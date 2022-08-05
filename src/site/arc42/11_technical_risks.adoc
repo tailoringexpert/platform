@@ -1,0 +1,26 @@
+[[section-technical-risks]]
+== Risiken und technische Schulden
+
+=== Risiken
+
+|===
+|  **Beschreibung** | **Risko** | **Maßnahmen** | **Status**
+
+|===
+=== Technische Schulden
+|===
+|  **Beschreibung** | **Maßnahmen** | **Status**
+
+|_Die Screeningsheet Parameter sind als Datenobjekt definiert_
+|_In Bezug auf mandantenfähigkeit sowie Erweiterbarkeit wäre es sinnvoller hier nur über eine Map zu arbeiten_
+| _offen_
+
+|_Mandantkennung als Headerparameter_
+|_Im Moment wird ein Default Mandant als Headerattribut in presentation-vue gesetzt
+Dies ist über sie initial URL zu ermitteln, im Store zu setzen und bei jedem Request zu setzen_
+| _offen_
+
+|===
+
+
+

@@ -1,0 +1,63 @@
+@startuml Ebene3.png
+hide empty members
+
+package repository {
+    interface JpaRepository<T, ID>
+
+    interface DokumentZeichnerRepsository<DocumentZeichnerEntity, Long> {
+        CACHE_DOKUMENTZEICHNER : String = "DokumentZeichnerRepository#findAll"
+        findAll() : List<DokumentZeichnerEntity>
+    }
+    JpaRepository <|-- DocumentZeichnerEntity
+
+    interface DRDRepository<DRDEntity, Long> {
+        findByNummer(nummer : String) : DRDEntity
+    }
+    JpaRepository <|-- DRDRepository
+
+    interface KatalogRepository<KatalogEntity, Long> {
+        CACHE_KATALOG : String = "KatalogRepository#Katalog"
+        CACHE_KATALOGKLISTE : String = "KatalogRepository#KatalogListe"
+        findByVersion(version : String) : KatalogEntity
+        findKatalogVersionBy() : Collection<KatalogVersion>
+        setGueltigBisFuerNichtGesetztesGueltigBis(zeitpunkt : ZonedDateTime) : int
+        save( entity : S) : <S extends KatalogEntity>
+    }
+    JpaRepository <|-- KatalogDefinitionRepository
+
+    interface LogoRepository<LogoEntity, Long> {
+        CACHE_LOGO : String = "LogoRepository#Name"
+        findByName(name : String) : LogoEntity
+    }
+    JpaRepository <|-- LogoRepository
+
+    interface ParameterRepository<ParameterEntity, Long> {
+        findByNameIn(names : Collection<String>) : Collection<ParameterEntity>
+    }
+    JpaRepository <|-- ParameterRepository
+
+    interface ProjektAnforderungGruppeRepository<ProjektPhaseAnforderungGruppeEntity, Long> {
+    }
+    JpaRepository <|-- ProjektAnforderungGruppeRepository
+
+    interface ProjektAnforderungRepository<ProjektPhaseAnforderungEntity, Long> {
+    }
+    JpaRepository <|-- ProjektAnforderungRepository
+
+    interface TailoringRepository<TailoringEntity, Long> {
+    }
+    JpaRepository <|-- TailoringRepository
+
+    interface ProjektRepository<ProjektEntity, Long> {
+        findByKuerzel(projekt : String) : ProjektEntity
+        deleteByKuerzel(projekt : String) : Long
+        findTailoring(projekt : String, tailoring : String) : TailoringEntity
+    }
+    JpaRepository <|-- ProjektRepository
+
+    interface SelektionsVektorProfilRepository<SelektionsVektorProfilEntity, Long> {
+    }
+    JpaRepository <|-- SelektionsVektorProfilRepository
+
+}
+@enduml

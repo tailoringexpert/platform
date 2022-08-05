@@ -1,0 +1,133 @@
+@startuml ProjektAnlegen.png
+skinparam BoxPadding 10
+
+actor ARZS
+
+
+box rest
+    boundary ScreeningSheetController
+
+    boundary ProjektController
+    control ProjektControllerMapper
+end box
+
+box core
+    control ScreeningSheetService
+    control ScreeningSheetParameterProvider
+    control SelektionsVektorProvider
+
+    control ProjektService
+    control TailoringService
+    control TailoringServiceMapper
+end box
+
+
+box data-jpa
+    control ScreeningSheetServiceRepository
+    control ProjektServiceRepository
+    control TailoringServiceRepository
+    control ProjektRepository
+    control TailoringRepository
+    control TailoringServiceRepositoryMapper
+    control JPAProjektServiceRepositoryMapper
+    control JPAPScreeningServiceRepositoryMapper
+    control KatalogRepository
+    control ParameterRepository
+end box
+
+box rdbms
+    database tailoring as db
+end box
+
+ARZS -> ScreeningSheetController : POST /screeningsheet
+activate ScreeningSheetController
+    ScreeningSheetController -> ScreeningSheetService : createScreeningSheet (byte[])
+    activate ScreeningSheetService
+        ScreeningSheetService -> ScreeningSheetParameterProvider : parse(ByteArrayInputStream)
+        activate ScreeningSheetParameterProvider
+            ScreeningSheetParameterProvider --> ScreeningSheetService : Map<String, Object>>
+        deactivate ScreeningSheetParameterProvider
+        ScreeningSheetService -> ScreeningSheetServiceRepository : getParameter(Set<String>)
+        activate ScreeningSheetServiceRepository
+            ScreeningSheetServiceRepository -> ParameterRepository : findByNameIn(namen)
+            activate ParameterRepository
+                ParameterRepository -> db : findByNameIn(namen)
+                activate db
+                    db --> ParameterRepository : Collection<ParameterEntity>
+                deactivate db
+            ParameterRepository --> ScreeningSheetServiceRepository : Collection<ParameterEntity>
+            deactivate ParameterRepository
+            loop alle Parameter
+                ScreeningSheetServiceRepository -> JPAPScreeningServiceRepositoryMapper : toDomain(ParameterEntity)
+                activate JPAPScreeningServiceRepositoryMapper
+                    JPAPScreeningServiceRepositoryMapper --> ScreeningSheetServiceRepository : Parameter
+                deactivate JPAPScreeningServiceRepositoryMapper
+            end
+
+
+
+            ScreeningSheetServiceRepository --> ScreeningSheetService : Collection<Parameter>
+        deactivate ScreeningSheetServiceRepository
+            ScreeningSheetService -> SelektionsVektorProvider : apply(Collection<Parameter>)
+        activate SelektionsVektorProvider
+            SelektionsVektorProvider --> ScreeningSheetService : SelektionsVektor
+        deactivate SelektionsVektorProvider
+    deactivate ScreeningSheetService
+    ScreeningSheetService --> ScreeningSheetController : ScreeningSheet
+deactivate ScreeningSheetController
+
+ARZS -> ProjektController : POST /projekt/{katolgversion}
+activate ProjektController
+
+ProjektController -> ProjektService : createProjekt(katalogVersion, screeningsheet byte[], selektionsVerktor)
+activate ProjektService
+    ProjektService -> ProjektServiceRepository : getKatalog(katalogVersion)
+    activate ProjektServiceRepository
+        ProjektServiceRepository --> ProjektService : Katalog<KatalogAnforderung>
+    deactivate ProjektServiceRepository
+    ProjektService -> ScreeningSheetService : createScreeningSheet
+    activate ScreeningSheetService
+        ScreeningSheetService --> ProjektService : ScreeningSheet
+    deactivate ScreeningSheetService
+    ProjektService -> TailoringService : createTailoring("master", "1000", screeningsheet, anzuwendender SelektionsVektor)
+    activate TailoringService
+        TailoringService -> TailoringServiceMapper : toTailoringKatalog(Katalog, ScreeningSheet, SelektionsVektor)
+        activate TailoringServiceMapper
+            TailoringServiceMapper --> TailoringService :  Katalog<TailoringAnforderung>
+        deactivate TailoringServiceMapper
+        TailoringService --> ProjektService : Tailoring
+    deactivate TailoringService
+    ProjektService --> ProjektService : Erzeuge ProjektParameter()ScreeningSheet, Tailoring)
+    ProjektService -> ProjektServiceRepository : createProjekt(KatalogVersion, projekt)
+    activate ProjektServiceRepository
+        ProjektServiceRepository -> JPAProjektServiceRepositoryMapper : createProjekt(projekt)
+        activate JPAProjektServiceRepositoryMapper
+            JPAProjektServiceRepositoryMapper --> ProjektServiceRepository : ProjektEntity
+        deactivate JPAProjektServiceRepositoryMapper
+        ProjektServiceRepository -> ProjektRepository : save(ProjektEntity)
+        activate ProjektRepository
+            ProjektRepository -> db
+            activate db
+                db --> ProjektRepository : ProjektEntity
+            deactivate db
+            ProjektRepository --> ProjektServiceRepository : ProjektEntity
+        deactivate ProjektRepository
+        ProjektServiceRepository -> KatalogRepository : findByVersion(katalogVersion)
+        activate KatalogRepository
+            KatalogRepository -> db
+            activate db
+                db --> KatalogRepository : KatalogEntity
+            deactivate db
+            KatalogRepository --> ProjektServiceRepository : KatalogEntity
+        deactivate KatalogRepository
+        ProjektServiceRepository -> JPAProjektServiceRepositoryMapper : toDomain()
+    deactivate ProjektServiceRepository
+
+    ProjektService --> ProjektController
+    deactivate ProjektService
+    ProjektController --> ARZS
+  deactivate ProjektController
+
+
+
+@enduml

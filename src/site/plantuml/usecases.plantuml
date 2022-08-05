@@ -1,0 +1,22 @@
+@startuml usecases.png
+
+  left to right direction
+  skinparam packageStyle rect
+  
+  actor "Anwender" as anwender
+
+
+  anwender --> (Neues Projekt anlegen)
+  anwender --> (Projekt bearbeiten)
+  anwender --> (Anforderung de-/selektiern)
+  anwender --> (Anforderungstext bearbeiten)
+  anwender --> (Dokumente erstellen)
+  anwender --> (Dokument hochladen)
+  anwender --> (Unterschriftenliste erstellen)
+  anwender --> (Dokumente verwalten)
+  anwender --> (Initiales Tailoring)
+  anwender --> (Projekt auswählen)
+  anwender --> (neue Anforderung hinzufügen)
+  anwender --> (Tailoringergebnisse vergleichen)
+  anwender --> (Anforderungsdokumente erstellen)
+@enduml

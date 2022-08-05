@@ -1,0 +1,46 @@
+@startuml
+hide empty members
+
+package de.dlr.rpds.tailoring {
+    package domain {
+        interface ResourceMapper
+    }
+}
+
+package tailoring {
+
+
+    interface TailoringService {
+    }
+
+    interface TailoringServiceRepository {
+    }
+
+    class TailoringController {
+        +getKatalog(projekt : String, phase: String) : ResponseEntity<EntityModel<KatalogResource>>
+        +getKapitel(projekt : String, phase : String, kapitel : String) : ResponseEntity<EntityModel<TailoringAnforderungGruppeResource>>
+        +getScreeningSheet(projekt : String, phase : String) : ResponseEntity<EntityModel<ScreeningSheetResource>
+        +getScreeningSheetDatei(projekt : String, phase : String) : ResponseEntity<byte[]>
+        +getSelektionsVektor(projekt : String, phase : String) :  ResponseEntity<EntityModel<SelektionsVektorResource>>
+        +addKatalog(projekt : String, phase : String, selektionsVektor : SelektionsVektor) : ResponseEntity<EntityModel<TailoringResource>
+        +getTailoring(projekt : String, phase : String): ResponseEntity<EntityModel<TailoringResource>>
+        +addAnforderungDokument(projekt : String, phase : String, datei : MultipartFile): ResponseEntity<EntityModel<TailoringResource>>
+        +getDokumente(projekt : String, phase : String) : ResponseEntity<byte[]>
+        +getAnforderungDokument(projekt : String, phase : String) : ResponseEntity<byte[]>
+        +getAnforderungen(projekt : String, phase : String, kapitel : String ) : ResponseEntity<CollectionModel<EntityModel<TailoringAnforderungResource>>>
+        +getDokumentZeichnungen(projekt : String, phase : String) : ResponseEntity<CollectionModel<DokumentZeichnungResource>>
+        +updateDokumentZeichnung(projekt : String, phase : String, bereich : String, dokumentZeichnung : DokumentZeichnung) : ResponseEntity<EntityModel<DokumentZeichnungResource>>
+        +updateName(projekt : String, phase : String, name : String) : ResponseEntity<EntityModel<TailoringInformationResource>>
+        +getDokumentListe(projekt : String, phase : String) : ResponseEntity<CollectionModel<DokumentResource>>
+        +getDokument(projekt : String, phase : String, name : String) : ResponseEntity<byte[]>
+        +getVergleichsdokumentDokument(projekt : String, phase : String, name : String) : ResponseEntity<byte[]>
+        +getProfile() : ResponseEntity<CollectionModel<EntityModel<SelektionsVektorProfilResource>>>
+    }
+
+
+    TailoringController --> "1" ResourceMapper : mapper
+    TailoringController --> "1" TailoringService : TailoringService
+    TailoringController --> "1" TailoringServiceRepository : TailoringServiceRepository
+
+}
+@enduml

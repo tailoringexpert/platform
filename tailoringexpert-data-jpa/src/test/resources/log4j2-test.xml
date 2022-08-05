@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Configuration status="ERROR" verbose="true"
+               monitorInterval="60">
+
+    <Appenders>
+        <Console name="Console" target="SYSTEM_OUT">
+            <PatternLayout pattern="%d{HH:mm:ss.SSS} %-5p [%c] %m%n"/>
+        </Console>
+
+        <Console name="STDOUT" target="SYSTEM_OUT">
+            <PatternLayout pattern="%m%n"/>
+        </Console>
+
+    </Appenders>
+
+    <Loggers>
+        <!-- Loggers -->
+        <Logger name="de.baedorf.tailoringexpert" level="TRACE" additivity="false">
+            <AppenderRef ref="STDOUT"/>
+        </Logger>
+
+        <logger name="org.hibernate.SQL" level="ERROR" additivity="false">
+            <appender-ref ref="STDOUT" />
+        </logger>
+
+        <logger name="liquibase" level="OFF" additivity="false">
+            <appender-ref ref="STDOUT" />
+        </logger>
+
+        <Root level="ERROR">
+            <AppenderRef ref="STDOUT" />
+        </Root>
+
+    </Loggers>
+
+</Configuration>

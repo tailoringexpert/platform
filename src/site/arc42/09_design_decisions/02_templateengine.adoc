@@ -1,0 +1,42 @@
+=== HTML Template Engine
+[horizontal]
+Status:: proposed
+Entscheider:: Bädorf, Michael
+Datum:: 07.03.2021
+
+Technische Story:: n/a
+
+==== Kontext und Problemstellung
+
+Für die Erzeugung von PDF Dateien als HTML Code wird eine Template Engine benötigt, die Systemdaten in Vorlagen auflösen und HTML Fragmente zu einer Seite zusammenfügen kann.
+
+==== Entscheidungstreiber
+
+* Funktionalität
+* Integrierbarkeit in das System
+
+==== Betrachtete Lösungsmöglichkeiten
+
+* Thymeleaf
+
+==== Entscheidung
+
+Gewählte Alternative::
+Thymeleaf, weil
+
+* alle benötigten Funktionen zur Verfügung gestellt werden
+* etabilierte sehr gute Integration in eine Spring Anwendung
+
+==== Vergleich der Alternativen
+
+===== Thymeleaf
+
+====== Postiv
+* einfache Template Sprache
+* einfache Integration in die Anwendunf
+
+====== Negativ
+* n/a
+
+==== Links
+* https://www.thymeleaf.org[thymeleaf]

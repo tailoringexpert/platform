@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Configuration status="ERROR" verbose="true"
+               monitorInterval="60">
+
+    <Appenders>
+        <Console name="Console" target="SYSTEM_OUT">
+            <PatternLayout pattern="%d{HH:mm:ss.SSS} %-5p [%c] %m%n"/>
+        </Console>
+
+        <Console name="STDOUT" target="SYSTEM_OUT">
+            <PatternLayout pattern="%m%n"/>
+        </Console>
+
+    </Appenders>
+
+    <Loggers>
+        <!-- Loggers -->
+        <Logger name="de.baedorf.tailoringexpert" level="trace" additivity="false">
+            <AppenderRef ref="STDOUT"/>
+        </Logger>
+
+        <Root>
+            <AppenderRef ref="STDOUT" level="info"/>
+        </Root>
+
+    </Loggers>
+
+</Configuration>

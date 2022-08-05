@@ -1,0 +1,56 @@
+[[section-solution-strategy]]
+== Lösungsstrategie
+
+Dieser Abschnitt enthält einen stark verdichteten Architekturüberblick.
+Eine Gegenüberstellung der wichtigsten Ziele und Lösungsansätze.
+
+Die folgende Tabelle stellt die Qualitätsziele von Tailoring (siehe Abschnitt 1.2)
+passenden Architekturansätzen gegenüber, und erleichtert so einen Einstieg in die Lösung.
+
+|===
+ | Qualitätsziel           | Dem zuträgliche Ansätze in der Architektur
+
+ | Technologie Neutralität
+a|
+- Implementierung gegen Standard Schnittstelle, z.B. JPA
+- Umsetzung hexagonale Architektur
+
+ | Testbarkeit
+a|
+- Bereistellung von Cucumber für die Erstellung von Abnahme-/Akzeptanztests
+- Smoketest mittels gespeicherten JMeter Requests
+|===
+
+=== Aufbau von Tailoring
+
+Tailoring ist als Java Spring Anwendung unter berücksichtigung der hexagonalen
+Architektur realisiert.
+
+Es zerfällt grob in folgende Teile:
+
+- eine Implementierung des fachlichen Kerns
+- einem Modul für die Datenzugriffsschicht
+- Module für die Erstellung der Ausgabedokument
+- einem Modul für den Import von Tailoring Anforderungen
+- einem Modul mit Spring RestController für die Anbindung durch ein Webfrontend
+- ein Webfrontend
+
+Diese Zerlegung ermöglicht es, den fachlichen Kern technologieneutral zu implementieren.
+Alle Teile sind durch Schnittstellen abstrahiert, die Implementierungen werden
+per Java Config Dependency Injection zusammengesteckt.
+
+=== Mandantenfähigkeit
+
+TailoringExpert ist als mandantenfähige Anwendung zu realisieren.
+
+Dafür soll für jede mandantenspezfische Funktionalität eine Schnittstelle definiert werden. Jede Implementierung
+einer Schnittstelle ist konsistent über alle Implementierungen eines Mandanten zu annotieren.
+Der Name der Annotation entspricht dabei dem Mandantennamen.
+
+Die Anwendung selbst implementiert die primäre Schnittstellenimplementierung und ist für das Einbinden der
+Mandantenimplementierungen zuständig. Diese primäre Schnittstellenimplementierung ist dabei nichts weiter als eine
+Map mit dem Mapping des Mandanten(namen) zu dessen Implementierung. Der Zugriff auf die spezifische
+Mandantenimplementierung erfolgt mittels des Mandantenschlüssels über die primäre Schnittstelle(nmap).
+
+Aus diesem Grund ist die Mandantenkennung über eine ThreadContext notwendig. Deshalb muss jeder Client die
+Mandantenkennung als X-Tenant Header Attribut senden. Die Anwendung liest dieses Attribut als erstes in einem Filter aus.

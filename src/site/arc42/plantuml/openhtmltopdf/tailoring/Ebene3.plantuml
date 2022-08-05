@@ -1,0 +1,84 @@
+@startuml Ebene3.png
+hide empty members
+
+package renderer {
+    interface HTMLTemplateEngine
+    class PDFEngine
+}
+
+package tailoring {
+
+    interface DokumentCreator {
+        createDokument(docId : String, projektPhase : ProjektPhase, platzhalter : Map<String, String>) : Datei
+    }
+
+    class TailoringKatalogDokumentCreator {
+    }
+    DokumentCreator <|.. AnforderungKatalogDokumentCreator
+    TailoringKatalogDokumentCreator --> "1" HTMLTemplateEngine : templateEngine
+    TailoringKatalogDokumentCreator --> "1" PDFEngine : pdfEngine
+    TailoringKatalogDokumentCreator --> "1" "BiFunction<Kapitel<TailoringAnforderung>, Collection<Phase>, Map<DRD, Set<String>>>" : drdProvider
+
+
+    class CMDokumentCreator {
+    }
+    DokumentCreator <|.. CMDokumentCreator
+    CMDokumentCreator --> "1" HTMLTemplateEngine : templateEngine
+    CMDokumentCreator --> "1" PDFEngine : pdfEngine
+    CMDokumentCreator --> "1" "BiFunction<Kapitel<TailoringAnforderung>, Collection<Phase>, Map<DRD, Set<String>>>" : drdProvider
+
+
+    class CMElement {
+        -ebene : int
+        -nummer : String
+        -name : String
+    }
+
+
+    class DRDDokumentCreator {
+    }
+    DokumentCreator <|.. DRDDokumentCreator
+    DRDDokumentCreator --> "1" HTMLTemplateEngine : templateEngine
+    DRDDokumentCreator --> "1" PDFEngine : pdfEngine
+    DRDDokumentCreator --> "1" "BiFunction<Kapitel<TailoringAnforderung>, Collection<Phase>, Map<DRD, Set<String>>>" : drdProvider
+
+    class DRDElement {
+        -titel : String
+        -datum : String
+        -anforderung : Collection<String>
+        -nummer : String
+        -aktion : String
+    }
+
+    class DRDFragment {
+        -name : String
+        -nummer : String
+        -fragment : String
+    }
+
+    class KatalogElement {
+        -referenz : String
+        -position : String
+        -kapitel : String
+        -text : String
+        -anwendbar : boolean
+        -phasen : Collection<String>
+        -identifikatoren : Collection<String>
+    }
+
+
+    class VergleichDokumentCreator {
+    }
+    DokumentCreator <|.. VergleichDokumentCreator
+    VergleichDokumentCreator --> "1" HTMLTemplateEngine : templateEngine
+    VergleichDokumentCreator --> "1" PDFEngine : pdfEngine
+
+    class VergleichElement {
+        -absatz : String
+        -titel : String
+        -ausgewaehlt : boolean
+        -geaendert : boolean
+        -datum : ZonedDateTime
+    }
+}
+@enduml

@@ -1,0 +1,80 @@
+=== Erzeugung PA Dokumente
+[horizontal]
+Status:: proposed
+Entscheider:: Bädorf, Michael
+Datum:: 07.03.2021
+
+Technische Story:: n/a
+
+==== Kontext und Problemstellung
+
+Ziel des Tailorings ist die Erzeugung von Anforderungsdokumenten.
+Diese Dokumente werden an den Auftragnehmer übergeben. Bisher werden diese Dokumente in Form von Word und gezeichneten
+PDF an die Auftragnehmer übergeben.
+
+==== Entscheidungstreiber
+
+* Coperate Design
+* migrierte (HTML)Anforderungstextbausteine
+* Hauptspeicherverwendung
+* Performance
+
+==== Betrachtete Lösungsmöglichkeiten
+
+* Word (mittels docx4j)
+* PDF (mittels openhtmltopdf)
+
+==== Entscheidung
+
+Gewählte Alternative::
+PDF (mittels openmhtmltopdf), weil
+* volle HTML Fähigkeiten
+* Speicherfreundlicher
+* erheblich schneller
+
+werden können
+
+==== Vergleich der Alternativen
+
+===== Word (mittels docx4j)
+
+PA Word Dokumente können mittels Java ohne eine Word Installation erezeugt werden.
+Eine Library hierfür ist https://www.docx4java.org/trac/docx4j[docx4j].
+Diese Library stellt eine Schnittstelle für die Erzeugung vonn Word Dateien über die XML-Schnitstelle zur Verfügung.
+
+====== Postiv
+* keine Word Installation nötig
+* Unterstützung von HTML Inhalten
+* bisherige Word Vorlage kann verwendet werden
+** Berücksichtigung Coperate Design
+* erzeugtes Dokument kann nachträglich händisch bearbeitet werden
+** ggf. notwendig, wenn HTML Fehler in migrierten HTML Testbausteinen
+
+====== Negativ
+* XML Verrabeitung kann Speicher- und Zeitintensiv sein
+* Bei der Erstellung der Dokumente werden vorhandene Grafiken/Bilddateien scheinbar nicht erinfach regerennziert sondern
+komplett in den Hauptspeicher geladen und in das erzeugt Word eingefügt. Diese führt spätestens bei Generierung des DRD
+Dokumentes zu massiven Speicherproblemen!
+
+
+===== PDF (mittels openhtmltopdf)
+
+PA Dokumente können mittels openhtmltopdf einfach über den "Zwischenschritt" HTML ohne CLient Installationen als PDF erezeugt werden.
+
+====== Postiv
+* keine Client Installation nötig
+* Unterstützung von HTML Inhalten
+* Formattierung/Layouting mittels CSS
+* erzeugtes Dokument kann nachträglich händisch bearbeitet werden
+* sehr schnell
+* festes Layout/Format durch Einbettung von Schriften möglich
+
+
+====== Negativ
+* Coperate Design muss in HTML umgesetzt werden
+* erzeugtes Dokument kann nicht ohne "hochwertigen" Editor manuell nachbearbeitet werden
+
+
+==== Links
+* https://www.docx4java.org/trac/docx4j[docx4j]
+* https://github.com/danfickle/openhtmltopdf[openhtmltopdf]

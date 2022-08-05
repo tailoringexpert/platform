@@ -1,0 +1,22 @@
+@startuml
+hide empty members
+
+package de.dlr.rpds.tailoring {
+    package domain {
+        abstract class ResourceMapper
+    }
+}
+
+package screeningsheet {
+
+    interface ScreeningSheetService {
+    }
+
+    class ScreeningSheetController {
+        +createScreeningSheet(datei : MultipartFile) : ResponseEntity<EntityModel<ScreeningSheetResource>>
+    }
+    ScreeningSheetController --> "1" ResourceMapper : mapper
+    ScreeningSheetController --> "1" ScreeningSheetService : screeningSheetService
+
+}
+@enduml

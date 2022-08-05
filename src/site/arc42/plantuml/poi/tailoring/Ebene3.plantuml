@@ -1,0 +1,38 @@
+@startuml Ebene3.png
+hide empty members
+
+package tailoring {
+    interface DokumentCreator {
+        createDokument(docId : String, projektPhase : ProjektPhase, platzhalter : Map<String, String>) : Datei
+    }
+
+    interface "BiFunction<Kapitel<TailoringAnforderung>, Collection<Phase>, Map<DRD, Set<String>>>" as drdSupplier {
+    }
+
+    interface "Function<String, File>" as templateSupplier {
+    }
+
+    class CMSpreadsheetCreator {
+        templateEngine : ITemplateEngine
+        toXHTML(text : String) : String
+        toXHTML(text : String, platzhalter :  Map<String, String>) : String
+    }
+    CMSpreadsheetCreator --> "1" templateSupplier : templateSupplier
+    CMSpreadsheetCreator --> "1" drdSupplier : drdProvider
+
+    class DRDElement {
+        titel : String
+        datum : String
+        anforderung : Collection<String>
+        nummer: String
+        aktion : String
+    }
+
+    interface "Function<byte[], Map<String, Collection<ImportAnforderung>>>" as anforderungFunction {
+    }
+
+    class TailoringAnforderungExcelFileReader {
+    }
+    anforderungFunction <|.. TailoringAnforderungExcelFileReader
+}
+@enduml

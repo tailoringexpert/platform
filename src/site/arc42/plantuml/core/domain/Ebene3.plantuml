@@ -1,0 +1,188 @@
+@startuml Ebene3.png
+skinparam componentStyle uml2
+
+package domain {
+
+    class Logo {
+        name : String
+        url : String
+    }
+
+    class Referenz {
+      text : String
+      geaendert: Boolean
+    }
+    Referenz --> "0..1" Logo : logo
+
+    abstract class Anforderung{
+      text: String
+      position : String
+    }
+    Anforderung --> "0..1" Referenz : referenz
+    Anforderung --> "0..*" DRD : drds
+
+    class DRD {
+        nummer : String
+        titel : String
+        lieferzeitpunkt : String
+        aktion : String
+    }
+    class Identifikator {
+        typ : String
+        level : int
+        limitierierungen : Collection<String>
+    }
+
+    enum Phase {
+        ZERO("0")
+        A("A")
+        B("B")
+        C("C")
+        D("D")
+        E("E")
+        F("F")
+    }
+
+    class KatalogAnforderung {
+    }
+    Anforderung <|-- KatalogAnforderung
+    KatalogAnforderung --> "0..*" Identifikator : identifikatoren
+    KatalogAnforderung --> "0...*" Phase : phasen
+
+
+    class Kapitel<T extends Anforderung> {
+        name : String
+        position : int
+        nummer : String
+    }
+    Kapitel --> "0..*" Kapitel : kapitel
+    Kapitel --> "0..*" Anforderung : anforderungen
+
+    class TailoringAnforderung {
+        ausgewaehlt : Boolean
+        ausgewaehltGeaendert : ZonedDateTime
+        textGeaendert : ZonedDateTime
+    }
+    Anforderung <|-- TailoringAnforderung
+
+    class Katalog<T extends Anforderung> {
+        version : String
+    }
+    Katalog --> "1" Kapitel : toc
+
+
+    class SelektionsVektor {
+        levels : Map<String, Integer>
+        getLevel(type : String) : int
+    }
+
+    class SelektionsVektorProfil {
+        name: String
+        levels : Map<String, Integer>
+    }
+
+    class ScreeningSheet {
+        data : byte[]
+        getKuezel() : String
+        getProjektLeiter() : String
+        getAbteilung() : String
+        getLangname() : String
+        getKurzname() : String
+    }
+    ScreeningSheet --> "1" SelektionsVektor : selektionsVektor
+    ScreeningSheet -->  "0..*" ScreeningSheetParameter : parameters
+
+    class Dokument {
+        name : String
+        type : String
+        daten:  byte[]
+        hash : String
+    }
+
+    enum TailoringStatus {
+        ANGELEGT
+        AKTIV
+    }
+
+    class Tailoring {
+        name : String
+        kennung : String
+    }
+
+    Tailoring --> "1" SelektionsVektor : selektionsVektor
+    Tailoring --> "1" ScreeningSheet : screeningSheet
+    Tailoring --> "1..*" Phase : phasen
+    Tailoring --> "1" Katalog : katalog
+    Tailoring --> "1" TailoringStatus : status
+    Tailoring --> "1" Dokument : anforderungDokument
+    Tailoring --> "1" Dokument : drdDokument
+    Tailoring --> "1..*" DokumentZeichnung : zeichnungen
+
+    class Projekt {
+        kuerzel : String
+        erstellungsZeitpunkt : ZonedDateTime
+    }
+    Projekt --> "1..*" Tailoring : tailorings
+    Projekt --> "1" ScreeningSheet : screeningSheet
+    Projekt --> "1" Katalog : katalog
+
+    enum DatenTyp {
+        SKALAR
+        MATRIX
+    }
+
+    class Parameter {
+        parameterTyp : String
+        name : String
+        bezeichnung: String
+        wert : Object
+        reihenfolge : int
+    }
+    Parameter --> "1" DatenTyp : datenTyp
+
+    enum DokumentZeichnungStatus {
+        PREPARED("Prepared")
+        AGREED("Agreed")
+        RELEASED("Released")
+    }
+
+    class DokumentZeichnung {
+        bereich : String
+        unterzeichner : String
+        anwendbar : Boolean
+        position : int
+    }
+    DokumentZeichnung --> "1" DokumentZeichnungStatus : status
+
+    class Datei {
+        docId : String
+        type: String
+        bytes : byte[]
+    }
+
+    class TailoringInformation<<Projektion>> {
+        name : String
+        katalogVersion : String
+    }
+    TailoringInformation --> "1.." Phase : phasen
+
+    class ProjektInformation<<Projektion>> {
+        kuerzel : String
+        katalogVersion : Sting
+        erstellungsZeitpunkt : ZonedDateTime
+    }
+    ProjektInformation --> "1..*" TailoringInformation : Tailoringn
+
+    class ScreeningSheetParameter {
+        bezeichnung : String
+        wert : Object
+    }
+
+    class ScreeningSheetInformation {
+    }
+    ScreeningSheetInformation --> "1..*" ScreeningSheetParameter : parameters
+    ScreeningSheetInformation --> "1" SelektionsVektor : selektionsVektor
+
+}
+hide empty members
+@enduml

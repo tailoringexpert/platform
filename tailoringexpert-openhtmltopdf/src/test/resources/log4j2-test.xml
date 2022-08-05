@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Configuration status="ERROR" verbose="true" monitorInterval="60">
+
+    <Appenders>
+        <Console name="CONSOLE" target="SYSTEM_OUT">
+            <PatternLayout pattern="%d{HH:mm:ss.SSS} %-5p [%c] %m%n"/>
+        </Console>
+
+        <File name="FILE" fileName="target/tailoring.html" append="false">
+            <PatternLayout>
+                <Pattern>%m%n</Pattern>
+            </PatternLayout>
+        </File>
+
+        <File name="ANFORDERUNG" fileName="target/anforderung.log" append="false">
+            <PatternLayout>
+                <Pattern>%m%n</Pattern>
+            </PatternLayout>
+        </File>
+        <Console name="STDOUT" target="SYSTEM_OUT">
+            <PatternLayout pattern="%m%n"/>
+        </Console>
+
+    </Appenders>
+
+    <Loggers>
+        <!-- Loggers -->
+
+        <Logger name="de.baedorf.tailoringexpert" level="DEBUG" additivity="false">
+            <AppenderRef ref="CONSOLE"/>
+        </Logger>
+
+        <Logger name="de.baedorf.tailoringexpert.katalog.KatalogDokumentCreator" level="TRACE" additivity="false">
+            <AppenderRef ref="CONSOLE"/>
+        </Logger>
+
+
+        <Logger name="com.openhtmltopdf" level="DEBUG" additivity="false">
+            <AppenderRef ref="CONSOLE"/>
+        </Logger>
+
+
+        <Root level="ERROR">
+            <AppenderRef ref="CONSOLE"/>
+        </Root>
+
+    </Loggers>
+
+</Configuration>

@@ -1,0 +1,22 @@
+@startuml Ebene3.png
+hide empty members
+
+package renderer {
+    interface HTMLTemplateEngine
+    class PDFEngine
+}
+
+package katalog {
+
+    interface DokumentCreator {
+        createDokument(docId : String, projektPhase : ProjektPhase, platzhalter : Map<String, String>) : Datei
+    }
+
+    class KatalogDokumentCreator {
+    }
+    DokumentCreator <|.. KatalogDokumentCreator
+    TailoringKatalogDokumentCreator --> "1" HTMLTemplateEngine : templateEngine
+    TailoringKatalogDokumentCreator --> "1" PDFEngine : pdfEngine
+
+}
+@enduml

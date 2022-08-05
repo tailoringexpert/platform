@@ -1,0 +1,35 @@
+@startuml Ebene3.png
+hide empty members
+
+package repository {
+    interface KatalogRepository
+    interface LogoRepository
+    interface DRDRepository
+
+}
+package katalog {
+    interface KatalogServiceRepository {
+        createKatalog(katalog : Katalog<AnforderungDefinition>, gueligAb : ZonedDateTime) : Optional<Katalog<AnforderungDefinition>>
+        deleteKatalog(version : String) : boolean
+        getKatalog(version : String) : Optional<Katalog<KatalogAnforderung>>
+    }
+
+    abstract JPAKatalogServiceRepositoryMapper {
+        {abstract} createKatalog(domain : Katalog<KatalogAnforderung>) : KatalogEntity
+        {abstract} createKatalog(domain : DRD) : DRDEntity
+        {abstract} createKatalog(entity : KatalogEntity) : Katalog<KatalogAnforderung>
+        resolve(domain : Logo) : LogoEntity
+        resolve(domain : DRD) : DRDEntity
+    }
+    JPAKatalogServiceRepositoryMapper --> "1" LogoRepository : logoRepository
+    JPAKatalogServiceRepositoryMapper --> "1" DRDRepository : drdRepository
+
+    class JPAKatalogServiceRepository {
+    }
+
+    KatalogServiceRepository <|.. JPAKatalogServiceRepository
+    JPAKatalogServiceRepository --> "1" JPAKatalogServiceRepositoryMapper : mapper
+    JPAKatalogServiceRepository --> "1" KatalogRepository : katalogRepository
+}
+
+@enduml

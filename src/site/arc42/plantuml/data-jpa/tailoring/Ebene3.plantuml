@@ -1,0 +1,56 @@
+@startuml Ebene3.png
+hide empty members
+
+package repository {
+    interface LogoRepository
+    interface ProjektRepository
+    interface TailoringRepository
+    interface SelektionsVektorProfilRepository
+    interface DokumentZeichnerRepository
+}
+
+package tailoring {
+
+    interface TailoringServiceRepository {
+        getProjekt(projekt : String) : Optional<Projekt>
+        updateTailoring(projekt : String, tailoring : Tailoring) : Tailoring
+        updateAnforderungDokument(projekt : String, tailoring : String, dokument : Dokument) : Tailoring
+        getTailoring(projekt : String, tailoring : String): Optional<Tailoring>
+        getScreeningSheet(projekt : String, tailoring : String): Optional<ScreeningSheet>
+        getScreeningSheetDatei(projekt : String, tailoring : String): Optional<byte[]>
+        updateDokumentZeichnung(projekt : String, tailoring : String, zeichnung : DokumentZeichnung) : Optional<DokumentZeichnung>
+        updateName(projekt : String, tailoring : String, name : String) : Optional<Tailoring>
+        getDokumentListe(projekt : String, tailoring : String): List<Dokument>
+        getDokument(projekt : String, tailoring : String, name : String) : byte[]
+        deleteDokument(projekt : String, tailoring : String, name : String) : boolean
+        getSelektionsVektorProfile() : Collection<SelektionsVektorProfil>
+        getDefaultZeichnungen() : Collection<DokumentZeichnung>
+        deleteTailoring(projekt : String, tailoring : String)
+    }
+
+    abstract class JPATailoringServiceRepositoryMapper {
+        {abstract} toDomain(entity : ProjektEntity) : Projekt
+        {abstract} toDomain(entity : TailoringEntity) : Tailoring
+        {abstract} addKatalog(domain : Tailoring,  entity : TailoringEntity) : void
+        {abstract} update(domain : Dokument, entity : DokumentEntity) : void
+        {abstract} toScreeningSheetParameters(entity : ScreeningSheetEntity) : ScreeningSheet
+        {abstract} updateDokumentZeichnung(domain : DokumentZeichnung, entity : DokumentZeichnungEntity) : void
+        {abstract} toDomain(entity : DokumentZeichnungEntity) : DokumentZeichnung
+        {abstract} toDomain(entity : DokumentEntity) : Dokument
+        {abstract} toDomain(entity : SelektionsVektorProfilEntity) : SelektionsVektorProfil
+        {abstract} getDefaultZeichnungen(entity : DokumentZeichnerEntity) : DokumentZeichnung
+        resolve(domain: Logo) : LogoEntity
+    }
+    JPAProjektServiceRepositoryMapper -->  "1" LogoRepository : logoRepository
+
+    class JPATailoringServiceRepository {
+    }
+    TailoringServiceRepository <|.. JPATailoringServiceRepository
+    JPATailoringServiceRepository --> "1" JPATailoringServiceRepositoryMapper : mapper
+    JPATailoringServiceRepository --> "1" ProjektRepository : projektRepository
+    JPATailoringServiceRepository --> "1" TailoringRepository : tailoringRepository
+    JPATailoringServiceRepository --> "1" SelektionsVektorProfilRepository : selektionsVektorProfilRepository
+    JPATailoringServiceRepository --> "1" DokumentZeichnerRepository : dokumentZeichnerRepository;
+
+}
+@enduml

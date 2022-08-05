@@ -1,0 +1,215 @@
+@startuml Ebene3.png
+skinparam componentStyle uml2
+'skinparam linetype ortho
+
+package domain {
+
+    enum DatenTyp {
+        SKALAR
+        MATRIX
+    }
+
+    class ParameterEntity {
+        id : Long <<PK>>
+        parameterTyp : String
+        bezeichnung : String
+        name : String
+        wert : String
+        position : int
+    }
+    ParameterEntity --> "1" DatenTyp : datenTyp
+
+    class Phase {
+    }
+
+
+    enum TailoringStatus {
+        ANGELEGT
+        AKTIV
+    }
+
+    class DRDEntity {
+        id : Long <<PK>>
+        nummer : String
+        titel : String
+        lieferzeitpunkt : String
+        aktion : String
+    }
+
+    class LogoEntity {
+        id : Long <<PK>>
+        name : String
+        url : String
+    }
+
+    class ReferenzEntity <<Embeddable>>{
+        text : String
+        geaendert : Boolean
+    }
+    ReferenzEntity --> "0..1" LogoEntity : logo
+
+    class IdentifikatorEntity {
+        id : Long <<PK>
+        typ : String
+        level : int
+        limitierungen : Set<String>
+    }
+
+    class KatalogAnforderungEntity {
+        id : Long <<PK>>
+        text : String
+        postion : String
+    }
+    KatalogAnforderungEntity --> "0..1" ReferenzEntity : referenz
+    KatalogAnforderungEntity --> "0..*" Phase : phasen <<ordered>>
+    KatalogAnforderungEntity --> "0..*" IdentifikatorEntity : identifkatoren <<unordered>>
+    KatalogAnforderungEntity --> "0..*" DRDEntity : drds <<unordered>>
+
+    class KatalogKapitelEntity {
+        id : Long <<PK>>
+        name : String
+        postion : int
+        nummer : String
+    }
+    KatalogKapitelEntity --> "0..*" KatalogKapitelEntity : kapitel <<ordered>>
+    KatalogKapitelEntity --> "0..*" KatalogAnforderungEntity : anforderungen <<ordered>>
+
+    class KatalogEntity {
+        id : Long <<PK>>
+        version : String
+        gueltigAb : ZonedDateTime
+        gueltigBis : ZonedDateTime
+    }
+    KatalogEntity --> "1" KatalogKapitelEntity : toc
+
+    enum Phase {
+        NULL("0")
+        A("A")
+        B("B")
+        C("C")
+        D("D")
+        E("E")
+        F("F")
+    }
+
+    class SelektionsVektorEntity {
+        id : Long <<PK>>
+        levels : Map<String, Integer>
+    }
+
+    class SelektionsVektorProfilEntity {
+        id : Long <<PK>>
+        name : String
+        levels : Map<String, Integer>
+    }
+
+    class ScreeningSheetParameterEntity {
+        id: Long <<PK>>
+        bezeichnung : String
+        wert: Object
+    }
+
+    class ScreeningSheetEntity {
+        id: Long <<PK>>
+        data : byte[]
+    }
+    ScreeningSheetEntity --> "1..*" ScreeningSheetParameterEntity : parameters
+    ScreeningSheetEntity --> "1" SelektionsVektorEntity : selektionsVektor
+
+    class TailoringAnforderungEntity {
+        id : Long <<PK>>
+        text : String
+        position : String
+        ausgewaehlt : Boolean
+        ausgewaehltGeaendert : ZonedDateTime
+        textGeaendert : ZonedDateTime
+    }
+    TailoringAnforderungEntity --> "0..1" ReferenzEntity : referenz
+    TailoringAnforderungEntity --> "0..*" DRDEntity : drds <<unordered>>
+
+    class TailoringKatalogKapitelEntity {
+        id : Long <<PK>>
+        name : String
+        position : int
+        kapitel : String
+        getKapitel(kapitel : String) : Optional<TailoringKatalogKapitelEntity>
+    }
+    TailoringKatalogKapitelEntity --> "0..*" TailoringKatalogKapitelEntity : kapitel <<ordered>>
+    TailoringKatalogKapitelEntity --> "0..*" TailoringAnforderungEntity : anforderungen <<ordered>>
+
+    class DokumentEntity {
+        id : Long <<PK>>
+        name : String
+        daten : byte []
+        hash : String
+    }
+
+    class DokumentZeichnungEntity {
+        bereich : String
+        unterzeichner : String
+        anwendbar : Boolean
+        position : int
+    }
+    DokumentZeichnungEntity --> "1" DokumentZeichnungStatus : status
+
+    class DokumentZeichnerEntity {
+        id : Long <<PK>>
+        bereich : String
+        unterzeichner : String
+        position : int
+
+    }
+    DokumentZeicherEntity --> "1" DokumentZeichnungStatus : status
+
+    class TailoringEntity {
+        id : Long <<Pk>>
+        kennung : String
+        name : String
+        erstellungsZeitpunkt : ZonedDateTime
+    }
+    TailoringEntity --> "1" SelektionsVektorEntity : selektionsVektor
+    TailoringEntity --> "1" KatalogEntity : basisKatalog
+    TailoringEntity --> "1" ScreeningSheetEntity : screeningSheet
+    TailoringEntity --> "1..*" Phase : phasen
+    TailoringEntity --> "1" TailoringKatalogEntity : katalog
+    TailoringEntity --> "1" TailoringStatus : status
+    TailoringEntity --> "1..*" DokumentZeichnungEntity : zeichnungen
+    TailoringEntity --> "0..*" DokumentEntity : dokumente
+
+    class TailoringKatalogEntity {
+        id : Long <<PK>>
+        version : String
+    }
+    TailoringKatalogEntity --> "1" TailoringKatalogEntity : toc
+
+    class ProjektEntity {
+        id : Long <<PK>>
+        kuerzel : String <<unique>>
+        erstellungsZeitpunkt : ZonedDateTime
+        getTailoring(name : String) : Optional<TailoringEntity>
+    }
+    ProjektEntity --> "1" KatalogEntity : katalog
+    ProjektEntity --> "1" ScreeningSheetEntity : screeningSheet
+    ProjektEntity --> "1..*" TailoringEntity : tailorings
+
+
+    interface KatalogVersion<<Projektion>> {
+        getVersion() : String
+        getGueltigAb() : ZonedDateTime
+        getGueltigBis() : ZonedDateTime
+    }
+
+    interface AttributeConverter<E, D>
+
+    class ScreeningSheetParameterValueAttributeConverter<Object, String> {
+    }
+    AttributeConverter <|-- ScreeningSheetParameterValueAttributeConverter
+
+    class ZonedDateTimeAttributeConverter<ZonedDateTime, String> {
+    }
+    AttributeConverter <|-- ZonedDateTimeAttributeConverter
+
+}
+
+hide empty members
+@enduml

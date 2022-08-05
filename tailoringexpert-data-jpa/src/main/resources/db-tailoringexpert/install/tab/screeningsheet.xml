@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+         http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
+
+    <property name="blob_type" value="BYTEA" dbms="postgresql"/>
+    <property name="blob_type" value="LONGBLOB" dbms="mariadb"/>
+    <property name="blob_type" value="BLOB" dbms="h2"/>
+
+    <changeSet id="1" author="Michael Baedorf">
+        <createTable tableName="SCREENINGSHEET">
+            <column name="SCREENINGSHEET_ID" type="BIGINT">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+
+            <column name="DATA" type="${blob_type}"/>
+            <column name="SELEKTIONSVEKTOR_ID" type="BIGINT"/>
+        </createTable>
+    </changeSet>
+
+</databaseChangeLog>

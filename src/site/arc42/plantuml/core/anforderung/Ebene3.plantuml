@@ -1,0 +1,27 @@
+@startuml Ebene3.png
+hide empty members
+
+package anforderung {
+
+    interface AnforderungService {
+        handleAusgewaehlt(projekt : String, tailoring : String, kapitel: String, position : String, ausgewaehlt : Boolean) : Optinal<TailoringAnforderung>;
+        handleAusgewaehlt(projekt : String, tailoring : String, kapitel : String, ausgewaehlt : Boolean) : Optional<AnforderungsGruppe<TailoringAnforderung>>
+        handleText(projekt : String, tailoring : String, kapitel : String, position : String, text : String) : Optional<TailoringAnforderung>
+        createAnforderung(projekt : String, tailoring : String, kapitel : String, position : position, text : String) : Optional<ProjektPhaseAnforderung>
+    }
+
+    interface AnforderungServiceRepository {
+        getAnforderung(projekt : String, tailoring : String, kapitel : String, position : String) : Optional<TailoringAnforderung>
+        getKapitel(projekt : String, tailoring : String, kapitel : String) : Optional<AnforderungsGruppe<TailoringAnforderung>>
+        updateAnforderung(projekt : String, tailoring : String, anforderung : TailoringAnforderung) : Optional<TailoringAnforderung>
+        updateAusgewaehlt(projekt : String, tailoring : String, gruppe : Optional<AnforderungsGruppe<TailoringAnforderung>) : Optional<AnforderungsGruppe<TailoringAnforderung>>
+        updateKapitel(projekt : String, tailoring : String, gruppe : AnforderungsGruppe<TailoringAnforderung>) : Optional<AnforderungsGruppe<TailoringAnforderung>>
+    }
+
+    class AnforderungServiceImpl {
+    }
+    AnforderungService <|-- AnforderungServiceImpl
+    AnforderungServiceImpl --> "1" AnforderungServiceRepository : repository
+
+}
+@enduml
