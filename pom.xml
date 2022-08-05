@@ -61,7 +61,7 @@
         <maven.compiler.source>${java.version}</maven.compiler.source>
         <maven.compiler.target>${java.version}</maven.compiler.target>
         <license.licenseName>gpl_v3</license.licenseName>
-        <plattform.version>0.0.1-SNAPSHOT</plattform.version>
+        <plattform.version>0.0.1</plattform.version>
 
         <jacoco.version>0.8.7</jacoco.version>
         <junit-jupiter.version>5.7.2</junit-jupiter.version>
