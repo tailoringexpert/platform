@@ -1,0 +1,31 @@
+@startuml Deployment.png
+
+  node ApplicationServer <<device>> {
+    node ServletEngine <<executionEnvironment>> {
+      artifact tailoringexpert.jar
+      artifact tenantX.jar
+      artifact tenantY.jar
+
+      tailoringexpert.jar ..> tenantX.jar : <<use>>
+      tailoringexpert.jar ..> tenantY.jar : <<use>>
+     }
+     
+     database RDBMS <<executionEnvironment>> {
+       database tailoringexpert
+       database tailoringexpert_tenantX
+       database tailoringexpert_tenantY
+     }
+     tailoringexpert <.. tailoringexpert.jar : <<calls>>
+     tailoringexpert_tenantX <.. tailoringexpert.jar : <<calls>>
+     tailoringexpert_tenantY <.. tailoringexpert.jar : <<calls>>
+     
+     
+  }
+  
+  node Client {
+    node WebBrowser <<executionEnvironment>>
+  }
+  
+  ApplicationServer "1" -- "*" Client
+  
+@enduml

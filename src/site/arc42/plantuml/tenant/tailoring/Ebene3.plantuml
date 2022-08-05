@@ -1,0 +1,17 @@
+@startuml Ebene3.png
+hide empty members
+
+package tailoring {
+
+    interface DokumentService {
+        createAnforderungDokument(tailoring : Tailoring, erstellungszeitpunkt : LocalDateTime): Optional<Datei>
+        createVergleichsDokument(tailoring : Tailoring, erstellungszeitpunkt : LocalDateTime): Optional<Datei>
+        createAll(tailoring : Tailoring, erstellungszeitpunkt : LocalDateTime): Optional<Datei>
+    }
+
+    class TenantDokumentService {
+        tenantService : Map<String, DokumentService>
+    }
+    DokumentService <|.. TenantDokumentService
+}
+@enduml

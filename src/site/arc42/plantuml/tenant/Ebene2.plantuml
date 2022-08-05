@@ -1,0 +1,34 @@
+@startuml Ebene2.png
+hide empty members
+allow_mixing
+
+'skinparam componentStyle uml2
+'skinparam component {
+'  BorderColor #grey
+'  BackgroundColor #white
+'}
+'
+component tenant {
+    annotation Tenant {
+        value : String
+    }
+    class TenantContext {
+        +{static} registerTenant(tenant : String) : void
+        +{static} getRegisteredTenants() : Set<String>
+        +{static} setCurrentTenant(tenant : String) : void
+        +{static} getCurrentTenant() : String
+    }
+
+    component domain
+
+    component tailoring
+    domain <-- tailoring
+
+    component screeningsheet
+    domain <-- screeningsheet
+
+
+}
+
+
+@enduml

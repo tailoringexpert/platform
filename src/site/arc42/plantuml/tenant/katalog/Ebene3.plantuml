@@ -1,0 +1,15 @@
+@startuml Ebene3.png
+hide empty members
+
+package katalog {
+
+    interface DokumentService {
+        createKatalog(katalog : Katalog<KatalogAnforderung>, erstellungszeitpunkt : LocalDateTime) : Optional<Datei>
+    }
+
+    class TenantDokumentService {
+        tenantService : Map<String, DokumentService>
+    }
+    DokumentService <|.. TenantDokumentService
+}
+@enduml

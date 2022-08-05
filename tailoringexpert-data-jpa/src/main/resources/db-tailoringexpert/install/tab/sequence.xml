@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                   http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
+
+    <changeSet id="1" author="Michael Baedorf">
+        <createTable tableName="SEQUENCE">
+            <column name="SEQ_NAME" type="VARCHAR(50)">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="SEQ_COUNT" type="BIGINT"/>
+        </createTable>
+
+        <insert tableName="SEQUENCE">
+            <column name="SEQ_NAME" value="SEQ_PARAMETER"/>
+            <column name="SEQ_COUNT" valueNumeric="1"/>
+        </insert>
+        <insert tableName="SEQUENCE">
+            <column name="SEQ_NAME" value="SEQ_TAILORINGANFORDERUNG"/>
+            <column name="SEQ_COUNT" valueNumeric="1"/>
+        </insert>
+        <insert tableName="SEQUENCE">
+            <column name="SEQ_NAME" value="SEQ_TAILORINGKATALOGKAPITEL"/>
+            <column name="SEQ_COUNT" valueNumeric="1"/>
+        </insert>
+        <insert tableName="SEQUENCE">
+            <column name="SEQ_NAME" value="SEQ_KATALOGKAPITEL"/>
+            <column name="SEQ_COUNT" valueNumeric="1"/>
+        </insert>
+        <insert tableName="SEQUENCE">
+            <column name="SEQ_NAME" value="SEQ_KATALOG"/>
+            <column name="SEQ_COUNT" valueNumeric="1"/>
+        </insert>
+        <insert tableName="SEQUENCE">
+            <column name="SEQ_NAME" value="SEQ_KATALOGANFORDERUNG"/>
+            <column name="SEQ_COUNT" valueNumeric="1"/>
+        </insert>
+        <insert tableName="SEQUENCE">
+            <column name="SEQ_NAME" value="SEQ_IDENTIFIKATOR"/>
+            <column name="SEQ_COUNT" valueNumeric="1"/>
+        </insert>
+        <insert tableName="SEQUENCE">
+            <column name="SEQ_NAME" value="SEQ_DRD"/>
+            <column name="SEQ_COUNT" valueNumeric="1"/>
+        </insert>
+
+        <insert tableName="SEQUENCE">
+            <column name="SEQ_NAME" value="SEQ_SCREENINGSHEET"/>
+            <column name="SEQ_COUNT" valueNumeric="1"/>
+        </insert>
+        <insert tableName="SEQUENCE">
+            <column name="SEQ_NAME" value="SEQ_SCREENINGSHEETPARAMETER"/>
+            <column name="SEQ_COUNT" valueNumeric="1"/>
+        </insert>
+
+        <insert tableName="SEQUENCE">
+            <column name="SEQ_NAME" value="SEQ_SELEKTIONSVEKTOR"/>
+            <column name="SEQ_COUNT" valueNumeric="1"/>
+        </insert>
+        <insert tableName="SEQUENCE">
+            <column name="SEQ_NAME" value="SEQ_TAILORING"/>
+            <column name="SEQ_COUNT" valueNumeric="1"/>
+        </insert>
+        <insert tableName="SEQUENCE">
+            <column name="SEQ_NAME" value="SEQ_TAILORINGKATALOG"/>
+            <column name="SEQ_COUNT" valueNumeric="1"/>
+        </insert>
+        <insert tableName="SEQUENCE">
+            <column name="SEQ_NAME" value="SEQ_PROJEKT"/>
+            <column name="SEQ_COUNT" valueNumeric="1"/>
+        </insert>
+        <insert tableName="SEQUENCE">
+            <column name="SEQ_NAME" value="SEQ_LOGO"/>
+            <column name="SEQ_COUNT" valueNumeric="1"/>
+        </insert>
+        <insert tableName="SEQUENCE">
+            <column name="SEQ_NAME" value="SEQ_DOKUMENT"/>
+            <column name="SEQ_COUNT" valueNumeric="1"/>
+        </insert>
+        <insert tableName="SEQUENCE">
+            <column name="SEQ_NAME" value="SEQ_PROJEKTPHASEDOKUMENT"/>
+            <column name="SEQ_COUNT" valueNumeric="1"/>
+        </insert>
+        <insert tableName="SEQUENCE">
+            <column name="SEQ_NAME" value="SEQ_SELEKTIONSVEKTORPROFIL"/>
+            <column name="SEQ_COUNT" valueNumeric="1"/>
+        </insert>
+        <insert tableName="SEQUENCE">
+            <column name="SEQ_NAME" value="SEQ_DOKUMENTZEICHNER"/>
+            <column name="SEQ_COUNT" valueNumeric="1"/>
+        </insert>
+    </changeSet>
+</databaseChangeLog>

@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+         http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
+
+    <include file="db-tailoringexpert/install/tab/sequence.xml"/>
+    <include file="db-tailoringexpert/install/tab/parameter.xml"/>
+    <include file="db-tailoringexpert/install/tab/tailoringanforderung.xml"/>
+    <include file="db-tailoringexpert/install/tab/tailoringanforderung_drd.xml"/>
+    <include file="db-tailoringexpert/install/tab/tailoringkatalogkapitel.xml"/>
+    <include file="db-tailoringexpert/install/tab/drd.xml"/>
+    <include file="db-tailoringexpert/install/tab/identifikator.xml"/>
+    <include file="db-tailoringexpert/install/tab/identifiktator_limitierung.xml"/>
+    <include file="db-tailoringexpert/install/tab/kataloganforderung.xml"/>
+    <include file="db-tailoringexpert/install/tab/kataloganforderung_phase.xml"/>
+    <include file="db-tailoringexpert/install/tab/kataloganforderung_drd.xml"/>
+    <include file="db-tailoringexpert/install/tab/katalogkapitel.xml"/>
+    <include file="db-tailoringexpert/install/tab/katalog.xml"/>
+    <include file="db-tailoringexpert/install/tab/screeningsheet.xml"/>
+    <include file="db-tailoringexpert/install/tab/screeningsheetparameter.xml"/>
+    <include file="db-tailoringexpert/install/tab/selektionsvektor.xml"/>
+    <include file="db-tailoringexpert/install/tab/selektionsvektorparameter.xml"/>
+    <include file="db-tailoringexpert/install/tab/selektionsvektorprofil.xml"/>
+    <include file="db-tailoringexpert/install/tab/selektionsvektorprofilparameter.xml"/>
+    <include file="db-tailoringexpert/install/tab/tailoring.xml"/>
+    <include file="db-tailoringexpert/install/tab/tailoring_phase.xml"/>
+    <include file="db-tailoringexpert/install/tab/projekt.xml"/>
+    <include file="db-tailoringexpert/install/tab/tailoringkatalog.xml"/>
+    <include file="db-tailoringexpert/install/tab/logo.xml"/>
+    <include file="db-tailoringexpert/install/tab/dokumentzeichnung.xml"/>
+    <include file="db-tailoringexpert/install/tab/dokument.xml"/>
+    <include file="db-tailoringexpert/install/tab/dokumentzeichner.xml"/>
+
+    <include file="db-tailoringexpert/install/cst/kataloganforderung.xml"/>
+    <include file="db-tailoringexpert/install/cst/kataloganforderung_phase.xml"/>
+    <include file="db-tailoringexpert/install/cst/kataloganforderung_drd.xml"/>
+    <include file="db-tailoringexpert/install/cst/katalogkapitel.xml"/>
+    <include file="db-tailoringexpert/install/cst/dokument.xml"/>
+    <include file="db-tailoringexpert/install/cst/dokumentzeichnung.xml"/>
+    <include file="db-tailoringexpert/install/cst/identifikator.xml"/>
+    <include file="db-tailoringexpert/install/cst/identifiktator_limitierung.xml"/>
+    <include file="db-tailoringexpert/install/cst/katalog.xml"/>
+    <include file="db-tailoringexpert/install/cst/projekt.xml"/>
+    <include file="db-tailoringexpert/install/cst/tailoringkatalog.xml"/>
+    <include file="db-tailoringexpert/install/cst/tailoring.xml"/>
+    <include file="db-tailoringexpert/install/cst/tailoring_phase.xml"/>
+    <include file="db-tailoringexpert/install/cst/tailoringanforderung.xml"/>
+    <include file="db-tailoringexpert/install/cst/tailoringkatalogkapitel.xml"/>
+    <include file="db-tailoringexpert/install/cst/selektionsvektorparameter.xml"/>
+    <include file="db-tailoringexpert/install/cst/selektionsvektorprofil.xml"/>
+    <include file="db-tailoringexpert/install/cst/selektionsvektorprofilparameter.xml"/>
+
+    <changeSet author="MajorVersion" id="1"/>
+
+</databaseChangeLog>

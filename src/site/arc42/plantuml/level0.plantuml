@@ -1,0 +1,37 @@
+@startuml level0.png
+skinparam componentStyle uml2
+
+node "org.springframework" {
+  component [core]
+  component [data-jpa]
+  component [hateoas]
+  component [log4j2]
+  component [thymeleaf]
+  component [security]
+}
+
+node "org.projectlombok" {
+    component [lombok]
+}
+
+node "org.mapstruct" {
+    component [mapstruct]
+}
+
+node "com.openhtmltopdf" {
+    component [openhtmltopdf]
+}
+
+
+
+component [tailoringexpert]
+[tailoringexpert] ..> [core] : <<use>>
+[tailoringexpert] ..> [data-jpa] : <<use>>
+[tailoringexpert] ..> [hateoas] : <<use>>
+[tailoringexpert] ..> [log4j2] : <<use>>
+[tailoringexpert] ..> [thymeleaf] : <<use>>
+[tailoringexpert] ..> [security] : <<use>>
+[tailoringexpert] ..> [openhtmltopdf] : <<use>>
+[tailoringexpert] ..> [lombok] : <<use>>
+[tailoringexpert] ..> [mapstruct] : <<use>>
+@enduml

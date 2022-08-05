@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
+
+    <changeSet id="1" author="Michael Baedorf">
+        <createTable tableName="KATALOG">
+            <column name="KATALOG_ID" type="BIGINT">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="VERSION" type="VARCHAR(16)"/>
+            <column name="GUELTIGAB" type="VARCHAR(256)"/>
+            <column name="GUELTIGBIS" type="VARCHAR(256)"/>
+            <column name="KAPITEL_ID" type="BIGINT"/>
+        </createTable>
+    </changeSet>
+</databaseChangeLog>

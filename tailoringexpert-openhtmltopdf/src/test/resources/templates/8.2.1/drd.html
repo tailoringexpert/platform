@@ -1,0 +1,58 @@
+<!DOCTYPE html SYSTEM "http://www.thymeleaf.org/dtd/xhtml1-strict-thymeleaf-4.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8"/>
+    <title th:text="${titel}">Product Assurance, Safety &amp; Sustainability Requirements</title>
+    <meta name="description" th:content="${beschreibung}" content="DRD Katalog für"/>
+    <meta name="author" content="TailoringExpert"/>
+    <meta name="subject" content="Project Requirements"/>
+
+    <link rel="stylesheet" type="text/css" href="../css/page.css"/>
+    <link rel="stylesheet" type="text/css" href="../css/drd.css"/>
+
+</head>
+<body>
+
+<div style="position: running(dokument_datum);font-size:x-small;border-bottom: 1px solid black;">
+    <span th:text="${DOKUMENT}"/><br/>
+    <span th:text="${DATUM}"/>
+</div>
+
+<div style="position: running(logo)">
+    <img src="../css/img/logo.png" alt="Logo" width="29px" height="24px"
+         style="position: absolute;top:10px;right: 0px;"/>
+</div>
+
+<header-box>
+    <h1>DLR<br/>Product Assurance</h1>
+    <h2>Space Agency</h2>
+</header-box>
+
+<div style="position: running(dokumenttyp_projekt);font-size:x-small;border-top: 1px solid black">
+    <span>Title: Product Assurance, Safety &amp; Sustainability DRD</span><br/>
+    <span th:text="${PROJEKT}"/>
+</div>
+
+<title-box>
+    <dokument-typ>Product Assurance</dokument-typ>
+    <dokument-subtyp>DRD</dokument-subtyp>
+    <dokument-projekt>for [[${PROJEKT}]]</dokument-projekt>
+    <dokument-release>[[${DOKUMENT}]] [[${DATUM}]]</dokument-release>
+</title-box>
+
+<page-after id="toc">
+    <h2>Table of Content</h2>
+    <ul class="toc" th:each="drd: ${drds}">
+        <li><a th:href="'#' + ${drd.nummer}" th:text="${drd.name}"></a></li>
+    </ul>
+</page-after>
+
+<th:block th:each="drd : ${drds}">
+    <page-after th:id="${drd.nummer}">
+        <div th:insert="~{__${drd.fragment}__ :: content}?:_"></div>
+    </page-after>
+</th:block>
+
+</body>
+
+</html>

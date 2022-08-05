@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
+
+    <changeSet id="FK_TAILORING_PROJEKT" author="Michael Baedorf">
+        <addForeignKeyConstraint constraintName="FK_TAILORING_PROJEKT"
+                                 baseTableName="TAILORING" baseColumnNames="PROJEKT_ID"
+                                 referencedTableName="PROJEKT"
+                                 referencedColumnNames="PROJEKT_ID"/>
+    </changeSet>
+
+    <changeSet id="FK_TAILORING_PROJEKTKATALOG" author="Michael Baedorf">
+        <addForeignKeyConstraint constraintName="FK_TAILORING_PROJEKTKATALOG"
+                                 baseTableName="TAILORING" baseColumnNames="KATALOG_ID"
+                                 referencedTableName="TAILORINGKATALOG"
+                                 referencedColumnNames="TAILORINGKATALOG_ID"/>
+    </changeSet>
+
+    <changeSet id="FK_TAILORING_SCREENINGSHEET" author="Michael Baedorf">
+        <addForeignKeyConstraint constraintName="FK_TAILORING_SCREENINGSHEET"
+                                 baseTableName="TAILORING" baseColumnNames="SCREENINGSHEET_ID"
+                                 referencedTableName="SCREENINGSHEET"
+                                 referencedColumnNames="SCREENINGSHEET_ID"/>
+    </changeSet>
+
+    <changeSet id="FK_TAILORING_SELEKTIONSVEKTOR" author="Michael Baedorf">
+        <addForeignKeyConstraint constraintName="FK_TAILORING_SELEKTIONSVEKTOR"
+                                 baseTableName="TAILORING" baseColumnNames="SELEKTIONSVEKTOR_ID"
+                                 referencedTableName="SELEKTIONSVEKTOR"
+                                 referencedColumnNames="SELEKTIONSVEKTOR_ID"/>
+    </changeSet>
+
+    <changeSet id="FK_TAILORING_KATALOG" author="Michael Baedorf">
+        <addForeignKeyConstraint constraintName="FK_TAILORING_KATALOG"
+                                 baseTableName="TAILORING" baseColumnNames="KATALOGDEFINITION_ID"
+                                 referencedTableName="KATALOG" referencedColumnNames="KATALOG_ID"/>
+    </changeSet>
+
+    <changeSet id="UC_TAILORING_KENNUNG" author="Michael Baedorf">
+        <addUniqueConstraint constraintName="UC_TAILORING_KENNUNG"
+                                 tableName="TAILORING" columnNames="PROJEKT_ID, KENNUNG"/>
+    </changeSet>
+
+</databaseChangeLog>

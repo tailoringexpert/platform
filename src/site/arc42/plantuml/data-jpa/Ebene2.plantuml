@@ -1,0 +1,36 @@
+@startuml Ebene2.png
+
+skinparam componentStyle uml2
+'skinparam component {
+'  BorderColor #grey
+'  BackgroundColor #white
+'}
+component [data-jpa] {
+    [domain]
+
+    [katalog]
+    [domain] <-- [katalog]
+
+    [repository]
+    [domain] <-- [repository]
+
+    [anforderung]
+    [domain] <-- [anforderung]
+    [repository] <-- [anforderung]
+
+    [screeningsheet]
+    [domain] <-- [screeningsheet]
+    [repository] <-- [screeningsheet]
+
+    [tailoring]
+    [domain] <-- [tailoring]
+    [repository] <-- [tailoring]
+    [screeningsheet] <-- [tailoring]
+
+    [projekt]
+    [domain] <-- [projekt]
+    [repository] <-- [projekt]
+    [screeningsheet] <-- [projekt]
+    [tailoring] <-- [projekt]
+}
+@enduml

@@ -1,0 +1,27 @@
+@startuml Ebene2.png
+
+skinparam componentStyle uml2
+
+component [rest] {
+
+    [Domain]
+
+    [Anforderung]
+    [Domain] <-- [Anforderung]
+
+    [KatalogDefinition]
+    [Domain] <-- [KatalogDefinition]
+
+    [ScreeningSheet]
+    [Domain] <-- [ScreeningSheet]
+
+    [Tailoring]
+    [Domain] <-- [Tailoring]
+    [Anforderung] <-- [Tailoring]
+
+    [Projekt]
+    [Domain] <-- [Projekt]
+    [Tailoring] <-- [Projekt]
+
+}
+@enduml
