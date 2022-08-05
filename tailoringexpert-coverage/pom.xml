@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <name>${project.groupId}:${project.artifactId}</name>
+    <description>Code Coverage Tailoring</description>
+
+    <artifactId>tailoringexpert-coverage</artifactId>
+    <packaging>jar</packaging>
+
+    <parent>
+        <groupId>de.baedorf.tailoringexpert</groupId>
+        <artifactId>tailoringexpert-plattform</artifactId>
+        <version>0.0.1-SNAPSHOT</version>
+    </parent>
+
+    <dependencies>
+        <dependency>
+            <groupId>de.baedorf.tailoringexpert</groupId>
+            <artifactId>tailoringexpert-core</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>de.baedorf.tailoringexpert</groupId>
+            <artifactId>tailoringexpert-data-jpa</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>de.baedorf.tailoringexpert</groupId>
+            <artifactId>tailoringexpert-rest</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>de.baedorf.tailoringexpert</groupId>
+            <artifactId>tailoringexpert-openhtmltopdf</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>de.baedorf.tailoringexpert</groupId>
+            <artifactId>tailoringexpert-poi</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>de.baedorf.tailoringexpert</groupId>
+            <artifactId>tailoringexpert-tenant</artifactId>
+        </dependency>
+    </dependencies>
+
+    <build>
+        <plugins>
+
+            <plugin>
+                <groupId>org.jacoco</groupId>
+                <artifactId>jacoco-maven-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>aggregate-reports-ut</id>
+                        <phase>test</phase>
+                        <goals>
+                            <goal>report-aggregate</goal>
+                        </goals>
+                        <configuration>
+                            <title>TailoringExpert: Testabdeckung Unit Tests</title>
+                            <outputDirectory>${project.reporting.outputDirectory}/jacoco-aggregate-ut</outputDirectory>
+                            <dataFileExcludes>
+                                <dataFileExclude>**/target/jacoco-it.exec</dataFileExclude>
+                            </dataFileExcludes>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+
+        </plugins>
+    </build>
+
+</project>

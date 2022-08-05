@@ -1,0 +1,76 @@
+[[section-architecture-constraints]]
+== Randbedingungen
+
+Beim Lösungsentwurf waren zu Beginn verschiedene Randbedingungen zu beachten, sie wirken in der Lösung fort.
+
+Dieser Abschnitt stellt sie dar und erklärt auch – wo nötig – deren Motivation.
+
+=== Technische Randbedingungen
+
+[cols="40%,60%"]
+|===
+|Randbedingung | Erläuterungen, Hintergrund
+
+|Implementierung in Java
+|Entwicklung Java SE 11. Die Engine soll auch in neueren Java-Versionen, sobald verfügbar, laufen.
+
+|Fremdsoftware frei verfügbar
+|Falls zur Lösung Fremdsoftware hinzugezogen wird (z.B. grafisches Frontend), sollte diese idealerweise frei verfügbar und kostenlos sein. Die Schwelle der Verwendung wird auf diese Weise niedrig gehalten.
+
+|Berücksichtigung der internen Sicherheitsrichtilinien
+|Die Anwendung muss so realisiert werden, dass sie im DLR Umfeld eingesetzt werden darf
+
+|Berechtigungverwaltung über Comet
+|Im DLR wir das Single Sign On über Comet umgesetzt. Dies ist für diese Anwendung ebenfalls erforderlich
+|===
+
+=== Organisatorische Randbedingungen
+
+[cols="40%,60%"]
+|===
+ | Randbedingung                          | Erläuterungen, Hintergrund
+
+ | Vorgehensmodell
+ |
+
+ | Konfigurations- und Versionsverwaltung
+ | Die Versionsverwaltung ist mit git und Feature Branches umzusetzen
+
+ | Testwerkzeuge und -prozesse
+a|
+* JUnit 5 im Annotationsstil sowohl für inhaltliche Richtigkeit als auch für Integrationstests.
+* Akzeptanztest sind mit Cucumber umzusetzen.
+* Für Smoketests soll JMeter eingesetzt werden.
+|===
+
+=== Konventionen
+
+[cols="40%,60%"]
+|===
+ | Konvention | Erläuterungen, Hintergrund
+
+ | Kodierrichtlinien für Java
+a|
+* Java Coding Conventions von Sun/Oracle, geprüft mit Hilfe von Findbugs
+* Es soll vermehrt mit _Optional_ gearbeitet werden.
+* In RestControllern soll bei _Optional.empty_ eine _404_ zurück gegeben werden.
+
+ |Dokumentation
+a|
+* Die Dokumentation ist im Code als auch in den Dokumenten in Deutsch zu erstellen
+* Verwendung deutscher Bezeichner für Klassen, Methoden etc. im Java-Quelltext (es sei denn, die Java-Kodierrichtlinien stehen dem im Wege oder Präfixe sind in englischer Sprache gebräuchlich)
+* Für jede Schnittstellen Methode ist gültiges javadoc zu erstellen.
+*Webservice Schnittstellenn sind vollständig mit OpenApi Annotationen zu dokumentieren.
+
+ | Architekturdokumentation
+a|
+* Die Architekturdokumentation ist unter _$PROJEKT_HOME/src/site/arc42_ zu erstellen
+* Terminologie und Gliederung nach dem deutschen arc42-Template
+* UML Diagramme sind mittels https://www.plantuml.com[plantuml] unterhalb von  _$PROJEKT_HOME/src/site/arc42/plantuml_ zu erstellen
+* Alle in der Dokumentation zu verwendenden Bilder sind unterhalb _$PROJEKT_HOME/src/site/arc42/images_ abzulegen
+* Architekturentscheidungen sind als Architecture Decision Records (ADR) als einzelne Datei pro Entscheidung unterhalb
+von _$PROJEKT_HOME/src/site/arc42/images/09_design_decisions_ fortlaufend zu dokumentieren und in _$PROJEKT_HOME/src/site/arc42/src/09_design_decisions_
+zu referenzieren.
+** Ein einmal angelegter ADR darf nicht gelöscht werden. Im Fall einer gewollten Löschung ist dies als Status kenntlich zu machen
+
+|===

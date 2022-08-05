@@ -1,0 +1,25 @@
+[[section-introduction-and-goals]]
+==	Einführung und Ziele
+
+=== Aufgabenstellung
+Ziel ist die Entwicklung einer Webanwendung für die Erstellung von getailorten
+Anforderungskatalogen.
+Anforderungskataloge sollen dabei phasenbezogen erstellt werden können
+
+==== Anforderungen
+
+=== Qualitätsziele
+|===
+|Nr |Ziel |Motivation und Erläuterung
+
+| 1 | Technologie Neutralität | Eine zu starke Abhängigkeit des fachlichen Kerns zu Libraries ist zu vermeiden. Der fachliche Kern soll stabil sein.
+| 2 | Testbarkeit |Da das Programm eine Neuentwicklung eines bestehenden Systems ist, muss einer Vergleichbarkeit mit den Tailoringergebnissen der aktuellen Umsetzung möglich sein
+|===
+
+=== Stakeholder
+|===
+|Rolle |Kontakt |Erwartungshaltung
+
+| _Auftraggeber_ | | _Das Programm ermöglicht und erleichert die Erstellung von Projektanforderungskatalogen_
+| _Auftragnehmer_ |  | _Vom Auftraggeber getailorte Anforderungskataloge in maschinenverarbeitbarer Form_
+|===

@@ -1,0 +1,248 @@
+@startuml Ebene3.png
+skinparam componentStyle uml2
+'skinparam linetype ortho
+
+component [spring-hateoas] {
+    package org.springframework.hateoas {
+        class RepresentationModel
+        class Link
+    }
+}
+
+
+package domain {
+
+    abstract class ResourceMapper {
+        ..URL..
+        +{static} PROJEKTE = "Projekt" : String
+        +{static} PROJEKT_NEU =  "katalog/{version}/projekt": String
+        +{static} PROJEKT = "projekt/{projekt}" : String
+        +{static} PROJEKTSELEKTIONSVEKTOR = "projekt/{projekt}/selektionsvektor" : String
+        +{static} PROJEKTSCREENINGSHEET = "projekt/{projekt}/screeningsheet" : String
+        +{static} PROJEKTSCREENINGSHEETDATEI = "projekt/{projekt}/screeningsheet/pdf" : String
+        +{static} ANFORDERUNG = "projekt/{projekt}/tailoring/{tailoring}/katalog/{kapitel}/{anforderung}" : String
+        +{static} ANFORDERUNG_AUSGEWAEHLT = "projekt/{projekt}/tailoring/{tailoring}/katalog/{kapitel}/{anforderung}/ausgewaehlt/{ausgewaehlt}" : String
+        +{static} ANFORDERUNG_TEXT = "projekt/{projekt}/tailoring/{tailoring}/katalog/{kapitel}/{anforderung}/text" : String
+        +{static} KAPITEL_AUSGEWAEHLT = "projekt/{projekt}/tailoring/{tailoring}/katalog/{kapitel}/ausgewaehlt/{ausgewaehlt}" : String
+        +{static} TAILORINGS = "projekt/{projekt}/tailoring" : String
+        +{static} TAILORING = "projekt/{projekt}/tailoring/{tailoring]" : String
+        +{static} TAILORINGSCREENINGSHEET = "projekt/{projekt}/tailoring/{tailoring}/screeningsheet"
+        +{static} TAILORINGSCREENINGSHEETDATEI = "projekt/{projekt}/tailoring/{tailoring}/screeningsheet/pdf" : String
+        +{static} TAILORINGSELEKTIONSVEKTOR = "projekt/{projekt}/tailoring/{tailoring}/selektionsvektor" : String
+        +{static} TAILORINGNAME = "projekt/{projekt}/tailoring/{tailoring}/name" : String
+        +{static} TAILORINGZEICHNUNG = "projekt/{projekt}/tailoring/{tailoring}/zeichnung" : String
+        +{static} TAILORINGZEICHNUNGBEREICH = "projekt/{projekt}/tailoring/{tailoring}/zeichnung/{bereich}" : String
+        +{static} TAILORINGDOKUMENT = "projekt/{projekt}/tailoring/{tailoring}/dokument" : String
+        +{static} TAILORINGDOKUMENTKATALOG = "projekt/{projekt}/tailoring/{tailoring}/dokument/katalog" : String
+        +{static} TAILORINGVERGLEICHDOKUMENT = "projekt/{projekt}/tailoring/{tailoring}/dokument/vergleich" : String
+        +{static} TAILORINGEDOKUMENTDOWNLOAD = "projekt/{projekt}/tailoring/{tailoring}/dokument/{name}" : String
+        +{static} TAILORINGKATALOG = "projekt/{projekt}/tailoring/{tailoring}/katalog" : String
+        +{static} TAILORINGKATALOGKAPITEL = "projekt/{projekt}/tailoring/{tailoring}/katalog/{kapitel}" : String
+        +{static} TAILORINGKATALOGKAPITELANFORDERUG = "projekt/{projekt}/tailoring/{tailoring}/katalog/{kapitel}/anforderung" : String
+        +{static} KATALOG = "katalog" : String
+        +{static} SCREENINGSHEET = "screeningsheet" : String
+        +{static} SELEKTIONSVEKTORPROFILE = "selektionsvektor"" : String
+        ..Rel..
+        +{static} REL_SELF = "self" : String
+        +{static} REL_SCREENINGSHEET = "screeningsheet" : String
+        +{static} REL_SELEKTIONSVEKTOR = "selektionsvektor" : String
+        +{static} REL_TAILORING = "tailoring" : String
+        +{static} REL_KATALOG = "katalog" : String
+        +{static} REL_KATALOGDOKUMENT = "katalogdokument" : String
+        +{static} REL_ZEICHNUNG = "zeichnung" : String
+        +{static} REL_KAPITEL = "kapitel" : String
+        +{static} REL_AUSGEWAEHLT = "ausgewaehlt" : String
+        +{static} REL_TEXT = "text" : String
+        +{static} REL_DOKUMENT = "dokument" : String
+        +{static} REL_VERGLEICH = "vergleich" : String
+        -{static} REL_NAME = "name" : String
+        -{static} REL_IMPORT = "import" : String
+        
+        .. KatalogVersion ..
+        updatePathContext(pathContext : PathContextBuilder, domain : KatalogVersion): void
+        +{abstract} toResource(pathContext : PathContextBuilder , domain : KatalogVersion ) : KatalogVersionResource
+        addLinks(pathContext : PathContextBuilder, resource : KatalogVersionResourceBuilder) : void
+        .. ProjektInformation ..
+        updatePathContext(pathContext : PathContextBuilder, domain : ProjektInformation): void
+        +{abstract} toResource(pathContext :  PathContextBuilder, domain : ProjektInformation) : ProjektInformationResource
+         addLinks(pathContext : PathContextBuilder, resource : ProjektInformationResourceBuilder) : void
+        .. TailoringInformation ..
+        updatePathContext(pathContext : PathContextBuilder, domain : TailoringInformation): void
+        +{abstract} toResource(pathContext : PathContextBuilder, domain : TailoringInformation) : ProjektPhaseInformationResource
+        #addLinks(pathContext : PathContextBuilder, resource : TailoringInformationResourceBuilder) : void
+        .. ScreeningSheet ..
+        updatePathContext(pathContext : PathContextBuilder, domain : ScreeningSheet): void
+        +{abstract}  toResource(pathContext : PathContextBuilder, domain : ScreeningSheet) : ScreeningSheetResource
+        #addLinks(pathContext : PathContextBuilder, resource : ScreeningSheetResourceBuilder) : void
+        .. Projekt ..
+        updatePathContext(pathContext : PathContextBuilder, domain : Projekt): void
+        +{abstract}  toResource(pathContext : PathContextBuilder, domain : Projekt) : ProjektResource
+        #addLinks(pathContext : PathContextBuilder, resource : ProjektResourceBuilder) : void
+        .. Tailoring ..
+        updatePathContext(pathContext : PathContextBuilder, domain : Tailoring): void
+        +{abstract}  toResource(pathContext : PathContextBuilder, domain : Tailoring) : ProjektPhaseResource
+        #addLinks(pathContext : PathContextBuilder, resource : TailoringResourceBuilder) : void
+        .. TailoringKatalogKapitel ..
+        updatePathContext(pathContext : PathContextBuilder, domain : Kapitel<Tailoringanforderung>): void
+        +{abstract}  toResource(pathContext : PathContextBuilder, domain : Kapitel<TailoringAnforderung>) : TailoringKatalogKapitelResource
+        #addLinks(pathContext : PathContextBuilder, resource : TailoringKapitelResourceBuilder) : void
+        ..TailoringAnforderung ..
+        updatePathContext(pathContext : PathContextBuilder, domain : TailoringAnforderung): void
+        +{abstract}  toResource(pathContext : PathContextBuilder, domain : TailoringAnforderung) : ProjektPhaseAnforderungResource
+        #addLinks(pathContext : PathContextBuilder, resource : TailoringAnforderungResourceBuilder) : void
+        .. DokumentZeichnung ..
+        updatePathContext(pathContext : PathContextBuilder, domain : DokumentZeichnung): void
+        +{abstract}  toResource(pathContext : PathContextBuilder, domain : DokumentZeichnung) : DokumentZeichnungResource
+        #addLinks(pathContext : PathContextBuilder, resource : DokumentZeichnungResourceBuilder) : void
+        .. Dokument ..
+        updatePathContext(pathContext : PathContextBuilder, domain : Dokument): void
+        +{abstract}  toResource(pathContext : PathContextBuilder, domain : Dokument) : DokumentResource
+        #addLinks(pathContext : PathContextBuilder, resource : DokumentResourceBuilder) : void
+        .. Selektionsvektor ..
+        updatePathContext(pathContext : PathContextBuilder, domain : SelektionsVektor): void
+        +{abstract}  toResource(pathContext : PathContextBuilder, domain : SelektionsVektor) : SelektionsVektorResource
+        #addLinks(pathContext : PathContextBuilder, resource : SelektionsVektorResourceBuilder) : void
+        .. Katalog ..
+        updatePathContext(pathContext : PathContextBuilder, domain :  Katalog<TailoringAnforderung>): void
+        +{abstract}  toResource(pathContext : PathContextBuilder, domain :  Katalog<TailoringAnforderung>) : KatalogResource
+        #addLinks(pathContext : PathContextBuilder, resource : KatalogResourceBuilder) : void
+        .. Selektionsvektorprofil ..
+        updatePathContext(pathContext : PathContextBuilder, domain : SelektionsVektorProfil): void
+        +{abstract}  toResource(pathContext : PathContextBuilder, domain : SelektionsVektorProfil) : SelektionsVektorProfilResource
+        #addLinks(pathContext : PathContextBuilder, resource : SelektionsVektorProfilResourceBuilder) : void
+
+        +createLink(rel : String, baseUri : String, path: String, parameter : Map<String, String>) : Link
+
+    }
+
+    class DokumentResource {
+        name : String
+        typ : String
+        hash : String
+    }
+    RepresentationModel <|-- DokumentResource
+
+    enum DokumentZeichnungStatus {
+        PREPARED("Prepared"),
+        AGREED("Agreed"),
+        RELEASED("Released");
+    }
+
+    class DokumentZeichnungResource {
+        bereich : String
+        unterzeichner : String
+        anwendbar : Boolean
+    }
+    DokumentZeichnungResource --> "1" DokumentZeichnungStatus : status
+    RepresentationModel <|-- DokumentZeichnungResource
+
+
+    class PathContext {
+        katalog : String
+        projekt : String
+        tailoring : String
+        kapitel : String
+        anforderung : String
+        ausgewaehlt : Boolean
+    }
+
+    class SelektionsVektor {
+    }
+
+
+    class TailoringInformationResource {
+        name : String
+    }
+    RepresentationModel <|-- TailoringInformationResource
+    TailoringInformationResource --> "1..*" Phase : phasen
+
+    class ProjektInformationResource {
+        name : String
+        erstellungsZeitpunkt : ZonedDateTime
+        katalogVersion : String
+    }
+    RepresentationModel <|-- ProjektInformationResource
+    ProjektInformationResource --> "1..*" TailoringInformationResource : tailorings
+
+    class ProjektResource {
+        name : String
+        projektLeiter : String
+    }
+    RepresentationModel <|-- ProjektResource
+    ProjektResource --> "1..*" TailoringResource : tailorings
+
+
+    class TailoringAnforderungResource {
+        text : String
+        position : String
+        referenz : String
+        ausgewaehlt : Boolean
+        geaendert : Boolean
+    }
+    RepresentationModel <|-- TailoringAnforderungResource
+
+    class TailoringKatalogKapitelResource {
+        name : String
+        kapitel : String
+    }
+    RepresentationModel <|-- TailoringKatalogKapitelResource
+    TailoringKatalogKapitelResource --> "0..*" TailoringKatalogKapitelResource : kapitel
+    TailoringKatalogKapitelResource --> "0..*" TailoringAnforderungResource : anforderungen
+    class KatalogResource {
+    }
+    RepresentationModel <|-- KatalogResource
+    KatalogResource --> "1" TailoringKatalogKapitelResource : toc
+
+    class TailoringResource {
+        name : String
+    }
+    RepresentationModel <|-- TailoringResource
+    TailoringResource --> "1" TailoringStatus : status
+    TailoringResource --> "1..*" Phase : phasen
+    TailoringResource --> "1" KatalogResource : katalog
+
+    class ScreeningSheetParameterResource {
+        bezeichnung : String
+        wert : Object
+    }
+    RepresentationModel <|-- ScreeningSheetParameterResource
+
+    class ScreeningSheetResource {
+        data : byte[]
+    }
+    RepresentationModel <|-- ScreeningSheetResource
+    ScreeningSheetResource --> "1..*" ScreeningSheetParameterResource : parameters
+    ScreeningSheetResource --> "1" SelektionsVektorResource : selektionsVektor
+
+
+    class SelektionsVektorResource {
+        levels : Map<String, Integer>
+    }
+    RepresentationModel <|-- SelektionsVektorResource
+
+    class SelektionsVektorProfilResource {
+        name : String
+        levels : Map<String, Integer>
+    }
+    RepresentationModel <|-- SelektionsVektorResource
+
+
+    class KatalogVersionResource {
+        version : String
+        gueltigAb: ZonedDateTime
+        gueltigBis : ZonedDateTime
+        standard : Boolean
+    }
+    RepresentationModel <|-- KatalogVersionResource
+
+    interface "Function<String, MediaType>" as mediaTypeFunction {
+    }
+    class MediaTypeProvider {
+        FORM_DATA : String = "form-data"
+        ATTACHMENT : String = "attachment"
+    }
+    mediaTypeFunction <|-- MediaTypeProvider
+
+}
+hide empty members
+@enduml

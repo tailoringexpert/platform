@@ -1,0 +1,24 @@
+@startuml
+nwdiag {
+
+    intranet [ shape = cloud]
+    intranet -- ReverseProxy
+
+    network proxy {
+        App
+        WebServer
+        ReverseProxy
+    }
+
+    network tailoring {
+        App
+        WebServer
+    }
+
+    network mariadb {
+        mariadb [shape = database ]
+        App
+    }
+
+}
+@enduml

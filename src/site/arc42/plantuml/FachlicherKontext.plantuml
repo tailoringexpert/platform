@@ -1,0 +1,12 @@
+@startuml
+
+[DRD] as drd
+[Anforderungen] as anforderungen
+
+[TailoringExpert] <<system>> as tailoring
+tailoring --> drd
+tailoring --> anforderungen
+
+actor "Anwender" as anwender
+anwender -> tailoring
+@enduml

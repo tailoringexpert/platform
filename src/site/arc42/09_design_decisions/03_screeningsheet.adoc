@@ -1,0 +1,62 @@
+=== Screeningsheet
+[horizontal]
+Status:: proposed
+Entscheider:: Bädorf, Michael
+Datum:: 07.03.2021
+
+Technische Story:: n/a
+
+==== Kontext und Problemstellung
+
+Die Tailoring Parameter für eine Projekt-/Phaseanlage müssen in das System eingepflegt werden.
+
+
+==== Entscheidungstreiber
+
+* Multimandantenfähigkeit
+
+
+==== Betrachtete Lösungsmöglichkeiten
+
+* Eingabe über eine Webseite
+* Automatisierte Verarbeitung eines Screeningsheet
+
+==== Entscheidung
+
+Gewählte Alternative::
+Screeningsheet, weil
+* Projektleiter durch seine Signatur die Korrektheit der Parameter bestätigt
+* Übertragsfehler ausgegschlossen werden
+* keine Oberflächen- bzw mandantenspezifischen Anpassungen erforderlich sind.
+** Implementierung erfolgt in Mandantenschnittstellen
+
+
+==== Vergleich der Alternativen
+
+===== Eingabe über eine Webseite
+
+
+====== Postiv
+
+
+====== Negativ
+* Übertragsgungsfehler bei der manuellen Übernahme der Daten in das System
+* Der zuständige Projektleiter muss nicht bestätigen, das die eingegeben Parameter dem Projekt und dessen Ziel entsprechen
+
+
+===== Automatisierte Verarbeitung eines Screeningsheet
+
+Der Systemparameter werden durch den Projektleiter in eine Datei eingetragen
+Diese Datei bei Projektanlage hochgeladen und automatisiert verarbeitet
+
+====== Postiv
+* Keine Oberflächenpflege und Weichen für Mandanten in Plattform
+* Je nach vom Mandanten gewählten Dateityp kann die Korrektheit der Parameter
+durch Signatur des Projektleiters bestätigt werden
+* Die Plattform hat keine Kenntniss über das _Wie_ der einzelnen Mandanten
+
+====== Negativ
+
+
+==== Links
+
