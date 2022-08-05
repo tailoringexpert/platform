@@ -1,0 +1,19 @@
+@startuml
+
+[Domain] <<..domain..>>
+[Anforderung] <<..anforderung..>>
+[ScreeningSheet] <<..screeningsheet..>>
+[Tailoring] <<..tailoring..>>
+[Projekt] <<..projekt..>>
+
+[Domain] <-- [Anforderung]
+[Domain] <-- [ScreeningSheet]
+[Domain] <-- [Tailoring]
+[Domain] <-- [Projekt]
+
+[ScreeningSheet] <-- [Tailoring]
+[ScreeningSheet] <-- [Projekt]
+
+[Tailoring] <-- [Projekt]
+
+@enduml

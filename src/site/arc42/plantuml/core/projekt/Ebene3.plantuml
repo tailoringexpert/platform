@@ -1,0 +1,50 @@
+@startuml Ebene3.png
+hide empty members
+
+package de.dlr.rpds.tailoringexpert {
+    package screeningsheet {
+        interface ScreeningSheetService
+    }
+    package tailoring {
+        interface TailoringService
+    }
+}
+
+package projekt {
+
+    class CreateProjectTO {
+        projekt : String
+        tailoring : String
+    }
+    CreateProjectTO --> "1" SelektionsVektor : selektionsVector
+
+    interface ProjektService {
+        createProjekt(katalogVersion : String, screeningSheet : byte[], anzuwendenderSelektionsVektor : SelektionsVektor) : CreateProjectTO
+        addTailoring(projekt : String, screeningSheetData : byte[], anzuwendenderSelektionsVektor : SelektionsVektor) : Optional<tailoring>
+        copyProjekt(projekt : String, screeningSheet: byte[]) : Optional<Projekt>
+        deleteProjekt(projekt : String) : boolean
+    }
+
+    interface ProjektServiceRepository {
+        getKatalog(version : String) : Katalog<AnforderungDefinition>
+        createProjekt(katalogVersion : String, projekt : Projekt) : Projekt
+        createProjekt(projekt : Projekt) : Projekt
+        deleteProjekt(projekt : String): boolean
+        getProjekt(projekt : String) : Optional<Projekt>
+        addTailoring(projekt : String, tailoring : Tailoring) : Optional<tailoring>
+        getProjektInformationen() : Collection<ProjektInformation>
+        getProjektInformation(projekt : String) : Optional<ProjektInformation>
+        getScreeningSheetDatei(projekt : String) : Optional<byte[]>
+        getScreeningSheet(projekt : String) : Optional<ScreeningSheet>
+    }
+
+    class ProjektServiceImpl {
+    }
+
+    ProjektService <|-- ProjektServiceImpl
+    ProjektServiceImpl --> "1" ProjektServiceRepository : repository
+    ProjektServiceImpl --> "1" ScreeningSheetService : screeningSheetService
+    ProjektServiceImpl --> "1" TailoringService : tailoringService
+
+}
+@enduml

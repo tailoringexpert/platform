@@ -1,0 +1,34 @@
+@startuml TailoringWhitebox.png
+skinparam componentStyle uml2
+
+component tailoring <<system>> {
+    component [tailoringexpert-core]
+
+    component [tailoringexpert-tenant]
+    [tailoringexpert-tenant] ..|> [tailoringexpert-core]
+
+    component [tailoringexpert-data-jpa]
+    [tailoringexpert-data-jpa] ..|> [tailoringexpert-core]
+
+    component [tailoringexpert-openhtmltopdf]
+    [tailoringexpert-openhtmltopdf] ..|> [tailoringexpert-core]
+
+    component [tailoringexpert-poi]
+    [tailoringexpert-poi] ..|> [tailoringexpert-core]
+
+    component [tailoringexpert-rest]
+    [tailoringexpert-rest] ..> [tailoringexpert-core] : <<use>>
+    [tailoringexpert-rest] ..> [tailoringexpert-data-jpa] : <<use>>
+
+    component [tailoringexpert-vue] <<extern>>
+
+    component [tailoringexpert-bootapp]
+    [tailoringexpert-bootapp] ..> [tailoringexpert-core] : <<use>>
+    [tailoringexpert-bootapp] ..> [tailoringexpert-data-jpa] : <<use>>
+    [tailoringexpert-bootapp] ..> [tailoringexpert-openhtmltopdf] : <<use>>
+    [tailoringexpert-bootapp] ..> [tailoringexpert-poi] : <<use>>
+    [tailoringexpert-bootapp] ..> [tailoringexpert-rest] : <<use>>
+    [tailoringexpert-bootapp] ..> [tailoringexpert-tenant] : <<use>>
+
+}
+@enduml

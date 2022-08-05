@@ -1,0 +1,15 @@
+@startuml Ebene2.png
+
+skinparam componentStyle uml2
+'skinparam component {
+'  BorderColor #grey
+'  BackgroundColor #white
+'}
+component [generator-poi] {
+    [domain]
+
+    [tailoring]
+    [domain] <-- [tailoring]
+
+}
+@enduml

@@ -1,0 +1,76 @@
+@startuml ProjektKopieren.png
+skinparam BoxPadding 10
+
+actor RDPS
+
+box rest
+    boundary ProjektController
+    control ProjektControllerMapper
+end box
+
+box core
+    control ProjektService
+end box
+
+box screeningsheet-pdfbox
+    control ScreeningSheetService
+end box
+
+box data-jpa
+    control ProjektServiceRepository
+    control ProjektRepository
+end box
+
+box rdbms
+    database tailoring as db
+end box
+
+RDPS -> ProjektController : POST /projekt/{projekt}/
+activate ProjektController
+
+ProjektController -> ProjektService : copyProject
+activate ProjektService
+
+ProjektService -> ProjektServiceRepository : getProjekt
+activate ProjektServiceRepository
+ProjektServiceRepository -> ProjektRepository : findByKuerzel
+activate ProjektRepository
+ProjektRepository -> db
+activate db
+return Projekt
+ProjektRepository --> ProjektServiceRepository : Projekt
+deactivate ProjektRepository
+
+ProjektServiceRepository -->  ProjektService : Projekt
+deactivate ProjektServiceRepository
+
+ProjektService -> ScreeningSheetService : createScreeningSheet
+activate ScreeningSheetService
+return ScreeningSheet
+deactivate ScreeningSheetService
+
+ProjektService -> ProjektServiceRepository : createProjekt(projektKopie)
+activate ProjektServiceRepository
+ProjektServiceRepository -> ProjektRepository : save
+activate ProjektRepository
+ProjektRepository -> db
+activate db
+return Projekt
+deactivate db
+ProjektRepository --> ProjektServiceRepository : Projekt
+deactivate ProjektRepository
+ProjektServiceRepository --> ProjektService : Projekt
+deactivate ProjektServiceRepository
+
+ProjektService --> ProjektController : Projekt
+deactivate ProjektService
+
+ProjektController -> ProjektControllerMapper : toResource(Projekt)
+activate ProjektControllerMapper
+return ProjektResource
+deactivate ProjektControllerMapper
+ProjektController --> RDPS : ProjektResource
+deactivate ProjektController
+
+
+@enduml

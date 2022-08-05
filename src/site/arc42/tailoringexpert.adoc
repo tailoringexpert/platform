@@ -1,0 +1,79 @@
+// header file for arc42-template,
+// including all help texts
+//
+// ====================================
+// configure DE settings for asciidoc
+include::config.adoc[]
+
+:doctitle: TailoringExpert Architekturdokumentation
+:author: Michael Bädorf
+
+= image:arc42-logo.png[arc42] TailoringExpert Architekturdokumentation
+
+// toc-title definition MUST follow document title without blank line!
+:toc:
+:toclevels: 2
+//:toc-placement!:
+:sectanchors:
+toc::[]
+
+
+//include::src/about-arc42.adoc[]
+
+// horizontal line
+//***
+
+<<<<
+// 0. Änderungshistorie
+include::00_document_history.adoc[]
+
+// numbering from here on
+:numbered:
+
+<<<<
+// 1. Anforderungen und Ziele
+include::01_introduction_and_goals.adoc[]
+
+<<<<
+// 2. Randbedingungen
+include::02_architecture_constraints.adoc[]
+
+<<<<
+// 3. Kontextabgrenzung
+include::03_system_scope_and_context.adoc[]
+
+<<<<
+// 4. Lösungsstrategie
+include::04_solution_strategy.adoc[]
+
+<<<<
+// 5. Bausteinsicht
+include::05_building_block_view.adoc[]
+
+<<<<
+// 6. Laufzeitsicht
+include::06_runtime_view.adoc[]
+
+<<<<
+// 7. Verteilungssicht
+include::07_deployment_view.adoc[]
+
+<<<<
+// 8. Querschnittliche Konzepte
+include::08_concepts.adoc[]
+
+<<<<
+// 9. Entscheidungen
+include::09_design_decisions.adoc[]
+
+<<<<
+// 10. Qualität...
+include::10_quality_scenarios.adoc[]
+
+<<<<
+// 11. Risiken
+include::11_technical_risks.adoc[]
+
+<<<<
+// 12. Glossar
+include::12_glossary.adoc[]

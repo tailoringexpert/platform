@@ -1,0 +1,10 @@
+@startuml
+
+[Domain] <<..domain..>>
+[Renderer] <<..renderer..>>
+
+[ProjektPhase] <<..projektphase..>>
+[Domain] <-- [ProjektPhase]
+[Renderer] <-- [ProjektPhase]
+
+@enduml

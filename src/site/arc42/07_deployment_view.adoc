@@ -1,0 +1,20 @@
+[[section-deployment-view]]
+== Verteilungssicht
+
+=== Natives Deployment
+.Natives Deployment
+plantuml::plantuml/DeploymentNativ.plantuml[target="{plantumls-outdir}/07/DeploymentNativ" format=svg, alt="Standard Verteilung"]
+
+
+Zuordnung von Bausteinen zu Infrastruktur::
+Alle Module sind Teil von _tailoringexpert.jar_.
+
+
+=== Virtualisiertes Deployment mit Docker
+==== Guests
+.Docker Deployment
+plantuml::plantuml/DeploymentDocker.plantuml[target="{plantumls-outdir}/07/Deployment" format=svg, alt="Docker Verteilung"]
+
+==== Netzwerke
+.Docker Netzwerke
+plantuml::plantuml/NetzwerkDocker.plantuml[target="{plantumls-outdir}/07/Deployment" format=svg, alt="Docker Verteilung"]
