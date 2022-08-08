@@ -73,7 +73,7 @@
         <!-- plugins -->
         <dependency-check-maven.version>7.1.1</dependency-check-maven.version>
         <jacoco-maven-plugin.version>0.8.8</jacoco-maven-plugin.version>
-        <liquibase-maven-plugin.version>4.14.0</liquibase-maven-plugin.version>
+        <liquibase-maven-plugin.version>4.15.0</liquibase-maven-plugin.version>
         <spring-boot-maven-plugin.version>2.7.2</spring-boot-maven-plugin.version>
         <springdoc-openapi-maven-plugin.version>1.4</springdoc-openapi-maven-plugin.version>
 
