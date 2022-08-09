@@ -134,7 +134,7 @@
 
             <!-- tailoring-dependencies -->
             <dependency>
-                <groupId>io.github.baedorf.tailoringexpert</groupId>
+                <groupId>eu.tailoringexpert</groupId>
                 <artifactId>tailoringexpert-dependencies</artifactId>
                 <version>${plattform.version}</version>
                 <type>pom</type>
