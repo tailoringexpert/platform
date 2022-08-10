@@ -13,7 +13,7 @@
 
     <organization>
         <name>Michael Bädorf and others</name>
-        <url>https://github.com/baedorf/tailoringexpert-plattform</url>
+        <url>https://www.tailoringexpert.eu</url>
     </organization>
 
     <developers>
@@ -31,9 +31,9 @@
     </licenses>
 
     <scm>
-        <connection>scm:git:https://github.com/baedorf/tailoringexpert-plattform.git</connection>
-        <developerConnection>scm:git:https://baedorf/tailoringexpert-plattform.git</developerConnection>
-        <url>https://github.com/baedorf/tailoringexpert-plattform.git</url>
+        <connection>scm:git:https://github.com/tailoringexpert/plattform.git</connection>
+        <developerConnection>scm:git:https://github.com/tailoringexpert/plattform.git</developerConnection>
+        <url>https://github.com/tailoringexpert/plattform.git</url>
     </scm>
 
     <repositories>
@@ -134,7 +134,7 @@
 
             <!-- tailoring-dependencies -->
             <dependency>
-                <groupId>io.github.baedorf.tailoringexpert</groupId>
+                <groupId>eu.tailoringexpert</groupId>
                 <artifactId>tailoringexpert-dependencies</artifactId>
                 <version>${plattform.version}</version>
                 <type>pom</type>
@@ -339,49 +339,36 @@
                     <autoVersionSubmodules>true</autoVersionSubmodules>
                 </configuration>
             </plugin>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>license-maven-plugin</artifactId>
+                <version>2.0.0</version>
+                <configuration>
+                    <dryRun>false</dryRun>
+                    <addJavaLicenseAfterPackage>false</addJavaLicenseAfterPackage>
+                    <licenseName>gpl_v3</licenseName>
+                    <projectName>TailoringExpert</projectName>
+                    <excludedScopes>test,provided</excludedScopes>
+                    <excludedTypes>pom</excludedTypes>
+                    <includeOptional>false</includeOptional>
+                    <includeTransitiveDependencies>false</includeTransitiveDependencies>
+                </configuration>
+                <executions>
+                    <execution>
+                        <id>update-file-header</id>
+                        <goals>
+                            <goal>update-file-header</goal>
+                        </goals>
+                        <phase>process-sources</phase>
+                        <configuration>
+                            <roots>
+                                <root>src/main/java</root>
+                                <root>src/test/java</root>
+                            </roots>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
         </plugins>
     </build>
-
-    <profiles>
-        <profile>
-            <id>license</id>
-            <activation>
-                <activeByDefault>false</activeByDefault>
-            </activation>
-            <build>
-                <plugins>
-                    <plugin>
-                        <groupId>org.codehaus.mojo</groupId>
-                        <artifactId>license-maven-plugin</artifactId>
-                        <version>2.0.0</version>
-                        <configuration>
-                            <dryRun>false</dryRun>
-                            <addJavaLicenseAfterPackage>false</addJavaLicenseAfterPackage>
-                            <licenseName>gpl_v3</licenseName>
-                            <projectName>TailoringExpert</projectName>
-                            <excludedScopes>test,provided</excludedScopes>
-                            <excludedTypes>pom</excludedTypes>
-                            <includeOptional>false</includeOptional>
-                            <includeTransitiveDependencies>false</includeTransitiveDependencies>
-                        </configuration>
-                        <!--                        <executions>-->
-                        <!--                            <execution>-->
-                        <!--                                <id>update-file-header</id>-->
-                        <!--                                <goals>-->
-                        <!--                                    <goal>update-file-header</goal>-->
-                        <!--                                </goals>-->
-                        <!--                                <phase>process-sources</phase>-->
-                        <!--                                <configuration>-->
-                        <!--                                    <roots>-->
-                        <!--                                        <root>src/main/java</root>-->
-                        <!--                                        <root>src/test/java</root>-->
-                        <!--                                    </roots>-->
-                        <!--                                </configuration>-->
-                        <!--                            </execution>-->
-                        <!--                        </executions>-->
-                    </plugin>
-                </plugins>
-            </build>
-        </profile>
-    </profiles>
 </project>

@@ -180,7 +180,7 @@ package domain {
         id : Long <<PK>>
         version : String
     }
-    TailoringKatalogEntity --> "1" TailoringKatalogEntity : toc
+    TailoringKatalogEntity --> "1" TailoringKatalogKapitelEntity : toc
 
     class ProjektEntity {
         id : Long <<PK>>

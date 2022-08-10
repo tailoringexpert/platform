@@ -22,7 +22,6 @@
   -->
 
 <Configuration status="ERROR" verbose="true" monitorInterval="60">
-
     <Appenders>
         <Console name="CONSOLE" target="SYSTEM_OUT">
             <PatternLayout pattern="%d{HH:mm:ss.SSS} %-5p [%c] %m%n"/>
@@ -42,13 +41,11 @@
         <Console name="STDOUT" target="SYSTEM_OUT">
             <PatternLayout pattern="%m%n"/>
         </Console>
-
     </Appenders>
 
     <Loggers>
         <!-- Loggers -->
-
-        <Logger name="de.baedorf.tailoringexpert" level="DEBUG" additivity="false">
+        <Logger name="eu.tailoringexpert" level="DEBUG" additivity="false">
             <AppenderRef ref="CONSOLE"/>
         </Logger>
 
@@ -56,7 +53,5 @@
         <Root level="ERROR">
             <AppenderRef ref="CONSOLE"/>
         </Root>
-
     </Loggers>
-
 </Configuration>
