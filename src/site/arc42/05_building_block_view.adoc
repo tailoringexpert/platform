@@ -250,7 +250,7 @@ Wichtige Schnittstellen::
 | Schnittstelle | Beschreibung
 
  | GET /
-a| Ermittlung der Haupt-Urls der Anforderung
+a| Ermittlung der Haupt-Urls der Anwendung
 
 * Verfügbare Katalogversionen
 * Vorhandene Projekte

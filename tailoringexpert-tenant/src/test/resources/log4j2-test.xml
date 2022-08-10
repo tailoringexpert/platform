@@ -15,7 +15,7 @@
 
     <Loggers>
         <!-- Loggers -->
-        <Logger name="de.baedorf.tailoringexpert" level="trace" additivity="false">
+        <Logger name="de.dlr.tailoringexpert" level="trace" additivity="false">
             <AppenderRef ref="STDOUT"/>
         </Logger>
 

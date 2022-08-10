@@ -78,3 +78,5 @@ atlassian-ide-plugin.xml
 /src/site/arc42/.asciidoctor/
 /src/site/arc42/images/generated/
 
+**/.env
+

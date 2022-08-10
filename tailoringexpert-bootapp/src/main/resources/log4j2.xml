@@ -16,7 +16,7 @@
 
   <Loggers>
     <!-- Loggers -->
-    <Logger name="de.baedorf.tailoringexpert" level="debug" additivity="false">
+    <Logger name="eu.tailoringexpert" level="debug" additivity="false">
       <AppenderRef ref="Console" />
     </Logger>
 
