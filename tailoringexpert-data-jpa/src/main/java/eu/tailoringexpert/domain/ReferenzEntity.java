@@ -40,14 +40,14 @@ import java.io.Serializable;
 public class ReferenzEntity implements Serializable {
     private static final long serialVersionUID = 5590162094478573160L;
 
-    @Column(name = "REFERENZ")
+    @Column(name = "REFERENCE")
     private String text;
 
-    @Column(name = "REFERENZ_GEAENDERT")
+    @Column(name = "REFERENCE_CHANGED")
     private Boolean geaendert;
 
     @OneToOne
-    @JoinColumn(name="REFERENZLOGO_ID", referencedColumnName = "LOGO_ID")
+    @JoinColumn(name="REFERENCELOGO_ID", referencedColumnName = "LOGO_ID")
     private LogoEntity logo;
 
 

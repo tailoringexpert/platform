@@ -49,15 +49,15 @@ import static javax.persistence.GenerationType.TABLE;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity(name = "KatalogKapitel")
-@Table(name = "KATALOGKAPITEL")
+@Table(name = "BASECATALOGCHAPTER")
 public class KatalogKapitelEntity implements Serializable {
     private static final long serialVersionUID = 8843674935264907440L;
 
     @Id
-    @TableGenerator(name = "SEQ_KATALOGKAPITEL", table = "SEQUENCE", pkColumnName = "SEQ_NAME",
-        valueColumnName = "SEQ_COUNT", pkColumnValue = "SEQ_KATALOGKAPITEL", initialValue = 1)
-    @GeneratedValue(strategy = TABLE, generator = "SEQ_KATALOGKAPITEL")
-    @Column(name = "KAPITEL_ID")
+    @TableGenerator(name = "SEQ_BASECATALOGCHAPTER", table = "SEQUENCE", pkColumnName = "SEQ_NAME",
+        valueColumnName = "SEQ_COUNT", pkColumnValue = "SEQ_BASECATALOGCHAPTER", initialValue = 1)
+    @GeneratedValue(strategy = TABLE, generator = "SEQ_BASECATALOGCHAPTER")
+    @Column(name = "CHAPTER_ID")
     private Long id;
 
     @Column(name = "NAME")
@@ -66,17 +66,17 @@ public class KatalogKapitelEntity implements Serializable {
     @Column(name = "POSITION")
     private int position;
 
-    @Column(name = "NUMMER")
+    @Column(name = "NUMBER")
     private String nummer;
 
     @OneToMany(cascade = ALL, fetch = LAZY)
-    @JoinColumn(name = "PARENTKAPITEL_ID", referencedColumnName = "KAPITEL_ID")
-    @OrderColumn(name = "KAPITEL_ORDER")
+    @JoinColumn(name = "PARENTCHAPTER_ID", referencedColumnName = "CHAPTER_ID")
+    @OrderColumn(name = "CHAPTER_ORDER")
     private List<KatalogKapitelEntity> kapitel;
 
     @OneToMany(cascade = ALL, orphanRemoval = true, fetch = LAZY)
-    @JoinColumn(name = "KAPITEL_ID", referencedColumnName = "KAPITEL_ID", nullable = false)
-    @OrderColumn(name = "ANFORDERUNG_ORDER")
+    @JoinColumn(name = "CHAPTER_ID", referencedColumnName = "CHAPTER_ID", nullable = false)
+    @OrderColumn(name = "REQUIREMENT_ORDER")
     private List<KatalogAnforderungEntity> anforderungen;
 
 }

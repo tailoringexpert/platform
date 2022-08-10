@@ -3,20 +3,20 @@
                    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
                    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
 
-    <changeSet id="1" author="Michael Baedorf">
+    <changeSet id="Table: TAILORING" author="Michael Baedorf">
         <createTable tableName="TAILORING">
             <column name="TAILORING_ID" type="BIGINT">
                 <constraints primaryKey="true" nullable="false"/>
             </column>
-            <column name="KENNUNG" type="VARCHAR(4)"/>
+            <column name="IDENTIFER" type="VARCHAR(4)"/>
             <column name="NAME" type="VARCHAR(256)"/>
-            <column name="KATALOG_ID" type="BIGINT"/>
+            <column name="TAILORINGCATALOG_ID" type="BIGINT"/>
             <column name="SCREENINGSHEET_ID" type="BIGINT"/>
-            <column name="SELEKTIONSVEKTOR_ID" type="BIGINT"/>
-            <column name="STATUS" type="VARCHAR(16)"/>
-            <column name="ERSTELLUNGSZEITPUNKT" type="VARCHAR(256)"/>
-            <column name="PROJEKT_ID" type="BIGINT"/>
-            <column name="KATALOGDEFINITION_ID" type="BIGINT"/>
+            <column name="SELECTIONVECTOR_ID" type="BIGINT"/>
+            <column name="STATE" type="VARCHAR(16)"/>
+            <column name="CREATIONTIMESTAMP" type="VARCHAR(256)"/>
+            <column name="PROJECT_ID" type="BIGINT"/>
+            <column name="BASECATALOG_ID" type="BIGINT"/>
             <column name="TAILORING_ORDER" type="BIGINT"/>
         </createTable>
     </changeSet>

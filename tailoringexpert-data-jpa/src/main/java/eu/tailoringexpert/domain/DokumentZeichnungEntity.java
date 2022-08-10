@@ -42,17 +42,17 @@ import static javax.persistence.EnumType.STRING;
 public class DokumentZeichnungEntity implements Serializable {
     private static final long serialVersionUID = 6380646019782563133L;
 
-    @Column(name = "BEREICH")
+    @Column(name = "FACULTY")
     private String bereich;
 
-    @Column(name = "UNTERZEICHNER")
+    @Column(name = "SIGNEE")
     private String unterzeichner;
 
-    @Column(name = "STATUS")
+    @Column(name = "STATE")
     @Enumerated(STRING)
     private DokumentZeichnungStatus status;
 
-    @Column(name = "ANWENDBAR")
+    @Column(name = "APPLICABLE")
     private Boolean anwendbar;
 
     private int position;

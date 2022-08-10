@@ -4,7 +4,7 @@
                    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
                    http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
 
-    <changeSet id="1" author="Michael Baedorf">
+    <changeSet id="Table: SEQUENCE" author="Michael Baedorf">
         <createTable tableName="SEQUENCE">
             <column name="SEQ_NAME" type="VARCHAR(50)">
                 <constraints primaryKey="true" nullable="false"/>
@@ -17,27 +17,27 @@
             <column name="SEQ_COUNT" valueNumeric="1"/>
         </insert>
         <insert tableName="SEQUENCE">
-            <column name="SEQ_NAME" value="SEQ_TAILORINGANFORDERUNG"/>
+            <column name="SEQ_NAME" value="SEQ_TAILORINGREQUIREMENT"/>
             <column name="SEQ_COUNT" valueNumeric="1"/>
         </insert>
         <insert tableName="SEQUENCE">
-            <column name="SEQ_NAME" value="SEQ_TAILORINGKATALOGKAPITEL"/>
+            <column name="SEQ_NAME" value="SEQ_TAILORINGCATALOGCHAPTER"/>
             <column name="SEQ_COUNT" valueNumeric="1"/>
         </insert>
         <insert tableName="SEQUENCE">
-            <column name="SEQ_NAME" value="SEQ_KATALOGKAPITEL"/>
+            <column name="SEQ_NAME" value="SEQ_BASECATALOGCHAPTER"/>
             <column name="SEQ_COUNT" valueNumeric="1"/>
         </insert>
         <insert tableName="SEQUENCE">
-            <column name="SEQ_NAME" value="SEQ_KATALOG"/>
+            <column name="SEQ_NAME" value="SEQ_BASECATALOG"/>
             <column name="SEQ_COUNT" valueNumeric="1"/>
         </insert>
         <insert tableName="SEQUENCE">
-            <column name="SEQ_NAME" value="SEQ_KATALOGANFORDERUNG"/>
+            <column name="SEQ_NAME" value="SEQ_BASECATALOGREQUIREMENT"/>
             <column name="SEQ_COUNT" valueNumeric="1"/>
         </insert>
         <insert tableName="SEQUENCE">
-            <column name="SEQ_NAME" value="SEQ_IDENTIFIKATOR"/>
+            <column name="SEQ_NAME" value="SEQ_IDENTIFIER"/>
             <column name="SEQ_COUNT" valueNumeric="1"/>
         </insert>
         <insert tableName="SEQUENCE">
@@ -55,7 +55,7 @@
         </insert>
 
         <insert tableName="SEQUENCE">
-            <column name="SEQ_NAME" value="SEQ_SELEKTIONSVEKTOR"/>
+            <column name="SEQ_NAME" value="SEQ_SELECTIONVECTOR"/>
             <column name="SEQ_COUNT" valueNumeric="1"/>
         </insert>
         <insert tableName="SEQUENCE">
@@ -63,11 +63,11 @@
             <column name="SEQ_COUNT" valueNumeric="1"/>
         </insert>
         <insert tableName="SEQUENCE">
-            <column name="SEQ_NAME" value="SEQ_TAILORINGKATALOG"/>
+            <column name="SEQ_NAME" value="SEQ_TAILORINGCATALOG"/>
             <column name="SEQ_COUNT" valueNumeric="1"/>
         </insert>
         <insert tableName="SEQUENCE">
-            <column name="SEQ_NAME" value="SEQ_PROJEKT"/>
+            <column name="SEQ_NAME" value="SEQ_PROJECT"/>
             <column name="SEQ_COUNT" valueNumeric="1"/>
         </insert>
         <insert tableName="SEQUENCE">
@@ -75,19 +75,19 @@
             <column name="SEQ_COUNT" valueNumeric="1"/>
         </insert>
         <insert tableName="SEQUENCE">
-            <column name="SEQ_NAME" value="SEQ_DOKUMENT"/>
+            <column name="SEQ_NAME" value="SEQ_DOCUMENT"/>
             <column name="SEQ_COUNT" valueNumeric="1"/>
         </insert>
         <insert tableName="SEQUENCE">
-            <column name="SEQ_NAME" value="SEQ_PROJEKTPHASEDOKUMENT"/>
+            <column name="SEQ_NAME" value="SEQ_PROJECTPHASEDOCUMENT"/>
             <column name="SEQ_COUNT" valueNumeric="1"/>
         </insert>
         <insert tableName="SEQUENCE">
-            <column name="SEQ_NAME" value="SEQ_SELEKTIONSVEKTORPROFIL"/>
+            <column name="SEQ_NAME" value="SEQ_SELECTIONVECTORPROFILE"/>
             <column name="SEQ_COUNT" valueNumeric="1"/>
         </insert>
         <insert tableName="SEQUENCE">
-            <column name="SEQ_NAME" value="SEQ_DOKUMENTZEICHNER"/>
+            <column name="SEQ_NAME" value="SEQ_DOCUMENTSIGNEE"/>
             <column name="SEQ_COUNT" valueNumeric="1"/>
         </insert>
     </changeSet>
