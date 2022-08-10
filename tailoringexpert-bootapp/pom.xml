@@ -10,34 +10,34 @@
     <packaging>jar</packaging>
 
     <parent>
-        <groupId>de.baedorf.tailoringexpert</groupId>
+        <groupId>eu.tailoringexpert</groupId>
         <artifactId>tailoringexpert-plattform</artifactId>
         <version>0.0.1-SNAPSHOT</version>
     </parent>
 
     <dependencies>
         <dependency>
-            <groupId>de.baedorf.tailoringexpert</groupId>
+            <groupId>eu.tailoringexpert</groupId>
             <artifactId>tailoringexpert-core</artifactId>
         </dependency>
         <dependency>
-            <groupId>de.baedorf.tailoringexpert</groupId>
+            <groupId>eu.tailoringexpert</groupId>
             <artifactId>tailoringexpert-data-jpa</artifactId>
         </dependency>
         <dependency>
-            <groupId>de.baedorf.tailoringexpert</groupId>
+            <groupId>eu.tailoringexpert</groupId>
             <artifactId>tailoringexpert-rest</artifactId>
         </dependency>
         <dependency>
-            <groupId>de.baedorf.tailoringexpert</groupId>
+            <groupId>eu.tailoringexpert</groupId>
             <artifactId>tailoringexpert-openhtmltopdf</artifactId>
         </dependency>
         <dependency>
-            <groupId>de.baedorf.tailoringexpert</groupId>
+            <groupId>eu.tailoringexpert</groupId>
             <artifactId>tailoringexpert-poi</artifactId>
         </dependency>
         <dependency>
-            <groupId>de.baedorf.tailoringexpert</groupId>
+            <groupId>eu.tailoringexpert</groupId>
             <artifactId>tailoringexpert-tenant</artifactId>
         </dependency>
 
