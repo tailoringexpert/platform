@@ -102,13 +102,13 @@ Dieser kann z.B. mittel Postman eingespielt werden. Dafür muss die Plattform un
 Beim TailoringExpert handelt sich es um eine mandantenfähige Spring Boot Anwendung.
 Die Haupt-/Starterklasse ist
 
-> de.dlr.tailoringexpert.App
+> eu.tailoringexpert.App
 
-und kann mittels java de.dlr.tailoringexpert.App gestartet werden
+und kann mittels java eu.tailoringexpert.App gestartet werden
 
 Jeder Mandant muss seine Konfiguration in dem Paket
 
-> de.dlr.tailoringexpert
+> eu.tailoringexpert
 
 anlegen. Nur so kann diese beim Start der Plattform angezogen werden.
 
