@@ -10,14 +10,14 @@
     <packaging>jar</packaging>
 
     <parent>
-        <groupId>de.baedorf.tailoringexpert</groupId>
+        <groupId>eu.tailoringexpert</groupId>
         <artifactId>tailoringexpert-plattform</artifactId>
         <version>0.0.1-SNAPSHOT</version>
     </parent>
 
     <dependencies>
         <dependency>
-            <groupId>de.baedorf.tailoringexpert</groupId>
+            <groupId>eu.tailoringexpert</groupId>
             <artifactId>tailoringexpert-core</artifactId>
         </dependency>
 
