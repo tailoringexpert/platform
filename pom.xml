@@ -3,7 +3,7 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>de.baedorf.tailoringexpert</groupId>
+    <groupId>eu.tailoringexpert</groupId>
     <artifactId>tailoringexpert-plattform</artifactId>
     <packaging>pom</packaging>
     <name>${project.groupId}:${project.artifactId}</name>
@@ -80,6 +80,7 @@
         <maven-exec-plugin.version>3.1.0</maven-exec-plugin.version>
         <maven-compiler-plugin.version>3.10.1</maven-compiler-plugin.version>
         <maven-dependency-plugin.version>3.3.0</maven-dependency-plugin.version>
+		<maven-dependency-plugin.phase>install</maven-dependency-plugin.phase>
         <maven-gpg-plugin.version>3.0.1</maven-gpg-plugin.version>
         <maven-licence-plugin.verision>2.0.0</maven-licence-plugin.verision>
         <maven-source-plugin.version>3.2.1</maven-source-plugin.version>
@@ -92,42 +93,42 @@
     <dependencyManagement>
         <dependencies>
             <dependency>
-                <groupId>de.baedorf.tailoringexpert</groupId>
+                <groupId>eu.tailoringexpert</groupId>
                 <artifactId>tailoringexpert-core</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
-                <groupId>de.baedorf.tailoringexpert</groupId>
+                <groupId>eu.tailoringexpert</groupId>
                 <artifactId>tailoringexpert-data-jpa</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
-                <groupId>de.baedorf.tailoringexpert</groupId>
+                <groupId>eu.tailoringexpert</groupId>
                 <artifactId>tailoringexpert-rest</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
-                <groupId>de.baedorf.tailoringexpert</groupId>
+                <groupId>eu.tailoringexpert</groupId>
                 <artifactId>tailoringexpert-openhtmltopdf</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
-                <groupId>de.baedorf.tailoringexpert</groupId>
+                <groupId>eu.tailoringexpert</groupId>
                 <artifactId>tailoringexpert-poi</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
-                <groupId>de.baedorf.tailoringexpert</groupId>
+                <groupId>eu.tailoringexpert</groupId>
                 <artifactId>tailoringexpert-tenant</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
-                <groupId>de.baedorf.tailoringexpert</groupId>
+                <groupId>eu.tailoringexpert</groupId>
                 <artifactId>tailoringexpert-security-keycloak</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
-                <groupId>de.baedorf.tailoringexpert</groupId>
+                <groupId>eu.tailoringexpert</groupId>
                 <artifactId>tailoringexpert-bootapp</artifactId>
                 <version>${project.version}</version>
             </dependency>
@@ -317,13 +318,14 @@
             <plugin>
                 <groupId>org.owasp</groupId>
                 <artifactId>dependency-check-maven</artifactId>
-                <version>${dependency-check-maven.version}</version>
+                <version>${dependency-check-maven.version}</version>				
                 <configuration>
                     <failOnError>false</failOnError>
                 </configuration>
                 <executions>
                     <execution>
-                        <goals>
+						<phase>${maven-dependency-plugin.phase}</phase>
+                        <goals>							
                             <goal>check</goal>
                         </goals>
                     </execution>
