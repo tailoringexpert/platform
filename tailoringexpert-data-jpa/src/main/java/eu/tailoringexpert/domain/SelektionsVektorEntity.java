@@ -46,21 +46,21 @@ import static javax.persistence.GenerationType.TABLE;
 @AllArgsConstructor
 @Builder
 @Entity(name = "SelektionsVektor")
-@Table(name = "SELEKTIONSVEKTOR")
+@Table(name = "SELECTIONVECTOR")
 public class SelektionsVektorEntity implements Serializable {
     private static final long serialVersionUID = 3707196505262153813L;
 
     @Id
-    @TableGenerator(name = "SEQ_SELEKTIONSVEKTOR", table = "SEQUENCE", pkColumnName = "SEQ_NAME",
-        valueColumnName = "SEQ_COUNT", pkColumnValue = "SEQ_SELEKTIONSVEKTOR", initialValue = 1)
-    @GeneratedValue(strategy = TABLE, generator = "SEQ_SELEKTIONSVEKTOR")
-    @Column(name = "SELEKTIONSVEKTOR_ID")
+    @TableGenerator(name = "SEQ_SELECTIONVECTOR", table = "SEQUENCE", pkColumnName = "SEQ_NAME",
+        valueColumnName = "SEQ_COUNT", pkColumnValue = "SEQ_SELECTIONVECTOR", initialValue = 1)
+    @GeneratedValue(strategy = TABLE, generator = "SEQ_SELECTIONVECTOR")
+    @Column(name = "SELECTIONVECTOR_ID")
     private Long id;
 
     @ElementCollection
-    @MapKeyColumn(name = "TYP")
+    @MapKeyColumn(name = "TYPE")
     @Column(name = "LEVEL")
-    @CollectionTable(name = "SELEKTIONSVEKTORPARAMETER", joinColumns = @JoinColumn(name = "SELEKTIONSVEKTOR_ID"))
+    @CollectionTable(name = "SELECTIONVECTORPARAMETER", joinColumns = @JoinColumn(name = "SELECTIONVECTOR_ID"))
     private Map<String, Integer> levels;
 
 }

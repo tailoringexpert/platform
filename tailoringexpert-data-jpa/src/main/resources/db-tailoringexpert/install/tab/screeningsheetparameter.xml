@@ -4,13 +4,13 @@
   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
          http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
 
-  <changeSet id="TABLE: SCREENINGSHEETPARAMETER" author="Michael Baedorf">
+  <changeSet id="Table: SCREENINGSHEETPARAMETER" author="Michael Baedorf">
     <createTable tableName="SCREENINGSHEETPARAMETER">
       <column name="SCREENINGSHEETPARAMETER_ID" type="BIGINT">
         <constraints primaryKey="true" nullable="false" />
       </column>
-      <column name="BEZEICHNUNG" type="VARCHAR(255)" />
-      <column name="WERT" type="CLOB">
+      <column name="CATEGORY" type="VARCHAR(255)" />
+      <column name="PARAMETERVALUE" type="CLOB">
         <constraints nullable="false"/>
       </column>
       <column name="POSITION" type="BIGINT" />

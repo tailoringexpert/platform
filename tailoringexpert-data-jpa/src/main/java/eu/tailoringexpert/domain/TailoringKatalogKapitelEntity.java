@@ -53,15 +53,15 @@ import static javax.persistence.GenerationType.TABLE;
 @AllArgsConstructor
 @Builder
 @Entity(name = "TailoringKatalogKapitel")
-@Table(name = "TAILORINGKATALOGKAPITEL")
+@Table(name = "TAILORINGCATALOGCHAPTER")
 public class TailoringKatalogKapitelEntity implements Serializable {
     private static final long serialVersionUID = -2953875408100894292L;
 
     @Id
-    @TableGenerator(name = "SEQ_TAILORINGKATALOGKAPITEL", table = "SEQUENCE", pkColumnName = "SEQ_NAME",
-        valueColumnName = "SEQ_COUNT", pkColumnValue = "SEQ_TAILORINGKATALOGKAPITEL", initialValue = 1)
-    @GeneratedValue(strategy = TABLE, generator = "SEQ_TAILORINGKATALOGKAPITEL")
-    @Column(name = "KAPITEL_ID")
+    @TableGenerator(name = "SEQ_TAILORINGCATALOGCHAPTER", table = "SEQUENCE", pkColumnName = "SEQ_NAME",
+        valueColumnName = "SEQ_COUNT", pkColumnValue = "SEQ_TAILORINGCATALOGCHAPTER", initialValue = 1)
+    @GeneratedValue(strategy = TABLE, generator = "SEQ_TAILORINGCATALOGCHAPTER")
+    @Column(name = "CHAPTER_ID")
     private Long id;
 
     @Column(name = "NAME")
@@ -70,17 +70,17 @@ public class TailoringKatalogKapitelEntity implements Serializable {
     @Column(name = "POSITION")
     private int position;
 
-    @Column(name = "NUMMER")
+    @Column(name = "NUMBER")
     private String nummer;
 
     @OneToMany(cascade = ALL, fetch = LAZY)
-    @JoinColumn(name = "PARENTKAPITEL_ID", referencedColumnName = "KAPITEL_ID")
-    @OrderColumn(name = "KAPITEL_ORDER")
+    @JoinColumn(name = "PARENTCHAPTER_ID", referencedColumnName = "CHAPTER_ID")
+    @OrderColumn(name = "CHAPTER_ORDER")
     private List<TailoringKatalogKapitelEntity> kapitel;
 
     @OneToMany(cascade = ALL, orphanRemoval = true, fetch = LAZY)
-    @JoinColumn(name = "KAPITEL_ID", referencedColumnName = "KAPITEL_ID", nullable = false)
-    @OrderColumn(name = "ANFORDERUNG_ORDER")
+    @JoinColumn(name = "CHAPTER_ID", referencedColumnName = "CHAPTER_ID", nullable = false)
+    @OrderColumn(name = "REQUIREMENT_ORDER")
     private List<TailoringAnforderungEntity> anforderungen = new ArrayList<>();
 
     public Optional<TailoringKatalogKapitelEntity> getKapitel(String kapitel) {

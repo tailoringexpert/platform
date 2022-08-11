@@ -44,24 +44,24 @@ import static javax.persistence.GenerationType.TABLE;
 @AllArgsConstructor
 @Builder
 @Entity(name = "DokumentZeichner")
-@Table(name = "DOKUMENTZEICHNER")
+@Table(name = "DOCUMENTSIGNEE")
 public class DokumentZeichnerEntity implements Serializable {
     private static final long serialVersionUID = 2199876579780053096L;
 
     @Id
-    @TableGenerator(name = "SEQ_DOKUMENTZEICHNER", table = "SEQUENCE", pkColumnName = "SEQ_NAME",
-        valueColumnName = "SEQ_COUNT", pkColumnValue = "SEQ_DOKUMENTZEICHNER", initialValue = 1)
-    @GeneratedValue(strategy = TABLE, generator = "SEQ_DOKUMENTZEICHNER")
-    @Column(name = "DOKUMENTZEICHNER_ID")
+    @TableGenerator(name = "SEQ_DOCUMENTSIGNEE", table = "SEQUENCE", pkColumnName = "SEQ_NAME",
+        valueColumnName = "SEQ_COUNT", pkColumnValue = "SEQ_DOCUMENTSIGNEE", initialValue = 1)
+    @GeneratedValue(strategy = TABLE, generator = "SEQ_DOCUMENTSIGNEE")
+    @Column(name = "DOCUMENTSIGNEE_ID")
     private Long id;
 
-    @Column(name = "BEREICH")
+    @Column(name = "FACULTY")
     private String bereich;
 
-    @Column(name = "UNTERZEICHNER")
+    @Column(name = "SIGNEE")
     private String unterzeichner;
 
-    @Column(name = "STATUS")
+    @Column(name = "STATE")
     @Enumerated(STRING)
     private DokumentZeichnungStatus status;
 

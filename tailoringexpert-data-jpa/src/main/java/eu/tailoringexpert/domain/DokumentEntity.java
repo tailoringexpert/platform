@@ -41,21 +41,21 @@ import static javax.persistence.GenerationType.TABLE;
 @AllArgsConstructor
 @Builder
 @Entity(name = "Dokument")
-@Table(name = "DOKUMENT")
+@Table(name = "DOCUMENT")
 public class DokumentEntity implements Serializable {
     private static final long serialVersionUID = -2130704173973857598L;
 
     @Id
-    @TableGenerator(name = "SEQ_DOKUMENT", table = "SEQUENCE", pkColumnName = "SEQ_NAME",
-        valueColumnName = "SEQ_COUNT", pkColumnValue = "SEQ_DOKUMENT", initialValue = 1)
-    @GeneratedValue(strategy = TABLE, generator = "SEQ_DOKUMENT")
-    @Column(name = "DOKUMENT_ID")
+    @TableGenerator(name = "SEQ_DOCUMENT", table = "SEQUENCE", pkColumnName = "SEQ_NAME",
+        valueColumnName = "SEQ_COUNT", pkColumnValue = "SEQ_DOCUMENT", initialValue = 1)
+    @GeneratedValue(strategy = TABLE, generator = "SEQ_DOCUMENT")
+    @Column(name = "DOCUMENT_ID")
     private Long id;
 
     @Column(name = "NAME")
     private String name;
 
-    @Column(name = "DATEN")
+    @Column(name = "DATA")
     private byte[] daten;
 
     @Column(name = "MD5")

@@ -45,18 +45,18 @@ import static javax.persistence.GenerationType.TABLE;
 @AllArgsConstructor
 @Builder
 @Entity(name = "Identifikator")
-@Table(name = "IDENTIFIKATOR")
+@Table(name = "IDENTIFIER")
 public class IdentifikatorEntity implements Serializable {
     private static final long serialVersionUID = 7005585376849837188L;
 
     @Id
-    @TableGenerator(name = "SEQ_IDENTIFIKATOR", table = "SEQUENCE", pkColumnName = "SEQ_NAME",
-        valueColumnName = "SEQ_COUNT", pkColumnValue = "SEQ_IDENTIFIKATOR", initialValue = 1)
-    @GeneratedValue(strategy = TABLE, generator = "SEQ_IDENTIFIKATOR")
-    @Column(name = "IDENTIFIKATOR_ID")
+    @TableGenerator(name = "SEQ_IDENTIFIER", table = "SEQUENCE", pkColumnName = "SEQ_NAME",
+        valueColumnName = "SEQ_COUNT", pkColumnValue = "SEQ_IDENTIFIER", initialValue = 1)
+    @GeneratedValue(strategy = TABLE, generator = "SEQ_IDENTIFIER")
+    @Column(name = "IDENTIFIER_ID")
     private Long id;
 
-    @Column(name = "TYP")
+    @Column(name = "TYPE")
     private String typ;
 
     @Column(name = "LEVEL")
@@ -64,10 +64,10 @@ public class IdentifikatorEntity implements Serializable {
 
     @ElementCollection
     @CollectionTable(
-        name = "IDENTIFIKATOR_LIMITIERUNG",
-        joinColumns = @JoinColumn(name = "IDENTIFIKATOR_ID")
+        name = "IDENTIFIER_LIMITATION",
+        joinColumns = @JoinColumn(name = "IDENTIFIER_ID")
     )
-    @Column(name = "LIMITIERUNG")
+    @Column(name = "LIMITATION")
     private Set<String> limitierungen;
 
 }

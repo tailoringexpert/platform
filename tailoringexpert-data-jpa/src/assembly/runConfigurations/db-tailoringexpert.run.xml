@@ -28,6 +28,7 @@
           </option>
           <option name="goals">
             <list>
+              <option value="-Ddependency-check-maven.phase=deploy" />
               <option value="-DskipTests" />
               <option value="install" />
               <option value="exec:exec@dropAll" />
@@ -42,10 +43,20 @@
             </map>
           </option>
           <option name="resolveToWorkspace" value="false" />
-          <option name="workingDirPath" value="$PROJECT_DIR$/../../git/tailoringexpert/tailoringexpert-plattform/tailoringexpert-data-jpa" />
+          <option name="workingDirPath" value="$PROJECT_DIR$/../../git/tailoringexpert/plattform/tailoringexpert-data-jpa" />
         </MavenRunnerParameters>
       </option>
     </MavenSettings>
+    <extension name="net.ashald.envfile">
+      <option name="IS_ENABLED" value="false" />
+      <option name="IS_SUBST" value="false" />
+      <option name="IS_PATH_MACRO_SUPPORTED" value="false" />
+      <option name="IS_IGNORE_MISSING_FILES" value="false" />
+      <option name="IS_ENABLE_EXPERIMENTAL_INTEGRATIONS" value="false" />
+      <ENTRIES>
+        <ENTRY IS_ENABLED="true" PARSER="runconfig" />
+      </ENTRIES>
+    </extension>
     <method v="2" />
   </configuration>
 </component>

@@ -49,15 +49,15 @@ import static javax.persistence.GenerationType.TABLE;
 @AllArgsConstructor
 @Builder
 @Entity(name = "ImportAnforderung")
-@Table(name = "TAILORINGANFORDERUNG")
+@Table(name = "TAILORINGREQUIREMENT")
 public class TailoringAnforderungEntity implements Serializable {
     private static final long serialVersionUID = 586167029258031537L;
 
     @Id
-    @TableGenerator(name = "SEQ_TAILORINGANFORDERUNG", table = "SEQUENCE", pkColumnName = "SEQ_NAME",
-        valueColumnName = "SEQ_COUNT", pkColumnValue = "SEQ_TAILORINGANFORDERUNG", initialValue = 1)
-    @GeneratedValue(strategy = TABLE, generator = "SEQ_TAILORINGANFORDERUNG")
-    @Column(name = "ANFORDERUNG_ID")
+    @TableGenerator(name = "SEQ_TAILORINGREQUIREMENT", table = "SEQUENCE", pkColumnName = "SEQ_NAME",
+        valueColumnName = "SEQ_COUNT", pkColumnValue = "SEQ_TAILORINGREQUIREMENT", initialValue = 1)
+    @GeneratedValue(strategy = TABLE, generator = "SEQ_TAILORINGREQUIREMENT")
+    @Column(name = "REQUIREMENT_ID")
     private Long id;
 
     @Column(name = "TEXT")
@@ -65,7 +65,7 @@ public class TailoringAnforderungEntity implements Serializable {
 
     @Embedded
     @AssociationOverride(name = "logo",
-        joinColumns = @JoinColumn(name = "REFERENZLOGO_ID"))
+        joinColumns = @JoinColumn(name = "REFERENCELOGO_ID"))
     private ReferenzEntity referenz;
 
     @Column(name = "POSITION")
@@ -73,19 +73,19 @@ public class TailoringAnforderungEntity implements Serializable {
 
     @OneToMany(fetch = LAZY)
     @JoinTable(
-        name = "TAILORINGANFORDERUNG_DRD",
-        joinColumns = {@JoinColumn(name = "ANFORDERUNG_ID", referencedColumnName = "ANFORDERUNG_ID")},
+        name = "TAILORINGREQUIREMENT_DRD",
+        joinColumns = {@JoinColumn(name = "REQUIREMENT_ID", referencedColumnName = "REQUIREMENT_ID")},
         inverseJoinColumns = {@JoinColumn(name = "DRD_ID", referencedColumnName = "DRD_ID")}
     )
     private Set<DRDEntity> drds;
 
-    @Column(name = "AUSGEWAEHLT")
+    @Column(name = "SELECTED")
     private Boolean ausgewaehlt;
 
-    @Column(name = "AUSGEWAEHLTGEAENDERT")
+    @Column(name = "SELECTIONCHANGED")
     private ZonedDateTime ausgewaehltGeaendert;
 
-    @Column(name = "TEXTGEAENDERT")
+    @Column(name = "TEXTCHANGED")
     private ZonedDateTime textGeaendert;
 }
 
