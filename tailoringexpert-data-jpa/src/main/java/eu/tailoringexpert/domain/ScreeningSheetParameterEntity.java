@@ -53,11 +53,11 @@ public class ScreeningSheetParameterEntity implements Serializable {
     @Column(name = "SCREENINGSHEETPARAMETER_ID")
     private Long id;
 
-    @Column(name = "BEZEICHNUNG")
+    @Column(name = "CATEGORY")
     private String bezeichnung;
 
     @SuppressWarnings({"java:S1948"})
-    @Column(name = "WERT")
+    @Column(name = "PARAMETERVALUE")
     @Convert(converter = ScreeningSheetParameterValueAttributeConverter.class)
     private Object wert;
 

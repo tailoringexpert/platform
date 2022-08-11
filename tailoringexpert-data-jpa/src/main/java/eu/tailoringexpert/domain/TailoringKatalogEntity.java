@@ -53,22 +53,22 @@ import static javax.persistence.GenerationType.TABLE;
 @AllArgsConstructor
 @Builder
 @Entity(name = "TailoringKatalog")
-@Table(name = "TAILORINGKATALOG")
+@Table(name = "TAILORINGCATALOG")
 public class TailoringKatalogEntity implements Serializable {
     private static final long serialVersionUID = 3354894662905267412L;
 
     @Id
-    @TableGenerator(name = "SEQ_TAILORINGKATALOG", table = "SEQUENCE", pkColumnName = "SEQ_NAME",
-        valueColumnName = "SEQ_COUNT", pkColumnValue = "SEQ_TAILORINGKATALOG", initialValue = 1)
-    @GeneratedValue(strategy = TABLE, generator = "SEQ_TAILORINGKATALOG")
-    @Column(name = "TAILORINGKATALOG_ID")
+    @TableGenerator(name = "SEQ_TAILORINGCATALOG", table = "SEQUENCE", pkColumnName = "SEQ_NAME",
+        valueColumnName = "SEQ_COUNT", pkColumnValue = "SEQ_TAILORINGCATALOG", initialValue = 1)
+    @GeneratedValue(strategy = TABLE, generator = "SEQ_TAILORINGCATALOG")
+    @Column(name = "CATALOG_ID")
     private Long id;
 
     @Column(name = "VERSION")
     private String version;
 
     @OneToOne(cascade = CascadeType.ALL, fetch = LAZY)
-    @JoinColumn(name = "KAPITEL_ID")
+    @JoinColumn(name = "CHAPTER_ID")
     private TailoringKatalogKapitelEntity toc;
 
 }

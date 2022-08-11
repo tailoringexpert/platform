@@ -54,28 +54,28 @@ import static javax.persistence.GenerationType.TABLE;
 @AllArgsConstructor
 @Builder
 @Entity(name = "Katalog")
-@Table(name = "KATALOG")
+@Table(name = "BASECATALOG")
 public class KatalogEntity implements Serializable {
     private static final long serialVersionUID = -6960103411041929370L;
 
     @Id
-    @TableGenerator(name = "SEQ_KATALOG", table = "SEQUENCE", pkColumnName = "SEQ_NAME",
-        valueColumnName = "SEQ_COUNT", pkColumnValue = "SEQ_KATALOG", initialValue = 1)
-    @GeneratedValue(strategy = TABLE, generator = "SEQ_KATALOG")
-    @Column(name = "KATALOG_ID")
+    @TableGenerator(name = "SEQ_BASECATALOG", table = "SEQUENCE", pkColumnName = "SEQ_NAME",
+        valueColumnName = "SEQ_COUNT", pkColumnValue = "SEQ_BASECATALOG", initialValue = 1)
+    @GeneratedValue(strategy = TABLE, generator = "SEQ_BASECATALOG")
+    @Column(name = "CATALOG_ID")
     private Long id;
 
     @Column(name = "VERSION")
     private String version;
 
-    @Column(name = "GUELTIGAB")
+    @Column(name = "VALIDFROM")
     private ZonedDateTime gueltigAb;
 
-    @Column(name = "GUELTIGBIS")
+    @Column(name = "VALIDUNTIL")
     private ZonedDateTime gueltigBis;
 
     @OneToOne(cascade = ALL, fetch = LAZY)
-    @JoinColumn(name = "KAPITEL_ID")
+    @JoinColumn(name = "CHAPTER_ID")
     private KatalogKapitelEntity toc;
 
 }

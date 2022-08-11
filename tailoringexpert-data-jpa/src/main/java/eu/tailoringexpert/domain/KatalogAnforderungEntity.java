@@ -55,15 +55,15 @@ import static javax.persistence.GenerationType.TABLE;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity(name = "KatalogAnforderung")
-@Table(name = "KATALOGANFORDERUNG")
+@Table(name = "BASECATALOGREQUIREMENT")
 public class KatalogAnforderungEntity implements Serializable {
     private static final long serialVersionUID = -1863038272996727592L;
 
     @Id
-    @TableGenerator(name = "SEQ_KATALOGANFORDERUNG", table = "SEQUENCE", pkColumnName = "SEQ_NAME",
-        valueColumnName = "SEQ_COUNT", pkColumnValue = "SEQ_KATALOGANFORDERUNG", initialValue = 1)
-    @GeneratedValue(strategy = TABLE, generator = "SEQ_KATALOGANFORDERUNG")
-    @Column(name = "ANFORDERUNG_ID")
+    @TableGenerator(name = "SEQ_BASECATALOGREQUIREMENT", table = "SEQUENCE", pkColumnName = "SEQ_NAME",
+        valueColumnName = "SEQ_COUNT", pkColumnValue = "SEQ_BASECATALOGREQUIREMENT", initialValue = 1)
+    @GeneratedValue(strategy = TABLE, generator = "SEQ_BASECATALOGREQUIREMENT")
+    @Column(name = "REQUIREMENT_ID")
     private Long id;
 
     @Column(name = "TEXT")
@@ -71,7 +71,7 @@ public class KatalogAnforderungEntity implements Serializable {
 
     @Embedded
     @AssociationOverride(name = "logo",
-        joinColumns = @JoinColumn(name = "REFERENZLOGO_ID"))
+        joinColumns = @JoinColumn(name = "REFERENCELOGO_ID"))
     private ReferenzEntity referenz;
 
     @Column(name = "POSITION")
@@ -80,21 +80,21 @@ public class KatalogAnforderungEntity implements Serializable {
     @Singular(value = "phase", ignoreNullCollections = true)
     @ElementCollection
     @CollectionTable(
-        name = "KATALOGANFORDERUNG_PHASE",
-        joinColumns = @JoinColumn(name = "ANFORDERUNG_ID")
+        name = "BASECATALOGREQUIREMENT_PHASE",
+        joinColumns = @JoinColumn(name = "REQUIREMENT_ID")
     )
     @Column(name = "PHASE")
     @Enumerated(STRING)
     private List<Phase> phasen;
 
     @OneToMany(cascade = ALL, orphanRemoval = true, fetch = LAZY)
-    @JoinColumn(name = "ANFORDERUNG_ID", referencedColumnName = "ANFORDERUNG_ID", nullable = false)
+    @JoinColumn(name = "REQUIREMENT_ID", referencedColumnName = "REQUIREMENT_ID", nullable = false)
     private Set<IdentifikatorEntity> identifikatoren;
 
     @OneToMany(cascade = ALL, orphanRemoval = true, fetch = LAZY)
     @JoinTable(
-        name = "KATALOGANFORDERUNG_DRD",
-        joinColumns = {@JoinColumn(name = "ANFORDERUNG_ID", referencedColumnName = "ANFORDERUNG_ID")},
+        name = "BASECATALOGREQUIREMENT_DRD",
+        joinColumns = {@JoinColumn(name = "REQUIREMENT_ID", referencedColumnName = "REQUIREMENT_ID")},
         inverseJoinColumns = {@JoinColumn(name = "DRD_ID", referencedColumnName = "DRD_ID")}
     )
     private Set<DRDEntity> drds;

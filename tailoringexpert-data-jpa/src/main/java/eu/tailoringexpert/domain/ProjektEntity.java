@@ -51,18 +51,18 @@ import static javax.persistence.GenerationType.TABLE;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity(name = "Projekt")
-@Table(name = "PROJEKT")
+@Table(name = "PROJECT")
 public class ProjektEntity implements Serializable {
     private static final long serialVersionUID = -7657514213994672871L;
 
     @Id
-    @TableGenerator(name = "SEQ_PROJEKT", table = "SEQUENCE", pkColumnName = "SEQ_NAME",
-        valueColumnName = "SEQ_COUNT", pkColumnValue = "SEQ_PROJEKT", initialValue = 1)
-    @GeneratedValue(strategy = TABLE, generator = "SEQ_PROJEKT")
-    @Column(name = "PROJEKT_ID")
+    @TableGenerator(name = "SEQ_PROJECT", table = "SEQUENCE", pkColumnName = "SEQ_NAME",
+        valueColumnName = "SEQ_COUNT", pkColumnValue = "SEQ_PROJECT", initialValue = 1)
+    @GeneratedValue(strategy = TABLE, generator = "SEQ_PROJECT")
+    @Column(name = "PROJECT_ID")
     private Long id;
 
-    @Column(name = "KUERZEL")
+    @Column(name = "IDENTIFIER")
     private String kuerzel;
 
     @OneToOne(cascade = ALL, fetch = LAZY)
@@ -70,11 +70,11 @@ public class ProjektEntity implements Serializable {
     private ScreeningSheetEntity screeningSheet;
 
     @OneToMany(cascade = ALL, fetch = LAZY)
-    @JoinColumn(name = "PROJEKT_ID", referencedColumnName = "PROJEKT_ID", nullable = false)
+    @JoinColumn(name = "PROJECT_ID", referencedColumnName = "PROJECT_ID", nullable = false)
     @OrderColumn(name = "TAILORING_ORDER")
     private List<TailoringEntity> tailorings = new ArrayList<>();
 
-    @Column(name = "ERSTELLUNGSZEITPUNKT")
+    @Column(name = "CREATIONTIMESTAMP")
     private ZonedDateTime erstellungsZeitpunkt;
 
     public Optional<TailoringEntity> getTailoring(String name) {

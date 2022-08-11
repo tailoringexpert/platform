@@ -8,14 +8,14 @@
     <property name="blob_type" value="LONGBLOB" dbms="mariadb"/>
     <property name="blob_type" value="BLOB" dbms="h2"/>
 
-    <changeSet id="1" author="Michael Baedorf">
+    <changeSet id="Table: SCREENINGSHEET" author="Michael Baedorf">
         <createTable tableName="SCREENINGSHEET">
             <column name="SCREENINGSHEET_ID" type="BIGINT">
                 <constraints primaryKey="true" nullable="false"/>
             </column>
 
             <column name="DATA" type="${blob_type}"/>
-            <column name="SELEKTIONSVEKTOR_ID" type="BIGINT"/>
+            <column name="SELEKTIONVECTOR_ID" type="BIGINT"/>
         </createTable>
     </changeSet>
 

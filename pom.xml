@@ -79,8 +79,8 @@
 
         <maven-exec-plugin.version>3.1.0</maven-exec-plugin.version>
         <maven-compiler-plugin.version>3.10.1</maven-compiler-plugin.version>
-        <maven-dependency-plugin.version>3.3.0</maven-dependency-plugin.version>
-		<maven-dependency-plugin.phase>install</maven-dependency-plugin.phase>
+        <dependency-check-maven.version>3.3.0</dependency-check-maven.version>
+		<dependency-check-maven.phase>install</dependency-check-maven.phase>
         <maven-gpg-plugin.version>3.0.1</maven-gpg-plugin.version>
         <maven-licence-plugin.verision>2.0.0</maven-licence-plugin.verision>
         <maven-source-plugin.version>3.2.1</maven-source-plugin.version>
@@ -324,7 +324,7 @@
                 </configuration>
                 <executions>
                     <execution>
-						<phase>${maven-dependency-plugin.phase}</phase>
+						<phase>${dependency-check-maven.version}</phase>
                         <goals>							
                             <goal>check</goal>
                         </goals>

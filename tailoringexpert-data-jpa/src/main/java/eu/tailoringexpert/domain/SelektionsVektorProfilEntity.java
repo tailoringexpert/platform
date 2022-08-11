@@ -46,24 +46,24 @@ import static javax.persistence.GenerationType.TABLE;
 @AllArgsConstructor
 @Builder
 @Entity(name = "SelektionsVektorProfil")
-@Table(name = "SELEKTIONSVEKTORPROFIL")
+@Table(name = "SELECTIONVECTORPROFILE")
 public class SelektionsVektorProfilEntity implements Serializable {
     private static final long serialVersionUID = -5062851233486910911L;
 
     @Id
-    @TableGenerator(name = "SEQ_SELEKTIONSVEKTORPROFIL", table = "SEQUENCE", pkColumnName = "SEQ_NAME",
-        valueColumnName = "SEQ_COUNT", pkColumnValue = "SEQ_SELEKTIONSVEKTORPROFIL", initialValue = 1)
-    @GeneratedValue(strategy = TABLE, generator = "SEQ_SELEKTIONSVEKTORPROFIL")
-    @Column(name = "SELEKTIONSVEKTORPROFIL_ID")
+    @TableGenerator(name = "SEQ_SELECTIONVECTORPROFILE", table = "SEQUENCE", pkColumnName = "SEQ_NAME",
+        valueColumnName = "SEQ_COUNT", pkColumnValue = "SEQ_SELECTIONVECTORPROFILE", initialValue = 1)
+    @GeneratedValue(strategy = TABLE, generator = "SEQ_SELECTIONVECTORPROFILE")
+    @Column(name = "SELECTIONVECTORPROFILE_ID")
     private Long id;
 
     @Column(name = "NAME")
     private String name;
 
     @ElementCollection
-    @MapKeyColumn(name = "TYP")
+    @MapKeyColumn(name = "TYPE")
     @Column(name = "LEVEL")
-    @CollectionTable(name = "SELEKTIONSVEKTORPROFILPARAMETER", joinColumns = @JoinColumn(name = "SELEKTIONSVEKTORPROFIL_ID"))
+    @CollectionTable(name = "SELECTIONVECTORPROFILEPARAMETER", joinColumns = @JoinColumn(name = "SELECTIONVECTORPROFILE_ID"))
     private Map<String, Integer> levels;
 
 }

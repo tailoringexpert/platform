@@ -54,20 +54,20 @@ public class ParameterEntity implements Serializable {
     @Column(name = "PARAMETER_ID")
     private Long id;
 
-    @Column(name = "KATEGORIE")
+    @Column(name = "CATEGORY")
     private String kategorie;
 
-    @Column(name = "BEZEICHNUNG")
+    @Column(name = "LABEL")
     private String bezeichnung;
 
     @Column(name = "NAME")
     private String name;
 
-    @Column(name = "DATENTYP")
+    @Column(name = "PARAMETERTYPE")
     @Enumerated(STRING)
     private DatenTyp datenTyp;
 
-    @Column(name = "WERT")
+    @Column(name = "PARAMETERVALUE")
     private String wert;
 
     @Column(name = "POSITION")
