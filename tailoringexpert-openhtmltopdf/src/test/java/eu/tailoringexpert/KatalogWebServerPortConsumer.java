@@ -21,10 +21,10 @@
  */
 package eu.tailoringexpert;
 
-import eu.tailoringexpert.domain.Anforderung;
-import eu.tailoringexpert.domain.Katalog;
+import eu.tailoringexpert.domain.Catalog;
+import eu.tailoringexpert.domain.Requirement;
 import eu.tailoringexpert.domain.Logo;
-import eu.tailoringexpert.domain.Referenz;
+import eu.tailoringexpert.domain.Reference;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 
@@ -33,24 +33,24 @@ import java.util.function.Consumer;
 import static java.util.Objects.nonNull;
 
 @RequiredArgsConstructor
-public class KatalogWebServerPortConsumer<T extends Anforderung> implements Consumer<Katalog<T>> {
+public class KatalogWebServerPortConsumer<T extends Requirement> implements Consumer<Catalog<T>> {
 
     @NonNull
     int port;
 
     @Override
-    public void accept(Katalog<T> katalog) {
-        katalog.alleKapitel()
-            .forEach(kapitel -> kapitel.getAnforderungen()
+    public void accept(Catalog<T> catalog) {
+        catalog.allChapters()
+            .forEach(kapitel -> kapitel.getRequirements()
                 .forEach(anforderung -> {
                     String text = anforderung.getText();
                     if (text.contains("http://localhost/")) {
                         anforderung.setText(text.replace("http://localhost/", "http://localhost:" + port + "/"));
                     }
 
-                    Referenz referenz = anforderung.getReferenz();
-                    if (nonNull(referenz)) {
-                        Logo logo = referenz.getLogo();
+                    Reference reference = anforderung.getReference();
+                    if (nonNull(reference)) {
+                        Logo logo = reference.getLogo();
                         if (nonNull(logo)) {
                             logo.setUrl(logo.getUrl().replace("localhost/", "localhost:" + port + "/"));
                         }

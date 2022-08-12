@@ -1,0 +1,43 @@
+@startuml Ebene3.png
+hide empty members
+
+package eu.tailoringexpert {
+    package domain {
+        abstract class ResourceMapper
+        class ScreeningSheet
+        class SelectionVector
+    }
+}
+
+package project {
+    interface ProjectService {
+    }
+
+    interface TailoringService {
+    }
+
+    interface ProjectServiceRepository {
+    }
+
+    class ProjectCreationRequest {
+        catalog : String
+    }
+    ProjectCreationRequest -> "1" ScreeningSheet : screeningSheet
+    ProjectCreationRequest -> "1" SelectionVector : selectionVector
+
+    class ProjectController {
+        +getProjects() : ResponseEntity<CollectionModel<EntityModel<ProjectInformationResource>>>
+        +createProject(version : String, request : ProjectCreationRequest) : ResponseEntity<Void>
+        +getProject(project : String): ResponseEntity<EntityModel<ProjectInformationResource>>
+        +getScreeningSheet(project : String) : ResponseEntity<EntityModel<ScreeningSheetResource>>
+        +getScreeningSheetFile(project : String) : ResponseEntity<byte[]>
+        +deleteProject(project : String) : ResponseEntity<Void>
+        +copyProject(project : String, screeningSheet : MultipartFile) : ResponseEntity<EntityModel<ProjectResource>>
+        +addNewTailoring(project : String, request : ProjektAnlageRequest) : ResponseEntity<Void>
+        +getSelectionVector(project : String) : ResponseEntity<EntityModel<SelectionVectorResource>>
+    }
+    ProjectController --> "1" ResourceMapper : mapper
+    ProjectController --> "1" ProjectService : projectService
+    ProjectController --> "1" ProjektServiceRepository : projectServiceRepository
+}
+@enduml

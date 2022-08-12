@@ -36,40 +36,40 @@ class AnforderungGruppeTest {
     @Test
     void alleAnforderungen_UnterkapitelTeilweiseMitAnforderungen_AlleAnforderungenInListe() {
         // arrange
-        Kapitel<TailoringAnforderung> gruppe = Kapitel.<TailoringAnforderung>builder()
-            .nummer("1")
-            .anforderungen(asList(
-                TailoringAnforderung.builder()
-                    .text("Anforderung 1")
+        Chapter<TailoringRequirement> gruppe = Chapter.<TailoringRequirement>builder()
+            .number("1")
+            .requirements(asList(
+                TailoringRequirement.builder()
+                    .text("Requirement 1")
                     .build()))
-            .kapitel(asList(
-                Kapitel.<TailoringAnforderung>builder()
-                    .nummer("1.1")
-                    .anforderungen(asList(
-                        TailoringAnforderung.builder()
-                            .text("Anforderung 1.1")
+            .chapters(asList(
+                Chapter.<TailoringRequirement>builder()
+                    .number("1.1")
+                    .requirements(asList(
+                        TailoringRequirement.builder()
+                            .text("Requirement 1.1")
                             .build()))
-                    .kapitel(
-                        asList(Kapitel.<TailoringAnforderung>builder()
-                            .nummer("1.1.1")
-                            .anforderungen(asList(
-                                TailoringAnforderung.builder()
-                                    .text("Anforderung 1.1.1")
+                    .chapters(
+                        asList(Chapter.<TailoringRequirement>builder()
+                            .number("1.1.1")
+                            .requirements(asList(
+                                TailoringRequirement.builder()
+                                    .text("Requirement 1.1.1")
                                     .build()))
                             .build())
                     )
                     .build(),
-                Kapitel.<TailoringAnforderung>builder()
-                    .nummer("1.2")
-                    .anforderungen(asList(
-                        TailoringAnforderung.builder()
-                            .text("Anforderung 1.2")
+                Chapter.<TailoringRequirement>builder()
+                    .number("1.2")
+                    .requirements(asList(
+                        TailoringRequirement.builder()
+                            .text("Requirement 1.2")
                             .build()))
                     .build()))
             .build();
 
         // act
-        List<TailoringAnforderung> actual = gruppe.allAnforderungen().collect(toList());
+        List<TailoringRequirement> actual = gruppe.allRequirements().collect(toList());
 
         // assert
         assertThat(actual).hasSize(4);
@@ -78,50 +78,50 @@ class AnforderungGruppeTest {
     @Test
     void getGruppe_Kapitel1_1_2Vorhanden_KapitelWirdGefunden() {
         // arrange
-        Kapitel<TailoringAnforderung> gruppe = Kapitel.<TailoringAnforderung>builder()
-            .nummer("1")
-            .anforderungen(asList(
-                TailoringAnforderung.builder()
-                    .text("Anforderung 1")
+        Chapter<TailoringRequirement> gruppe = Chapter.<TailoringRequirement>builder()
+            .number("1")
+            .requirements(asList(
+                TailoringRequirement.builder()
+                    .text("Requirement 1")
                     .build()))
-            .kapitel(asList(
-                Kapitel.<TailoringAnforderung>builder()
-                    .nummer("1.1")
-                    .anforderungen(asList(
-                        TailoringAnforderung.builder()
-                            .text("Anforderung 1.1")
+            .chapters(asList(
+                Chapter.<TailoringRequirement>builder()
+                    .number("1.1")
+                    .requirements(asList(
+                        TailoringRequirement.builder()
+                            .text("Requirement 1.1")
                             .build()))
-                    .kapitel(asList(
-                        Kapitel.<TailoringAnforderung>builder()
-                            .nummer("1.1.1")
-                            .anforderungen(asList(
-                                TailoringAnforderung.builder()
-                                    .text("Anforderung 1.1.1")
+                    .chapters(asList(
+                        Chapter.<TailoringRequirement>builder()
+                            .number("1.1.1")
+                            .requirements(asList(
+                                TailoringRequirement.builder()
+                                    .text("Requirement 1.1.1")
                                     .build()))
                             .build(),
-                        Kapitel.<TailoringAnforderung>builder()
-                            .nummer("1.1.2")
-                            .anforderungen(asList(
-                                TailoringAnforderung.builder()
-                                    .text("Anforderung 1.1.2")
+                        Chapter.<TailoringRequirement>builder()
+                            .number("1.1.2")
+                            .requirements(asList(
+                                TailoringRequirement.builder()
+                                    .text("Requirement 1.1.2")
                                     .build()))
                             .build()))
                     .build(),
-                Kapitel.<TailoringAnforderung>builder()
-                    .nummer("1.2")
-                    .anforderungen(asList(
-                        TailoringAnforderung.builder()
-                            .text("Anforderung 1.2")
+                Chapter.<TailoringRequirement>builder()
+                    .number("1.2")
+                    .requirements(asList(
+                        TailoringRequirement.builder()
+                            .text("Requirement 1.2")
                             .build()))
                     .build()))
             .build();
 
         // act
-        Kapitel<TailoringAnforderung> actual = gruppe.getKapitel("1.1.2");
+        Chapter<TailoringRequirement> actual = gruppe.getChapter("1.1.2");
 
         // assert
         assertThat(actual).isNotNull();
-        assertThat(actual.getNummer()).isEqualTo("1.1.2");
+        assertThat(actual.getNumber()).isEqualTo("1.1.2");
 
     }
 

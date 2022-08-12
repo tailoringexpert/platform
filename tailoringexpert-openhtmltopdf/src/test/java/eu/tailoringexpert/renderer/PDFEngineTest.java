@@ -21,7 +21,7 @@
  */
 package eu.tailoringexpert.renderer;
 
-import eu.tailoringexpert.domain.Datei;
+import eu.tailoringexpert.domain.File;
 import org.apache.pdfbox.io.IOUtils;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -81,7 +81,7 @@ class PDFEngineTest {
         // arrange
 
         // act
-        Datei actual;
+        File actual;
         try (MockedStatic<IOUtils> io = mockStatic(IOUtils.class)) {
             io.when(() -> IOUtils.toByteArray(any())).thenThrow(new IOException());
             actual = engine.process("4711", "tailoring", "parameter");

@@ -24,7 +24,6 @@ package eu.tailoringexpert.screeningsheet;
 import eu.tailoringexpert.domain.PathContext;
 import eu.tailoringexpert.domain.ResourceMapper;
 import eu.tailoringexpert.domain.ScreeningSheetResource;
-import eu.tailoringexpert.domain.TailoringResource;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -43,11 +42,12 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 
+import static eu.tailoringexpert.domain.ResourceMapper.SCREENINGSHEET;
 import static java.util.Optional.ofNullable;
 
 @Log
 @RequiredArgsConstructor
-@Tag(name = "ScreeningSheet Controller", description = "Erstellung von ScreeningSheets")
+@Tag(name = "ScreeningSheet Controller", description = "Creating of screeningsheets")
 @RestController
 public class ScreeningSheetController {
 
@@ -57,23 +57,22 @@ public class ScreeningSheetController {
     @NonNull
     private ScreeningSheetService screeningSheetService;
 
-    @Operation(summary = "Parsen des überhebenen Screeningsheets")
+    @Operation(summary = "Parse screeningsheet of provided raw data")
     @ApiResponses(value = {
         @ApiResponse(
-            responseCode = "200", description = "Screeningsheet wurde ausgewertet",
-            content = @Content(mediaType = "application/json+hal", schema = @Schema(implementation = TailoringResource.class)))
+            responseCode = "200", description = "Screeningsheet parsed",
+            content = @Content(mediaType = "application/json+hal", schema = @Schema(implementation = ScreeningSheetResource.class))),
+        @ApiResponse(
+            responseCode = "404", description = "Scrreningsheet could not be parsed",
+            content = @Content)
     })
-    @PostMapping(value = ResourceMapper.SCREENINGSHEET, produces = {"application/hal+json"})
+    @PostMapping(value = SCREENINGSHEET, produces = {"application/hal+json"})
     public ResponseEntity<EntityModel<ScreeningSheetResource>> createScreeningSheet(
-        @RequestPart("datei") MultipartFile datei) throws IOException {
-
-        return ofNullable(screeningSheetService.createScreeningSheet(datei.getBytes()))
+        @RequestPart("datei") MultipartFile file) throws IOException {
+        return ofNullable(screeningSheetService.createScreeningSheet(file.getBytes()))
             .map(screeningSheet -> ResponseEntity
                 .ok()
                 .body(EntityModel.of(mapper.toResource(PathContext.builder(), screeningSheet))))
             .orElseGet(() -> ResponseEntity.notFound().build());
-
-
     }
-
 }

@@ -12,12 +12,12 @@ package screeningsheet {
     }
     ScreeningSheetParameterProvider <|.. TenantScreeningSheetParameterProvider
 
-    interface "SelektionsVektorProvider<Collection<Parameter>, SelektionsVektor>"  as selektionsVektorProvider{
-        apply(t : Collection<Parameter>) : SelektionsVektor
+    interface "SelectionVectorProvider<Collection<Parameter>, SelectionVector>"  as selectionVectorProvider{
+        apply(t : Collection<Parameter>) : SelectionVector
     }
-    class TenantSelektionsVektorProvider {
+    class TenantSelectionVectorProvider {
     }
-    selektionsVektorProvider <|.. TenantSelektionsVektorProvider
+    selectionVectorProvider <|.. TenantSelectionVectorProvider
 
 
 }

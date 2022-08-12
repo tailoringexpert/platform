@@ -1,7 +1,7 @@
 @startuml Ebene3.png
 hide empty members
 
-package de.dlr.rpds.tailoringexpert {
+package eu.tailoringexpert {
     package screeningsheet {
         interface ScreeningSheetService
     }
@@ -12,77 +12,73 @@ package tailoring {
     interface "BiPredicate<T, U>" as AnwendbarBiFunction {
         test(t: T, u : U) : boolean
     }
-    class DRDAnwendbarPraedikat<String, Collection<Phase>> {
+    class DRDApplicablePredicate<String, Collection<Phase>> {
     }
-    AnwendbarBiFunction <|.. DRDAnwendbarPraedikat
-
-    interface Supplier<Collection<DokumentZeichnung>> {
-        get() : Collection<DokumentZeichnung>
-    }
+    AnwendbarBiFunction <|.. DRDApplicablePredicate
 
     interface "BiFunction<T, U, R>" as DRDProviderBiFunction {
         apply(var1 : T, var2 : U) : R
     }
-    class "DRDProvider<Kapitel<TailoringAnforderung>, Map<DRD, Set<String>>" as DRDProvider{
+    class "DRDProvider<Chapter<TailoringRequirement>, Map<DRD, Set<String>>" as DRDProvider{
     }
     DRDProviderBiFunction <|.. DRDProvider
+    DRDProvider --> "1" DRDApplicablePredicate : predicate
 
-    interface DokumentCreator {
-        createDokument(docId : String, tailoring : Tailoring, platzhalter : Map<String, String>) : Datei
+    interface DocumentCreator {
+        createDocument(docId : String, tailoring : Tailoring, placeholders : Map<String, String>) : File
     }
 
     interface TailoringService {
-        createTailoring(name : String, kennung : String, screeningSheetData : byte[], anzuwendenderSelektionsVektor : SelektionsVektor, katalog : Katalog<KatalogAnforderung>) : Tailoring
-        addAnforderungDokument(projekt : String, tailoring : String, name : String, daten : byte[]) Optional<Tailoring>
-        createAnforderungDokument(projekt : String, tailoring : String): Optional<Datei>
-        createVergleichsDokument(projekt : String, tailoring : String): Optional<Datei>
-        createDokumente(projekt : String, tailoring : String): Optional<Datei>
-        getKatalog(projekt : String, tailoring : String) :   Optional<Katalog<TailoringAnforderung>>
-        getAnforderungen(projekt : String, tailoring : String, kapitel : String) : Optional<List<TailoringAnforderung>>
-        getScreeningSheet(projekt : String, tailoring : String) : Optional<ScreeningSheet>
-        getSelektionsVektor(projekt : String, tailoring : String) : Optional<SelektionsVektor>
-        getKapitel(projekt : String, tailoring : String, kapitel : String) : Optional<Kapitel<TailoringAnforderung>>
-        getDokumentZeichnungen(projekt : String, tailoring : String) : Optional<Collection<DokumentZeichnung>>
-        updateDokumentZeichnung(projekt : String, tailoring : String, zeichnung : DokumentZeichnung) : Optional<DokumentZeichnung>
-        updateName(projekt : String, tailoring : String, name : String) : Optional<Tailoring>
-        updateAusgewaehlteAnforderungen(projekt : String, tailoring : String, data : byte[]) : void
-        deleteTailoring(projekt : String, tailoring : String) : Optional<Boolean>
+        createTailoring(name : String, identifier : String, screeningSheetData : byte[], applicableSelectionVectore : SelectionVector, catalog : Catalog<BaseRequirement>) : Tailoring
+        addFile(project : String, tailoring : String, name : String, data : byte[]) Optional<Tailoring>
+        createRequirementDocument(project : String, tailoring : String): Optional<File>
+        createComparisonDocument(project : String, tailoring : String): Optional<File>
+        createDocuments(project : String, tailoring : String): Optional<File>
+        getCatalog(project : String, tailoring : String) :   Optional<Catalog<TailoringRequirement>>
+        getRequirements(project : String, tailoring : String, chapter : String) : Optional<List<TailoringRequirement>>
+        getScreeningSheet(project : String, tailoring : String) : Optional<ScreeningSheet>
+        getSelectionVector(project : String, tailoring : String) : Optional<SelectionVector>
+        getChapter(project : String, tailoring : String, chapter : String) : Optional<Chapter<TailoringRequirement>>
+        getDocumentSignatures(project : String, tailoring : String) : Optional<Collection<DokumentSignature>>
+        updateDocumentSignature(project : String, tailoring : String, signature : DocumentSignature) : Optional<DocumentSignature>
+        updateName(project : String, tailoring : String, name : String) : Optional<Tailoring>
+        updateSelectedRequirements(project : String, tailoring : String, data : byte[]) : void
+        deleteTailoring(project : String, tailoring : String) : Optional<Boolean>
     }
 
     abstract class TailoringServiceMapper {
         toTailoringInformation(domain : Tailoring) : TailoringInformation
-        toTailoringKatalog(katalog : Katalog<KatalogAnforderung>, screeningSheet : ScreeningSheet, selektionsVektor : SelektionsVektor) : Katalog<TailoringAnforderung>
-        toTailoringAnforderung(katalogAnforderung : KatalogAnforderung, screeningSheet: ScreeningSheet, selektionsVektor : SelektionsVektor, builder : TailoringAnforderungBuilder) : void
+        toTailoringCatalog(catalog : Catalog<BaseRequirement>, screeningSheet : ScreeningSheet, selectionVector : SelectionVector) : Catalog<TailoringRequirement>
+        toTailoringRequirement(baseRequirement : BaseRequirement, screeningSheet: ScreeningSheet, selectionVector : SelectionVector, builder : TailoringRequirementBuilder) : void
     }
 
     interface TailoringServiceRepository {
-        getProjekt(projekt : String) : Optional<Projekt>
-        updateTailoring(projekt : String, tailoring : Tailoring) : Tailoring
-        updateAnforderungDokument(projekt : String, tailoring : String, dokument : Dokument) : Tailoring
-        getTailoring(projekt : String, tailoring : String): Optional<Tailoring>
-        getScreeningSheet(projekt : String, tailoring : String): Optional<ScreeningSheet>
-        getScreeningSheetDatei(projekt : String, tailoring : String): Optional<byte[]>
-        updateDokumentZeichnung(projekt : String, tailoring : String, zeichnung : DokumentZeichnung) : Optional<DokumentZeichnung>
-        updateName(projekt : String, tailoring : String, name : String) : Optional<Tailoring>
-        getDokumentListe(projekt : String, tailoring : String): List<Dokument>
-        getDokument(projekt : String, tailoring : String, name : String) : byte[]
-        deleteDokument(projekt : String, tailoring : String, name : String) : boolean
-        getSelektionsVektorProfile() : Collection<SelektionsVektorProfil>
-        getDefaultZeichnungen() : Collection<DokumentZeichnung>
-        deleteTailoring(projekt : String, tailoring : String)
+        getProject(project : String) : Optional<Project>
+        updateTailoring(project : String, tailoring : Tailoring) : Tailoring
+        updateFile(project : String, tailoring : String, file : File) : Tailoring
+        getTailoring(project : String, tailoring : String): Optional<Tailoring>
+        getScreeningSheet(project : String, tailoring : String): Optional<ScreeningSheet>
+        getScreeningSheetFile(project : String, tailoring : String): Optional<byte[]>
+        updateDocumentSignature(project : String, tailoring : String, signature : DocumentSignature) : Optional<DocumentSignature>
+        updateName(project : String, tailoring : String, name : String) : Optional<Tailoring>
+        getFileList(project : String, tailoring : String): List<File>
+        getFile(project : String, tailoring : String, name : String) : Optional<File>
+        deleteFile(project : String, tailoring : String, name : String) : boolean
+        getSelectionVectorProfile() : Collection<SelectionVectorProfile>
+        getDefaultSignatures() : Collection<DocumentSignature>
+        deleteTailoring(project : String, tailoring : String)
     }
 
-    interface DokumentService {
-        createAnforderungDokument(tailoring : Tailoring, erstellungszeitpunkt : LocalDateTime): Optional<Datei>
-        createVergleichsDokument(tailoring : Tailoring, erstellungszeitpunkt : LocalDateTime): Optional<Datei>
-        createAll(tailoring : Tailoring, erstellungszeitpunkt : LocalDateTime): Optional<Datei>
+    interface DocumentService {
+        createRequirementDocument(tailoring : Tailoring, creationTimestamp : LocalDateTime): Optional<File>
+        createComparisonDocument(tailoring : Tailoring, creationTimestamp : LocalDateTime): Optional<File>
+        createAll(tailoring : Tailoring, creationTimestamp : LocalDateTime): Optional<File>
     }
 
-
-    class ImportAnforderung {
-        bezeichnung : String
+    class ImportRequirement {
+        label : String
         position : String
-        anwendbar : String
+        applicable : String
         text : String
     }
 

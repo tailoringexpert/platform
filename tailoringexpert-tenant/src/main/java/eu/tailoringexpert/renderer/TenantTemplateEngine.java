@@ -54,12 +54,12 @@ public class TenantTemplateEngine implements HTMLTemplateEngine {
     }
 
     @Override
-    public String toXHTML(String text, Map<String, String> platzhalter) {
+    public String toXHTML(String text, Map<String, String> placeholders) {
         HTMLTemplateEngine engine = tenantEngine.get(TenantContext.getCurrentTenant());
         if (isNull(engine)) {
             return null;
         }
 
-        return engine.toXHTML(text, platzhalter);
+        return engine.toXHTML(text, placeholders);
     }
 }

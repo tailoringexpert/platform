@@ -45,15 +45,13 @@ public class ThymeleafTemplateEngine implements HTMLTemplateEngine {
     }
 
     @Override
-    public String toXHTML(String text, Map<String, String> platzhalter) {
+    public String toXHTML(String text, Map<String, String> placeholders) {
         AtomicReference<String> updatedText = new AtomicReference<>(text);
-        platzhalter.entrySet()
+        placeholders.entrySet()
             .forEach(entry -> updatedText.set(updatedText.get().replace(entry.getKey(), entry.getValue())));
         Document document = Jsoup.parseBodyFragment(updatedText.get());
         document.outputSettings().escapeMode(Entities.EscapeMode.xhtml);
         document.outputSettings().syntax(Document.OutputSettings.Syntax.xml);
         return document.body().html();
     }
-
-
 }

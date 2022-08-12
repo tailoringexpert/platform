@@ -21,19 +21,19 @@
  */
 package eu.tailoringexpert.tailoring;
 
-import eu.tailoringexpert.domain.Kapitel;
-import eu.tailoringexpert.domain.Katalog;
+import eu.tailoringexpert.domain.Chapter;
+import eu.tailoringexpert.domain.Catalog;
 import eu.tailoringexpert.domain.Logo;
 import eu.tailoringexpert.domain.LogoEntity;
-import eu.tailoringexpert.domain.Projekt;
-import eu.tailoringexpert.domain.ProjektEntity;
+import eu.tailoringexpert.domain.Project;
+import eu.tailoringexpert.domain.ProjectEntity;
 import eu.tailoringexpert.domain.ScreeningSheet;
-import eu.tailoringexpert.domain.SelektionsVektor;
+import eu.tailoringexpert.domain.SelectionVector;
 import eu.tailoringexpert.domain.Tailoring;
-import eu.tailoringexpert.domain.TailoringAnforderung;
+import eu.tailoringexpert.domain.TailoringRequirement;
 import eu.tailoringexpert.domain.TailoringEntity;
-import eu.tailoringexpert.domain.TailoringKatalogEntity;
-import eu.tailoringexpert.domain.TailoringStatus;
+import eu.tailoringexpert.domain.TailoringCatalogEntity;
+import eu.tailoringexpert.domain.TailoringState;
 import eu.tailoringexpert.repository.LogoRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -64,10 +64,10 @@ class JPATailoringServiceRepositoryMapperTest {
     @Test
     void toDomain_ProjektEntityNichtVorhanden_NullWirdZurueckGegeben() {
         // arrange
-        ProjektEntity projekt = null;
+        ProjectEntity projekt = null;
 
         // act
-        Projekt actual = mapper.toDomain(projekt);
+        Project actual = mapper.toDomain(projekt);
 
         //assert
         assertThat(actual).isNull();
@@ -89,68 +89,68 @@ class JPATailoringServiceRepositoryMapperTest {
     @Test
     void addKatalog_ProjektPhaseNichtVorhanden_EntityWieVorher() {
         // arrange
-        TailoringKatalogEntity katalog = TailoringKatalogEntity.builder().version("NaN").build();
+        TailoringCatalogEntity katalog = TailoringCatalogEntity.builder().version("NaN").build();
         TailoringEntity entity = new TailoringEntity();
-        entity.setKatalog(katalog);
+        entity.setCatalog(katalog);
 
         // act
-        mapper.addKatalog(null, entity);
+        mapper.addCatalog(null, entity);
 
         // assert
-        assertThat(entity.getKatalog()).isEqualTo(katalog);
+        assertThat(entity.getCatalog()).isEqualTo(katalog);
     }
 
     @Test
     void addKatalog_ProjektPhaseKatalogNichtVorhanden_EntityKatalogWordNullGesetzt() {
         // arrange
-        Tailoring domain = Tailoring.builder().katalog(null).build();
+        Tailoring domain = Tailoring.builder().catalog(null).build();
 
-        TailoringKatalogEntity katalog = TailoringKatalogEntity.builder().version("NaN").build();
+        TailoringCatalogEntity katalog = TailoringCatalogEntity.builder().version("NaN").build();
         TailoringEntity entity = new TailoringEntity();
-        entity.setKatalog(katalog);
+        entity.setCatalog(katalog);
 
         // act
-        mapper.addKatalog(domain, entity);
+        mapper.addCatalog(domain, entity);
 
         // assert
-        assertThat(entity.getKatalog()).isNull();
+        assertThat(entity.getCatalog()).isNull();
     }
 
     @Test
     void addKatalog_ProjektPhaseEntityNichtVorhanden_NullWirdZurueckGegeben() {
         // arrange
         Tailoring domain = Tailoring.builder()
-            .katalog(Katalog.<TailoringAnforderung>builder()
+            .catalog(Catalog.<TailoringRequirement>builder()
                 .version("8.2.1")
-                .toc(Kapitel.<TailoringAnforderung>builder()
-                    .anforderungen(Arrays.asList(
-                        TailoringAnforderung.builder()
+                .toc(Chapter.<TailoringRequirement>builder()
+                    .requirements(Arrays.asList(
+                        TailoringRequirement.builder()
                             .position("a")
                             .text("Text")
                             .build()
                     ))
-                    .kapitel(Arrays.asList(
-                        Kapitel.<TailoringAnforderung>builder()
-                            .nummer("1.1")
+                    .chapters(Arrays.asList(
+                        Chapter.<TailoringRequirement>builder()
+                            .number("1.1")
                             .build()
                     ))
                     .build())
                 .build())
             .screeningSheet(ScreeningSheet.builder().build())
-            .status(TailoringStatus.AKTIV)
+            .state(TailoringState.ACTIVE)
             .name("master")
-            .selektionsVektor(SelektionsVektor.builder()
+            .selectionVector(SelectionVector.builder()
                 .build())
             .build();
 
         TailoringEntity entity = new TailoringEntity();
 
         // act
-        mapper.addKatalog(domain, entity);
+        mapper.addCatalog(domain, entity);
 
         //assert
         assertThat(entity.getName()).isNull();
-        assertThat(entity.getKatalog().getVersion()).isEqualTo(domain.getKatalog().getVersion());
+        assertThat(entity.getCatalog().getVersion()).isEqualTo(domain.getCatalog().getVersion());
     }
 
     @Test

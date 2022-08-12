@@ -21,20 +21,19 @@
  */
 package eu.tailoringexpert.tailoring;
 
-import eu.tailoringexpert.anforderung.AnforderungService;
-import eu.tailoringexpert.domain.Datei;
-import eu.tailoringexpert.domain.Dokument;
-import eu.tailoringexpert.domain.DokumentZeichnung;
-import eu.tailoringexpert.domain.DokumentZeichnungStatus;
-import eu.tailoringexpert.domain.Kapitel;
-import eu.tailoringexpert.domain.Katalog;
-import eu.tailoringexpert.domain.KatalogAnforderung;
-import eu.tailoringexpert.domain.Projekt;
+import eu.tailoringexpert.domain.BaseRequirement;
+import eu.tailoringexpert.requirement.RequirementService;
+import eu.tailoringexpert.domain.Catalog;
+import eu.tailoringexpert.domain.Chapter;
+import eu.tailoringexpert.domain.File;
+import eu.tailoringexpert.domain.DocumentSignature;
+import eu.tailoringexpert.domain.DocumentSignatureState;
+import eu.tailoringexpert.domain.Project;
 import eu.tailoringexpert.domain.ScreeningSheet;
 import eu.tailoringexpert.domain.ScreeningSheetParameter;
-import eu.tailoringexpert.domain.SelektionsVektor;
+import eu.tailoringexpert.domain.SelectionVector;
 import eu.tailoringexpert.domain.Tailoring;
-import eu.tailoringexpert.domain.TailoringAnforderung;
+import eu.tailoringexpert.domain.TailoringRequirement;
 import eu.tailoringexpert.domain.TailoringInformation;
 import lombok.extern.log4j.Log4j2;
 import org.junit.jupiter.api.BeforeEach;
@@ -56,7 +55,7 @@ import java.util.zip.ZipInputStream;
 
 import static eu.tailoringexpert.domain.Phase.E;
 import static eu.tailoringexpert.domain.Phase.F;
-import static eu.tailoringexpert.domain.TailoringStatus.AKTIV;
+import static eu.tailoringexpert.domain.TailoringState.ACTIVE;
 
 import static java.lang.Boolean.TRUE;
 import static java.nio.charset.StandardCharsets.UTF_8;
@@ -85,22 +84,22 @@ class TailoringServiceImplTest {
 
     private TailoringServiceRepository repositoryMock;
     private TailoringServiceMapper mapperMock;
-    private DokumentService dokumentServiceMock;
-    private AnforderungService anforderungServiceMock;
-    private Function<byte[], Map<String, Collection<ImportAnforderung>>> tailoringAnforderungFileReaderMock;
+    private DocumentService documentServiceMock;
+    private RequirementService requirementServiceMock;
+    private Function<byte[], Map<String, Collection<ImportRequirement>>> tailoringAnforderungFileReaderMock;
 
     @BeforeEach
     void setup() {
         this.repositoryMock = mock(TailoringServiceRepository.class);
         this.mapperMock = mock(TailoringServiceMapper.class);
-        this.dokumentServiceMock = mock(DokumentService.class);
-        this.anforderungServiceMock = mock(AnforderungService.class);
+        this.documentServiceMock = mock(DocumentService.class);
+        this.requirementServiceMock = mock(RequirementService.class);
         this.tailoringAnforderungFileReaderMock = mock(Function.class);
         this.service = new TailoringServiceImpl(
             repositoryMock,
             mapperMock,
-            dokumentServiceMock,
-            anforderungServiceMock,
+            documentServiceMock,
+            requirementServiceMock,
             tailoringAnforderungFileReaderMock
         );
     }
@@ -113,10 +112,10 @@ class TailoringServiceImplTest {
             assert nonNull(is);
             data = is.readAllBytes();
         }
-        given(repositoryMock.getProjekt("DUMMY")).willReturn(empty());
+        given(repositoryMock.getProject("DUMMY")).willReturn(empty());
 
         // act
-        Optional<Tailoring> actual = service.addAnforderungDokument("DUMMY", "master", "dummy.pdf", data);
+        Optional<Tailoring> actual = service.addFile("DUMMY", "master", "dummy.pdf", data);
 
         // assert
         assertThat(actual).isEmpty();
@@ -131,14 +130,14 @@ class TailoringServiceImplTest {
             data = is.readAllBytes();
         }
 
-        given(repositoryMock.getProjekt("DUMMY")).willReturn(of(
-            Projekt.builder()
+        given(repositoryMock.getProject("DUMMY")).willReturn(of(
+            Project.builder()
                 .tailorings(Collections.emptyList())
                 .build())
         );
 
         // act
-        Optional<Tailoring> actual = service.addAnforderungDokument("DUMMY", "master", "dummy.pdf", data);
+        Optional<Tailoring> actual = service.addFile("DUMMY", "master", "dummy.pdf", data);
 
         // assert
         assertThat(actual).isEmpty();
@@ -162,24 +161,24 @@ class TailoringServiceImplTest {
                 ))
             );
 
-        given(repositoryMock.updateAnforderungDokument(eq("SAMPLE"), eq("master"), any()))
-            .willAnswer(invocation ->
-                of(Tailoring.builder()
-                    .dokumente(asList(
-                        Dokument.builder()
-                            .name(((Dokument) invocation.getArgument(2)).getName())
-                            .build()))
-                    .build())
+        given(repositoryMock.updateFile(eq("SAMPLE"), eq("master"), any()))
+            .willAnswer(invocation -> of(Tailoring.builder()
+                .files(asList(
+                    File.builder()
+                        .name("dummy.pdf")
+                        .build()))
+                .build())
             );
 
 
         // act
-        Optional<Tailoring> actual = service.addAnforderungDokument("SAMPLE", "master", "dummy.pdf", data);
+        Optional<Tailoring> actual = service.addFile("SAMPLE", "master", "dummy.pdf", data);
 
         // assert
         assertThat(actual).isPresent();
-        assertThat(actual.get().getDokumente()).hasSize(1);
-        assertThat(actual.get().getDokumente().iterator().next().getName()).isEqualTo("dummy.pdf");
+
+        assertThat(actual.get().getFiles()).hasSize(1);
+        assertThat(actual.get().getFiles().iterator().next().getName()).isEqualTo("dummy.pdf");
     }
 
     @Test
@@ -195,10 +194,10 @@ class TailoringServiceImplTest {
             .willReturn(empty());
 
         // act
-        Optional<Tailoring> actual = service.addAnforderungDokument("SAMPLE", "master", "dummy.pdf", data);
+        Optional<Tailoring> actual = service.addFile("SAMPLE", "master", "dummy.pdf", data);
 
         // assert
-        verify(repositoryMock, times(0)).updateAnforderungDokument(anyString(), anyString(), any());
+        verify(repositoryMock, times(0)).updateFile(anyString(), anyString(), any());
         assertThat(actual).isEmpty();
     }
 
@@ -207,7 +206,7 @@ class TailoringServiceImplTest {
         // arrange
 
         // act
-        Throwable actual = catchThrowable(() -> service.getKatalog(null, "master"));
+        Throwable actual = catchThrowable(() -> service.getCatalog(null, "master"));
 
         // assert
         assertThat(actual).isInstanceOf(NullPointerException.class);
@@ -218,7 +217,7 @@ class TailoringServiceImplTest {
         // arrange
 
         // act
-        Throwable actual = catchThrowable(() -> service.getKatalog("DUMMY", null));
+        Throwable actual = catchThrowable(() -> service.getCatalog("DUMMY", null));
 
         // assert
         assertThat(actual).isInstanceOf(NullPointerException.class);
@@ -231,12 +230,12 @@ class TailoringServiceImplTest {
             .willAnswer(invocation -> of(
                 Tailoring.builder()
                     .name("master")
-                    .katalog(Katalog.<TailoringAnforderung>builder().build())
+                    .catalog(Catalog.<TailoringRequirement>builder().build())
                     .build())
             );
 
         // act
-        Optional<Katalog<TailoringAnforderung>> actual = service.getKatalog("SAMPLE", "master");
+        Optional<Catalog<TailoringRequirement>> actual = service.getCatalog("SAMPLE", "master");
 
         // assert
         assertThat(actual).isPresent();
@@ -245,11 +244,11 @@ class TailoringServiceImplTest {
     @Test
     void getKatalog_ProjektNichtVorhanden_KatalogEmpty() {
         // arrange
-        given(repositoryMock.getProjekt("SAMPLE"))
+        given(repositoryMock.getProject("SAMPLE"))
             .willAnswer(invocation -> empty());
 
         // act
-        Optional<Katalog<TailoringAnforderung>> actual = service.getKatalog("SAMPLE", "master");
+        Optional<Catalog<TailoringRequirement>> actual = service.getCatalog("SAMPLE", "master");
 
         // assert
         assertThat(actual).isEmpty();
@@ -258,21 +257,21 @@ class TailoringServiceImplTest {
     @Test
     void getKatalog_PhaseNichtVorhanden_KatalogEmpty() {
         // arrange
-        given(repositoryMock.getProjekt("SAMPLE"))
+        given(repositoryMock.getProject("SAMPLE"))
             .willAnswer(invocation -> of(
-                Projekt.builder()
-                    .kuerzel(invocation.getArgument(0))
+                Project.builder()
+                    .identifier(invocation.getArgument(0))
                     .tailorings(asList(
                         Tailoring.builder()
                             .name("master1")
-                            .katalog(Katalog.<TailoringAnforderung>builder().build())
+                            .catalog(Catalog.<TailoringRequirement>builder().build())
                             .build()
                     ))
                     .build())
             );
 
         // act
-        Optional<Katalog<TailoringAnforderung>> actual = service.getKatalog("SAMPLE", "master");
+        Optional<Catalog<TailoringRequirement>> actual = service.getCatalog("SAMPLE", "master");
 
         // assert
         assertThat(actual).isEmpty();
@@ -284,64 +283,64 @@ class TailoringServiceImplTest {
         given(repositoryMock.getTailoring("DUMMY", "master25")).willReturn(empty());
 
         // act
-        Optional<Datei> actual = service.createAnforderungDokument("DUMMY", "master25");
+        Optional<File> actual = service.createRequirementDocument("DUMMY", "master25");
 
         // assert
         assertThat(actual).isEmpty();
-        verify(dokumentServiceMock, times(0)).createAnforderungDokument(any(), any());
+        verify(documentServiceMock, times(0)).createRequirementDocument(any(), any());
     }
 
     @Test
     void createAnforderungDokument() {
         // arrange
-        Collection<DokumentZeichnung> zeichnungen = asList(
-            DokumentZeichnung.builder()
-                .status(DokumentZeichnungStatus.PREPARED)
-                .bereich("Safety")
-                .unterzeichner("B. Safe")
+        Collection<DocumentSignature> zeichnungen = asList(
+            DocumentSignature.builder()
+                .state(DocumentSignatureState.PREPARED)
+                .faculty("Safety")
+                .signee("B. Safe")
                 .build(),
-            DokumentZeichnung.builder()
-                .status(DokumentZeichnungStatus.AGREED)
-                .bereich("Software")
-                .unterzeichner("Software Tuppes")
+            DocumentSignature.builder()
+                .state(DocumentSignatureState.AGREED)
+                .faculty("Software")
+                .signee("Software Tuppes")
                 .build(),
-            DokumentZeichnung.builder()
-                .status(DokumentZeichnungStatus.AGREED)
-                .bereich("Project Management")
-                .unterzeichner("P. Management/RD-???")
+            DocumentSignature.builder()
+                .state(DocumentSignatureState.AGREED)
+                .faculty("Project Management")
+                .signee("P. Management/RD-???")
                 .build(),
-            DokumentZeichnung.builder()
-                .status(DokumentZeichnungStatus.RELEASED)
-                .bereich("Head of Product Assurance")
-                .unterzeichner("Head Hunter/RD-PS")
+            DocumentSignature.builder()
+                .state(DocumentSignatureState.RELEASED)
+                .faculty("Head of Product Assurance")
+                .signee("Head Hunter/RD-PS")
                 .build()
         );
 
-        Katalog<TailoringAnforderung> katalog = Katalog.<TailoringAnforderung>builder()
+        Catalog<TailoringRequirement> catalog = Catalog.<TailoringRequirement>builder()
             .version("8.2.1")
             .build();
 
         Tailoring tailoring = Tailoring.builder()
             .name("master1")
-            .katalog(katalog)
+            .catalog(catalog)
             .screeningSheet(ScreeningSheet.builder()
-                .parameters(asList(ScreeningSheetParameter.builder().bezeichnung(ScreeningSheetDataProviderSupplier.Kuerzel.getName()).wert("SAMPLE").build()))
+                .parameters(asList(ScreeningSheetParameter.builder().category(ScreeningSheetDataProviderSupplier.Kuerzel.getName()).value("SAMPLE").build()))
                 .build())
-            .zeichnungen(zeichnungen)
+            .signatures(zeichnungen)
             .build();
         given(repositoryMock.getTailoring("SAMPLE", "master1"))
             .willAnswer(invocation -> of(tailoring));
 
-        given(dokumentServiceMock.createAnforderungDokument(eq(tailoring), any()))
-            .willReturn(of(Datei.builder().build()));
+        given(documentServiceMock.createRequirementDocument(eq(tailoring), any()))
+            .willReturn(of(File.builder().build()));
 
         // act
-        Optional<Datei> actual = service.createAnforderungDokument("SAMPLE", "master1");
+        Optional<File> actual = service.createRequirementDocument("SAMPLE", "master1");
 
         // assert
         assertThat(actual).isPresent();
-        verify(dokumentServiceMock, times(1))
-            .createAnforderungDokument(eq(tailoring), any());
+        verify(documentServiceMock, times(1))
+            .createRequirementDocument(eq(tailoring), any());
     }
 
     @Test
@@ -349,7 +348,7 @@ class TailoringServiceImplTest {
         // arrange
 
         // act
-        Throwable actual = catchThrowable(() -> service.getAnforderungen(null, "master", "1.1"));
+        Throwable actual = catchThrowable(() -> service.getRequirements(null, "master", "1.1"));
 
         // assert
         assertThat(actual).isInstanceOf(NullPointerException.class);
@@ -360,7 +359,7 @@ class TailoringServiceImplTest {
         // arrange
 
         // act
-        Throwable actual = catchThrowable(() -> service.getAnforderungen("Dummy", null, "1.1"));
+        Throwable actual = catchThrowable(() -> service.getRequirements("Dummy", null, "1.1"));
 
         // assert
         assertThat(actual).isInstanceOf(NullPointerException.class);
@@ -371,7 +370,7 @@ class TailoringServiceImplTest {
         // arrange
 
         // act
-        Throwable actual = catchThrowable(() -> service.getAnforderungen("Dummy", "master", null));
+        Throwable actual = catchThrowable(() -> service.getRequirements("Dummy", "master", null));
 
         // assert
         assertThat(actual).isInstanceOf(NullPointerException.class);
@@ -381,28 +380,28 @@ class TailoringServiceImplTest {
     void getAnforderungen_ProjektPhaseNichtVorhanden_EmptyWirdZurueckGegeben() {
         // arrange
         TailoringService serviceSpy = spy(service);
-        doReturn(empty()).when(serviceSpy).getKapitel(anyString(), anyString(), any());
+        doReturn(empty()).when(serviceSpy).getChapter(anyString(), anyString(), any());
 
         // act
-        Optional<List<TailoringAnforderung>> actual = serviceSpy.getAnforderungen("Dummy", "master1", "1.1");
+        Optional<List<TailoringRequirement>> actual = serviceSpy.getRequirements("Dummy", "master1", "1.1");
 
         // assert
         assertThat(actual).isEmpty();
-        verify(serviceSpy, times(1)).getKapitel("Dummy", "master1", "1.1");
+        verify(serviceSpy, times(1)).getChapter("Dummy", "master1", "1.1");
     }
 
     @Test
     void getAnforderungen_KapitelNichtVorhanden_EmptyWirdZurueckGegeben() {
         // arrange
         TailoringService serviceSpy = spy(service);
-        doReturn(empty()).when(serviceSpy).getKapitel(anyString(), anyString(), any());
+        doReturn(empty()).when(serviceSpy).getChapter(anyString(), anyString(), any());
 
         // act
-        Optional<List<TailoringAnforderung>> actual = serviceSpy.getAnforderungen("Dummy", "master", "1.1");
+        Optional<List<TailoringRequirement>> actual = serviceSpy.getRequirements("Dummy", "master", "1.1");
 
         // assert
         assertThat(actual).isEmpty();
-        verify(serviceSpy, times(1)).getKapitel("Dummy", "master", "1.1");
+        verify(serviceSpy, times(1)).getChapter("Dummy", "master", "1.1");
     }
 
     @Test
@@ -410,26 +409,26 @@ class TailoringServiceImplTest {
         // arrange
         TailoringService serviceSpy = spy(service);
         doReturn(of(
-            Kapitel.<TailoringAnforderung>builder()
-                .nummer("1.1")
-                .anforderungen(asList(
-                    TailoringAnforderung.builder()
-                        .text("Anforderung 1")
+            Chapter.<TailoringRequirement>builder()
+                .number("1.1")
+                .requirements(asList(
+                    TailoringRequirement.builder()
+                        .text("Requirement 1")
                         .build(),
-                    TailoringAnforderung.builder()
-                        .text("Anforderung 2")
+                    TailoringRequirement.builder()
+                        .text("Requirement 2")
                         .build()
                 ))
                 .build()))
-            .when(serviceSpy).getKapitel("Dummy", "master", "1.1");
+            .when(serviceSpy).getChapter("Dummy", "master", "1.1");
 
         // act
-        Optional<List<TailoringAnforderung>> actual = serviceSpy.getAnforderungen("Dummy", "master", "1.1");
+        Optional<List<TailoringRequirement>> actual = serviceSpy.getRequirements("Dummy", "master", "1.1");
 
         // assert
         assertThat(actual).isPresent();
         assertThat(actual.get()).hasSize(2);
-        verify(serviceSpy, times(1)).getKapitel("Dummy", "master", "1.1");
+        verify(serviceSpy, times(1)).getChapter("Dummy", "master", "1.1");
     }
 
     @Test
@@ -502,7 +501,7 @@ class TailoringServiceImplTest {
         // arrange
 
         // act
-        Throwable actual = catchThrowable(() -> service.getSelektionsVektor(null, "master"));
+        Throwable actual = catchThrowable(() -> service.getSelectionVector(null, "master"));
 
         // assert
         assertThat(actual).isInstanceOf(NullPointerException.class);
@@ -513,7 +512,7 @@ class TailoringServiceImplTest {
         // arrange
 
         // act
-        Throwable actual = catchThrowable(() -> service.getSelektionsVektor("Dummy", null));
+        Throwable actual = catchThrowable(() -> service.getSelectionVector("Dummy", null));
 
         // assert
         assertThat(actual).isInstanceOf(NullPointerException.class);
@@ -525,7 +524,7 @@ class TailoringServiceImplTest {
         given(repositoryMock.getTailoring(any(), any())).willReturn(empty());
 
         // act
-        Optional<SelektionsVektor> actual = service.getSelektionsVektor("Dummy", "master1");
+        Optional<SelectionVector> actual = service.getSelectionVector("Dummy", "master1");
 
         // assert
         assertThat(actual).isEmpty();
@@ -536,11 +535,11 @@ class TailoringServiceImplTest {
     void getSelektionsVektor_PhaseMitSelektionsVektorVorhanden_SelektionsVektorWirdZurueckGegeben() {
         // arrange
         given(repositoryMock.getTailoring(any(), any())).willReturn(of(
-            Tailoring.builder().selektionsVektor(SelektionsVektor.builder().build()).build()
+            Tailoring.builder().selectionVector(SelectionVector.builder().build()).build()
         ));
 
         // act
-        Optional<SelektionsVektor> actual = service.getSelektionsVektor("Dummy", "master");
+        Optional<SelectionVector> actual = service.getSelectionVector("Dummy", "master");
 
         // assert
         assertThat(actual).isNotEmpty();
@@ -553,7 +552,7 @@ class TailoringServiceImplTest {
         // arrange
 
         // act
-        Throwable actual = catchThrowable(() -> service.getKapitel(null, "master", "1.1"));
+        Throwable actual = catchThrowable(() -> service.getChapter(null, "master", "1.1"));
 
         // assert
         assertThat(actual).isInstanceOf(NullPointerException.class);
@@ -564,7 +563,7 @@ class TailoringServiceImplTest {
         // arrange
 
         // act
-        Throwable actual = catchThrowable(() -> service.getKapitel("Dummy", null, "1.1"));
+        Throwable actual = catchThrowable(() -> service.getChapter("Dummy", null, "1.1"));
 
         // assert
         assertThat(actual).isInstanceOf(NullPointerException.class);
@@ -575,7 +574,7 @@ class TailoringServiceImplTest {
         // arrange
 
         // act
-        Throwable actual = catchThrowable(() -> service.getKapitel("Dummy", "master", null));
+        Throwable actual = catchThrowable(() -> service.getChapter("Dummy", "master", null));
 
         // assert
         assertThat(actual).isInstanceOf(NullPointerException.class);
@@ -587,7 +586,7 @@ class TailoringServiceImplTest {
         given(repositoryMock.getTailoring("DUMMY", "master")).willReturn(empty());
 
         // act
-        Optional<Kapitel<TailoringAnforderung>> actual = service.getKapitel("DUMMY", "master", "1.1");
+        Optional<Chapter<TailoringRequirement>> actual = service.getChapter("DUMMY", "master", "1.1");
 
         // assert
         assertThat(actual).isEmpty();
@@ -598,14 +597,14 @@ class TailoringServiceImplTest {
         // arrange
         given(repositoryMock.getTailoring("Dummy", "master")).willReturn(of(
             Tailoring.builder()
-                .katalog(Katalog.<TailoringAnforderung>builder()
-                    .toc(Kapitel.<TailoringAnforderung>builder()
-                        .kapitel(asList(
-                            Kapitel.<TailoringAnforderung>builder()
-                                .nummer("1")
-                                .kapitel(asList(
-                                    Kapitel.<TailoringAnforderung>builder()
-                                        .nummer("1.1")
+                .catalog(Catalog.<TailoringRequirement>builder()
+                    .toc(Chapter.<TailoringRequirement>builder()
+                        .chapters(asList(
+                            Chapter.<TailoringRequirement>builder()
+                                .number("1")
+                                .chapters(asList(
+                                    Chapter.<TailoringRequirement>builder()
+                                        .number("1.1")
                                         .build()
                                 ))
                                 .build()
@@ -615,7 +614,7 @@ class TailoringServiceImplTest {
                 .build()));
 
         // act
-        Optional<Kapitel<TailoringAnforderung>> actual = service.getKapitel("Dummy", "master", "1.1");
+        Optional<Chapter<TailoringRequirement>> actual = service.getChapter("Dummy", "master", "1.1");
 
         // assert
         assertThat(actual).isPresent();
@@ -627,7 +626,7 @@ class TailoringServiceImplTest {
         // arrange
 
         // act
-        Throwable actual = catchThrowable(() -> service.getDokumentZeichnungen(null, "master"));
+        Throwable actual = catchThrowable(() -> service.getDocumentSignatures(null, "master"));
 
         // assert
         assertThat(actual).isInstanceOf(NullPointerException.class);
@@ -638,7 +637,7 @@ class TailoringServiceImplTest {
         // arrange
 
         // act
-        Throwable actual = catchThrowable(() -> service.getDokumentZeichnungen("Dummy", null));
+        Throwable actual = catchThrowable(() -> service.getDocumentSignatures("Dummy", null));
 
         // assert
         assertThat(actual).isInstanceOf(NullPointerException.class);
@@ -650,7 +649,7 @@ class TailoringServiceImplTest {
         given(repositoryMock.getTailoring(any(), any())).willReturn(empty());
 
         // act
-        Optional<Collection<DokumentZeichnung>> actual = service.getDokumentZeichnungen("Dummy", "master1");
+        Optional<Collection<DocumentSignature>> actual = service.getDocumentSignatures("Dummy", "master1");
 
         // assert
         assertThat(actual).isEmpty();
@@ -661,18 +660,18 @@ class TailoringServiceImplTest {
     void getDokumentZeichnungen_PhaseMitDokumentZeichnungVorhanden_DokumentZeichnungWirdZurueckGegeben() {
         // arrange
         given(repositoryMock.getTailoring(any(), any())).willReturn(of(
-            Tailoring.builder().zeichnungen(asList(
-                    DokumentZeichnung.builder()
-                        .bereich("Software")
-                        .unterzeichner("Hans Dampf")
-                        .status(DokumentZeichnungStatus.AGREED)
+            Tailoring.builder().signatures(asList(
+                    DocumentSignature.builder()
+                        .faculty("Software")
+                        .signee("Hans Dampf")
+                        .state(DocumentSignatureState.AGREED)
                         .build()
                 ))
                 .build()
         ));
 
         // act
-        Optional<Collection<DokumentZeichnung>> actual = service.getDokumentZeichnungen("Dummy", "master");
+        Optional<Collection<DocumentSignature>> actual = service.getDocumentSignatures("Dummy", "master");
 
         // assert
         assertThat(actual).isNotEmpty();
@@ -685,7 +684,7 @@ class TailoringServiceImplTest {
         // arrange
 
         // act
-        Throwable actual = catchThrowable(() -> service.updateDokumentZeichnung(null, "master", DokumentZeichnung.builder().build()));
+        Throwable actual = catchThrowable(() -> service.updateDocumentSignature(null, "master", DocumentSignature.builder().build()));
 
         // assert
         assertThat(actual).isInstanceOf(NullPointerException.class);
@@ -696,7 +695,7 @@ class TailoringServiceImplTest {
         // arrange
 
         // act
-        Throwable actual = catchThrowable(() -> service.updateDokumentZeichnung("Dummy", null, DokumentZeichnung.builder().build()));
+        Throwable actual = catchThrowable(() -> service.updateDocumentSignature("Dummy", null, DocumentSignature.builder().build()));
 
         // assert
         assertThat(actual).isInstanceOf(NullPointerException.class);
@@ -707,7 +706,7 @@ class TailoringServiceImplTest {
         // arrange
 
         // act
-        Throwable actual = catchThrowable(() -> service.updateDokumentZeichnung("Dummy", "master", null));
+        Throwable actual = catchThrowable(() -> service.updateDocumentSignature("Dummy", "master", null));
 
         // assert
         assertThat(actual).isInstanceOf(NullPointerException.class);
@@ -716,39 +715,39 @@ class TailoringServiceImplTest {
     @Test
     void updateDokumentZeichnung_ZeichnungNichtVorhanden_EmptyWirdZurueckGegeben() {
         // arrange
-        DokumentZeichnung zeichnung = DokumentZeichnung.builder()
-            .bereich("Software")
-            .unterzeichner("Hans Dampf")
-            .status(DokumentZeichnungStatus.AGREED)
+        DocumentSignature zeichnung = DocumentSignature.builder()
+            .faculty("Software")
+            .signee("Hans Dampf")
+            .state(DocumentSignatureState.AGREED)
             .build();
 
-        given(repositoryMock.updateDokumentZeichnung(anyString(), anyString(), any(DokumentZeichnung.class))).willReturn(empty());
+        given(repositoryMock.updateDocumentSignature(anyString(), anyString(), any(DocumentSignature.class))).willReturn(empty());
         // act
-        Optional<DokumentZeichnung> actual = service.updateDokumentZeichnung("Dummy", "master", zeichnung);
+        Optional<DocumentSignature> actual = service.updateDocumentSignature("Dummy", "master", zeichnung);
 
         // assert
         assertThat(actual).isEmpty();
-        verify(repositoryMock, times(1)).updateDokumentZeichnung("Dummy", "master", zeichnung);
+        verify(repositoryMock, times(1)).updateDocumentSignature("Dummy", "master", zeichnung);
     }
 
     @Test
     void updateDokumentZeichnung_ZeichnungVorhanden_AktualisierteZeichnungWirdZurueckGegeben() {
         // arrange
-        DokumentZeichnung zeichnung = DokumentZeichnung.builder()
-            .bereich("Software")
-            .unterzeichner("Hans Dampf")
-            .status(DokumentZeichnungStatus.AGREED)
+        DocumentSignature zeichnung = DocumentSignature.builder()
+            .faculty("Software")
+            .signee("Hans Dampf")
+            .state(DocumentSignatureState.AGREED)
             .build();
 
-        given(repositoryMock.updateDokumentZeichnung("Dummy", "master", zeichnung)).willReturn(of(zeichnung));
+        given(repositoryMock.updateDocumentSignature("Dummy", "master", zeichnung)).willReturn(of(zeichnung));
         // act
-        Optional<DokumentZeichnung> actual = service.updateDokumentZeichnung("Dummy", "master", zeichnung);
+        Optional<DocumentSignature> actual = service.updateDocumentSignature("Dummy", "master", zeichnung);
 
         // assert
         assertThat(actual)
             .isNotEmpty()
             .contains(zeichnung);
-        verify(repositoryMock, times(1)).updateDokumentZeichnung("Dummy", "master", zeichnung);
+        verify(repositoryMock, times(1)).updateDocumentSignature("Dummy", "master", zeichnung);
     }
 
     @Test
@@ -821,20 +820,20 @@ class TailoringServiceImplTest {
 
         ScreeningSheet screeningSheet = ScreeningSheet.builder()
             .data(data)
-            .parameters(asList(ScreeningSheetParameter.builder().bezeichnung(ScreeningSheetDataProviderSupplier.Phase.getName()).wert(asList(E, F)).build()))
-            .selektionsVektor(SelektionsVektor.builder().build())
+            .parameters(asList(ScreeningSheetParameter.builder().category(ScreeningSheetDataProviderSupplier.Phase.getName()).value(asList(E, F)).build()))
+            .selectionVector(SelectionVector.builder().build())
             .build();
 
-        SelektionsVektor anzuwendenderSelektionsVektor = SelektionsVektor.builder().build();
+        SelectionVector anzuwendenderSelectionVector = SelectionVector.builder().build();
 
-        Katalog<KatalogAnforderung> katalog = Katalog.<KatalogAnforderung>builder()
-            .toc(Kapitel.<KatalogAnforderung>builder()
-                .kapitel(asList(
-                    Kapitel.<KatalogAnforderung>builder()
-                        .nummer("1")
-                        .kapitel(asList(
-                            Kapitel.<KatalogAnforderung>builder()
-                                .nummer("1.1")
+        Catalog<BaseRequirement> catalog = Catalog.<BaseRequirement>builder()
+            .toc(Chapter.<BaseRequirement>builder()
+                .chapters(asList(
+                    Chapter.<BaseRequirement>builder()
+                        .number("1")
+                        .chapters(asList(
+                            Chapter.<BaseRequirement>builder()
+                                .number("1.1")
                                 .build()
                         ))
                         .build()
@@ -842,25 +841,25 @@ class TailoringServiceImplTest {
                 .build())
             .build();
 
-        List<DokumentZeichnung> defaultZeichnungen = Collections.emptyList();
-        given(repositoryMock.getDefaultZeichnungen()).willReturn(defaultZeichnungen);
+        List<DocumentSignature> defaultZeichnungen = Collections.emptyList();
+        given(repositoryMock.getDefaultSignatures()).willReturn(defaultZeichnungen);
 
-        given(mapperMock.toTailoringKatalog(katalog, screeningSheet, anzuwendenderSelektionsVektor)).willReturn(Katalog.<TailoringAnforderung>builder().build());
+        given(mapperMock.toTailoringCatalog(catalog, screeningSheet, anzuwendenderSelectionVector)).willReturn(Catalog.<TailoringRequirement>builder().build());
 
         // act
-        Tailoring actual = service.createTailoring("master1", "1000", screeningSheet, anzuwendenderSelektionsVektor, katalog);
+        Tailoring actual = service.createTailoring("master1", "1000", screeningSheet, anzuwendenderSelectionVector, catalog);
 
         // assert
         assertThat(actual.getName()).isEqualTo("master1");
         assertThat(actual.getScreeningSheet()).isEqualTo(screeningSheet);
-        assertThat(actual.getSelektionsVektor()).isEqualTo(anzuwendenderSelektionsVektor);
-        assertThat(actual.getKatalog()).isNotNull();
-        assertThat(actual.getZeichnungen()).isEqualTo(defaultZeichnungen);
-        assertThat(actual.getStatus()).isEqualTo(AKTIV);
-        assertThat(actual.getPhasen()).containsOnly(E, F);
+        assertThat(actual.getSelectionVector()).isEqualTo(anzuwendenderSelectionVector);
+        assertThat(actual.getCatalog()).isNotNull();
+        assertThat(actual.getSignatures()).isEqualTo(defaultZeichnungen);
+        assertThat(actual.getState()).isEqualTo(ACTIVE);
+        assertThat(actual.getPhases()).containsOnly(E, F);
 
-        verify(mapperMock, times(1)).toTailoringKatalog(katalog, screeningSheet, anzuwendenderSelektionsVektor);
-        verify(repositoryMock, times(1)).getDefaultZeichnungen();
+        verify(mapperMock, times(1)).toTailoringCatalog(catalog, screeningSheet, anzuwendenderSelectionVector);
+        verify(repositoryMock, times(1)).getDefaultSignatures();
     }
 
 
@@ -869,7 +868,7 @@ class TailoringServiceImplTest {
         // arrange
 
         // act
-        Throwable actual = catchThrowable(() -> service.createDokumente(null, "master"));
+        Throwable actual = catchThrowable(() -> service.createDocuments(null, "master"));
 
         // assert
         assertThat(actual).isInstanceOf(NullPointerException.class);
@@ -880,7 +879,7 @@ class TailoringServiceImplTest {
         // arrange
 
         // act
-        Throwable actual = catchThrowable(() -> service.createDokumente("DUMMY", null));
+        Throwable actual = catchThrowable(() -> service.createDocuments("DUMMY", null));
 
         // assert
         assertThat(actual).isInstanceOf(NullPointerException.class);
@@ -892,36 +891,35 @@ class TailoringServiceImplTest {
         given(repositoryMock.getTailoring("DUMMY", "master1")).willReturn(empty());
 
         // act
-        Optional<Datei> actual = service.createDokumente("DUMMY", "master1");
+        Optional<File> actual = service.createDocuments("DUMMY", "master1");
 
         // assert
         assertThat(actual).isEmpty();
     }
 
     @Test
-    void createDokumente_ProjektUndPhaseVorhanden_ZipZurueckegeben() throws IOException {
+    void createDokumente_TailoringExist_ZipReturned() throws IOException {
         // arrange
         Tailoring tailoring = Tailoring.builder().name("master").build();
         given(repositoryMock.getTailoring("DUMMY", "master")).willReturn(of(tailoring));
 
-        List<Datei> dokumente = asList(
-            Datei.builder()
-                .docId("DUMMY-KATALOG")
-                .bytes("Testdokument".getBytes(UTF_8))
-                .type("pdf")
+        List<File> dokumente = asList(
+            File.builder()
+                .name("DUMMY-KATALOG.pdf")
+                .data("Testdokument".getBytes(UTF_8))
                 .build()
         );
-        given(dokumentServiceMock.createAll(eq(tailoring), any())).willReturn(dokumente);
+        given(documentServiceMock.createAll(eq(tailoring), any())).willReturn(dokumente);
 
         // act
-        Optional<Datei> actual = service.createDokumente("DUMMY", "master");
+        Optional<File> actual = service.createDocuments("DUMMY", "master");
 
         // assert
         assertThat(actual).isNotEmpty();
-        assertThat(actual.get().getDocId()).isEqualTo("DUMMY-master");
+        assertThat(actual.get().getName()).isEqualTo("DUMMY-master.zip");
         assertThat(actual.get().getType()).isEqualTo("zip");
 
-        Collection<String> zipDateien = dateiNamenImZip(actual.get().getBytes());
+        Collection<String> zipDateien = dateiNamenImZip(actual.get().getData());
         assertThat(zipDateien)
             .hasSize(1)
             .containsExactly("DUMMY-KATALOG.pdf");
@@ -933,7 +931,7 @@ class TailoringServiceImplTest {
         given(repositoryMock.getTailoring("DUMMY", "master")).willReturn(empty());
 
         // act
-        Optional<Datei> actual = service.createVergleichsDokument("DUMMY", "master");
+        Optional<File> actual = service.createComparisonDocument("DUMMY", "master");
 
         // assert
         assertThat(actual).isEmpty();
@@ -945,14 +943,14 @@ class TailoringServiceImplTest {
         Tailoring tailoring = Tailoring.builder().build();
         given(repositoryMock.getTailoring("DUMMY", "master")).willReturn(of(tailoring));
 
-        given(dokumentServiceMock.createVergleichsDokument(eq(tailoring), any())).willReturn(of(Datei.builder().build()));
+        given(documentServiceMock.createComparisonDocument(eq(tailoring), any())).willReturn(of(File.builder().build()));
 
         // act
-        Optional<Datei> actual = service.createVergleichsDokument("DUMMY", "master");
+        Optional<File> actual = service.createComparisonDocument("DUMMY", "master");
 
         // assert
         assertThat(actual).isNotEmpty();
-        verify(dokumentServiceMock, times(1)).createVergleichsDokument(eq(tailoring), any());
+        verify(documentServiceMock, times(1)).createComparisonDocument(eq(tailoring), any());
     }
 
 
@@ -961,10 +959,10 @@ class TailoringServiceImplTest {
         // arrange
         String project = null;
         String phase = "master";
-        byte[] data = "Filereader wird gemockt. Kein parsen einer Datei".getBytes(UTF_8);
+        byte[] data = "Filereader wird gemockt. Kein parsen einer File".getBytes(UTF_8);
 
         // act
-        Throwable actual = catchThrowable(() -> service.updateAusgewaehlteAnforderungen(project, phase, data));
+        Throwable actual = catchThrowable(() -> service.updateSelectedRequirements(project, phase, data));
 
         // assert
         assertThat(actual).isInstanceOf(NullPointerException.class);
@@ -975,10 +973,10 @@ class TailoringServiceImplTest {
         // arrange
         String project = "DUMMY";
         String phase = null;
-        byte[] data = "Filereader wird gemockt. Kein parsen einer Datei".getBytes(UTF_8);
+        byte[] data = "Filereader wird gemockt. Kein parsen einer File".getBytes(UTF_8);
 
         // act
-        Throwable actual = catchThrowable(() -> service.updateAusgewaehlteAnforderungen(project, phase, data));
+        Throwable actual = catchThrowable(() -> service.updateSelectedRequirements(project, phase, data));
 
         // assert
         assertThat(actual).isInstanceOf(NullPointerException.class);
@@ -991,7 +989,7 @@ class TailoringServiceImplTest {
         String phase = "master";
 
         // act
-        service.updateAusgewaehlteAnforderungen(project, phase, null);
+        service.updateSelectedRequirements(project, phase, null);
 
         // assert
         verify(tailoringAnforderungFileReaderMock, times(0)).apply(any());
@@ -1002,22 +1000,22 @@ class TailoringServiceImplTest {
         // arrange
         String project = "DUMMY";
         String phase = "master";
-        byte[] data = "Filereader wird gemockt. Kein parsen einer Datei".getBytes(UTF_8);
+        byte[] data = "Filereader wird gemockt. Kein parsen einer File".getBytes(UTF_8);
 
         given(tailoringAnforderungFileReaderMock.apply(data)).willReturn(Map.ofEntries(
                 new AbstractMap.SimpleEntry<>("1", asList(
-                    ImportAnforderung.builder().position("a").anwendbar("JEIN").build(),
-                    ImportAnforderung.builder().position("b").anwendbar("NEIN").build()
+                    ImportRequirement.builder().position("a").applicable("JEIN").build(),
+                    ImportRequirement.builder().position("b").applicable("NEIN").build()
                 ))
             )
         );
 
         // act
-        service.updateAusgewaehlteAnforderungen(project, phase, data);
+        service.updateSelectedRequirements(project, phase, data);
 
         // assert
-        verify(anforderungServiceMock, times(0)).handleAusgewaehlt(eq("DUMMY"), eq("master"), eq("1"), eq("a"), any());
-        verify(anforderungServiceMock, times(1)).handleAusgewaehlt("DUMMY", "master", "1", "b", false);
+        verify(requirementServiceMock, times(0)).handleSelected(eq("DUMMY"), eq("master"), eq("1"), eq("a"), any());
+        verify(requirementServiceMock, times(1)).handleSelected("DUMMY", "master", "1", "b", false);
     }
 
     @Test
@@ -1025,22 +1023,22 @@ class TailoringServiceImplTest {
         // arrange
         String project = "DUMMY";
         String phase = "master";
-        byte[] data = "Filereader wird gemockt. Kein parsen einer Datei".getBytes(UTF_8);
+        byte[] data = "Filereader wird gemockt. Kein parsen einer File".getBytes(UTF_8);
 
         given(tailoringAnforderungFileReaderMock.apply(data)).willReturn(Map.ofEntries(
                 new AbstractMap.SimpleEntry<>("1", asList(
-                    ImportAnforderung.builder().position("a").anwendbar("JA").build(),
-                    ImportAnforderung.builder().position("b").anwendbar("NEIN").build()
+                    ImportRequirement.builder().position("a").applicable("JA").build(),
+                    ImportRequirement.builder().position("b").applicable("NEIN").build()
                 ))
             )
         );
 
         // act
-        service.updateAusgewaehlteAnforderungen(project, phase, data);
+        service.updateSelectedRequirements(project, phase, data);
 
         // assert
-        verify(anforderungServiceMock, times(1)).handleAusgewaehlt("DUMMY", "master", "1", "a", true);
-        verify(anforderungServiceMock, times(1)).handleAusgewaehlt("DUMMY", "master", "1", "b", false);
+        verify(requirementServiceMock, times(1)).handleSelected("DUMMY", "master", "1", "a", true);
+        verify(requirementServiceMock, times(1)).handleSelected("DUMMY", "master", "1", "b", false);
     }
 
 
@@ -1049,22 +1047,22 @@ class TailoringServiceImplTest {
         // arrange
         String project = "DUMMY";
         String phase = "master";
-        byte[] data = "Filereader wird gemockt. Kein parsen einer Datei".getBytes(UTF_8);
+        byte[] data = "Filereader wird gemockt. Kein parsen einer File".getBytes(UTF_8);
 
         given(tailoringAnforderungFileReaderMock.apply(data)).willReturn(Map.ofEntries(
                 new AbstractMap.SimpleEntry<>("1", asList(
-                    ImportAnforderung.builder().position("a").anwendbar("JA").text("Dies ist der neue Text").build(),
-                    ImportAnforderung.builder().position("b").anwendbar("NEIN").build()
+                    ImportRequirement.builder().position("a").applicable("JA").text("Dies ist der neue Text").build(),
+                    ImportRequirement.builder().position("b").applicable("NEIN").build()
                 ))
             )
         );
 
         // act
-        service.updateAusgewaehlteAnforderungen(project, phase, data);
+        service.updateSelectedRequirements(project, phase, data);
 
         // assert
-        verify(anforderungServiceMock, times(1)).handleText(eq("DUMMY"), eq("master"), eq("1"), any(), any());
-        verify(anforderungServiceMock, times(1)).handleText("DUMMY", "master", "1", "a", "Dies ist der neue Text");
+        verify(requirementServiceMock, times(1)).handleText(eq("DUMMY"), eq("master"), eq("1"), any(), any());
+        verify(requirementServiceMock, times(1)).handleText("DUMMY", "master", "1", "a", "Dies ist der neue Text");
 
     }
 
@@ -1073,21 +1071,21 @@ class TailoringServiceImplTest {
         // arrange
         String project = "DUMMY";
         String phase = "master";
-        byte[] data = "Filereader wird gemockt. Kein parsen einer Datei".getBytes(UTF_8);
+        byte[] data = "Filereader wird gemockt. Kein parsen einer File".getBytes(UTF_8);
 
         given(tailoringAnforderungFileReaderMock.apply(data)).willReturn(Map.ofEntries(
                 new AbstractMap.SimpleEntry<>("1", asList(
-                    ImportAnforderung.builder().position("a").anwendbar("JA").text("").build(),
-                    ImportAnforderung.builder().position("b").anwendbar("NEIN").build()
+                    ImportRequirement.builder().position("a").applicable("JA").text("").build(),
+                    ImportRequirement.builder().position("b").applicable("NEIN").build()
                 ))
             )
         );
 
         // act
-        service.updateAusgewaehlteAnforderungen(project, phase, data);
+        service.updateSelectedRequirements(project, phase, data);
 
         // assert
-        verify(anforderungServiceMock, times(0)).handleText(eq("DUMMY"), eq("master"), eq("1"), any(), any());
+        verify(requirementServiceMock, times(0)).handleText(eq("DUMMY"), eq("master"), eq("1"), any(), any());
 
     }
 

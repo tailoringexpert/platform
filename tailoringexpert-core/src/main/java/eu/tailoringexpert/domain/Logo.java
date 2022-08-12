@@ -37,5 +37,4 @@ public class Logo implements Serializable {
 
     private String name;
     private String url;
-
 }

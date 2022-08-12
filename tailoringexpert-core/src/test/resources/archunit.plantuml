@@ -10,9 +10,9 @@ skinparam componentStyle uml2
 [Renderer] <<..renderer..>>
 [Repository] <<..repository..>>
 
-[Anforderung] <<..anforderung..>>
-[Domain] <-- [Anforderung]
-[Repository] <-- [Anforderung]
+[Requirement] <<..requirement..>>
+[Domain] <-- [Requirement]
+[Repository] <-- [Requirement]
 
 [ScreeningSheet] <<..screeningsheet..>>
 [Domain] <-- [ScreeningSheet]
@@ -23,17 +23,17 @@ skinparam componentStyle uml2
 [Repository] <-- [Tailoring]
 [Renderer] <-- [Tailoring]
 [ScreeningSheet] <-- [Tailoring]
-[Anforderung] <-- [Tailoring]
+[Requirement] <-- [Tailoring]
 
-[Projekt] <<..projekt..>>
-[Domain] <-- [Projekt]
-[Repository]  <- [Projekt]
-[ScreeningSheet] <-- [Projekt]
-[Tailoring] <-- [Projekt]
+[Project] <<..project..>>
+[Domain] <-- [Project]
+[Repository]  <- [Project]
+[ScreeningSheet] <-- [Project]
+[Tailoring] <-- [Project]
 
-[Katalog] <<..katalog..>>
-[Domain] <-- [Katalog]
-[Repository] <-- [Katalog]
-[Renderer] <-- [Katalog]
+[Catalog] <<..catalog..>>
+[Domain] <-- [Catalog]
+[Repository] <-- [Catalog]
+[Renderer] <-- [Catalog]
 
 @enduml

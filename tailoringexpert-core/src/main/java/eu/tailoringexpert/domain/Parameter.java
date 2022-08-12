@@ -35,10 +35,10 @@ import java.io.Serializable;
 public class Parameter implements Serializable {
     private static final long serialVersionUID = 8412257758609369625L;
 
-    private String kategorie;
+    private String category;
     private String name;
-    private String bezeichnung;
-    private DatenTyp datenTyp;
-    private Serializable wert;
-    private int reihenfolge;
+    private String label;
+    private DatenType parameterType;
+    private Serializable value;
+    private int position;
 }

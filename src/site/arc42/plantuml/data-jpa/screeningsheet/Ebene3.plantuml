@@ -7,7 +7,7 @@ package repository {
 
 package screeningsheet {
     interface ScreeningSheetServiceRepository {
-        getParameter(namen : Collection<String>) : Collection<Parameter>
+        getParameter(names : Collection<String>) : Collection<Parameter>
     }
 
     abstract class JPAScreeningSheetServiceRepositoryMapper {

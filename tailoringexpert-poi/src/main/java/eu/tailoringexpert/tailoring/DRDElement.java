@@ -29,9 +29,9 @@ import java.util.Collection;
 @Value
 @Builder
 public class DRDElement {
-    private String titel;
-    private String datum;
-    private Collection<String> anforderung;
-    private String nummer;
-    private String aktion;
+    private String title;
+    private String deliveryDate;
+    private Collection<String> requirements;
+    private String number;
+    private String action;
 }

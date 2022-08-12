@@ -27,7 +27,7 @@ import lombok.Value;
 @Value
 @Builder
 public class CMElement {
-    private int ebene;
-    private String nummer;
+    private int level;
+    private String number;
     private String name;
 }

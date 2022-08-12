@@ -65,7 +65,7 @@
 <title-box>
     <dokument-typ>Compliance Matrix (CM)</dokument-typ>
     <dokument-subtyp>Product Assurance, Safety &amp; Sustainability Requirements</dokument-subtyp>
-    <dokument-projekt>for [[${PROJEKT}]]</dokument-projekt>
+    <dokument-project>for [[${PROJEKT}]]</dokument-project>
     <dokument-release>[[${DOKUMENT}]] [[${DATUM}]]</dokument-release>
 </title-box>
 
@@ -75,7 +75,7 @@
         <hr/>
         <dokument-typ>Compliance Matrix (CM)</dokument-typ>
         <dokument-subtyp>Product Assurance, Safety &amp; Sustainability Requirements</dokument-subtyp>
-        <dokument-projekt>for [[${PROJEKT}]]</dokument-projekt>
+        <dokument-project>for [[${PROJEKT}]]</dokument-project>
         <hr/>
     </div>
 
@@ -123,9 +123,9 @@
             </tr>
             </thead>
             <tbody>
-            <tr th:each=" zeichnung : ${zeichnungen}">
-                <td style="width:20%" th:text="${zeichnung.status}">Status</td>
-                <td style="width:40%" th:utext="${zeichnung.unterzeichner}">Name</td>
+            <tr th:each=" signature : ${signatures}">
+                <td style="width:20%" th:text="${signature.state}">Status</td>
+                <td style="width:40%" th:utext="${signature.signee}">Name</td>
                 <td style="width:25%"></td>
                 <td style="width:15%"></td>
             </tr>
@@ -203,12 +203,12 @@
         </tr>
         </thead>
         <tbody>
-        <tr th:each="kapitel : ${kapitels}" th:classappend="${kapitel.ebene<3}?'kapitelEbene' + ${kapitel.ebene}">
-            <td th:utext="${kapitel.nummer}">Referenz</td>
-            <td th:utext="${kapitel.name}" th:attrappend="colspan=${kapitel.ebene<3}?4">Position</td>
-            <td th:if="${kapitel.ebene}>2"></td>
-            <td th:if="${kapitel.ebene}>2"></td>
-            <td th:if="${kapitel.ebene}>2"></td>
+        <tr th:each="chapter : ${chapters}" th:classappend="${chapter.level<3}?'kapitelEbene' + ${chapter.level}">
+            <td th:utext="${chapter.number}">Referenz</td>
+            <td th:utext="${chapter.name}" th:attrappend="colspan=${chapter.level<3}?4">Position</td>
+            <td th:if="${chapter.level}>2"></td>
+            <td th:if="${chapter.level}>2"></td>
+            <td th:if="${chapter.level}>2"></td>
         </tr>
         </tbody>
     </table>
@@ -228,11 +228,11 @@
         </thead>
         <tbody>
         <tr th:each="drd : ${drds}">
-            <td th:text="${drd.titel}"></td>
-            <td th:text="${drd.datum}"></td>
-            <td th:utext="${#strings.listJoin(drd.anforderung, ',<br/>')}"></td>
-            <td th:text="${drd.nummer}"></td>
-            <td th:text="${drd.aktion}"></td>
+            <td th:text="${drd.title}"></td>
+            <td th:text="${drd.deliveryDate}"></td>
+            <td th:utext="${#strings.listJoin(drd.requirements, ',<br/>')}"></td>
+            <td th:text="${drd.number}"></td>
+            <td th:text="${drd.action}"></td>
         </tr>
         </tbody>
     </table>
