@@ -33,6 +33,6 @@ public class TailoringInformation implements Serializable {
     private static final long serialVersionUID = -1549876821007305812L;
 
     private String name;
-    private Collection<Phase> phasen;
-    private String katalogVersion;
+    private Collection<Phase> phases;
+    private String catalogVersion;
 }

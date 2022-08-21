@@ -1,0 +1,15 @@
+@startuml Ebene3.png
+hide empty members
+
+package catalog {
+
+    interface DocumentService {
+        createCatalog(catalog : Catalog<BaseRequirement>, creationTimestamp : LocalDateTime) : Optional<File>
+    }
+
+    class TenantDocumentService {
+        tenantService : Map<String, DocumentService>
+    }
+    DocumentService <|.. TenantDocumentService
+}
+@enduml

@@ -5,8 +5,7 @@ package renderer {
 
     interface HTMLTemplateEngine {
         process(template : String, Map<String, Object> variables) : String
-        toXHTML(text: String ) : String
-        toXHTML(text :String, platzhalter : Map<String, String>) : String
+        toXHTML(text :String, placeholders : Map<String, String>) : String
     }
 
     class TenantTemplateEngine {

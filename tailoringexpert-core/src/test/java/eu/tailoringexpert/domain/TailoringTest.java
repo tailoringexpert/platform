@@ -51,7 +51,7 @@ class TailoringTest {
 
         TailoringBuilder builder = Tailoring.builder()
             .screeningSheet(ScreeningSheet.builder().data(data).build())
-            .phasen(asList(ZERO, A, B));
+            .phases(asList(ZERO, A, B));
 
         // act
         Tailoring actual = builder.build();

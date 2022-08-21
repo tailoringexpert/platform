@@ -39,13 +39,13 @@ public class ScreeningSheet implements Serializable {
 
     private byte[] data;
     private List<ScreeningSheetParameter> parameters;
-    private SelektionsVektor selektionsVektor;
+    private SelectionVector selectionVector;
 
-    public String getKuerzel() {
+    public String getIdentifier() {
         Optional<ScreeningSheetParameter> result = parameters.stream()
-            .filter(parameter -> KUERZEL.equalsIgnoreCase(parameter.getBezeichnung()))
+            .filter(parameter -> KUERZEL.equalsIgnoreCase(parameter.getCategory()))
             .findFirst();
 
-        return result.isPresent() ? (String) result.get().getWert() : null;
+        return result.isPresent() ? (String) result.get().getValue() : null;
     }
 }

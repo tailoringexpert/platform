@@ -42,8 +42,8 @@ public class JPAScreeningSheetServiceRepository implements ScreeningSheetService
      * {@inheritDoc}
      */
     @Override
-    public Collection<Parameter> getParameter(Collection<String> namen) {
-        return parameterRepository.findByNameIn(namen)
+    public Collection<Parameter> getParameter(Collection<String> names) {
+        return parameterRepository.findByNameIn(names)
             .stream()
             .map(mapper::toDomain)
             .collect(toList());

@@ -13,9 +13,9 @@
     <include file="db-tailoringexpert/install/tab/drd.xml"/>
     <include file="db-tailoringexpert/install/tab/identifier.xml"/>
     <include file="db-tailoringexpert/install/tab/identifier_limitation.xml"/>
-    <include file="db-tailoringexpert/install/tab/basecatalogrequirement.xml"/>
-    <include file="db-tailoringexpert/install/tab/basecatalogrequirement_phase.xml"/>
-    <include file="db-tailoringexpert/install/tab/basecatalogrequirement_drd.xml"/>
+    <include file="db-tailoringexpert/install/tab/baserequirement.xml"/>
+    <include file="db-tailoringexpert/install/tab/baserequirement_phase.xml"/>
+    <include file="db-tailoringexpert/install/tab/baserequirement_drd.xml"/>
     <include file="db-tailoringexpert/install/tab/basecatalogchapter.xml"/>
     <include file="db-tailoringexpert/install/tab/basecatalog.xml"/>
     <include file="db-tailoringexpert/install/tab/screeningsheet.xml"/>
@@ -30,14 +30,14 @@
     <include file="db-tailoringexpert/install/tab/tailoringcatalog.xml"/>
     <include file="db-tailoringexpert/install/tab/logo.xml"/>
     <include file="db-tailoringexpert/install/tab/documentsignature.xml"/>
-    <include file="db-tailoringexpert/install/tab/document.xml"/>
+    <include file="db-tailoringexpert/install/tab/file.xml"/>
     <include file="db-tailoringexpert/install/tab/documentsignee.xml"/>
 
-    <include file="db-tailoringexpert/install/cst/basecatalogrequirement.xml"/>
-    <include file="db-tailoringexpert/install/cst/basecatalogrequirement_phase.xml"/>
-    <include file="db-tailoringexpert/install/cst/basecatalogrequirement_drd.xml"/>
+    <include file="db-tailoringexpert/install/cst/baserequirement.xml"/>
+    <include file="db-tailoringexpert/install/cst/baserequirement_phase.xml"/>
+    <include file="db-tailoringexpert/install/cst/baserequirement_drd.xml"/>
     <include file="db-tailoringexpert/install/cst/basecatalogchapter.xml"/>
-    <include file="db-tailoringexpert/install/cst/document.xml"/>
+    <include file="db-tailoringexpert/install/cst/file.xml"/>
     <include file="db-tailoringexpert/install/cst/documentsignature.xml"/>
     <include file="db-tailoringexpert/install/cst/identifier.xml"/>
     <include file="db-tailoringexpert/install/cst/identifier_limitation.xml"/>

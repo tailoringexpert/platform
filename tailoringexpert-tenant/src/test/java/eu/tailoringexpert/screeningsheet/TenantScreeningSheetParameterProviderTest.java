@@ -75,7 +75,7 @@ class TenantScreeningSheetParameterProviderTest {
         InputStream is = new ByteArrayInputStream("Blindobjekt".getBytes(UTF_8));
 
         given(tenentScreeningSheetParameterProvider.parse(is))
-            .willReturn(List.of(ScreeningSheetParameterEintrag.builder().kategorie("Param1").name("Value1").build()));
+            .willReturn(List.of(ScreeningSheetParameterEintrag.builder().category("Param1").name("Value1").build()));
 
         // act
         Collection<ScreeningSheetParameterEintrag> actual = provder.parse(is);

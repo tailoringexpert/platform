@@ -21,10 +21,10 @@
  */
 package eu.tailoringexpert.tailoring;
 
+import eu.tailoringexpert.domain.Chapter;
 import eu.tailoringexpert.domain.DRD;
-import eu.tailoringexpert.domain.Kapitel;
 import eu.tailoringexpert.domain.Phase;
-import eu.tailoringexpert.domain.TailoringAnforderung;
+import eu.tailoringexpert.domain.TailoringRequirement;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 
@@ -45,7 +45,7 @@ import static java.util.Objects.nonNull;
  * innerhalb der Projektphasen sind.
  */
 @RequiredArgsConstructor
-public class DRDProvider implements BiFunction<Kapitel<TailoringAnforderung>, Collection<Phase>, Map<DRD, Set<String>>> {
+public class DRDProvider implements BiFunction<Chapter<TailoringRequirement>, Collection<Phase>, Map<DRD, Set<String>>> {
 
     @NonNull
     private BiPredicate<String, Collection<Phase>> predicate;
@@ -54,22 +54,22 @@ public class DRDProvider implements BiFunction<Kapitel<TailoringAnforderung>, Co
      * {@inheritDoc}
      */
     @Override
-    public Map<DRD, Set<String>> apply(Kapitel<TailoringAnforderung> gruppe, Collection<Phase> phasen) {
+    public Map<DRD, Set<String>> apply(Chapter<TailoringRequirement> chapter, Collection<Phase> phases) {
         Map<DRD, Set<String>> result = new ConcurrentHashMap<>();
-        gruppe.allKapitel()
-            .forEach(subgruppe -> subgruppe.getAnforderungen()
+        chapter.allChapters()
+            .forEach(subChapter -> subChapter.getRequirements()
                 .stream()
-                .filter(anforderung -> nonNull(anforderung.getAusgewaehlt()) && anforderung.getAusgewaehlt().booleanValue()
-                    && nonNull(anforderung.getDrds()) && !anforderung.getDrds().isEmpty())
+                .filter(requirement -> nonNull(requirement.getSelected()) && requirement.getSelected().booleanValue()
+                    && nonNull(requirement.getDrds()) && !requirement.getDrds().isEmpty())
                 .forEach(anforderung -> anforderung.getDrds()
                     .forEach(drd -> {
-                        if (predicate.test(drd.getLieferzeitpunkt(), phasen)) {
+                        if (predicate.test(drd.getDeliveryDate(), phases)) {
                             Set<String> kapitel = result.get(drd);
                             if (isNull(kapitel)) {
                                 kapitel = new LinkedHashSet<>();
                                 result.put(drd, kapitel);
                             }
-                            kapitel.add(subgruppe.getNummer());
+                            kapitel.add(subChapter.getNumber());
                         }
                     }))
             );

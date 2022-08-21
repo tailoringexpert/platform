@@ -27,15 +27,15 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jdk8.Jdk8Module;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.fasterxml.jackson.module.paramnames.ParameterNamesModule;
+import eu.tailoringexpert.domain.Catalog;
 import eu.tailoringexpert.domain.DRD;
-import eu.tailoringexpert.domain.Datei;
-import eu.tailoringexpert.domain.DokumentZeichnung;
-import eu.tailoringexpert.domain.DokumentZeichnungStatus;
-import eu.tailoringexpert.domain.Kapitel;
-import eu.tailoringexpert.domain.Katalog;
+import eu.tailoringexpert.domain.File;
+import eu.tailoringexpert.domain.DocumentSignature;
+import eu.tailoringexpert.domain.DocumentSignatureState;
+import eu.tailoringexpert.domain.Chapter;
 import eu.tailoringexpert.domain.Phase;
 import eu.tailoringexpert.domain.Tailoring;
-import eu.tailoringexpert.domain.TailoringAnforderung;
+import eu.tailoringexpert.domain.TailoringRequirement;
 import lombok.SneakyThrows;
 import lombok.extern.log4j.Log4j2;
 import org.junit.jupiter.api.BeforeEach;
@@ -43,7 +43,6 @@ import org.junit.jupiter.api.Test;
 import org.mockito.MockedStatic;
 import org.mockito.Mockito;
 
-import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
@@ -79,7 +78,7 @@ class CMSpreadsheetCreatorTest {
 
     private ObjectMapper objectMapper;
     private FileSaver fileSaver;
-    BiFunction<Kapitel<TailoringAnforderung>, Collection<Phase>, Map<DRD, Set<String>>> drdProviderMock;
+    BiFunction<Chapter<TailoringRequirement>, Collection<Phase>, Map<DRD, Set<String>>> drdProviderMock;
     private CMSpreadsheetCreator creator;
 
 
@@ -92,7 +91,7 @@ class CMSpreadsheetCreatorTest {
         this.fileSaver = new FileSaver("target");
 
         this.drdProviderMock =
-            new DRDProvider(new DRDAnwendbarPraedikat(ofEntries(
+            new DRDProvider(new DRDApplicablePredicate(ofEntries(
                 new SimpleEntry<>(ZERO, unmodifiableCollection(asList("MDR"))),
                 new SimpleEntry<>(A, unmodifiableCollection(asList("SRR"))),
                 new SimpleEntry<>(B, unmodifiableCollection(asList("PDR"))),
@@ -101,11 +100,11 @@ class CMSpreadsheetCreatorTest {
                 new SimpleEntry<>(E, unmodifiableCollection(asList("ORR"))),
                 new SimpleEntry<>(F, unmodifiableCollection(asList("EOM")))
             )));
-        this.creator = new CMSpreadsheetCreator(new Function<String, File>() {
+        this.creator = new CMSpreadsheetCreator(new Function<String, java.io.File>() {
             @SneakyThrows
             @Override
-            public File apply(String s) {
-                return new File("src/test/resources/" + s);
+            public java.io.File apply(String s) {
+                return new java.io.File("src/test/resources/" + s);
             }
         }, this.drdProviderMock);
     }
@@ -113,30 +112,30 @@ class CMSpreadsheetCreatorTest {
     @Test
     void createDokument_AlleDatenOK_DateiWirdErstellt() throws IOException {
         // arrange
-        Katalog<TailoringAnforderung> katalog;
+        Catalog<TailoringRequirement> catalog;
         try (InputStream is = this.getClass().getResourceAsStream("/tailoringkatalog.json")) {
             assert nonNull(is);
-            katalog = objectMapper.readValue(is, new TypeReference<Katalog<TailoringAnforderung>>() {
+            catalog = objectMapper.readValue(is, new TypeReference<Catalog<TailoringRequirement>>() {
             });
         }
 
-        Collection<DokumentZeichnung> zeichnungen = of(
-            DokumentZeichnung.builder()
-                .anwendbar(true)
-                .bereich("Software")
-                .unterzeichner("Hans Dampf")
-                .status(DokumentZeichnungStatus.AGREED)
+        Collection<DocumentSignature> zeichnungen = of(
+            DocumentSignature.builder()
+                .applicable(true)
+                .faculty("Software")
+                .signee("Hans Dampf")
+                .state(DocumentSignatureState.AGREED)
                 .build()
         );
 
         Tailoring tailoring = Tailoring.builder()
-            .katalog(katalog)
-            .zeichnungen(zeichnungen)
-            .phasen(of(ZERO, A, B, C, D, E, F))
+            .catalog(catalog)
+            .signatures(zeichnungen)
+            .phases(of(ZERO, A, B, C, D, E, F))
             .build();
 
         Map<String, String> parameter = ofEntries(
-            Map.entry("titel", "DRD Katalog"),
+            Map.entry("titel", "DRD Catalog"),
             Map.entry("beschreibung", "BESCHREIBUNG"),
             Map.entry("PROJEKT", "HRWS"),
             Map.entry("DATUM", LocalDateTime.now().format(DateTimeFormatter.ofPattern("dd.MM.YYYY"))),
@@ -144,40 +143,40 @@ class CMSpreadsheetCreatorTest {
         );
 
         // act
-        Datei actual = creator.createDokument("4711", tailoring, parameter);
+        File actual = creator.createDocument("4711", tailoring, parameter);
 
         // assert
         assertThat(actual).isNotNull();
-        fileSaver.accept("cm.xlsx", actual.getBytes());
+        fileSaver.accept("cm.xlsx", actual.getData());
     }
 
     @Test
     void createDokument_TemplateNichtVorhanden_ExceptionWirdGeworfen() throws IOException {
         // arrange
-        Katalog<TailoringAnforderung> katalog;
+        Catalog<TailoringRequirement> catalog;
         try (InputStream is = this.getClass().getResourceAsStream("/tailoringkatalog.json")) {
             assert nonNull(is);
-            katalog = objectMapper.readValue(is, new TypeReference<Katalog<TailoringAnforderung>>() {
+            catalog = objectMapper.readValue(is, new TypeReference<Catalog<TailoringRequirement>>() {
             });
         }
 
-        Collection<DokumentZeichnung> zeichnungen = of(
-            DokumentZeichnung.builder()
-                .anwendbar(true)
-                .bereich("Software")
-                .unterzeichner("Hans Dampf")
-                .status(DokumentZeichnungStatus.AGREED)
+        Collection<DocumentSignature> zeichnungen = of(
+            DocumentSignature.builder()
+                .applicable(true)
+                .faculty("Software")
+                .signee("Hans Dampf")
+                .state(DocumentSignatureState.AGREED)
                 .build()
         );
 
         Tailoring tailoring = Tailoring.builder()
-            .katalog(katalog)
-            .zeichnungen(zeichnungen)
-            .phasen(of(ZERO, A, B, C, D, E, F))
+            .catalog(catalog)
+            .signatures(zeichnungen)
+            .phases(of(ZERO, A, B, C, D, E, F))
             .build();
 
         Map<String, String> parameter = ofEntries(
-            Map.entry("titel", "DRD Katalog"),
+            Map.entry("titel", "DRD Catalog"),
             Map.entry("beschreibung", "BESCHREIBUNG"),
             Map.entry("PROJEKT", "HRWS"),
             Map.entry("DATUM", LocalDateTime.now().format(DateTimeFormatter.ofPattern("dd.MM.YYYY"))),
@@ -185,10 +184,10 @@ class CMSpreadsheetCreatorTest {
         );
 
         // act
-        Datei actual;
+        File actual;
         try (MockedStatic<Files> files = Mockito.mockStatic(Files.class)) {
             files.when(() -> Files.newInputStream(any(Path.class), any())).thenThrow(new FileNotFoundException());
-            actual = creator.createDokument("4711", tailoring, parameter);
+            actual = creator.createDocument("4711", tailoring, parameter);
 
         }
 

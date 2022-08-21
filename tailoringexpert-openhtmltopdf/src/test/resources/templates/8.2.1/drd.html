@@ -36,19 +36,19 @@
 <title-box>
     <dokument-typ>Product Assurance</dokument-typ>
     <dokument-subtyp>DRD</dokument-subtyp>
-    <dokument-projekt>for [[${PROJEKT}]]</dokument-projekt>
+    <dokument-project>for [[${PROJEKT}]]</dokument-project>
     <dokument-release>[[${DOKUMENT}]] [[${DATUM}]]</dokument-release>
 </title-box>
 
 <page-after id="toc">
     <h2>Table of Content</h2>
     <ul class="toc" th:each="drd: ${drds}">
-        <li><a th:href="'#' + ${drd.nummer}" th:text="${drd.name}"></a></li>
+        <li><a th:href="'#' + ${drd.number}" th:text="${drd.name}"></a></li>
     </ul>
 </page-after>
 
 <th:block th:each="drd : ${drds}">
-    <page-after th:id="${drd.nummer}">
+    <page-after th:id="${drd.number}">
         <div th:insert="~{__${drd.fragment}__ :: content}?:_"></div>
     </page-after>
 </th:block>

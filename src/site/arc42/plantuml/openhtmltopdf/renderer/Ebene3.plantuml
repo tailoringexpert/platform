@@ -4,13 +4,12 @@ hide empty members
 package renderer {
     class ThymeleafTemplateEngine {
         templateEngine : ITemplateEngine
-        toXHTML(text : String) : String
         toXHTML(text : String, platzhalter :  Map<String, String>) : String
     }
     HTMLTemplateEngine <|.. ThymeleafTemplateEngine
     class PDFEngine {
         baseUri : String
-        process(docId : String, html : String, pfadSuffix : String) :  Datei
+        process(docId : String, html : String, pfadSuffix : String) :  File
     }
 }
 @enduml

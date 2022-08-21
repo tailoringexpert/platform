@@ -30,8 +30,8 @@ public interface ScreeningSheetServiceRepository {
     /**
      * Ermittlung der Parameter Objekte für die übergebenen Parameternamen/-schlüssel.
      *
-     * @param namen Namen der Parameter
+     * @param names Namen der Parameter
      * @return Colletion mit den Parameter Konfigurationen
      */
-    Collection<Parameter> getParameter(Collection<String> namen);
+    Collection<Parameter> getParameter(Collection<String> names);
 }

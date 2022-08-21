@@ -3,9 +3,9 @@ hide empty members
 
 package screeningsheet {
     class ScreeningSheetParameterEintrag {
-        kategorie : String
+        cateory : String
         name : String
-        bezeichnung : String
+        label : String
     }
 
     interface ScreeningSheetParameterProvider {
@@ -17,20 +17,20 @@ package screeningsheet {
     }
 
     interface ScreeningSheetService {
-        berechneSelektionsVektor(rawData : byte[]) : SelektionsVektor
+        calculateSelectionVector(rawData : byte[]) : SelectionVector
         createScreeningSheet(rawData : byte[]) : ScreeningSheet
     }
 
     interface ScreeningSheetServiceRepository {
-        getParameter(namen : Collection<String>) : Collection<Parameter>
+        getParameter(names : Collection<String>) : Collection<Parameter>
     }
 
     interface "Function<T, R>" as Function{
         apply(t : T) : R
     }
-    interface SelektionsVektorProvider<Collection<Parameter>, SelektionsVektor> {
+    interface SelectionVectorProvider<Collection<Parameter>, SelectionVector> {
     }
-    Function <|-- SelektionsVektorProvider
+    Function <|-- SelectionVectorProvider
 
 
     class ScreeningSheetServiceImpl {

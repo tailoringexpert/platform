@@ -4,26 +4,26 @@ hide empty members
 package repository {
     interface JpaRepository<T, ID>
 
-    interface DokumentZeichnerRepsository<DocumentZeichnerEntity, Long> {
-        CACHE_DOKUMENTZEICHNER : String = "DokumentZeichnerRepository#findAll"
-        findAll() : List<DokumentZeichnerEntity>
+    interface DokumentSigneeRepository<DocumentSigneeEntity, Long> {
+        CACHE_SIGNEE : String = "DocumentSigneeRepository#findAll"
+        findAll() : List<DocumentSigneeEntity>
     }
-    JpaRepository <|-- DocumentZeichnerEntity
+    JpaRepository <|-- DocumentSigneeRepository
 
     interface DRDRepository<DRDEntity, Long> {
-        findByNummer(nummer : String) : DRDEntity
+        findByNumber(nummbr : String) : DRDEntity
     }
     JpaRepository <|-- DRDRepository
 
-    interface KatalogRepository<KatalogEntity, Long> {
-        CACHE_KATALOG : String = "KatalogRepository#Katalog"
-        CACHE_KATALOGKLISTE : String = "KatalogRepository#KatalogListe"
-        findByVersion(version : String) : KatalogEntity
-        findKatalogVersionBy() : Collection<KatalogVersion>
-        setGueltigBisFuerNichtGesetztesGueltigBis(zeitpunkt : ZonedDateTime) : int
-        save( entity : S) : <S extends KatalogEntity>
+    interface BaseCatalogRepository<BaseCatalogEntity, Long> {
+        CACHE_BASECATALOG : String = "BaseCatalogRepository#BaseCatalog"
+        CACHE_BASECATALOGLIST : String = "BaseCatalogRepository#BaseCatalogList"
+        findByVersion(version : String) : BaseCatalogEntity
+        findCatalogVersionBy() : Collection<KatalogVersion>
+        setValidUntilForEmptyValidUntil(pointOfTime : ZonedDateTime) : int
+        save( entity : S) : <S extends BaseCatalogEntity>
     }
-    JpaRepository <|-- KatalogDefinitionRepository
+    JpaRepository <|-- BaseCatalogRepository
 
     interface LogoRepository<LogoEntity, Long> {
         CACHE_LOGO : String = "LogoRepository#Name"
@@ -36,28 +36,20 @@ package repository {
     }
     JpaRepository <|-- ParameterRepository
 
-    interface ProjektAnforderungGruppeRepository<ProjektPhaseAnforderungGruppeEntity, Long> {
-    }
-    JpaRepository <|-- ProjektAnforderungGruppeRepository
-
-    interface ProjektAnforderungRepository<ProjektPhaseAnforderungEntity, Long> {
-    }
-    JpaRepository <|-- ProjektAnforderungRepository
-
     interface TailoringRepository<TailoringEntity, Long> {
     }
     JpaRepository <|-- TailoringRepository
 
-    interface ProjektRepository<ProjektEntity, Long> {
-        findByKuerzel(projekt : String) : ProjektEntity
-        deleteByKuerzel(projekt : String) : Long
-        findTailoring(projekt : String, tailoring : String) : TailoringEntity
+    interface ProjectRepository<ProjectEntity, Long> {
+        findByIdentifier(project : String) : ProjectEntity
+        deleteByIdentifier(project : String) : Long
+        findTailoring(project : String, tailoring : String) : TailoringEntity
     }
-    JpaRepository <|-- ProjektRepository
+    JpaRepository <|-- ProjectRepository
 
-    interface SelektionsVektorProfilRepository<SelektionsVektorProfilEntity, Long> {
+    interface SelectionVectorProfileRepository<SelectionVektorProfileEntity, Long> {
     }
-    JpaRepository <|-- SelektionsVektorProfilRepository
+    JpaRepository <|-- SelectionVectorProfileRepository
 
 }
 @enduml

@@ -31,6 +31,6 @@ import java.io.Serializable;
 public class ScreeningSheetParameter implements Serializable {
     private static final long serialVersionUID = 2885701385918069974L;
 
-    private String bezeichnung;
-    private transient Object wert;
+    private String category;
+    private transient Object value;
 }

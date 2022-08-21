@@ -33,13 +33,12 @@ import java.io.Serializable;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@EqualsAndHashCode(of = "nummer")
+@EqualsAndHashCode(of = "number")
 public class DRD implements Serializable {
     private static final long serialVersionUID = 259056135676816215L;
 
-    private String nummer;
-    private String titel;
-    private String lieferzeitpunkt;
-    private String aktion;
-
+    private String number;
+    private String title;
+    private String deliveryDate;
+    private String action;
 }

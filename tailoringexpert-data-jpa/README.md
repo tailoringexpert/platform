@@ -30,5 +30,5 @@ mvn -DskipTests -P develop install exec:exec@dropAll exec:exec@install exec:exec
 
 ### Identifikatoren der aller Anforderungen eines Kapitels
 ```
-select * from identifikator where ANFORDERUNG_ID in (select anforderung_id from anforderungdefinition where ANFORDERUNGGRUPPE_ID = (select ANFORDERUNGGRUPPE_ID from anforderungdefinitiongruppe where KAPITEL='4.11.2.13'));
+select * from identifier where ANFORDERUNG_ID in (select anforderung_id from anforderungdefinition where ANFORDERUNGGRUPPE_ID = (select ANFORDERUNGGRUPPE_ID from anforderungdefinitiongruppe where KAPITEL='4.11.2.13'));
 ```

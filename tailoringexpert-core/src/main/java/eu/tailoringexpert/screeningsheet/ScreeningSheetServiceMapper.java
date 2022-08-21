@@ -29,8 +29,7 @@ import org.mapstruct.Mapping;
 @Mapper
 public interface ScreeningSheetServiceMapper {
 
-    @Mapping(target = "bezeichnung", source = "kategorie")
-    @Mapping(target = "wert", source = "bezeichnung")
+    @Mapping(target = "value", source = "label")
     ScreeningSheetParameter createScreeningSheet(Parameter parameter);
 
 

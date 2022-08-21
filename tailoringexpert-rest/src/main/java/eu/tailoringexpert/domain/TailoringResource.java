@@ -39,17 +39,17 @@ import static java.util.Objects.nonNull;
 public class TailoringResource extends RepresentationModel<TailoringResource> {
 
     String name;
-    Collection<Phase> phasen;
-    TailoringStatus status;
-    KatalogResource katalog;
+    Collection<Phase> phases;
+    TailoringState state;
+    TailoringCatalogResource catalog;
 
     @Builder
-    public TailoringResource(String name, Collection<Phase> phasen, TailoringStatus status, KatalogResource katalog, List<Link> links) {
+    public TailoringResource(String name, Collection<Phase> phases, TailoringState state, TailoringCatalogResource catalog, List<Link> links) {
         super();
         this.name = name;
-        this.phasen = phasen;
-        this.status = status;
-        this.katalog = katalog;
+        this.phases = phases;
+        this.state = state;
+        this.catalog = catalog;
         if (nonNull(links)) {
             add(links);
         }

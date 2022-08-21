@@ -22,7 +22,7 @@
 package eu.tailoringexpert.renderer;
 
 import com.openhtmltopdf.pdfboxout.PdfRendererBuilder;
-import eu.tailoringexpert.domain.Datei;
+import eu.tailoringexpert.domain.File;
 import lombok.Getter;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
@@ -32,14 +32,13 @@ import org.apache.pdfbox.io.IOUtils;
 import org.apache.pdfbox.pdmodel.PDDocument;
 
 import java.io.ByteArrayOutputStream;
-import java.io.File;
 import java.io.InputStream;
 
 import static java.lang.String.format;
 import static org.apache.pdfbox.io.MemoryUsageSetting.setupTempFileOnly;
 
 /**
- * Erzeugung der PDF Datei aus HTML Content.
+ * Erzeugung der PDF File aus HTML Content.
  *
  * @author Michael Bädorf
  */
@@ -48,7 +47,7 @@ import static org.apache.pdfbox.io.MemoryUsageSetting.setupTempFileOnly;
 public class PDFEngine {
 
     @NonNull
-    private String ersteller;
+    private String creator;
 
     /**
      * Hauptpfad im Dateisystem für die Auflösung von relativen Resourcen.
@@ -60,12 +59,12 @@ public class PDFEngine {
     /**
      * Erzeugt ein PDF aus dem übergebenen HTML String.
      *
-     * @param docId      Name der zu erstellenden PDF Datei
-     * @param html       HTML für die Erzeugung der PDF Datei
+     * @param docId      Name der zu erstellenden PDF File
+     * @param html       HTML für die Erzeugung der PDF File
      * @param pfadSuffix Pfad zum Verzeichnis unterhalb der definierten <strong>baseUri</strong>. Wird für die relative Referenzierung von Bildern benötigt.
-     * @return Die erzeugte "PA" Datei
+     * @return Die erzeugte "PA" File
      */
-    public Datei process(@NonNull String docId, @NonNull String html, @NonNull String pfadSuffix) {
+    public File process(@NonNull String docId, @NonNull String html, @NonNull String pfadSuffix) {
         try (PDDocument document = new PDDocument(setupTempFileOnly())) {
             ByteArrayOutputStream os = new ByteArrayOutputStream();
             PdfRendererBuilder builder = new PdfRendererBuilder();
@@ -73,16 +72,15 @@ public class PDFEngine {
             addColorProfile(builder);
 
             builder
-                .withHtmlContent(html, new File(format("%s/%s/", baseUri, pfadSuffix)).toURI().toString())
-                .withProducer(ersteller)
+                .withHtmlContent(html, new java.io.File(format("%s/%s/", baseUri, pfadSuffix)).toURI().toString())
+                .withProducer(creator)
                 .usePDDocument(document)
                 .toStream(os)
                 .run();
 
-            return Datei.builder()
-                .docId(docId)
-                .type("pdf")
-                .bytes(os.toByteArray())
+            return File.builder()
+                .name(docId + ".pdf")
+                .data(os.toByteArray())
                 .build();
         } catch (Exception e) {
             log.catching(e);

@@ -39,15 +39,15 @@ public class ScreeningSheetResource extends RepresentationModel<ScreeningSheetRe
 
     private byte[] data;
     private List<ScreeningSheetParameterResource> parameters;
-    private SelektionsVektorResource selektionsVektor;
+    private SelectionVectorResource selectionVector;
 
     @Builder
-    public ScreeningSheetResource(byte[] data, List<ScreeningSheetParameterResource> parameters, SelektionsVektorResource selektionsVektor, List<Link> links) {
+    public ScreeningSheetResource(byte[] data, List<ScreeningSheetParameterResource> parameters, SelectionVectorResource selectionVector, List<Link> links) {
         super();
 
         this.data = nonNull(data) ? data.clone() : data;
         this.parameters = parameters;
-        this.selektionsVektor = selektionsVektor;
+        this.selectionVector = selectionVector;
         if (nonNull(links)) {
             add(links);
         }

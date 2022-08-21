@@ -26,14 +26,14 @@ import eu.tailoringexpert.Tenants;
 import eu.tailoringexpert.domain.MediaTypeProvider;
 import eu.tailoringexpert.domain.ResourceMapper;
 import eu.tailoringexpert.domain.DRD;
-import eu.tailoringexpert.domain.Kapitel;
+import eu.tailoringexpert.domain.Chapter;
 import eu.tailoringexpert.domain.Phase;
-import eu.tailoringexpert.domain.TailoringAnforderung;
-import eu.tailoringexpert.anforderung.AnforderungService;
-import eu.tailoringexpert.repository.DokumentZeichnerRepository;
+import eu.tailoringexpert.domain.TailoringRequirement;
+import eu.tailoringexpert.requirement.RequirementService;
+import eu.tailoringexpert.repository.DokumentSigneeRepository;
 import eu.tailoringexpert.repository.LogoRepository;
-import eu.tailoringexpert.repository.ProjektRepository;
-import eu.tailoringexpert.repository.SelektionsVektorProfilRepository;
+import eu.tailoringexpert.repository.ProjectRepository;
+import eu.tailoringexpert.repository.SelectionVectorProfileRepository;
 import eu.tailoringexpert.repository.TailoringRepository;
 import lombok.NonNull;
 import org.springframework.beans.factory.ListableBeanFactory;
@@ -73,24 +73,24 @@ public class TailoringConfiguration {
     }
 
     @Bean
-    DokumentCreator projektPhaseKatalogSpreadsheetCreator() {
-        return new TailoringKatalogSpreadsheetCreator();
+    DocumentCreator projektPhaseKatalogSpreadsheetCreator() {
+        return new TailoringCatalogSpreadsheetCreator();
     }
 
     @Bean
     @Primary
-    DokumentService dokumentService(@NonNull ListableBeanFactory beanFactory) {
-        Map<String, DokumentService> services = Tenants.get(beanFactory, DokumentService.class);
-        return new TenantDokumentService(services);
+    DocumentService dokumentService(@NonNull ListableBeanFactory beanFactory) {
+        Map<String, DocumentService> services = Tenants.get(beanFactory, DocumentService.class);
+        return new TenantDocumentService(services);
     }
 
     @Bean
     TailoringServiceRepository tailoringServiceRepository(@NonNull JPATailoringServiceRepositoryMapper mapper,
-                                                          @NonNull ProjektRepository projektRepository,
+                                                          @NonNull ProjectRepository projectRepository,
                                                           @NonNull TailoringRepository tailoringRepository,
-                                                          @NonNull SelektionsVektorProfilRepository selektionsVektorProfilRepository,
-                                                          @NonNull DokumentZeichnerRepository dokumentZeichnerRepository) {
-        return new JPATailoringServiceRepository(mapper, projektRepository, tailoringRepository, selektionsVektorProfilRepository, dokumentZeichnerRepository);
+                                                          @NonNull SelectionVectorProfileRepository selectionVectorProfileRepository,
+                                                          @NonNull DokumentSigneeRepository dokumentSigneeRepository) {
+        return new JPATailoringServiceRepository(mapper, projectRepository, tailoringRepository, selectionVectorProfileRepository, dokumentSigneeRepository);
     }
 
     @Bean
@@ -102,10 +102,10 @@ public class TailoringConfiguration {
     TailoringService tailoringService(
         @NonNull TailoringServiceRepository repository,
         @NonNull TailoringServiceMapper mapper,
-        @NonNull DokumentService dokumentService,
-        @NonNull AnforderungService anforderungService,
-        @NonNull Function<byte[], Map<String, Collection<ImportAnforderung>>> tailoringAnforderungFileReader) {
-        return new TailoringServiceImpl(repository, mapper, dokumentService, anforderungService, tailoringAnforderungFileReader);
+        @NonNull DocumentService documentService,
+        @NonNull RequirementService requirementService,
+        @NonNull Function<byte[], Map<String, Collection<ImportRequirement>>> tailoringAnforderungFileReader) {
+        return new TailoringServiceImpl(repository, mapper, documentService, requirementService, tailoringAnforderungFileReader);
     }
 
     Map<String, String> arzs(@Value("#{${tenant.arzs}}") Map<String, String> arzs) {
@@ -125,11 +125,11 @@ public class TailoringConfiguration {
             new SimpleEntry<>(F, unmodifiableCollection(asList("EOM", "MCR")))
         );
 
-        return new DRDAnwendbarPraedikat(phase2Meilensteine);
+        return new DRDApplicablePredicate(phase2Meilensteine);
     }
 
     @Bean
-    BiFunction<Kapitel<TailoringAnforderung>, Collection<Phase>, Map<DRD, Set<String>>> drdProvider(
+    BiFunction<Chapter<TailoringRequirement>, Collection<Phase>, Map<DRD, Set<String>>> drdProvider(
         @NonNull BiPredicate<String, Collection<Phase>> drdAnwendbarPraedikat) {
         return new DRDProvider(drdAnwendbarPraedikat);
     }
@@ -154,8 +154,8 @@ public class TailoringConfiguration {
     }
 
     @Bean
-    Function<byte[], Map<String, Collection<ImportAnforderung>>> tailoringAnforderungExcelFileReader() {
-        return new TailoringAnforderungExcelFileReader();
+    Function<byte[], Map<String, Collection<ImportRequirement>>> tailoringAnforderungExcelFileReader() {
+        return new TailoringRequirementExcelFileReader();
     }
 
 }
