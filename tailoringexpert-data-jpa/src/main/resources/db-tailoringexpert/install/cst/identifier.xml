@@ -6,7 +6,7 @@
     <changeSet id="Constraint: FK_IDENTIFIER_REQUIREMENT" author="Michael Baedorf">
         <addForeignKeyConstraint constraintName="FK_IDENTIFIER_REQUIREMENT"
                                  baseTableName="IDENTIFIER" baseColumnNames="REQUIREMENT_ID"
-                                 referencedTableName="BASECATALOGREQUIREMENT"
+                                 referencedTableName="BASEREQUIREMENT"
                                  referencedColumnNames="REQUIREMENT_ID"/>
     </changeSet>
 

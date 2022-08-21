@@ -37,7 +37,7 @@ import java.time.format.DateTimeFormatter;
 
 import static eu.tailoringexpert.domain.Phase.A;
 import static eu.tailoringexpert.domain.Phase.C;
-import static eu.tailoringexpert.domain.TailoringStatus.AKTIV;
+import static eu.tailoringexpert.domain.TailoringState.ACTIVE;
 import static java.lang.Boolean.TRUE;
 import static java.nio.file.Files.newInputStream;
 import static java.nio.file.Paths.get;
@@ -64,10 +64,10 @@ class ResourceMapperTest {
         // arrange
         PathContextBuilder pathContext = PathContext.builder();
 
-        KatalogVersion katalogVersion = null;
+        BaseCatalogVersion baseCatalogVersion = null;
 
         // act
-        KatalogVersionResource actual = mapper.toResource(pathContext, katalogVersion);
+        BaseCatalogVersionResource actual = mapper.toResource(pathContext, baseCatalogVersion);
 
         // assert
         assertThat(actual).isNull();
@@ -78,38 +78,38 @@ class ResourceMapperTest {
         // arrange
         PathContextBuilder pathContext = PathContext.builder();
 
-        KatalogVersion katalogVersion = new KatalogVersion() {
+        BaseCatalogVersion baseCatalogVersion = new BaseCatalogVersion() {
             @Override
             public String getVersion() {
                 return "8.2.1";
             }
 
             @Override
-            public ZonedDateTime getGueltigAb() {
+            public ZonedDateTime getValidFrom() {
                 return ZonedDateTime.now();
             }
 
             @Override
-            public ZonedDateTime getGueltigBis() {
+            public ZonedDateTime getValidUntil() {
                 return null;
             }
         };
 
         // act
-        KatalogVersionResource actual = mapper.toResource(pathContext, katalogVersion);
+        BaseCatalogVersionResource actual = mapper.toResource(pathContext, baseCatalogVersion);
 
         // assert
         assertThat(actual).isNotNull();
         assertThat(actual.getVersion()).isEqualTo("8.2.1");
-        assertThat(actual.getGueltigAb()).isNotNull();
-        assertThat(actual.getGueltigBis()).isNull();
+        assertThat(actual.getValidFrom()).isNotNull();
+        assertThat(actual.getValidUntil()).isNull();
         assertThat(actual.getStandard()).isTrue();
 
         assertThat(actual.getLinks()).containsExactlyInAnyOrder(
-            Link.of("http://localhost/katalog/8.2.1", "self"),
-            Link.of("http://localhost/katalog/8.2.1/projekt", "projekt"),
-            Link.of("http://localhost/katalog/8.2.1/pdf", "pdf"),
-            Link.of("http://localhost/katalog/8.2.1/json", "json")
+            Link.of("http://localhost/catalog/8.2.1", "self"),
+            Link.of("http://localhost/catalog/8.2.1/project", "project"),
+            Link.of("http://localhost/catalog/8.2.1/pdf", "pdf"),
+            Link.of("http://localhost/catalog/8.2.1/json", "json")
         );
 
     }
@@ -118,10 +118,10 @@ class ResourceMapperTest {
     void toResource_ProjektInformationNull_NullWirdZurueckGegeben() {
         // arrange
         PathContextBuilder pathContext = PathContext.builder();
-        ProjektInformation projekt = null;
+        ProjectInformation projekt = null;
 
         // act
-        ProjektInformationResource actual = mapper.toResource(pathContext, projekt);
+        ProjectInformationResource actual = mapper.toResource(pathContext, projekt);
 
         // assert
         assertThat(actual).isNull();
@@ -131,12 +131,12 @@ class ResourceMapperTest {
     void toResource_ProjektInformation_DatenUndLinksOk() {
         // arrange
         PathContextBuilder pathContext = PathContext.builder()
-            .projekt("SAMPLE")
-            .katalog("8.2.1");
+            .project("SAMPLE")
+            .catalog("8.2.1");
 
-        ProjektInformation projekt = ProjektInformation.builder()
-            .kuerzel("SAMPLE")
-            .katalogVersion("8.2.1")
+        ProjectInformation projekt = ProjectInformation.builder()
+            .identifier("SAMPLE")
+            .catalogVersion("8.2.1")
             .tailorings(asList(
                 TailoringInformation.builder().name("master").build(),
                 TailoringInformation.builder().name("master1").build()
@@ -144,20 +144,20 @@ class ResourceMapperTest {
             .build();
 
         // act
-        ProjektInformationResource actual = mapper.toResource(pathContext, projekt);
+        ProjectInformationResource actual = mapper.toResource(pathContext, projekt);
 
         // assert
         assertThat(actual).isNotNull();
-        assertThat(actual.getName()).isEqualTo(projekt.getKuerzel());
-        assertThat(actual.getKatalogVersion()).isEqualTo(projekt.getKatalogVersion());
+        assertThat(actual.getName()).isEqualTo(projekt.getIdentifier());
+        assertThat(actual.getCatalogVersion()).isEqualTo(projekt.getCatalogVersion());
         assertThat(actual.getTailorings()).hasSize(2);
         assertThat(actual.getTailorings()).extracting("name").containsExactlyInAnyOrder("master", "master1");
 
         assertThat(actual.getLinks()).containsExactlyInAnyOrder(
-            Link.of("http://localhost/projekt/SAMPLE", "self"),
-            Link.of("http://localhost/projekt/SAMPLE/selektionsvektor", "selektionsvektor"),
-            Link.of("http://localhost/projekt/SAMPLE/screeningsheet", "screeningsheet"),
-            Link.of("http://localhost/projekt/SAMPLE/tailoring", "tailoring")
+            Link.of("http://localhost/project/SAMPLE", "self"),
+            Link.of("http://localhost/project/SAMPLE/selectionvector", "selectionvector"),
+            Link.of("http://localhost/project/SAMPLE/screeningsheet", "screeningsheet"),
+            Link.of("http://localhost/project/SAMPLE/tailoring", "tailoring")
         );
     }
 
@@ -165,44 +165,44 @@ class ResourceMapperTest {
     void toResource_ProjektInformationOhneProjektPhaseInformation_DatenMitNullPhasenUndLinksOk() {
         // arrange
         PathContextBuilder pathContext = PathContext.builder()
-            .projekt("SAMPLE")
-            .katalog("8.2.1");
+            .project("SAMPLE")
+            .catalog("8.2.1");
 
-        ProjektInformation projekt = ProjektInformation.builder()
-            .kuerzel("SAMPLE")
-            .katalogVersion("8.2.1")
+        ProjectInformation projekt = ProjectInformation.builder()
+            .identifier("SAMPLE")
+            .catalogVersion("8.2.1")
             .tailorings(null)
             .build();
 
         // act
-        ProjektInformationResource actual = mapper.toResource(pathContext, projekt);
+        ProjectInformationResource actual = mapper.toResource(pathContext, projekt);
 
         // assert
         assertThat(actual).isNotNull();
-        assertThat(actual.getName()).isEqualTo(projekt.getKuerzel());
-        assertThat(actual.getKatalogVersion()).isEqualTo(projekt.getKatalogVersion());
+        assertThat(actual.getName()).isEqualTo(projekt.getIdentifier());
+        assertThat(actual.getCatalogVersion()).isEqualTo(projekt.getCatalogVersion());
         assertThat(actual.getTailorings()).isNull();
 
         assertThat(actual.getLinks()).containsExactlyInAnyOrder(
-            Link.of("http://localhost/projekt/SAMPLE", "self"),
-            Link.of("http://localhost/projekt/SAMPLE/selektionsvektor", "selektionsvektor"),
-            Link.of("http://localhost/projekt/SAMPLE/screeningsheet", "screeningsheet"),
-            Link.of("http://localhost/projekt/SAMPLE/tailoring", "tailoring")
+            Link.of("http://localhost/project/SAMPLE", "self"),
+            Link.of("http://localhost/project/SAMPLE/selectionvector", "selectionvector"),
+            Link.of("http://localhost/project/SAMPLE/screeningsheet", "screeningsheet"),
+            Link.of("http://localhost/project/SAMPLE/tailoring", "tailoring")
         );
     }
 
     @Test
-    void toResource_ProjektInformationErstellungsZeitpunktVorhanden_DatenUndLinksOk() {
+    void toResource_ProjectInformationCreationTimestampAvailable_DatenUndLinksOk() {
         // arrange
         PathContextBuilder pathContext = PathContext.builder()
-            .projekt("SAMPLE")
-            .katalog("8.2.1");
+            .project("SAMPLE")
+            .catalog("8.2.1");
 
         ZonedDateTime now = ZonedDateTime.now();
-        ProjektInformation projekt = ProjektInformation.builder()
-            .kuerzel("SAMPLE")
-            .katalogVersion("8.2.1")
-            .erstellungsZeitpunkt(now)
+        ProjectInformation projekt = ProjectInformation.builder()
+            .identifier("SAMPLE")
+            .catalogVersion("8.2.1")
+            .creationTimestamp(now)
             .tailorings(asList(
                 TailoringInformation.builder().name("master").build(),
                 TailoringInformation.builder().name("master1").build()
@@ -210,21 +210,21 @@ class ResourceMapperTest {
             .build();
 
         // act
-        ProjektInformationResource actual = mapper.toResource(pathContext, projekt);
+        ProjectInformationResource actual = mapper.toResource(pathContext, projekt);
 
         // assert
         assertThat(actual).isNotNull();
-        assertThat(actual.getName()).isEqualTo(projekt.getKuerzel());
-        assertThat(actual.getKatalogVersion()).isEqualTo(projekt.getKatalogVersion());
-        assertThat(actual.getErstellungsZeitpunkt()).isEqualTo(DateTimeFormatter.ofPattern("dd.MM.yyyy").format(now));
+        assertThat(actual.getName()).isEqualTo(projekt.getIdentifier());
+        assertThat(actual.getCatalogVersion()).isEqualTo(projekt.getCatalogVersion());
+        assertThat(actual.getCreationTimestamp()).isEqualTo(DateTimeFormatter.ofPattern("dd.MM.yyyy").format(now));
         assertThat(actual.getTailorings()).hasSize(2);
         assertThat(actual.getTailorings()).extracting("name").containsExactlyInAnyOrder("master", "master1");
 
         assertThat(actual.getLinks()).containsExactlyInAnyOrder(
-            Link.of("http://localhost/projekt/SAMPLE", "self"),
-            Link.of("http://localhost/projekt/SAMPLE/selektionsvektor", "selektionsvektor"),
-            Link.of("http://localhost/projekt/SAMPLE/screeningsheet", "screeningsheet"),
-            Link.of("http://localhost/projekt/SAMPLE/tailoring", "tailoring")
+            Link.of("http://localhost/project/SAMPLE", "self"),
+            Link.of("http://localhost/project/SAMPLE/selectionvector", "selectionvector"),
+            Link.of("http://localhost/project/SAMPLE/screeningsheet", "screeningsheet"),
+            Link.of("http://localhost/project/SAMPLE/tailoring", "tailoring")
         );
     }
 
@@ -242,16 +242,16 @@ class ResourceMapperTest {
     }
 
     @Test
-    void toResource_ProjektPhaseInformation_DatenUndLinksOk() {
+    void toResource_TailoringInformation_DatenUndLinksOk() {
         // arrange
         PathContextBuilder pathContext = PathContext.builder()
-            .projekt("SAMPLE")
+            .project("SAMPLE")
             .tailoring("master");
 
         TailoringInformation projektPhase = TailoringInformation.builder()
             .name("master")
-            .katalogVersion("8.2.1")
-            .phasen(asList(A, C))
+            .catalogVersion("8.2.1")
+            .phases(asList(A, C))
             .build();
 
         // act
@@ -260,20 +260,21 @@ class ResourceMapperTest {
         // assert
         assertThat(actual).isNotNull();
         assertThat(actual.getName()).isEqualTo("master");
-        assertThat(actual.getPhasen()).containsExactlyInAnyOrderElementsOf(asList(A, C));
+        assertThat(actual.getPhases()).containsExactlyInAnyOrderElementsOf(asList(A, C));
 
         assertThat(actual.getLinks()).containsExactlyInAnyOrder(
-            Link.of("http://localhost/projekt/SAMPLE/tailoring/master", "self"),
-            Link.of("http://localhost/projekt/SAMPLE/tailoring/master/screeningsheet", "screeningsheet"),
-            Link.of("http://localhost/projekt/SAMPLE/tailoring/master/selektionsvektor", "selektionsvektor"),
-            Link.of("http://localhost/projekt/SAMPLE/tailoring/master/zeichnung", "zeichnung"),
-            Link.of("http://localhost/projekt/SAMPLE/tailoring/master/dokument", "dokument"),
-            Link.of("http://localhost/projekt/SAMPLE/tailoring/master/dokument/katalog", "katalogdokument"),
-            Link.of("http://localhost/projekt/SAMPLE/tailoring/master/dokument/vergleich", "vergleich"),
-            Link.of("http://localhost/projekt/SAMPLE/tailoring/master/katalog", "katalog"),
-            Link.of("http://localhost/projekt/SAMPLE/tailoring/master/name", "name"),
-            Link.of("http://localhost/projekt/SAMPLE/tailoring/master/anforderungen/import", "import"),
-            Link.of("http://localhost/katalog/8.2.1/pdf", "katalogdefinitiondokument")
+            Link.of("http://localhost/project/SAMPLE/tailoring/master", "self"),
+            Link.of("http://localhost/project/SAMPLE/tailoring/master/screeningsheet", "screeningsheet"),
+            Link.of("http://localhost/project/SAMPLE/tailoring/master/selectionvector", "selectionvector"),
+            Link.of("http://localhost/project/SAMPLE/tailoring/master/signature", "signature"),
+            Link.of("http://localhost/project/SAMPLE/tailoring/master/document", "document"),
+            Link.of("http://localhost/project/SAMPLE/tailoring/master/document/catalog", "tailoringcatalog"),
+            Link.of("http://localhost/project/SAMPLE/tailoring/master/compare", "compare"),
+            Link.of("http://localhost/project/SAMPLE/tailoring/master/catalog", "catalog"),
+            Link.of("http://localhost/project/SAMPLE/tailoring/master/name", "name"),
+            Link.of("http://localhost/project/SAMPLE/tailoring/master/requirement/import", "import"),
+            Link.of("http://localhost/catalog/8.2.1/pdf", "basecatalog"),
+            Link.of("http://localhost/project/SAMPLE/tailoring/master/attachment", "attachment")
         );
     }
 
@@ -294,15 +295,15 @@ class ResourceMapperTest {
     void toResource_ProjektScreeningSheet_ProjektScreeningDatenUndLinksOk() {
         // arrange
         PathContextBuilder pathContext = PathContext.builder()
-            .projekt("SAMPLE");
+            .project("SAMPLE");
 
         ScreeningSheetParameter parameter = ScreeningSheetParameter.builder()
-            .bezeichnung("Kuerzel")
-            .wert("SAMPLE")
+            .category("Kuerzel")
+            .value("SAMPLE")
             .build();
 
         ScreeningSheet screeningSheet = ScreeningSheet.builder()
-            .selektionsVektor(SelektionsVektor.builder().build())
+            .selectionVector(SelectionVector.builder().build())
             .parameters(asList(parameter))
             .build();
 
@@ -312,17 +313,17 @@ class ResourceMapperTest {
         // assert
         assertThat(actual).isNotNull();
         assertThat(actual.getData()).isNull();
-        assertThat(actual.getSelektionsVektor()).isNotNull();
+        assertThat(actual.getSelectionVector()).isNotNull();
         assertThat(actual.getParameters()).isNotNull();
         assertThat(actual.getParameters()).hasSize(1);
         assertThat(actual.getParameters()).containsOnly(ScreeningSheetParameterResource.builder()
-            .bezeichnung(parameter.getBezeichnung())
-            .wert(parameter.getWert())
+            .bezeichnung(parameter.getCategory())
+            .value(parameter.getValue())
             .build());
 
         assertThat(actual.getLinks()).containsExactlyInAnyOrder(
-            Link.of("http://localhost/projekt/SAMPLE/screeningsheet", "self"),
-            Link.of("http://localhost/projekt/SAMPLE/screeningsheet/pdf", "datei")
+            Link.of("http://localhost/project/SAMPLE/screeningsheet", "self"),
+            Link.of("http://localhost/project/SAMPLE/screeningsheet/pdf", "datei")
 
         );
     }
@@ -331,10 +332,10 @@ class ResourceMapperTest {
     void toResource_ProjektScreeningSheetScreeningSheetParameterNull_ProjektScreeningParameterNullDatenUndLinksOk() {
         // arrange
         PathContextBuilder pathContext = PathContext.builder()
-            .projekt("SAMPLE");
+            .project("SAMPLE");
 
         ScreeningSheet screeningSheet = ScreeningSheet.builder()
-            .selektionsVektor(SelektionsVektor.builder().build())
+            .selectionVector(SelectionVector.builder().build())
             .parameters(null)
             .build();
 
@@ -344,12 +345,12 @@ class ResourceMapperTest {
         // assert
         assertThat(actual).isNotNull();
         assertThat(actual.getData()).isNull();
-        assertThat(actual.getSelektionsVektor()).isNotNull();
+        assertThat(actual.getSelectionVector()).isNotNull();
         assertThat(actual.getParameters()).isNull();
 
         assertThat(actual.getLinks()).containsExactlyInAnyOrder(
-            Link.of("http://localhost/projekt/SAMPLE/screeningsheet", "self"),
-            Link.of("http://localhost/projekt/SAMPLE/screeningsheet/pdf", "datei")
+            Link.of("http://localhost/project/SAMPLE/screeningsheet", "self"),
+            Link.of("http://localhost/project/SAMPLE/screeningsheet/pdf", "datei")
 
         );
     }
@@ -364,16 +365,16 @@ class ResourceMapperTest {
         }
 
         PathContextBuilder pathContext = PathContext.builder()
-            .projekt("SAMPLE");
+            .project("SAMPLE");
 
 
         ScreeningSheetParameter parameter = ScreeningSheetParameter.builder()
-            .bezeichnung("Kuerzel")
-            .wert("SAMPLE")
+            .category("Kuerzel")
+            .value("SAMPLE")
             .build();
 
         ScreeningSheet screeningSheet = ScreeningSheet.builder()
-            .selektionsVektor(SelektionsVektor.builder().build())
+            .selectionVector(SelectionVector.builder().build())
             .parameters(asList(parameter))
             .data(data)
             .build();
@@ -383,18 +384,18 @@ class ResourceMapperTest {
 
         // assert
         assertThat(actual).isNotNull();
-        assertThat(actual.getSelektionsVektor()).isNotNull();
+        assertThat(actual.getSelectionVector()).isNotNull();
         assertThat(actual.getParameters()).isNotNull();
         assertThat(actual.getParameters()).hasSize(1);
         assertThat(actual.getParameters()).containsOnly(ScreeningSheetParameterResource.builder()
-            .bezeichnung(parameter.getBezeichnung())
-            .wert(parameter.getWert())
+            .bezeichnung(parameter.getCategory())
+            .value(parameter.getValue())
             .build());
         assertThat(actual.getData()).isEqualTo(data);
 
         assertThat(actual.getLinks()).containsExactlyInAnyOrder(
-            Link.of("http://localhost/projekt/SAMPLE/screeningsheet", "self"),
-            Link.of("http://localhost/projekt/SAMPLE/screeningsheet/pdf", "datei")
+            Link.of("http://localhost/project/SAMPLE/screeningsheet", "self"),
+            Link.of("http://localhost/project/SAMPLE/screeningsheet/pdf", "datei")
 
         );
     }
@@ -403,16 +404,16 @@ class ResourceMapperTest {
     void toResource_ProjektPhaseScreeningSheet_ProjektPhaseScreeningDatenUndLinksOk() {
         // arrange
         PathContextBuilder pathContext = PathContext.builder()
-            .projekt("SAMPLE")
+            .project("SAMPLE")
             .tailoring("master");
 
         ScreeningSheetParameter parameter = ScreeningSheetParameter.builder()
-            .bezeichnung("Kuerzel")
-            .wert("SAMPLE")
+            .category("Kuerzel")
+            .value("SAMPLE")
             .build();
 
         ScreeningSheet screeningSheet = ScreeningSheet.builder()
-            .selektionsVektor(SelektionsVektor.builder().build())
+            .selectionVector(SelectionVector.builder().build())
             .parameters(asList(parameter))
             .build();
 
@@ -422,17 +423,17 @@ class ResourceMapperTest {
         // assert
         assertThat(actual).isNotNull();
         assertThat(actual.getData()).isNull();
-        assertThat(actual.getSelektionsVektor()).isNotNull();
+        assertThat(actual.getSelectionVector()).isNotNull();
         assertThat(actual.getParameters()).isNotNull();
         assertThat(actual.getParameters()).hasSize(1);
         assertThat(actual.getParameters()).containsOnly(ScreeningSheetParameterResource.builder()
-            .bezeichnung(parameter.getBezeichnung())
-            .wert(parameter.getWert())
+            .bezeichnung(parameter.getCategory())
+            .value(parameter.getValue())
             .build());
 
         assertThat(actual.getLinks()).containsExactlyInAnyOrder(
-            Link.of("http://localhost/projekt/SAMPLE/tailoring/master/screeningsheet", "self"),
-            Link.of("http://localhost/projekt/SAMPLE/tailoring/master/screeningsheet/pdf", "datei")
+            Link.of("http://localhost/project/SAMPLE/tailoring/master/screeningsheet", "self"),
+            Link.of("http://localhost/project/SAMPLE/tailoring/master/screeningsheet/pdf", "datei")
 
         );
     }
@@ -442,10 +443,10 @@ class ResourceMapperTest {
     void toResource_ProjektNull_NullWirdZurueckGegeben() {
         // arrange
         PathContextBuilder pathContext = PathContext.builder();
-        Projekt projekt = null;
+        Project project = null;
 
         // act
-        ProjektResource actual = mapper.toResource(pathContext, projekt);
+        ProjectResource actual = mapper.toResource(pathContext, project);
 
         // assert
         assertThat(actual).isNull();
@@ -456,16 +457,16 @@ class ResourceMapperTest {
     void toResource_Projekt_DatenUndLinksOk() {
         // arrange
         PathContextBuilder pathContext = PathContext.builder()
-            .projekt("SAMPLE");
+            .project("SAMPLE");
 
-        Projekt projekt = Projekt.builder()
-            .kuerzel("SAMPLE")
+        Project project = Project.builder()
+            .identifier("SAMPLE")
             .tailorings(asList(
                 Tailoring.builder()
                     .name("master")
-                    .katalog(Katalog.<TailoringAnforderung>builder()
-                        .toc(Kapitel.<TailoringAnforderung>builder()
-                            .nummer("1")
+                    .catalog(Catalog.<TailoringRequirement>builder()
+                        .toc(Chapter.<TailoringRequirement>builder()
+                            .number("1")
                             .build())
                         .build())
                     .build()
@@ -474,16 +475,16 @@ class ResourceMapperTest {
 
 
         // act
-        ProjektResource actual = mapper.toResource(pathContext, projekt);
+        ProjectResource actual = mapper.toResource(pathContext, project);
 
         // assert
         assertThat(actual).isNotNull();
-        assertThat(actual.getName()).isEqualTo(projekt.getKuerzel());
+        assertThat(actual.getName()).isEqualTo(project.getIdentifier());
         assertThat(actual.getTailorings()).hasSize(1);
 
         assertThat(actual.getLinks()).containsExactlyInAnyOrder(
-            Link.of("http://localhost/projekt/SAMPLE", "self"),
-            Link.of("http://localhost/projekt/SAMPLE", "copy")
+            Link.of("http://localhost/project/SAMPLE", "self"),
+            Link.of("http://localhost/project/SAMPLE", "copy")
         );
     }
 
@@ -501,18 +502,18 @@ class ResourceMapperTest {
     }
 
     @Test
-    void toResource_ProjektPhase_DatenUndLinksOk() {
+    void toResource_Tailoring_DatenUndLinksOk() {
         // arrange
         PathContextBuilder pathContext = PathContext.builder()
-            .projekt("SAMPLE")
+            .project("SAMPLE")
             .tailoring("master");
 
         Tailoring tailoring = Tailoring.builder()
             .name("master")
-            .status(AKTIV)
-            .phasen(asList(A, C))
-            .katalog(Katalog.<TailoringAnforderung>builder()
-                .toc(Kapitel.<TailoringAnforderung>builder().build())
+            .state(ACTIVE)
+            .phases(asList(A, C))
+            .catalog(Catalog.<TailoringRequirement>builder()
+                .toc(Chapter.<TailoringRequirement>builder().build())
                 .build())
             .build();
 
@@ -523,18 +524,19 @@ class ResourceMapperTest {
         // assert
         assertThat(actual).isNotNull();
         assertThat(actual.getName()).isEqualTo("master");
-        assertThat(actual.getPhasen()).containsExactlyInAnyOrderElementsOf(asList(A, C));
-        assertThat(actual.getStatus()).isEqualTo(AKTIV);
-        assertThat(actual.getKatalog()).isNotNull();
+        assertThat(actual.getPhases()).containsExactlyInAnyOrderElementsOf(asList(A, C));
+        assertThat(actual.getState()).isEqualTo(ACTIVE);
+        assertThat(actual.getCatalog()).isNotNull();
 
         assertThat(actual.getLinks()).containsExactlyInAnyOrder(
-            Link.of("http://localhost/projekt/SAMPLE/tailoring/master", "self"),
-            Link.of("http://localhost/projekt/SAMPLE/tailoring/master/screeningsheet", "screeningsheet"),
-            Link.of("http://localhost/projekt/SAMPLE/tailoring/master/selektionsvektor", "selektionsvektor"),
-            Link.of("http://localhost/projekt/SAMPLE/tailoring/master/zeichnung", "zeichnung"),
-            Link.of("http://localhost/projekt/SAMPLE/tailoring/master/dokument", "dokument"),
-            Link.of("http://localhost/projekt/SAMPLE/tailoring/master/katalog", "katalog"),
-            Link.of("http://localhost/projekt/SAMPLE/tailoring/master/name", "name")
+            Link.of("http://localhost/project/SAMPLE/tailoring/master", "self"),
+            Link.of("http://localhost/project/SAMPLE/tailoring/master/screeningsheet", "screeningsheet"),
+            Link.of("http://localhost/project/SAMPLE/tailoring/master/selectionvector", "selectionvector"),
+            Link.of("http://localhost/project/SAMPLE/tailoring/master/signature", "signature"),
+            Link.of("http://localhost/project/SAMPLE/tailoring/master/document", "document"),
+            Link.of("http://localhost/project/SAMPLE/tailoring/master/catalog", "catalog"),
+            Link.of("http://localhost/project/SAMPLE/tailoring/master/name", "name"),
+            Link.of("http://localhost/project/SAMPLE/tailoring/master/attachment", "attachment")
         );
     }
 
@@ -542,45 +544,45 @@ class ResourceMapperTest {
     void toResource_ProjektPhaseAnforderungNull_NullWirdZurueckGegeben() {
         // arrange
         PathContextBuilder pathContext = PathContext.builder();
-        TailoringAnforderung anforderung = null;
+        TailoringRequirement anforderung = null;
 
         // act
-        TailoringAnforderungResource actual = mapper.toResource(pathContext, anforderung);
+        TailoringRequirementResource actual = mapper.toResource(pathContext, anforderung);
 
         // assert
         assertThat(actual).isNull();
     }
 
     @Test
-    void toResource_ProjektPhaseAnforderung_DatenUndLinksOk() {
+    void toResource_TailoringRequirement_DatenUndLinksOk() {
         // arrange
         PathContextBuilder pathContext = PathContext.builder()
-            .projekt("SAMPLE")
+            .project("SAMPLE")
             .tailoring("master")
-            .kapitel("1.4");
+            .chapter("1.4");
 
-        TailoringAnforderung anforderung = TailoringAnforderung.builder()
+        TailoringRequirement anforderung = TailoringRequirement.builder()
             .position("c")
             .text("Dies ist eine Testanforderung")
-            .ausgewaehlt(TRUE)
-            .referenz(Referenz.builder().text("Eine Referenz").build())
+            .selected(TRUE)
+            .reference(Reference.builder().text("Eine Reference").build())
             .build();
 
         // act
-        TailoringAnforderungResource actual = mapper.toResource(pathContext, anforderung);
+        TailoringRequirementResource actual = mapper.toResource(pathContext, anforderung);
 
         // assert
         assertThat(actual).isNotNull();
         assertThat(actual.getPosition()).isEqualTo(anforderung.getPosition());
         assertThat(actual.getText()).isEqualTo(anforderung.getText());
-        assertThat(actual.getAusgewaehlt()).isTrue();
-        assertThat(actual.getGeaendert()).isFalse();
-        assertThat(actual.getReferenz()).isEqualTo("Eine Referenz");
+        assertThat(actual.getSelected()).isTrue();
+        assertThat(actual.getChanged()).isFalse();
+        assertThat(actual.getReference()).isEqualTo("Eine Reference");
 
         assertThat(actual.getLinks()).containsExactlyInAnyOrder(
-            Link.of("http://localhost/projekt/SAMPLE/tailoring/master/katalog/1.4/c", "self"),
-            Link.of("http://localhost/projekt/SAMPLE/tailoring/master/katalog/1.4/c/ausgewaehlt/false", "ausgewaehlt"),
-            Link.of("http://localhost/projekt/SAMPLE/tailoring/master/katalog/1.4/c/text", "text")
+            Link.of("http://localhost/project/SAMPLE/tailoring/master/catalog/1.4/c", "self"),
+            Link.of("http://localhost/project/SAMPLE/tailoring/master/catalog/1.4/c/selected/false", "selected"),
+            Link.of("http://localhost/project/SAMPLE/tailoring/master/catalog/1.4/c/text", "text")
         );
     }
 
@@ -588,41 +590,41 @@ class ResourceMapperTest {
     void toResource_DokumentZeichnungNull_NullWirdZurueckGegeben() {
         // arrange
         PathContextBuilder pathContext = PathContext.builder();
-        DokumentZeichnung dokumentZeichnung = null;
+        DocumentSignature documentSignature = null;
 
         // act
-        DokumentZeichnungResource actual = mapper.toResource(pathContext, dokumentZeichnung);
+        DocumentSignatureResource actual = mapper.toResource(pathContext, documentSignature);
 
         // assert
         assertThat(actual).isNull();
     }
 
     @Test
-    void toResource_DokumentZeichnung_DatenUndLinksOk() {
+    void toResource_DocumentSignature_DatenUndLinksOk() {
         // arrange
         PathContextBuilder pathContext = PathContext.builder()
-            .projekt("SAMPLE")
+            .project("SAMPLE")
             .tailoring("master");
 
-        DokumentZeichnung dokumentZeichnung = DokumentZeichnung.builder()
-            .bereich("Software")
-            .unterzeichner("Hans Dampf")
-            .status(DokumentZeichnungStatus.AGREED)
-            .anwendbar(TRUE)
+        DocumentSignature documentSignature = DocumentSignature.builder()
+            .faculty("Software")
+            .signee("Hans Dampf")
+            .state(DocumentSignatureState.AGREED)
+            .applicable(TRUE)
             .build();
 
         // act
-        DokumentZeichnungResource actual = mapper.toResource(pathContext, dokumentZeichnung);
+        DocumentSignatureResource actual = mapper.toResource(pathContext, documentSignature);
 
         // assert
         assertThat(actual).isNotNull();
-        assertThat(actual.getBereich()).isEqualTo(dokumentZeichnung.getBereich());
-        assertThat(actual.getUnterzeichner()).isEqualTo(dokumentZeichnung.getUnterzeichner());
-        assertThat(actual.getStatus()).isEqualTo(dokumentZeichnung.getStatus());
-        assertThat(actual.getAnwendbar()).isEqualTo(dokumentZeichnung.getAnwendbar());
+        assertThat(actual.getFaculty()).isEqualTo(documentSignature.getFaculty());
+        assertThat(actual.getSignee()).isEqualTo(documentSignature.getSignee());
+        assertThat(actual.getState()).isEqualTo(documentSignature.getState());
+        assertThat(actual.getApplicable()).isEqualTo(documentSignature.getApplicable());
 
         assertThat(actual.getLinks()).containsExactlyInAnyOrder(
-            Link.of("http://localhost/projekt/SAMPLE/tailoring/master/zeichnung/Software", "self")
+            Link.of("http://localhost/project/SAMPLE/tailoring/master/signature/Software", "self")
         );
     }
 
@@ -630,10 +632,10 @@ class ResourceMapperTest {
     void toResource_AnforderungGruppeNull_NullWirdZurueckGegeben() {
         // arrange
         PathContextBuilder pathContext = PathContext.builder();
-        Kapitel<TailoringAnforderung> gruppe = null;
+        Chapter<TailoringRequirement> gruppe = null;
 
         // act
-        TailoringKatalogKapitelResource actual = mapper.toResource(pathContext, gruppe);
+        TailoringCatalogChapterResource actual = mapper.toResource(pathContext, gruppe);
 
         // assert
         assertThat(actual).isNull();
@@ -643,24 +645,24 @@ class ResourceMapperTest {
     void toResource_AnforderungGruppe_DatenUndLinksOK() {
         // arrange
         PathContextBuilder pathContext = PathContext.builder()
-            .projekt("SAMPLE")
+            .project("SAMPLE")
             .tailoring("master")
-            .kapitel("1.1");
+            .chapter("1.1");
 
-        Kapitel<TailoringAnforderung> gruppe = Kapitel.<TailoringAnforderung>builder()
-            .nummer("1.1")
+        Chapter<TailoringRequirement> gruppe = Chapter.<TailoringRequirement>builder()
+            .number("1.1")
             .build();
 
         // act
-        TailoringKatalogKapitelResource actual = mapper.toResource(pathContext, gruppe);
+        TailoringCatalogChapterResource actual = mapper.toResource(pathContext, gruppe);
 
         // assert
         assertThat(actual).isNotNull();
 
         assertThat(actual.getLinks()).containsExactlyInAnyOrder(
-            Link.of("http://localhost/projekt/SAMPLE/tailoring/master/katalog/1.1", "self"),
-            Link.of("http://localhost/projekt/SAMPLE/tailoring/master/katalog/1.1/anforderung", "anforderungen"),
-            Link.of("http://localhost/projekt/SAMPLE/tailoring/master/katalog/1.1/ausgewaehlt/{ausgewaehlt}", "selektion")
+            Link.of("http://localhost/project/SAMPLE/tailoring/master/catalog/1.1", "self"),
+            Link.of("http://localhost/project/SAMPLE/tailoring/master/catalog/1.1/requirement", "requirement"),
+            Link.of("http://localhost/project/SAMPLE/tailoring/master/catalog/1.1/selected/{selected}", "selection")
         );
     }
 
@@ -668,22 +670,22 @@ class ResourceMapperTest {
     void toResource_SelektionsVektorNull_NullWirdZurueckGegeben() {
         // arrange
         PathContextBuilder pathContext = PathContext.builder();
-        SelektionsVektor selektionsVektor = null;
+        SelectionVector selectionVector = null;
 
         // act
-        SelektionsVektorResource actual = mapper.toResource(pathContext, selektionsVektor);
+        SelectionVectorResource actual = mapper.toResource(pathContext, selectionVector);
 
         // assert
         assertThat(actual).isNull();
     }
 
     @Test
-    void toResource_ProjektSelektionsVektor_DatenUndLinksOK() {
+    void toResource_ProjectSelectionVector_DatenUndLinksOK() {
         // arrange
         PathContextBuilder pathContext = PathContext.builder()
-            .projekt("SAMPLE");
+            .project("SAMPLE");
 
-        SelektionsVektor selektionsVektor = SelektionsVektor.builder()
+        SelectionVector selectionVector = SelectionVector.builder()
             .level("G", 1)
             .level("E", 2)
             .level("M", 3)
@@ -697,7 +699,7 @@ class ResourceMapperTest {
             .build();
 
         // act
-        SelektionsVektorResource actual = mapper.toResource(pathContext, selektionsVektor);
+        SelectionVectorResource actual = mapper.toResource(pathContext, selectionVector);
 
         // assert
         assertThat(actual.getLevels()).containsEntry("G", 1);
@@ -712,18 +714,18 @@ class ResourceMapperTest {
         assertThat(actual.getLevels()).containsEntry("R", 10);
 
         assertThat(actual.getLinks()).containsExactlyInAnyOrder(
-            Link.of("http://localhost/projekt/SAMPLE/selektionsvektor", "self")
+            Link.of("http://localhost/project/SAMPLE/selectionvector", "self")
         );
     }
 
     @Test
-    void toResource_ProjektPhaseSelektionsVektor_DatenUndLinksOK() {
+    void toResource_TailoringSelectionVector_DatenUndLinksOK() {
         // arrange
         PathContextBuilder pathContext = PathContext.builder()
-            .projekt("SAMPLE")
+            .project("SAMPLE")
             .tailoring("master");
 
-        SelektionsVektor selektionsVektor = SelektionsVektor.builder()
+        SelectionVector selectionVector = SelectionVector.builder()
             .level("G", 1)
             .level("E", 2)
             .level("M", 3)
@@ -737,7 +739,7 @@ class ResourceMapperTest {
             .build();
 
         // act
-        SelektionsVektorResource actual = mapper.toResource(pathContext, selektionsVektor);
+        SelectionVectorResource actual = mapper.toResource(pathContext, selectionVector);
 
         // assert
         assertThat(actual).isNotNull();
@@ -753,7 +755,7 @@ class ResourceMapperTest {
         assertThat(actual.getLevels()).containsEntry("R", 10);
 
         assertThat(actual.getLinks()).containsExactlyInAnyOrder(
-            Link.of("http://localhost/projekt/SAMPLE/tailoring/master/selektionsvektor", "self")
+            Link.of("http://localhost/project/SAMPLE/tailoring/master/selectionvector", "self")
         );
     }
 
@@ -761,34 +763,34 @@ class ResourceMapperTest {
     void toResource_KatalogNull_NullWirdZurueckGegeben() {
         // arrange
         PathContextBuilder pathContext = PathContext.builder();
-        Katalog<TailoringAnforderung> domain = null;
+        Catalog<TailoringRequirement> domain = null;
 
         // act
-        KatalogResource actual = mapper.toResource(pathContext, domain);
+        TailoringCatalogResource actual = mapper.toResource(pathContext, domain);
 
         // assert
         assertThat(actual).isNull();
     }
 
     @Test
-    void toResource_Katalog_DatenUndLinksOK() {
+    void toResource_TailoringCatalog_DatenUndLinksOK() {
         // arrange
         PathContextBuilder pathContext = PathContext.builder()
-            .projekt("SAMPLE")
+            .project("SAMPLE")
             .tailoring("master");
 
-        Katalog<TailoringAnforderung> domain = Katalog.<TailoringAnforderung>builder()
-            .toc(Kapitel.<TailoringAnforderung>builder().build())
+        Catalog<TailoringRequirement> domain = Catalog.<TailoringRequirement>builder()
+            .toc(Chapter.<TailoringRequirement>builder().build())
             .build();
 
         // act
-        KatalogResource actual = mapper.toResource(pathContext, domain);
+        TailoringCatalogResource actual = mapper.toResource(pathContext, domain);
 
         // assert
         assertThat(actual).isNotNull();
 
         assertThat(actual.getLinks()).containsExactlyInAnyOrder(
-            Link.of("http://localhost/projekt/SAMPLE/tailoring/master/katalog", "self")
+            Link.of("http://localhost/project/SAMPLE/tailoring/master/catalog", "self")
         );
     }
 

@@ -22,20 +22,20 @@
 package eu.tailoringexpert.tailoring;
 
 import eu.tailoringexpert.ResourceException;
-import eu.tailoringexpert.domain.DokumentResource;
-import eu.tailoringexpert.domain.DokumentZeichnung;
-import eu.tailoringexpert.domain.DokumentZeichnungResource;
-import eu.tailoringexpert.domain.KatalogResource;
+import eu.tailoringexpert.domain.FileResource;
+import eu.tailoringexpert.domain.DocumentSignature;
+import eu.tailoringexpert.domain.DocumentSignatureResource;
+import eu.tailoringexpert.domain.SelectionVectorProfileResource;
+import eu.tailoringexpert.domain.TailoringCatalogResource;
 import eu.tailoringexpert.domain.MediaTypeProvider;
 import eu.tailoringexpert.domain.PathContext;
 import eu.tailoringexpert.domain.PathContext.PathContextBuilder;
 import eu.tailoringexpert.domain.ResourceMapper;
 import eu.tailoringexpert.domain.ScreeningSheetResource;
-import eu.tailoringexpert.domain.SelektionsVektorProfilResource;
-import eu.tailoringexpert.domain.SelektionsVektorResource;
-import eu.tailoringexpert.domain.TailoringAnforderungResource;
+import eu.tailoringexpert.domain.SelectionVectorResource;
+import eu.tailoringexpert.domain.TailoringRequirementResource;
 import eu.tailoringexpert.domain.TailoringInformationResource;
-import eu.tailoringexpert.domain.TailoringKatalogKapitelResource;
+import eu.tailoringexpert.domain.TailoringCatalogChapterResource;
 import eu.tailoringexpert.domain.TailoringResource;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -48,6 +48,7 @@ import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import org.springframework.hateoas.CollectionModel;
 import org.springframework.hateoas.EntityModel;
+import org.springframework.hateoas.UriTemplate;
 import org.springframework.http.ContentDisposition;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -68,10 +69,21 @@ import java.util.List;
 import java.util.Optional;
 import java.util.function.Function;
 
+import static eu.tailoringexpert.domain.ResourceMapper.TAILORING_ATTACHMENTS;
+import static eu.tailoringexpert.domain.ResourceMapper.TAILORING_ATTACHMENT;
+import static eu.tailoringexpert.domain.ResourceMapper.TAILORING_CATALOG;
+import static eu.tailoringexpert.domain.ResourceMapper.TAILORING_CATALOG_CHAPTER;
+import static eu.tailoringexpert.domain.ResourceMapper.TAILORING_CATALOG_CHAPTER_REQUIREMENT;
+import static eu.tailoringexpert.domain.ResourceMapper.TAILORING_COMPARE;
+import static eu.tailoringexpert.domain.ResourceMapper.TAILORING_DOCUMENT;
+import static eu.tailoringexpert.domain.ResourceMapper.TAILORING_DOCUMENT_CATALOG;
+import static eu.tailoringexpert.domain.ResourceMapper.TAILORING_SCREENINGSHEET;
+import static eu.tailoringexpert.domain.ResourceMapper.TAILORING_SCREENINGSHEET_PDF;
+import static eu.tailoringexpert.domain.ResourceMapper.TAILORING_SELECTIONVECTOR;
+import static eu.tailoringexpert.domain.ResourceMapper.TAILORING_SIGNATURE;
+import static eu.tailoringexpert.domain.ResourceMapper.TAILORING_SIGNATURE_FACULTY;
 import static java.util.stream.Collectors.toList;
 import static org.springframework.hateoas.EntityModel.of;
-import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
-import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 import static org.springframework.http.HttpHeaders.ACCESS_CONTROL_EXPOSE_HEADERS;
 import static org.springframework.http.HttpHeaders.CONTENT_DISPOSITION;
 import static org.springframework.http.HttpStatus.NOT_FOUND;
@@ -81,7 +93,7 @@ import static org.springframework.http.ResponseEntity.notFound;
 
 
 @RequiredArgsConstructor
-@Tag(name = "Tailoring Controller", description = "Verwaltung von Projekt Tailorings")
+@Tag(name = "Tailoring Controller", description = "Management of tailorings")
 @RestController
 public class TailoringController {
 
@@ -92,100 +104,99 @@ public class TailoringController {
     private TailoringService tailoringService;
 
     @NonNull
-    private TailoringServiceRepository projektPhaseServiceRepository;
+    private TailoringServiceRepository tailoringServiceRepository;
 
     @NonNull
     private Function<String, MediaType> mediaTypeProvider;
 
-    @Operation(summary = "Laden des Anforderungkatalog des Tailorings")
+    @Operation(summary = "Load tailoring requirements catalog")
     @ApiResponses(value = {
         @ApiResponse(
-            responseCode = "200", description = "Anforderungskatalog wurde geladen",
+            responseCode = "200", description = "Catalog loaded",
             content = @Content(mediaType = "application/json+hal", schema = @Schema(implementation = TailoringResource.class))),
         @ApiResponse(
-            responseCode = "404", description = "Anforderungskatalog nicht vorhanden",
+            responseCode = "404", description = "Catalog not be loaded",
             content = @Content)
     })
-    @GetMapping(value = ResourceMapper.TAILORINGKATALOG, produces = {"application/hal+json"})
-    public ResponseEntity<EntityModel<KatalogResource>> getKatalog(
-        @Parameter(description = "fachlicher Projektschlüssel") @PathVariable("projekt") String projekt,
-        @Parameter(description = "Identifikator des Tailorings") @PathVariable("tailoring") String tailoring) {
+    @GetMapping(value = TAILORING_CATALOG, produces = {"application/hal+json"})
+    public ResponseEntity<EntityModel<TailoringCatalogResource>> getCatalog(
+        @Parameter(description = "Project identifier") @PathVariable String project,
+        @Parameter(description = "Tailoring name") @PathVariable String tailoring) {
         PathContextBuilder pathContext = PathContext.builder()
-            .projekt(projekt)
+            .project(project)
             .tailoring(tailoring);
 
-        return tailoringService.getKatalog(projekt, tailoring)
+        return tailoringService.getCatalog(project, tailoring)
             .map(projektPhase -> ResponseEntity
                 .ok()
                 .body(of(mapper.toResource(pathContext, projektPhase))))
             .orElseGet(() -> notFound().build());
     }
 
-    @Operation(summary = "Laden eines Kapitels des Anforderungkatalogs")
+    @Operation(summary = "Load all chapter with all contained requirements")
     @ApiResponses(value = {
         @ApiResponse(
-            responseCode = "200", description = "Gruppe wurde geladen",
-            content = @Content(mediaType = "application/json+hal", schema = @Schema(implementation = TailoringKatalogKapitelResource.class))),
+            responseCode = "200", description = "Chapter loaded",
+            content = @Content(mediaType = "application/json+hal", schema = @Schema(implementation = TailoringCatalogChapterResource.class))),
         @ApiResponse(
-            responseCode = "404", description = "Kapitel nicht vorhanden",
+            responseCode = "404", description = "Chapter does not exits",
             content = @Content)
     })
-    @GetMapping(value = ResourceMapper.TAILORINGKATALOGKAPITEL, produces = {"application/hal+json"})
-    public ResponseEntity<EntityModel<TailoringKatalogKapitelResource>> getKapitel(
-        @Parameter(description = "fachlicher Projektschlüssel") @PathVariable("projekt") String projekt,
-        @Parameter(description = "Identifikator des Tailorings") @PathVariable("tailoring") String tailoring,
-        @Parameter(description = "Kapitel, für das alle Informationen ermittelt werden sollen") @PathVariable("kapitel") String kapitel) {
+    @GetMapping(value = TAILORING_CATALOG_CHAPTER, produces = {"application/hal+json"})
+    public ResponseEntity<EntityModel<TailoringCatalogChapterResource>> getChapter(
+        @Parameter(description = "Project identifier") @PathVariable String project,
+        @Parameter(description = "Tailoring name") @PathVariable String tailoring,
+        @Parameter(description = "Chapter number") @PathVariable String chapter) {
         PathContextBuilder pathContext = PathContext.builder()
-            .projekt(projekt)
+            .project(project)
             .tailoring(tailoring);
 
-        return tailoringService.getKapitel(projekt, tailoring, kapitel)
+        return tailoringService.getChapter(project, tailoring, chapter)
             .map(k -> ResponseEntity
                 .ok()
                 .body(of(mapper.toResource(pathContext, k))))
             .orElseGet(() -> notFound().build());
-
     }
 
-    @Operation(summary = "Laden des Screeningsheets des Tailorings")
+    @Operation(summary = "Load screeningsheet data of tailoring")
     @ApiResponses(value = {
         @ApiResponse(
-            responseCode = "200", description = "Screeningsheet des Tailorings wurde geladen",
+            responseCode = "200", description = "Screeningsheet loaded",
             content = @Content(mediaType = "application/json+hal", schema = @Schema(implementation = ScreeningSheetResource.class))),
         @ApiResponse(
-            responseCode = "404", description = "Screeningsheet nicht vorhanden",
+            responseCode = "404", description = "Screeningsheet does not exist",
             content = @Content)
     })
-    @GetMapping(value = ResourceMapper.TAILORINGSCREENINGSHEET, produces = {"application/hal+json"})
+    @GetMapping(value = TAILORING_SCREENINGSHEET, produces = {"application/hal+json"})
     public ResponseEntity<EntityModel<ScreeningSheetResource>> getScreeningSheet(
-        @Parameter(description = "fachlicher Projektschlüssel") @PathVariable("projekt") String projekt,
-        @Parameter(description = "Identifikator des Tailorings") @PathVariable("tailoring") String tailoring) {
+        @Parameter(description = "Project identifier") @PathVariable String project,
+        @Parameter(description = "Tailoring name") @PathVariable String tailoring) {
         PathContextBuilder pathContext = PathContext.builder()
-            .projekt(projekt)
+            .project(project)
             .tailoring(tailoring);
 
-        return tailoringService.getScreeningSheet(projekt, tailoring)
+        return tailoringService.getScreeningSheet(project, tailoring)
             .map(screeningSheet -> ResponseEntity
                 .ok()
                 .body(of(mapper.toResource(pathContext, screeningSheet))))
             .orElseGet(() -> notFound().build());
     }
 
-    @Operation(summary = "Laden der Screeningsheet Datei des Tailorings")
+    @Operation(summary = "Load screeningsheet file of tailoring")
     @ApiResponses(value = {
         @ApiResponse(
-            responseCode = "200", description = "Screeningsheet Datei des Tailorings wurde geladen",
+            responseCode = "200", description = "Screeningsheet file loaded",
             content = @Content(mediaType = "application/json+hal", schema = @Schema(implementation = byte[].class))),
         @ApiResponse(
-            responseCode = "404", description = "Screeningsheet datei nicht vorhanden",
+            responseCode = "404", description = "Screeningsheet file does not exist",
             content = @Content)
     })
-    @GetMapping(ResourceMapper.TAILORINGSCREENINGSHEETDATEI)
+    @GetMapping(TAILORING_SCREENINGSHEET_PDF)
     @ResponseBody
-    public ResponseEntity<byte[]> getScreeningSheetDatei(
-        @Parameter(description = "fachlicher Projektschlüssel") @PathVariable("projekt") String projekt,
-        @Parameter(description = "Identifikator des Tailorings") @PathVariable("tailoring") String tailoring) {
-        return projektPhaseServiceRepository.getScreeningSheetDatei(projekt, tailoring)
+    public ResponseEntity<byte[]> getScreeningSheetFile(
+        @Parameter(description = "Project identifier") @PathVariable String project,
+        @Parameter(description = "Tailoring name") @PathVariable String tailoring) {
+        return tailoringServiceRepository.getScreeningSheetFile(project, tailoring)
             .map(daten -> ResponseEntity
                 .ok()
                 .header(CONTENT_DISPOSITION, ContentDisposition.builder(MediaTypeProvider.FORM_DATA).name(MediaTypeProvider.ATTACHMENT).filename("screeningsheet.pdf").build().toString())
@@ -196,154 +207,158 @@ public class TailoringController {
             .orElseGet(() -> notFound().build());
     }
 
-    @Operation(summary = "Laden der angewendeten Selektionsvektors des Tailorings")
+    @Operation(summary = "Load sectionvector applied to tailoring")
     @ApiResponses(value = {
         @ApiResponse(
-            responseCode = "200", description = "Angewendeter Selektionsvektor des Tailorings wurde geladen",
+            responseCode = "200", description = "Applied selectionvector loaded",
             content = @Content(mediaType = "application/json+hal", schema = @Schema(implementation = byte[].class))),
         @ApiResponse(
-            responseCode = "404", description = "Angewendeter Selektionsvektor des Tailorings nicht vorhanden",
+            responseCode = "404", description = "Selectioncvector does not exist",
             content = @Content)
     })
-    @GetMapping(value = ResourceMapper.TAILORINGSELEKTIONSVEKTOR, produces = {"application/hal+json"})
-    public ResponseEntity<EntityModel<SelektionsVektorResource>> getSelektionsVektor(
-        @Parameter(description = "fachlicher Projektschlüssel") @PathVariable("projekt") String projekt,
-        @Parameter(description = "Identifikator des Tailorings") @PathVariable("tailoring") String tailoring) {
+    @GetMapping(value = TAILORING_SELECTIONVECTOR, produces = {"application/hal+json"})
+    public ResponseEntity<EntityModel<SelectionVectorResource>> getSelectionVector(
+        @Parameter(description = "Project identifier") @PathVariable String project,
+        @Parameter(description = "Tailoring name") @PathVariable String tailoring) {
         PathContextBuilder pathContext = PathContext.builder()
-            .projekt(projekt)
+            .project(project)
             .tailoring(tailoring);
 
-        return tailoringService.getSelektionsVektor(projekt, tailoring)
+        return tailoringService.getSelectionVector(project, tailoring)
             .map(selektionsVektor -> ResponseEntity
                 .ok()
                 .body(of(mapper.toResource(pathContext, selektionsVektor))))
             .orElseGet(() -> notFound().build());
     }
 
-    @Operation(summary = "Ermittlung der Daten eines Tailorings")
+    @Operation(summary = "Load all tailoring data")
     @ApiResponses(value = {
         @ApiResponse(
-            responseCode = "200", description = "Projektphase vorhanden",
+            responseCode = "200", description = "Tailoring loaded",
             content = @Content(mediaType = "application/json+hal", schema = @Schema(implementation = TailoringResource.class))),
         @ApiResponse(
-            responseCode = "404", description = "Projektphase nicht vorhanden",
+            responseCode = "404", description = "Tailoring does not exist",
             content = @Content)
     })
     @GetMapping(value = ResourceMapper.TAILORING, produces = {"application/hal+json"})
-    public ResponseEntity<EntityModel<TailoringResource>> getProjektPhase(
-        @Parameter(description = "fachlicher Projektschlüssel") @PathVariable("projekt") String projekt,
-        @Parameter(description = "Identifikator des Tailorings") @PathVariable("tailoring") String tailoring) {
+    public ResponseEntity<EntityModel<TailoringResource>> getTailoring(
+        @Parameter(description = "Project identifier") @PathVariable String project,
+        @Parameter(description = "Tailoring name") @PathVariable String tailoring) {
         PathContextBuilder pathContext = PathContext.builder()
-            .projekt(projekt)
+            .project(project)
             .tailoring(tailoring);
 
-        return projektPhaseServiceRepository.getTailoring(projekt, tailoring)
+        return tailoringServiceRepository.getTailoring(project, tailoring)
             .map(projektPhase -> ResponseEntity
                 .ok()
                 .body(of(mapper.toResource(pathContext, projektPhase))))
             .orElseGet(() -> notFound().build());
     }
 
-    @Operation(summary = "Hinzufügen eines (PDF) Anforderungsdokuments zur Projektphase")
+    @Operation(summary = "Add file to tailoring")
     @ApiResponses(value = {
         @ApiResponse(
-            responseCode = "201", description = "Dokument wurde des Tailorings hinzugefügt",
+            responseCode = "201", description = "File added to tailoring",
             content = @Content(mediaType = "application/json+hal", schema = @Schema(implementation = TailoringResource.class))),
         @ApiResponse(
-            responseCode = "404", description = "Projektphase nicht vorhanden",
+            responseCode = "404", description = "Tailoring does not exist",
             content = @Content)
     })
-    @PostMapping(value = ResourceMapper.TAILORINGDOKUMENT, produces = {"application/hal+json"})
-    public ResponseEntity<EntityModel<TailoringResource>> addAnforderungDokument(
-        @Parameter(description = "fachlicher Projektschlüssel") @PathVariable("projekt") String projekt,
-        @Parameter(description = "Identifikator des Tailorings") @PathVariable("tailoring") String tailoring,
-        @Parameter(description = "Hochzuladende Datei") @RequestPart("datei") MultipartFile datei) throws IOException {
+    @PostMapping(value = TAILORING_ATTACHMENTS, produces = {"application/hal+json"})
+    public ResponseEntity<EntityModel<Void>> addFile(
+        @Parameter(description = "Project identifier") @PathVariable String project,
+        @Parameter(description = "Tailoring name") @PathVariable String tailoring,
+        @Parameter(description = "File to add") @RequestPart("datei") MultipartFile file) throws IOException {
         PathContextBuilder pathContext = PathContext.builder()
-            .projekt(projekt)
+            .project(project)
             .tailoring(tailoring);
 
-        return tailoringService.addAnforderungDokument(projekt, tailoring, datei.getOriginalFilename(), datei.getBytes())
-            .map(projektPhase -> ResponseEntity
-                .created(linkTo(methodOn(TailoringController.class).getDokumente(projekt, tailoring)).toUri())
-                .body(of(mapper.toResource(pathContext, projektPhase))))
-            .orElseGet(() -> notFound().build());
+        return tailoringService.addFile(project, tailoring, file.getOriginalFilename(), file.getBytes()).isPresent() ?
+            ResponseEntity.created(UriTemplate.of(ResourceMapper.TAILORINGREQUIRMENT).expand(pathContext.build().parameter())).build() :
+            notFound().build();
+//            .map(projektPhase -> ResponseEntity
+//                .created(UriTemplate.of(ResourceMapper.TAILORINGREQUIRMENT).expand(pathContext.build().parameter()))
+//                .created(linkTo(methodOn(TailoringController.class).createDokuments(project, tailoring)).toUri()))
+//                .body(of(mapper.toResource(pathContext, projektPhase))))
+
+//            .orElseGet(() -> notFound().build());
     }
 
-    @Operation(summary = "Generierung eines neuen Anforderungsdokumentes für die Projektphase")
+    @Operation(summary = "Generate all (tenant) documents of a specified tailoring.")
     @ApiResponses(value = {
         @ApiResponse(
-            responseCode = "200", description = "Dokument wurde erzeugt",
+            responseCode = "200", description = "Documents created",
             content = @Content(mediaType = "application/json+hal", schema = @Schema(implementation = byte[].class))),
         @ApiResponse(
-            responseCode = "404", description = "Projektphase nicht vorhanden",
+            responseCode = "404", description = "Tailoring does not exist",
             content = @Content)
     })
-    @GetMapping(ResourceMapper.TAILORINGDOKUMENT)
+    @GetMapping(TAILORING_DOCUMENT)
     @ResponseBody
-    public ResponseEntity<byte[]> getDokumente(
-        @Parameter(description = "fachlicher Projektschlüssel") @PathVariable("projekt") String projekt,
-        @Parameter(description = "Identifikator des Tailorings") @PathVariable("tailoring") String tailoring) {
-        return tailoringService.createDokumente(projekt, tailoring)
+    public ResponseEntity<byte[]> createDokuments(
+        @Parameter(description = "Project identifier") @PathVariable String project,
+        @Parameter(description = "Tailoring name") @PathVariable String tailoring) {
+        return tailoringService.createDocuments(project, tailoring)
             .map(dokument -> ResponseEntity
                 .ok()
                 .header(CONTENT_DISPOSITION, ContentDisposition.builder(MediaTypeProvider.FORM_DATA).name(MediaTypeProvider.ATTACHMENT).filename(dokument.getName()).build().toString())
                 .header(ACCESS_CONTROL_EXPOSE_HEADERS, CONTENT_DISPOSITION)
                 .contentType(mediaTypeProvider.apply(dokument.getType()))
                 .contentLength(dokument.getLength())
-                .body(dokument.getBytes()))
+                .body(dokument.getData()))
             .orElseGet(() -> notFound().build());
     }
 
-    @Operation(summary = "Generierung eines neuen Anforderungsdokumentes für die Projektphase")
+    @Operation(summary = "Generate tailoring requirement document")
     @ApiResponses(value = {
         @ApiResponse(
-            responseCode = "200", description = "Dokument wurde erzeugt",
+            responseCode = "200", description = "File created",
             content = @Content(mediaType = "application/json+hal", schema = @Schema(implementation = byte[].class))),
         @ApiResponse(
-            responseCode = "404", description = "Projektphase nicht vorhanden",
+            responseCode = "404", description = "Tailoring does not exist",
             content = @Content)
     })
-    @GetMapping(ResourceMapper.TAILORINGDOKUMENTKATALOG)
+    @GetMapping(TAILORING_DOCUMENT_CATALOG)
     @ResponseBody
-    public ResponseEntity<byte[]> getAnforderungDokument(
-        @Parameter(description = "fachlicher Projektschlüssel") @PathVariable("projekt") String projekt,
-        @Parameter(description = "Identifikator des Tailorings") @PathVariable("tailoring") String tailoring) {
-        return tailoringService.createAnforderungDokument(projekt, tailoring)
+    public ResponseEntity<byte[]> createRequirementFile(
+        @Parameter(description = "Project identifier") @PathVariable String project,
+        @Parameter(description = "Tailoring name") @PathVariable String tailoring) {
+        return tailoringService.createRequirementDocument(project, tailoring)
             .map(dokument -> ResponseEntity
                 .ok()
                 .header(CONTENT_DISPOSITION, ContentDisposition.builder(MediaTypeProvider.FORM_DATA).name(MediaTypeProvider.ATTACHMENT).filename(dokument.getName()).build().toString())
                 .header(ACCESS_CONTROL_EXPOSE_HEADERS, CONTENT_DISPOSITION)
                 .contentType(mediaTypeProvider.apply(dokument.getType()))
                 .contentLength(dokument.getLength())
-                .body(dokument.getBytes()))
+                .body(dokument.getData()))
             .orElseGet(() -> notFound().build());
 
     }
 
-    @Operation(summary = "Ermittlung der Anforderungen eines Kapitels des Anforderungkatalogs eines Tailorings")
+    @Operation(summary = "Load all requirements of requested chpater")
     @ApiResponses(value = {
         @ApiResponse(
-            responseCode = "200", description = "Anforderungskatalog wurde geladen",
-            content = @Content(mediaType = "application/json+hal", schema = @Schema(implementation = TailoringAnforderungResource.class))),
+            responseCode = "200", description = "Requirements of chapter loaded",
+            content = @Content(mediaType = "application/json+hal", schema = @Schema(implementation = TailoringRequirementResource.class))),
         @ApiResponse(
-            responseCode = "404", description = "Kapitel nicht vorhanden",
+            responseCode = "404", description = "Chapter does not exist",
             content = @Content)
     })
-    @GetMapping(ResourceMapper.TAILORINGKATALOGKAPITELANFORDERUG)
+    @GetMapping(TAILORING_CATALOG_CHAPTER_REQUIREMENT)
     @ResponseBody
-    public ResponseEntity<CollectionModel<EntityModel<TailoringAnforderungResource>>> getAnforderungen(
-        @Parameter(description = "fachlicher Projektschlüssel") @PathVariable("projekt") String projekt,
-        @Parameter(description = "Identifikator des Tailorings") @PathVariable("tailoring") String tailoring,
-        @Parameter(description = "Identifikator des Kapitels") @PathVariable String kapitel) {
+    public ResponseEntity<CollectionModel<EntityModel<TailoringRequirementResource>>> getRequirements(
+        @Parameter(description = "Project identifier") @PathVariable String project,
+        @Parameter(description = "Tailoring name") @PathVariable String tailoring,
+        @Parameter(description = "Chapter number") @PathVariable String chapter) {
         PathContextBuilder pathContext = PathContext.builder()
-            .projekt(projekt)
+            .project(project)
             .tailoring(tailoring)
-            .kapitel(kapitel);
+            .chapter(chapter);
 
         return ResponseEntity
             .ok()
             .body(CollectionModel.of(
-                tailoringService.getAnforderungen(projekt, tailoring, kapitel)
+                tailoringService.getRequirements(project, tailoring, chapter)
                     .stream()
                     .flatMap(Collection::stream)
                     .map(domain -> of(mapper.toResource(pathContext, domain)))
@@ -354,49 +369,49 @@ public class TailoringController {
     @ApiResponses(value = {
         @ApiResponse(
             responseCode = "200", description = "Dokumentzeichnungen wurden geladen",
-            content = @Content(mediaType = "application/json+hal", schema = @Schema(implementation = DokumentZeichnungResource.class))),
+            content = @Content(mediaType = "application/json+hal", schema = @Schema(implementation = DocumentSignatureResource.class))),
         @ApiResponse(
             responseCode = "404", description = "Zeichnungen des Tailorings nicht vorhanden",
             content = @Content)
     })
-    @GetMapping(value = ResourceMapper.TAILORINGZEICHNUNG, produces = {"application/hal+json"})
-    public ResponseEntity<CollectionModel<DokumentZeichnungResource>> getDokumentZeichnungen(
-        @Parameter(description = "fachlicher Projektschlüssel") @PathVariable("projekt") String projekt,
-        @Parameter(description = "Identifikator des Tailorings") @PathVariable("tailoring") String tailoring) {
+    @GetMapping(value = TAILORING_SIGNATURE, produces = {"application/hal+json"})
+    public ResponseEntity<CollectionModel<DocumentSignatureResource>> getSigntures(
+        @Parameter(description = "fachlicher Projektschlüssel") @PathVariable String project,
+        @Parameter(description = "Identifier des Tailorings") @PathVariable String tailoring) {
         PathContextBuilder pathContext = PathContext.builder()
-            .projekt(projekt)
+            .project(project)
             .tailoring(tailoring);
 
         return ResponseEntity
             .ok()
             .body(CollectionModel.of(
-                tailoringService.getDokumentZeichnungen(projekt, tailoring)
+                tailoringService.getDocumentSignatures(project, tailoring)
                     .stream()
                     .flatMap(Collection::stream)
                     .map(domain -> mapper.toResource(pathContext, domain))
                     .collect(toList())));
     }
 
-    @Operation(summary = "Aktualisierung einer Dokumentzeichnung eines Tailorings")
+    @Operation(summary = "Update signature of tailoring")
     @ApiResponses(value = {
         @ApiResponse(
-            responseCode = "200", description = "Dokumentzeichnung wurde aktualisiert",
-            content = @Content(mediaType = "application/json+hal", schema = @Schema(implementation = DokumentZeichnungResource.class))),
+            responseCode = "200", description = "Signature updated",
+            content = @Content(mediaType = "application/json+hal", schema = @Schema(implementation = DocumentSignatureResource.class))),
         @ApiResponse(
-            responseCode = "404", description = "Zeichnung nicht vorhanden",
+            responseCode = "404", description = "Signature does not exist",
             content = @Content)
     })
-    @PutMapping(value = ResourceMapper.TAILORINGZEICHNUNGBEREICH, produces = {"application/hal+json"})
-    public ResponseEntity<EntityModel<DokumentZeichnungResource>> updateDokumentZeichnung(
-        @Parameter(description = "fachlicher Projektschlüssel") @PathVariable("projekt") String projekt,
-        @Parameter(description = "Identifikator des Tailorings") @PathVariable("tailoring") String tailoring,
-        @Parameter(description = "Identifikator der zu ändernden Zeichnung") @PathVariable("bereich") String bereich,
-        @Parameter(description = "Neue Daten der Dokumentzeichnung") @RequestBody DokumentZeichnung dokumentZeichnung) {
+    @PutMapping(value = TAILORING_SIGNATURE_FACULTY, produces = {"application/hal+json"})
+    public ResponseEntity<EntityModel<DocumentSignatureResource>> updateDokumentZeichnung(
+        @Parameter(description = "Project identifier") @PathVariable String project,
+        @Parameter(description = "Tailoring name") @PathVariable String tailoring,
+        @Parameter(description = "Faculty of signature") @PathVariable String faculty,
+        @Parameter(description = "Signature data to use") @RequestBody DocumentSignature signature) {
         PathContextBuilder pathContext = PathContext.builder()
-            .projekt(projekt)
+            .project(project)
             .tailoring(tailoring);
 
-        return tailoringService.updateDokumentZeichnung(projekt, tailoring, dokumentZeichnung)
+        return tailoringService.updateDocumentSignature(project, tailoring, signature)
             .map(zeichnung -> ResponseEntity
                 .ok()
                 .body(of(mapper.toResource(pathContext, zeichnung))))
@@ -404,17 +419,25 @@ public class TailoringController {
 
     }
 
-
-    @PutMapping(value = ResourceMapper.TAILORINGNAME, produces = {"application/hal+json"})
+    @Operation(summary = "Update name of tailoring")
+    @ApiResponses(value = {
+        @ApiResponse(
+            responseCode = "200", description = "Name updated",
+            content = @Content(mediaType = "application/json+hal", schema = @Schema(implementation = DocumentSignatureResource.class))),
+        @ApiResponse(
+            responseCode = "404", description = "Tailoring does not exist",
+            content = @Content)
+    })
+    @PutMapping(value = ResourceMapper.TAILORING_NAME, produces = {"application/hal+json"})
     public ResponseEntity<EntityModel<TailoringInformationResource>> updateName(
-        @Parameter(description = "fachlicher Projektschlüssel") @PathVariable("projekt") String projekt,
-        @Parameter(description = "Identifikator des Tailorings") @PathVariable("tailoring") String tailoring,
-        @Parameter(description = "Neuer Name des Tailorings") @RequestBody String name) {
+        @Parameter(description = "Project identifier") @PathVariable String project,
+        @Parameter(description = "Tailoring name") @PathVariable String tailoring,
+        @Parameter(description = "New tailoring name") @RequestBody String name) {
         PathContextBuilder pathContext = PathContext.builder()
-            .projekt(projekt)
+            .project(project)
             .tailoring(name);
 
-        return tailoringService.updateName(projekt, tailoring, name)
+        return tailoringService.updateName(project, tailoring, name)
             .map(projektPhase -> ResponseEntity
                 .ok()
                 .body(of(mapper.toResource(pathContext, projektPhase))))
@@ -422,89 +445,107 @@ public class TailoringController {
 
     }
 
-    @GetMapping(value = ResourceMapper.TAILORINGZEICHNUNG + "/doks", produces = {"application/hal+json"})
-    public ResponseEntity<CollectionModel<DokumentResource>> getDokumentListe(
-        @Parameter(description = "fachlicher Projektschlüssel") @PathVariable("projekt") String projekt,
-        @Parameter(description = "Identifikator des Tailorings") @PathVariable("tailoring") String tailoring) {
+    @Operation(summary = "Load list of all attachment of tailoring")
+    @ApiResponses(value = {
+        @ApiResponse(
+            responseCode = "200", description = "???",
+            content = @Content(mediaType = "application/json+hal", schema = @Schema(implementation = FileResource.class))),
+        @ApiResponse(
+            responseCode = "404", description = "Tailoring does not exist",
+            content = @Content)
+    })
+    @GetMapping(value = TAILORING_ATTACHMENTS, produces = {"application/hal+json"})
+    public ResponseEntity<CollectionModel<FileResource>> getAttachmentList(
+        @Parameter(description = "Project identifier") @PathVariable String project,
+        @Parameter(description = "Tailoring name") @PathVariable String tailoring) {
         PathContextBuilder pathContext = PathContext.builder()
-            .projekt(projekt)
+            .project(project)
             .tailoring(tailoring);
 
         return ResponseEntity
             .ok()
             .body(CollectionModel.of(
-                projektPhaseServiceRepository.getDokumentListe(projekt, tailoring)
+                tailoringServiceRepository.getFileList(project, tailoring)
                     .stream()
                     .map(domain -> mapper.toResource(pathContext, domain))
                     .collect(toList())));
     }
 
-    @GetMapping(ResourceMapper.TAILORINGDOKUMENTDOWNLOAD)
+    @GetMapping(TAILORING_ATTACHMENT)
     @ResponseBody
-    public ResponseEntity<byte[]> getDokument(
-        @Parameter(description = "fachlicher Projektschlüssel") @PathVariable("projekt") String projekt,
-        @Parameter(description = "Identifikator des Tailorings") @PathVariable("tailoring") String tailoring,
-        @Parameter(description = "Name der Datei") @PathVariable("name") String name) {
-        return projektPhaseServiceRepository.getDokument(projekt, tailoring, name)
+    public ResponseEntity<byte[]> getAttachment(
+        @Parameter(description = "Project identifier") @PathVariable String project,
+        @Parameter(description = "Tailoring name") @PathVariable String tailoring,
+        @Parameter(description = "Name of File") @PathVariable String name) {
+        return tailoringServiceRepository.getFile(project, tailoring, name)
             .map(daten -> ResponseEntity
                 .ok()
                 .header(CONTENT_DISPOSITION, ContentDisposition.builder(MediaTypeProvider.FORM_DATA).name(MediaTypeProvider.ATTACHMENT).filename(name).build().toString())
                 .header(ACCESS_CONTROL_EXPOSE_HEADERS, CONTENT_DISPOSITION)
                 .contentType(mediaTypeProvider.apply(daten.getType()))
-                .contentLength(daten.getBytes().length)
-                .body(daten.getBytes()))
+                .contentLength(daten.getData().length)
+                .body(daten.getData()))
             .orElseGet(() -> notFound().build());
     }
 
-    @DeleteMapping(ResourceMapper.TAILORINGDOKUMENTDOWNLOAD)
-    public ResponseEntity<Void> deleteDokument(
-        @Parameter(description = "fachlicher Projektschlüssel") @PathVariable("projekt") String projekt,
-        @Parameter(description = "Identifikator des Tailorings") @PathVariable("tailoring") String tailoring,
-        @Parameter(description = "Name der Datei") @PathVariable("name") String name) {
-        return projektPhaseServiceRepository.deleteDokument(projekt, tailoring, name) ?
+    @Operation(summary = "Get file attached to tailoring")
+    @ApiResponses(value = {
+        @ApiResponse(
+            responseCode = "200", description = "File loaded",
+            content = @Content(mediaType = "application/json+hal", schema = @Schema(implementation = DocumentSignatureResource.class))),
+        @ApiResponse(
+            responseCode = "404", description = "File does not exist",
+            content = @Content)
+    })
+    @DeleteMapping(TAILORING_ATTACHMENT)
+    public ResponseEntity<Void> deleteAttachment(
+        @Parameter(description = "Project identifier") @PathVariable String project,
+        @Parameter(description = "Tailoring name") @PathVariable String tailoring,
+        @Parameter(description = "Filename") @PathVariable("name") String name) {
+        return tailoringServiceRepository.deleteFile(project, tailoring, name) ?
             ResponseEntity.ok().build() :
             notFound().build();
     }
 
-    @Operation(summary = "Generierung Dokumentes für die Unterschiede zwischen automatischen und nachgetailorten Tailorings")
+    @Operation(summary = "Get document containg diffeences between automatic tailoring and current tailoring")
     @ApiResponses(value = {
         @ApiResponse(
-            responseCode = "200", description = "Dokument wurde erzeugt",
+            responseCode = "200", description = "Comparsion document created",
             content = @Content(mediaType = "application/json+hal", schema = @Schema(implementation = byte[].class))),
         @ApiResponse(
-            responseCode = "404", description = "Tailoring nicht vorhanden",
+            responseCode = "404", description = "Tailoring does not exist",
             content = @Content)
     })
-    @GetMapping(ResourceMapper.TAILORINGVERGLEICHDOKUMENT)
+    @GetMapping(TAILORING_COMPARE)
     @ResponseBody
-    public ResponseEntity<byte[]> getVergleichsdokumentDokument(
-        @Parameter(description = "fachlicher Projektschlüssel") @PathVariable("projekt") String projekt,
-        @Parameter(description = "Identifikator des Tailorings") @PathVariable("tailoring") String tailoring) {
-        return tailoringService.createVergleichsDokument(projekt, tailoring)
+    public ResponseEntity<byte[]> getComparisonDocument(
+        @Parameter(description = "Project identifier") @PathVariable String project,
+        @Parameter(description = "Tailoring name") @PathVariable String tailoring) {
+        return tailoringService.createComparisonDocument(project, tailoring)
             .map(dokument -> ResponseEntity
                 .ok()
-                .header(CONTENT_DISPOSITION, ContentDisposition.builder(MediaTypeProvider.FORM_DATA).name(MediaTypeProvider.ATTACHMENT).filename(dokument.getDocId()).build().toString())
+                .header(CONTENT_DISPOSITION, ContentDisposition.builder(MediaTypeProvider.FORM_DATA).name(MediaTypeProvider.ATTACHMENT).filename(dokument.getName()).build().toString())
                 .header(ACCESS_CONTROL_EXPOSE_HEADERS, CONTENT_DISPOSITION)
                 .contentType(mediaTypeProvider.apply(dokument.getType()))
                 .contentLength(dokument.getLength())
-                .body(dokument.getBytes()))
+                .body(dokument.getData()))
             .orElseGet(() -> notFound().build());
 
     }
 
-    @Operation(summary = "Ermittlung aller verfügbaren Selektionsvektor Profile")
+    @Operation(summary = "Get all definded selectionvector profiles")
     @ApiResponses(value = {
         @ApiResponse(
-            responseCode = "200", description = "Selektionsvektor Profile ermittelt",
-            content = @Content(mediaType = "application/json+hal", schema = @Schema(implementation = SelektionsVektorProfilResource.class))),
+            responseCode = "200", description = "Profiles loaded",
+            content = @Content(mediaType = "application/json+hal", schema = @Schema(implementation = SelectionVectorProfileResource.class))),
         @ApiResponse(
-            responseCode = "404", description = "Profile konnten nicht ermittelt werden",
+            responseCode = "404", description = "Profiles do not exist",
             content = @Content)
     })
-    @GetMapping(value = ResourceMapper.SELEKTIONSVEKTORPROFILE, produces = {"application/hal+json"})
-    public ResponseEntity<CollectionModel<EntityModel<SelektionsVektorProfilResource>>> getProfile() {
+    @GetMapping(value = ResourceMapper.SELECTIONVECTOR_PROFILE, produces = {"application/hal+json"})
+    public ResponseEntity<CollectionModel<EntityModel<SelectionVectorProfileResource>>> getProfile() {
         PathContextBuilder pathContext = PathContext.builder();
-        List<EntityModel<SelektionsVektorProfilResource>> profile = projektPhaseServiceRepository.getSelektionsVektorProfile()
+        List<EntityModel<SelectionVectorProfileResource>> profile = tailoringServiceRepository.getSelectionVectorProfile()
             .stream()
             .map(profil -> of(mapper.toResource(pathContext, profil)))
             .collect(toList());
@@ -514,22 +555,31 @@ public class TailoringController {
             .body(CollectionModel.of(profile));
     }
 
-    @Operation(summary = "Setzen des ausgewählt Status von Anforderungen des überegebenen Datenobjekts")
-    @ApiResponse(responseCode = "202", description = "Daten der Anforderugen wurden ausgewertet")
-    @PostMapping(ResourceMapper.TAILORINGANFORDERUNG)
+    @Operation(summary = "Update requirement state in accordance to provided file")
+    @ApiResponse(responseCode = "202", description = "File evaluates")
+    @PostMapping(ResourceMapper.TAILORING_REQUIREMENT_IMPORT)
     public ResponseEntity<EntityModel<Void>> updateAnforderungen(
-        @Parameter(description = "fachlicher Projektschlüssel") @PathVariable("projekt") String projekt,
-        @Parameter(description = "Identifikator des Tailorings") @PathVariable("tailoring") String tailoring,
+        @Parameter(description = "Project identifier") @PathVariable String project,
+        @Parameter(description = "Tailoring name") @PathVariable String tailoring,
         @RequestPart("datei") MultipartFile datei) throws IOException {
-        tailoringService.updateAusgewaehlteAnforderungen(projekt, tailoring, datei.getBytes());
+        tailoringService.updateSelectedRequirements(project, tailoring, datei.getBytes());
         return ResponseEntity.accepted().build();
     }
 
+    @Operation(summary = "Delete a tailoring")
+    @ApiResponses(value = {
+        @ApiResponse(
+            responseCode = "200", description = "Tailoring deleted",
+            content = @Content(mediaType = "application/json+hal", schema = @Schema(implementation = Void.class))),
+        @ApiResponse(
+            responseCode = "404", description = "Tailoring does not exist",
+            content = @Content)
+    })
     @DeleteMapping(ResourceMapper.TAILORING)
     public ResponseEntity<EntityModel<Void>> deleteTailoring(
-        @Parameter(description = "fachlicher Projektschlüssel") @PathVariable("projekt") String projekt,
-        @Parameter(description = "Identifikator des Tailorings") @PathVariable("tailoring") String tailoring) {
-        Optional<Boolean> deleted = tailoringService.deleteTailoring(projekt, tailoring);
+        @Parameter(description = "fachlicher Projektschlüssel") @PathVariable String project,
+        @Parameter(description = "Identifier des Tailorings") @PathVariable String tailoring) {
+        Optional<Boolean> deleted = tailoringService.deleteTailoring(project, tailoring);
         return ResponseEntity.status(deleted.isPresent() ? OK : NOT_FOUND).build();
     }
 }

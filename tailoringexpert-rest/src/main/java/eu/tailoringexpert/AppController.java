@@ -40,11 +40,15 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.Collections;
 import java.util.Map;
 
+import static eu.tailoringexpert.domain.ResourceMapper.BASECATALOG;
+import static eu.tailoringexpert.domain.ResourceMapper.PROJECT;
+import static eu.tailoringexpert.domain.ResourceMapper.SCREENINGSHEET;
+import static eu.tailoringexpert.domain.ResourceMapper.SELECTIONVECTOR_PROFILE;
 import static org.springframework.hateoas.CollectionModel.empty;
 import static org.springframework.hateoas.server.mvc.BasicLinkBuilder.linkToCurrentMapping;
 
 @Log4j2
-@Tag(name = "AppController", description = "Einstiegspunkt für die Ermittlung der URLs der Hauptfunktionen")
+@Tag(name = "AppController", description = "Main controller to retrieve top level resource urls")
 @RestController
 @RequiredArgsConstructor
 public class AppController {
@@ -52,9 +56,9 @@ public class AppController {
     @NonNull
     private ResourceMapper mapper;
 
-    @Operation(summary = "Ermittlung der Haput-URLs")
+    @Operation(summary = "Retrieve main urls of application")
     @ApiResponses(value = {
-        @ApiResponse(responseCode = "200", description = "Links der Hauptfunktionen",
+        @ApiResponse(responseCode = "200", description = "Links to to level resources",
             content = @Content(array = @ArraySchema(schema = @Schema(implementation = CollectionModel.class))))
     })
     @GetMapping(value = "/", produces = {"application/hal+json"})
@@ -63,13 +67,11 @@ public class AppController {
         return ResponseEntity
             .ok()
             .body(empty(
-                mapper.createLink("katalog", linkToCurrentMapping().toString(), ResourceMapper.KATALOG, parameter),
-                mapper.createLink("projekt", linkToCurrentMapping().toString(), ResourceMapper.PROJEKT, parameter),
-                mapper.createLink("screeningsheet", linkToCurrentMapping().toString(), ResourceMapper.SCREENINGSHEET, parameter),
-                mapper.createLink("selektionsvektor", linkToCurrentMapping().toString(), ResourceMapper.SELEKTIONSVEKTORPROFILE, parameter)
+                mapper.createLink("catalog", linkToCurrentMapping().toString(), BASECATALOG, parameter),
+                mapper.createLink("project", linkToCurrentMapping().toString(), PROJECT, parameter),
+                mapper.createLink("screeningsheet", linkToCurrentMapping().toString(), SCREENINGSHEET, parameter),
+                mapper.createLink("selectionvector", linkToCurrentMapping().toString(), SELECTIONVECTOR_PROFILE, parameter)
                 )
             );
     }
-
-
 }

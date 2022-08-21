@@ -25,7 +25,7 @@ import eu.tailoringexpert.domain.Parameter;
 import eu.tailoringexpert.domain.Phase;
 import eu.tailoringexpert.domain.ScreeningSheet;
 import eu.tailoringexpert.domain.ScreeningSheetParameter;
-import eu.tailoringexpert.domain.SelektionsVektor;
+import eu.tailoringexpert.domain.SelectionVector;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 
@@ -56,13 +56,13 @@ public class ScreeningSheetServiceImpl implements ScreeningSheetService {
     private ScreeningSheetParameterProvider screeningSheetParameterProvider;
 
     @NonNull
-    private SelektionsVektorProvider selektionsVectorProvider;
+    private SelectionVectorProvider selektionsVectorProvider;
 
     /**
      * {@inheritDoc}
      */
     @Override
-    public SelektionsVektor berechneSelektionsVektor(@NonNull byte[] rawData) {
+    public SelectionVector calculateSelectionVector(@NonNull byte[] rawData) {
         Collection<ScreeningSheetParameterEintrag> screeningSheetEingabeParameter = screeningSheetParameterProvider.parse(new ByteArrayInputStream(rawData));
         Collection<Parameter> parameterKonfigurationsWerte = getParameter(screeningSheetEingabeParameter);
 
@@ -85,15 +85,15 @@ public class ScreeningSheetServiceImpl implements ScreeningSheetService {
         // phasen konvertieren und an liste hinzufügen
         List<Phase> phase = screeningSheetEingabeParameter
             .stream()
-            .filter(entry -> "phase".equalsIgnoreCase(entry.getKategorie()))
+            .filter(entry -> "phase".equalsIgnoreCase(entry.getCategory()))
             .map(entry -> Phase.fromString(entry.getName()))
             .filter(Objects::nonNull)
             .sorted(comparing(Phase::ordinal))
             .collect(toCollection(LinkedList::new));
         if (!phase.isEmpty()) {
             screeningSheetParameter.add(ScreeningSheetParameter.builder()
-                .bezeichnung("Phase")
-                .wert(phase)
+                .category("Phase")
+                .value(phase)
                 .build());
         }
 
@@ -105,19 +105,19 @@ public class ScreeningSheetServiceImpl implements ScreeningSheetService {
 //         Parameter, die nicht aus der DB stammen, da sie keinen Einfluss auf Berechnung Selektionsvektor haben
         screeningSheetParameter.addAll(screeningSheetEingabeParameter
             .stream()
-            .filter(entry -> !"phase".equalsIgnoreCase(entry.getKategorie()) && !parameterKonfigurationsOhneWerte.contains(entry.getName()))
+            .filter(entry -> !"phase".equalsIgnoreCase(entry.getCategory()) && !parameterKonfigurationsOhneWerte.contains(entry.getName()))
             .map(entry -> ScreeningSheetParameter.builder()
-                .bezeichnung(entry.getName().substring(0, 1).toUpperCase(Locale.GERMANY) + entry.getName().substring(1))
-                .wert(entry.getBezeichnung())
+                .category(entry.getName().substring(0, 1).toUpperCase(Locale.GERMANY) + entry.getName().substring(1))
+                .value(entry.getLabel())
                 .build())
             .collect(toList()));
 
-        SelektionsVektor selektionsVektor = selektionsVectorProvider.apply(parameterKonfigurationsWerte);
+        SelectionVector selectionVector = selektionsVectorProvider.apply(parameterKonfigurationsWerte);
 
         return ScreeningSheet.builder()
             .data(rawData)
             .parameters(screeningSheetParameter)
-            .selektionsVektor(selektionsVektor)
+            .selectionVector(selectionVector)
             .build();
     }
 

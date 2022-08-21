@@ -29,6 +29,7 @@ import java.util.Collection;
  *
  * @author Michael Bödorf
  */
+@FunctionalInterface
 public interface ScreeningSheetParameterProvider {
     Collection<ScreeningSheetParameterEintrag> parse(InputStream is);
 }

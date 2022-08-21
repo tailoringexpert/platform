@@ -28,6 +28,6 @@ import lombok.Value;
 @Builder
 public class DRDFragment {
     private String name;
-    private String nummer;
+    private String number;
     private String fragment;
 }

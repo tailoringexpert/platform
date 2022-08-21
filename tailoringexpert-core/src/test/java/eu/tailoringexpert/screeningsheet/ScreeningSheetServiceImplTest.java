@@ -24,7 +24,7 @@ package eu.tailoringexpert.screeningsheet;
 import eu.tailoringexpert.domain.Parameter;
 import eu.tailoringexpert.domain.ScreeningSheet;
 import eu.tailoringexpert.domain.ScreeningSheetParameter;
-import eu.tailoringexpert.domain.SelektionsVektor;
+import eu.tailoringexpert.domain.SelectionVector;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
@@ -58,7 +58,7 @@ class ScreeningSheetServiceImplTest {
     ScreeningSheetServiceMapper mapperMock;
     ScreeningSheetServiceRepository repositoryMock;
     ScreeningSheetParameterProvider screeningDataProviderMock;
-    SelektionsVektorProvider selektionsVectorProviderMock;
+    SelectionVectorProvider selektionsVectorProviderMock;
     ScreeningSheetServiceImpl service;
 
     @BeforeEach
@@ -66,7 +66,7 @@ class ScreeningSheetServiceImplTest {
         this.mapperMock = mock(ScreeningSheetServiceMapper.class);
         this.repositoryMock = mock(ScreeningSheetServiceRepository.class);
         this.screeningDataProviderMock = mock(ScreeningSheetParameterProvider.class);
-        this.selektionsVectorProviderMock = mock(SelektionsVektorProvider.class);
+        this.selektionsVectorProviderMock = mock(SelectionVectorProvider.class);
         this.service = new ScreeningSheetServiceImpl(
             mapperMock,
             repositoryMock,
@@ -80,7 +80,7 @@ class ScreeningSheetServiceImplTest {
         // arrange
 
         // act
-        Throwable actual = catchThrowable(() -> service.berechneSelektionsVektor(null));
+        Throwable actual = catchThrowable(() -> service.calculateSelectionVector(null));
 
         // assert
         assertThat(actual).isInstanceOf(NullPointerException.class);
@@ -97,34 +97,34 @@ class ScreeningSheetServiceImplTest {
 
         List<ScreeningSheetParameterEintrag> screeningSheetParameters = List.of(
             ScreeningSheetParameterEintrag.builder()
-                .kategorie("Produkttyp")
+                .category("Produkttyp")
                 .name("SAT")
-                .bezeichnung("Satellite")
+                .label("Satellite")
                 .build(),
             ScreeningSheetParameterEintrag.builder()
-                .kategorie("Einsatzzweck")
+                .category("Einsatzzweck")
                 .name("Erdbeobachtung")
-                .bezeichnung("Erdbeobachtung")
+                .label("Erdbeobachtung")
                 .build(),
             ScreeningSheetParameterEintrag.builder()
-                .kategorie("Anwendungscharakter")
+                .category("Anwendungscharakter")
                 .name("wissenschaftlich")
-                .bezeichnung("wissenschaftliche Anwendung")
+                .label("wissenschaftliche Anwendung")
                 .build(),
             ScreeningSheetParameterEintrag.builder()
-                .kategorie("Lebensdauer")
+                .category("Lebensdauer")
                 .name("Dauer1")
-                .bezeichnung("t < 2 Jahre")
+                .label("t < 2 Jahre")
                 .build(),
             ScreeningSheetParameterEintrag.builder()
-                .kategorie("Programmatische Bewertung")
+                .category("Programmatische Bewertung")
                 .name("Programmatik1")
-                .bezeichnung("erforderlich")
+                .label("erforderlich")
                 .build(),
             ScreeningSheetParameterEintrag.builder()
-                .kategorie("Kosten/Budget")
+                .category("Kosten/Budget")
                 .name("Budget1")
-                .bezeichnung("<2 Mio")
+                .label("<2 Mio")
                 .build());
 
         given(screeningDataProviderMock.parse(any(ByteArrayInputStream.class)))
@@ -142,10 +142,10 @@ class ScreeningSheetServiceImplTest {
 
         ArgumentCaptor<Collection<Parameter>> selektionsVektorCaptor = ArgumentCaptor.forClass(Collection.class);
         given(selektionsVectorProviderMock.apply(selektionsVektorCaptor.capture()))
-            .willReturn(SelektionsVektor.builder().build());
+            .willReturn(SelectionVector.builder().build());
 
         // act
-        SelektionsVektor actual = service.berechneSelektionsVektor(data);
+        SelectionVector actual = service.calculateSelectionVector(data);
 
         // assert
         assertThat(actual).isNotNull();
@@ -195,26 +195,26 @@ class ScreeningSheetServiceImplTest {
         }
         List<ScreeningSheetParameterEintrag> screeningSheetParameters = List.of(
             ScreeningSheetParameterEintrag.builder()
-                .kategorie("Produkttyp")
+                .category("Produkttyp")
                 .name("SAT")
-                .bezeichnung("Satellit")
+                .label("Satellit")
                 .build(),
             ScreeningSheetParameterEintrag.builder()
-                .kategorie("Projekt")
+                .category("Project")
                 .name("Kuerzel")
-                .bezeichnung("DUMMY")
+                .label("DUMMY")
                 .build()
         );
         given(screeningDataProviderMock.parse(any())).willReturn(screeningSheetParameters);
 
         Collection<Parameter> parameter = Arrays.asList(
-            Parameter.builder().kategorie("Produkttyp").name("SAT").build()
+            Parameter.builder().category("Produkttyp").name("SAT").build()
         );
         given(repositoryMock.getParameter(anyCollection())).willReturn(parameter);
 
         given(mapperMock.createScreeningSheet(any())).willAnswer(invocation -> {
             Parameter p = (Parameter) invocation.getArgument(0);
-            return ScreeningSheetParameter.builder().bezeichnung(p.getName()).build();
+            return ScreeningSheetParameter.builder().category(p.getName()).build();
         });
 
         // act

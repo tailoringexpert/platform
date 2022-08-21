@@ -3,42 +3,43 @@ hide empty members
 
 package repository {
     interface LogoRepository
-    interface ProjektRepository
+    interface ProjectRepository
     interface TailoringRepository
-    interface SelektionsVektorProfilRepository
-    interface DokumentZeichnerRepository
+    interface SelectionVektorProfileRepository
+    interface DocumentSigneeRepository
 }
 
 package tailoring {
 
     interface TailoringServiceRepository {
-        getProjekt(projekt : String) : Optional<Projekt>
-        updateTailoring(projekt : String, tailoring : Tailoring) : Tailoring
-        updateAnforderungDokument(projekt : String, tailoring : String, dokument : Dokument) : Tailoring
-        getTailoring(projekt : String, tailoring : String): Optional<Tailoring>
-        getScreeningSheet(projekt : String, tailoring : String): Optional<ScreeningSheet>
-        getScreeningSheetDatei(projekt : String, tailoring : String): Optional<byte[]>
-        updateDokumentZeichnung(projekt : String, tailoring : String, zeichnung : DokumentZeichnung) : Optional<DokumentZeichnung>
-        updateName(projekt : String, tailoring : String, name : String) : Optional<Tailoring>
-        getDokumentListe(projekt : String, tailoring : String): List<Dokument>
-        getDokument(projekt : String, tailoring : String, name : String) : byte[]
-        deleteDokument(projekt : String, tailoring : String, name : String) : boolean
-        getSelektionsVektorProfile() : Collection<SelektionsVektorProfil>
-        getDefaultZeichnungen() : Collection<DokumentZeichnung>
-        deleteTailoring(projekt : String, tailoring : String)
+        getProject(project : String) : Optional<Project>
+        updateTailoring(project : String, tailoring : Tailoring) : Tailoring
+        updateFile(project : String, tailoring : String, file : File) : Tailoring
+        getTailoring(project : String, tailoring : String): Optional<Tailoring>
+        getScreeningSheet(project : String, tailoring : String): Optional<ScreeningSheet>
+        getScreeningSheetFile(project : String, tailoring : String): Optional<byte[]>
+        updateDocumentSignature(project : String, tailoring : String, signature : DocumentSignature) : Optional<DocumentSignature>
+        updateName(project : String, tailoring : String, name : String) : Optional<Tailoring>
+        getFileList(project : String, tailoring : String): List<File>
+        getFile(project : String, tailoring : String, name : String) : Optional<File>
+        deleteFile(project : String, tailoring : String, name : String) : boolean
+        getSelectionVectorProfile() : Collection<SelectionVectorProfile>
+        getDefaultSignatures() : Collection<DocumentSignature>
+        deleteTailoring(project : String, tailoring : String)
     }
+
 
     abstract class JPATailoringServiceRepositoryMapper {
         {abstract} toDomain(entity : ProjektEntity) : Projekt
         {abstract} toDomain(entity : TailoringEntity) : Tailoring
-        {abstract} addKatalog(domain : Tailoring,  entity : TailoringEntity) : void
-        {abstract} update(domain : Dokument, entity : DokumentEntity) : void
+        {abstract} addCatalog(domain : Tailoring,  entity : TailoringEntity) : void
+        {abstract} update(file : File, entity : FileEntity) : void
         {abstract} toScreeningSheetParameters(entity : ScreeningSheetEntity) : ScreeningSheet
-        {abstract} updateDokumentZeichnung(domain : DokumentZeichnung, entity : DokumentZeichnungEntity) : void
-        {abstract} toDomain(entity : DokumentZeichnungEntity) : DokumentZeichnung
-        {abstract} toDomain(entity : DokumentEntity) : Dokument
-        {abstract} toDomain(entity : SelektionsVektorProfilEntity) : SelektionsVektorProfil
-        {abstract} getDefaultZeichnungen(entity : DokumentZeichnerEntity) : DokumentZeichnung
+        {abstract} updateDocumentSignature(domain : DokumentZeichnung, entity : DokumentZeichnungEntity) : void
+        {abstract} toDomain(entity : DocumentSignatureEntity) : DocumentSignature
+        {abstract} toDomain(entity : FileEntity) : File
+        {abstract} toDomain(entity : SelektionVectorProfileEntity) : SelectionVectorProfile
+        {abstract} getDefaultSignatures(entity : DocumentSigneeEntity) : DocumentSignee
         resolve(domain: Logo) : LogoEntity
     }
     JPAProjektServiceRepositoryMapper -->  "1" LogoRepository : logoRepository
@@ -47,10 +48,10 @@ package tailoring {
     }
     TailoringServiceRepository <|.. JPATailoringServiceRepository
     JPATailoringServiceRepository --> "1" JPATailoringServiceRepositoryMapper : mapper
-    JPATailoringServiceRepository --> "1" ProjektRepository : projektRepository
+    JPATailoringServiceRepository --> "1" ProjectRepository : projectRepository
     JPATailoringServiceRepository --> "1" TailoringRepository : tailoringRepository
-    JPATailoringServiceRepository --> "1" SelektionsVektorProfilRepository : selektionsVektorProfilRepository
-    JPATailoringServiceRepository --> "1" DokumentZeichnerRepository : dokumentZeichnerRepository;
+    JPATailoringServiceRepository --> "1" SelektionVectorProfileRepository : selectionVectorProfileRepository
+    JPATailoringServiceRepository --> "1" DocumentSigneeRepository : documentSigneeRepository
 
 }
 @enduml

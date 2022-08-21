@@ -37,15 +37,15 @@ import static java.util.Objects.nonNull;
 @EqualsAndHashCode(callSuper = false)
 public class ScreeningSheetParameterResource extends RepresentationModel<ScreeningSheetParameterResource> {
 
-    private String bezeichnung;
-    private Object wert;
+    private String label;
+    private Object value;
 
     @Builder
-    public ScreeningSheetParameterResource(String bezeichnung, Object wert, List<Link> links) {
+    public ScreeningSheetParameterResource(String bezeichnung, Object value, List<Link> links) {
         super();
 
-        this.wert = wert;
-        this.bezeichnung = bezeichnung;
+        this.value = value;
+        this.label = bezeichnung;
         if (nonNull(links)) {
             add(links);
         }

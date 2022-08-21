@@ -18,7 +18,7 @@ hs_err_pid*
 /bin/
 **/.settings/
 **/.classpath
-**/.projekt
+**/.project
 
 ### Intellij ###
 # Covers JetBrains IDEs: IntelliJ, RubyMine, PhpStorm, AppCode, PyCharm, CLion, Android Studio and Webstorm
@@ -52,7 +52,7 @@ hs_err_pid*
 **/.idea/gradle.xml
 **/.idea/libraries
 
-## File-based projekt format:
+## File-based project format:
 *.iws
 **/*.iml
 

@@ -28,8 +28,8 @@ import lombok.Value;
 @Value
 public class ScreeningSheetParameterEintrag {
 
-    private String kategorie;
+    private String category;
     private String name;
-    private String bezeichnung;
+    private String label;
 
 }

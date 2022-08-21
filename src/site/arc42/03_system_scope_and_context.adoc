@@ -7,7 +7,7 @@
 plantuml::plantuml/FachlicherKontext.plantuml[target="{plantumls-outdir}/03/FachlicherKontext", format=svg, opts="inline", alt="Class diagram", width=300, height=200]
 
 ==== Anwender (Benutzer)
-Mitarbeiter, der projekt- und phasenspezfische Anforderungskataloge erstellt
+Mitarbeiter, der project- und phasenspezfische Anforderungskataloge erstellt
 
 ==== DRD (Fremdsystem)
 DRD sind zu verwendende oder Beispielvorlagen für den Auftragnehmer für die Erstellung

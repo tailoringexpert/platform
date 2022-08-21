@@ -26,7 +26,7 @@ import eu.tailoringexpert.domain.ScreeningSheetParameter;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import static eu.tailoringexpert.domain.DatenTyp.SKALAR;
+import static eu.tailoringexpert.domain.DatenType.SKALAR;
 import static org.assertj.core.api.Assertions.assertThat;
 
 class ScreeningSheetServiceMapperTest {
@@ -53,11 +53,11 @@ class ScreeningSheetServiceMapperTest {
     void createScreeningSheet_ParameterVorhanden_ScreeningSheetParameterWirdZurueckGegeben() {
         // arrange
         Parameter parameter = Parameter.builder()
-            .datenTyp(SKALAR)
-            .kategorie("Lebensdauer")
-            .bezeichnung("15 Jahre < t")
+            .parameterType(SKALAR)
+            .category("Lebensdauer")
+            .label("15 Jahre < t")
             .name("Dauer4")
-            .reihenfolge(1)
+            .position(1)
             .build();
 
         // act
@@ -65,7 +65,7 @@ class ScreeningSheetServiceMapperTest {
 
         // assert
         assertThat(actual).isNotNull();
-        assertThat(actual.getBezeichnung()).isEqualTo(parameter.getKategorie());
-        assertThat(actual.getWert()).isEqualTo(parameter.getBezeichnung());
+        assertThat(actual.getCategory()).isEqualTo(parameter.getCategory());
+        assertThat(actual.getValue()).isEqualTo(parameter.getLabel());
     }
 }

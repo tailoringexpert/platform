@@ -33,7 +33,7 @@
             <column name="SEQ_COUNT" valueNumeric="1"/>
         </insert>
         <insert tableName="SEQUENCE">
-            <column name="SEQ_NAME" value="SEQ_BASECATALOGREQUIREMENT"/>
+            <column name="SEQ_NAME" value="SEQ_BASEREQUIREMENT"/>
             <column name="SEQ_COUNT" valueNumeric="1"/>
         </insert>
         <insert tableName="SEQUENCE">

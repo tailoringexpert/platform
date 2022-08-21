@@ -48,9 +48,9 @@ public class ScreeningSheetConfiguration {
 
     @Bean
     @Primary
-    SelektionsVektorProvider selektionsVektorProvider(@NonNull ListableBeanFactory beanFactory) {
-        Map<String, SelektionsVektorProvider> services = getTenantImplementierungen(beanFactory, SelektionsVektorProvider.class);
-        return new TenantSelektionsVektorProvider(services);
+    SelectionVectorProvider selektionsVektorProvider(@NonNull ListableBeanFactory beanFactory) {
+        Map<String, SelectionVectorProvider> services = getTenantImplementierungen(beanFactory, SelectionVectorProvider.class);
+        return new TenantSelectionVectorProvider(services);
     }
 
     @Bean
@@ -77,7 +77,7 @@ public class ScreeningSheetConfiguration {
         @NonNull ScreeningSheetServiceMapper mapper,
         @NonNull ScreeningSheetServiceRepository repository,
         @NonNull ScreeningSheetParameterProvider screeningDataProvider,
-        @NonNull SelektionsVektorProvider selektionsVectorProvider) {
+        @NonNull SelectionVectorProvider selektionsVectorProvider) {
         return new ScreeningSheetServiceImpl(mapper, repository, screeningDataProvider, selektionsVectorProvider);
     }
 

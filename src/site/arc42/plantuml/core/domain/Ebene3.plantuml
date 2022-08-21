@@ -8,29 +8,29 @@ package domain {
         url : String
     }
 
-    class Referenz {
+    class Reference {
       text : String
       geaendert: Boolean
     }
-    Referenz --> "0..1" Logo : logo
+    changed --> "0..1" Logo : logo
 
-    abstract class Anforderung{
+    abstract class Requirement{
       text: String
       position : String
     }
-    Anforderung --> "0..1" Referenz : referenz
-    Anforderung --> "0..*" DRD : drds
+    Requirement --> "0..1" Reference : reference
+    Requirement --> "0..*" DRD : drds
 
     class DRD {
-        nummer : String
-        titel : String
-        lieferzeitpunkt : String
-        aktion : String
+        numer : String
+        title : String
+        deliveryDate : String
+        action : String
     }
-    class Identifikator {
-        typ : String
+    class Identifier {
+        type : String
         level : int
-        limitierierungen : Collection<String>
+        limitations : Collection<String>
     }
 
     enum Phase {
@@ -43,88 +43,83 @@ package domain {
         F("F")
     }
 
-    class KatalogAnforderung {
+    class BaseRequirement {
     }
-    Anforderung <|-- KatalogAnforderung
-    KatalogAnforderung --> "0..*" Identifikator : identifikatoren
-    KatalogAnforderung --> "0...*" Phase : phasen
+    Requirement <|-- BaseRequirement
+    BaseRequirement --> "0..*" Identifier : identifiers
+    BaseRequirement --> "0...*" Phase : phases
 
 
-    class Kapitel<T extends Anforderung> {
+    class Chapter<T extends Requirement> {
         name : String
         position : int
-        nummer : String
+        number : String
     }
-    Kapitel --> "0..*" Kapitel : kapitel
-    Kapitel --> "0..*" Anforderung : anforderungen
+    Chapter --> "0..*" Chapter : chapters
+    Chapter --> "0..*" Requirement : requirements
 
-    class TailoringAnforderung {
-        ausgewaehlt : Boolean
-        ausgewaehltGeaendert : ZonedDateTime
-        textGeaendert : ZonedDateTime
+    class TailoringRequirement {
+        selected : Boolean
+        selectionChanged : ZonedDateTime
+        textChanged : ZonedDateTime
     }
-    Anforderung <|-- TailoringAnforderung
+    Requirement <|-- TailoringRequirement
 
-    class Katalog<T extends Anforderung> {
+    class Catalog<T extends Requirement> {
         version : String
     }
-    Katalog --> "1" Kapitel : toc
+    Catalog --> "1" Chapter : toc
 
 
-    class SelektionsVektor {
+    class SelectionVector {
         levels : Map<String, Integer>
         getLevel(type : String) : int
     }
 
-    class SelektionsVektorProfil {
+    class SelectionVectorProfile {
         name: String
         levels : Map<String, Integer>
     }
 
     class ScreeningSheet {
         data : byte[]
-        getKuezel() : String
-        getProjektLeiter() : String
-        getAbteilung() : String
-        getLangname() : String
-        getKurzname() : String
+        getIdentifier() : String
     }
-    ScreeningSheet --> "1" SelektionsVektor : selektionsVektor
+    ScreeningSheet --> "1" SelectionVector : selectionsVector
     ScreeningSheet -->  "0..*" ScreeningSheetParameter : parameters
 
-    class Dokument {
+    class File {
         name : String
-        type : String
         daten:  byte[]
         hash : String
+        +getType() : String
     }
 
-    enum TailoringStatus {
-        ANGELEGT
-        AKTIV
+    enum TailoringState {
+        CREATED
+        ACTIVE
     }
 
     class Tailoring {
         name : String
-        kennung : String
+        identifier : String
     }
 
-    Tailoring --> "1" SelektionsVektor : selektionsVektor
+    Tailoring --> "1" SelectionVector : selectionVector
     Tailoring --> "1" ScreeningSheet : screeningSheet
-    Tailoring --> "1..*" Phase : phasen
-    Tailoring --> "1" Katalog : katalog
-    Tailoring --> "1" TailoringStatus : status
-    Tailoring --> "1" Dokument : anforderungDokument
-    Tailoring --> "1" Dokument : drdDokument
-    Tailoring --> "1..*" DokumentZeichnung : zeichnungen
+    Tailoring --> "1..*" Phase : phases
+    Tailoring --> "1" "Catalog<TailoringRequirement>" : catalog
+    Tailoring --> "1" TailoringState : state
+    Tailoring --> "0..*" File : files
+    Tailoring --> "1..*" DocumentSignature : signatures
 
-    class Projekt {
-        kuerzel : String
-        erstellungsZeitpunkt : ZonedDateTime
+    class Project {
+        identifier : String
+        creationTimestamp : ZonedDateTime
     }
-    Projekt --> "1..*" Tailoring : tailorings
-    Projekt --> "1" ScreeningSheet : screeningSheet
-    Projekt --> "1" Katalog : katalog
+    Project --> "1..*" Tailoring : tailorings
+    Project --> "1" ScreeningSheet : screeningSheet
+    Project --> "1" "Catalog<BaseRequirement>" : catalog
 
     enum DatenTyp {
         SKALAR
@@ -132,57 +127,45 @@ package domain {
     }
 
     class Parameter {
-        parameterTyp : String
+        parameterType : String
         name : String
-        bezeichnung: String
-        wert : Object
-        reihenfolge : int
+        label: String
+        value : Object
+        position : int
     }
-    Parameter --> "1" DatenTyp : datenTyp
+    Parameter --> "1" DatenType : datenType
 
-    enum DokumentZeichnungStatus {
+    enum DocumentSignatureState {
         PREPARED("Prepared")
         AGREED("Agreed")
         RELEASED("Released")
     }
 
-    class DokumentZeichnung {
-        bereich : String
-        unterzeichner : String
-        anwendbar : Boolean
+    class DocumentSignature {
+        faculty : String
+        signee : String
+        applicable : Boolean
         position : int
     }
-    DokumentZeichnung --> "1" DokumentZeichnungStatus : status
+    DocumentSignature --> "1" DocumentSignatureState : status
 
-    class Datei {
-        docId : String
-        type: String
-        bytes : byte[]
-    }
-
-    class TailoringInformation<<Projektion>> {
+    class TailoringInformation<<Projection>> {
         name : String
-        katalogVersion : String
+        catalogVersion : String
     }
-    TailoringInformation --> "1.." Phase : phasen
+    TailoringInformation --> "1.." Phase : phases
 
-    class ProjektInformation<<Projektion>> {
-        kuerzel : String
-        katalogVersion : Sting
-        erstellungsZeitpunkt : ZonedDateTime
+    class ProjectInformation<<Projection>> {
+        identifier : String
+        catalogVersion : Sting
+        creationTimestamp : ZonedDateTime
     }
-    ProjektInformation --> "1..*" TailoringInformation : Tailoringn
+    ProjectInformation --> "1..*" TailoringInformation : tailorings
 
     class ScreeningSheetParameter {
-        bezeichnung : String
-        wert : Object
+        category : String
+        value : Object
     }
-
-    class ScreeningSheetInformation {
-    }
-    ScreeningSheetInformation --> "1..*" ScreeningSheetParameter : parameters
-    ScreeningSheetInformation --> "1" SelektionsVektor : selektionsVektor
-
 }
 hide empty members
 @enduml

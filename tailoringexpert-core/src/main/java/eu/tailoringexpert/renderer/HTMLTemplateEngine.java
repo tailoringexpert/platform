@@ -27,8 +27,7 @@ public interface HTMLTemplateEngine {
 
     String process(String template, Map<String, Object> variables);
 
-
-    String toXHTML(String text, Map<String, String> platzhalter);
+    String toXHTML(String text, Map<String, String> placeholders);
 
 
 }

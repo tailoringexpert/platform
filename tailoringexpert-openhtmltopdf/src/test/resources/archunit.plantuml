@@ -3,8 +3,12 @@
 [Domain] <<..domain..>>
 [Renderer] <<..renderer..>>
 
-[ProjektPhase] <<..projektphase..>>
-[Domain] <-- [ProjektPhase]
-[Renderer] <-- [ProjektPhase]
+[Tailoring] <<..tailoring..>>
+[Domain] <-- [Tailoring]
+[Renderer] <-- [Tailoring]
+
+[Catalog] <<..catalog..>>
+[Domain] <-- [Catalog]
+[Renderer] <-- [Catalog]
 
 @enduml

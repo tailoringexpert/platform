@@ -37,16 +37,16 @@ import static java.util.Objects.nonNull;
 public class TailoringInformationResource extends RepresentationModel<TailoringInformationResource> {
 
     private String name;
-    private Collection<Phase> phasen;
-    private String katalogVersion;
+    private Collection<Phase> phases;
+    private String catalogVersion;
 
     @Builder
-    public TailoringInformationResource(String name, Collection<Phase> phasen, String katalogVersion, List<Link> links) {
+    public TailoringInformationResource(String name, Collection<Phase> phases, String catalogVersion, List<Link> links) {
         super();
 
         this.name = name;
-        this.phasen = phasen;
-        this.katalogVersion = katalogVersion;
+        this.phases = phases;
+        this.catalogVersion = catalogVersion;
         if (nonNull(links)) {
             add(links);
         }

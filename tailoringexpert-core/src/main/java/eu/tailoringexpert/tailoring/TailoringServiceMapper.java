@@ -8,12 +8,12 @@
  * it under the terms of the GNU General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/gpl-3.0.html>.
@@ -21,15 +21,15 @@
  */
 package eu.tailoringexpert.tailoring;
 
-import eu.tailoringexpert.domain.Katalog;
-import eu.tailoringexpert.domain.KatalogAnforderung;
+import eu.tailoringexpert.domain.BaseRequirement;
+import eu.tailoringexpert.domain.Catalog;
 import eu.tailoringexpert.domain.Phase;
 import eu.tailoringexpert.domain.ScreeningSheet;
 import eu.tailoringexpert.domain.ScreeningSheetParameter;
-import eu.tailoringexpert.domain.SelektionsVektor;
+import eu.tailoringexpert.domain.SelectionVector;
 import eu.tailoringexpert.domain.Tailoring;
-import eu.tailoringexpert.domain.TailoringAnforderung;
-import eu.tailoringexpert.domain.TailoringAnforderung.TailoringAnforderungBuilder;
+import eu.tailoringexpert.domain.TailoringRequirement;
+import eu.tailoringexpert.domain.TailoringRequirement.TailoringRequirementBuilder;
 import eu.tailoringexpert.domain.TailoringInformation;
 import org.mapstruct.AfterMapping;
 import org.mapstruct.BeanMapping;
@@ -59,65 +59,65 @@ public abstract class TailoringServiceMapper {
      */
     @BeanMapping(ignoreByDefault = true)
     @Mapping(target = "name", source = "domain.name")
-    @Mapping(target = "phasen", source = "domain.phasen")
+    @Mapping(target = "phases", source = "domain.phases")
     abstract TailoringInformation toTailoringInformation(Tailoring domain);
 
     /**
      * Konvertiert einen übergebenen Anforderungskatalog in einen projektspezifischen Anforderungskatalog.
      *
-     * @param katalog          Der zu konvertierende Katalog
+     * @param catalog          Der zu konvertierende Catalog
      * @param screeningSheet   ScreeningSheet mit den Informationen für die Anwendbarkeit von Anforderungen
-     * @param selektionsVektor Selektionsvektor für die Anwendbarkeit von Anforderungen
+     * @param selectionVector Selektionsvektor für die Anwendbarkeit von Anforderungen
      * @return konvertierter Projektkatalog
      */
-    abstract Katalog<TailoringAnforderung> toTailoringKatalog(
-        Katalog<KatalogAnforderung> katalog,
+    abstract Catalog<TailoringRequirement> toTailoringCatalog(
+        Catalog<BaseRequirement> catalog,
         @Context ScreeningSheet screeningSheet,
-        @Context SelektionsVektor selektionsVektor
+        @Context SelectionVector selectionVector
     );
 
     @AfterMapping
-    void toTailoringAnforderung(
-        KatalogAnforderung katalogAnforderung,
+    void toTailoringRequirement(
+        BaseRequirement baseRequirement,
         @Context ScreeningSheet screeningSheet,
-        @Context SelektionsVektor selektionsVektor,
-        @MappingTarget TailoringAnforderungBuilder builder) {
+        @Context SelectionVector selectionVector,
+        @MappingTarget TailoringRequirementBuilder builder) {
 
         Collection<Phase> phasen = (Collection<Phase>) screeningSheet.getParameters()
             .stream()
-            .filter(parameter -> "phase".equalsIgnoreCase(parameter.getBezeichnung()))
+            .filter(parameter -> "phase".equalsIgnoreCase(parameter.getCategory()))
             .findFirst()
             .orElseThrow(RuntimeException::new)
-            .getWert();
+            .getValue();
 
         boolean isRelevantPhase = containsScreeningPhase(
             phasen,
-            katalogAnforderung.getPhasen()
+            baseRequirement.getPhases()
         );
 
         Set<String> parameterValues = screeningSheet.getParameters()
             .stream()
-            .map(ScreeningSheetParameter::getWert)
+            .map(ScreeningSheetParameter::getValue)
             .filter(String.class::isInstance)
             .map(String.class::cast)
             .collect(toUnmodifiableSet());
 
-        katalogAnforderung.getIdentifikatoren()
+        baseRequirement.getIdentifiers()
             .stream()
-            .filter(applicability -> isRelevantPhase)
-            .filter(applicability -> {
-                int level = selektionsVektor.getLevel(applicability.getTyp());
+            .filter(identifier -> isRelevantPhase)
+            .filter(identifier -> {
+                int level = selectionVector.getLevel(identifier.getType());
                 // prüfen, ob abwendbarkeit ohne einschränkung
-                if ((isNull(applicability.getLimitierungen()) || applicability.getLimitierungen().isEmpty()) &&
-                    level >= applicability.getLevel()) {
+                if ((isNull(identifier.getLimitations()) || identifier.getLimitations().isEmpty()) &&
+                    level >= identifier.getLevel()) {
                     return true;
                 }
 
                 // sind alle limitierungen enthalten und ist der level gleich
-                return containsAllLimitations(parameterValues, applicability.getLimitierungen()) && level == applicability.getLevel();
+                return containsAllLimitations(parameterValues, identifier.getLimitations()) && level == identifier.getLevel();
             })
             .findFirst()
-            .ifPresentOrElse(applicability -> builder.ausgewaehlt(TRUE), () -> builder.ausgewaehlt(FALSE));
+            .ifPresentOrElse(applicability -> builder.selected(TRUE), () -> builder.selected(FALSE));
     }
 
     private boolean containsScreeningPhase(

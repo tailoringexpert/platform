@@ -25,6 +25,7 @@ import javax.persistence.AttributeConverter;
 import javax.persistence.Converter;
 import java.time.ZonedDateTime;
 
+import static java.time.ZonedDateTime.parse;
 import static java.util.Objects.nonNull;
 
 /**
@@ -40,6 +41,6 @@ public class ZonedDateTimeAttributeConverter implements AttributeConverter<Zoned
 
     @Override
     public ZonedDateTime convertToEntityAttribute(String dbData) {
-        return nonNull(dbData) ? ZonedDateTime.parse(dbData) : null;
+        return nonNull(dbData) ? parse(dbData) : null;
     }
 }

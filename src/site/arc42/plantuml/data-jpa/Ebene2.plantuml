@@ -8,15 +8,15 @@ skinparam componentStyle uml2
 component [data-jpa] {
     [domain]
 
-    [katalog]
-    [domain] <-- [katalog]
+    [catalog]
+    [domain] <-- [catalog]
 
     [repository]
     [domain] <-- [repository]
 
-    [anforderung]
-    [domain] <-- [anforderung]
-    [repository] <-- [anforderung]
+    [requirement]
+    [domain] <-- [requirement]
+    [repository] <-- [requirement]
 
     [screeningsheet]
     [domain] <-- [screeningsheet]
@@ -27,10 +27,10 @@ component [data-jpa] {
     [repository] <-- [tailoring]
     [screeningsheet] <-- [tailoring]
 
-    [projekt]
-    [domain] <-- [projekt]
-    [repository] <-- [projekt]
-    [screeningsheet] <-- [projekt]
-    [tailoring] <-- [projekt]
+    [project]
+    [domain] <-- [project]
+    [repository] <-- [project]
+    [screeningsheet] <-- [project]
+    [tailoring] <-- [project]
 }
 @enduml

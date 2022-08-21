@@ -69,5 +69,5 @@ public class ScreeningSheetEntity implements Serializable {
 
     @OneToOne(cascade = ALL)
     @JoinColumn(name = "SELEKTIONVECTOR_ID")
-    private SelektionsVektorEntity selektionsVektor;
+    private SelectionVectorEntity selectionVector;
 }

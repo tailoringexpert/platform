@@ -22,7 +22,7 @@
 package eu.tailoringexpert.screeningsheet;
 
 import eu.tailoringexpert.domain.ScreeningSheet;
-import eu.tailoringexpert.domain.SelektionsVektor;
+import eu.tailoringexpert.domain.SelectionVector;
 
 public interface ScreeningSheetService {
 
@@ -32,7 +32,7 @@ public interface ScreeningSheetService {
      * @param rawData (PDF) Rohdaten des Screeningsheets
      * @return Der berechnete Selektionsvektor
      */
-    SelektionsVektor berechneSelektionsVektor(byte[] rawData);
+    SelectionVector calculateSelectionVector(byte[] rawData);
 
     /**
      * Erzeugt ein ScreeningSheet Objekt inklusive berechnetem Selektionsvektor

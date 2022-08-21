@@ -26,7 +26,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface DRDRepository extends JpaRepository<DRDEntity, Long> {
 
-    //    @Transactional(readOnly = true)
-    DRDEntity findByNummer(String nummer);
+    DRDEntity findByNumber(String number);
 
 }

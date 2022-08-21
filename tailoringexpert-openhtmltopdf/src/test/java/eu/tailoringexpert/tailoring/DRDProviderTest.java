@@ -27,11 +27,11 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jdk8.Jdk8Module;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.fasterxml.jackson.module.paramnames.ParameterNamesModule;
+import eu.tailoringexpert.domain.Catalog;
+import eu.tailoringexpert.domain.Chapter;
 import eu.tailoringexpert.domain.DRD;
-import eu.tailoringexpert.domain.Kapitel;
-import eu.tailoringexpert.domain.Katalog;
 import eu.tailoringexpert.domain.Phase;
-import eu.tailoringexpert.domain.TailoringAnforderung;
+import eu.tailoringexpert.domain.TailoringRequirement;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -77,22 +77,22 @@ class DRDProviderTest {
         this.objectMapper.registerModules(new ParameterNamesModule(), new JavaTimeModule(), new Jdk8Module());
         this.objectMapper.disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES);
 
-        this.provider = new DRDProvider(new DRDAnwendbarPraedikat(phase2Meilensteine));
+        this.provider = new DRDProvider(new DRDApplicablePredicate(phase2Meilensteine));
     }
 
 
     @Test
     void safety() throws IOException {
         // arrange
-        Katalog<TailoringAnforderung> katalog;
-        try (InputStream is = newInputStream(get("src/test/resources/tailoringkatalog.json"))) {
+        Catalog<TailoringRequirement> catalog;
+        try (InputStream is = newInputStream(get("src/test/resources/tailoringcatalog.json"))) {
             assert nonNull(is);
-            katalog = objectMapper.readValue(is, new TypeReference<Katalog<TailoringAnforderung>>() {
+            catalog = objectMapper.readValue(is, new TypeReference<Catalog<TailoringRequirement>>() {
             });
         }
 
         // act
-        Map<DRD, Set<String>> actual = provider.apply(katalog.getKapitel("5").get(), asList(E));
+        Map<DRD, Set<String>> actual = provider.apply(catalog.getChapter("5").get(), asList(E));
 
         // assert
         assertThat(actual).hasSize(20);
@@ -101,37 +101,37 @@ class DRDProviderTest {
     @Test
     void doit() {
         // arrange
-        Kapitel<TailoringAnforderung> kapitel = Kapitel.<TailoringAnforderung>builder()
-            .nummer("5.1")
-            .anforderungen(asList(
-                TailoringAnforderung.builder()
-                    .text("Anforderung 1")
-                    .ausgewaehlt(false)
+        Chapter<TailoringRequirement> chapter = Chapter.<TailoringRequirement>builder()
+            .number("5.1")
+            .requirements(asList(
+                TailoringRequirement.builder()
+                    .text("Requirement 1")
+                    .selected(false)
                     .drds(asList(
-                        DRD.builder().nummer("05.01").lieferzeitpunkt("SRR").build(),
-                        DRD.builder().nummer("05.02").lieferzeitpunkt("PDR").build(),
-                        DRD.builder().nummer("05.03").lieferzeitpunkt("QR").build()
+                        DRD.builder().number("05.01").deliveryDate("SRR").build(),
+                        DRD.builder().number("05.02").deliveryDate("PDR").build(),
+                        DRD.builder().number("05.03").deliveryDate("QR").build()
                     ))
                     .build(),
-                TailoringAnforderung.builder()
+                TailoringRequirement.builder()
                     .text("Anforderung2")
-                    .ausgewaehlt(true)
+                    .selected(true)
                     .drds(asList(
-                        DRD.builder().nummer("05.10").lieferzeitpunkt("SRR").build()
+                        DRD.builder().number("05.10").deliveryDate("SRR").build()
                     ))
                     .build(),
-                TailoringAnforderung.builder()
+                TailoringRequirement.builder()
                     .text("Anforderung3")
-                    .ausgewaehlt(true)
+                    .selected(true)
                     .drds(asList(
-                        DRD.builder().nummer("05.10").lieferzeitpunkt("PDR").build()
+                        DRD.builder().number("05.10").deliveryDate("PDR").build()
                     ))
                     .build()
             ))
             .build();
 
         // act
-        Map<DRD, Set<String>> actual = provider.apply(kapitel, asList(A));
+        Map<DRD, Set<String>> actual = provider.apply(chapter, asList(A));
 
         // assert
         assertThat(actual).hasSize(1);

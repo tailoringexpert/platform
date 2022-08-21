@@ -37,8 +37,8 @@ import java.io.IOException;
 import java.util.Arrays;
 import java.util.Collection;
 
-import static eu.tailoringexpert.domain.DatenTyp.MATRIX;
-import static eu.tailoringexpert.domain.DatenTyp.SKALAR;
+import static eu.tailoringexpert.domain.DatenType.MATRIX;
+import static eu.tailoringexpert.domain.DatenType.SKALAR;
 import static org.assertj.core.api.Assertions.assertThat;
 
 
@@ -70,27 +70,27 @@ class ParameterRepositoryTest {
     void findByNameIn_2ParameterInListeVorhanden_ListeMitParameternZurueckGegeben() throws IOException {
         // arrange
         repository.save(ParameterEntity.builder()
-            .bezeichnung("Produkttyp")
-            .datenTyp(MATRIX)
-            .wert("[[10],[10],[10],[10],[10],[10],[10],[10],[10],[10]]")
+            .label("Produkttyp")
+            .parameterType(MATRIX)
+            .value("[[10],[10],[10],[10],[10],[10],[10],[10],[10],[10]]")
             .name("SAT")
-            .kategorie("Produkttyp")
+            .category("Produkttyp")
             .build());
 
         repository.save(ParameterEntity.builder()
-            .bezeichnung("Lebensdauer")
-            .datenTyp(SKALAR)
-            .wert("3")
+            .label("Lebensdauer")
+            .parameterType(SKALAR)
+            .value("3")
             .name("15 Jahre < t")
-            .kategorie("Lebensdauer")
+            .category("Lebensdauer")
             .build());
 
         repository.save(ParameterEntity.builder()
-            .bezeichnung("Kostenorientierung")
-            .datenTyp(SKALAR)
-            .wert("5")
+            .label("Kostenorientierung")
+            .parameterType(SKALAR)
+            .value("5")
             .name("150 <= k")
-            .kategorie("Kosten/Budget")
+            .category("Kosten/Budget")
             .build());
 
         // act

@@ -6,22 +6,22 @@ component [rest] {
 
     [Domain]
 
-    [Anforderung]
-    [Domain] <-- [Anforderung]
+    [Requirement]
+    [Domain] <-- [Requirement]
 
     [KatalogDefinition]
-    [Domain] <-- [KatalogDefinition]
+    [Domain] <-- [Catalog]
 
     [ScreeningSheet]
     [Domain] <-- [ScreeningSheet]
 
     [Tailoring]
     [Domain] <-- [Tailoring]
-    [Anforderung] <-- [Tailoring]
+    [Requirement] <-- [Tailoring]
 
-    [Projekt]
-    [Domain] <-- [Projekt]
-    [Tailoring] <-- [Projekt]
+    [Project]
+    [Domain] <-- [Project]
+    [Tailoring] <-- [Project]
 
 }
 @enduml

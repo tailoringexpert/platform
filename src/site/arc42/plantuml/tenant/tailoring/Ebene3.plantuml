@@ -3,15 +3,15 @@ hide empty members
 
 package tailoring {
 
-    interface DokumentService {
-        createAnforderungDokument(tailoring : Tailoring, erstellungszeitpunkt : LocalDateTime): Optional<Datei>
-        createVergleichsDokument(tailoring : Tailoring, erstellungszeitpunkt : LocalDateTime): Optional<Datei>
-        createAll(tailoring : Tailoring, erstellungszeitpunkt : LocalDateTime): Optional<Datei>
+    interface DocumentService {
+        createRequirementDocument(tailoring : Tailoring, creationTimestamp : LocalDateTime): Optional<File>
+        createComparisonDocument(tailoring : Tailoring, creationTimestamp : LocalDateTime): Optional<File>
+        createAll(tailoring : Tailoring, creationTimestamp : LocalDateTime): Optional<File>
     }
 
-    class TenantDokumentService {
-        tenantService : Map<String, DokumentService>
+    class TenantDocumentService {
+        tenantService : Map<String, DocumentService>
     }
-    DokumentService <|.. TenantDokumentService
+    DocumentService <|.. TenantDocumentService
 }
 @enduml

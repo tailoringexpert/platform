@@ -21,20 +21,19 @@
  */
 package eu.tailoringexpert.tailoring;
 
-import eu.tailoringexpert.domain.Datei;
-import eu.tailoringexpert.domain.Dokument;
-import eu.tailoringexpert.domain.DokumentEntity;
-import eu.tailoringexpert.domain.DokumentZeichnung;
-import eu.tailoringexpert.domain.DokumentZeichnungEntity;
-import eu.tailoringexpert.domain.Projekt;
-import eu.tailoringexpert.domain.ProjektEntity;
+import eu.tailoringexpert.domain.FileEntity;
+import eu.tailoringexpert.domain.File;
+import eu.tailoringexpert.domain.DocumentSignature;
+import eu.tailoringexpert.domain.DocumentSignatureEntity;
+import eu.tailoringexpert.domain.Project;
+import eu.tailoringexpert.domain.ProjectEntity;
 import eu.tailoringexpert.domain.ScreeningSheet;
-import eu.tailoringexpert.domain.SelektionsVektorProfil;
+import eu.tailoringexpert.domain.SelectionVectorProfile;
 import eu.tailoringexpert.domain.Tailoring;
 import eu.tailoringexpert.domain.TailoringEntity;
-import eu.tailoringexpert.repository.DokumentZeichnerRepository;
-import eu.tailoringexpert.repository.ProjektRepository;
-import eu.tailoringexpert.repository.SelektionsVektorProfilRepository;
+import eu.tailoringexpert.repository.DokumentSigneeRepository;
+import eu.tailoringexpert.repository.ProjectRepository;
+import eu.tailoringexpert.repository.SelectionVectorProfileRepository;
 import eu.tailoringexpert.repository.TailoringRepository;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
@@ -60,36 +59,36 @@ public class JPATailoringServiceRepository implements TailoringServiceRepository
     private JPATailoringServiceRepositoryMapper mapper;
 
     @NonNull
-    private ProjektRepository projektRepository;
+    private ProjectRepository projectRepository;
 
     @NonNull
     private TailoringRepository tailoringRepository;
 
     @NonNull
-    private SelektionsVektorProfilRepository selektionsVektorProfilRepository;
+    private SelectionVectorProfileRepository selectionVectorProfileRepository;
 
     @NonNull
-    private DokumentZeichnerRepository dokumentZeichnerRepository;
+    private DokumentSigneeRepository dokumentSigneeRepository;
 
     /**
      * {@inheritDoc}
      */
     @Override
-    public Optional<Projekt> getProjekt(String kuerzel) {
-        return ofNullable(mapper.toDomain(projektRepository.findByKuerzel(kuerzel)));
+    public Optional<Project> getProject(String project) {
+        return ofNullable(mapper.toDomain(projectRepository.findByIdentifier(project)));
     }
 
     /**
      * {@inheritDoc}
      */
     @Override
-    public Tailoring updateTailoring(String projekt, Tailoring tailoring) {
-        Optional<ProjektEntity> oProjekt = findProjekt(projekt);
+    public Tailoring updateTailoring(String project, Tailoring tailoring) {
+        Optional<ProjectEntity> oProjekt = findProjekt(project);
         if (oProjekt.isPresent()) {
             Optional<TailoringEntity> toUpdate = oProjekt.get().getTailoring(tailoring.getName());
             if (toUpdate.isPresent()) {
-                mapper.addKatalog(tailoring, toUpdate.get());
-                projektRepository.flush();
+                mapper.addCatalog(tailoring, toUpdate.get());
+                projectRepository.flush();
                 return mapper.toDomain(toUpdate.get());
             }
         }
@@ -100,41 +99,44 @@ public class JPATailoringServiceRepository implements TailoringServiceRepository
      * {@inheritDoc}
      */
     @Override
-    public Optional<Tailoring> updateAnforderungDokument(String projekt, String tailoring, Dokument dokument) {
-        Optional<TailoringEntity> projektPhase = findProjektPhase(projekt, tailoring);
-        if (projektPhase.isPresent()) {
-            DokumentEntity toUpdate = projektPhase.get().getDokumente()
-                .stream()
-                .filter(entity -> entity.getName().equalsIgnoreCase(dokument.getName()))
-                .findFirst()
-                .orElseGet(() -> {
-                    DokumentEntity entity = new DokumentEntity();
-                    projektPhase.get().getDokumente().add(entity);
-                    return entity;
-                });
-            mapper.update(dokument, toUpdate);
+    public Optional<Tailoring> updateFile(String project, String tailoring, File file) {
+        Optional<TailoringEntity> oTailoring = findTailoring(project, tailoring);
 
-            return ofNullable(mapper.toDomain(projektPhase.get()));
-        }
-        return empty();
-    }
-
-    private Optional<TailoringEntity> findProjektPhase(String projekt, String phase) {
-        if (isNull(projekt) || isNull(phase)) {
+        if (oTailoring.isEmpty()) {
             return empty();
         }
-        return ofNullable(projektRepository.findTailoring(projekt, phase));
+
+        FileEntity toUpdate = oTailoring.get().getFiles()
+            .stream()
+            .filter(entity -> entity.getName().equalsIgnoreCase(file.getName()))
+            .findFirst()
+            .orElseGet(() -> {
+                FileEntity entity = new FileEntity();
+                oTailoring.get().getFiles().add(entity);
+                return entity;
+            });
+        mapper.update(file, toUpdate);
+
+        return ofNullable(mapper.toDomain(oTailoring.get()));
+
+    }
+
+    private Optional<TailoringEntity> findTailoring(String projekt, String tailoring) {
+        if (isNull(projekt) || isNull(tailoring)) {
+            return empty();
+        }
+        return ofNullable(projectRepository.findTailoring(projekt, tailoring));
     }
 
     /**
      * {@inheritDoc}
      */
     @Override
-    public Optional<Tailoring> getTailoring(String projekt, String tailoring) {
-        if (isNull(projekt) || isNull(tailoring)) {
+    public Optional<Tailoring> getTailoring(String project, String tailoring) {
+        if (isNull(project) || isNull(tailoring)) {
             return empty();
         }
-        TailoringEntity entity = projektRepository.findTailoring(projekt, tailoring);
+        TailoringEntity entity = projectRepository.findTailoring(project, tailoring);
         return ofNullable(mapper.toDomain(entity));
     }
 
@@ -142,8 +144,8 @@ public class JPATailoringServiceRepository implements TailoringServiceRepository
      * {@inheritDoc}
      */
     @Override
-    public Optional<ScreeningSheet> getScreeningSheet(String projekt, String tailoring) {
-        TailoringEntity projektPhase = projektRepository.findTailoring(projekt, tailoring);
+    public Optional<ScreeningSheet> getScreeningSheet(String project, String tailoring) {
+        TailoringEntity projektPhase = projectRepository.findTailoring(project, tailoring);
         if (isNull(projektPhase)) {
             return empty();
         }
@@ -155,8 +157,8 @@ public class JPATailoringServiceRepository implements TailoringServiceRepository
      * {@inheritDoc}
      */
     @Override
-    public Optional<byte[]> getScreeningSheetDatei(String projekt, String tailoring) {
-        TailoringEntity projektPhase = projektRepository.findTailoring(projekt, tailoring);
+    public Optional<byte[]> getScreeningSheetFile(String project, String tailoring) {
+        TailoringEntity projektPhase = projectRepository.findTailoring(project, tailoring);
         if (isNull(projektPhase)) {
             return empty();
         }
@@ -165,30 +167,30 @@ public class JPATailoringServiceRepository implements TailoringServiceRepository
     }
 
 
-    private Optional<ProjektEntity> findProjekt(String projekt) {
-        return ofNullable(projektRepository.findByKuerzel(projekt));
+    private Optional<ProjectEntity> findProjekt(String projekt) {
+        return ofNullable(projectRepository.findByIdentifier(projekt));
     }
 
     /**
      * {@inheritDoc}
      */
     @Override
-    public Optional<DokumentZeichnung> updateDokumentZeichnung(String projekt, String tailoring, DokumentZeichnung zeichnung) {
-        TailoringEntity projektPhase = projektRepository.findTailoring(projekt, tailoring);
+    public Optional<DocumentSignature> updateDocumentSignature(String project, String tailoring, DocumentSignature signature) {
+        TailoringEntity projektPhase = projectRepository.findTailoring(project, tailoring);
         if (isNull(projektPhase)) {
             return empty();
         }
 
-        Optional<DokumentZeichnungEntity> toUpdate = projektPhase.getZeichnungen()
+        Optional<DocumentSignatureEntity> toUpdate = projektPhase.getSignatures()
             .stream()
-            .filter(z -> z.getBereich().equals(zeichnung.getBereich()))
+            .filter(z -> z.getFaculty().equals(signature.getFaculty()))
             .findFirst();
 
         if (toUpdate.isEmpty()) {
             return empty();
         }
 
-        mapper.updateDokumentZeichnung(zeichnung, toUpdate.get());
+        mapper.updateDocumentSignature(signature, toUpdate.get());
         return of(mapper.toDomain(toUpdate.get()));
     }
 
@@ -196,8 +198,8 @@ public class JPATailoringServiceRepository implements TailoringServiceRepository
      * {@inheritDoc}
      */
     @Override
-    public Optional<Tailoring> updateName(String projekt, String tailoring, String name) {
-        Optional<TailoringEntity> projektPhase = findProjektPhase(projekt, tailoring);
+    public Optional<Tailoring> updateName(String project, String tailoring, String name) {
+        Optional<TailoringEntity> projektPhase = findTailoring(project, tailoring);
         if (projektPhase.isPresent()) {
             projektPhase.get().setName(name);
             return of(mapper.toDomain(projektPhase.get()));
@@ -209,14 +211,14 @@ public class JPATailoringServiceRepository implements TailoringServiceRepository
      * {@inheritDoc}
      */
     @Override
-    public List<Dokument> getDokumentListe(String projekt, String tailoring) {
-        Optional<TailoringEntity> projektPhase = findProjektPhase(projekt, tailoring);
-        if (projektPhase.isEmpty()) {
+    public List<File> getFileList(String project, String tailoring) {
+        Optional<TailoringEntity> entity = findTailoring(project, tailoring);
+        if (entity.isEmpty()) {
             return Collections.emptyList();
         }
 
-        return projektPhase
-            .map(TailoringEntity::getDokumente)
+        return entity
+            .map(TailoringEntity::getFiles)
             .stream()
             .flatMap(Collection::stream)
             .map(mapper::toDomain)
@@ -229,23 +231,21 @@ public class JPATailoringServiceRepository implements TailoringServiceRepository
      * @return
      */
     @Override
-    public Optional<Datei> getDokument(String projekt, String tailoring, String name) {
-        TailoringEntity projektPhase = projektRepository.findTailoring(projekt, tailoring);
+    public Optional<File> getFile(String project, String tailoring, String name) {
+        TailoringEntity projektPhase = projectRepository.findTailoring(project, tailoring);
         if (isNull(projektPhase)) {
             return empty();
         }
-        Optional<DokumentEntity> dokument = projektPhase.getDokumente()
+        Optional<FileEntity> dokument = projektPhase.getFiles()
             .stream()
             .filter(entity -> entity.getName().equalsIgnoreCase(name))
             .findFirst();
 
         if (dokument.isPresent()) {
-            DokumentEntity entity = dokument.get();
-            int i = entity.getName().lastIndexOf(".");
-            return of(Datei.builder()
-                .docId(entity.getName().substring(0, i))
-                .type(entity.getName().substring(i + 1))
-                .bytes(entity.getDaten())
+            FileEntity entity = dokument.get();
+            return of(File.builder()
+                .name(entity.getName())
+                .data(entity.getData())
                 .build()
             );
         }
@@ -259,13 +259,13 @@ public class JPATailoringServiceRepository implements TailoringServiceRepository
      * @return
      */
     @Override
-    public boolean deleteDokument(String projekt, String tailoring, String name) {
-        TailoringEntity projektPhase = projektRepository.findTailoring(projekt, tailoring);
+    public boolean deleteFile(String project, String tailoring, String name) {
+        TailoringEntity projektPhase = projectRepository.findTailoring(project, tailoring);
         if (isNull(projektPhase)) {
             return false;
         }
 
-        Optional<DokumentEntity> toDelete = projektPhase.getDokumente()
+        Optional<FileEntity> toDelete = projektPhase.getFiles()
             .stream()
             .filter(entity -> entity.getName().equalsIgnoreCase(name))
             .findFirst();
@@ -274,15 +274,15 @@ public class JPATailoringServiceRepository implements TailoringServiceRepository
             return false;
         }
 
-        return projektPhase.getDokumente().remove(toDelete.get());
+        return projektPhase.getFiles().remove(toDelete.get());
     }
 
     /**
      * {@inheritDoc}
      */
     @Override
-    public Collection<SelektionsVektorProfil> getSelektionsVektorProfile() {
-        return selektionsVektorProfilRepository.findAll()
+    public Collection<SelectionVectorProfile> getSelectionVectorProfile() {
+        return selectionVectorProfileRepository.findAll()
             .stream()
             .map(mapper::toDomain)
             .collect(Collectors.toList());
@@ -292,17 +292,17 @@ public class JPATailoringServiceRepository implements TailoringServiceRepository
      * {@inheritDoc}
      */
     @Override
-    public Collection<DokumentZeichnung> getDefaultZeichnungen() {
-        return dokumentZeichnerRepository.findAll()
+    public Collection<DocumentSignature> getDefaultSignatures() {
+        return dokumentSigneeRepository.findAll()
             .stream()
-            .map(mapper::getDefaultZeichnungen)
+            .map(mapper::getDefaultSignatures)
             .collect(Collectors.toList());
 
     }
 
     @Override
-    public boolean deleteTailoring(String projekt, String tailoring) {
-        TailoringEntity toDelete = projektRepository.findTailoring(projekt, tailoring);
+    public boolean deleteTailoring(String project, String tailoring) {
+        TailoringEntity toDelete = projectRepository.findTailoring(project, tailoring);
         if (nonNull(toDelete)) {
             tailoringRepository.delete(toDelete);
             return true;

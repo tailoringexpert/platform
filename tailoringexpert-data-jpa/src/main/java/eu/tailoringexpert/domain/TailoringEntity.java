@@ -68,18 +68,18 @@ public class TailoringEntity implements Serializable {
     private Long id;
 
     @Column(name = "IDENTIFER")
-    private String kennung;
+    private String identifier;
 
     @Column(name = "NAME")
     private String name;
 
     @OneToOne(cascade = ALL)
     @JoinColumn(name = "SELECTIONVECTOR_ID")
-    private SelektionsVektorEntity selektionsVektor;
+    private SelectionVectorEntity selectionVector;
 
     @OneToOne(fetch = LAZY)
     @JoinColumn(name = "BASECATALOG_ID")
-    private KatalogEntity basisKatalog;
+    private BaseCatalogEntity baseCatalog;
 
     @OneToOne(cascade = ALL)
     @JoinColumn(name = "SCREENINGSHEET_ID")
@@ -94,27 +94,27 @@ public class TailoringEntity implements Serializable {
     @Enumerated(STRING)
     @Column(name = "PHASE")
     @OrderColumn(name = "PHASE_ORDER")
-    private List<Phase> phasen;
+    private List<Phase> phases;
 
     @OneToOne(cascade = ALL, fetch = LAZY)
     @JoinColumn(name = "TAILORINGCATALOG_ID")
-    private TailoringKatalogEntity katalog;
+    private TailoringCatalogEntity catalog;
 
     @Enumerated(STRING)
     @Column(name = "STATE")
-    private TailoringStatus status;
+    private TailoringState state;
 
     @ElementCollection
     @CollectionTable(
         name = "DOCUMENTSIGNATURE",
         joinColumns = @JoinColumn(name = "TAILORING_ID")
     )
-    private Collection<DokumentZeichnungEntity> zeichnungen;
+    private Collection<DocumentSignatureEntity> signatures;
 
     @OneToMany(cascade = ALL, orphanRemoval = true, fetch = LAZY)
     @JoinColumn(name = "TAILORING_ID", referencedColumnName = "TAILORING_ID", nullable = false)
-    private Set<DokumentEntity> dokumente;
+    private Set<FileEntity> files;
 
     @Column(name = "CREATIONTIMESTAMP")
-    private ZonedDateTime erstellungsZeitpunkt;
+    private ZonedDateTime creationTimestamp;
 }

@@ -1,0 +1,38 @@
+@startuml Ebene3.png
+hide empty members
+
+package repository {
+    interface ProjectRepository
+    interface LogoRepository
+    interface DRDRepository
+}
+
+package requirement {
+    interface RequirementServiceRepository {
+        getRequirement(project : String, tailoring : String, chapter : String, position : String) : Optional<TailoringRequirement>
+        getChapter(project : String, tailoring : String, chapter : String) : Optional<Chpter<TailoringRequirement>>
+        updateRequirement(project : String, tailoring : String, requirement : TailoringRequirement) : Optional<TailoringRequirement>
+        updateSelected(project : String, tailoring : String, chapter : Optional<Chapter<TailoringRequirement>) : Optional<Chapter<TailoringRequirement>>
+        updateChapter(project : String, tailoring : String, chapter : Chapter<TailoringRequirement>) : Optional<Chapter<TailoringRequirement>>
+    }
+
+    abstract class JPARequirmentServiceRepositoryMapper {
+        {abstract} toDomain(entity : TailoringRequirementEntity) : TailoringRequirement
+        {abstract} updateAnforderung(domain : TailoringRequirement, entity : TailoringRequirementEntity) : void
+        {abstract} toDomain(entity : TailoringCatalogChapterEntity) : Chapter<TailoringRequirement>
+        {abstract} updateChapter(domain : Chapter<TailoringRequirement>, entity : TailoringCatalogChapterEntity) : void
+        resolve(domain : Logo) : LogoEntity
+        resolve(domain : DRD) : DRDEntity
+    }
+    JPAAnforderungServiceRepositoryMapper --> "1" logoRepository : repository
+    DRDRepository --> "1" LogoRepository : drdRepository
+
+    class JPARequirementServiceRepository {
+    }
+
+    RequirementServiceRepository <|.. JPARequirementServiceRepository
+    JPARequirementServiceRepository --> "1" JPARequirementServiceRepositoryMapper : mapper
+    JPARequirementServiceRepository --> "1" ProjectRepository : projectRepository
+}
+
+@enduml

@@ -21,18 +21,18 @@
  */
 package eu.tailoringexpert.domain;
 
-import eu.tailoringexpert.domain.DokumentResource.DokumentResourceBuilder;
-import eu.tailoringexpert.domain.DokumentZeichnungResource.DokumentZeichnungResourceBuilder;
-import eu.tailoringexpert.domain.KatalogResource.KatalogResourceBuilder;
-import eu.tailoringexpert.domain.KatalogVersionResource.KatalogVersionResourceBuilder;
+import eu.tailoringexpert.domain.BaseCatalogVersionResource.BaseCatalogVersionResourceBuilder;
+import eu.tailoringexpert.domain.DocumentSignatureResource.DocumentSignatureResourceBuilder;
+import eu.tailoringexpert.domain.FileResource.FileResourceBuilder;
 import eu.tailoringexpert.domain.PathContext.PathContextBuilder;
-import eu.tailoringexpert.domain.ProjektInformationResource.ProjektInformationResourceBuilder;
-import eu.tailoringexpert.domain.ProjektResource.ProjektResourceBuilder;
+import eu.tailoringexpert.domain.ProjectInformationResource.ProjectInformationResourceBuilder;
+import eu.tailoringexpert.domain.ProjectResource.ProjectResourceBuilder;
 import eu.tailoringexpert.domain.ScreeningSheetResource.ScreeningSheetResourceBuilder;
-import eu.tailoringexpert.domain.SelektionsVektorResource.SelektionsVektorResourceBuilder;
-import eu.tailoringexpert.domain.TailoringAnforderungResource.TailoringAnforderungResourceBuilder;
+import eu.tailoringexpert.domain.SelectionVectorResource.SelectionVectorResourceBuilder;
+import eu.tailoringexpert.domain.TailoringCatalogChapterResource.TailoringCatalogChapterResourceBuilder;
+import eu.tailoringexpert.domain.TailoringCatalogResource.TailoringCatalogResourceBuilder;
 import eu.tailoringexpert.domain.TailoringInformationResource.TailoringInformationResourceBuilder;
-import eu.tailoringexpert.domain.TailoringKatalogKapitelResource.TailoringKatalogKapitelResourceBuilder;
+import eu.tailoringexpert.domain.TailoringRequirementResource.TailoringRequirementResourceBuilder;
 import eu.tailoringexpert.domain.TailoringResource.TailoringResourceBuilder;
 import org.mapstruct.AfterMapping;
 import org.mapstruct.BeforeMapping;
@@ -58,103 +58,104 @@ import static org.springframework.hateoas.server.mvc.BasicLinkBuilder.linkToCurr
 public abstract class ResourceMapper {
 
     // Resource URLs
-    public static final String PROJEKTE = "projekt";
-    public static final String PROJEKT_NEU = "katalog/{version}/projekt";
-    public static final String PROJEKT = "projekt/{projekt}";
-    public static final String PROJEKTSELEKTIONSVEKTOR = "projekt/{projekt}/selektionsvektor";
-    public static final String PROJEKTSCREENINGSHEET = "projekt/{projekt}/screeningsheet";
-    public static final String PROJEKTSCREENINGSHEETDATEI = "projekt/{projekt}/screeningsheet/pdf";
-    public static final String ANFORDERUNG = "projekt/{projekt}/tailoring/{tailoring}/katalog/{kapitel}/{anforderung}";
-    public static final String ANFORDERUNG_AUSGEWAEHLT = "projekt/{projekt}/tailoring/{tailoring}/katalog/{kapitel}/{anforderung}/ausgewaehlt/{ausgewaehlt}";
-    public static final String ANFORDERUNG_TEXT = "projekt/{projekt}/tailoring/{tailoring}/katalog/{kapitel}/{anforderung}/text";
-    public static final String KAPITEL_AUSGEWAEHLT = "projekt/{projekt}/tailoring/{tailoring}/katalog/{kapitel}/ausgewaehlt/{ausgewaehlt}";
+    public static final String PROJECTS = "project";
+    public static final String PROJECT_NEW = "catalog/{version}/project";
+    public static final String PROJECT = "project/{project}";
+    public static final String PROJECT_SELECTIONVECTOR = "project/{project}/selectionvector";
+    public static final String PROJECT_SCREENINGSHEET = "project/{project}/screeningsheet";
+    public static final String PROJECT_SCREENINGSHEET_PDF = "project/{project}/screeningsheet/pdf";
+    public static final String TAILORINGREQUIRMENT = "project/{project}/tailoring/{tailoring}/catalog/{chapter}/{requirement}";
+    public static final String TAILORINGREQUIRMENT_SELECTED = "project/{project}/tailoring/{tailoring}/catalog/{chapter}/{requirement}/selected/{selected}";
+    public static final String TAILORINGREQUIRMENT_TEXT = "project/{project}/tailoring/{tailoring}/catalog/{chapter}/{requirement}/text";
+    public static final String CHAPTER_SELECTED = "project/{project}/tailoring/{tailoring}/catalog/{chapter}/selected/{selected}";
 
-    public static final String TAILORINGS = "projekt/{projekt}/tailoring";
-    public static final String TAILORING = "projekt/{projekt}/tailoring/{tailoring}";
-    public static final String TAILORINGSCREENINGSHEET = "projekt/{projekt}/tailoring/{tailoring}/screeningsheet";
-    public static final String TAILORINGANFORDERUNG = "projekt/{projekt}/tailoring/{tailoring}/anforderungen/import";
-    public static final String TAILORINGSCREENINGSHEETDATEI = "projekt/{projekt}/tailoring/{tailoring}/screeningsheet/pdf";
-    public static final String TAILORINGSELEKTIONSVEKTOR = "projekt/{projekt}/tailoring/{tailoring}/selektionsvektor";
-    public static final String TAILORINGNAME = "projekt/{projekt}/tailoring/{tailoring}/name";
-    public static final String TAILORINGZEICHNUNG = "projekt/{projekt}/tailoring/{tailoring}/zeichnung";
-    public static final String TAILORINGZEICHNUNGBEREICH = "projekt/{projekt}/tailoring/{tailoring}/zeichnung/{bereich}";
-    public static final String TAILORINGDOKUMENT = "projekt/{projekt}/tailoring/{tailoring}/dokument";
-    public static final String TAILORINGDOKUMENTKATALOG = "projekt/{projekt}/tailoring/{tailoring}/dokument/katalog";
-    public static final String TAILORINGVERGLEICHDOKUMENT = "projekt/{projekt}/tailoring/{tailoring}/dokument/vergleich";
-    public static final String TAILORINGDOKUMENTDOWNLOAD = "projekt/{projekt}/tailoring/{tailoring}/dokument/{name}";
-    public static final String TAILORINGKATALOG = "projekt/{projekt}/tailoring/{tailoring}/katalog";
-    public static final String TAILORINGKATALOGKAPITEL = "projekt/{projekt}/tailoring/{tailoring}/katalog/{kapitel}";
-    public static final String TAILORINGKATALOGKAPITELANFORDERUG = "projekt/{projekt}/tailoring/{tailoring}/katalog/{kapitel}/anforderung";
-    public static final String KATALOG = "katalog";
-    public static final String KATALOGVERSION = "katalog/{version}";
-    public static final String KATALOGVERSIONPDFDOWNLOAD = "katalog/{version}/pdf";
-    public static final String KATALOGVERSIONJSONDOWNLOAD = "katalog/{version}/json";
+    public static final String TAILORINGS = "project/{project}/tailoring";
+    public static final String TAILORING = "project/{project}/tailoring/{tailoring}";
+    public static final String TAILORING_SCREENINGSHEET = "project/{project}/tailoring/{tailoring}/screeningsheet";
+    public static final String TAILORING_REQUIREMENT_IMPORT = "project/{project}/tailoring/{tailoring}/requirement/import";
+    public static final String TAILORING_SCREENINGSHEET_PDF = "project/{project}/tailoring/{tailoring}/screeningsheet/pdf";
+    public static final String TAILORING_SELECTIONVECTOR = "project/{project}/tailoring/{tailoring}/selectionvector";
+    public static final String TAILORING_NAME = "project/{project}/tailoring/{tailoring}/name";
+    public static final String TAILORING_SIGNATURE = "project/{project}/tailoring/{tailoring}/signature";
+    public static final String TAILORING_SIGNATURE_FACULTY = "project/{project}/tailoring/{tailoring}/signature/{faculty}";
+    public static final String TAILORING_DOCUMENT = "project/{project}/tailoring/{tailoring}/document";
+    public static final String TAILORING_DOCUMENT_CATALOG = "project/{project}/tailoring/{tailoring}/document/catalog";
+    public static final String TAILORING_COMPARE = "project/{project}/tailoring/{tailoring}/compare";
+    public static final String TAILORING_CATALOG = "project/{project}/tailoring/{tailoring}/catalog";
+    public static final String TAILORING_CATALOG_CHAPTER = "project/{project}/tailoring/{tailoring}/catalog/{chapter}";
+    public static final String TAILORING_CATALOG_CHAPTER_REQUIREMENT = "project/{project}/tailoring/{tailoring}/catalog/{chapter}/requirement";
+    public static final String TAILORING_ATTACHMENTS = "project/{project}/tailoring/{tailoring}/attachment";
+    public static final String TAILORING_ATTACHMENT = "project/{project}/tailoring/{tailoring}/attachment/{name}";
+    public static final String BASECATALOG = "catalog";
+    public static final String BASECATALOG_VERSION = "catalog/{version}";
+    public static final String BASECATALOG_VERION_PDF = "catalog/{version}/pdf";
+    public static final String BASECATALOG_VERION_JSON = "catalog/{version}/json";
 
     public static final String SCREENINGSHEET = "screeningsheet";
-    public static final String SELEKTIONSVEKTORPROFILE = "selektionsvektor";
+    public static final String SELECTIONVECTOR_PROFILE = "selectionvector";
 
     // RELs
     public static final String REL_SELF = "self";
     public static final String REL_SCREENINGSHEET = "screeningsheet";
-    public static final String REL_SELEKTIONSVEKTOR = "selektionsvektor";
+    public static final String REL_SELECTIONVECTOR = "selectionvector";
     public static final String REL_TAILORING = "tailoring";
-    public static final String REL_KATALOG = "katalog";
+    public static final String REL_KATALOG = "catalog";
     public static final String REL_PDF = "pdf";
     public static final String REL_JSON = "json";
-    public static final String REL_KATALOGDOKUMENT = "katalogdokument";
-    public static final String REL_KATALOGDEFINITIONDOKUMENT = "katalogdefinitiondokument";
-    public static final String REL_ZEICHNUNG = "zeichnung";
-    public static final String REL_KAPITEL = "kapitel";
+    public static final String REL_TAILORINGCATALOG_DOCUMENT = "tailoringcatalog";
+    public static final String REL_BASECATALOG_DOCUMENT = "basecatalog";
+    public static final String REL_SIGNATURE = "signature";
+    public static final String REL_KAPITEL = "chapter";
     public static final String REL_TEXT = "text";
-    public static final String REL_AUSGEWAEHLT = "ausgewaehlt";
-    public static final String REL_DOKUMENT = "dokument";
-    public static final String REL_VERGLEICH = "vergleich";
+    public static final String REL_SELECTED = "selected";
+    public static final String REL_DOCUMENT = "document";
+    public static final String REL_COMPARE = "compare";
     private static final String REL_NAME = "name";
     private static final String REL_IMPORT = "import";
-
+    private static final String REL_ATTACHMENT = "attachment";
 
     // Katalogversion
     @BeforeMapping
-    protected void updatePathContext(@Context PathContextBuilder pathContext, KatalogVersion domain) {
-        pathContext.katalog(nonNull(domain) ? domain.getVersion() : null);
+    protected void updatePathContext(@Context PathContextBuilder pathContext, BaseCatalogVersion domain) {
+        pathContext.catalog(nonNull(domain) ? domain.getVersion() : null);
     }
 
-    @Mapping(target = "standard", expression = "java( domain.getGueltigBis() == null)")
-    public abstract KatalogVersionResource toResource(@Context PathContextBuilder pathContext, KatalogVersion domain);
+    @Mapping(target = "standard", expression = "java( domain.getValidUntil() == null)")
+    public abstract BaseCatalogVersionResource toResource(@Context PathContextBuilder pathContext, BaseCatalogVersion domain);
 
     @AfterMapping
-    protected void addLinks(@Context PathContextBuilder pathContext, @MappingTarget KatalogVersionResourceBuilder resource) {
+    protected void addLinks(@Context PathContextBuilder pathContext, @MappingTarget BaseCatalogVersionResourceBuilder resource) {
         PathContext context = pathContext.build();
         String baseUri = linkToCurrentMapping().toString();
         Map<String, String> parameter = context.parameter();
         resource.links(asList(
-            linkToCurrentMapping().slash(resolveParameter(PROJEKT_NEU, context.parameter())).withRel(PROJEKTE),
-            createLink(REL_SELF, baseUri, KATALOGVERSION, parameter),
-            createLink(REL_PDF, baseUri, KATALOGVERSIONPDFDOWNLOAD, parameter),
-            createLink(REL_JSON, baseUri, KATALOGVERSIONJSONDOWNLOAD, parameter)
+            linkToCurrentMapping().slash(resolveParameter(PROJECT_NEW, context.parameter())).withRel(PROJECTS),
+            createLink(REL_SELF, baseUri, BASECATALOG_VERSION, parameter),
+            createLink(REL_PDF, baseUri, BASECATALOG_VERION_PDF, parameter),
+            createLink(REL_JSON, baseUri, BASECATALOG_VERION_JSON, parameter)
         ));
     }
 
-    // ProjektInformation
+    // ProjectInformation
     @BeforeMapping
-    protected void updatePathContext(@Context PathContextBuilder pathContext, ProjektInformation domain) {
-        pathContext.projekt(nonNull(domain) ? domain.getKuerzel() : null);
+    protected void updatePathContext(@Context PathContextBuilder pathContext, ProjectInformation domain) {
+        pathContext.project(nonNull(domain) ? domain.getIdentifier() : null);
     }
 
-    @Mapping(target = "name", source = "kuerzel")
-    @Mapping(target = "erstellungsZeitpunkt", dateFormat = "dd.MM.yyyy")
-    public abstract ProjektInformationResource toResource(@Context PathContextBuilder pathContext, ProjektInformation domain);
+    @Mapping(target = "name", source = "identifier")
+    @Mapping(target = "creationTimestamp", source = "creationTimestamp", dateFormat = "dd.MM.yyyy")
+    public abstract ProjectInformationResource toResource(@Context PathContextBuilder pathContext, ProjectInformation domain);
 
     @AfterMapping
-    protected void addLinks(@Context PathContextBuilder pathContext, @MappingTarget ProjektInformationResourceBuilder resource) {
+    protected void addLinks(@Context PathContextBuilder pathContext, @MappingTarget ProjectInformationResourceBuilder resource) {
         PathContext context = pathContext.build();
         Map<String, String> parameter = context.parameter();
 
         String baseUri = linkToCurrentMapping().toString();
         resource.links(asList(
-            createLink(REL_SELF, baseUri, PROJEKT, parameter),
-            createLink(REL_SELEKTIONSVEKTOR, baseUri, PROJEKTSELEKTIONSVEKTOR, parameter),
-            createLink(REL_SCREENINGSHEET, baseUri, PROJEKTSCREENINGSHEET, parameter),
+            createLink(REL_SELF, baseUri, PROJECT, parameter),
+            createLink(REL_SELECTIONVECTOR, baseUri, PROJECT_SELECTIONVECTOR, parameter),
+            createLink(REL_SCREENINGSHEET, baseUri, PROJECT_SCREENINGSHEET, parameter),
             createLink(REL_TAILORING, baseUri, TAILORINGS, parameter))
         );
     }
@@ -163,7 +164,7 @@ public abstract class ResourceMapper {
     @BeforeMapping
     protected void updatePathContext(@Context PathContextBuilder pathContext, TailoringInformation domain) {
         pathContext.tailoring(nonNull(domain) ? domain.getName() : null);
-        pathContext.katalog(nonNull(domain) ? domain.getKatalogVersion() : null);
+        pathContext.catalog(nonNull(domain) ? domain.getCatalogVersion() : null);
     }
 
     public abstract TailoringInformationResource toResource(@Context PathContextBuilder pathContext, TailoringInformation domain);
@@ -175,17 +176,19 @@ public abstract class ResourceMapper {
 
         String baseUri = linkToCurrentMapping().toString();
         resource.links(asList(
-            createLink(REL_SELF, baseUri, TAILORING, parameter),
-            createLink(REL_SCREENINGSHEET, baseUri, TAILORINGSCREENINGSHEET, parameter),
-            createLink(REL_SELEKTIONSVEKTOR, baseUri, TAILORINGSELEKTIONSVEKTOR, parameter),
-            createLink(REL_ZEICHNUNG, baseUri, TAILORINGZEICHNUNG, parameter),
-            createLink(REL_DOKUMENT, baseUri, TAILORINGDOKUMENT, parameter),
-            createLink(REL_KATALOGDOKUMENT, baseUri, TAILORINGDOKUMENTKATALOG, parameter),
-            createLink(REL_VERGLEICH, baseUri, TAILORINGVERGLEICHDOKUMENT, parameter),
-            createLink(REL_KATALOG, baseUri, TAILORINGKATALOG, parameter),
-            createLink(REL_NAME, baseUri, TAILORINGNAME, parameter),
-            createLink(REL_IMPORT, baseUri, TAILORINGANFORDERUNG, parameter),
-            createLink(REL_KATALOGDEFINITIONDOKUMENT, baseUri, KATALOGVERSIONPDFDOWNLOAD, parameter))
+                createLink(REL_SELF, baseUri, TAILORING, parameter),
+                createLink(REL_SCREENINGSHEET, baseUri, TAILORING_SCREENINGSHEET, parameter),
+                createLink(REL_SELECTIONVECTOR, baseUri, TAILORING_SELECTIONVECTOR, parameter),
+                createLink(REL_SIGNATURE, baseUri, TAILORING_SIGNATURE, parameter),
+                createLink(REL_DOCUMENT, baseUri, TAILORING_DOCUMENT, parameter),
+                createLink(REL_TAILORINGCATALOG_DOCUMENT, baseUri, TAILORING_DOCUMENT_CATALOG, parameter),
+                createLink(REL_COMPARE, baseUri, TAILORING_COMPARE, parameter),
+                createLink(REL_KATALOG, baseUri, TAILORING_CATALOG, parameter),
+                createLink(REL_NAME, baseUri, TAILORING_NAME, parameter),
+                createLink(REL_IMPORT, baseUri, TAILORING_REQUIREMENT_IMPORT, parameter),
+                createLink(REL_BASECATALOG_DOCUMENT, baseUri, BASECATALOG_VERION_PDF, parameter),
+                createLink(REL_ATTACHMENT, baseUri, TAILORING_ATTACHMENTS, parameter)
+            )
         );
     }
 
@@ -195,9 +198,9 @@ public abstract class ResourceMapper {
     @AfterMapping
     protected void addLinks(@Context PathContextBuilder pathContext, @MappingTarget ScreeningSheetResourceBuilder resource) {
         PathContext context = pathContext.build();
-        if (nonNull(context.getProjekt()) || nonNull(context.getTailoring())) {
-            String self = isNull(context.getTailoring()) ? PROJEKTSCREENINGSHEET : TAILORINGSCREENINGSHEET;
-            String datei = isNull(context.getTailoring()) ? PROJEKTSCREENINGSHEETDATEI : TAILORINGSCREENINGSHEETDATEI;
+        if (nonNull(context.getProject()) || nonNull(context.getTailoring())) {
+            String self = isNull(context.getTailoring()) ? PROJECT_SCREENINGSHEET : TAILORING_SCREENINGSHEET;
+            String datei = isNull(context.getTailoring()) ? PROJECT_SCREENINGSHEET_PDF : TAILORING_SCREENINGSHEET_PDF;
 
             Map<String, String> parameter = context.parameter();
             String baseUri = linkToCurrentMapping().toString();
@@ -216,14 +219,14 @@ public abstract class ResourceMapper {
         }
 
         return parameters.stream()
-            .collect(Collectors.groupingBy(ScreeningSheetParameter::getBezeichnung))
+            .collect(Collectors.groupingBy(ScreeningSheetParameter::getCategory))
             .entrySet()
             .stream()
             .map(entry -> ScreeningSheetParameterResource.builder()
                 .bezeichnung(entry.getKey())
-                .wert(entry.getValue()
+                .value(entry.getValue()
                     .stream()
-                    .map(ScreeningSheetParameter::getWert)
+                    .map(ScreeningSheetParameter::getValue)
                     .map(Objects::toString)
                     .collect(joining("; ")))
                 .build()
@@ -231,24 +234,24 @@ public abstract class ResourceMapper {
             .collect(Collectors.toList());
     }
 
-    // Projekt
+    // Project
     @BeforeMapping
-    protected void updatePathContext(@Context PathContextBuilder pathContext, Projekt domain) {
-        pathContext.projekt(nonNull(domain) ? domain.getKuerzel() : null);
+    protected void updatePathContext(@Context PathContextBuilder pathContext, Project domain) {
+        pathContext.project(nonNull(domain) ? domain.getIdentifier() : null);
     }
 
-    @Mapping(target = "name", source = "kuerzel")
-    public abstract ProjektResource toResource(@Context PathContextBuilder pathContext, Projekt domain);
+    @Mapping(target = "name", source = "identifier")
+    public abstract ProjectResource toResource(@Context PathContextBuilder pathContext, Project domain);
 
     @AfterMapping
-    protected void addLinks(@Context PathContextBuilder pathContext, @MappingTarget ProjektResourceBuilder resource) {
+    protected void addLinks(@Context PathContextBuilder pathContext, @MappingTarget ProjectResourceBuilder resource) {
         PathContext context = pathContext.build();
         Map<String, String> parameter = context.parameter();
 
         String baseUri = linkToCurrentMapping().toString();
         resource.links(asList(
-            createLink(REL_SELF, baseUri, PROJEKT, parameter),
-            createLink("copy", baseUri, PROJEKT, parameter))
+            createLink(REL_SELF, baseUri, PROJECT, parameter),
+            createLink("copy", baseUri, PROJECT, parameter))
         );
     }
 
@@ -267,137 +270,139 @@ public abstract class ResourceMapper {
 
         String baseUri = linkToCurrentMapping().toString();
         resource.links(asList(
-            createLink(REL_SELF, baseUri, TAILORING, parameter),
-            createLink(REL_SCREENINGSHEET, baseUri, TAILORINGSCREENINGSHEET, parameter),
-            createLink(REL_SELEKTIONSVEKTOR, baseUri, TAILORINGSELEKTIONSVEKTOR, parameter),
-            createLink(REL_ZEICHNUNG, baseUri, TAILORINGZEICHNUNG, parameter),
-            createLink(REL_DOKUMENT, baseUri, TAILORINGDOKUMENT, parameter),
-            createLink(REL_KATALOG, baseUri, TAILORINGKATALOG, parameter),
-            createLink(REL_NAME, baseUri, TAILORINGNAME, parameter))
+                createLink(REL_SELF, baseUri, TAILORING, parameter),
+                createLink(REL_SCREENINGSHEET, baseUri, TAILORING_SCREENINGSHEET, parameter),
+                createLink(REL_SELECTIONVECTOR, baseUri, TAILORING_SELECTIONVECTOR, parameter),
+                createLink(REL_SIGNATURE, baseUri, TAILORING_SIGNATURE, parameter),
+                createLink(REL_DOCUMENT, baseUri, TAILORING_DOCUMENT, parameter),
+                createLink(REL_KATALOG, baseUri, TAILORING_CATALOG, parameter),
+                createLink(REL_NAME, baseUri, TAILORING_NAME, parameter),
+                createLink(REL_ATTACHMENT, baseUri, TAILORING_ATTACHMENTS, parameter)
+            )
         );
     }
 
-    // TailoringKatalogKapitel
+    // TailoringChapter
     @BeforeMapping
-    protected void updatePathContext(@Context PathContextBuilder pathContext, Kapitel<TailoringAnforderung> domain) {
+    protected void updatePathContext(@Context PathContextBuilder pathContext, Chapter<TailoringRequirement> domain) {
         if (nonNull(domain)) {
-            pathContext.kapitel(domain.getNummer());
-            pathContext.ausgewaehlt(null);
+            pathContext.chapter(domain.getNumber());
+            pathContext.selected(null);
         }
     }
 
-    public abstract TailoringKatalogKapitelResource toResource(@Context PathContextBuilder pathContext, Kapitel<TailoringAnforderung> domain);
+    public abstract TailoringCatalogChapterResource toResource(@Context PathContextBuilder pathContext, Chapter<TailoringRequirement> domain);
 
     @AfterMapping
-    protected void addLinks(@Context PathContextBuilder pathContext, @MappingTarget TailoringKatalogKapitelResourceBuilder resource) {
+    protected void addLinks(@Context PathContextBuilder pathContext, @MappingTarget TailoringCatalogChapterResourceBuilder resource) {
         PathContext context = pathContext.build();
-        pathContext.kapitel(resource.build().getNummer());
+        pathContext.chapter(resource.build().getNumber());
         Map<String, String> parameter = context.parameter();
-        parameter.put(REL_AUSGEWAEHLT, null);
-        parameter.put(REL_KAPITEL, resource.build().getNummer());
+        parameter.put(REL_SELECTED, null);
+        parameter.put(REL_KAPITEL, resource.build().getNumber());
 
         String baseUri = linkToCurrentMapping().toString();
         resource.links(asList(
-            createLink(REL_SELF, baseUri, TAILORINGKATALOGKAPITEL, parameter),
-            createLink("anforderungen", baseUri, TAILORINGKATALOGKAPITELANFORDERUG, parameter),
-            createLink("selektion", baseUri, KAPITEL_AUSGEWAEHLT, parameter))
+            createLink(REL_SELF, baseUri, TAILORING_CATALOG_CHAPTER, parameter),
+            createLink("requirement", baseUri, TAILORING_CATALOG_CHAPTER_REQUIREMENT, parameter),
+            createLink("selection", baseUri, CHAPTER_SELECTED, parameter))
         );
     }
 
 
-    // TailoringAnforderung
+    // TailoringRequirement
     @BeforeMapping
-    protected void updatePathContext(@Context PathContextBuilder pathContext, TailoringAnforderung domain) {
+    protected void updatePathContext(@Context PathContextBuilder pathContext, TailoringRequirement domain) {
         if (nonNull(domain)) {
-            pathContext.anforderung(domain.getPosition());
-            pathContext.ausgewaehlt(!domain.getAusgewaehlt());
+            pathContext.requirment(domain.getPosition());
+            pathContext.selected(!domain.getSelected());
         }
     }
 
 
-    @Mapping(target = "geaendert", expression = "java( domain.getAusgewaehltGeaendert() != null || domain.getTextGeaendert() != null)")
-    @Mapping(target = "referenz", source = "domain.referenz.text")
-    public abstract TailoringAnforderungResource toResource(@Context PathContextBuilder pathContext, TailoringAnforderung domain);
+    @Mapping(target = "changed", expression = "java( domain.getSelectionChanged() != null || domain.getTextChanged() != null)")
+    @Mapping(target = "reference", source = "domain.reference.text")
+    public abstract TailoringRequirementResource toResource(@Context PathContextBuilder pathContext, TailoringRequirement domain);
 
 
     @AfterMapping
-    protected void addLinks(@Context PathContextBuilder pathContext, @MappingTarget TailoringAnforderungResourceBuilder resource) {
+    protected void addLinks(@Context PathContextBuilder pathContext, @MappingTarget TailoringRequirementResourceBuilder resource) {
         PathContext context = pathContext.build();
         Map<String, String> parameter = context.parameter();
 
         String baseUri = linkToCurrentMapping().toString();
         resource.links(asList(
-            createLink(REL_SELF, baseUri, ANFORDERUNG, parameter),
-            createLink(REL_AUSGEWAEHLT, baseUri, ANFORDERUNG_AUSGEWAEHLT, parameter),
-            createLink(REL_TEXT, baseUri, ANFORDERUNG_TEXT, parameter))
+            createLink(REL_SELF, baseUri, TAILORINGREQUIRMENT, parameter),
+            createLink(REL_SELECTED, baseUri, TAILORINGREQUIRMENT_SELECTED, parameter),
+            createLink(REL_TEXT, baseUri, TAILORINGREQUIRMENT_TEXT, parameter))
         );
     }
 
-    // DokumentZeichnung
-    public abstract DokumentZeichnungResource toResource(@Context PathContextBuilder pathContext, DokumentZeichnung domain);
+    // DocumentSignature
+    public abstract DocumentSignatureResource toResource(@Context PathContextBuilder pathContext, DocumentSignature domain);
 
     @AfterMapping
-    protected void addLinks(@Context PathContextBuilder pathContext, @MappingTarget DokumentZeichnungResourceBuilder resource) {
+    protected void addLinks(@Context PathContextBuilder pathContext, @MappingTarget DocumentSignatureResourceBuilder resource) {
         PathContext context = pathContext.build();
         Map<String, String> parameter = context.parameter();
-        parameter.put("bereich", resource.build().getBereich());
+        parameter.put("faculty", resource.build().getFaculty());
 
         String baseUri = linkToCurrentMapping().toString();
         resource.links(asList(
-            createLink(REL_SELF, baseUri, TAILORINGZEICHNUNGBEREICH, parameter))
+            createLink(REL_SELF, baseUri, TAILORING_SIGNATURE_FACULTY, parameter))
         );
     }
 
-    // DokumentResource
-    public abstract DokumentResource toResource(@Context PathContextBuilder pathContext, Dokument domain);
+    // FileResource
+    public abstract FileResource toResource(@Context PathContextBuilder pathContext, File domain);
 
     @AfterMapping
-    protected void addLinks(@Context PathContextBuilder pathContext, @MappingTarget DokumentResourceBuilder resource) {
+    protected void addLinks(@Context PathContextBuilder pathContext, @MappingTarget FileResourceBuilder resource) {
         PathContext context = pathContext.build();
         Map<String, String> parameter = context.parameter();
         parameter.put("name", resource.build().getName());
 
         String baseUri = linkToCurrentMapping().toString();
         resource.links(asList(
-            createLink(REL_DOKUMENT, baseUri, TAILORINGDOKUMENTDOWNLOAD, parameter))
+            createLink(REL_SELF, baseUri, TAILORING_ATTACHMENT, parameter))
         );
     }
 
-    // Selektionsvektor
-    public abstract SelektionsVektorResource toResource(@Context PathContextBuilder pathContext, SelektionsVektor domain);
+    // Selectionvector
+    public abstract SelectionVectorResource toResource(@Context PathContextBuilder pathContext, SelectionVector domain);
 
     @AfterMapping
-    protected void addLinks(@Context PathContextBuilder pathContext, @MappingTarget SelektionsVektorResourceBuilder resource) {
+    protected void addLinks(@Context PathContextBuilder pathContext, @MappingTarget SelectionVectorResourceBuilder resource) {
         PathContext context = pathContext.build();
         Map<String, String> parameter = context.parameter();
         String baseUri = linkToCurrentMapping().toString();
         if (nonNull(context.getTailoring())) {
             resource.links(asList(
-                createLink(REL_SELF, baseUri, TAILORINGSELEKTIONSVEKTOR, parameter))
+                createLink(REL_SELF, baseUri, TAILORING_SELECTIONVECTOR, parameter))
             );
-        } else if (nonNull(context.getProjekt())) {
+        } else if (nonNull(context.getProject())) {
             resource.links(asList(
-                createLink(REL_SELF, baseUri, PROJEKTSELEKTIONSVEKTOR, parameter))
+                createLink(REL_SELF, baseUri, PROJECT_SELECTIONVECTOR, parameter))
             );
         }
     }
 
-    // Katalog
-    public abstract KatalogResource toResource(@Context PathContextBuilder pathContext, Katalog<TailoringAnforderung> domain);
+    // Catalog
+    public abstract TailoringCatalogResource toResource(@Context PathContextBuilder pathContext, Catalog<TailoringRequirement> domain);
 
     @AfterMapping
-    protected void addLinks(@Context PathContextBuilder pathContext, @MappingTarget KatalogResourceBuilder resource) {
+    protected void addLinks(@Context PathContextBuilder pathContext, @MappingTarget TailoringCatalogResourceBuilder resource) {
         PathContext context = pathContext.build();
         Map<String, String> parameter = context.parameter();
 
         String baseUri = linkToCurrentMapping().toString();
         resource.links(asList(
-            createLink(REL_SELF, baseUri, TAILORINGKATALOG, parameter))
+            createLink(REL_SELF, baseUri, TAILORING_CATALOG, parameter))
         );
     }
 
-    // SelektionsVektorProfil
-    public abstract SelektionsVektorProfilResource toResource(@Context PathContextBuilder pathContext, SelektionsVektorProfil domain);
+    // SelectionVectorProfile
+    public abstract SelectionVectorProfileResource toResource(@Context PathContextBuilder pathContext, SelectionVectorProfile domain);
 
     private String resolveParameter(String path, Map<String, String> parameter) {
         String result = path;

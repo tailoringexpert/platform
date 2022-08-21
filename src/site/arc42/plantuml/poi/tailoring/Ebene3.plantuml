@@ -2,11 +2,12 @@
 hide empty members
 
 package tailoring {
-    interface DokumentCreator {
-        createDokument(docId : String, projektPhase : ProjektPhase, platzhalter : Map<String, String>) : Datei
+
+    interface DocumentCreator {
+        createDocument(docId : String, tailoring : Tailoring, placeholders : Map<String, String>) : File
     }
 
-    interface "BiFunction<Kapitel<TailoringAnforderung>, Collection<Phase>, Map<DRD, Set<String>>>" as drdSupplier {
+    interface "BiFunction<Kapitel<TailoringRequirement>, Collection<Phase>, Map<DRD, Set<String>>>" as drdSupplier {
     }
 
     interface "Function<String, File>" as templateSupplier {
@@ -14,25 +15,23 @@ package tailoring {
 
     class CMSpreadsheetCreator {
         templateEngine : ITemplateEngine
-        toXHTML(text : String) : String
-        toXHTML(text : String, platzhalter :  Map<String, String>) : String
     }
     CMSpreadsheetCreator --> "1" templateSupplier : templateSupplier
     CMSpreadsheetCreator --> "1" drdSupplier : drdProvider
 
     class DRDElement {
-        titel : String
-        datum : String
-        anforderung : Collection<String>
-        nummer: String
-        aktion : String
+        title : String
+        deliveryDate : String
+        requirements : Collection<String>
+        number: String
+        action : String
     }
 
-    interface "Function<byte[], Map<String, Collection<ImportAnforderung>>>" as anforderungFunction {
+    interface "Function<byte[], Map<String, Collection<ImportRequirement>>>" as requirmentFunction {
     }
 
-    class TailoringAnforderungExcelFileReader {
+    class TailoringRequirementExcelFileReader {
     }
-    anforderungFunction <|.. TailoringAnforderungExcelFileReader
+    requirementFunction <|.. TailoringRequirementExcelFileReader
 }
 @enduml

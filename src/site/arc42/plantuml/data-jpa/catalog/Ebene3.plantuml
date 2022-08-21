@@ -1,0 +1,35 @@
+@startuml Ebene3.png
+hide empty members
+
+package repository {
+    interface BaseCatalogRepository
+    interface LogoRepository
+    interface DRDRepository
+
+}
+package catalog {
+    interface CatalogServiceRepository {
+        createCatalog(catalog : Catalog<BaseRequirement>, validFrom : ZonedDateTime) : Optional<Catalog<BaseRequirement>>
+        getCatalog(version : String) : Optional<Catalog<BaseRequirement>>
+    }
+
+    abstract JPACatalogServiceRepositoryMapper {
+        {abstract} createCatalog(domain : Catalog<BaseRequirement>) : BaseCatalogEntity
+        {abstract} createCatalog(entity : BaseCatalogEntity) : Catalog<BaseRequirement>
+        {abstract} getCatalog(entity: BaseCatalogEntity) : Catalog<BaseRequirement>
+        {abstract} createCatalog(domain : DRD) : DRDEntity
+        resolve(domain : Logo) : LogoEntity
+        resolve(domain : DRD) : DRDEntity
+    }
+    JPACatalogServiceRepositoryMapper --> "1" LogoRepository : logoRepository
+    JPACatalogServiceRepositoryMapper --> "1" DRDRepository : drdRepository
+
+    class JPACatalogServiceRepository {
+    }
+
+    CatalogServiceRepository <|.. JPACatalogServiceRepository
+    JPACatalogServiceRepository --> "1" JPACatalogServiceRepositoryMapper : mapper
+    JPACatalogServiceRepository --> "1" BaseCatalogRepository : baseCatalogRepository
+}
+
+@enduml

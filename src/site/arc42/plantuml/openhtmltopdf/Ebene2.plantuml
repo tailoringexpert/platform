@@ -10,10 +10,10 @@ component [generator-openhtmltopdf] {
 
     [renderer]
 
-    [katalog]
-    [domain] <-- [katalog]
-    [renderer] <-- [katalog]
-    [tailoring] <-- [katalog]
+    [catalog]
+    [domain] <-- [catalog]
+    [renderer] <-- [catalog]
+    [tailoring] <-- [catalog]
 
     [tailoring]
     [domain] <-- [tailoring]

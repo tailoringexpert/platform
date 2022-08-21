@@ -10,11 +10,11 @@ component core {
 
     [renderer]
 
-    [katalog]
-    [domain] <-- [katalog]
+    [catalog]
+    [domain] <-- [catalog]
 
-    [anforderung]
-    [domain] <-- [anforderung]
+    [requirement]
+    [domain] <-- [requirement]
 
     [screeningsheet]
     [domain] <-- [screeningsheet]
@@ -24,8 +24,8 @@ component core {
     [screeningsheet] <-- [tailoring]
 
     [projekt]
-    [domain] <-- [projekt]
-    [screeningsheet] <-- [projekt]
-    [tailoring] <-- [projekt]
+    [domain] <-- [project]
+    [screeningsheet] <-- [project]
+    [tailoring] <-- [project]
 }
 @enduml

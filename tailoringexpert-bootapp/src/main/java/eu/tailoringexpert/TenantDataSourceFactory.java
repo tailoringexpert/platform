@@ -107,7 +107,7 @@ public class TenantDataSourceFactory {
      *
      * @param file Die zu ladenende Propertydatei
      * @return Properties mit ersetzten Platzhaltern
-     * @throws IOException Fehler beim einlesen der Datei
+     * @throws IOException Fehler beim einlesen der File
      */
     private static Properties loadProperties(final File file) throws IOException {
         final Properties result = new Properties();

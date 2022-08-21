@@ -1,7 +1,7 @@
 @startuml
 hide empty members
 
-package de.dlr.rpds.tailoring {
+package eu.tailoringexpert {
     package domain {
         abstract class ResourceMapper
     }

@@ -27,6 +27,8 @@ component tenant {
     component screeningsheet
     domain <-- screeningsheet
 
+    component catalog
+
 
 }
 

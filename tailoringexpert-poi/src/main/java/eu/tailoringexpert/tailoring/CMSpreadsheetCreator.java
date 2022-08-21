@@ -21,13 +21,13 @@
  */
 package eu.tailoringexpert.tailoring;
 
+import eu.tailoringexpert.domain.Chapter;
 import eu.tailoringexpert.domain.DRD;
-import eu.tailoringexpert.domain.Datei;
-import eu.tailoringexpert.domain.Kapitel;
-import eu.tailoringexpert.domain.Katalog;
+import eu.tailoringexpert.domain.File;
+import eu.tailoringexpert.domain.Catalog;
 import eu.tailoringexpert.domain.Phase;
 import eu.tailoringexpert.domain.Tailoring;
-import eu.tailoringexpert.domain.TailoringAnforderung;
+import eu.tailoringexpert.domain.TailoringRequirement;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
@@ -41,7 +41,6 @@ import org.apache.poi.ss.util.CellRangeAddress;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
 import java.io.ByteArrayOutputStream;
-import java.io.File;
 import java.util.Collection;
 import java.util.LinkedList;
 import java.util.Map;
@@ -50,7 +49,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.BiFunction;
 import java.util.function.Function;
 
-import static eu.tailoringexpert.domain.Datei.*;
+import static eu.tailoringexpert.domain.File.*;
 import static java.nio.file.Files.newInputStream;
 import static java.util.Objects.nonNull;
 import static java.util.stream.Collectors.joining;
@@ -60,13 +59,13 @@ import static org.apache.poi.ss.usermodel.IndexedColors.GREY_25_PERCENT;
 
 @Log4j2
 @RequiredArgsConstructor
-public class CMSpreadsheetCreator implements DokumentCreator {
+public class CMSpreadsheetCreator implements DocumentCreator {
 
     @NonNull
-    private Function<String, File> templateSupplier;
+    private Function<String, java.io.File> templateSupplier;
 
     @NonNull
-    private BiFunction<Kapitel<TailoringAnforderung>, Collection<Phase>, Map<DRD, Set<String>>> drdProvider;
+    private BiFunction<Chapter<TailoringRequirement>, Collection<Phase>, Map<DRD, Set<String>>> drdProvider;
 
     private static final int MAIN_CHAPTER = 1;
     private static final int SUB_CHAPTER = 2;
@@ -75,24 +74,24 @@ public class CMSpreadsheetCreator implements DokumentCreator {
      * {@inheritDoc}
      */
     @Override
-    public Datei createDokument(String docId,
-                                Tailoring tailoring,
-                                Map<String, String> platzhalter) {
+    public File createDocument(String docId,
+                               Tailoring tailoring,
+                               Map<String, String> placeholders) {
 
         try {
-            DateiBuilder result = builder()
-                .docId(docId)
-                .type("xlsx");
+            FileBuilder result = builder()
+                .name(docId + ".xlsx");
 
-            File template = templateSupplier.apply(tailoring.getKatalog().getVersion() + "/cm.xlsx");
+            java.io.File template = templateSupplier.apply(tailoring.getCatalog().getVersion() + "/cm.xlsx");
             try (Workbook wb = new XSSFWorkbook(newInputStream(template.toPath()))) {
                 Sheet cmSheet = createCMSheet(wb);
 
+                Catalog<TailoringRequirement> catalog = tailoring.getCatalog();
+                catalog.getToc().getChapters()
+                    .forEach(chapter -> addChapter(chapter, 1, cmSheet));
+
                 Collection<DRDElement> drds = new LinkedList<>();
-                Katalog<TailoringAnforderung> katalog = tailoring.getKatalog();
-                katalog.getToc().getKapitel()
-                    .forEach(kapitel -> addKapitel(kapitel, 1, cmSheet));
-                addDRD(katalog.getToc(), drds, tailoring.getPhasen());
+                addDRD(catalog.getToc(), drds, tailoring.getPhases());
 
                 range(0, cmSheet.getRow(0).getPhysicalNumberOfCells())
                     .forEach(cmSheet::autoSizeColumn);
@@ -103,7 +102,7 @@ public class CMSpreadsheetCreator implements DokumentCreator {
 
                 try (ByteArrayOutputStream os = new ByteArrayOutputStream()) {
                     wb.write(os);
-                    result.bytes(os.toByteArray());
+                    result.data(os.toByteArray());
                 }
             }
             return result.build();
@@ -114,25 +113,18 @@ public class CMSpreadsheetCreator implements DokumentCreator {
 
     }
 
-    void addDRD(@NonNull Kapitel<TailoringAnforderung> gruppe, Collection<DRDElement> zeilen, Collection<Phase> phasen) {
-        drdProvider.apply(gruppe, phasen)
+    void addDRD(Chapter<TailoringRequirement> chapter, Collection<DRDElement> rows, Collection<Phase> phases) {
+        drdProvider.apply(chapter, phases)
             .entrySet()
-            .forEach(entry -> zeilen.add(DRDElement.builder()
-                .titel(entry.getKey().getTitel())
-                .datum(entry.getKey().getLieferzeitpunkt())
-                .anforderung(entry.getValue())
-                .nummer(entry.getKey().getNummer())
-                .aktion(entry.getKey().getAktion())
+            .forEach(entry -> rows.add(DRDElement.builder()
+                .title(entry.getKey().getTitle())
+                .deliveryDate(entry.getKey().getDeliveryDate())
+                .requirements(entry.getValue())
+                .number(entry.getKey().getNumber())
+                .action(entry.getKey().getAction())
                 .build()));
     }
 
-
-    /**
-     * Erzeugt ein neues Excel Sheet mit einer Header Zeile.
-     *
-     * @param wb Workbook, in der das Sheet erzeugt werden soll
-     * @return Das erzeugte Sheet
-     */
     private Sheet createDRDSheet(Workbook wb, Collection<DRDElement> drds) {
         Sheet result = wb.createSheet("DRD");
 
@@ -169,39 +161,31 @@ public class CMSpreadsheetCreator implements DokumentCreator {
         cellStyle.setVerticalAlignment(VerticalAlignment.TOP);
         cellStyle.setWrapText(true);
 
-        row.createCell(0).setCellValue(drd.getTitel());
+        row.createCell(0).setCellValue(drd.getTitle());
         row.getCell(0).setCellStyle(cellStyle);
 
-        row.createCell(1).setCellValue(drd.getDatum());
+        row.createCell(1).setCellValue(drd.getDeliveryDate());
         row.getCell(1).setCellStyle(cellStyle);
 
-        row.createCell(2).setCellValue(drd.getAnforderung().stream().collect(joining(", \n")));
+        row.createCell(2).setCellValue(drd.getRequirements().stream().collect(joining(", \n")));
         row.getCell(2).setCellStyle(cellStyle);
 
-        row.createCell(3).setCellValue(drd.getNummer());
+        row.createCell(3).setCellValue(drd.getNumber());
         row.getCell(3).setCellStyle(cellStyle);
 
-        row.createCell(4).setCellValue(drd.getAktion());
+        row.createCell(4).setCellValue(drd.getAction());
         row.getCell(4).setCellStyle(cellStyle);
-
-
     }
 
-    private void addKapitel(Kapitel<TailoringAnforderung> kapitel, int ebene, Sheet sheet) {
-        addRow(sheet, ebene, kapitel.getNummer(), kapitel.getName());
-        if (nonNull(kapitel.getKapitel())) {
-            AtomicInteger naechsteEbene = new AtomicInteger(ebene + 1);
-            kapitel.getKapitel()
-                .forEach(subgroup -> addKapitel(subgroup, naechsteEbene.get(), sheet));
+    private void addChapter(Chapter<TailoringRequirement> chapter, int level, Sheet sheet) {
+        addRow(sheet, level, chapter.getNumber(), chapter.getName());
+        if (nonNull(chapter.getChapters())) {
+            AtomicInteger nextLevel = new AtomicInteger(level + 1);
+            chapter.getChapters()
+                .forEach(subChapter -> addChapter(subChapter, nextLevel.get(), sheet));
         }
     }
 
-    /**
-     * Erzeugt ein neues Excel Sheet mit einer Header Zeile.
-     *
-     * @param wb Workbook, in der das Sheet erzeugt werden soll
-     * @return Das erzeugte Sheet
-     */
     private Sheet createCMSheet(Workbook wb) {
         Sheet result = wb.createSheet("CM");
 
@@ -226,29 +210,22 @@ public class CMSpreadsheetCreator implements DokumentCreator {
         return result;
     }
 
-    /**
-     * Fügt eine neue Zeile dem Arbeitsblatt hinzu.
-     *
-     * @param sheet   Arbeitsblatt, auf dem die Zeile hinzugefügt werden soll
-     * @param kapitel Bezeichnungstext
-     * @param titel   Position im Kontext (Kapitel und Nummer im Kapitel)
-     */
-    private void addRow(Sheet sheet, int ebene, String kapitel, String titel) {
+    private void addRow(Sheet sheet, int level, String chapter, String title) {
         Row row = sheet.createRow((short) sheet.getLastRowNum() + 1);
 
         CellStyle cellStyle;
-        if (MAIN_CHAPTER == ebene) {
+        if (MAIN_CHAPTER == level) {
             cellStyle = createCellStyle(sheet, IndexedColors.LIGHT_BLUE);
-        } else if (SUB_CHAPTER == ebene) {
+        } else if (SUB_CHAPTER == level) {
             cellStyle = createCellStyle(sheet, IndexedColors.LIGHT_GREEN);
         } else {
             cellStyle = sheet.getWorkbook().createCellStyle();
         }
 
-        row.createCell(0).setCellValue(kapitel);
+        row.createCell(0).setCellValue(chapter);
         row.getCell(0).setCellStyle(cellStyle);
 
-        row.createCell(1).setCellValue(titel);
+        row.createCell(1).setCellValue(title);
         row.getCell(1).setCellStyle(cellStyle);
 
         row.createCell(2).setCellStyle(cellStyle);
@@ -263,5 +240,4 @@ public class CMSpreadsheetCreator implements DokumentCreator {
         result.setFillPattern(SOLID_FOREGROUND);
         return result;
     }
-
 }

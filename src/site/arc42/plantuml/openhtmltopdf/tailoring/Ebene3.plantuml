@@ -8,77 +8,76 @@ package renderer {
 
 package tailoring {
 
-    interface DokumentCreator {
-        createDokument(docId : String, projektPhase : ProjektPhase, platzhalter : Map<String, String>) : Datei
+    interface DocumentCreator {
+        createDocument(docId : String, tailoring : Tailoring, placeholders : Map<String, String>) : File
     }
 
-    class TailoringKatalogDokumentCreator {
+    class TailoringCatalogDocumentCreator {
     }
-    DokumentCreator <|.. AnforderungKatalogDokumentCreator
-    TailoringKatalogDokumentCreator --> "1" HTMLTemplateEngine : templateEngine
-    TailoringKatalogDokumentCreator --> "1" PDFEngine : pdfEngine
-    TailoringKatalogDokumentCreator --> "1" "BiFunction<Kapitel<TailoringAnforderung>, Collection<Phase>, Map<DRD, Set<String>>>" : drdProvider
+    DocumentCreator <|.. TailoringCatalogDocumentCreator
+    TailoringCatalogDocumentCreator --> "1" HTMLTemplateEngine : templateEngine
+    TailoringCatalogDocumentCreator --> "1" PDFEngine : pdfEngine
+    TailoringCatalogDocumentCreator --> "1" "BiFunction<Chapter<TailoringRequirement>, Collection<Phase>, Map<DRD, Set<String>>>" : drdProvider
 
-
-    class CMDokumentCreator {
+    class CMDocumentCreator {
     }
-    DokumentCreator <|.. CMDokumentCreator
-    CMDokumentCreator --> "1" HTMLTemplateEngine : templateEngine
-    CMDokumentCreator --> "1" PDFEngine : pdfEngine
-    CMDokumentCreator --> "1" "BiFunction<Kapitel<TailoringAnforderung>, Collection<Phase>, Map<DRD, Set<String>>>" : drdProvider
+    DocumentCreator <|.. CMDocumentCreator
+    CMDocumentCreator --> "1" HTMLTemplateEngine : templateEngine
+    CMDocumentCreator --> "1" PDFEngine : pdfEngine
+    CMDocumentCreator --> "1" "BiFunction<Chapter<TailoringRequirement>, Collection<Phase>, Map<DRD, Set<String>>>" : drdProvider
 
 
     class CMElement {
-        -ebene : int
-        -nummer : String
+        -levek : int
+        -nummbr : String
         -name : String
     }
 
 
-    class DRDDokumentCreator {
+    class DRDDocumentCreator {
     }
-    DokumentCreator <|.. DRDDokumentCreator
-    DRDDokumentCreator --> "1" HTMLTemplateEngine : templateEngine
-    DRDDokumentCreator --> "1" PDFEngine : pdfEngine
-    DRDDokumentCreator --> "1" "BiFunction<Kapitel<TailoringAnforderung>, Collection<Phase>, Map<DRD, Set<String>>>" : drdProvider
+    DocumentCreator <|.. DRDDocumentCreator
+    DRDDocumentCreator --> "1" HTMLTemplateEngine : templateEngine
+    DRDDocumentCreator --> "1" PDFEngine : pdfEngine
+    DRDDocumentCreator --> "1" "BiFunction<Chapter<TailoringRequirement>, Collection<Phase>, Map<DRD, Set<String>>>" : drdProvider
 
     class DRDElement {
-        -titel : String
-        -datum : String
-        -anforderung : Collection<String>
-        -nummer : String
-        -aktion : String
+        -title : String
+        -deliveryDate : String
+        -requirements : Collection<String>
+        -number : String
+        -action : String
     }
 
     class DRDFragment {
         -name : String
-        -nummer : String
+        -number : String
         -fragment : String
     }
 
-    class KatalogElement {
-        -referenz : String
+    class CatalogElement {
+        -reference : String
         -position : String
-        -kapitel : String
+        -chapter : String
         -text : String
-        -anwendbar : boolean
-        -phasen : Collection<String>
-        -identifikatoren : Collection<String>
+        -applicable : boolean
+        -phases : Collection<String>
+        -identifiers : Collection<String>
     }
 
 
-    class VergleichDokumentCreator {
+    class ComparisonDocumentCreator {
     }
-    DokumentCreator <|.. VergleichDokumentCreator
-    VergleichDokumentCreator --> "1" HTMLTemplateEngine : templateEngine
-    VergleichDokumentCreator --> "1" PDFEngine : pdfEngine
+    DckumentCreator <|.. ComparisonDocumentCreator
+    ComparisonDocumentCreator --> "1" HTMLTemplateEngine : templateEngine
+    ComparisonDocumentCreator --> "1" PDFEngine : pdfEngine
 
-    class VergleichElement {
-        -absatz : String
-        -titel : String
-        -ausgewaehlt : boolean
-        -geaendert : boolean
-        -datum : ZonedDateTime
+    class ComparisonElement {
+        -section : String
+        -title : String
+        -selected : boolean
+        -changed : boolean
+        -changeDate : ZonedDateTime
     }
 }
 @enduml

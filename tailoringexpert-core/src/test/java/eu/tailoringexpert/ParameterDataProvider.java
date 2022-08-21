@@ -21,7 +21,7 @@
  */
 package eu.tailoringexpert;
 
-import eu.tailoringexpert.domain.DatenTyp;
+import eu.tailoringexpert.domain.DatenType;
 import eu.tailoringexpert.domain.Parameter;
 import lombok.Getter;
 import lombok.extern.java.Log;
@@ -37,70 +37,70 @@ public class ParameterDataProvider {
 
     public static Parameter getEinsatzOrt() {
         return Parameter.builder()
-            .kategorie("EINSATZORT")
+            .category("EINSATZORT")
             .name("LEO")
-            .datenTyp(DatenTyp.MATRIX)
-            .wert(new double[][]{{0.5, 0, 0, 0, 0, 0, 0, 0, 0, 0}, {0, 0.7, 0, 0, 0, 0, 0, 0, 0, 0}, {0, 0, 0.8, 0, 0, 0, 0, 0, 0, 0}, {0, 0, 0, 0.6, 0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0.65, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0.8, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0, 0.7, 0, 0, 0}, {0, 0, 0, 0, 0, 0, 0, 1, 0, 0}, {0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0, 0, 0, 0, 0.9}})
-            .reihenfolge(1)
+            .parameterType(DatenType.MATRIX)
+            .value(new double[][]{{0.5, 0, 0, 0, 0, 0, 0, 0, 0, 0}, {0, 0.7, 0, 0, 0, 0, 0, 0, 0, 0}, {0, 0, 0.8, 0, 0, 0, 0, 0, 0, 0}, {0, 0, 0, 0.6, 0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0.65, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0.8, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0, 0.7, 0, 0, 0}, {0, 0, 0, 0, 0, 0, 0, 1, 0, 0}, {0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0, 0, 0, 0, 0.9}})
+            .position(1)
             .build();
     }
 
     public static Parameter getEinsatzZweck() {
         return Parameter.builder()
-            .kategorie("EINSATZZWECK")
+            .category("EINSATZZWECK")
             .name("Erdbeobachtungssatellit")
-            .datenTyp(DatenTyp.MATRIX)
-            .wert(new double[][]{{0.8, 0, 0, 0, 0, 0, 0, 0, 0, 0}, {0, 0.8, 0, 0, 0, 0, 0, 0, 0, 0}, {0, 0, 1, 0, 0, 0, 0, 0, 0, 0}, {0, 0, 0, 1, 0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0.9, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 1, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0, 1, 0, 0, 0}, {0, 0, 0, 0, 0, 0, 0, 1, 0, 0}, {0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0, 0, 0, 0, 0.95}})
-            .reihenfolge(2)
+            .parameterType(DatenType.MATRIX)
+            .value(new double[][]{{0.8, 0, 0, 0, 0, 0, 0, 0, 0, 0}, {0, 0.8, 0, 0, 0, 0, 0, 0, 0, 0}, {0, 0, 1, 0, 0, 0, 0, 0, 0, 0}, {0, 0, 0, 1, 0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0.9, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 1, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0, 1, 0, 0, 0}, {0, 0, 0, 0, 0, 0, 0, 1, 0, 0}, {0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0, 0, 0, 0, 0.95}})
+            .position(2)
             .build();
     }
 
     public static Parameter getAnwendungscharacter() {
         return Parameter.builder()
-            .kategorie("ANWENDUNGSCHARACTER")
+            .category("ANWENDUNGSCHARACTER")
             .name("wissenschaftlich")
-            .datenTyp(DatenTyp.MATRIX)
-            .wert(new double[][]{{0.5, 0, 0, 0, 0, 0, 0, 0, 0, 0}, {0, 0.4, 0, 0, 0, 0, 0, 0, 0, 0}, {0, 0, 0.6, 0, 0, 0, 0, 0, 0, 0}, {0, 0, 0, 0.4, 0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0.5, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0.8, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0, 0.7, 0, 0, 0}, {0, 0, 0, 0, 0, 0, 0, 1, 0, 0}, {0, 0, 0, 0, 0, 0, 0, 0, 1, 0}, {0, 0, 0, 0, 0, 0, 0, 0, 0, 0.7}}).reihenfolge(3)
+            .parameterType(DatenType.MATRIX)
+            .value(new double[][]{{0.5, 0, 0, 0, 0, 0, 0, 0, 0, 0}, {0, 0.4, 0, 0, 0, 0, 0, 0, 0, 0}, {0, 0, 0.6, 0, 0, 0, 0, 0, 0, 0}, {0, 0, 0, 0.4, 0, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0.5, 0, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0.8, 0, 0, 0, 0}, {0, 0, 0, 0, 0, 0, 0.7, 0, 0, 0}, {0, 0, 0, 0, 0, 0, 0, 1, 0, 0}, {0, 0, 0, 0, 0, 0, 0, 0, 1, 0}, {0, 0, 0, 0, 0, 0, 0, 0, 0, 0.7}}).position(3)
             .build();
     }
 
     public static Parameter getProduktTyp() {
         return Parameter.builder()
-            .kategorie("PRODUKTTYP")
+            .category("PRODUKTTYP")
             .name("SAT")
-            .datenTyp(DatenTyp.MATRIX)
-            .wert(new double[][]{{10}, {10}, {10}, {10}, {10}, {10}, {10}, {10}, {10}, {10}})
-            .reihenfolge(4)
+            .parameterType(DatenType.MATRIX)
+            .value(new double[][]{{10}, {10}, {10}, {10}, {10}, {10}, {10}, {10}, {10}, {10}})
+            .position(4)
             .build();
     }
 
     public static Parameter getLebensdauer() {
         return Parameter.builder()
-            .kategorie("LEBENSDAUER")
+            .category("LEBENSDAUER")
             .name("15 Jahre < t")
-            .datenTyp(DatenTyp.SKALAR)
-            .wert(3)
-            .reihenfolge(5)
+            .parameterType(DatenType.SKALAR)
+            .value(3)
+            .position(5)
             .build();
     }
 
     public static Parameter getProgammatischeBewertung() {
         return Parameter.builder()
-            .kategorie("PROGRAMMATISCHE_BEWERTUNG")
+            .category("PROGRAMMATISCHE_BEWERTUNG")
             .name("erforderlich")
-            .datenTyp(DatenTyp.SKALAR)
-            .wert(1)
-            .reihenfolge(6)
+            .parameterType(DatenType.SKALAR)
+            .value(1)
+            .position(6)
             .build();
     }
 
     public static Parameter getKosten() {
         return Parameter.builder()
-            .kategorie("KOSTENORIENTIERUNG")
+            .category("KOSTENORIENTIERUNG")
             .name("150 <= k")
-            .datenTyp(DatenTyp.SKALAR)
-            .wert(5)
-            .reihenfolge(7)
+            .parameterType(DatenType.SKALAR)
+            .value(5)
+            .position(7)
             .build();
     }
 }

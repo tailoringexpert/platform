@@ -53,15 +53,14 @@ public class DRDEntity implements Serializable {
     private Long id;
 
     @Column(name = "NUMBER")
-    private String nummer;
+    private String number;
 
     @Column(name = "TITLE")
-    private String titel;
+    private String title;
 
     @Column(name = "DELIVERYDATE")
-    private String lieferzeitpunkt;
+    private String deliveryDate;
 
     @Column(name = "ACTION")
-    private String aktion;
-
+    private String action;
 }

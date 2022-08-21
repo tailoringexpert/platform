@@ -21,24 +21,23 @@
  */
 package eu.tailoringexpert.tailoring;
 
-import eu.tailoringexpert.domain.Datei;
-import eu.tailoringexpert.domain.Dokument;
-import eu.tailoringexpert.domain.DokumentEntity;
-import eu.tailoringexpert.domain.DokumentZeichnerEntity;
-import eu.tailoringexpert.domain.DokumentZeichnung;
-import eu.tailoringexpert.domain.DokumentZeichnungEntity;
-import eu.tailoringexpert.domain.DokumentZeichnungStatus;
-import eu.tailoringexpert.domain.Projekt;
-import eu.tailoringexpert.domain.ProjektEntity;
+import eu.tailoringexpert.domain.FileEntity;
+import eu.tailoringexpert.domain.File;
+import eu.tailoringexpert.domain.DocumentSignature;
+import eu.tailoringexpert.domain.DocumentSignatureEntity;
+import eu.tailoringexpert.domain.DocumentSigneeEntity;
+import eu.tailoringexpert.domain.DocumentSignatureState;
+import eu.tailoringexpert.domain.Project;
+import eu.tailoringexpert.domain.ProjectEntity;
 import eu.tailoringexpert.domain.ScreeningSheet;
 import eu.tailoringexpert.domain.ScreeningSheetEntity;
-import eu.tailoringexpert.domain.SelektionsVektorProfil;
-import eu.tailoringexpert.domain.SelektionsVektorProfilEntity;
+import eu.tailoringexpert.domain.SelectionVectorProfile;
+import eu.tailoringexpert.domain.SelectionVectorProfileEntity;
 import eu.tailoringexpert.domain.Tailoring;
 import eu.tailoringexpert.domain.TailoringEntity;
-import eu.tailoringexpert.repository.DokumentZeichnerRepository;
-import eu.tailoringexpert.repository.ProjektRepository;
-import eu.tailoringexpert.repository.SelektionsVektorProfilRepository;
+import eu.tailoringexpert.repository.DokumentSigneeRepository;
+import eu.tailoringexpert.repository.ProjectRepository;
+import eu.tailoringexpert.repository.SelectionVectorProfileRepository;
 import eu.tailoringexpert.repository.TailoringRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -62,36 +61,36 @@ import static org.mockito.Mockito.verify;
 class JPATailoringServiceRepositoryTest {
 
     JPATailoringServiceRepositoryMapper mapperMock;
-    ProjektRepository projektRepositoryMock;
+    ProjectRepository projectRepositoryMock;
     TailoringRepository tailoringRepositoryMock;
-    SelektionsVektorProfilRepository selektionsVektorProfilRepositoryMock;
-    DokumentZeichnerRepository dokumentZeichnerRepositoryMock;
+    SelectionVectorProfileRepository selectionVectorProfileRepositoryMock;
+    DokumentSigneeRepository dokumentSigneeRepositoryMock;
     JPATailoringServiceRepository repository;
 
     @BeforeEach
     void setup() {
         this.mapperMock = mock(JPATailoringServiceRepositoryMapper.class);
-        this.projektRepositoryMock = mock(ProjektRepository.class);
+        this.projectRepositoryMock = mock(ProjectRepository.class);
         this.tailoringRepositoryMock = mock(TailoringRepository.class);
-        this.selektionsVektorProfilRepositoryMock = mock(SelektionsVektorProfilRepository.class);
-        this.dokumentZeichnerRepositoryMock = mock(DokumentZeichnerRepository.class);
+        this.selectionVectorProfileRepositoryMock = mock(SelectionVectorProfileRepository.class);
+        this.dokumentSigneeRepositoryMock = mock(DokumentSigneeRepository.class);
         this.repository = new JPATailoringServiceRepository(
             mapperMock,
-            projektRepositoryMock,
+            projectRepositoryMock,
             tailoringRepositoryMock,
-            selektionsVektorProfilRepositoryMock,
-            dokumentZeichnerRepositoryMock
+                selectionVectorProfileRepositoryMock,
+            dokumentSigneeRepositoryMock
         );
     }
 
     @Test
     void getProjekt_ProjektNichtVorhanden_EmptyErgebnis() {
         // arrange
-        given(projektRepositoryMock.findByKuerzel("SAMPLE"))
+        given(projectRepositoryMock.findByIdentifier("SAMPLE"))
             .willReturn(null);
 
         // act
-        Optional<Projekt> actual = repository.getProjekt("SAMPLE");
+        Optional<Project> actual = repository.getProject("SAMPLE");
 
         // assert
         assertThat(actual).isEmpty();
@@ -100,15 +99,15 @@ class JPATailoringServiceRepositoryTest {
     @Test
     void getProjekt_ProjektVorhanden_ProjektWirdZurueckGegeben() {
         // arrange
-        ProjektEntity projekt = ProjektEntity.builder().build();
-        given(projektRepositoryMock.findByKuerzel("SAMPLE"))
+        ProjectEntity projekt = ProjectEntity.builder().build();
+        given(projectRepositoryMock.findByIdentifier("SAMPLE"))
             .willReturn(projekt);
 
         given(mapperMock.toDomain(projekt))
-            .willReturn(Projekt.builder().build());
+            .willReturn(Project.builder().build());
 
         // act
-        Optional<Projekt> actual = repository.getProjekt("SAMPLE");
+        Optional<Project> actual = repository.getProject("SAMPLE");
 
         // assert
         assertThat(actual).isPresent();
@@ -120,7 +119,7 @@ class JPATailoringServiceRepositoryTest {
         TailoringEntity projektPhaseToUpdate = TailoringEntity.builder()
             .name("master1")
             .build();
-        ProjektEntity projekt = ProjektEntity.builder()
+        ProjectEntity projekt = ProjectEntity.builder()
             .tailorings(asList(
                 TailoringEntity.builder()
                     .name("master")
@@ -128,7 +127,7 @@ class JPATailoringServiceRepositoryTest {
                 projektPhaseToUpdate
             ))
             .build();
-        given(projektRepositoryMock.findByKuerzel("SAMPLE"))
+        given(projectRepositoryMock.findByIdentifier("SAMPLE"))
             .willReturn(projekt);
 
         Tailoring tailoring = Tailoring.builder()
@@ -141,7 +140,7 @@ class JPATailoringServiceRepositoryTest {
         // assert
         assertThat(actual).isNotNull();
         verify(mapperMock, times(0))
-            .addKatalog(tailoring, projektPhaseToUpdate);
+            .addCatalog(tailoring, projektPhaseToUpdate);
     }
 
     @Test
@@ -150,7 +149,7 @@ class JPATailoringServiceRepositoryTest {
         TailoringEntity projektPhaseToUpdate = TailoringEntity.builder()
             .name("master1")
             .build();
-        ProjektEntity projekt = ProjektEntity.builder()
+        ProjectEntity projekt = ProjectEntity.builder()
             .tailorings(asList(
                 TailoringEntity.builder()
                     .name("master")
@@ -158,7 +157,7 @@ class JPATailoringServiceRepositoryTest {
                 projektPhaseToUpdate
             ))
             .build();
-        given(projektRepositoryMock.findByKuerzel("SAMPLE"))
+        given(projectRepositoryMock.findByIdentifier("SAMPLE"))
             .willReturn(projekt);
 
         Tailoring tailoring = Tailoring.builder()
@@ -174,7 +173,7 @@ class JPATailoringServiceRepositoryTest {
         // assert
         assertThat(actual).isNotNull();
         verify(mapperMock, times(1))
-            .addKatalog(tailoring, projektPhaseToUpdate);
+            .addCatalog(tailoring, projektPhaseToUpdate);
     }
 
     @Test
@@ -182,39 +181,39 @@ class JPATailoringServiceRepositoryTest {
         // arrange
         TailoringEntity projektPhaseToUpdate = TailoringEntity.builder()
             .name("master")
-            .dokumente(new HashSet<>())
+            .files(new HashSet<>())
             .build();
-        given(projektRepositoryMock.findTailoring("SAMPLE", "master"))
+        given(projectRepositoryMock.findTailoring("SAMPLE", "master"))
             .willReturn(projektPhaseToUpdate);
 
-        Dokument dokument = Dokument.builder().build();
+        File document = File.builder().build();
         Tailoring tailoring = Tailoring.builder()
             .name("master")
-            .dokumente(asList(dokument))
+            .files(asList(document))
             .build();
 
         given(mapperMock.toDomain(projektPhaseToUpdate))
             .willReturn(tailoring);
 
         // act
-        Optional<Tailoring> actual = repository.updateAnforderungDokument("SAMPLE", "master", dokument);
+        Optional<Tailoring> actual = repository.updateFile("SAMPLE", "master", document);
 
         // assert
         assertThat(actual).isPresent();
-        assertThat(projektPhaseToUpdate.getDokumente()).isNotEmpty();
+        assertThat(projektPhaseToUpdate.getFiles()).isNotEmpty();
     }
 
 
     @Test
     void updateAnforderungDokument_ProjektPhaseNichtVorhanden_EmptyWirdZurueckGegeben() {
         // arrange
-        given(projektRepositoryMock.findTailoring("SAMPLE", "master"))
+        given(projectRepositoryMock.findTailoring("SAMPLE", "master"))
             .willReturn(null);
 
-        Dokument dokument = Dokument.builder().build();
+        File file = File.builder().build();
 
         // act
-        Optional<Tailoring> actual = repository.updateAnforderungDokument("SAMPLE", "master", dokument);
+        Optional<Tailoring> actual = repository.updateFile("SAMPLE", "master", file);
 
         // assert
         assertThat(actual).isEmpty();
@@ -223,7 +222,7 @@ class JPATailoringServiceRepositoryTest {
     @Test
     void updateName_NullProjekt_NameWirdNichtAktualisiert() {
         // arrange
-        given(projektRepositoryMock.findTailoring(null, "master"))
+        given(projectRepositoryMock.findTailoring(null, "master"))
             .willReturn(null);
 
         // act
@@ -236,7 +235,7 @@ class JPATailoringServiceRepositoryTest {
     @Test
     void updateName_NullPhase_NameWirdNichtAktualisiert() {
         // arrange
-        given(projektRepositoryMock.findTailoring("DUMMY", null))
+        given(projectRepositoryMock.findTailoring("DUMMY", null))
             .willReturn(null);
 
         // act
@@ -250,7 +249,7 @@ class JPATailoringServiceRepositoryTest {
     void updateName_AlleParameterVorhanden_NameWirdAktualisiert() {
         // arrange
         TailoringEntity projektPhase = new TailoringEntity();
-        given(projektRepositoryMock.findTailoring("DUMMY", "master"))
+        given(projectRepositoryMock.findTailoring("DUMMY", "master"))
             .willReturn(projektPhase);
 
         given(mapperMock.toDomain(projektPhase))
@@ -269,10 +268,10 @@ class JPATailoringServiceRepositoryTest {
     @Test
     void updateDokumentZeichnung_ProjektPhaseNichtVorhanden_EmptyWirdZurueckGegeben() {
         // arrange
-        given(projektRepositoryMock.findTailoring("DUMMY", "master")).willReturn(null);
+        given(projectRepositoryMock.findTailoring("DUMMY", "master")).willReturn(null);
 
         // act
-        Optional<DokumentZeichnung> actual = repository.updateDokumentZeichnung("DUMMY", "master", DokumentZeichnung.builder().build());
+        Optional<DocumentSignature> actual = repository.updateDocumentSignature("DUMMY", "master", DocumentSignature.builder().build());
 
         // assert
         assertThat(actual).isEmpty();
@@ -281,84 +280,84 @@ class JPATailoringServiceRepositoryTest {
     @Test
     void updateDokumentZeichnung_ZeichnungBereichNichtVorhanden_EmptyWirdZurueckGegeben1() {
         // arrange
-        DokumentZeichnungEntity zeichnungEntity = DokumentZeichnungEntity.builder()
-            .status(DokumentZeichnungStatus.AGREED)
-            .bereich("SW")
-            .unterzeichner("Hans Dampf")
-            .anwendbar(true)
+        DocumentSignatureEntity zeichnungEntity = DocumentSignatureEntity.builder()
+            .state(DocumentSignatureState.AGREED)
+            .faculty("SW")
+            .signee("Hans Dampf")
+            .applicable(true)
             .build();
-        given(projektRepositoryMock.findTailoring("DUMMY", "master"))
+        given(projectRepositoryMock.findTailoring("DUMMY", "master"))
             .willReturn(TailoringEntity.builder()
-                .zeichnungen(asList(
+                .signatures(asList(
                     zeichnungEntity
                 ))
                 .build()
             );
 
-        given(mapperMock.toDomain(zeichnungEntity)).willReturn(DokumentZeichnung.builder().build());
-        DokumentZeichnung zeichnung = DokumentZeichnung.builder()
-            .status(DokumentZeichnungStatus.RELEASED)
-            .bereich("Safety")
-            .unterzeichner("Hans Dampf")
-            .anwendbar(false)
+        given(mapperMock.toDomain(zeichnungEntity)).willReturn(DocumentSignature.builder().build());
+        DocumentSignature zeichnung = DocumentSignature.builder()
+            .state(DocumentSignatureState.RELEASED)
+            .faculty("Safety")
+            .signee("Hans Dampf")
+            .applicable(false)
             .build();
 
         // act
-        Optional<DokumentZeichnung> actual = repository.updateDokumentZeichnung("DUMMY", "master", zeichnung);
+        Optional<DocumentSignature> actual = repository.updateDocumentSignature("DUMMY", "master", zeichnung);
 
         // assert
         assertThat(actual).isEmpty();
-        verify(mapperMock, times(0)).updateDokumentZeichnung(any(), any());
-        verify(mapperMock, times(0)).toDomain(any(DokumentZeichnungEntity.class));
+        verify(mapperMock, times(0)).updateDocumentSignature(any(), any());
+        verify(mapperMock, times(0)).toDomain(any(DocumentSignatureEntity.class));
     }
 
     @Test
     void updateDokumentZeichnung_ZeichnungVorhanden_NeueZeichnungWirdZurueckGegeben() {
         // arrange
-        DokumentZeichnungEntity zeichnungEntity = DokumentZeichnungEntity.builder()
-            .status(DokumentZeichnungStatus.AGREED)
-            .bereich("SW")
-            .unterzeichner("Hans Dampf")
-            .anwendbar(true)
+        DocumentSignatureEntity zeichnungEntity = DocumentSignatureEntity.builder()
+            .state(DocumentSignatureState.AGREED)
+            .faculty("SW")
+            .signee("Hans Dampf")
+            .applicable(true)
             .build();
-        given(projektRepositoryMock.findTailoring("DUMMY", "master"))
+        given(projectRepositoryMock.findTailoring("DUMMY", "master"))
             .willReturn(TailoringEntity.builder()
-                .zeichnungen(asList(
+                .signatures(asList(
                     zeichnungEntity
                 ))
                 .build()
             );
 
-        given(mapperMock.toDomain(zeichnungEntity)).willReturn(DokumentZeichnung.builder().build());
-        DokumentZeichnung zeichnung = DokumentZeichnung.builder()
-            .status(DokumentZeichnungStatus.RELEASED)
-            .bereich("SW")
-            .unterzeichner("Hans Dampf")
-            .anwendbar(false)
+        given(mapperMock.toDomain(zeichnungEntity)).willReturn(DocumentSignature.builder().build());
+        DocumentSignature zeichnung = DocumentSignature.builder()
+            .state(DocumentSignatureState.RELEASED)
+            .faculty("SW")
+            .signee("Hans Dampf")
+            .applicable(false)
             .build();
 
         // act
-        Optional<DokumentZeichnung> actual = repository.updateDokumentZeichnung("DUMMY", "master", zeichnung);
+        Optional<DocumentSignature> actual = repository.updateDocumentSignature("DUMMY", "master", zeichnung);
 
         // assert
         assertThat(actual).isNotEmpty();
-        verify(mapperMock, times(1)).updateDokumentZeichnung(zeichnung, zeichnungEntity);
+        verify(mapperMock, times(1)).updateDocumentSignature(zeichnung, zeichnungEntity);
         verify(mapperMock, times(1)).toDomain(zeichnungEntity);
     }
 
     @Test
     void getDefaultZeichnungen_KeineParameter_ZeichnungenWerdenZurueckGegeben() {
         // arrange
-        DokumentZeichnerEntity dokumentZeichner = DokumentZeichnerEntity.builder()
-            .status(DokumentZeichnungStatus.AGREED)
-            .bereich("SW")
-            .unterzeichner("Hans Dampf")
+        DocumentSigneeEntity dokumentZeichner = DocumentSigneeEntity.builder()
+            .state(DocumentSignatureState.AGREED)
+            .faculty("SW")
+            .signee("Hans Dampf")
             .build();
-        given(dokumentZeichnerRepositoryMock.findAll()).willReturn(asList(dokumentZeichner));
-        given(mapperMock.getDefaultZeichnungen(dokumentZeichner)).willReturn(DokumentZeichnung.builder().build());
+        given(dokumentSigneeRepositoryMock.findAll()).willReturn(asList(dokumentZeichner));
+        given(mapperMock.getDefaultSignatures(dokumentZeichner)).willReturn(DocumentSignature.builder().build());
 
         // act
-        Collection<DokumentZeichnung> actual = repository.getDefaultZeichnungen();
+        Collection<DocumentSignature> actual = repository.getDefaultSignatures();
 
         // assert
         assertThat(actual)
@@ -370,15 +369,15 @@ class JPATailoringServiceRepositoryTest {
     @Test
     void getSelektionsVektorProfile_KeineParameter_ProfileWerdenZurueckGegeben() {
         // arrange
-        SelektionsVektorProfilEntity selektionsVektorProfil = SelektionsVektorProfilEntity.builder()
+        SelectionVectorProfileEntity selektionsVektorProfil = SelectionVectorProfileEntity.builder()
             .name("Test1")
             .build();
-        given(selektionsVektorProfilRepositoryMock.findAll()).willReturn(asList(selektionsVektorProfil));
+        given(selectionVectorProfileRepositoryMock.findAll()).willReturn(asList(selektionsVektorProfil));
 
-        given(mapperMock.toDomain(selektionsVektorProfil)).willReturn(SelektionsVektorProfil.builder().build());
+        given(mapperMock.toDomain(selektionsVektorProfil)).willReturn(SelectionVectorProfile.builder().build());
 
         // act
-        Collection<SelektionsVektorProfil> actual = repository.getSelektionsVektorProfile();
+        Collection<SelectionVectorProfile> actual = repository.getSelectionVectorProfile();
 
         // assert
         assertThat(actual)
@@ -389,11 +388,11 @@ class JPATailoringServiceRepositoryTest {
     @Test
     void getDokumentListe_ProjektPhaseNichtVorhanden_LeereListeWirdZurueckGegeben() {
         // arrange
-        given(projektRepositoryMock.findTailoring("DUMMY", "master"))
+        given(projectRepositoryMock.findTailoring("DUMMY", "master"))
             .willReturn(null);
 
         // act
-        List<Dokument> actual = repository.getDokumentListe("DUMMY", "master");
+        List<File> actual = repository.getFileList("DUMMY", "master");
 
         // assert
         assertThat(actual).isEmpty();
@@ -403,46 +402,46 @@ class JPATailoringServiceRepositoryTest {
     void getDokumentListe_ProjektPhaseKeineDokumentVorhanden_LeereListeWirdZurueckGegeben() {
         // arrange
         TailoringEntity projektPhase = TailoringEntity.builder()
-            .dokumente(Collections.emptySet())
+            .files(Collections.emptySet())
             .build();
-        given(projektRepositoryMock.findTailoring("DUMMY", "master")).willReturn(projektPhase);
+        given(projectRepositoryMock.findTailoring("DUMMY", "master")).willReturn(projektPhase);
 
 
         // act
-        List<Dokument> actual = repository.getDokumentListe("DUMMY", "master");
+        List<File> actual = repository.getFileList("DUMMY", "master");
 
         // assert
         assertThat(actual).isEmpty();
-        verify(mapperMock, times(0)).toDomain(any(DokumentEntity.class));
+        verify(mapperMock, times(0)).toDomain(any(FileEntity.class));
     }
 
     @Test
     void getDokumentListe_ProjektPhaseDokumenteVorhanden_ListeMit2DokumentenWirdZurueckGegeben() {
         // arrange
-        DokumentEntity dokument1 = DokumentEntity.builder().name("Dok1").build();
-        DokumentEntity dokument2 = DokumentEntity.builder().name("Dok2").build();
+        FileEntity dokument1 = FileEntity.builder().name("Dok1").build();
+        FileEntity dokument2 = FileEntity.builder().name("Dok2").build();
         TailoringEntity projektPhase = TailoringEntity.builder()
-            .dokumente(Set.of(dokument1, dokument2))
+            .files(Set.of(dokument1, dokument2))
             .build();
-        given(projektRepositoryMock.findTailoring("DUMMY", "master")).willReturn(projektPhase);
+        given(projectRepositoryMock.findTailoring("DUMMY", "master")).willReturn(projektPhase);
 
-        given(mapperMock.toDomain(any(DokumentEntity.class))).willReturn(Dokument.builder().build());
+        given(mapperMock.toDomain(any(FileEntity.class))).willReturn(File.builder().build());
 
         // act
-        List<Dokument> actual = repository.getDokumentListe("DUMMY", "master");
+        List<File> actual = repository.getFileList("DUMMY", "master");
 
         // assert
         assertThat(actual).hasSize(2);
-        verify(mapperMock, times(2)).toDomain(any(DokumentEntity.class));
+        verify(mapperMock, times(2)).toDomain(any(FileEntity.class));
     }
 
     @Test
     void getDokument_ProjektPhaseNichtVorhanden_EmptyWirdZurueckGegeben() {
         // arrange
-        given(projektRepositoryMock.findTailoring("DUMMY", "master")).willReturn(null);
+        given(projectRepositoryMock.findTailoring("DUMMY", "master")).willReturn(null);
 
         // act
-        Optional<Datei> actual = repository.getDokument("DUMMY", "master", "egal");
+        Optional<File> actual = repository.getFile("DUMMY", "master", "egal");
 
         // assert
         assertThat(actual).isEmpty();
@@ -452,12 +451,12 @@ class JPATailoringServiceRepositoryTest {
     void getDokument_ProjektPhaseVorhandenDokumentNicht_EmptyWirdZurueckGegeben() {
         // arrange
         TailoringEntity projektPhase = TailoringEntity.builder()
-            .dokumente(Collections.emptySet())
+            .files(Collections.emptySet())
             .build();
-        given(projektRepositoryMock.findTailoring("DUMMY", "master")).willReturn(projektPhase);
+        given(projectRepositoryMock.findTailoring("DUMMY", "master")).willReturn(projektPhase);
 
         // act
-        Optional<Datei> actual = repository.getDokument("DUMMY", "master", "egal");
+        Optional<File> actual = repository.getFile("DUMMY", "master", "egal");
 
         // assert
         assertThat(actual).isEmpty();
@@ -467,28 +466,28 @@ class JPATailoringServiceRepositoryTest {
     void getDokument_ProjektPhaseUndDokumentVorhande_ByteArrayWirdZurueckGegeben() {
         // arrange
         TailoringEntity projektPhase = TailoringEntity.builder()
-            .dokumente(Set.of(DokumentEntity.builder()
+            .files(Set.of(FileEntity.builder()
                 .name("egal.pdf")
-                .daten("Dummy Daten".getBytes(UTF_8))
+                .data("Dummy Daten".getBytes(UTF_8))
                 .build()))
             .build();
-        given(projektRepositoryMock.findTailoring("DUMMY", "master")).willReturn(projektPhase);
+        given(projectRepositoryMock.findTailoring("DUMMY", "master")).willReturn(projektPhase);
 
         // act
-        Optional<Datei> actual = repository.getDokument("DUMMY", "master", "egal.pdf");
+        Optional<File> actual = repository.getFile("DUMMY", "master", "egal.pdf");
 
         // assert
         assertThat(actual).isNotEmpty();
-        assertThat(actual.get().getBytes()).isNotNull();
+        assertThat(actual.get().getData()).isNotNull();
     }
 
     @Test
     void getScreeningSheetDatei_PhaseNichtVorhanden_EmptyWirdZurueckGegeben() {
         // arrange
-        given(projektRepositoryMock.findTailoring("DUMMY", "master")).willReturn(null);
+        given(projectRepositoryMock.findTailoring("DUMMY", "master")).willReturn(null);
 
         // act
-        Optional<byte[]> actual = repository.getScreeningSheetDatei("DUMMY", "master");
+        Optional<byte[]> actual = repository.getScreeningSheetFile("DUMMY", "master");
 
         // assert
         assertThat(actual).isEmpty();
@@ -502,10 +501,10 @@ class JPATailoringServiceRepositoryTest {
                 .data(null)
                 .build())
             .build();
-        given(projektRepositoryMock.findTailoring("DUMMY", "master")).willReturn(projektPhase);
+        given(projectRepositoryMock.findTailoring("DUMMY", "master")).willReturn(projektPhase);
 
         // act
-        Optional<byte[]> actual = repository.getScreeningSheetDatei("DUMMY", "master");
+        Optional<byte[]> actual = repository.getScreeningSheetFile("DUMMY", "master");
 
         // assert
         assertThat(actual).isEmpty();
@@ -519,10 +518,10 @@ class JPATailoringServiceRepositoryTest {
                 .data("ScreeningSheet".getBytes(UTF_8))
                 .build())
             .build();
-        given(projektRepositoryMock.findTailoring("DUMMY", "master")).willReturn(projektPhase);
+        given(projectRepositoryMock.findTailoring("DUMMY", "master")).willReturn(projektPhase);
 
         // act
-        Optional<byte[]> actual = repository.getScreeningSheetDatei("DUMMY", "master");
+        Optional<byte[]> actual = repository.getScreeningSheetFile("DUMMY", "master");
 
         // assert
         assertThat(actual).isNotEmpty();
@@ -531,7 +530,7 @@ class JPATailoringServiceRepositoryTest {
     @Test
     void getScreeningSheet_PhaseNichtVorhanden_EmptyWirdZurueckGegeben() {
         // arrange
-        given(projektRepositoryMock.findTailoring("DUMMY", "master")).willReturn(null);
+        given(projectRepositoryMock.findTailoring("DUMMY", "master")).willReturn(null);
 
         // act
         Optional<ScreeningSheet> actual = repository.getScreeningSheet("DUMMY", "master");
@@ -547,7 +546,7 @@ class JPATailoringServiceRepositoryTest {
             .screeningSheet(ScreeningSheetEntity.builder()
                 .build())
             .build();
-        given(projektRepositoryMock.findTailoring("DUMMY", "master")).willReturn(projektPhase);
+        given(projectRepositoryMock.findTailoring("DUMMY", "master")).willReturn(projektPhase);
         given(mapperMock.toScreeningSheetParameters(projektPhase.getScreeningSheet())).willReturn(null);
 
         // act
@@ -565,7 +564,7 @@ class JPATailoringServiceRepositoryTest {
             .screeningSheet(ScreeningSheetEntity.builder()
                 .build())
             .build();
-        given(projektRepositoryMock.findTailoring("DUMMY", "master")).willReturn(projektPhase);
+        given(projectRepositoryMock.findTailoring("DUMMY", "master")).willReturn(projektPhase);
         given(mapperMock.toScreeningSheetParameters(projektPhase.getScreeningSheet())).willReturn(ScreeningSheet.builder().build());
 
         // act
@@ -605,7 +604,7 @@ class JPATailoringServiceRepositoryTest {
             .screeningSheet(ScreeningSheetEntity.builder()
                 .build())
             .build();
-        given(projektRepositoryMock.findTailoring("DUMMY", "master")).willReturn(projektPhase);
+        given(projectRepositoryMock.findTailoring("DUMMY", "master")).willReturn(projektPhase);
 
         given(mapperMock.toDomain(projektPhase)).willReturn(Tailoring.builder().build());
 
@@ -620,7 +619,7 @@ class JPATailoringServiceRepositoryTest {
     @Test
     void deleteProjektPhase_ProjektPhaseNichtVorhanden_FalseWirdZurueckGegeben() {
         // arrange
-        given(projektRepositoryMock.findTailoring("DUMMY", "master42")).willReturn(null);
+        given(projectRepositoryMock.findTailoring("DUMMY", "master42")).willReturn(null);
 
         // act
         boolean actual = repository.deleteTailoring("DUMMY", "master42");
@@ -634,7 +633,7 @@ class JPATailoringServiceRepositoryTest {
     void deleteProjektPhase_ProjektPhaseVorhanden_TrueWirdZurueckGegeben() {
         // arrange
         TailoringEntity toDelete = TailoringEntity.builder().build();
-        given(projektRepositoryMock.findTailoring("DUMMY", "master42")).willReturn(toDelete);
+        given(projectRepositoryMock.findTailoring("DUMMY", "master42")).willReturn(toDelete);
 
         // act
         boolean actual = repository.deleteTailoring("DUMMY", "master42");
@@ -647,11 +646,11 @@ class JPATailoringServiceRepositoryTest {
     @Test
     void deleteDocument_ProjektNichtVorhanden_FalseWirdZurueckGegeben() {
         // arrange
-        given(projektRepositoryMock.findTailoring("SAMPLE", "master"))
+        given(projectRepositoryMock.findTailoring("SAMPLE", "master"))
             .willReturn(null);
 
         // act
-        boolean actual = repository.deleteDokument("SAMPLE", "master", "Demo");
+        boolean actual = repository.deleteFile("SAMPLE", "master", "Demo");
 
         // assert
         assertThat(actual).isFalse();
@@ -660,11 +659,11 @@ class JPATailoringServiceRepositoryTest {
     @Test
     void deleteDocument_DokumentNichtVorhanden_FalseWirdZurueckGegeben() {
         // arrange
-        given(projektRepositoryMock.findTailoring("SAMPLE", "master"))
-            .willReturn(TailoringEntity.builder().dokumente(Collections.emptySet()).build());
+        given(projectRepositoryMock.findTailoring("SAMPLE", "master"))
+            .willReturn(TailoringEntity.builder().files(Collections.emptySet()).build());
 
         // act
-        boolean actual = repository.deleteDokument("SAMPLE", "master", "NotExisting");
+        boolean actual = repository.deleteFile("SAMPLE", "master", "NotExisting");
 
         // assert
         assertThat(actual).isFalse();
@@ -673,13 +672,13 @@ class JPATailoringServiceRepositoryTest {
     @Test
     void deleteDocument_DokumentVorhanden_TrueWirdZurueckGegeben() {
         // arrange
-        given(projektRepositoryMock.findTailoring("SAMPLE", "master"))
+        given(projectRepositoryMock.findTailoring("SAMPLE", "master"))
             .willReturn(TailoringEntity.builder()
-                .dokumente(new HashSet(List.of(DokumentEntity.builder().name("DoBeDeleted").build())))
+                .files(new HashSet(List.of(FileEntity.builder().name("DoBeDeleted").build())))
                 .build());
 
         // act
-        boolean actual = repository.deleteDokument("SAMPLE", "master", "DoBeDeleted");
+        boolean actual = repository.deleteFile("SAMPLE", "master", "DoBeDeleted");
 
         // assert
         assertThat(actual).isTrue();

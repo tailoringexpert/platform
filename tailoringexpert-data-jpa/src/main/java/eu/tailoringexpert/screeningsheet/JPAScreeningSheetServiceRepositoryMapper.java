@@ -32,8 +32,8 @@ import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;
 
-import static eu.tailoringexpert.domain.DatenTyp.MATRIX;
-import static eu.tailoringexpert.domain.DatenTyp.SKALAR;
+import static eu.tailoringexpert.domain.DatenType.MATRIX;
+import static eu.tailoringexpert.domain.DatenType.SKALAR;
 import static java.lang.Integer.valueOf;
 
 @Mapper(componentModel = "jsr330")
@@ -48,16 +48,16 @@ public abstract class JPAScreeningSheetServiceRepositoryMapper {
      * @param entity Quelle
      * @return Neu erestelltes Domänen-Objekt
      */
-    @Mapping(target = "wert", ignore = true)
+    @Mapping(target = "value", ignore = true)
     public abstract Parameter toDomain(ParameterEntity entity);
 
     @SneakyThrows
     @AfterMapping
     void toDomain(ParameterEntity entity, @MappingTarget ParameterBuilder domain) {
-        if (SKALAR == entity.getDatenTyp()) {
-            domain.wert(valueOf(entity.getWert()));
-        } else if (MATRIX == entity.getDatenTyp()) {
-            domain.wert(mapper.readValue(entity.getWert(), double[][].class));
+        if (SKALAR == entity.getParameterType()) {
+            domain.value(valueOf(entity.getValue()));
+        } else if (MATRIX == entity.getParameterType()) {
+            domain.value(mapper.readValue(entity.getValue(), double[][].class));
         }
     }
 }
