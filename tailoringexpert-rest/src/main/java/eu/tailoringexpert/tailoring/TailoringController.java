@@ -34,9 +34,8 @@ import eu.tailoringexpert.domain.ResourceMapper;
 import eu.tailoringexpert.domain.ScreeningSheetResource;
 import eu.tailoringexpert.domain.SelectionVectorResource;
 import eu.tailoringexpert.domain.TailoringRequirementResource;
-import eu.tailoringexpert.domain.TailoringInformationResource;
-import eu.tailoringexpert.domain.TailoringCatalogChapterResource;
 import eu.tailoringexpert.domain.TailoringResource;
+import eu.tailoringexpert.domain.TailoringCatalogChapterResource;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -113,7 +112,7 @@ public class TailoringController {
     @ApiResponses(value = {
         @ApiResponse(
             responseCode = "200", description = "Catalog loaded",
-            content = @Content(mediaType = "application/json+hal", schema = @Schema(implementation = TailoringResource.class))),
+            content = @Content(mediaType = "application/json+hal", schema = @Schema(implementation = TailoringCatalogResource.class))),
         @ApiResponse(
             responseCode = "404", description = "Catalog not be loaded",
             content = @Content)
@@ -249,9 +248,9 @@ public class TailoringController {
             .tailoring(tailoring);
 
         return tailoringServiceRepository.getTailoring(project, tailoring)
-            .map(projektPhase -> ResponseEntity
+            .map(loaded -> ResponseEntity
                 .ok()
-                .body(of(mapper.toResource(pathContext, projektPhase))))
+                .body(of(mapper.toResource(pathContext, loaded))))
             .orElseGet(() -> notFound().build());
     }
 
@@ -259,7 +258,7 @@ public class TailoringController {
     @ApiResponses(value = {
         @ApiResponse(
             responseCode = "201", description = "File added to tailoring",
-            content = @Content(mediaType = "application/json+hal", schema = @Schema(implementation = TailoringResource.class))),
+            content = @Content(mediaType = "application/json+hal", schema = @Schema(implementation = Void.class))),
         @ApiResponse(
             responseCode = "404", description = "Tailoring does not exist",
             content = @Content)
@@ -429,7 +428,7 @@ public class TailoringController {
             content = @Content)
     })
     @PutMapping(value = ResourceMapper.TAILORING_NAME, produces = {"application/hal+json"})
-    public ResponseEntity<EntityModel<TailoringInformationResource>> updateName(
+    public ResponseEntity<EntityModel<TailoringResource>> updateName(
         @Parameter(description = "Project identifier") @PathVariable String project,
         @Parameter(description = "Tailoring name") @PathVariable String tailoring,
         @Parameter(description = "New tailoring name") @RequestBody String name) {

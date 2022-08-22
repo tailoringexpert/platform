@@ -29,7 +29,6 @@ import eu.tailoringexpert.domain.PathContext;
 import eu.tailoringexpert.domain.PathContext.PathContextBuilder;
 import eu.tailoringexpert.domain.Project;
 import eu.tailoringexpert.domain.ProjectInformation;
-import eu.tailoringexpert.domain.ProjectInformationResource;
 import eu.tailoringexpert.domain.ProjectResource;
 import eu.tailoringexpert.domain.ResourceMapper;
 import eu.tailoringexpert.domain.ScreeningSheet;
@@ -191,7 +190,7 @@ class ProjectControllerTest {
 
         PathContextBuilder pathContext = PathContext.builder();
         ArgumentCaptor<PathContextBuilder> pathContextCaptor = ArgumentCaptor.forClass(PathContextBuilder.class);
-        given(mapperMock.toResource(pathContextCaptor.capture(), eq(projekt))).willReturn(ProjectInformationResource.builder().build());
+        given(mapperMock.toResource(pathContextCaptor.capture(), eq(projekt))).willReturn(ProjectResource.builder().build());
 
         // act
         ResultActions actual = mockMvc.perform(get("/project")
@@ -217,7 +216,7 @@ class ProjectControllerTest {
 
         PathContextBuilder pathContext = PathContext.builder();
         ArgumentCaptor<PathContextBuilder> pathContextCaptor = ArgumentCaptor.forClass(PathContextBuilder.class);
-        given(mapperMock.toResource(pathContextCaptor.capture(), eq(projekt))).willReturn(ProjectInformationResource.builder().build());
+        given(mapperMock.toResource(pathContextCaptor.capture(), eq(projekt))).willReturn(ProjectResource.builder().build());
 
         // act
         ResultActions actual = mockMvc.perform(get("/project/{project}", "SAMPLE")

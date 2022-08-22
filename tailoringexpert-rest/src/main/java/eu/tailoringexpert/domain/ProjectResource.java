@@ -27,6 +27,7 @@ import lombok.Getter;
 import lombok.Value;
 import org.springframework.hateoas.Link;
 import org.springframework.hateoas.RepresentationModel;
+import org.springframework.hateoas.server.core.Relation;
 
 import java.util.Collection;
 import java.util.List;
@@ -36,21 +37,25 @@ import static java.util.Objects.nonNull;
 @Value
 @Getter
 @EqualsAndHashCode(callSuper = false)
+@Relation(itemRelation = "project", collectionRelation = "projects")
 public class ProjectResource extends RepresentationModel<ProjectResource> {
 
     String name;
     String projectManager;
     Collection<TailoringResource> tailorings;
+    String creationTimestamp;
+    String catalogVersion;
 
     @Builder
-    public ProjectResource(String name, String projectManager, Collection<TailoringResource> tailorings, List<Link> links) {
+    public ProjectResource(String name, String projectManager, String creationTimestamp, Collection<TailoringResource> tailorings, String catalogVersion, List<Link> links) {
         super();
         this.name = name;
         this.projectManager = projectManager;
+        this.creationTimestamp = creationTimestamp;
         this.tailorings = tailorings;
+        this.catalogVersion = catalogVersion;
         if (nonNull(links)) {
             add(links);
         }
     }
-
 }
