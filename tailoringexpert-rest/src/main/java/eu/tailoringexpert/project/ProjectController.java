@@ -24,7 +24,6 @@ package eu.tailoringexpert.project;
 import eu.tailoringexpert.domain.PathContext;
 import eu.tailoringexpert.domain.PathContext.PathContextBuilder;
 import eu.tailoringexpert.domain.ProjectInformation;
-import eu.tailoringexpert.domain.ProjectInformationResource;
 import eu.tailoringexpert.domain.ProjectResource;
 import eu.tailoringexpert.domain.ResourceMapper;
 import eu.tailoringexpert.domain.ScreeningSheetResource;
@@ -96,11 +95,11 @@ public class ProjectController {
     @ApiResponses(value = {
         @ApiResponse(
             responseCode = "200", description = "Project list created",
-            content = @Content(array = @ArraySchema(schema = @Schema(implementation = ProjectInformationResource.class))))
+            content = @Content(array = @ArraySchema(schema = @Schema(implementation = ProjectResource.class))))
     })
     @GetMapping(value = PROJECTS, produces = {"application/hal+json"})
-    public ResponseEntity<CollectionModel<EntityModel<ProjectInformationResource>>> getProjects() {
-        List<EntityModel<ProjectInformationResource>> projekte = projektServiceRepository.getProjectInformations()
+    public ResponseEntity<CollectionModel<EntityModel<ProjectResource>>> getProjects() {
+        List<EntityModel<ProjectResource>> projekte = projektServiceRepository.getProjectInformations()
             .stream()
             .map(domain -> EntityModel.of(mapper.toResource(PathContext.builder(), domain)))
             .collect(toList());
@@ -131,12 +130,12 @@ public class ProjectController {
     @ApiResponses(value = {
         @ApiResponse(
             responseCode = "200", description = "Project loaded",
-            content = @Content(mediaType = "application/json+hal", schema = @Schema(implementation = ProjectInformationResource.class))),
+            content = @Content(mediaType = "application/json+hal", schema = @Schema(implementation = ProjectResource.class))),
         @ApiResponse(
             responseCode = "404", description = "Project does not exist")
     })
     @GetMapping(value = PROJECT, produces = {"application/hal+json"})
-    public ResponseEntity<EntityModel<ProjectInformationResource>> getProject(
+    public ResponseEntity<EntityModel<ProjectResource>> getProject(
         @Parameter(description = "Project identifier") @PathVariable String project) {
 
         PathContextBuilder pathContextBuilder = PathContext.builder();

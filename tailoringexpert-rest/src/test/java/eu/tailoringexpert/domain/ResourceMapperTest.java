@@ -121,7 +121,7 @@ class ResourceMapperTest {
         ProjectInformation projekt = null;
 
         // act
-        ProjectInformationResource actual = mapper.toResource(pathContext, projekt);
+        ProjectResource actual = mapper.toResource(pathContext, projekt);
 
         // assert
         assertThat(actual).isNull();
@@ -144,7 +144,7 @@ class ResourceMapperTest {
             .build();
 
         // act
-        ProjectInformationResource actual = mapper.toResource(pathContext, projekt);
+        ProjectResource actual = mapper.toResource(pathContext, projekt);
 
         // assert
         assertThat(actual).isNotNull();
@@ -175,7 +175,7 @@ class ResourceMapperTest {
             .build();
 
         // act
-        ProjectInformationResource actual = mapper.toResource(pathContext, projekt);
+        ProjectResource actual = mapper.toResource(pathContext, projekt);
 
         // assert
         assertThat(actual).isNotNull();
@@ -210,7 +210,7 @@ class ResourceMapperTest {
             .build();
 
         // act
-        ProjectInformationResource actual = mapper.toResource(pathContext, projekt);
+        ProjectResource actual = mapper.toResource(pathContext, projekt);
 
         // assert
         assertThat(actual).isNotNull();
@@ -235,7 +235,7 @@ class ResourceMapperTest {
         TailoringInformation projektPhase = null;
 
         // act
-        TailoringInformationResource actual = mapper.toResource(pathContext, projektPhase);
+        TailoringResource actual = mapper.toResource(pathContext, projektPhase);
 
         // assert
         assertThat(actual).isNull();
@@ -255,7 +255,7 @@ class ResourceMapperTest {
             .build();
 
         // act
-        TailoringInformationResource actual = mapper.toResource(pathContext, projektPhase);
+        TailoringResource actual = mapper.toResource(pathContext, projektPhase);
 
         // assert
         assertThat(actual).isNotNull();
@@ -484,7 +484,9 @@ class ResourceMapperTest {
 
         assertThat(actual.getLinks()).containsExactlyInAnyOrder(
             Link.of("http://localhost/project/SAMPLE", "self"),
-            Link.of("http://localhost/project/SAMPLE", "copy")
+            Link.of("http://localhost/project/SAMPLE/selectionvector", "selectionvector"),
+            Link.of("http://localhost/project/SAMPLE/screeningsheet", "screeningsheet"),
+            Link.of("http://localhost/project/SAMPLE/tailoring", "tailoring")
         );
     }
 
@@ -513,6 +515,7 @@ class ResourceMapperTest {
             .state(ACTIVE)
             .phases(asList(A, C))
             .catalog(Catalog.<TailoringRequirement>builder()
+                .version("8.2.1")
                 .toc(Chapter.<TailoringRequirement>builder().build())
                 .build())
             .build();
@@ -525,8 +528,7 @@ class ResourceMapperTest {
         assertThat(actual).isNotNull();
         assertThat(actual.getName()).isEqualTo("master");
         assertThat(actual.getPhases()).containsExactlyInAnyOrderElementsOf(asList(A, C));
-        assertThat(actual.getState()).isEqualTo(ACTIVE);
-        assertThat(actual.getCatalog()).isNotNull();
+        assertThat(actual.getCatalogVersion()).isNotNull();
 
         assertThat(actual.getLinks()).containsExactlyInAnyOrder(
             Link.of("http://localhost/project/SAMPLE/tailoring/master", "self"),
@@ -536,7 +538,11 @@ class ResourceMapperTest {
             Link.of("http://localhost/project/SAMPLE/tailoring/master/document", "document"),
             Link.of("http://localhost/project/SAMPLE/tailoring/master/catalog", "catalog"),
             Link.of("http://localhost/project/SAMPLE/tailoring/master/name", "name"),
-            Link.of("http://localhost/project/SAMPLE/tailoring/master/attachment", "attachment")
+            Link.of("http://localhost/project/SAMPLE/tailoring/master/attachment", "attachment"),
+            Link.of("http://localhost/project/SAMPLE/tailoring/master/document/catalog", "tailoringcatalog"),
+            Link.of("http://localhost/project/SAMPLE/tailoring/master/compare", "compare"),
+            Link.of("http://localhost/project/SAMPLE/tailoring/master/requirement/import", "import"),
+            Link.of("http://localhost/catalog/8.2.1/pdf", "basecatalog")
         );
     }
 

@@ -26,6 +26,7 @@ import lombok.EqualsAndHashCode;
 import lombok.Value;
 import org.springframework.hateoas.Link;
 import org.springframework.hateoas.RepresentationModel;
+import org.springframework.hateoas.server.core.Relation;
 
 import java.util.List;
 
@@ -33,6 +34,7 @@ import static java.util.Objects.nonNull;
 
 @Value
 @EqualsAndHashCode(callSuper = false)
+@Relation(itemRelation = "tailoringCatalog", collectionRelation = "tailoringCatalogs")
 public class TailoringCatalogResource extends RepresentationModel<TailoringCatalogResource> {
     private TailoringCatalogChapterResource toc;
 

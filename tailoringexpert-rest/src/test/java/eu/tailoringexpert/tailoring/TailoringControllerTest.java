@@ -47,9 +47,8 @@ import eu.tailoringexpert.domain.Tailoring;
 import eu.tailoringexpert.domain.TailoringRequirement;
 import eu.tailoringexpert.domain.TailoringRequirementResource;
 import eu.tailoringexpert.domain.TailoringInformation;
-import eu.tailoringexpert.domain.TailoringInformationResource;
-import eu.tailoringexpert.domain.TailoringCatalogChapterResource;
 import eu.tailoringexpert.domain.TailoringResource;
+import eu.tailoringexpert.domain.TailoringCatalogChapterResource;
 import lombok.extern.log4j.Log4j2;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -644,7 +643,7 @@ class TailoringControllerTest {
 
         ArgumentCaptor<PathContextBuilder> pathContextCaptor = forClass(PathContextBuilder.class);
         given(mapperMock.toResource(pathContextCaptor.capture(), eq(projektPhase)))
-            .willReturn(TailoringInformationResource.builder().build());
+            .willReturn(TailoringResource.builder().build());
 
         // act
         ResultActions actual = mockMvc.perform(put("/project/{project}/tailoring/{tailoring}/name", "SAMPLE", "master")

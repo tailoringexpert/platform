@@ -27,6 +27,7 @@ import lombok.Getter;
 import lombok.Value;
 import org.springframework.hateoas.Link;
 import org.springframework.hateoas.RepresentationModel;
+import org.springframework.hateoas.server.core.Relation;
 
 import java.util.List;
 
@@ -35,6 +36,7 @@ import static java.util.Objects.nonNull;
 @Value
 @Getter
 @EqualsAndHashCode(callSuper = false)
+@Relation(itemRelation = "screeningSheet", collectionRelation = "screeningSheets")
 public class ScreeningSheetResource extends RepresentationModel<ScreeningSheetResource> {
 
     private byte[] data;

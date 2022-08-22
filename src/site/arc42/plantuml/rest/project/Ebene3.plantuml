@@ -26,9 +26,9 @@ package project {
     ProjectCreationRequest -> "1" SelectionVector : selectionVector
 
     class ProjectController {
-        +getProjects() : ResponseEntity<CollectionModel<EntityModel<ProjectInformationResource>>>
+        +getProjects() : ResponseEntity<CollectionModel<EntityModel<ProjectResource>>>
         +createProject(version : String, request : ProjectCreationRequest) : ResponseEntity<Void>
-        +getProject(project : String): ResponseEntity<EntityModel<ProjectInformationResource>>
+        +getProject(project : String): ResponseEntity<EntityModel<ProjectResource>>
         +getScreeningSheet(project : String) : ResponseEntity<EntityModel<ScreeningSheetResource>>
         +getScreeningSheetFile(project : String) : ResponseEntity<byte[]>
         +deleteProject(project : String) : ResponseEntity<Void>

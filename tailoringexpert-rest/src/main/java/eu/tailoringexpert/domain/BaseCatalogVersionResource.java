@@ -38,7 +38,7 @@ import static java.util.Objects.nonNull;
 @Value
 @Getter
 @EqualsAndHashCode(callSuper = false)
-@Relation(collectionRelation = "baseCatalogs", itemRelation = "baseCatalog")
+@Relation(itemRelation = "baseCatalogVersion", collectionRelation = "baseCatalogVersions")
 public class BaseCatalogVersionResource extends RepresentationModel<BaseCatalogVersionResource> {
 
     String version;

@@ -30,7 +30,7 @@ package tailoring {
         +getAnforderungen(projekt : String, phase : String, kapitel : String ) : ResponseEntity<CollectionModel<EntityModel<TailoringAnforderungResource>>>
         +getDokumentZeichnungen(projekt : String, phase : String) : ResponseEntity<CollectionModel<DokumentZeichnungResource>>
         +updateDokumentZeichnung(projekt : String, phase : String, bereich : String, dokumentZeichnung : DokumentZeichnung) : ResponseEntity<EntityModel<DokumentZeichnungResource>>
-        +updateName(projekt : String, phase : String, name : String) : ResponseEntity<EntityModel<TailoringInformationResource>>
+        +updateName(projekt : String, phase : String, name : String) : ResponseEntity<EntityModel<TailoringResource>>
         +getDokumentListe(projekt : String, phase : String) : ResponseEntity<CollectionModel<DokumentResource>>
         +getDokument(projekt : String, phase : String, name : String) : ResponseEntity<byte[]>
         +getVergleichsdokumentDokument(projekt : String, phase : String, name : String) : ResponseEntity<byte[]>

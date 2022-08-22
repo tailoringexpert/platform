@@ -72,10 +72,6 @@ package domain {
         updatePathContext(pathContext : PathContextBuilder, domain : ProjektInformation): void
         +{abstract} toResource(pathContext :  PathContextBuilder, domain : ProjektInformation) : ProjektInformationResource
          addLinks(pathContext : PathContextBuilder, resource : ProjektInformationResourceBuilder) : void
-        .. TailoringInformation ..
-        updatePathContext(pathContext : PathContextBuilder, domain : TailoringInformation): void
-        +{abstract} toResource(pathContext : PathContextBuilder, domain : TailoringInformation) : ProjektPhaseInformationResource
-        #addLinks(pathContext : PathContextBuilder, resource : TailoringInformationResourceBuilder) : void
         .. ScreeningSheet ..
         updatePathContext(pathContext : PathContextBuilder, domain : ScreeningSheet): void
         +{abstract}  toResource(pathContext : PathContextBuilder, domain : ScreeningSheet) : ScreeningSheetResource
@@ -153,27 +149,14 @@ package domain {
         selected : Boolean
     }
 
-    class SelektionVector {
+    class SelectionVector {
     }
-
-
-    class TailoringInformationResource {
-        name : String
-    }
-    RepresentationModel <|-- TailoringInformationResource
-    TailoringInformationResource --> "1..*" Phase : phases
-
-    class ProjectInformationResource {
-        name : String
-        creationTimestamp : ZonedDateTime
-        catalogVersion : String
-    }
-    RepresentationModel <|-- ProjectInformationResource
-    ProjectInformationResource --> "1..*" TailoringInformationResource : tailorings
 
     class ProjectResource {
         name : String
-        projektManager : String
+        projectManager : String
+        creationTimestamp : String
+        catalogVersion : String
     }
     RepresentationModel <|-- ProjectResource
     ProjectResource --> "1..*" TailoringResource : tailorings

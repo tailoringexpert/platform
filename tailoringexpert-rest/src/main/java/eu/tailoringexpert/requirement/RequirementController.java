@@ -26,7 +26,6 @@ import eu.tailoringexpert.domain.PathContext.PathContextBuilder;
 import eu.tailoringexpert.domain.ResourceMapper;
 import eu.tailoringexpert.domain.TailoringRequirementResource;
 import eu.tailoringexpert.domain.TailoringCatalogChapterResource;
-import eu.tailoringexpert.domain.TailoringResource;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -183,7 +182,7 @@ public class RequirementController {
     @ApiResponses(value = {
         @ApiResponse(
             responseCode = "201", description = "Requirement added to tailoring",
-            content = @Content(mediaType = "application/json+hal", schema = @Schema(implementation = TailoringResource.class))),
+            content = @Content(mediaType = "application/json+hal", schema = @Schema(implementation = TailoringRequirementResource.class))),
         @ApiResponse(
             responseCode = "404", description = "Tailoring does not exist",
             content = @Content)
