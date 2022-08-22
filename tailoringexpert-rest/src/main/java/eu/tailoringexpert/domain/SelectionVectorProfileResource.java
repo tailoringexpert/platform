@@ -27,6 +27,7 @@ import lombok.Getter;
 import lombok.Value;
 import org.springframework.hateoas.Link;
 import org.springframework.hateoas.RepresentationModel;
+import org.springframework.hateoas.server.core.Relation;
 
 import java.util.List;
 import java.util.Map;
@@ -36,6 +37,7 @@ import static java.util.Objects.nonNull;
 @Value
 @Getter
 @EqualsAndHashCode(callSuper = false)
+@Relation(itemRelation = "selectionVectorProfile", collectionRelation = "selectionVectorProfiles")
 public class SelectionVectorProfileResource extends RepresentationModel<SelectionVectorProfileResource> {
 
     private String name;
