@@ -141,7 +141,8 @@
                         <configuration>
                             <arguments>
                                 <argument>liquibase:update</argument>
-                                <argument>-Dliquibase.changeLogFile=db-tailoringexpert-plattform-devupdate.xml</argument>
+                                <argument>-Dliquibase.changeLogFile=db-tailoringexpert-plattform-devupdate.xml
+                                </argument>
                                 <argument>-P ${db}</argument>
                             </arguments>
                         </configuration>

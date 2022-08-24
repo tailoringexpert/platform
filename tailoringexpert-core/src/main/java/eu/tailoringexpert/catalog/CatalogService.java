@@ -8,12 +8,12 @@
  * it under the terms of the GNU General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/gpl-3.0.html>.
@@ -27,31 +27,35 @@ import eu.tailoringexpert.domain.File;
 
 import java.util.Optional;
 
+/**
+ * Service for management of base catalogs.
+ *
+ * @author Michael Bädorf
+ */
 public interface CatalogService {
 
     /**
-     * Importiert den übergebenen Catalog und setzt ihn sofort gültig.
+     * Import provided base catalog and sets immidatly valid
      *
-     * @param catalog Der zu importierende Catalog
-     * @return true, der Catalog konnte importiert werden, sonst false
+     * @param catalog base catalog to import
+     * @return true, if catalog was imported successfully
      */
     boolean doImport(Catalog<BaseRequirement> catalog);
 
     /**
-     * Ermittelt eine Catalog.
+     * Load base catalog of requested version.
      *
-     * @param version Version des zu ermittelnden Katalogs.
-     * @return Sofern vorhanden, der geladenen Catalog, sonst empty
+     * @param version version to load
+     * @return if available base catalog, else empty
      */
     Optional<Catalog<BaseRequirement>> getCatalog(String version);
 
     /**
-     * Erzeugt eine Druckbare Version des Katalogs.
+     * Creates printable version of base catalog.
      *
-     * @param version Version des zu druckenden Katalogs.
-     * @return Sofern vorhanden, die erstellte File des Catalog, sonst empty
+     * @param version Version of base catalog to create document
+     * @return If base catalog availabe, a printable document, else empty
      */
-
-    Optional<File> createKatalog(String version);
+    Optional<File> createCatalog(String version);
 
 }

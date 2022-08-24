@@ -61,15 +61,15 @@ public class DRDProvider implements BiFunction<Chapter<TailoringRequirement>, Co
                 .stream()
                 .filter(requirement -> nonNull(requirement.getSelected()) && requirement.getSelected().booleanValue()
                     && nonNull(requirement.getDrds()) && !requirement.getDrds().isEmpty())
-                .forEach(anforderung -> anforderung.getDrds()
+                .forEach(requirement -> requirement.getDrds()
                     .forEach(drd -> {
                         if (predicate.test(drd.getDeliveryDate(), phases)) {
-                            Set<String> kapitel = result.get(drd);
-                            if (isNull(kapitel)) {
-                                kapitel = new LinkedHashSet<>();
-                                result.put(drd, kapitel);
+                            Set<String> chapters = result.get(drd);
+                            if (isNull(chapters)) {
+                                chapters = new LinkedHashSet<>();
+                                result.put(drd, chapters);
                             }
-                            kapitel.add(subChapter.getNumber());
+                            chapters.add(subChapter.getNumber());
                         }
                     }))
             );

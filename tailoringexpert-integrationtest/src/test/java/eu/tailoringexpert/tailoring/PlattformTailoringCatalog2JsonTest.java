@@ -19,16 +19,20 @@
  * <http://www.gnu.org/licenses/gpl-3.0.html>.
  * #L%
  */
-package eu.tailoringexpert.catalog;
+package eu.tailoringexpert.tailoring;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+
 import eu.tailoringexpert.DBSetupRunner;
 import eu.tailoringexpert.FileSaver;
 import eu.tailoringexpert.SpringTestConfiguration;
 import eu.tailoringexpert.TenantContext;
-import eu.tailoringexpert.domain.BaseRequirement;
 import eu.tailoringexpert.domain.Catalog;
-import eu.tailoringexpert.project.ProjectServiceRepository;
+import eu.tailoringexpert.domain.SelectionVector;
+import eu.tailoringexpert.domain.TailoringRequirement;
+import eu.tailoringexpert.project.CreateProjectTO;
+import eu.tailoringexpert.project.ProjectService;
+import eu.tailoringexpert.screeningsheet.ScreeningSheetService;
 import lombok.extern.log4j.Log4j2;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -38,14 +42,19 @@ import org.springframework.test.context.junit.jupiter.SpringJUnitConfig;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 import java.io.IOException;
+import java.io.InputStream;
+import java.util.Optional;
 import java.util.function.BiConsumer;
 
+import static java.nio.file.Files.newInputStream;
+import static java.nio.file.Paths.get;
+import static java.util.Objects.nonNull;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @Log4j2
 @SpringJUnitConfig(classes = {SpringTestConfiguration.class})
 @EnableTransactionManagement
-class Catalog2JsonTest {
+class PlattformTailoringCatalog2JsonTest {
 
     @Autowired
     private DBSetupRunner dbSetupRunner;
@@ -54,7 +63,13 @@ class Catalog2JsonTest {
     private ObjectMapper objectMapper;
 
     @Autowired
-    private ProjectServiceRepository projectServiceRepository;
+    private ProjectService projectService;
+
+    @Autowired
+    private TailoringService projektPhaseService;
+
+    @Autowired
+    private ScreeningSheetService screeningSheetService;
 
     private BiConsumer<String, byte[]> toFile = new FileSaver();
 
@@ -70,15 +85,23 @@ class Catalog2JsonTest {
 
     @Test
     @DirtiesContext
-    void katalog2Json() throws IOException {
+    void tailoringcatalog2Json() throws IOException {
         // arrange
+        byte[] data;
+        try (InputStream is = newInputStream(get("src/test/resources/screeningsheet.pdf"))) {
+            assert nonNull(is);
+            data = is.readAllBytes();
+        }
+
+        SelectionVector selectionVector = screeningSheetService.calculateSelectionVector(data);
+        CreateProjectTO projekt = projectService.createProject("8.2.1", data, selectionVector);
 
         // act
-        Catalog<BaseRequirement> actual = projectServiceRepository.getBaseCatalog("8.2.1");
+        Optional<Catalog<TailoringRequirement>> actual = projektPhaseService.getCatalog(projekt.getProject(), projekt.getTailoring());
 
         // assert
-        assertThat(actual).isNotNull();
-        toFile.accept("basecatalog.json", objectMapper.writeValueAsBytes(actual));
+        assertThat(actual).isPresent();
+        toFile.accept("tailoringkatalog.json", objectMapper.writeValueAsBytes(actual));
     }
 
 }

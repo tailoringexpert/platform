@@ -48,7 +48,7 @@ import static java.util.stream.Collectors.toList;
 
 @RequiredArgsConstructor
 @Transactional
-public class JPAProjectServiceRepository implements ProjektServiceRepository {
+public class JPAProjectServiceRepository implements ProjectServiceRepository {
 
     public static final String CACHE_KATALOG = "ProjectServiceRepository#Catalog";
 
@@ -81,6 +81,8 @@ public class JPAProjectServiceRepository implements ProjektServiceRepository {
     public Project createProject(String catalog, Project project) {
         ProjectEntity entity = projectRepository.save(mapper.createProject(project));
 
+        // deprecated: only store base catalog version, not needed to save a reference to base catalog.
+        // version is only for info or load as resource
         BaseCatalogEntity katalogDefinition = baseCatalogRepository.findByVersion(catalog);
         entity.getTailorings().get(0).setBaseCatalog(katalogDefinition);
 
@@ -101,7 +103,7 @@ public class JPAProjectServiceRepository implements ProjektServiceRepository {
      * {@inheritDoc}
      */
     @Override
-    public boolean deleteProjekt(String project) {
+    public boolean deleteProject(String project) {
         Long deletedProjekte = projectRepository.deleteByIdentifier(project);
         return deletedProjekte.intValue() > 0;
     }

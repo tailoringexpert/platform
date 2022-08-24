@@ -48,15 +48,15 @@ public class ProjectConfiguration {
     }
 
     @Bean
-    ProjektServiceRepository projektServiceRepository(
+    ProjectServiceRepository projectServiceRepository(
         @NonNull JPAProjectServiceRepositoryMapper mapper,
         @NonNull ProjectRepository projectRepository,
-        @NonNull BaseCatalogRepository katalogDefintionRepository) {
-        return new JPAProjectServiceRepository(mapper, projectRepository, katalogDefintionRepository);
+        @NonNull BaseCatalogRepository baseCatalogRepository) {
+        return new JPAProjectServiceRepository(mapper, projectRepository, baseCatalogRepository);
     }
 
     @Bean
-    ProjectService projektService(@NonNull ProjektServiceRepository repository,
+    ProjectService projektService(@NonNull ProjectServiceRepository repository,
                                   @NonNull ScreeningSheetService screeningSheetService,
                                   @NonNull TailoringService tailoringService) {
         return new ProjectServiceImpl(repository, screeningSheetService, tailoringService);
@@ -66,8 +66,8 @@ public class ProjectConfiguration {
     ProjectController projektController(
         @NonNull ResourceMapper mapper,
         @NonNull ProjectService projectService,
-        @NonNull ProjektServiceRepository projektServiceRepository) {
-        return new ProjectController(mapper, projectService, projektServiceRepository);
+        @NonNull ProjectServiceRepository projectServiceRepository) {
+        return new ProjectController(mapper, projectService, projectServiceRepository);
     }
 
 }

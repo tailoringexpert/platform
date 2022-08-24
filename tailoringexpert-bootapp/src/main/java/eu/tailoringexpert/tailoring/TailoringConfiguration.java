@@ -79,7 +79,7 @@ public class TailoringConfiguration {
 
     @Bean
     @Primary
-    DocumentService dokumentService(@NonNull ListableBeanFactory beanFactory) {
+    DocumentService documentService(@NonNull ListableBeanFactory beanFactory) {
         Map<String, DocumentService> services = Tenants.get(beanFactory, DocumentService.class);
         return new TenantDocumentService(services);
     }
@@ -107,11 +107,6 @@ public class TailoringConfiguration {
         @NonNull Function<byte[], Map<String, Collection<ImportRequirement>>> tailoringAnforderungFileReader) {
         return new TailoringServiceImpl(repository, mapper, documentService, requirementService, tailoringAnforderungFileReader);
     }
-
-    Map<String, String> arzs(@Value("#{${tenant.arzs}}") Map<String, String> arzs) {
-        return arzs;
-    }
-
 
     @Bean
     BiPredicate<String, Collection<Phase>> drdAnwendbarPraedikat() {

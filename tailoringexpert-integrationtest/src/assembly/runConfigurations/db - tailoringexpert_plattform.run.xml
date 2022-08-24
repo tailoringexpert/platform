@@ -30,7 +30,6 @@
             <list>
               <option value="-Ddependency-check-maven.phase=deploy" />
               <option value="-DskipTests" />
-              <option value="install" />
               <option value="exec:exec@dropAll" />
               <option value="exec:exec@install" />
               <option value="exec:exec@update" />

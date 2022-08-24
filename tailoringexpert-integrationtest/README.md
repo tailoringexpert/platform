@@ -1,36 +1,41 @@
-# tailoringexpert-arzs-integrationstest
+# tailoringexpert-integrationstest
 
-Modul für Integrationstest und Start der Plattform für den Mandanten *arzs*.
+Module for integration testing and running a demo plattform.
 
-## Plattform Konfiguration
+## Limitations
 
-Am einfachsten ist die Konfiguration über einen _XAMP_ Stack.
-Dieser kann als portable Version von [Apache Friends](https://www.apachefriends.org/de/index.html) geladen werden.
+All tenant specific interfaces are implemented in a very simple way to fulfill plattform requirements.
+Implementations are to be understand as _non productive_ examples!
+
+## System-Plattform configuration
+
+The easiest way to configure the demo plattform is using a _XAMP_ stack.
+The stack can be downloaded as portable version from [Apache Friends](https://www.apachefriends.org/de/index.html) .
 
 ### Installation
 
-Das Zip ist in ein beliebiges Verzeichnis zu entpacken.
-Bei einer Windows Umgebung ist im Root Verzeichnis zuerst die Batchdatei _setup_xampp.bat_ auszuführen.
-Hiermit werden die entsprechenden Pfade in der Konfigurationsdateien geschrieben.
+Unzip file in any directory.
+In case of a Windows envitrionment you first have to run batchfile _setup_xampp.bat_.
+This script will configure paths and writes them to the corresponding configuration files.
 
 #### Apache Webserver
 
-Um auf die Bilder für den Katalog über den Webserver zugreifen zu können ist ein *vhost* anzulegen.
-Ein Beispiel hierfür ist unter 
+To access catalog pictures using the apache httpd websever it is required to create a *vhost*.
+An example is given at
 
 > src/assembly/localhost/apache/conf/extra/httpd_vhost.conf
 
-gegeben.
-Dieses Beispiel ist ab *apache* in das Verzeichnis **%XAMPP_HOME%/apache/conf/extra** zu kopieren und entsprechend anzupassen
+This file has to be copied starting from *apache* to directory  **%XAMPP_HOME%/apache/conf/extra**.
+After that change directories to system needs.
 
 #### MariaDB Datenbank
 
-Vor dem ersten Start der Datenbank sollte noch das Encoding auf **UTF 8** geändert werden.
-Dafür ist die Datei
+Before first run of database encoding shall be changed to **UTF 8** geändert.
+An example is file
 
 > %XAMPP_HOME%/mysql/bin/my.conf
 
-im Bereich der **UTF 8 Settings** anzupassen
+Section of **UTF 8 Settings** has to be changed to
 
     ## UTF 8 Settings
     #init-connect=\'SET NAMES utf8\'
@@ -41,7 +46,9 @@ im Bereich der **UTF 8 Settings** anzupassen
     sql_mode=NO_ZERO_IN_DATE,NO_ZERO_DATE,NO_ENGINE_SUBSTITUTION
     log_bin_trust_function_creators = 1
 
-Der Administrator hat den Login _*root*_ und **KEIN** Passwort!
+Admin account _*root*_ is **passwordless**!
+
+Following commands can be used to create user, database and grant permissions:
 
     CREATE USER 'tailoringexpert_plattform'@'localhost' IDENTIFIED BY 'test1234';
     CREATE DATABASE TAILORINGEXPERT_PLATTFORM CHARACTER SET utf8mb4;
@@ -49,7 +56,5 @@ Der Administrator hat den Login _*root*_ und **KEIN** Passwort!
 
 ### Start
 
-Am einfachsten ist der Start mit der Anwendung _xampp-control.exe_. Hier lassen sich die einzelnen Module 
-(Webserver, Datenbank) komfortabel starten und stoppen.
-
+The easiest way to start webserver and database is using _xampp-control.exe_ app.
 

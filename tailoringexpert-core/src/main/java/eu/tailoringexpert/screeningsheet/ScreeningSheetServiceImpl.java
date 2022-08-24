@@ -75,9 +75,9 @@ public class ScreeningSheetServiceImpl implements ScreeningSheetService {
     @Override
     public ScreeningSheet createScreeningSheet(@NonNull byte[] rawData) {
         Collection<ScreeningSheetParameterEintrag> screeningSheetEingabeParameter = screeningSheetParameterProvider.parse(new ByteArrayInputStream(rawData));
-        Collection<Parameter> parameterKonfigurationsWerte = getParameter(screeningSheetEingabeParameter);
+        Collection<Parameter> parameterConfigurationValues = getParameter(screeningSheetEingabeParameter);
 
-        List<ScreeningSheetParameter> screeningSheetParameter = parameterKonfigurationsWerte
+        List<ScreeningSheetParameter> screeningSheetParameter = parameterConfigurationValues
             .stream()
             .map(mapper::createScreeningSheet)
             .collect(toList());
@@ -97,7 +97,7 @@ public class ScreeningSheetServiceImpl implements ScreeningSheetService {
                 .build());
         }
 
-        List<String> parameterKonfigurationsOhneWerte = parameterKonfigurationsWerte
+        List<String> parameterConfigurationWithoutValues = parameterConfigurationValues
             .stream()
             .map(Parameter::getName)
             .collect(Collectors.toUnmodifiableList());
@@ -105,14 +105,14 @@ public class ScreeningSheetServiceImpl implements ScreeningSheetService {
 //         Parameter, die nicht aus der DB stammen, da sie keinen Einfluss auf Berechnung Selektionsvektor haben
         screeningSheetParameter.addAll(screeningSheetEingabeParameter
             .stream()
-            .filter(entry -> !"phase".equalsIgnoreCase(entry.getCategory()) && !parameterKonfigurationsOhneWerte.contains(entry.getName()))
+            .filter(entry -> !"phase".equalsIgnoreCase(entry.getCategory()) && !parameterConfigurationWithoutValues.contains(entry.getName()))
             .map(entry -> ScreeningSheetParameter.builder()
                 .category(entry.getName().substring(0, 1).toUpperCase(Locale.GERMANY) + entry.getName().substring(1))
                 .value(entry.getLabel())
                 .build())
             .collect(toList()));
 
-        SelectionVector selectionVector = selektionsVectorProvider.apply(parameterKonfigurationsWerte);
+        SelectionVector selectionVector = selektionsVectorProvider.apply(parameterConfigurationValues);
 
         return ScreeningSheet.builder()
             .data(rawData)

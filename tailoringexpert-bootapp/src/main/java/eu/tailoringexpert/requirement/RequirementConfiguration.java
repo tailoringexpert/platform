@@ -33,7 +33,7 @@ import org.springframework.context.annotation.Configuration;
 public class RequirementConfiguration {
 
     @Bean
-    JPARequirementServiceRepositoryMapper jpaAnforderungServiceRepositoryMapper(
+    JPARequirementServiceRepositoryMapper jpaRequirementServiceRepositoryMapper(
         @NonNull LogoRepository logoRepository,
         @NonNull DRDRepository drdRepository) {
         JPARequirementServiceRepositoryMapperImpl result = new JPARequirementServiceRepositoryMapperImpl();
@@ -43,20 +43,20 @@ public class RequirementConfiguration {
     }
 
     @Bean
-    RequirementServiceRepository anforderungServiceRepository(
+    RequirementServiceRepository requirementServiceRepository(
         @NonNull JPARequirementServiceRepositoryMapper mapper,
         @NonNull ProjectRepository projectRepository) {
         return new JPARequirementServiceRepository(mapper, projectRepository);
     }
 
     @Bean
-    RequirementService anforderungService(
+    RequirementService requirementService(
         @NonNull RequirementServiceRepository repository) {
         return new RequirementServiceImpl(repository);
     }
 
     @Bean
-    RequirementController anforderungController(
+    RequirementController requirementController(
         @NonNull ResourceMapper mapper,
         @NonNull RequirementService requirementService,
         @NonNull RequirementServiceRepository requirementServiceRepository) {

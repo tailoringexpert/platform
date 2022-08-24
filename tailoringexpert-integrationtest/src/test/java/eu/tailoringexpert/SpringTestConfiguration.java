@@ -24,27 +24,21 @@ package eu.tailoringexpert;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import eu.tailoringexpert.catalog.CatalogService;
 import eu.tailoringexpert.project.ProjectService;
-import eu.tailoringexpert.screeningsheet.PlattformScreeningSheetConfiguration;
 import eu.tailoringexpert.screeningsheet.ScreeningSheetService;
 import io.github.cdimascio.dotenv.Dotenv;
 import lombok.NonNull;
 import lombok.extern.log4j.Log4j2;
-import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
-import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration;
-import org.springframework.boot.autoconfigure.liquibase.LiquibaseAutoConfiguration;
-import org.springframework.boot.autoconfigure.thymeleaf.ThymeleafAutoConfiguration;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 import org.springframework.context.annotation.Primary;
 import org.springframework.context.annotation.PropertySource;
-import org.springframework.context.support.PropertySourcesPlaceholderConfigurer;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 
 import javax.sql.DataSource;
 import java.io.File;
-import java.net.URISyntaxException;
 import java.util.Map;
 
 import static java.util.Map.entry;
@@ -57,24 +51,20 @@ import static java.util.Map.entry;
 @EnableJpaRepositories("eu.tailoringexpert.repository")
 @EnableCaching
 @Import({
-    App.class,
-    PlattformCacheConfig.class,
-    PlattformScreeningSheetConfiguration.class
-//    ARZSTailoringConfiguration.class,
-//    ARZSScreeningSheetConfiguration.class
+    App.class
 })
 
 @Log4j2
-public class SpringConfiguration {
+public class SpringTestConfiguration {
 
-    @Primary
     @Bean
-    PropertySourcesPlaceholderConfigurer propertyConfigurer() {
-        PropertySourcesPlaceholderConfigurer result = new PropertySourcesPlaceholderConfigurer();
-        result.setOrder(0);
-        result.setIgnoreUnresolvablePlaceholders(true);
-        result.setNullValue("@null");
-        return result;
+    @Primary
+    Map<String, String> plattform() {
+        Dotenv env = Dotenv.configure().ignoreIfMissing().load();
+        return Map.ofEntries(
+            entry("template", new File(env.get("TEMPLATE_HOME", "src/test/resources/templates/")).toPath().toAbsolutePath().toString() + "/"),
+            entry("drd", new File(env.get("ASSET_HOME", "src/test/resources/assets/")).toURI().toString())
+        );
     }
 
     @Bean
@@ -97,20 +87,9 @@ public class SpringConfiguration {
     }
 
     @Bean
-    String tenantConfigDir() throws URISyntaxException {
-        return new File(getClass().getResource("/").toURI()).getAbsoluteFile().getPath();
-    }
-
-    @Primary
-    @Bean("plattform")
-    Map<String, String> plattform() {
+    String tenantConfigDir(@NonNull @Value("${tenantConfigDir}") String tenantConfigDir) {
         Dotenv env = Dotenv.configure().ignoreIfMissing().load();
-        return Map.ofEntries(
-            entry("template", new File(env.get("TEMPLATE_HOME", "src/test/resources/templates/")).toPath().toAbsolutePath().toString() + "/"),
-            entry("drd", new File(env.get("ASSET_HOME", "src/test/resources/assets/")).toURI().toString())
-        );
-
+        return new File(env.get("TENANT_CONFIG_DIR", "src/main/resources/tenants/")).toPath().toAbsolutePath().toString();
     }
-
 
 }

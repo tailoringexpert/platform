@@ -65,23 +65,22 @@ public class CatalogServiceImpl implements CatalogService {
      * {@inheritDoc}
      */
     @Override
-    public Optional<File> createKatalog(String version) {
+    public Optional<File> createCatalog(String version) {
         @SuppressWarnings("PMD.PrematureDeclaration")
-        final LocalDateTime erstellungsZeitpunkt = LocalDateTime.now();
+        final LocalDateTime creationTimestamp = LocalDateTime.now();
         log.info("STARTED | trying to create output document of catalogue version {}", version);
 
-        Optional<Catalog<BaseRequirement>> katalog = repository.getCatalog(version);
-        if (katalog.isEmpty()) {
+        Optional<Catalog<BaseRequirement>> catalog = repository.getCatalog(version);
+        if (catalog.isEmpty()) {
             log.info("FINISHED | output document NOT created due to non existing catalogue version");
             return empty();
         }
 
-        Optional<File> result = documentService.createCatalog(katalog.get(), erstellungsZeitpunkt);
-        result.ifPresentOrElse(datei -> log.info("FINISHED | created output document {} of katalog version ", version),
+        Optional<File> result = documentService.createCatalog(catalog.get(), creationTimestamp);
+        result.ifPresentOrElse(datei -> log.info("FINISHED | created output document {} of catalog version ", version),
             () -> log.info("FINISHED | output document NOT created"));
 
         return result;
     }
-
 
 }
