@@ -53,17 +53,17 @@ public class RequirementServiceImpl implements RequirementService {
     @Override
     public Optional<TailoringRequirement> handleSelected(String project, String tailoring, String chapter, String position, Boolean selected) {
         log.info("STARTED  | trying to set selection state of requirements of {}:{}:{}.{} to {}", project, tailoring, chapter, position, selected);
-        Optional<TailoringRequirement> projektAnforderung = repository.getRequirement(project, tailoring, chapter, position);
-        if (projektAnforderung.isPresent()) {
-            log.info(projektAnforderung.get().getSelected() + ": neu {}", selected);
-            if (!projektAnforderung.get().getSelected().equals(selected)) {
-                TailoringRequirement anforderung = handleSelected(projektAnforderung.get(), selected, ZonedDateTime.now());
-                Optional<TailoringRequirement> result = repository.updateRequirement(project, tailoring, chapter, anforderung);
+        Optional<TailoringRequirement> tailoringRequirment = repository.getRequirement(project, tailoring, chapter, position);
+        if (tailoringRequirment.isPresent()) {
+            log.info(tailoringRequirment.get().getSelected() + ": neu {}", selected);
+            if (!tailoringRequirment.get().getSelected().equals(selected)) {
+                TailoringRequirement requirement = handleSelected(tailoringRequirment.get(), selected, ZonedDateTime.now());
+                Optional<TailoringRequirement> result = repository.updateRequirement(project, tailoring, chapter, requirement);
                 log.info("FINISHED | setting selection state of requirement {}:{}:{}.{} to {}", project, tailoring, chapter, position, selected);
                 return result;
             }
             log.info("FINISHED | no change in selection state of requirements of {}:{}:{}.{}", project, tailoring, chapter, position);
-            return projektAnforderung;
+            return tailoringRequirment;
         }
         log.info("FINISHED | trying to set selection state of requirements of {}:{}:{}.{} to {}", project, tailoring, chapter, position, selected);
         return empty();
@@ -76,16 +76,16 @@ public class RequirementServiceImpl implements RequirementService {
     public Optional<Chapter<TailoringRequirement>> handleSelected(String project, String tailoring, String chapter, Boolean selected) {
         log.info("STARTED  | trying to set selection state of requirements of {}:{}:{} to {}", project, tailoring, chapter, selected);
         final ZonedDateTime now = ZonedDateTime.now();
-        Optional<Chapter<TailoringRequirement>> anforderungGruppe = repository.getChapter(project, tailoring, chapter);
-        if (anforderungGruppe.isPresent()) {
-            anforderungGruppe.get().allChapters()
+        Optional<Chapter<TailoringRequirement>> tailoringChapter = repository.getChapter(project, tailoring, chapter);
+        if (tailoringChapter.isPresent()) {
+            tailoringChapter.get().allChapters()
                 .sorted(comparing(Chapter::getNumber))
-                .forEachOrdered(gruppe -> {
-                    gruppe.getRequirements().stream().sorted(comparing(TailoringRequirement::getPosition));
-                    handleSelected(gruppe, selected, now);
+                .forEachOrdered(subChapter -> {
+                    subChapter.getRequirements().stream().sorted(comparing(TailoringRequirement::getPosition));
+                    handleSelected(subChapter, selected, now);
                 });
             log.info("FINISHED | selection state of requirements of {}:{}:{} set to {}", project, tailoring, chapter, selected);
-            return repository.updateSelected(project, tailoring, anforderungGruppe.get());
+            return repository.updateSelected(project, tailoring, tailoringChapter.get());
         }
         log.info("FINISHED | no change in selection state of {}:{}:{}.{} due to not existing chapter", project, tailoring, chapter);
         return empty();
@@ -97,14 +97,14 @@ public class RequirementServiceImpl implements RequirementService {
     @Override
     public Optional<TailoringRequirement> handleText(String project, String tailoring, String chapter, String position, String text) {
         log.info("STARTED  | trying to set text of requirements of {}:{}:{}.{} to {}", project, tailoring, chapter, position, text);
-        Optional<TailoringRequirement> projektAnforderung = repository.getRequirement(project, tailoring, chapter, position);
+        Optional<TailoringRequirement> requirement = repository.getRequirement(project, tailoring, chapter, position);
 
-        if (projektAnforderung.isEmpty()) {
+        if (requirement.isEmpty()) {
             log.info("FINISHED |  no change in text of requirements of {}:{}:{}.{} due to not existing requirement", project, tailoring, chapter, position);
             return empty();
         }
 
-        TailoringRequirement anforderung = projektAnforderung.get();
+        TailoringRequirement anforderung = requirement.get();
         if (!anforderung.getText().equals(text)) {
             anforderung.setText(text);
             if (nonNull(anforderung.getReference())) {
@@ -113,8 +113,8 @@ public class RequirementServiceImpl implements RequirementService {
             anforderung.setTextChanged(ZonedDateTime.now());
             return repository.updateRequirement(project, tailoring, chapter, anforderung);
         }
-        log.info("FINISHED | text of requirements of {}:{}:{}.{} set to {}", project, tailoring, chapter, position, projektAnforderung.get().getText());
-        return projektAnforderung;
+        log.info("FINISHED | text of requirements of {}:{}:{}.{} set to {}", project, tailoring, chapter, position, requirement.get().getText());
+        return requirement;
     }
 
     /**
@@ -130,15 +130,15 @@ public class RequirementServiceImpl implements RequirementService {
             return empty();
         }
 
-        OptionalInt anforderungPosition = kapitel.get().indexOfRequirement(position);
-        if (anforderungPosition.isEmpty()) {
+        OptionalInt requirementPosition = kapitel.get().indexOfRequirement(position);
+        if (requirementPosition.isEmpty()) {
             return empty();
         }
 
         TailoringRequirementBuilder builder = TailoringRequirement.builder()
             .text(text)
             .selected(TRUE);
-        if (isBenutzerAnforderung(position)) {
+        if (isCustomRequirement(position)) {
             int i = parseInt(position.substring(position.length() - 1)) + 1;
             builder.position(position.substring(0, position.length() - 1) + i);
         } else {
@@ -146,15 +146,15 @@ public class RequirementServiceImpl implements RequirementService {
         }
         TailoringRequirement toCreate = builder.build();
 
-        List<TailoringRequirement> anforderungen = kapitel.get().getRequirements();
-        anforderungen.add(anforderungPosition.getAsInt() + 1, toCreate);
+        List<TailoringRequirement> requirements = kapitel.get().getRequirements();
+        requirements.add(requirementPosition.getAsInt() + 1, toCreate);
 
         // nachfolgende Positionen für neue Anforderungen anpassen
-        anforderungen.stream().skip(anforderungPosition.getAsInt() + 2l)
-            .takeWhile(this::isBenutzerAnforderung)
+        requirements.stream().skip(requirementPosition.getAsInt() + 2l)
+            .takeWhile(this::isCustomRequirement)
             .forEach(anforderung -> {
                 int i = parseInt(anforderung.getPosition().substring(position.length())) + 1;
-                if (isBenutzerAnforderung(position)) {
+                if (isCustomRequirement(position)) {
                     anforderung.setPosition(position.substring(0, position.length() - 1) + i);
                 } else {
                     anforderung.setPosition(position + i);
@@ -170,27 +170,27 @@ public class RequirementServiceImpl implements RequirementService {
         return updatedKapitel.get().getRequirement(toCreate.getPosition());
     }
 
-    private Chapter<TailoringRequirement> handleSelected(Chapter<TailoringRequirement> gruppe, Boolean ausgewaehlt, ZonedDateTime now) {
-        gruppe.getRequirements()
+    private Chapter<TailoringRequirement> handleSelected(Chapter<TailoringRequirement> chapter, Boolean selected, ZonedDateTime now) {
+        chapter.getRequirements()
             .stream()
             .sorted(comparing(TailoringRequirement::getPosition))
-            .forEachOrdered(anforderung -> handleSelected(anforderung, ausgewaehlt, now));
-        return gruppe;
+            .forEachOrdered(requirement -> handleSelected(requirement, selected, now));
+        return chapter;
     }
 
-    private TailoringRequirement handleSelected(TailoringRequirement anforderung, Boolean ausgewaehlt, ZonedDateTime now) {
-        if (!anforderung.getSelected().equals(ausgewaehlt)) {
-            anforderung.setSelected(ausgewaehlt);
-            anforderung.setSelectionChanged(isNull(anforderung.getSelectionChanged()) ? now : null);
+    private TailoringRequirement handleSelected(TailoringRequirement requirement, Boolean selected, ZonedDateTime now) {
+        if (!requirement.getSelected().equals(selected)) {
+            requirement.setSelected(selected);
+            requirement.setSelectionChanged(isNull(requirement.getSelectionChanged()) ? now : null);
         }
-        return anforderung;
+        return requirement;
     }
 
-    private boolean isBenutzerAnforderung(String position) {
+    private boolean isCustomRequirement(String position) {
         return position.matches(".\\d+");
     }
 
-    private boolean isBenutzerAnforderung(TailoringRequirement anforderung) {
-        return isBenutzerAnforderung(anforderung.getPosition());
+    private boolean isCustomRequirement(TailoringRequirement requirment) {
+        return isCustomRequirement(requirment.getPosition());
     }
 }

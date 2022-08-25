@@ -70,11 +70,11 @@ class ProjectServiceImplTest {
 
     private TailoringService tailoringServiceMock;
     private ScreeningSheetService screeningSheetServiceMock;
-    private ProjektServiceRepository repositoryMock;
+    private ProjectServiceRepository repositoryMock;
 
     @BeforeEach
     void setup() {
-        this.repositoryMock = mock(ProjektServiceRepository.class);
+        this.repositoryMock = mock(ProjectServiceRepository.class);
         this.tailoringServiceMock = mock(TailoringService.class);
         this.screeningSheetServiceMock = mock(ScreeningSheetService.class);
         this.service = new ProjectServiceImpl(
@@ -104,7 +104,7 @@ class ProjectServiceImplTest {
 
         // act
         Throwable actual = catchThrowable(() -> new ProjectServiceImpl(
-            mock(ProjektServiceRepository.class),
+            mock(ProjectServiceRepository.class),
             null,
             mock(TailoringService.class)));
 
@@ -118,7 +118,7 @@ class ProjectServiceImplTest {
 
         // act
         Throwable actual = catchThrowable(() -> new ProjectServiceImpl(
-            mock(ProjektServiceRepository.class),
+            mock(ProjectServiceRepository.class),
             mock(ScreeningSheetService.class),
             null));
 
@@ -228,7 +228,7 @@ class ProjectServiceImplTest {
 
 
         // act
-        CreateProjectTO actual = service.createProjekt("1", data, selectionVector);
+        CreateProjectTO actual = service.createProject("1", data, selectionVector);
 
         // assert
         assertThat(actual.getProject()).isNotBlank();
@@ -245,14 +245,14 @@ class ProjectServiceImplTest {
                     .identifier(invocation.getArgument(0))
                     .build())
             );
-        given(repositoryMock.deleteProjekt("SAMPLE")).willReturn(true);
+        given(repositoryMock.deleteProject("SAMPLE")).willReturn(true);
 
         // act
-        boolean actual = service.deleteProjekt("SAMPLE");
+        boolean actual = service.deleteProject("SAMPLE");
 
         // assert
         verify(repositoryMock, times(1))
-            .deleteProjekt("SAMPLE");
+            .deleteProject("SAMPLE");
         assertThat(actual).isTrue();
     }
 
@@ -262,11 +262,11 @@ class ProjectServiceImplTest {
         given(repositoryMock.getProject("SAMPLE")).willReturn(empty());
 
         // act
-        boolean actual = service.deleteProjekt("SAMPLE");
+        boolean actual = service.deleteProject("SAMPLE");
 
         // assert
         verify(repositoryMock, times(0))
-            .deleteProjekt("SAMPLE");
+            .deleteProject("SAMPLE");
         assertThat(actual).isFalse();
     }
 
