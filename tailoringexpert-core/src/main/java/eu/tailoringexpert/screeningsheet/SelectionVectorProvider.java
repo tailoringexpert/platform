@@ -21,6 +21,7 @@
  */
 package eu.tailoringexpert.screeningsheet;
 
+import eu.tailoringexpert.TenantInterface;
 import eu.tailoringexpert.domain.Parameter;
 import eu.tailoringexpert.domain.SelectionVector;
 
@@ -32,6 +33,6 @@ import java.util.function.Function;
  *
  * @author Michael Bädorf
  */
-@FunctionalInterface
+@TenantInterface
 public interface SelectionVectorProvider extends Function<Collection<Parameter>, SelectionVector> {
 }

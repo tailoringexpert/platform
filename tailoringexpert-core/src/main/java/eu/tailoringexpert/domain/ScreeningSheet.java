@@ -36,6 +36,8 @@ public class ScreeningSheet implements Serializable {
     public static final String KUERZEL = "kuerzel";
     public static final String LANGNAME = "langname";
     public static final String KURZNAME = "kurzname";
+    public static final String IDENTIFIER = "identifier";
+    public static final String PHASE = "phase";
 
     private byte[] data;
     private List<ScreeningSheetParameter> parameters;

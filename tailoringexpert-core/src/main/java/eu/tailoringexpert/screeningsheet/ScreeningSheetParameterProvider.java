@@ -21,6 +21,8 @@
  */
 package eu.tailoringexpert.screeningsheet;
 
+import eu.tailoringexpert.TenantInterface;
+
 import java.io.InputStream;
 import java.util.Collection;
 
@@ -29,7 +31,7 @@ import java.util.Collection;
  *
  * @author Michael Bödorf
  */
-@FunctionalInterface
+@TenantInterface
 public interface ScreeningSheetParameterProvider {
 
     /**
