@@ -122,7 +122,7 @@ class CatalogServiceImplTest {
         given(repositoryMock.getCatalog(any())).willReturn(Optional.empty());
 
         // act
-        Optional<File> actual = service.createKatalog("8.2.1");
+        Optional<File> actual = service.createCatalog("8.2.1");
 
         // assert
         assertThat(actual).isEmpty();
@@ -139,7 +139,7 @@ class CatalogServiceImplTest {
             .willReturn(of(File.builder().build()));
 
         // act
-        Optional<File> actual = service.createKatalog("8.2.1");
+        Optional<File> actual = service.createCatalog("8.2.1");
 
         // assert
         assertThat(actual).isNotEmpty();

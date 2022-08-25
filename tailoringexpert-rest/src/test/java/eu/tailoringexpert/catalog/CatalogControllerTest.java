@@ -283,7 +283,7 @@ class CatalogControllerTest {
             assert nonNull(is);
             data = is.readAllBytes();
         }
-        given(serviceMock.createKatalog("8.2.1"))
+        given(serviceMock.createCatalog("8.2.1"))
             .willReturn(of(File.builder()
                 .name("DOC-CAT-001.pdf")
                 .data(data)

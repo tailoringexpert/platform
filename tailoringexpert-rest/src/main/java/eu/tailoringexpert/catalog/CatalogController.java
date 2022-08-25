@@ -150,7 +150,7 @@ public class CatalogController {
     @ResponseBody
     public ResponseEntity<byte[]> getPrintCatalog(
         @Parameter(description = "Requested base catalog version") @PathVariable String version) {
-        return catalogService.createKatalog(version)
+        return catalogService.createCatalog(version)
             .map(dokument -> ResponseEntity
                 .ok()
                 .header(CONTENT_DISPOSITION, ContentDisposition.builder(MediaTypeProvider.FORM_DATA).name(MediaTypeProvider.ATTACHMENT).filename(dokument.getName()).build().toString())

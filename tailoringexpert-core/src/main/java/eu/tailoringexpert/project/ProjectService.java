@@ -8,12 +8,12 @@
  * it under the terms of the GNU General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/gpl-3.0.html>.
@@ -27,43 +27,49 @@ import eu.tailoringexpert.domain.Tailoring;
 
 import java.util.Optional;
 
+/**
+ * Service for management of projects.
+ *
+ * @author Michael Bädorf
+ */
 public interface ProjectService {
 
     /**
-     * Erzeugt ein neues Project mit dem Catalog in der übergenbenen Version.
+     * Creates a new project.
      *
-     * @param catalog                zu verwendende Katalogversion
-     * @param screeningSheet                Zu verarbeitendendes ScreeningSheet
-     * @param applicableSelectionVector Für die Selektion von Anforderungen anzuwendender Selektionsvektor
-     * @return Basisdaten des erzeugten Projekts
+     * @param catalog                   Version of base catalog to use to create initial tailoring
+     * @param screeningSheet            Screeningsheet to evaluate for tailoring parameters
+     * @param applicableSelectionVector electionvector to use for making requirements applicable
+     * @return Minimal data of created project
      */
-    CreateProjectTO createProjekt(String catalog, byte[] screeningSheet, SelectionVector applicableSelectionVector);
+    CreateProjectTO createProject(String catalog, byte[] screeningSheet, SelectionVector applicableSelectionVector);
 
     /**
-     * Fügt ein neues Tailoring dem Project hinzu.
+     * Creates a new tailoring and adds to project.
      *
-     * @param project                       (Fachlicher) Schlüssel des Projektes, zu dem eine neue Phase hibzugefügt werden soll
-     * @param catalog                       ZU verwendener Catalog für das Tailoring
-     * @param screeningSheetData            Zu verarbeitendendes ScreeningSheet
-     * @param applicableSelectionVector Für die Selektion von Anforderungen anzuwendender Selektionsvektor
-     * @return hinzugefügte Projektphase
+     * @param project                   Identifier of project to add tailoring for
+     * @param catalog                   Version of base catalog to use to create tailoring
+     * @param screeningSheetData        Screeningsheet to evaluate for tailoring parameters
+     * @param applicableSelectionVector Selectionvector to use for making requirements applicable
+     * @return added new tailoring
      */
     Optional<Tailoring> addTailoring(String project, String catalog, byte[] screeningSheetData, SelectionVector applicableSelectionVector);
 
     /**
-     * Erstellt eine Kopie eines bereits vorhandenen Projektes.
+     * Creates (full) copy of provided project.
+     * Screeningsheets of tailorings will be replaced with provided data.
      *
-     * @param project        Name des zu kopierenden Projektes
-     * @param screeningSheet ScreeningSheet des anzulegenden Projekts
-     * @return Das neu erstellte Project
+     * @param project        Identifier of project to copy
+     * @param screeningSheet ScreeningSheet of project to copy to
+     * @return Created project
      */
     Optional<Project> copyProject(String project, byte[] screeningSheet);
 
     /**
-     * Löscht das übergebene Project.
+     * Deletes a project.
      *
-     * @param projekt Name des zu löschenden Projektes
-     * @return true, wenn das Project gelöscht wurde, false, wenn das Project nicht vorhanden war oder nicht gelöscht werden konnte
+     * @param project Name of project to delete
+     * @return true, if project is deleted, false in all other cases
      */
-    boolean deleteProjekt(String projekt);
+    boolean deleteProject(String project);
 }

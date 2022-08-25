@@ -39,7 +39,7 @@ import java.util.stream.Collectors;
 public class ScreeningSheetConfiguration {
 
     @Bean
-    JPAScreeningSheetServiceRepositoryMapper parameterMapper(
+    JPAScreeningSheetServiceRepositoryMapper screeningSheetServiceRepositoryMapper(
         @NonNull ObjectMapper objectMapper) {
         JPAScreeningSheetServiceRepositoryMapperImpl result = new JPAScreeningSheetServiceRepositoryMapperImpl();
         result.setMapper(objectMapper);
@@ -48,7 +48,7 @@ public class ScreeningSheetConfiguration {
 
     @Bean
     @Primary
-    SelectionVectorProvider selektionsVektorProvider(@NonNull ListableBeanFactory beanFactory) {
+    SelectionVectorProvider selectionVectorProvider(@NonNull ListableBeanFactory beanFactory) {
         Map<String, SelectionVectorProvider> services = getTenantImplementierungen(beanFactory, SelectionVectorProvider.class);
         return new TenantSelectionVectorProvider(services);
     }

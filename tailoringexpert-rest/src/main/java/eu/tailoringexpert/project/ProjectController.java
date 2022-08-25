@@ -89,7 +89,7 @@ public class ProjectController {
     private ProjectService projectService;
 
     @NonNull
-    private ProjektServiceRepository projektServiceRepository;
+    private ProjectServiceRepository projectServiceRepository;
 
     @Operation(summary = "Load all projects base data")
     @ApiResponses(value = {
@@ -99,7 +99,7 @@ public class ProjectController {
     })
     @GetMapping(value = PROJECTS, produces = {"application/hal+json"})
     public ResponseEntity<CollectionModel<EntityModel<ProjectResource>>> getProjects() {
-        List<EntityModel<ProjectResource>> projekte = projektServiceRepository.getProjectInformations()
+        List<EntityModel<ProjectResource>> projekte = projectServiceRepository.getProjectInformations()
             .stream()
             .map(domain -> EntityModel.of(mapper.toResource(PathContext.builder(), domain)))
             .collect(toList());
@@ -120,7 +120,7 @@ public class ProjectController {
     public ResponseEntity<Void> createProject(
         @Parameter(description = "Base catalog for project creation") @PathVariable String version,
         @Parameter(description = "New project configuration data") @RequestBody ProjectCreationRequest request) {
-        CreateProjectTO projekt = projectService.createProjekt(version, request.getScreeningSheet().getData(), request.getSelectionVector());
+        CreateProjectTO projekt = projectService.createProject(version, request.getScreeningSheet().getData(), request.getSelectionVector());
         return ResponseEntity
             .created(mapper.createLink(ResourceMapper.REL_SELF, linkToCurrentMapping().toString(), PROJECT, Map.of("project", projekt.getProject())).toUri())
             .build();
@@ -139,7 +139,7 @@ public class ProjectController {
         @Parameter(description = "Project identifier") @PathVariable String project) {
 
         PathContextBuilder pathContextBuilder = PathContext.builder();
-        Optional<ProjectInformation> result = projektServiceRepository.getProjectInformation(project);
+        Optional<ProjectInformation> result = projectServiceRepository.getProjectInformation(project);
         result.ifPresent(pi -> pathContextBuilder.catalog(pi.getCatalogVersion()));
 
         return result.map(pi -> ResponseEntity
@@ -162,7 +162,7 @@ public class ProjectController {
 
         PathContextBuilder pathContext = PathContext.builder()
             .project(project);
-        return projektServiceRepository.getScreeningSheet(project)
+        return projectServiceRepository.getScreeningSheet(project)
             .map(screeningSheet -> ResponseEntity
                 .ok()
                 .body(EntityModel.of(mapper.toResource(pathContext, screeningSheet))))
@@ -180,7 +180,7 @@ public class ProjectController {
     public ResponseEntity<byte[]> getScreeningSheetFile(
         @Parameter(description = "Project identifier") @PathVariable String project) {
 
-        return projektServiceRepository.getScreeningSheetFile(project)
+        return projectServiceRepository.getScreeningSheetFile(project)
             .map(daten -> ResponseEntity
                 .ok()
                 .header(CONTENT_DISPOSITION, ContentDisposition.builder("form-data").name("attachment").filename("screeningsheet.pdf").build().toString())
@@ -204,7 +204,7 @@ public class ProjectController {
     public ResponseEntity<EntityModel<Void>> deleteProject(
         @Parameter(description = "Project identifier") @PathVariable String project) {
 
-        boolean deleted = projectService.deleteProjekt(project);
+        boolean deleted = projectService.deleteProject(project);
         return ResponseEntity.status(deleted ? NO_CONTENT : BAD_REQUEST).build();
     }
 
@@ -268,7 +268,7 @@ public class ProjectController {
         @PathVariable("project") String project) {
         PathContextBuilder pathContext = PathContext.builder()
             .project(project);
-        return projektServiceRepository.getProject(project)
+        return projectServiceRepository.getProject(project)
             .map(p -> ResponseEntity
                 .ok()
                 .body(EntityModel.of(mapper.toResource(pathContext, p.getScreeningSheet().getSelectionVector()))))

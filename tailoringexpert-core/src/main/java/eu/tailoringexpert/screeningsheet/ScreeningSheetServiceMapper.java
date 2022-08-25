@@ -26,11 +26,14 @@ import eu.tailoringexpert.domain.ScreeningSheetParameter;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 
+/**
+ * Mapper for converting data object in @see {@link ScreeningSheetService}.
+ *
+ * @author Michael Bädorf
+ */
 @Mapper
 public interface ScreeningSheetServiceMapper {
 
     @Mapping(target = "value", source = "label")
     ScreeningSheetParameter createScreeningSheet(Parameter parameter);
-
-
 }

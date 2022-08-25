@@ -27,17 +27,28 @@ import eu.tailoringexpert.domain.Catalog;
 import java.time.ZonedDateTime;
 import java.util.Optional;
 
+/**
+ * Service for handling (peristent) data used by @see {@link CatalogService}.
+ *
+ * @author Michael Bädorf
+ */
 public interface CatalogServiceRepository {
 
     /**
-     * Speichert den übergebenen Catalog als den ab dem Zeitpunkt einzig gültigen Catalog.<p>
-     * Bisher gültige Kataloge ab dem übergebenen Zeitpunkt ungültig markiert.
+     * Persist provided base catalog and mark it as valid.<p>
+     * All other valid base catalogs will be marked invalid.
      *
-     * @param catalog  Der zu erzeugende Catalog
-     * @param validFrom Beginn der Gültigkeit des neuen Katalogs
-     * @return Der gespeicherte Catalog
+     * @param catalog   Base catalog to persist
+     * @param validFrom Valid from of the new base catalog
+     * @return persited base catalog
      */
     Optional<Catalog<BaseRequirement>> createCatalog(Catalog<BaseRequirement> catalog, ZonedDateTime validFrom);
 
+    /**
+     * Load a persisted base catalog.
+     *
+     * @param version Version of base catalog to load
+     * @return loaded base catalog
+     */
     Optional<Catalog<BaseRequirement>> getCatalog(String version);
 }

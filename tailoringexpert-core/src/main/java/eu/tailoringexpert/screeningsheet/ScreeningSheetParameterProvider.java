@@ -31,5 +31,12 @@ import java.util.Collection;
  */
 @FunctionalInterface
 public interface ScreeningSheetParameterProvider {
+
+    /**
+     * Parse provided screeningsheet inputstream and evaluate parameters.
+     *
+     * @param is Stream to parse
+     * @return Parameter contained on screeningsheet
+     */
     Collection<ScreeningSheetParameterEintrag> parse(InputStream is);
 }

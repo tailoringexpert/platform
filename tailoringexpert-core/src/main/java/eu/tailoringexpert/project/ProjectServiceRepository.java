@@ -8,12 +8,12 @@
  * it under the terms of the GNU General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/gpl-3.0.html>.
@@ -31,26 +31,33 @@ import eu.tailoringexpert.domain.Tailoring;
 import java.util.Collection;
 import java.util.Optional;
 
-public interface ProjektServiceRepository {
+/**
+ * Service for handling (peristent) data used by @see {@link ProjectService}.
+ *
+ * @author Michael Bädorf
+ */
+public interface ProjectServiceRepository {
 
     /**
-     * Ermittelt den allgemeinen Anforderungskatalog in der übergebenen Version.
+     * Load base catalog of a requested version.
      *
-     * @param version Version des Anforderungkatalogs
-     * @return Anforderungskatalog in angeforderter Version
+     * @param version Version of base catalogs to load
+     * @return loaded base catalog
      */
     Catalog<BaseRequirement> getBaseCatalog(String version);
 
     /**
-     * Erzeugt ein neues persistentes Project.
+     * Creates a new persisted project.
      *
-     * @param project Das zu persistierende Project
-     * @return Das persistierte Project
+     * @param catalog version of base catalog to use
+     * @param project project to persist
+     * @return persisted project
      */
+    @Deprecated
     Project createProject(String catalog, Project project);
 
     /**
-     * Persistierung einese neuen Projektes.
+     * Persists provided project wPersistierung einese neuen Projektes.
      *
      * @param project Das nei zu persistierende Project
      * @return Daten des neuen Projektes
@@ -58,59 +65,59 @@ public interface ProjektServiceRepository {
     Project createProject(Project project);
 
     /**
-     * Löscht das übergebene Project.
+     * Delete a project.
      *
-     * @param project Das zu löschende Project
-     * @return true, wenn Project geläscht wurde
+     * @param project identifier for project to delete
+     * @return true, if project is deleted
      */
-    boolean deleteProjekt(String project);
+    boolean deleteProject(String project);
 
     /**
-     * Ermittelt das angeforderte Project.
+     * Load a persisted project.
      *
-     * @param project fachlicher Schlüssel des Projekts
-     * @return angefordertes Project
+     * @param project identifier of project to load
+     * @return loaded project
      */
     Optional<Project> getProject(String project);
 
     /**
-     * Fügt eine neue Projektphase dem Prohekt hinzu.
+     * Add tailoring to project.
      *
-     * @param project   fachlicher Identifier des Projekts, in dem die neue Phase angelegt werden soll
-     * @param tailoring Die anzulegende Projektphase
-     * @return angelgete Projektphase oder empty, wenn de Phase nicht anhelegt werden konnte
+     * @param project   identifier of project to add tailoring
+     * @param tailoring Tailoring to add
+     * @return added tailoring
      */
     Optional<Tailoring> addTailoring(String project, Tailoring tailoring);
 
     /**
-     * Ermittlung von aller Projekte.
+     * Load core project data of all projects.
      *
-     * @return Alle Projekte mit einem abgespecktem Satz an Projektdaten
+     * @return All projects with core data set
      */
     Collection<ProjectInformation> getProjectInformations();
 
     /**
-     * Ermittlung der minimalen Daten eines Projektes.
+     * Load core data of requested project.
      *
-     * @param project Fachlicher Projektschlüssel
-     * @return Informationen zum angefragten Project
+     * @param project identifier of project
+     * @return loaded project core data
      */
     Optional<ProjectInformation> getProjectInformation(String project);
 
     /**
-     * Ermittlung der ScreeningSheet File des Projektes.
+     * Load screeningsheet row data (file) of requested project.
      *
-     * @param project Fachlicher Projektschlüssel
-     * @return ScreeningSheet File der Projektes
+     * @param project identifier of project to get screeningsheet of
+     * @return screeningsheet of project
      */
     Optional<byte[]> getScreeningSheetFile(String project);
 
     /**
-     * Ermittelt die extrahierten und berechenten ScreeningSheet Daten.<p>
-     * <strong>Die File selbst ist nicht Teil des Ergebnisses!</strong>
+     * Load all extracted data of screeningsheet.<p>
+     * <strong>Raw data (file) not part of result!</strong>
      *
-     * @param project Project, für das die Daten geladen werden sollen
-     * @return ScreeningSheet Daten ohne die Eingabedatei
+     * @param project dentifier of project to get screeningsheet of
+     * @return ScreeningSheet data without file raw data
      */
     Optional<ScreeningSheet> getScreeningSheet(String project);
 }

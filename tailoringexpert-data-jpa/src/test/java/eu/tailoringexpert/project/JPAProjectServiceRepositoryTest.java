@@ -130,7 +130,7 @@ class JPAProjectServiceRepositoryTest {
             .willReturn(1l);
 
         // act
-        boolean actual = repository.deleteProjekt("SAMPLE");
+        boolean actual = repository.deleteProject("SAMPLE");
 
         // assert
         assertThat(actual).isTrue();
@@ -143,7 +143,7 @@ class JPAProjectServiceRepositoryTest {
             .willReturn(0l);
 
         // act
-        boolean actual = repository.deleteProjekt("SAMPLE");
+        boolean actual = repository.deleteProject("SAMPLE");
 
         // assert
         assertThat(actual).isFalse();

@@ -8,12 +8,12 @@
  * it under the terms of the GNU General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/gpl-3.0.html>.
@@ -26,52 +26,57 @@ import eu.tailoringexpert.domain.TailoringRequirement;
 
 import java.util.Optional;
 
+/**
+ * Service for handling requirements.
+ *
+ * @author Michael Bädorf
+ */
 public interface RequirementService {
 
     /**
-     * Ändert den ausgewählt Status einer Requirement.
+     * Change selected state of a requirement defined by path.
      *
-     * @param project     Project, zum dem die Requirement gehört
-     * @param tailoring   Tailoring des Projekts
-     * @param chapter     Chapter, aus dem die Requirement stammt
-     * @param position    Position der Requirement im Chapter
-     * @param selected Der neue ausgwählt Status der Requirement
-     * @return Die geänderte Requirement
+     * @param project   Identifier of the project
+     * @param tailoring tailoring identifier
+     * @param chapter   chapter of requirement
+     * @param position  position of requirement in chapter
+     * @param selected  selected state to set
+     * @return update requirement
      */
     Optional<TailoringRequirement> handleSelected(String project, String tailoring, String chapter, String position, Boolean selected);
 
     /**
-     * Ändert den ausgewählt Status einer Anforderungen im Chapter sowie dessen Unterkapiteln.
+     * Change selected state of all requirement in all chapter and subchapters.
      *
-     * @param project     Project, zum dem die Requirement gehört
-     * @param tailoring   Tailoring des Projekts
-     * @param chapter     Chapter, der zu ändernden Auswahl aller  Anforderungen und Unteranforderungen
-     * @param selected Der neue ausgwählt Status der Requirement
-     * @return Chapter der geänderten Anforderungen
+     * @param project   Identifier of the project
+     * @param tailoring tailoring identifier
+     * @param chapter   root chapter to set selection state of requirement
+     * @param selected  selection state to set
+     * @return root chapter with updated requirements
      */
     Optional<Chapter<TailoringRequirement>> handleSelected(String project, String tailoring, String chapter, Boolean selected);
 
     /**
-     * Ändert den Text  einer Requirement.
+     * Change text of requirement.
      *
-     * @param project   Project, zum dem die Requirement gehört
-     * @param tailoring Tailoring des Projekts
-     * @param chapter   Chapter, aus dem die Requirement stammt
-     * @param position  Position der Requirement im Chapter
-     * @param text      Der neue Text der Requirement
-     * @return Die geänderte Requirement
+     * @param project   identifier of project
+     * @param tailoring tailoring identifier
+     * @param chapter   chapter requirement is member of
+     * @param position  position of requirement in chapter
+     * @param text      new text of requirement
+     * @return modified requirement
      */
     Optional<TailoringRequirement> handleText(String project, String tailoring, String chapter, String position, String text);
 
     /**
-     * Erstellt eine neue Project-Requirement im angegeben Project an der Position NACH der überegebenen Position
+     * Create a new requirement AFTER provided position.
      *
-     * @param project   Project, zum dem die Requirement hinzugefügt
-     * @param tailoring Tailoring des Projekts
-     * @param chapter   Chapter, in dem die Requirement hinzugefügt werden soll
-     * @param position  Position, NACH der die neue Requirement im erstellt werden soll
-     * @param text      Der Text der neuen Requirement
-     * @return Die neu erstelte Requirement
+     * @param project   identifier of project
+     * @param tailoring tailoring identifier
+     * @param chapter   chapter to add new requirement
+     * @param position  position in chapter after which requirement shall be created
+     * @param text      text of new requirement
+     * @return new created requirement
      */
     Optional<TailoringRequirement> createRequirement(String project, String tailoring, String chapter, String position, String text);
 }

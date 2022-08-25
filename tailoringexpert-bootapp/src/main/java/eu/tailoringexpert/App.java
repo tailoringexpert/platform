@@ -25,6 +25,7 @@ import lombok.extern.log4j.Log4j2;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration;
+import org.springframework.boot.autoconfigure.liquibase.LiquibaseAutoConfiguration;
 import org.springframework.boot.autoconfigure.thymeleaf.ThymeleafAutoConfiguration;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
@@ -46,7 +47,8 @@ import static org.springframework.context.annotation.FilterType.REGEX;
 @SpringBootApplication(
     exclude = {
         DataSourceAutoConfiguration.class,
-        ThymeleafAutoConfiguration.class
+        ThymeleafAutoConfiguration.class,
+        LiquibaseAutoConfiguration.class
     }
 )
 @ComponentScan(

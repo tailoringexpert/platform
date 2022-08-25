@@ -53,14 +53,14 @@ public class DRDApplicablePredicate implements BiPredicate<String, Collection<Ph
      * {@inheritDoc}
      */
     @Override
-    public boolean test(String lieferzeitpunkt, Collection<Phase> phasen) {
+    public boolean test(String deliveryDate, Collection<Phase> phases) {
         // alle meilensteine phasensteine der phase ermitteln
-        List<String> dueDates = Collections.list(new StringTokenizer(lieferzeitpunkt, ";")).stream()
+        List<String> dueDates = Collections.list(new StringTokenizer(deliveryDate, ";")).stream()
             .map(token -> token.toString().trim())
             .collect(Collectors.toList());
 
         // für jede phase prüfen
-        Optional<Phase> result = phasen.stream()
+        Optional<Phase> result = phases.stream()
             .filter(phase -> {
                 Collection<String> phasenMeilensteine = phase2Milestones.get(phase);
                 return dueDates.stream()

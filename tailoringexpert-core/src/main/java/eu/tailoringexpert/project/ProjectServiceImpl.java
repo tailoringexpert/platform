@@ -46,7 +46,7 @@ import static java.util.Optional.of;
 public class ProjectServiceImpl implements ProjectService {
 
     @NonNull
-    private ProjektServiceRepository repository;
+    private ProjectServiceRepository repository;
 
     @NonNull
     private ScreeningSheetService screeningSheetService;
@@ -58,7 +58,7 @@ public class ProjectServiceImpl implements ProjectService {
      * {@inheritDoc}
      */
     @Override
-    public CreateProjectTO createProjekt(String catalogVersion, byte[] screeningSheetData, SelectionVector applicableSelectionVector) {
+    public CreateProjectTO createProject(String catalogVersion, byte[] screeningSheetData, SelectionVector applicableSelectionVector) {
         Catalog<BaseRequirement> catalog = repository.getBaseCatalog(catalogVersion);
         ScreeningSheet screeningSheet = screeningSheetService.createScreeningSheet(screeningSheetData);
         Tailoring tailoring = tailoringService.createTailoring("master", "1000", screeningSheet, applicableSelectionVector, catalog);
@@ -83,10 +83,10 @@ public class ProjectServiceImpl implements ProjectService {
      * {@inheritDoc}
      */
     @Override
-    public boolean deleteProjekt(String projekt) {
-        Optional<Project> toDelete = repository.getProject(projekt);
+    public boolean deleteProject(String project) {
+        Optional<Project> toDelete = repository.getProject(project);
         if (toDelete.isPresent()) {
-            return repository.deleteProjekt(projekt);
+            return repository.deleteProject(project);
         }
         return false;
     }
@@ -97,14 +97,14 @@ public class ProjectServiceImpl implements ProjectService {
     @Override
     public Optional<Tailoring> addTailoring(String project, String catalog, byte[] screeningSheetData, SelectionVector applicableSelectionVector) {
         log.info("STARTED  | adding tailoring to project {}", project);
-        Optional<Project> oProjekt = repository.getProject(project);
-        if (oProjekt.isEmpty()) {
+        Optional<Project> oProject = repository.getProject(project);
+        if (oProject.isEmpty()) {
             return empty();
         }
 
-        Catalog<BaseRequirement> anwendbarerCatalog = repository.getBaseCatalog(catalog);
-        if (isNull(anwendbarerCatalog)) {
-            log.error("ABORTED  | catalogue {} does not exist", catalog);
+        Catalog<BaseRequirement> baseCatalog = repository.getBaseCatalog(catalog);
+        if (isNull(baseCatalog)) {
+            log.error("ABORTED  | catalog {} does not exist", catalog);
             return empty();
         }
 
@@ -115,13 +115,13 @@ public class ProjectServiceImpl implements ProjectService {
             return empty();
         }
 
-        Project addTo = oProjekt.get();
-        StringBuilder phasenName = new StringBuilder("master");
+        Project addTo = oProject.get();
+        StringBuilder tailoringName = new StringBuilder("master");
         if (!addTo.getTailorings().isEmpty()) {
-            phasenName.append(addTo.getTailorings().size());
+            tailoringName.append(addTo.getTailorings().size());
         }
 
-        Optional<String> kennung = oProjekt.get()
+        Optional<String> identifier = oProject.get()
             .getTailorings()
             .stream()
             .map(p -> parseInt(p.getIdentifier()))
@@ -129,15 +129,15 @@ public class ProjectServiceImpl implements ProjectService {
             .map(max -> String.valueOf(max + 1));
 
         Tailoring tailoring = tailoringService.createTailoring(
-            phasenName.toString(),
-            kennung.orElse("1000"),
+            tailoringName.toString(),
+            identifier.orElse("1000"),
             screeningSheet,
             applicableSelectionVector,
-            anwendbarerCatalog
+            baseCatalog
         );
 
         Optional<Tailoring> result = repository.addTailoring(project, tailoring);
-        log.info("FINISHED | adding phase {} to project {}", phasenName, project);
+        log.info("FINISHED | adding phase {} to project {}", tailoringName, project);
         return result;
     }
 
@@ -147,8 +147,8 @@ public class ProjectServiceImpl implements ProjectService {
     @Override
     public Optional<Project> copyProject(String project, byte[] screeningSheetData) {
         log.info("STARTED  | copyig project {}", project);
-        Optional<Project> zuKopierendesProjekt = repository.getProject(project);
-        if (zuKopierendesProjekt.isEmpty()) {
+        Optional<Project> projectToCopy = repository.getProject(project);
+        if (projectToCopy.isEmpty()) {
             log.info("Project does not exist. Aborting");
             return empty();
         }
@@ -159,19 +159,19 @@ public class ProjectServiceImpl implements ProjectService {
         // 3. selektionvektor der phase wird aus kopierten projekt übernommen (zur info)
         // 4. KEIN neutailoring!
 
-        Project projectKopie = zuKopierendesProjekt.get();
+        Project projectCopy = projectToCopy.get();
 
         ScreeningSheet screeningSheet = screeningSheetService.createScreeningSheet(screeningSheetData);
-        projectKopie.setScreeningSheet(screeningSheet);
-        projectKopie.setIdentifier(screeningSheet.getIdentifier());
+        projectCopy.setScreeningSheet(screeningSheet);
+        projectCopy.setIdentifier(screeningSheet.getIdentifier());
 
-        projectKopie.getTailorings()
-            .forEach(projektPhase -> {
-                log.debug("Copying tailoring {}", projektPhase.getName());
-                projektPhase.setScreeningSheet(screeningSheet);
+        projectCopy.getTailorings()
+            .forEach(tailorings -> {
+                log.debug("Copying tailoring {}", tailorings.getName());
+                tailorings.setScreeningSheet(screeningSheet);
             });
 
-        Optional<Project> result = of(repository.createProject(projectKopie));
+        Optional<Project> result = of(repository.createProject(projectCopy));
         log.info("FINISHED | project {} copied to {}", project, screeningSheet.getIdentifier());
         return result;
     }

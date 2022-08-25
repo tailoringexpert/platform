@@ -42,7 +42,7 @@ import java.util.function.Function;
 public class CatalogConfiguration {
 
     @Bean
-    JPACatalogServiceRepositoryMapper katalogDefinitionServiceRepositoryMapper(
+    JPACatalogServiceRepositoryMapper catalogServiceRepositoryMapper(
         @NonNull LogoRepository logoRepository,
         @NonNull DRDRepository drdRepository) {
         JPACatalogServiceRepositoryMapperImpl result = new JPACatalogServiceRepositoryMapperImpl();
@@ -53,33 +53,33 @@ public class CatalogConfiguration {
 
 
     @Bean
-    CatalogServiceRepository katalogServiceRepository(
+    CatalogServiceRepository catalogServiceRepository(
         @NonNull JPACatalogServiceRepositoryMapper mapper,
-        @NonNull BaseCatalogRepository katalogDefinitionRepository,
+        @NonNull BaseCatalogRepository baseCatalogRepository,
         @NonNull DRDRepository drdRepository) {
-        return new JPACatalogServiceRepository(mapper, katalogDefinitionRepository, drdRepository);
+        return new JPACatalogServiceRepository(mapper, baseCatalogRepository, drdRepository);
     }
 
 
     @Bean
-    CatalogService katalogService(@NonNull CatalogServiceRepository catalogServiceRepository,
-                                  @NonNull @Qualifier("katalogDokumentService") DocumentService documentService) {
-        return new CatalogServiceImpl(catalogServiceRepository, documentService);
+    CatalogService catalogService(@NonNull CatalogServiceRepository catalogServiceRepository,
+                                  @NonNull @Qualifier("catalogDocumentService") DocumentService catalogDocumentService) {
+        return new CatalogServiceImpl(catalogServiceRepository, catalogDocumentService);
     }
 
     @Bean
-    CatalogController katalogDefinitionController(
+    CatalogController catalogController(
         @NonNull ResourceMapper mapper,
         @NonNull CatalogService catalogService,
-        @NonNull BaseCatalogRepository katalogDefinitionRepository,
+        @NonNull BaseCatalogRepository baseCatalogRepository,
         @NonNull Function<String, MediaType> mediaTypeProvider,
         @NonNull ObjectMapper objectMapper) {
-        return new CatalogController(mapper, catalogService, katalogDefinitionRepository, mediaTypeProvider, objectMapper);
+        return new CatalogController(mapper, catalogService, baseCatalogRepository, mediaTypeProvider, objectMapper);
     }
 
     @Bean
     @Primary
-    DocumentService katalogDokumentService(@NonNull ListableBeanFactory beanFactory) {
+    DocumentService catalogDocumentService(@NonNull ListableBeanFactory beanFactory) {
         Map<String, DocumentService> services = Tenants.get(beanFactory, DocumentService.class);
         return new TenantDocumentService(services);
     }
