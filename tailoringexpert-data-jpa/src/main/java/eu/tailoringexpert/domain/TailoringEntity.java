@@ -77,10 +77,6 @@ public class TailoringEntity implements Serializable {
     @JoinColumn(name = "SELECTIONVECTOR_ID")
     private SelectionVectorEntity selectionVector;
 
-    @OneToOne(fetch = LAZY)
-    @JoinColumn(name = "BASECATALOG_ID")
-    private BaseCatalogEntity baseCatalog;
-
     @OneToOne(cascade = ALL)
     @JoinColumn(name = "SCREENINGSHEET_ID")
     private ScreeningSheetEntity screeningSheet;
