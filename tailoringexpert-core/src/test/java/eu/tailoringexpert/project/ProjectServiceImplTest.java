@@ -85,7 +85,7 @@ class ProjectServiceImplTest {
     }
 
     @Test
-    void ProjektServiceImpl_ProjektServiceRepositoryNotProvided_NullPointerExceptionIsThrown() {
+    void ProjectServiceImpl_ProjectServiceRepositoryNotProvided_NullPointerExceptionIsThrown() {
         // arrange
 
         // act
@@ -99,7 +99,7 @@ class ProjectServiceImplTest {
     }
 
     @Test
-    void ProjektServiceImpl_ScreeningServiceNotProvided_NullPointerExceptionIsThrown() {
+    void ProjectServiceImpl_ScreeningServiceNotProvided_NullPointerExceptionIsThrown() {
         // arrange
 
         // act
@@ -113,7 +113,7 @@ class ProjectServiceImplTest {
     }
 
     @Test
-    void ProjektServiceImpl_TailoringServiceNotProvided_NullPointerExceptionIsThrown() {
+    void ProjectServiceImpl_TailoringServiceNotProvided_NullPointerExceptionIsThrown() {
         // arrange
 
         // act
@@ -141,7 +141,7 @@ class ProjectServiceImplTest {
                     .name("General")
                     .requirements(asList(
                         BaseRequirement.builder()
-                            .text("Die erste Requirement")
+                            .text("First Requirement")
                             .position("a")
                             .identifiers(asList(
                                 Identifier.builder()
@@ -219,7 +219,7 @@ class ProjectServiceImplTest {
             .state(TailoringState.CREATED)
             .build());
 
-        given(repositoryMock.createProject(eq("1"), any(Project.class))).willReturn(Project.builder()
+        given(repositoryMock.createProject( any(Project.class))).willReturn(Project.builder()
             .identifier("SAMPLE")
             .tailoring(Tailoring.builder()
                 .screeningSheet(screeningSheet)
@@ -257,7 +257,7 @@ class ProjectServiceImplTest {
     }
 
     @Test
-    void deleteProjekt_ProjektNichtVorhanden_ProjektNichtGeloescht() {
+    void deleteProjekt_ProjectNotExists_NoRepositoreyDeletionCall() {
         // arrange
         given(repositoryMock.getProject("SAMPLE")).willReturn(empty());
 
@@ -271,7 +271,7 @@ class ProjectServiceImplTest {
     }
 
     @Test
-    void addTailoring_ProjectNotExistingInSystem_TailoringIsNotAdded() throws IOException {
+    void addTailoring_ProjectNotExists_TailoringNotAdded() throws IOException {
         // arrange
         byte[] data;
         try (InputStream is = newInputStream(get("src/test/resources/screeningsheet.pdf"))) {
@@ -323,7 +323,7 @@ class ProjectServiceImplTest {
     }
 
     @Test
-    void addTailoring_BaseCatalogNotExisting_TailoringNotAdded() throws IOException {
+    void addTailoring_BaseCatalogNotExists_TailoringNotAdded() throws IOException {
         // arrange
         byte[] data;
         try (InputStream is = newInputStream(get("src/test/resources/screeningsheet.pdf"))) {

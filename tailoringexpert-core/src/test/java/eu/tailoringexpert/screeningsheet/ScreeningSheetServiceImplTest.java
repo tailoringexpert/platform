@@ -76,7 +76,7 @@ class ScreeningSheetServiceImplTest {
     }
 
     @Test
-    void berechneSelektionsVektor_KeineDaten_NullPointerWirdGeworfen() {
+    void calculateSelectionVector_NullData_NullPointerThrown() {
         // arrange
 
         // act
@@ -87,7 +87,7 @@ class ScreeningSheetServiceImplTest {
     }
 
     @Test
-    void berechneSelektionsVektor_DatenVorhanden_SelektionsvektorWirdBerechnet() throws IOException {
+    void calculateSelectionVector_DateaExists_SelectionvectorCalculated() throws IOException {
         // arrange
         byte[] data;
         try (InputStream is = newInputStream(get("src/test/resources/screeningsheet.pdf"))) {
@@ -162,7 +162,7 @@ class ScreeningSheetServiceImplTest {
     }
 
     @Test
-    void createScreeningSheet_DatenVorhanden_ScreeningSheetWirdErstellt() throws IOException {
+    void createScreeningSheet_DataExists_ScreeningSheetCreated() throws IOException {
         // arrange
         byte[] data;
         try (InputStream is = newInputStream(get("src/test/resources/screeningsheet.pdf"))) {
@@ -186,7 +186,7 @@ class ScreeningSheetServiceImplTest {
     }
 
     @Test
-    void createScreeningSheet_DatenVorhanden_ScreeningSheetWirdErstellt1() throws IOException {
+    void createScreeningSheet_DataExists_ScreeningSheetWirdErstellt1() throws IOException {
         // arrange
         byte[] data;
         try (InputStream is = newInputStream(get("src/test/resources/screeningsheet.pdf"))) {
@@ -228,7 +228,7 @@ class ScreeningSheetServiceImplTest {
     }
 
     @Test
-    void createScreeningSheet_KeineDatenVorhanden_NullPointerExceptionWirdGeworfen() throws IOException {
+    void createScreeningSheet_DataNotExists_NullPointerExceptionThrown() throws IOException {
         // arrange
 
         // act

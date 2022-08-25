@@ -63,7 +63,7 @@ public class ProjectServiceImpl implements ProjectService {
         ScreeningSheet screeningSheet = screeningSheetService.createScreeningSheet(screeningSheetData);
         Tailoring tailoring = tailoringService.createTailoring("master", "1000", screeningSheet, applicableSelectionVector, catalog);
 
-        Project project = repository.createProject(catalogVersion, Project.builder()
+        Project project = repository.createProject(Project.builder()
             .screeningSheet(screeningSheet)
             .identifier(screeningSheet.getIdentifier())
             .tailoring(tailoring)

@@ -42,7 +42,7 @@ public class Project implements Serializable {
 
     private String identifier;
     private ScreeningSheet screeningSheet;
-    private Catalog<BaseRequirement> catalog;
+    private String catalogVersion;
     private ZonedDateTime creationTimestamp;
 
     @Singular(value = "tailoring", ignoreNullCollections = true)

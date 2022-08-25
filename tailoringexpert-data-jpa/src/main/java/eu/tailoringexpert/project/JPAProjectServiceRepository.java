@@ -78,21 +78,6 @@ public class JPAProjectServiceRepository implements ProjectServiceRepository {
      * {@inheritDoc}
      */
     @Override
-    public Project createProject(String catalog, Project project) {
-        ProjectEntity entity = projectRepository.save(mapper.createProject(project));
-
-        // deprecated: only store base catalog version, not needed to save a reference to base catalog.
-        // version is only for info or load as resource
-        BaseCatalogEntity katalogDefinition = baseCatalogRepository.findByVersion(catalog);
-        entity.getTailorings().get(0).setBaseCatalog(katalogDefinition);
-
-        return mapper.toDomain(entity);
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
     public Project createProject(Project project) {
         ProjectEntity result = mapper.createProject(project);
         result = projectRepository.save(result);
@@ -123,9 +108,6 @@ public class JPAProjectServiceRepository implements ProjectServiceRepository {
     public Optional<Tailoring> addTailoring(String project, Tailoring tailoring) {
         ProjectEntity projekt = projectRepository.findByIdentifier(project);
         TailoringEntity eProjektPhase = mapper.toEntity(tailoring);
-
-        BaseCatalogEntity katalogDefinition = baseCatalogRepository.findByVersion(tailoring.getCatalog().getVersion());
-        eProjektPhase.setBaseCatalog(katalogDefinition);
 
         projekt.setTailorings(isNull(projekt.getTailorings()) ? new ArrayList<>() : new ArrayList<>(projekt.getTailorings()));
         projekt.getTailorings().add(eProjektPhase);

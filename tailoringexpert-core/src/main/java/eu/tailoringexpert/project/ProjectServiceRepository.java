@@ -47,16 +47,6 @@ public interface ProjectServiceRepository {
     Catalog<BaseRequirement> getBaseCatalog(String version);
 
     /**
-     * Creates a new persisted project.
-     *
-     * @param catalog version of base catalog to use
-     * @param project project to persist
-     * @return persisted project
-     */
-    @Deprecated
-    Project createProject(String catalog, Project project);
-
-    /**
      * Persists provided project wPersistierung einese neuen Projektes.
      *
      * @param project Das nei zu persistierende Project

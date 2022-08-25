@@ -8,7 +8,7 @@
             <column name="TAILORING_ID" type="BIGINT">
                 <constraints primaryKey="true" nullable="false"/>
             </column>
-            <column name="IDENTIFER" type="VARCHAR(4)"/>
+            <column name="IDENTIFER" type="VARCHAR(16)"/>
             <column name="NAME" type="VARCHAR(256)"/>
             <column name="TAILORINGCATALOG_ID" type="BIGINT"/>
             <column name="SCREENINGSHEET_ID" type="BIGINT"/>
@@ -16,7 +16,6 @@
             <column name="STATE" type="VARCHAR(16)"/>
             <column name="CREATIONTIMESTAMP" type="VARCHAR(256)"/>
             <column name="PROJECT_ID" type="BIGINT"/>
-            <column name="BASECATALOG_ID" type="BIGINT"/>
             <column name="TAILORING_ORDER" type="BIGINT"/>
         </createTable>
     </changeSet>
