@@ -39,7 +39,7 @@ class ScreeningSheetServiceMapperTest {
     }
 
     @Test
-    void createScreeningSheet_ParameterNull_NullWirdZurueckGegeben() {
+    void createScreeningSheet_ParameterNull_NullReturned() {
         // arrange
 
         // act
@@ -50,7 +50,7 @@ class ScreeningSheetServiceMapperTest {
     }
 
     @Test
-    void createScreeningSheet_ParameterVorhanden_ScreeningSheetParameterWirdZurueckGegeben() {
+    void createScreeningSheet_ParameterExist_ScreeningSheetParameterReturned() {
         // arrange
         Parameter parameter = Parameter.builder()
             .parameterType(SKALAR)

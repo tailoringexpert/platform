@@ -105,7 +105,7 @@ class CatalogServiceImplTest {
     }
 
     @Test
-    void getCatalog_VersionInSystem_CatalogWillBeLoaded() {
+    void getCatalog_VersionExist_CatalogWillBeLoaded() {
         // arrange
         given(repositoryMock.getCatalog("8.2.1")).willReturn(of(Catalog.<BaseRequirement>builder().build()));
 
@@ -130,7 +130,7 @@ class CatalogServiceImplTest {
     }
 
     @Test
-    void createCatalog_CatalogExisting_FileReturned() {
+    void createCatalog_CatalogExists_FileReturned() {
         // arrange
         given(repositoryMock.getCatalog(any()))
             .willReturn(of(Catalog.<BaseRequirement>builder().build()));
