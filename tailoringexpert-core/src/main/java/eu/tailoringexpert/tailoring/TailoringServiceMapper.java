@@ -41,6 +41,7 @@ import org.mapstruct.MappingTarget;
 import java.util.Collection;
 import java.util.Set;
 
+import static eu.tailoringexpert.domain.ScreeningSheet.PHASE;
 import static java.lang.Boolean.FALSE;
 import static java.lang.Boolean.TRUE;
 import static java.util.Collections.disjoint;
@@ -65,8 +66,8 @@ public abstract class TailoringServiceMapper {
     /**
      * Konvertiert einen übergebenen Anforderungskatalog in einen projektspezifischen Anforderungskatalog.
      *
-     * @param catalog          Der zu konvertierende Catalog
-     * @param screeningSheet   ScreeningSheet mit den Informationen für die Anwendbarkeit von Anforderungen
+     * @param catalog         Der zu konvertierende Catalog
+     * @param screeningSheet  ScreeningSheet mit den Informationen für die Anwendbarkeit von Anforderungen
      * @param selectionVector Selektionsvektor für die Anwendbarkeit von Anforderungen
      * @return konvertierter Projektkatalog
      */
@@ -82,19 +83,6 @@ public abstract class TailoringServiceMapper {
         @Context ScreeningSheet screeningSheet,
         @Context SelectionVector selectionVector,
         @MappingTarget TailoringRequirementBuilder builder) {
-
-        Collection<Phase> phasen = (Collection<Phase>) screeningSheet.getParameters()
-            .stream()
-            .filter(parameter -> "phase".equalsIgnoreCase(parameter.getCategory()))
-            .findFirst()
-            .orElseThrow(RuntimeException::new)
-            .getValue();
-
-        boolean isRelevantPhase = containsScreeningPhase(
-            phasen,
-            baseRequirement.getPhases()
-        );
-
         Set<String> parameterValues = screeningSheet.getParameters()
             .stream()
             .map(ScreeningSheetParameter::getValue)
@@ -102,6 +90,8 @@ public abstract class TailoringServiceMapper {
             .map(String.class::cast)
             .collect(toUnmodifiableSet());
 
+        Collection<Phase> phases = filterPhases(screeningSheet.getParameters());
+        boolean isRelevantPhase = containsScreeningPhase(phases, baseRequirement.getPhases());
         baseRequirement.getIdentifiers()
             .stream()
             .filter(identifier -> isRelevantPhase)
@@ -118,6 +108,15 @@ public abstract class TailoringServiceMapper {
             })
             .findFirst()
             .ifPresentOrElse(applicability -> builder.selected(TRUE), () -> builder.selected(FALSE));
+    }
+
+    private Collection<Phase> filterPhases(Collection<ScreeningSheetParameter> parameters) {
+        return (Collection<Phase>) parameters
+            .stream()
+            .filter(parameter -> PHASE.equalsIgnoreCase(parameter.getCategory()))
+            .findFirst()
+            .orElseThrow(RuntimeException::new)
+            .getValue();
     }
 
     private boolean containsScreeningPhase(

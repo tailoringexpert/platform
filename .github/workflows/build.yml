@@ -95,7 +95,7 @@ jobs:
       with:
         badges-directory: badges
         generate-branches-badge: true
-        jacoco-csv-file: coverage/target/site/jacoco-aggregate-ut/jacoco.csv
+        jacoco-csv-file: tailoringexpert-coverage/target/site/jacoco-aggregate-ut/jacoco.csv
 
     - name: Log coverage percentage
       run: |
@@ -118,4 +118,4 @@ jobs:
       uses: actions/upload-artifact@v3
       with:
         name: jacoco-report
-        path: coverage/target/site/jacoco-aggregate-ut/
+        path: tailoringexpert-coverage/target/site/jacoco-aggregate-ut/
