@@ -24,5 +24,10 @@ package eu.tailoringexpert.repository;
 import eu.tailoringexpert.domain.SelectionVectorProfileEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 
+/**
+ * Spring Data access layer of {@link SelectionVectorProfileEntity}.
+ *
+ * @author Michael Bädorf
+ */
 public interface SelectionVectorProfileRepository extends JpaRepository<SelectionVectorProfileEntity, Long> {
 }

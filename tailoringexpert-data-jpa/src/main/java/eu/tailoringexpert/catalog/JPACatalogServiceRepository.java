@@ -69,8 +69,8 @@ public class JPACatalogServiceRepository implements CatalogServiceRepository {
             return empty();
         }
 
-        int anzahlBeendeteKatalogGueltigkeiten = baseCatalogRepository.setValidUntilForEmptyValidUntil(validFrom);
-        log.info("Anzahl ungültig gesetzter Kataloge: " + anzahlBeendeteKatalogGueltigkeiten);
+        int numberOfChangedBaseCatalogValidities = baseCatalogRepository.setValidUntilForEmptyValidUntil(validFrom);
+        log.info("Number of changed base catalogs validities: " + numberOfChangedBaseCatalogValidities);
 
 
         Collection<DRD> drds = apply(catalog.getToc());
@@ -102,7 +102,5 @@ public class JPACatalogServiceRepository implements CatalogServiceRepository {
             .filter(Objects::nonNull)
             .flatMap(Collection::stream)
             .collect(Collectors.toSet());
-
     }
-
 }

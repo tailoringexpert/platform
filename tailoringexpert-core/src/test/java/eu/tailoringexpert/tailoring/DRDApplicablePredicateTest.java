@@ -42,11 +42,11 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 class DRDApplicablePredicateTest {
 
-    private DRDApplicablePredicate praedikat;
+    private DRDApplicablePredicate predicate;
 
     @BeforeEach
     void setup() {
-        this.praedikat = new DRDApplicablePredicate(Map.ofEntries(
+        this.predicate = new DRDApplicablePredicate(Map.ofEntries(
             new SimpleEntry<Phase, Collection<String>>(ZERO, unmodifiableCollection(asList("MDR"))),
             new SimpleEntry<Phase, Collection<String>>(A, unmodifiableCollection(asList("SRR"))),
             new SimpleEntry<Phase, Collection<String>>(B, unmodifiableCollection(asList("PDR"))),
@@ -58,78 +58,78 @@ class DRDApplicablePredicateTest {
     }
 
     @Test
-    void test_MeilensteinInPhaseNichtVorhanden_DRDNichtAnwendbar() {
+    void test_MilestoneNotInRelevantPhase_FalseReturned() {
         // arrange
-        String lieferzeitpunkt = "PDR";
-        Collection<Phase> phasen = asList(E);
+        String deliveryDate = "PDR";
+        Collection<Phase> phases = asList(E);
 
         // act
-        boolean actual = praedikat.test(lieferzeitpunkt, phasen);
+        boolean actual = predicate.test(deliveryDate, phases);
 
         // assert
         assertThat(actual).isFalse();
     }
 
     @Test
-    void test_MeilensteinInPhaseVorhanden_DRDAnwendbar() {
+    void test_MilestoneInRelevantPhase_TrueReturned() {
         // arrange
-        String lieferzeitpunkt = "ORR";
-        Collection<Phase> phasen = asList(E);
+        String deliveryDate = "ORR";
+        Collection<Phase> phases = asList(E);
 
         // act
-        boolean actual = praedikat.test(lieferzeitpunkt, phasen);
+        boolean actual = predicate.test(deliveryDate, phases);
 
         // assert
         assertThat(actual).isTrue();
     }
 
     @Test
-    void test_FreitextMeilensteinInPhaseNichtVorhanden_DRDAnwendbar() {
+    void test_CustomTextMilestoneNotInRelevantPhase_TrueReturned() {
         // arrange
-        String lieferzeitpunkt = "PDR;on regular basis within project progress";
-        Collection<Phase> phasen = asList(E);
+        String deliveryDate = "PDR;on regular basis within project progress";
+        Collection<Phase> phases = asList(E);
 
         // act
-        boolean actual = praedikat.test(lieferzeitpunkt, phasen);
+        boolean actual = predicate.test(deliveryDate, phases);
 
         // assert
         assertThat(actual).isTrue();
     }
 
     @Test
-    void test_MehrerePhasenMeilensteinInZweiterPhase_DRDAnwendbar() {
+    void test_MultipleMilestonesOneRelevant_TrueReturned() {
         // arrange
-        String lieferzeitpunkt = "ORR;on regular basis within project progress";
-        Collection<Phase> phasen = asList(D, E);
+        String deliveryDate = "ORR;on regular basis within project progress";
+        Collection<Phase> phases = asList(D, E);
 
         // act
-        boolean actual = praedikat.test(lieferzeitpunkt, phasen);
+        boolean actual = predicate.test(deliveryDate, phases);
 
         // assert
         assertThat(actual).isTrue();
     }
 
     @Test
-    void test_MehrerePhasenMeilensteinInKeinerPhase_DRDNichtAnwendbar() {
+    void test_MultipleMilestonesNonRelevant_FalseReturned() {
         // arrange
-        String lieferzeitpunkt = "PDR";
-        Collection<Phase> phasen = asList(D, E);
+        String deliveryDate = "PDR";
+        Collection<Phase> phases = asList(D, E);
 
         // act
-        boolean actual = praedikat.test(lieferzeitpunkt, phasen);
+        boolean actual = predicate.test(deliveryDate, phases);
 
         // assert
         assertThat(actual).isFalse();
     }
 
     @Test
-    void test_MehrerePhasenMeilensteinInKeinerPhaseFreitext_DRDAnwendbar() {
+    void test_MultipleMilestonesNonRelevantMilestoneCustomText_TrueReturned() {
         // arrange
-        String lieferzeitpunkt = "PDR;on regular basis within project progress";
-        Collection<Phase> phasen = asList(D, E);
+        String deliveryDate = "PDR;on regular basis within project progress";
+        Collection<Phase> phases = asList(D, E);
 
         // act
-        boolean actual = praedikat.test(lieferzeitpunkt, phasen);
+        boolean actual = predicate.test(deliveryDate, phases);
 
         // assert
         assertThat(actual).isTrue();

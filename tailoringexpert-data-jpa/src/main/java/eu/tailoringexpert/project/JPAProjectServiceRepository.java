@@ -67,11 +67,8 @@ public class JPAProjectServiceRepository implements ProjectServiceRepository {
     @Cacheable(CACHE_KATALOG)
     @Override
     public Catalog<BaseRequirement> getBaseCatalog(String version) {
-        return mapper.toDomain(getKatalogDefinition(version));
-    }
-
-    private BaseCatalogEntity getKatalogDefinition(String version) {
-        return baseCatalogRepository.findByVersion(version);
+        BaseCatalogEntity entity = baseCatalogRepository.findByVersion(version);
+        return mapper.toDomain(entity);
     }
 
     /**
@@ -161,6 +158,4 @@ public class JPAProjectServiceRepository implements ProjectServiceRepository {
 
         return ofNullable(mapper.getScreeningSheet(entity.getScreeningSheet()));
     }
-
-
 }

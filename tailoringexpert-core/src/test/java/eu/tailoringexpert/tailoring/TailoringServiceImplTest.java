@@ -105,7 +105,7 @@ class TailoringServiceImplTest {
     }
 
     @Test
-    void addAnforderungDokument_ProjektNichtVorhanden_DokumentWirdNichtHinzugefuegt() throws IOException {
+    void addFile_ProjectNoExits_FileNotAdded() throws IOException {
         // arrange
         byte[] data;
         try (InputStream is = newInputStream(get("src/test/resources/screeningsheet.pdf"))) {
@@ -122,7 +122,7 @@ class TailoringServiceImplTest {
     }
 
     @Test
-    void addAnforderungDokument_ProjektPhaseNichtVorhanden_DokumentWirdNichtHinzugefuegt() throws IOException {
+    void addFile_TailoringNotExits_FileNotAdded() throws IOException {
         // arrange
         byte[] data;
         try (InputStream is = newInputStream(get("src/test/resources/screeningsheet.pdf"))) {
@@ -141,11 +141,12 @@ class TailoringServiceImplTest {
 
         // assert
         assertThat(actual).isEmpty();
+        verify(repositoryMock, times(0)).updateFile(anyString(), anyString(), any());
     }
 
 
     @Test
-    void addAnforderungDokument_ProjektPhaseVorhanden_DokumentHinzugefuegt() throws IOException {
+    void addFile_TailoringFileExists_FileUpdated() throws IOException {
         // arrange
         byte[] data;
         try (InputStream is = newInputStream(get("src/test/resources/screeningsheet.pdf"))) {
@@ -176,13 +177,11 @@ class TailoringServiceImplTest {
 
         // assert
         assertThat(actual).isPresent();
-
         assertThat(actual.get().getFiles()).hasSize(1);
-        assertThat(actual.get().getFiles().iterator().next().getName()).isEqualTo("dummy.pdf");
     }
 
     @Test
-    void addAnforderungDokument_ProjektPhaseNichtVorhanden_DokumentNichtHinzugefuegt() throws IOException {
+    void addFile_TailoringNotExists_FileNotAdded() throws IOException {
         // arrange
         byte[] data;
         try (InputStream is = newInputStream(get("src/test/resources/screeningsheet.pdf"))) {
@@ -202,7 +201,7 @@ class TailoringServiceImplTest {
     }
 
     @Test
-    void getKatalog_ProjektNull_NullPointerExceptionWirdGeworfen() {
+    void getCatalog_ProjectNull_NullPointerExceptionThrown() {
         // arrange
 
         // act
@@ -213,7 +212,7 @@ class TailoringServiceImplTest {
     }
 
     @Test
-    void getKatalog_PhasetNull_NullPointerExceptionWirdGeworfen() {
+    void getCatalog_TailoringNull_NullPointerExceptionThrown() {
         // arrange
 
         // act
@@ -224,7 +223,7 @@ class TailoringServiceImplTest {
     }
 
     @Test
-    void getKatalog_PhaseVorhanden_KatalogGefunden() {
+    void getCatalog_TailoringExists_CatalogLoaded() {
         // arrange
         given(repositoryMock.getTailoring("SAMPLE", "master"))
             .willAnswer(invocation -> of(
@@ -242,7 +241,7 @@ class TailoringServiceImplTest {
     }
 
     @Test
-    void getKatalog_ProjektNichtVorhanden_KatalogEmpty() {
+    void getCatalog_ProjectNotExists_EmptyReturned() {
         // arrange
         given(repositoryMock.getProject("SAMPLE"))
             .willAnswer(invocation -> empty());
@@ -255,7 +254,7 @@ class TailoringServiceImplTest {
     }
 
     @Test
-    void getKatalog_PhaseNichtVorhanden_KatalogEmpty() {
+    void getCatalog_TailoringNotExists_EmptyExists() {
         // arrange
         given(repositoryMock.getProject("SAMPLE"))
             .willAnswer(invocation -> of(
@@ -278,7 +277,7 @@ class TailoringServiceImplTest {
     }
 
     @Test
-    void createAnforderungDokument_PhaseNichtVorhanden_KeinDokumentErstellt() {
+    void createRequirementDocument_TailoringNotExists_EmptyReturned() {
         // arrange
         given(repositoryMock.getTailoring("DUMMY", "master25")).willReturn(empty());
 
@@ -291,7 +290,7 @@ class TailoringServiceImplTest {
     }
 
     @Test
-    void createAnforderungDokument() {
+    void createRequirementDocument_TailoringExists_DocumentCreated() {
         // arrange
         Collection<DocumentSignature> zeichnungen = asList(
             DocumentSignature.builder()
@@ -344,7 +343,7 @@ class TailoringServiceImplTest {
     }
 
     @Test
-    void getAnforderungen_NullProjekt_ExceptionWirdGeworfen() {
+    void getRequirements_ProjectNull_NullPointerExceptionThrown() {
         // arrange
 
         // act
@@ -355,7 +354,7 @@ class TailoringServiceImplTest {
     }
 
     @Test
-    void getAnforderungen_NullPhase_NullPointerExceptionWirdGeworfen() {
+    void getRequirements_TailoringNull_NullPointerExceptionThrown() {
         // arrange
 
         // act
@@ -366,7 +365,7 @@ class TailoringServiceImplTest {
     }
 
     @Test
-    void getAnforderungen_NullKapitel_NullPointerExceptionWirdGeworfen() {
+    void getRequirements_ChapterNull_NullPointerExceptionThrown() {
         // arrange
 
         // act
@@ -377,7 +376,7 @@ class TailoringServiceImplTest {
     }
 
     @Test
-    void getAnforderungen_ProjektPhaseNichtVorhanden_EmptyWirdZurueckGegeben() {
+    void getAnforderungen_TailoringNotExists_EmptyReturned() {
         // arrange
         TailoringService serviceSpy = spy(service);
         doReturn(empty()).when(serviceSpy).getChapter(anyString(), anyString(), any());
@@ -391,7 +390,7 @@ class TailoringServiceImplTest {
     }
 
     @Test
-    void getAnforderungen_KapitelNichtVorhanden_EmptyWirdZurueckGegeben() {
+    void getRequirements_ChapterNotExists_EmptyReturned() {
         // arrange
         TailoringService serviceSpy = spy(service);
         doReturn(empty()).when(serviceSpy).getChapter(anyString(), anyString(), any());
@@ -405,7 +404,7 @@ class TailoringServiceImplTest {
     }
 
     @Test
-    void getAnforderungen_KapitelVorhanden_AnforderungenWerdenZurueckGegeben() {
+    void getRequirements_ChapterExists_RequirementsReturned() {
         // arrange
         TailoringService serviceSpy = spy(service);
         doReturn(of(
@@ -432,7 +431,7 @@ class TailoringServiceImplTest {
     }
 
     @Test
-    void getScreeningSheet_NullProjekt_NullPointerExceptionWirdGeworfen() {
+    void getScreeningSheet_ProjectNull_NullPointerExceptionThrown() {
         // arrange
 
         // act
@@ -443,7 +442,7 @@ class TailoringServiceImplTest {
     }
 
     @Test
-    void getScreeningSheet_NullPhase_NullPointerExceptionWirdGeworfen() {
+    void getScreeningSheet_TailoringNull_NullPointerExceptionThrown() {
         // arrange
 
         // act
@@ -454,7 +453,7 @@ class TailoringServiceImplTest {
     }
 
     @Test
-    void getScreeningSheet_PhaseNichtVorhanden_EmptyWirdZurueckGegeben() {
+    void getScreeningSheet_TailoringNotExists_EmptyReturned() {
         // arrange
         given(repositoryMock.getTailoring(any(), any())).willReturn(empty());
 
@@ -467,7 +466,7 @@ class TailoringServiceImplTest {
     }
 
     @Test
-    void getScreeningSheet_PhaseOhneScreeningSheetVorhanden_EmptyWirdZurueckGegeben() {
+    void getScreeningSheet_TailoringNoScreeningSheet_EmptyReturned() {
         // arrange
         given(repositoryMock.getTailoring(any(), any())).willReturn(of(
             Tailoring.builder().screeningSheet(null).build()
@@ -482,7 +481,7 @@ class TailoringServiceImplTest {
     }
 
     @Test
-    void getScreeningSheet_PhaseMitScreeningSheetVorhanden_ScreeningSheetWirdZurueckGegeben() {
+    void getScreeningSheet_TailoringWithScreningSheet_ScreeningSheeReturned() {
         // arrange
         given(repositoryMock.getTailoring(any(), any())).willReturn(of(
             Tailoring.builder().screeningSheet(ScreeningSheet.builder().build()).build()
@@ -497,7 +496,7 @@ class TailoringServiceImplTest {
     }
 
     @Test
-    void getSelektionsVektor_NullProjekt_NullPointerExceptionWirdGeworfen() {
+    void getSelectionVector_ProjectNull_NullPointerExceptionThrown() {
         // arrange
 
         // act
@@ -508,7 +507,7 @@ class TailoringServiceImplTest {
     }
 
     @Test
-    void getSelektionsVektor_NullPhase_NullPointerExceptionWirdGeworfen() {
+    void getSelectionVector_TailoringNull_NullPointerExceptionThrown() {
         // arrange
 
         // act
@@ -519,7 +518,7 @@ class TailoringServiceImplTest {
     }
 
     @Test
-    void getSelektionsVektor_PhaseNichtVorhanden_EmptyWirdZurueckGegeben() {
+    void getSelectionVector_TailoringNotExists_EmptyReturned() {
         // arrange
         given(repositoryMock.getTailoring(any(), any())).willReturn(empty());
 
@@ -532,7 +531,7 @@ class TailoringServiceImplTest {
     }
 
     @Test
-    void getSelektionsVektor_PhaseMitSelektionsVektorVorhanden_SelektionsVektorWirdZurueckGegeben() {
+    void getSelectionVector_TailoringWithSelectionVector_SelectionVectorReturned() {
         // arrange
         given(repositoryMock.getTailoring(any(), any())).willReturn(of(
             Tailoring.builder().selectionVector(SelectionVector.builder().build()).build()
@@ -548,7 +547,7 @@ class TailoringServiceImplTest {
 
 
     @Test
-    void getKapitel_NullProjekt_NullPointerExceptionWirdGeworfen() {
+    void getChapter_ProjectNull_NullPointerExceptionThrown() {
         // arrange
 
         // act
@@ -559,7 +558,7 @@ class TailoringServiceImplTest {
     }
 
     @Test
-    void getKapitel_NullPhase_NullPointerExceptionWirdGeworfen() {
+    void getChapter_TailoringNull_NullPointerExceptionThrown() {
         // arrange
 
         // act
@@ -570,7 +569,7 @@ class TailoringServiceImplTest {
     }
 
     @Test
-    void getKapitel_NullKapitel_NullPointerExceptionWirdGeworfen() {
+    void getChapter_ChapterNull_NullPointerExceptionThrown() {
         // arrange
 
         // act
@@ -581,7 +580,7 @@ class TailoringServiceImplTest {
     }
 
     @Test
-    void getKapitel_ProjektPhaseNichtVorhanden_EmptyWirdZurueckGegeben() {
+    void getChapter_TailoringNotExists_EmptyReturned() {
         // arrange
         given(repositoryMock.getTailoring("DUMMY", "master")).willReturn(empty());
 
@@ -593,7 +592,7 @@ class TailoringServiceImplTest {
     }
 
     @Test
-    void getKapitel_KapitelVorhanden_KapitelZurueckGegeben() {
+    void getChapter_ChapteExists_ChapterReturned() {
         // arrange
         given(repositoryMock.getTailoring("Dummy", "master")).willReturn(of(
             Tailoring.builder()
@@ -622,7 +621,7 @@ class TailoringServiceImplTest {
     }
 
     @Test
-    void getDokumentZeichnungen_NullProjekt_NullPointerExceptionWirdGeworfen() {
+    void getDocumentSignatures_ProjectNull_NullPointerExceptionThrown() {
         // arrange
 
         // act
@@ -633,7 +632,7 @@ class TailoringServiceImplTest {
     }
 
     @Test
-    void getDokumentZeichnungen_NullPhase_NullPointerExceptionWirdGeworfen() {
+    void getDocumentSignatures_TailoringNull_NullPointerExceptionThrown() {
         // arrange
 
         // act
@@ -644,7 +643,7 @@ class TailoringServiceImplTest {
     }
 
     @Test
-    void getDokumentZeichnungen_PhaseNichtVorhanden_EmptyWirdZurueckGegeben() {
+    void getDocumentSignatures_TailoringNotExists_EmptyReturned() {
         // arrange
         given(repositoryMock.getTailoring(any(), any())).willReturn(empty());
 
@@ -657,7 +656,7 @@ class TailoringServiceImplTest {
     }
 
     @Test
-    void getDokumentZeichnungen_PhaseMitDokumentZeichnungVorhanden_DokumentZeichnungWirdZurueckGegeben() {
+    void getDocumentSignatures_TailoringWithSignatuesExists_DocumentSignaturesReturned() {
         // arrange
         given(repositoryMock.getTailoring(any(), any())).willReturn(of(
             Tailoring.builder().signatures(asList(
@@ -680,22 +679,11 @@ class TailoringServiceImplTest {
     }
 
     @Test
-    void updateDokumentZeichnung_NullProjekt_NullPointerExceptionWirdGeworfen() {
+    void updateDocumentSignature_ProjectNull_NullPointerExceptionThrown() {
         // arrange
 
         // act
         Throwable actual = catchThrowable(() -> service.updateDocumentSignature(null, "master", DocumentSignature.builder().build()));
-
-        // assert
-        assertThat(actual).isInstanceOf(NullPointerException.class);
-    }
-
-    @Test
-    void updateDokumentZeichnung_NullPhase_NullPointerExceptionWirdGeworfen() {
-        // arrange
-
-        // act
-        Throwable actual = catchThrowable(() -> service.updateDocumentSignature("Dummy", null, DocumentSignature.builder().build()));
 
         // assert
         assertThat(actual).isInstanceOf(NullPointerException.class);
@@ -713,7 +701,18 @@ class TailoringServiceImplTest {
     }
 
     @Test
-    void updateDokumentZeichnung_ZeichnungNichtVorhanden_EmptyWirdZurueckGegeben() {
+    void updateDocumentSignature_TailoringNull_NullPointerExceptionThrown() {
+        // arrange
+
+        // act
+        Throwable actual = catchThrowable(() -> service.updateDocumentSignature("Dummy", null, DocumentSignature.builder().build()));
+
+        // assert
+        assertThat(actual).isInstanceOf(NullPointerException.class);
+    }
+
+    @Test
+    void updateDocumentSignature_DocumentSignatureNotExists_EmptyReturned() {
         // arrange
         DocumentSignature zeichnung = DocumentSignature.builder()
             .faculty("Software")
@@ -731,7 +730,7 @@ class TailoringServiceImplTest {
     }
 
     @Test
-    void updateDokumentZeichnung_ZeichnungVorhanden_AktualisierteZeichnungWirdZurueckGegeben() {
+    void updateDocumentSignature_DocumentSignatureExists_UpdatedDocumentSignatureReturned() {
         // arrange
         DocumentSignature zeichnung = DocumentSignature.builder()
             .faculty("Software")
@@ -751,7 +750,7 @@ class TailoringServiceImplTest {
     }
 
     @Test
-    void updateName_NeuerNameNichtVorhanden_NullPointerExceptionWirdGeworfen() {
+    void updateName_NewNameNull_NullPointerExceptionThrown() {
         // arrange
 
         // act
@@ -762,7 +761,7 @@ class TailoringServiceImplTest {
     }
 
     @Test
-    void updateName_NeuerNameBereitsVerwendet_NameWirdNichtAktualisiert() {
+    void updateName_NewNameAlreadyInUse_NameNotUpdated() {
         // arrange
         given(repositoryMock.getTailoring("DUMMY", "test"))
             .willReturn(of(Tailoring.builder().build()));
@@ -776,7 +775,7 @@ class TailoringServiceImplTest {
     }
 
     @Test
-    void updateName_NeuerNameNochNichtVerwendet_NameWirdAktualisiert() {
+    void updateName_NewNameNotUsed_NameUpdated() {
         // arrange
         given(repositoryMock.getTailoring("DUMMY", "test"))
             .willReturn(empty());
@@ -797,7 +796,7 @@ class TailoringServiceImplTest {
     }
 
     @Test
-    void updateName_PhaseUndNeuerNameGleich_NameWirdNichtAktualisiert() {
+    void updateName_TailoringAndNewNameSame_NameNotUpdated() {
         // arrange
 
         // act
@@ -810,7 +809,7 @@ class TailoringServiceImplTest {
     }
 
     @Test
-    void createProjektPhase_ProjektPhaseWirdErzeugt() throws IOException {
+    void createTailoring_ValidData_TailoringCreated() throws IOException {
         // arrange
         byte[] data;
         try (InputStream is = newInputStream(get("src/test/resources/screeningsheet.pdf"))) {
@@ -864,7 +863,7 @@ class TailoringServiceImplTest {
 
 
     @Test
-    void createDokumente_ProjektNull_NullPointerExceptionWirdGeworfen() {
+    void createDocuments_ProjectNull_NullPointerExceptionThrown() {
         // arrange
 
         // act
@@ -875,7 +874,7 @@ class TailoringServiceImplTest {
     }
 
     @Test
-    void createDokumente_PhaseNull_NullPointerExceptionWirdGeworfen() {
+    void createDocuments_TailoringNull_NullPointerExceptionThrown() {
         // arrange
 
         // act
@@ -886,7 +885,7 @@ class TailoringServiceImplTest {
     }
 
     @Test
-    void createDokumente_PhaseNichtVorhanden_EmptyWirdZurueckgegeben() {
+    void createDocuments_TailoringNotExists_EmptyReturned() {
         // arrange
         given(repositoryMock.getTailoring("DUMMY", "master1")).willReturn(empty());
 
@@ -898,7 +897,7 @@ class TailoringServiceImplTest {
     }
 
     @Test
-    void createDokumente_TailoringExist_ZipReturned() throws IOException {
+    void createDocuments_TailoringExists_ZipReturned() throws IOException {
         // arrange
         Tailoring tailoring = Tailoring.builder().name("master").build();
         given(repositoryMock.getTailoring("DUMMY", "master")).willReturn(of(tailoring));
@@ -919,14 +918,14 @@ class TailoringServiceImplTest {
         assertThat(actual.get().getName()).isEqualTo("DUMMY-master.zip");
         assertThat(actual.get().getType()).isEqualTo("zip");
 
-        Collection<String> zipDateien = dateiNamenImZip(actual.get().getData());
+        Collection<String> zipDateien = fileNameInZip(actual.get().getData());
         assertThat(zipDateien)
             .hasSize(1)
             .containsExactly("DUMMY-KATALOG.pdf");
     }
 
     @Test
-    void createVergleichsDokument_PhaseNichtVorhanden_EmptyWirdZurueckGegeben() {
+    void createComparisonDocument_TailoringNotExists_EmptyReturned() {
         // arrange
         given(repositoryMock.getTailoring("DUMMY", "master")).willReturn(empty());
 
@@ -938,7 +937,7 @@ class TailoringServiceImplTest {
     }
 
     @Test
-    void createVergleichsDokument_PhaseVorhanden_VergeleichsdokuemnWirdZurueckGegeben() {
+    void createComparisonDocument_TailoringExists_ComparisonDocumentReturned() {
         // arrange
         Tailoring tailoring = Tailoring.builder().build();
         given(repositoryMock.getTailoring("DUMMY", "master")).willReturn(of(tailoring));
@@ -955,52 +954,52 @@ class TailoringServiceImplTest {
 
 
     @Test
-    void updateAusgewaehlteAnforderungen_ProjektNull_NullPointerExceptionWirdGeworfen() {
+    void updateSelectedRequirements_ProjectNull_NullPointerExceptionThrown() {
         // arrange
         String project = null;
-        String phase = "master";
-        byte[] data = "Filereader wird gemockt. Kein parsen einer File".getBytes(UTF_8);
+        String tailoring = "master";
+        byte[] data = "Filereader mocked. No file parsing".getBytes(UTF_8);
 
         // act
-        Throwable actual = catchThrowable(() -> service.updateSelectedRequirements(project, phase, data));
+        Throwable actual = catchThrowable(() -> service.updateSelectedRequirements(project, tailoring, data));
 
         // assert
         assertThat(actual).isInstanceOf(NullPointerException.class);
     }
 
     @Test
-    void updateAusgewaehlteAnforderungen_PhaseNull_NullPointerExceptionWirdGeworfen() throws IOException {
+    void updateSelectedRequirements_TailoringNull_NullPointerExceptionThrown() throws IOException {
         // arrange
         String project = "DUMMY";
-        String phase = null;
-        byte[] data = "Filereader wird gemockt. Kein parsen einer File".getBytes(UTF_8);
+        String tailoring = null;
+        byte[] data = "Filereader mocked. No file parsing".getBytes(UTF_8);
 
         // act
-        Throwable actual = catchThrowable(() -> service.updateSelectedRequirements(project, phase, data));
+        Throwable actual = catchThrowable(() -> service.updateSelectedRequirements(project, tailoring, data));
 
         // assert
         assertThat(actual).isInstanceOf(NullPointerException.class);
     }
 
     @Test
-    void updateAusgewaehlteAnforderungen_DataNull_DateiWirdNichtEingelesenVoidReturn() {
+    void updateSelectedRequirements_DataNull_NoFileReadVoidReturn() {
         // arrange
         String project = "DUMMY";
-        String phase = "master";
+        String tailoring = "master";
 
         // act
-        service.updateSelectedRequirements(project, phase, null);
+        service.updateSelectedRequirements(project, tailoring, null);
 
         // assert
         verify(tailoringAnforderungFileReaderMock, times(0)).apply(any());
     }
 
     @Test
-    void updateAusgewaehlteAnforderungen_AnforderungMitUngueltigemStatus_AnforderungMitUngueltigemStatusNichtVerarbeitet() {
+    void updateSelectedRequirements_RequirementsInValidAndInvalidStates_InvalidStateNotUpdates() {
         // arrange
         String project = "DUMMY";
-        String phase = "master";
-        byte[] data = "Filereader wird gemockt. Kein parsen einer File".getBytes(UTF_8);
+        String tailoring = "master";
+        byte[] data = "Filereader mocked. No file parsing".getBytes(UTF_8);
 
         given(tailoringAnforderungFileReaderMock.apply(data)).willReturn(Map.ofEntries(
                 new AbstractMap.SimpleEntry<>("1", asList(
@@ -1011,7 +1010,7 @@ class TailoringServiceImplTest {
         );
 
         // act
-        service.updateSelectedRequirements(project, phase, data);
+        service.updateSelectedRequirements(project, tailoring, data);
 
         // assert
         verify(requirementServiceMock, times(0)).handleSelected(eq("DUMMY"), eq("master"), eq("1"), eq("a"), any());
@@ -1019,11 +1018,11 @@ class TailoringServiceImplTest {
     }
 
     @Test
-    void updateAusgewaehlteAnforderungen_AnforderungenMitGueltigemStatus_AnforderungenWerdenVerarbeitet() {
+    void updateSelectedRequirements_RequirementsAllValidStates_AllRequirementProcesed() {
         // arrange
         String project = "DUMMY";
-        String phase = "master";
-        byte[] data = "Filereader wird gemockt. Kein parsen einer File".getBytes(UTF_8);
+        String tailoring = "master";
+        byte[] data = "Filereader mocked. No file parsing".getBytes(UTF_8);
 
         given(tailoringAnforderungFileReaderMock.apply(data)).willReturn(Map.ofEntries(
                 new AbstractMap.SimpleEntry<>("1", asList(
@@ -1034,7 +1033,7 @@ class TailoringServiceImplTest {
         );
 
         // act
-        service.updateSelectedRequirements(project, phase, data);
+        service.updateSelectedRequirements(project, tailoring, data);
 
         // assert
         verify(requirementServiceMock, times(1)).handleSelected("DUMMY", "master", "1", "a", true);
@@ -1043,11 +1042,11 @@ class TailoringServiceImplTest {
 
 
     @Test
-    void updateAusgewaehlteAnforderungen_AnforderungenMitGueltigemStatusUndTextanpassung_AnforderungenWerdenVerarbeitet() {
+    void updateSelectedRequirements_RequirementsValidStateAndTextChanges_AllRequirementsProcesed() {
         // arrange
         String project = "DUMMY";
-        String phase = "master";
-        byte[] data = "Filereader wird gemockt. Kein parsen einer File".getBytes(UTF_8);
+        String tailoring = "master";
+        byte[] data = "Filereader mocked. No file parsing".getBytes(UTF_8);
 
         given(tailoringAnforderungFileReaderMock.apply(data)).willReturn(Map.ofEntries(
                 new AbstractMap.SimpleEntry<>("1", asList(
@@ -1058,7 +1057,7 @@ class TailoringServiceImplTest {
         );
 
         // act
-        service.updateSelectedRequirements(project, phase, data);
+        service.updateSelectedRequirements(project, tailoring, data);
 
         // assert
         verify(requirementServiceMock, times(1)).handleText(eq("DUMMY"), eq("master"), eq("1"), any(), any());
@@ -1067,10 +1066,10 @@ class TailoringServiceImplTest {
     }
 
     @Test
-    void updateAusgewaehlteAnforderungen_AnforderungenMitGueltigemStatusUndLeererTextanpassung_AnforderungenOhneTextWerdenVerarbeitet() {
+    void updateSelectedRequirements_RequirementsValidStateAndEmptyTextChanges_AllRequirementsWithoutTextProcessed() {
         // arrange
         String project = "DUMMY";
-        String phase = "master";
+        String tailoring = "master";
         byte[] data = "Filereader wird gemockt. Kein parsen einer File".getBytes(UTF_8);
 
         given(tailoringAnforderungFileReaderMock.apply(data)).willReturn(Map.ofEntries(
@@ -1082,7 +1081,7 @@ class TailoringServiceImplTest {
         );
 
         // act
-        service.updateSelectedRequirements(project, phase, data);
+        service.updateSelectedRequirements(project, tailoring, data);
 
         // assert
         verify(requirementServiceMock, times(0)).handleText(eq("DUMMY"), eq("master"), eq("1"), any(), any());
@@ -1091,48 +1090,48 @@ class TailoringServiceImplTest {
 
 
     @Test
-    void deleteProjektPhase_ProjektNull_NullPointerExceptionWirdGeworfen() throws IOException {
+    void deleteTailoring_ProjectNull_NullPointerExceptionThrown() throws IOException {
         // arrange
         String project = null;
-        String phase = null;
+        String tailoring = null;
 
         // act
-        Throwable actual = catchThrowable(() -> service.deleteTailoring(project, phase));
+        Throwable actual = catchThrowable(() -> service.deleteTailoring(project, tailoring));
 
         // assert
         assertThat(actual).isInstanceOf(NullPointerException.class);
     }
 
     @Test
-    void deleteProjektPhase_PhaseNull_NullPointerExceptionWirdGeworfen() throws IOException {
+    void deleteTailoring_TailoringNull_NullPointerExceptionThrown() throws IOException {
         // arrange
         String project = "DUMMY";
-        String phase = null;
+        String tailoring = null;
 
         // act
-        Throwable actual = catchThrowable(() -> service.deleteTailoring(project, phase));
+        Throwable actual = catchThrowable(() -> service.deleteTailoring(project, tailoring));
 
         // assert
         assertThat(actual).isInstanceOf(NullPointerException.class);
     }
 
     @Test
-    void deleteProjektPhase_ProjektPhaseNichtVorhanden_KeineVerarbeitungEmptyWirdZurueckGegeben() throws IOException {
+    void deleteTailoring_TailoringNotExist_NoProcessingEmptyReturned() throws IOException {
         // arrange
         String project = "DUMMY";
-        String phase = "master";
-        given(repositoryMock.getTailoring(project, phase)).willReturn(empty());
+        String tailoring = "master";
+        given(repositoryMock.getTailoring(project, tailoring)).willReturn(empty());
 
         // act
-        Optional<Boolean> actual = service.deleteTailoring(project, phase);
+        Optional<Boolean> actual = service.deleteTailoring(project, tailoring);
 
         // assert
         assertThat(actual).isEmpty();
-        verify(repositoryMock, times(1)).getTailoring(project, phase);
+        verify(repositoryMock, times(1)).getTailoring(project, tailoring);
     }
 
     @Test
-    void deleteProjektPhase_ProjektPhaseVorhanden_TrueWirdZurueckGegeben() throws IOException {
+    void deleteTailoring_TailoringExists_TrueReturned() throws IOException {
         // arrange
         String project = "DUMMY";
         String phase = "master";
@@ -1151,7 +1150,7 @@ class TailoringServiceImplTest {
     }
 
 
-    Collection<String> dateiNamenImZip(byte[] zip) throws IOException {
+    Collection<String> fileNameInZip(byte[] zip) throws IOException {
         Collection<String> result = new ArrayList<>();
         ZipInputStream zin = new ZipInputStream(new ByteArrayInputStream(zip));
         ZipEntry entry;
