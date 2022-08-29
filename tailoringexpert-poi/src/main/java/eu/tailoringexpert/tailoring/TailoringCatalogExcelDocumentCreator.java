@@ -41,8 +41,13 @@ import java.util.Map;
 import static java.util.Objects.nonNull;
 import static java.util.stream.IntStream.range;
 
+/**
+ * Create Excel requirement catalog file.
+ *
+ * @author Michael Bädorf
+ */
 @Log4j2
-public class TailoringCatalogSpreadsheetCreator implements DocumentCreator {
+public class TailoringCatalogExcelDocumentCreator implements DocumentCreator {
 
     /**
      * {@inheritDoc}

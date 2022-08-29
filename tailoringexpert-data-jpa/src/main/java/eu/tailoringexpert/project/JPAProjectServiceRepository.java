@@ -8,12 +8,12 @@
  * it under the terms of the GNU General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/gpl-3.0.html>.
@@ -46,6 +46,11 @@ import static java.util.Optional.empty;
 import static java.util.Optional.ofNullable;
 import static java.util.stream.Collectors.toList;
 
+/**
+ * Implementation of {@link ProjectServiceRepository}.
+ *
+ * @author Michael Bädorf
+ */
 @RequiredArgsConstructor
 @Transactional
 public class JPAProjectServiceRepository implements ProjectServiceRepository {
@@ -104,13 +109,13 @@ public class JPAProjectServiceRepository implements ProjectServiceRepository {
     @Override
     public Optional<Tailoring> addTailoring(String project, Tailoring tailoring) {
         ProjectEntity projekt = projectRepository.findByIdentifier(project);
-        TailoringEntity eProjektPhase = mapper.toEntity(tailoring);
+        TailoringEntity eTailoring = mapper.toEntity(tailoring);
 
         projekt.setTailorings(isNull(projekt.getTailorings()) ? new ArrayList<>() : new ArrayList<>(projekt.getTailorings()));
-        projekt.getTailorings().add(eProjektPhase);
+        projekt.getTailorings().add(eTailoring);
 
         projectRepository.flush();
-        return ofNullable(mapper.toDomain(eProjektPhase));
+        return ofNullable(mapper.toDomain(eTailoring));
     }
 
     /**
@@ -123,7 +128,6 @@ public class JPAProjectServiceRepository implements ProjectServiceRepository {
             .map(mapper::getTailoringInformationen)
             .collect(toList());
     }
-
 
     /**
      * {@inheritDoc}

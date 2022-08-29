@@ -33,137 +33,137 @@ import java.util.List;
 import java.util.Optional;
 
 /**
- * Repository für den Zugriff auf Projektphase Daten.
+ * Service for handling (peristent) data used by @see {@link TailoringService}.
  *
- * @author baed_mi
+ * @author Michael Bädorf
  */
 public interface TailoringServiceRepository {
 
     /**
-     * Ermittlung eines Projektes anhand des Projektkürzels (fachlicher Schlüssel).
+     * Load a project using its ideentifier.
      *
-     * @param project fachlicher Schlüssel des zu ermittelenden Projektes
-     * @return Das ermittelte Project
+     * @param project project identifier
+     * @return loaded project
      */
     Optional<Project> getProject(String project);
 
     /**
-     * Aktualisiert den (persistenten) Catalog dem der in des Tailoring übergebenem Catalog.
+     * Update persistent tailoring.
      *
-     * @param project   Project, zu dem das Tailoring gehört
-     * @param tailoring Tailoring, mit zu übernhemenden Catalog und Statusinformationen
-     * @return Das aktualisierte Tailoring
+     * @param project   project identifier
+     * @param tailoring tailoring to update
+     * @return updated tailoring
      */
     Tailoring updateTailoring(String project, Tailoring tailoring);
 
     /**
-     * Aktualisiert das (persistente) Anforderungsdokument des übergebenen Tailorings.
+     * Update file in tailoring.
      *
-     * @param project   Project, zu dem das Tailoring gehört
-     * @param tailoring Name des Tailotings, zu dem das Dokument hinzugefügt werden soll
-     * @param file  Das hinzuzufügende Dokument
-     * @return Das aktualisierte Tailoring
+     * @param project   project identifier
+     * @param tailoring tailoring name
+     * @param file      file to update in tailoring
+     * @return updated tailoring
      */
     Optional<Tailoring> updateFile(String project, String tailoring, File file);
 
     /**
-     * Ermittlung eines Tailorings mit den fachlichen Schlüsseln.
+     * Load tailoring by name.
      *
-     * @param project   Project, zu dem das angefragte Tailoring gehört
-     * @param tailoring Name der zu ermittelnden Phase
-     * @return Das ermittelte Tailoring
+     * @param project   project identifier
+     * @param tailoring tailoring name
+     * @return loaded tailoring
      */
     Optional<Tailoring> getTailoring(String project, String tailoring);
 
     /**
-     * Ermittlung eines Screeningsheet eines Tailorings.
+     * Load screeningsheet (data) of tailoring.
      *
-     * @param project   Projektschlüssel
-     * @param tailoring Name des Tailorings, deren ScreeningSheet ermittelt werden soll
-     * @return Das ermittelte ScreeningSheet
+     * @param project   project identifier
+     * @param tailoring tailoring name
+     * @return loaded screeningsheet of tailoring
      */
     Optional<ScreeningSheet> getScreeningSheet(String project, String tailoring);
 
     /**
-     * Ermittlung der Screeningsheet File eines Tailorings.
+     * Load screeningsheet file of tailoring.
      *
-     * @param project   Projektschlüssel
-     * @param tailoring Name des Tailorings, deren ScreeningSheet File ermittelt werden soll
-     * @return Die ermittelte ScreeningSheet File
+     * @param project   project identifier
+     * @param tailoring tailoring name
+     * @return screeningsheet file of tailoring
      */
     Optional<byte[]> getScreeningSheetFile(String project, String tailoring);
 
     /**
-     * Aktualisierung der übergebenen Dokumentzeichnung eines Tailorings.
+     * Update document signature of tailoring.
      *
-     * @param project   Projektschlüssel
-     * @param tailoring Tailoring
-     * @param signature zu aktualisierende Zeichnung
-     * @return Die aktualisierte Zeichnung
+     * @param project   project identifier
+     * @param tailoring tailoring name
+     * @param signature signature to update
+     * @return updated signature
      */
     Optional<DocumentSignature> updateDocumentSignature(String project, String tailoring, DocumentSignature signature);
 
     /**
      * Change name of tailoring.
      *
-     * @param project   Project, dem das Tailoring zugehörig ist
-     * @param tailoring Aktueller Name des Tailorings
-     * @param name      Neuer Name des Tailorings
+     * @param project   project identifier
+     * @param tailoring tailorings current name
+     * @param name      New name des tailoring
      * @return Im Falle der Aktualisierung das neue Tailoring, sonst empty
      */
     Optional<Tailoring> updateName(String project, String tailoring, String name);
 
     /**
-     * Ermittlung des zur (Meta-) Tailoring gespeicherten Dokumente.
+     * Load filelist of tailoring.
      * <p>
-     * Die Rohdaten werden <strong>NICHT</strong> geladen!
+     * Raw-Data (bytearray) will <strong>NOT</strong> be loaded!
      *
-     * @param project   Project, dem das Tailoring zugehörig ist
-     * @param tailoring Name des Tailorings
-     * @return Liste der Dokumente ohne die "eigentlichen" Dateidaten
+     * @param project   project identifier
+     * @param tailoring tailoring name
+     * @return List of files without file data
      */
     List<File> getFileList(String project, String tailoring);
 
     /**
-     * Lädt das angefragte Dokument.
+     * Load a file.
      *
-     * @param project   Project, dem das Tailoring zugehörig ist
-     * @param tailoring Name des Tailorings
-     * @param name      Name des zu ladenden Dokuments
+     * @param project   project identifier
+     * @param tailoring tailoring name
+     * @param filename  name of file to load
      * @return Rohdaten der File
      */
-    Optional<File> getFile(String project, String tailoring, String name);
+    Optional<File> getFile(String project, String tailoring, String filename);
 
     /**
-     * Löscht das angefragte Dokument.
+     * Delete a file.
      *
-     * @param project   Project, dem das Tailoring zugehörig ist
-     * @param tailoring Name der Phase
-     * @param name      Name des zu löschenden Dokuments
-     * @return true, wenn gelöscht, in allen anderen Fällen false
+     * @param project   project identifier
+     * @param tailoring tailoring name
+     * @param filename  name of file to delete
+     * @return true, if file deleted
      */
-    boolean deleteFile(String project, String tailoring, String name);
+    boolean deleteFile(String project, String tailoring, String filename);
 
     /**
-     * Ermittlung aller Selektionsvektor Profile.
+     * Load defined selectionvector profiles.
      *
-     * @return Liste aller Profile
+     * @return List of all selectionvector profiles
      */
     Collection<SelectionVectorProfile> getSelectionVectorProfile();
 
     /**
-     * Ermittlung der konfigurierten Standard-Dokumentzeichnungen.
+     * Load all defined default document signatures.
      *
-     * @return Collection der im System definierten Standard-Dokumentzeichner
+     * @return all defined default document signatures
      */
     Collection<DocumentSignature> getDefaultSignatures();
 
     /**
-     * Löschen eines Tailorings eines Projektes
+     * Delete a tailoring.
      *
-     * @param project   Project, aus dem ein Tailoring gelöscht werden soll
-     * @param tailoring Name des zu löschenden Tailorings
-     * @return
+     * @param project   project identifier
+     * @param tailoring tailoring to delete
+     * @return true, if deleted
      */
     boolean deleteTailoring(String project, String tailoring);
 }

@@ -30,38 +30,38 @@ import java.util.Collection;
 import java.util.Optional;
 
 /**
- * Service für die Erzeugung von Dokumenten einer Projktphase.
+ * Interface for providing generated document files of tailorings.
+ * This interface has to be implemented by each tenant.
  *
- * @author baed_mi
+ * @author Michael Bädorf
  */
 @TenantInterface
 public interface DocumentService {
 
     /**
-     * Erzeugt einen neuen Anforderungskatalog für ein Tailoring.
+     * Create a base requirements document.
      *
-     * @param tailoring         Tailoring, für die der Catalog erstellt werden soll
-     * @param creationTimestamp Zeitpunkt der Dokumentstellung
-     * @return Die erzeugte Katalogdatei
+     * @param tailoring         Data to create document of
+     * @param creationTimestamp timestamp of document creation
+     * @return created document file
      */
     Optional<File> createRequirementDocument(Tailoring tailoring, LocalDateTime creationTimestamp);
 
     /**
-     * Erezuegt ein Vergleichsdokument mit den Unterschieden der Anforderungsselektion zwischen automatisiertem und
-     * manuell nachgetailorten Anforderungen.
+     * Create a comparison document of differences between automatic and manual tailored requirements.
      *
-     * @param tailoring         Projektphase, für die der Catalog erstellt werden soll
-     * @param creationTimestamp Zeitpunkt der Dokumentstellung
-     * @return Die erzeugte Katalogdatei
+     * @param tailoring         Data to create document of
+     * @param creationTimestamp timestamp of document creation
+     * @return created document file
      */
     Optional<File> createComparisonDocument(Tailoring tailoring, LocalDateTime creationTimestamp);
 
     /**
-     * Erzeugt alle Dokumente des Tailorings.
+     * Creates all documents of a tailoring.
      *
-     * @param tailoring         Tailoring, für die die Dokumente erstellt werden sollen
-     * @param creationTimestamp Zeitpunkt der Dokumentstellung
-     * @return Die erzeugte Dokumente zusammengefasst als Zip
+     * @param tailoring         Data to create document of
+     * @param creationTimestamp timestamp of document creation
+     * @return created document {@code zip-file}
      */
     Collection<File> createAll(Tailoring tailoring, LocalDateTime creationTimestamp);
 }

@@ -40,7 +40,7 @@ import java.util.stream.Collectors;
 public class PlattformScreeningSheetParameterProvider implements ScreeningSheetParameterProvider {
 
     @Override
-    public Collection<ScreeningSheetParameterEintrag> parse(InputStream is) {
+    public Collection<ScreeningSheetParameterField> parse(InputStream is) {
         final List<PDField> fields = new ArrayList<>();
         try (PDDocument document = PDDocument.load(is)) {
             fields.addAll(document.getDocumentCatalog().getAcroForm().getFields());
@@ -49,7 +49,7 @@ public class PlattformScreeningSheetParameterProvider implements ScreeningSheetP
         }
 
         List<PDField> textfelder = filterTextfelder(fields);
-        Collection<ScreeningSheetParameterEintrag> result = new ArrayList<>();
+        Collection<ScreeningSheetParameterField> result = new ArrayList<>();
         result.addAll(mapFields(textfelder, "Project", "Kuerzel"));
 
         List<PDField> selectedParameters = filterCheckedCheckboxes(fields);
@@ -79,13 +79,13 @@ public class PlattformScreeningSheetParameterProvider implements ScreeningSheetP
     }
 
 
-    private Collection<ScreeningSheetParameterEintrag> mapFields(
+    private Collection<ScreeningSheetParameterField> mapFields(
         List<PDField> fields,
         String category,
         String name) {
         return fields.stream()
             .filter(field -> name.equals(field.getPartialName()))
-            .map(field -> ScreeningSheetParameterEintrag.builder()
+            .map(field -> ScreeningSheetParameterField.builder()
                 .category(category)
                 .name(field.getPartialName())
                 .label(field.getValueAsString())

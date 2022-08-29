@@ -8,12 +8,12 @@
  * it under the terms of the GNU General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/gpl-3.0.html>.
@@ -31,7 +31,6 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.log4j.Log4j2;
 import org.springframework.hateoas.CollectionModel;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -47,8 +46,12 @@ import static eu.tailoringexpert.domain.ResourceMapper.SELECTIONVECTOR_PROFILE;
 import static org.springframework.hateoas.CollectionModel.empty;
 import static org.springframework.hateoas.server.mvc.BasicLinkBuilder.linkToCurrentMapping;
 
-@Log4j2
-@Tag(name = "AppController", description = "Main controller to retrieve top level resource urls")
+/**
+ * REST-Controller for providing main rels of plattform.
+ *
+ * @author Michael Bädorf
+ */
+@Tag(name = "App Controller", description = "Main controller to retrieve top level resource urls")
 @RestController
 @RequiredArgsConstructor
 public class AppController {
@@ -67,10 +70,10 @@ public class AppController {
         return ResponseEntity
             .ok()
             .body(empty(
-                mapper.createLink("catalog", linkToCurrentMapping().toString(), BASECATALOG, parameter),
-                mapper.createLink("project", linkToCurrentMapping().toString(), PROJECT, parameter),
-                mapper.createLink("screeningsheet", linkToCurrentMapping().toString(), SCREENINGSHEET, parameter),
-                mapper.createLink("selectionvector", linkToCurrentMapping().toString(), SELECTIONVECTOR_PROFILE, parameter)
+                    mapper.createLink("catalog", linkToCurrentMapping().toString(), BASECATALOG, parameter),
+                    mapper.createLink("project", linkToCurrentMapping().toString(), PROJECT, parameter),
+                    mapper.createLink("screeningsheet", linkToCurrentMapping().toString(), SCREENINGSHEET, parameter),
+                    mapper.createLink("selectionvector", linkToCurrentMapping().toString(), SELECTIONVECTOR_PROFILE, parameter)
                 )
             );
     }

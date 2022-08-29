@@ -33,17 +33,28 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicReference;
 
+/**
+ * Implemenation of @see {@link HTMLTemplateEngine} using Thymeleaf and Jsoup.
+ *
+ * @author Michael Bädorf
+ */
 @RequiredArgsConstructor
 public class ThymeleafTemplateEngine implements HTMLTemplateEngine {
 
     @NonNull
     private ITemplateEngine templateEngine;
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public String process(String template, Map<String, Object> parameter) {
         return templateEngine.process(template, new Context(Locale.GERMAN, parameter));
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public String toXHTML(String text, Map<String, String> placeholders) {
         AtomicReference<String> updatedText = new AtomicReference<>(text);

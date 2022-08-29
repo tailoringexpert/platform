@@ -30,6 +30,11 @@ import java.util.Collection;
 
 import static java.util.stream.Collectors.toList;
 
+/**
+ * Implementation of {@link ScreeningSheetServiceRepository}.
+ *
+ * @author Michael Bädorf
+ */
 @RequiredArgsConstructor
 public class JPAScreeningSheetServiceRepository implements ScreeningSheetServiceRepository {
     @NonNull

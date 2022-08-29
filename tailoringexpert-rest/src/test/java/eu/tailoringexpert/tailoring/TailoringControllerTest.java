@@ -885,7 +885,7 @@ class TailoringControllerTest {
         // assert
         actual.andExpect(status().isAccepted());
 
-        verify(serviceMock, times(1)).updateSelectedRequirements("SAMPLE", "master", new byte[0]);
+        verify(serviceMock, times(1)).updateImportedRequirements("SAMPLE", "master", new byte[0]);
     }
 
     @Test
@@ -902,7 +902,7 @@ class TailoringControllerTest {
         // assert
         actual.andExpect(status().isAccepted());
 
-        verify(serviceMock, times(1)).updateSelectedRequirements("SAMPLE", "master", "Excel Import File".getBytes(UTF_8));
+        verify(serviceMock, times(1)).updateImportedRequirements("SAMPLE", "master", "Excel Import File".getBytes(UTF_8));
     }
 
     @Test

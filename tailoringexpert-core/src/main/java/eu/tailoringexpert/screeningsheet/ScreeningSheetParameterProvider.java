@@ -40,5 +40,5 @@ public interface ScreeningSheetParameterProvider {
      * @param is Stream to parse
      * @return Parameter contained on screeningsheet
      */
-    Collection<ScreeningSheetParameterEintrag> parse(InputStream is);
+    Collection<ScreeningSheetParameterField> parse(InputStream is);
 }

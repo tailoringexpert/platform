@@ -12,19 +12,19 @@ package tailoring {
         createDocument(docId : String, tailoring : Tailoring, placeholders : Map<String, String>) : File
     }
 
-    class TailoringCatalogDocumentCreator {
+    class TailoringCatalogPDFDocumentCreator {
     }
-    DocumentCreator <|.. TailoringCatalogDocumentCreator
-    TailoringCatalogDocumentCreator --> "1" HTMLTemplateEngine : templateEngine
-    TailoringCatalogDocumentCreator --> "1" PDFEngine : pdfEngine
-    TailoringCatalogDocumentCreator --> "1" "BiFunction<Chapter<TailoringRequirement>, Collection<Phase>, Map<DRD, Set<String>>>" : drdProvider
+    DocumentCreator <|.. TailoringCatalogPDFDocumentCreator
+    TailoringCatalogPDFDocumentCreator --> "1" HTMLTemplateEngine : templateEngine
+    TailoringCatalogPDFDocumentCreator --> "1" PDFEngine : pdfEngine
+    TailoringCatalogPDFDocumentCreator --> "1" "BiFunction<Chapter<TailoringRequirement>, Collection<Phase>, Map<DRD, Set<String>>>" : drdProvider
 
-    class CMDocumentCreator {
+    class CMPDFDocumentCreator {
     }
-    DocumentCreator <|.. CMDocumentCreator
-    CMDocumentCreator --> "1" HTMLTemplateEngine : templateEngine
-    CMDocumentCreator --> "1" PDFEngine : pdfEngine
-    CMDocumentCreator --> "1" "BiFunction<Chapter<TailoringRequirement>, Collection<Phase>, Map<DRD, Set<String>>>" : drdProvider
+    DocumentCreator <|.. CMPDFDocumentCreator
+    CMPDFDocumentCreator --> "1" HTMLTemplateEngine : templateEngine
+    CMPDFDocumentCreator --> "1" PDFEngine : pdfEngine
+    CMPDFDocumentCreator --> "1" "BiFunction<Chapter<TailoringRequirement>, Collection<Phase>, Map<DRD, Set<String>>>" : drdProvider
 
 
     class CMElement {
@@ -34,12 +34,12 @@ package tailoring {
     }
 
 
-    class DRDDocumentCreator {
+    class DRDPDFDocumentCreator {
     }
-    DocumentCreator <|.. DRDDocumentCreator
-    DRDDocumentCreator --> "1" HTMLTemplateEngine : templateEngine
-    DRDDocumentCreator --> "1" PDFEngine : pdfEngine
-    DRDDocumentCreator --> "1" "BiFunction<Chapter<TailoringRequirement>, Collection<Phase>, Map<DRD, Set<String>>>" : drdProvider
+    DocumentCreator <|.. DRDPDFDocumentCreator
+    DRDPDFDocumentCreator --> "1" HTMLTemplateEngine : templateEngine
+    DRDPDFDocumentCreator --> "1" PDFEngine : pdfEngine
+    DRDPDFDocumentCreator --> "1" "BiFunction<Chapter<TailoringRequirement>, Collection<Phase>, Map<DRD, Set<String>>>" : drdProvider
 
     class DRDElement {
         -title : String
@@ -61,16 +61,14 @@ package tailoring {
         -chapter : String
         -text : String
         -applicable : boolean
-        -phases : Collection<String>
-        -identifiers : Collection<String>
     }
 
 
-    class ComparisonDocumentCreator {
+    class ComparisonPDFDocumentCreator {
     }
-    DckumentCreator <|.. ComparisonDocumentCreator
-    ComparisonDocumentCreator --> "1" HTMLTemplateEngine : templateEngine
-    ComparisonDocumentCreator --> "1" PDFEngine : pdfEngine
+    DckumentCreator <|.. ComparisonPDFDocumentCreator
+    ComparisonPDFDocumentCreator --> "1" HTMLTemplateEngine : templateEngine
+    ComparisonPDFDocumentCreator --> "1" PDFEngine : pdfEngine
 
     class ComparisonElement {
         -section : String

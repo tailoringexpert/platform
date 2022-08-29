@@ -91,8 +91,13 @@ import static org.springframework.http.HttpStatus.PRECONDITION_FAILED;
 import static org.springframework.http.ResponseEntity.notFound;
 
 
-@RequiredArgsConstructor
+/**
+ * REST-Controller for management of tailorings.
+ *
+ * @author Michael Bädorf
+ */
 @Tag(name = "Tailoring Controller", description = "Management of tailorings")
+@RequiredArgsConstructor
 @RestController
 public class TailoringController {
 
@@ -561,7 +566,7 @@ public class TailoringController {
         @Parameter(description = "Project identifier") @PathVariable String project,
         @Parameter(description = "Tailoring name") @PathVariable String tailoring,
         @RequestPart("datei") MultipartFile datei) throws IOException {
-        tailoringService.updateSelectedRequirements(project, tailoring, datei.getBytes());
+        tailoringService.updateImportedRequirements(project, tailoring, datei.getBytes());
         return ResponseEntity.accepted().build();
     }
 

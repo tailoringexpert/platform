@@ -961,7 +961,7 @@ class TailoringServiceImplTest {
         byte[] data = "Filereader mocked. No file parsing".getBytes(UTF_8);
 
         // act
-        Throwable actual = catchThrowable(() -> service.updateSelectedRequirements(project, tailoring, data));
+        Throwable actual = catchThrowable(() -> service.updateImportedRequirements(project, tailoring, data));
 
         // assert
         assertThat(actual).isInstanceOf(NullPointerException.class);
@@ -975,7 +975,7 @@ class TailoringServiceImplTest {
         byte[] data = "Filereader mocked. No file parsing".getBytes(UTF_8);
 
         // act
-        Throwable actual = catchThrowable(() -> service.updateSelectedRequirements(project, tailoring, data));
+        Throwable actual = catchThrowable(() -> service.updateImportedRequirements(project, tailoring, data));
 
         // assert
         assertThat(actual).isInstanceOf(NullPointerException.class);
@@ -988,7 +988,7 @@ class TailoringServiceImplTest {
         String tailoring = "master";
 
         // act
-        service.updateSelectedRequirements(project, tailoring, null);
+        service.updateImportedRequirements(project, tailoring, null);
 
         // assert
         verify(tailoringAnforderungFileReaderMock, times(0)).apply(any());
@@ -1010,7 +1010,7 @@ class TailoringServiceImplTest {
         );
 
         // act
-        service.updateSelectedRequirements(project, tailoring, data);
+        service.updateImportedRequirements(project, tailoring, data);
 
         // assert
         verify(requirementServiceMock, times(0)).handleSelected(eq("DUMMY"), eq("master"), eq("1"), eq("a"), any());
@@ -1033,7 +1033,7 @@ class TailoringServiceImplTest {
         );
 
         // act
-        service.updateSelectedRequirements(project, tailoring, data);
+        service.updateImportedRequirements(project, tailoring, data);
 
         // assert
         verify(requirementServiceMock, times(1)).handleSelected("DUMMY", "master", "1", "a", true);
@@ -1057,7 +1057,7 @@ class TailoringServiceImplTest {
         );
 
         // act
-        service.updateSelectedRequirements(project, tailoring, data);
+        service.updateImportedRequirements(project, tailoring, data);
 
         // assert
         verify(requirementServiceMock, times(1)).handleText(eq("DUMMY"), eq("master"), eq("1"), any(), any());
@@ -1081,7 +1081,7 @@ class TailoringServiceImplTest {
         );
 
         // act
-        service.updateSelectedRequirements(project, tailoring, data);
+        service.updateImportedRequirements(project, tailoring, data);
 
         // assert
         verify(requirementServiceMock, times(0)).handleText(eq("DUMMY"), eq("master"), eq("1"), any(), any());

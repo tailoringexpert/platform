@@ -43,6 +43,11 @@ import static java.util.stream.Collectors.toCollection;
 import static java.util.stream.Collectors.toList;
 import static java.util.stream.Collectors.toUnmodifiableSet;
 
+/**
+ * Implementation of {@link ScreeningSheetService}.
+ *
+ * @author Michael Bädorf
+ */
 @RequiredArgsConstructor
 public class ScreeningSheetServiceImpl implements ScreeningSheetService {
 
@@ -56,17 +61,17 @@ public class ScreeningSheetServiceImpl implements ScreeningSheetService {
     private ScreeningSheetParameterProvider screeningSheetParameterProvider;
 
     @NonNull
-    private SelectionVectorProvider selektionsVectorProvider;
+    private SelectionVectorProvider selectionVectorProvider;
 
     /**
      * {@inheritDoc}
      */
     @Override
     public SelectionVector calculateSelectionVector(@NonNull byte[] rawData) {
-        Collection<ScreeningSheetParameterEintrag> screeningSheetEingabeParameter = screeningSheetParameterProvider.parse(new ByteArrayInputStream(rawData));
-        Collection<Parameter> parameterKonfigurationsWerte = getParameter(screeningSheetEingabeParameter);
+        Collection<ScreeningSheetParameterField> screeningSheetParameters = screeningSheetParameterProvider.parse(new ByteArrayInputStream(rawData));
+        Collection<Parameter> parameters = getParameter(screeningSheetParameters);
 
-        return selektionsVectorProvider.apply(parameterKonfigurationsWerte);
+        return selectionVectorProvider.apply(parameters);
     }
 
     /**
@@ -74,16 +79,16 @@ public class ScreeningSheetServiceImpl implements ScreeningSheetService {
      */
     @Override
     public ScreeningSheet createScreeningSheet(@NonNull byte[] rawData) {
-        Collection<ScreeningSheetParameterEintrag> screeningSheetEingabeParameter = screeningSheetParameterProvider.parse(new ByteArrayInputStream(rawData));
-        Collection<Parameter> parameterConfigurationValues = getParameter(screeningSheetEingabeParameter);
+        Collection<ScreeningSheetParameterField> screeningSheetParameters = screeningSheetParameterProvider.parse(new ByteArrayInputStream(rawData));
+        Collection<Parameter> parameters = getParameter(screeningSheetParameters);
 
-        List<ScreeningSheetParameter> screeningSheetParameter = parameterConfigurationValues
+        List<ScreeningSheetParameter> screeningSheetParameter = parameters
             .stream()
             .map(mapper::createScreeningSheet)
             .collect(toList());
 
         // phasen konvertieren und an liste hinzufügen
-        List<Phase> phase = screeningSheetEingabeParameter
+        List<Phase> phase = screeningSheetParameters
             .stream()
             .filter(entry -> "phase".equalsIgnoreCase(entry.getCategory()))
             .map(entry -> Phase.fromString(entry.getName()))
@@ -92,27 +97,27 @@ public class ScreeningSheetServiceImpl implements ScreeningSheetService {
             .collect(toCollection(LinkedList::new));
         if (!phase.isEmpty()) {
             screeningSheetParameter.add(ScreeningSheetParameter.builder()
-                .category("Phase")
+                .category(ScreeningSheet.PHASE.substring(0, 1).toUpperCase(Locale.ROOT) + ScreeningSheet.PHASE.substring(1))
                 .value(phase)
                 .build());
         }
 
-        List<String> parameterConfigurationWithoutValues = parameterConfigurationValues
+        List<String> parameterConfigurationWithoutValues = parameters
             .stream()
             .map(Parameter::getName)
             .collect(Collectors.toUnmodifiableList());
 
 //         Parameter, die nicht aus der DB stammen, da sie keinen Einfluss auf Berechnung Selektionsvektor haben
-        screeningSheetParameter.addAll(screeningSheetEingabeParameter
+        screeningSheetParameter.addAll(screeningSheetParameters
             .stream()
-            .filter(entry -> !"phase".equalsIgnoreCase(entry.getCategory()) && !parameterConfigurationWithoutValues.contains(entry.getName()))
+            .filter(entry -> !ScreeningSheet.PHASE.equalsIgnoreCase(entry.getCategory()) && !parameterConfigurationWithoutValues.contains(entry.getName()))
             .map(entry -> ScreeningSheetParameter.builder()
                 .category(entry.getName().substring(0, 1).toUpperCase(Locale.GERMANY) + entry.getName().substring(1))
                 .value(entry.getLabel())
                 .build())
             .collect(toList()));
 
-        SelectionVector selectionVector = selektionsVectorProvider.apply(parameterConfigurationValues);
+        SelectionVector selectionVector = selectionVectorProvider.apply(parameters);
 
         return ScreeningSheet.builder()
             .data(rawData)
@@ -121,10 +126,10 @@ public class ScreeningSheetServiceImpl implements ScreeningSheetService {
             .build();
     }
 
-    private Collection<Parameter> getParameter(Collection<ScreeningSheetParameterEintrag> screeningSheetEingabeParameter) {
+    private Collection<Parameter> getParameter(Collection<ScreeningSheetParameterField> screeningSheetEingabeParameter) {
         Set<String> parameterNamen = screeningSheetEingabeParameter
             .stream()
-            .map(ScreeningSheetParameterEintrag::getName)
+            .map(ScreeningSheetParameterField::getName)
             .collect(toUnmodifiableSet());
         return repository.getParameter(parameterNamen);
     }

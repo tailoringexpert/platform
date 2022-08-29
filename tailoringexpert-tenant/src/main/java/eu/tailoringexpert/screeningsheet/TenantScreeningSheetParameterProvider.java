@@ -39,7 +39,7 @@ public class TenantScreeningSheetParameterProvider implements ScreeningSheetPara
     private final Map<String, ScreeningSheetParameterProvider> tenantProvider;
 
     @Override
-    public Collection<ScreeningSheetParameterEintrag> parse(InputStream is) {
+    public Collection<ScreeningSheetParameterField> parse(InputStream is) {
         ScreeningSheetParameterProvider provider = tenantProvider.get(TenantContext.getCurrentTenant());
         if (isNull(provider)) {
             return emptyList();

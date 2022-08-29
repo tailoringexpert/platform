@@ -8,12 +8,12 @@
  * it under the terms of the GNU General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/gpl-3.0.html>.
@@ -36,150 +36,156 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 
+/**
+ * Interface for working on/with tailorings.
+ *
+ * @author Michael Bädorf
+ */
 public interface TailoringService {
 
     /**
-     * Erzeugt ein neues Tailoring einschliesslich des Angforderungkatalogs mit den Parametern der übergebenen ScreeningSheet (PDF)Daten.<p>
-     * Eine Projektphase kann sich über mehrere Phasen erstrecken.
+     * Create a new tailoring.<p>
+     * A tailoring con consist of multiple phases.
      *
-     * @param name                          Name des Tailorings
-     * @param identifier                       Für DocId zu verwendende Kenneung
-     * @param screeningSheet                ScreeningSheet der Phase
-     * @param applicableSelectionVector Der anzuwendende Selektionsvektor
-     * @return Das erstellte Tailoring
+     * @param name                      Tailoring name
+     * @param identifier                DocID identifier
+     * @param screeningSheet            screeningsheet of tailoring
+     * @param applicableSelectionVector selection vector to use of selecting requirements
+     * @param catalog                   Base catalog to use for creating the tailoring
+     * @return Create tailoring
      */
     Tailoring createTailoring(String name, String identifier, ScreeningSheet screeningSheet, SelectionVector applicableSelectionVector, Catalog<BaseRequirement> catalog);
 
     /**
-     * Fügt ein neues Dokument einem Tailoring eines Projektes hinzu.
+     * Add a file to tailoring
      *
-     * @param project   Project, zu dem das Dokument hinzugefügt werden soll
-     * @param tailoring Tailoring, zu dem das Dokument hinzugefügt werden soll
-     * @param name      Name des hinzuzufügenden Dokuments
-     * @param data     Raw-Daten des Dokumentes/das File
-     * @return Tailoring, zu der das Dokument hinzugefügt wurde
+     * @param project   project identidier
+     * @param tailoring tailoring, file to add to
+     * @param name      name of file to add
+     * @param data      Raw-data of file
+     * @return Tailoring, with added file
      */
     Optional<Tailoring> addFile(String project, String tailoring, String name, byte[] data);
 
     /**
-     * Erstellt ein Anforderungsdokument für das angegebenen Tailoring des Projektes.
+     * Create a requirements document of tailoring.
      *
-     * @param project   Projektschlüssel, zu dem die Phase gehört
-     * @param tailoring Identifier des Tailorings, zu der das Dokument erstellt werden soll
-     * @return Das erstellte Dokument
+     * @param project   Project identifier
+     * @param tailoring Tailoring to create document of
+     * @return Created document file
      */
     Optional<File> createRequirementDocument(String project, String tailoring);
 
     /**
-     * Erstellt einen Dokument für den Vergleich zwischen ausgewählten Anforderungen zwischen automatischen
-     * Tailoring und Nachbearbeitung.
+     * Create a new document for camparing automatic and manual tailoring.
      *
-     * @param project   Projektschlüssel, zu dem die Phase gehört
-     * @param tailoring Identifier des Tailorings, zu der das Dokument erstellt werden soll
-     * @return Das erstellte Dokument
+     * @param project   Project identifier
+     * @param tailoring Tailoring to create comparison document of
+     * @return Created document file
      */
     Optional<File> createComparisonDocument(String project, String tailoring);
 
     /**
-     * Erstellt alle Dokumente eines Tailorinngs und fasst diese in einer Zip-File zusammen.
+     * Create all documents of tialoring.<p>
+     * Documents will be provided in {@code Zip-File}.
      *
-     * @param project   Projektschlüssel, zu dem die Phase gehört
-     * @param tailoring Identifier des Tailorings
-     * @return Zip mit allen erstellten Dokumenten
+     * @param project   Project identifier
+     * @param tailoring Tailoring to create all documents of
+     * @return Created zip-file containing all created documents
      */
     Optional<File> createDocuments(String project, String tailoring);
 
     /**
-     * Ermittlung des Anforderungskataloges des Tailorings eines Projektes.
+     * Get requirement catalog of tailoring.
      *
-     * @param project   Projektschlüssel
-     * @param tailoring Tailoring, dessen Anforderungskatalog ermittelt werden soll
-     * @return Der ermittelte Anforderungskatalog
+     * @param project   Project identifier
+     * @param tailoring Tailoring, to get catalog of
+     * @return Requirement catalog of tailoring
      */
     Optional<Catalog<TailoringRequirement>> getCatalog(String project, String tailoring);
 
     /**
-     * Ermittlung der Anforderungen eines Kapitels eines Tailorings..
+     * Get requirements of requests tailoring catalog chapter.
      *
-     * @param project   Projektschlüssel
-     * @param tailoring Tailoring
-     * @param chapter   Chapter, für die die Anforderungen ermittelt werden sollen
-     * @return Alle Anforderungen des Kapitels
+     * @param project   Project identifier
+     * @param tailoring tailoring name
+     * @param chapter   Chapter, to get requirements of
+     * @return Alle requirements of chapter
      */
     Optional<List<TailoringRequirement>> getRequirements(String project, String tailoring, String chapter);
 
     /**
-     * Ermittlung des ScreeningSheets eines Tailorings..
+     * Get screeningsheet of tailoring.
      *
-     * @param project   Projektschlüssel
-     * @param tailoring Tailoring
-     * @return ScreeningSheet der Projektphase
+     * @param project   Project identifier
+     * @param tailoring Tailoring name
+     * @return ScreeningSheet of tailoring
      */
     Optional<ScreeningSheet> getScreeningSheet(String project, String tailoring);
 
     /**
-     * Ermittlung des angwendeten Selektionsvektors eines Tailorings.
+     * Get applied selection vector of tailoring.
      *
-     * @param project   Projektschlüssel
-     * @param tailoring Tailoring
-     * @return Angewendeter Selektionsvektor der Projektphase
+     * @param project   Project identifier
+     * @param tailoring Tailoring name
+     * @return applied selection vector of tailoring
      */
     Optional<SelectionVector> getSelectionVector(String project, String tailoring);
 
     /**
-     * Ermittlung des Kapitels eines Tailorings.
+     * Get chapter of tailoring catalog.
      *
-     * @param project   Projektschlüssel
-     * @param tailoring Tailoring
-     * @param chapter   das zu ermittelnde Chapter
-     * @return Alle Kapiteldaten
+     * @param project   project identifier
+     * @param tailoring tailoring name
+     * @param chapter   number of chapter to get
+     * @return all chapter data
      */
     Optional<Chapter<TailoringRequirement>> getChapter(String project, String tailoring, String chapter);
 
     /**
-     * Ermittling der definierten Dokumentzeichnungen eines Tailorings.
+     * Get list of all document signatures of tailoring.
      *
-     * @param project   Projektschlüssel
-     * @param tailoring Tailoring
-     * @return Alle Dokumentzeichnungen einer Projektphase
+     * @param project   project identifier
+     * @param tailoring tailoring name
+     * @return all document signature of tailoring
      */
     Optional<Collection<DocumentSignature>> getDocumentSignatures(String project, String tailoring);
 
     /**
-     * Aktualisierung der übergebenen Dokumentzeichnung eines Tailorings.
+     * Update document signature of tailoring.
      *
-     * @param project   Projektschlüssel
-     * @param tailoring Tailoring
-     * @param signature zu aktualisierende Zeichnung
-     * @return Die aktualisierte Zeichnung
+     * @param project   project identifier
+     * @param tailoring tailoring name
+     * @param signature signature to update
+     * @return updates signature
      */
     Optional<DocumentSignature> updateDocumentSignature(String project, String tailoring, DocumentSignature signature);
 
     /**
-     * Ändert den Namen eines Tailorings.
+     * Change name of tailoring.
      *
-     * @param project   Project, dem das Tailoring zugehörig ist
-     * @param tailoring Aktueller Name des Tailorings
-     * @param name      Neuer Name des Tailorings
-     * @return Im Falle der Aktualisierung das neue Tailoring, sonst empty
+     * @param project   project identidier
+     * @param tailoring current name of tailoring
+     * @param name      new name of tailoring
+     * @return in case of successful change new tailoring, otherwise empty
      */
     Optional<TailoringInformation> updateName(String project, String tailoring, String name);
 
     /**
-     * Ändert den ausgewählt Status der Anforderungen des übergebenen Byte Arrays.
+     * Import requirements contained in an Excel data byte arrays.
      *
-     * @param project   fachlicher Identifier des Projekts
-     * @param tailoring Tailoring, deren Anforderungsauswahl geändert werden sollen
-     * @param data      ByteArray mit Einträgen für Chapter, Position und Status
+     * @param project   project identifier
+     * @param tailoring tailoring, to import requirements to
+     * @param data      Excel ByteArray containing entries of Chapter, Position und State
      */
-    void updateSelectedRequirements(String project, String tailoring, byte[] data);
+    void updateImportedRequirements(String project, String tailoring, byte[] data);
 
     /**
-     * Löschen des übergebenen Tailorings.
+     * Delete a tailoring.
      *
-     * @param project   Project, in der zu löschenden Projektphase
-     * @param tailoring Das zu löschende Tailoring
-     * @return
+     * @param project   project identifier
+     * @param tailoring tailorig to delete
+     * @return true, if deleted
      */
     Optional<Boolean> deleteTailoring(String project, String tailoring);
 }
