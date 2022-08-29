@@ -75,7 +75,7 @@ class RequirementServiceImplTest {
     }
 
     @Test
-    void handleSelected_RequirementNotSelectedBeforeNowSelected_SelectedChanged() {
+    void handleSelected_RequirementNotSelectedBefore_StateSelected() {
         // arrange
         given(repositoryMock.getRequirement("SAMPLE", "master", "1.1", "a")).willReturn(of(
                 TailoringRequirement.builder()

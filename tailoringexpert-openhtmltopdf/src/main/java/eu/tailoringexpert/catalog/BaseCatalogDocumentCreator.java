@@ -29,7 +29,6 @@ import eu.tailoringexpert.domain.Catalog;
 import eu.tailoringexpert.domain.Phase;
 import eu.tailoringexpert.renderer.PDFEngine;
 import eu.tailoringexpert.tailoring.DRDElement;
-import eu.tailoringexpert.tailoring.CatalogElement;
 import eu.tailoringexpert.renderer.HTMLTemplateEngine;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
@@ -60,7 +59,7 @@ import static java.util.Objects.nonNull;
 import static java.util.stream.Collectors.toCollection;
 
 /**
- * Erzeugung eines PDF Anforderungkataloges.
+ * Create a base catalog PDF file.
  *
  * @author Michael Bädorf
  */
@@ -87,8 +86,8 @@ public class BaseCatalogDocumentCreator implements DocumentCreator {
             Map<String, Object> parameter = new HashMap<>();
             parameter.put("catalogVersion", catalog.getVersion());
 
-            Collection<CatalogElement> anforderungen = new LinkedList<>();
-            parameter.put("requirements", anforderungen);
+            Collection<BaseCatalogElement> requirements = new LinkedList<>();
+            parameter.put("requirements", requirements);
 
             Collection<DRDElement> drds = new LinkedList<>();
             parameter.put("drds", drds);
@@ -101,7 +100,7 @@ public class BaseCatalogDocumentCreator implements DocumentCreator {
             catalog.getToc().getChapters()
                 .forEach(chapter -> {
                     bookmarks.put(chapter.getNumber(), chapter.getName());
-                    addChapter(chapter, 1, anforderungen);
+                    addChapter(chapter, 1, requirements);
                 });
 
             String html = templateEngine.process(catalog.getVersion() + "/basecatalog", parameter);
@@ -114,11 +113,10 @@ public class BaseCatalogDocumentCreator implements DocumentCreator {
     }
 
 
-    void addChapter(Chapter<BaseRequirement> chapter, int level, Collection<CatalogElement> rows) {
-        rows.add(CatalogElement.builder()
+    void addChapter(Chapter<BaseRequirement> chapter, int level, Collection<BaseCatalogElement> rows) {
+        rows.add(BaseCatalogElement.builder()
             .text(templateEngine.toXHTML(chapter.getNumber() + " " + chapter.getName(), emptyMap()))
             .chapter(chapter.getNumber())
-            .applicable(true)
             .build());
         chapter.getRequirements()
             .forEach(requirement -> addRequirement(requirement, rows, chapter.getNumber()));
@@ -157,7 +155,7 @@ public class BaseCatalogDocumentCreator implements DocumentCreator {
         return result;
     }
 
-    void addRequirement(BaseRequirement requirement, Collection<CatalogElement> rows, String chapter) {
+    void addRequirement(BaseRequirement requirement, Collection<BaseCatalogElement> rows, String chapter) {
         String referenzText = buildReferenceText(requirement);
 
         List<String> identifiers = new ArrayList<>();
@@ -177,7 +175,7 @@ public class BaseCatalogDocumentCreator implements DocumentCreator {
         }
 
         log.trace(chapter + "." + requirement.getPosition() + ": " + identifiers + ", " + phases);
-        rows.add(CatalogElement.builder()
+        rows.add(BaseCatalogElement.builder()
             .phases(phases)
             .identifiers(identifiers)
             .reference(templateEngine.toXHTML(referenzText, emptyMap()))

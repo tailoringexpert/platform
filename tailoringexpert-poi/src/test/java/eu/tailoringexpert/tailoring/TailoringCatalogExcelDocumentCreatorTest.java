@@ -57,9 +57,9 @@ import static java.util.Objects.nonNull;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @Log4j2
-class TailoringCatalogSpreadsheetCreatorTest {
+class TailoringCatalogExcelDocumentCreatorTest {
 
-    TailoringCatalogSpreadsheetCreator creator;
+    TailoringCatalogExcelDocumentCreator creator;
     ObjectMapper objectMapper;
     BiConsumer<String, byte[]> fileSaver = (dateiName, data) -> {
         try {
@@ -78,7 +78,7 @@ class TailoringCatalogSpreadsheetCreatorTest {
         this.objectMapper.registerModules(new ParameterNamesModule(), new JavaTimeModule(), new Jdk8Module());
         this.objectMapper.disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES);
 
-        this.creator = new TailoringCatalogSpreadsheetCreator();
+        this.creator = new TailoringCatalogExcelDocumentCreator();
 
     }
 

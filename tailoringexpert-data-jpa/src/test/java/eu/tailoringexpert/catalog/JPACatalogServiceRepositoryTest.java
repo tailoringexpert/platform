@@ -46,18 +46,18 @@ import static org.mockito.Mockito.verify;
 class JPACatalogServiceRepositoryTest {
 
     JPACatalogServiceRepositoryMapper mapperMock;
-    BaseCatalogRepository katalogDefinitionRepositoryMock;
+    BaseCatalogRepository baseCatalogRepositoryMock;
     DRDRepository drdRepositoryMock;
     JPACatalogServiceRepository repository;
 
     @BeforeEach
     void setup() {
-        this.katalogDefinitionRepositoryMock = mock(BaseCatalogRepository.class);
+        this.baseCatalogRepositoryMock = mock(BaseCatalogRepository.class);
         this.drdRepositoryMock = mock(DRDRepository.class);
         this.mapperMock = mock(JPACatalogServiceRepositoryMapper.class);
         this.repository = new JPACatalogServiceRepository(
             this.mapperMock,
-            this.katalogDefinitionRepositoryMock,
+            this.baseCatalogRepositoryMock,
             this.drdRepositoryMock
         );
     }
@@ -65,7 +65,7 @@ class JPACatalogServiceRepositoryTest {
     @Test
     void createKatalog_KatalogUebergeben_OptionalNullWirdZurueckGegeben() {
         // arrange
-        given(katalogDefinitionRepositoryMock.setValidUntilForEmptyValidUntil(any())).willReturn(0);
+        given(baseCatalogRepositoryMock.setValidUntilForEmptyValidUntil(any())).willReturn(0);
 
         Catalog<BaseRequirement> catalog = Catalog.<BaseRequirement>builder()
             .toc(Chapter.<BaseRequirement>builder().build())
@@ -74,7 +74,7 @@ class JPACatalogServiceRepositoryTest {
         given(mapperMock.createCatalog(catalog)).willReturn(toSave);
 
         BaseCatalogEntity savedKatalog = null;
-        given(katalogDefinitionRepositoryMock.save(toSave)).willReturn(savedKatalog);
+        given(baseCatalogRepositoryMock.save(toSave)).willReturn(savedKatalog);
 
         Catalog<BaseRequirement> savedMappedCatalog = null;
         given(mapperMock.createCatalog(savedKatalog)).willReturn(savedMappedCatalog);
@@ -86,13 +86,13 @@ class JPACatalogServiceRepositoryTest {
         assertThat(actual).isEmpty();
         verify(mapperMock, times(1)).createCatalog(catalog);
         verify(mapperMock, times(1)).createCatalog(savedKatalog);
-        verify(katalogDefinitionRepositoryMock, times(1)).save(toSave);
+        verify(baseCatalogRepositoryMock, times(1)).save(toSave);
     }
 
     @Test
     void createKatalog_KatalogUebergeben_OptionalNotNullWirdZurueckGegeben() {
         // arrange
-        given(katalogDefinitionRepositoryMock.setValidUntilForEmptyValidUntil(any())).willReturn(0);
+        given(baseCatalogRepositoryMock.setValidUntilForEmptyValidUntil(any())).willReturn(0);
 
         Catalog<BaseRequirement> catalog = Catalog.<BaseRequirement>builder()
             .toc(Chapter.<BaseRequirement>builder().build())
@@ -101,7 +101,7 @@ class JPACatalogServiceRepositoryTest {
         given(mapperMock.createCatalog(catalog)).willReturn(toSave);
 
         BaseCatalogEntity savedKatalog = null;
-        given(katalogDefinitionRepositoryMock.save(toSave)).willReturn(savedKatalog);
+        given(baseCatalogRepositoryMock.save(toSave)).willReturn(savedKatalog);
 
         Catalog<BaseRequirement> savedMappedCatalog = Catalog.<BaseRequirement>builder().build();
         given(mapperMock.createCatalog(savedKatalog)).willReturn(savedMappedCatalog);
@@ -113,7 +113,7 @@ class JPACatalogServiceRepositoryTest {
         assertThat(actual).isNotNull();
         verify(mapperMock, times(1)).createCatalog(catalog);
         verify(mapperMock, times(1)).createCatalog(savedKatalog);
-        verify(katalogDefinitionRepositoryMock, times(1)).save(toSave);
+        verify(baseCatalogRepositoryMock, times(1)).save(toSave);
     }
 
     @Test
@@ -126,16 +126,16 @@ class JPACatalogServiceRepositoryTest {
 
         // assert
         assertThat(actual).isEmpty();
-        verify(katalogDefinitionRepositoryMock, times(0)).save(any());
+        verify(baseCatalogRepositoryMock, times(0)).save(any());
         verify(mapperMock, times(0)).createCatalog(any(Catalog.class));
         verify(mapperMock, times(0)).createCatalog(any(BaseCatalogEntity.class));
-        verify(katalogDefinitionRepositoryMock, times(0)).save(any());
+        verify(baseCatalogRepositoryMock, times(0)).save(any());
     }
 
     @Test
     void createKatalog_KatalogMitDRDBereitsGespeichertUebergeben_DRDWirdNichtNochmalsGespeichertOptionalWirdZurueckGegeben() {
         // arrange
-        given(katalogDefinitionRepositoryMock.setValidUntilForEmptyValidUntil(any())).willReturn(0);
+        given(baseCatalogRepositoryMock.setValidUntilForEmptyValidUntil(any())).willReturn(0);
 
 
         Catalog<BaseRequirement> catalog = Catalog.<BaseRequirement>builder()
@@ -156,7 +156,7 @@ class JPACatalogServiceRepositoryTest {
         given(mapperMock.createCatalog(catalog)).willReturn(toSave);
 
         BaseCatalogEntity savedKatalog = null;
-        given(katalogDefinitionRepositoryMock.save(toSave)).willReturn(savedKatalog);
+        given(baseCatalogRepositoryMock.save(toSave)).willReturn(savedKatalog);
 
         Catalog<BaseRequirement> savedMappedCatalog = null;
         given(mapperMock.createCatalog(savedKatalog)).willReturn(savedMappedCatalog);
@@ -169,13 +169,13 @@ class JPACatalogServiceRepositoryTest {
         verify(drdRepositoryMock, times(0)).save(any());
         verify(mapperMock, times(1)).createCatalog(catalog);
         verify(mapperMock, times(1)).createCatalog(savedKatalog);
-        verify(katalogDefinitionRepositoryMock, times(1)).save(toSave);
+        verify(baseCatalogRepositoryMock, times(1)).save(toSave);
     }
 
     @Test
     void createKatalog_KatalogMitDRDNochNichtGespeichertUebergeben_DRDWirdGespeichertOptionalWirdZurueckGegeben() {
         // arrange
-        given(katalogDefinitionRepositoryMock.setValidUntilForEmptyValidUntil(any())).willReturn(0);
+        given(baseCatalogRepositoryMock.setValidUntilForEmptyValidUntil(any())).willReturn(0);
 
         DRD drd = DRD.builder()
             .action("R")
@@ -201,7 +201,7 @@ class JPACatalogServiceRepositoryTest {
         given(mapperMock.createCatalog(catalog)).willReturn(toSave);
 
         BaseCatalogEntity savedKatalog = null;
-        given(katalogDefinitionRepositoryMock.save(toSave)).willReturn(savedKatalog);
+        given(baseCatalogRepositoryMock.save(toSave)).willReturn(savedKatalog);
 
         Catalog<BaseRequirement> savedMappedCatalog = null;
         given(mapperMock.createCatalog(savedKatalog)).willReturn(savedMappedCatalog);
@@ -214,13 +214,13 @@ class JPACatalogServiceRepositoryTest {
         verify(drdRepositoryMock, times(1)).save(any());
         verify(mapperMock, times(1)).createCatalog(catalog);
         verify(mapperMock, times(1)).createCatalog(savedKatalog);
-        verify(katalogDefinitionRepositoryMock, times(1)).save(toSave);
+        verify(baseCatalogRepositoryMock, times(1)).save(toSave);
     }
 
     @Test
     void getKatalog_UnbekannteVersion_EmptyWirdZurueckGegeben() {
         // arrange
-        given(katalogDefinitionRepositoryMock.findByVersion("4711")).willReturn(null);
+        given(baseCatalogRepositoryMock.findByVersion("4711")).willReturn(null);
 
         // act
         Optional<Catalog<BaseRequirement>> actual = repository.getCatalog("4711");
@@ -233,7 +233,7 @@ class JPACatalogServiceRepositoryTest {
     void getKatalog_BekannteVersion_OptionalWirdZurueckGegeben() {
         // arrange
         BaseCatalogEntity baseCatalogEntity = BaseCatalogEntity.builder().build();
-        given(katalogDefinitionRepositoryMock.findByVersion("4711")).willReturn(baseCatalogEntity);
+        given(baseCatalogRepositoryMock.findByVersion("4711")).willReturn(baseCatalogEntity);
 
         given(mapperMock.getCatalog(baseCatalogEntity)).willReturn(Catalog.<BaseRequirement>builder().build());
 

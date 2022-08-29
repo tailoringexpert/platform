@@ -37,6 +37,11 @@ import org.mapstruct.MappingTarget;
 
 import static java.util.Objects.nonNull;
 
+/**
+ * Mapper used by {@link JPARequirementServiceRepository} to convert domain and entity objects.
+ *
+ * @author Michael Bädorf
+ */
 @Mapper(componentModel = "jsr330")
 public abstract class JPARequirementServiceRepositoryMapper {
 
@@ -46,45 +51,14 @@ public abstract class JPARequirementServiceRepositoryMapper {
     @Setter
     private DRDRepository drdRepository;
 
-
-    /**
-     * Erstelluing eines neuen Domänen-Objektes mit den Daten der Entität.
-     *
-     * @param entity Quelle
-     * @return Neu erestelltes Domänen-Objekt
-     */
     abstract TailoringRequirement toDomain(TailoringRequirementEntity entity);
 
-    /**
-     * Aktualisierung der Entität  mit den Daten des Domänen-Objektes.
-     *
-     * @param domain Quelle
-     * @param entity Ziele
-     */
     abstract void updateRequirement(TailoringRequirement domain, @MappingTarget TailoringRequirementEntity entity);
 
-    /**
-     * Erstelluing eines neuen Domänen-Objektes mit den Daten der Entität.
-     *
-     * @param entity Quelle
-     * @return Neu erestelltes Domänen-Ibjekt
-     */
     abstract Chapter<TailoringRequirement> toDomain(TailoringCatalogChapterEntity entity);
 
-    /**
-     * Aktualisierung des persistenten Datenobjektes mit den Daten des domain Objektes.
-     *
-     * @param domain Quelle
-     * @param entity Ziele
-     */
     abstract void updateChapter(Chapter<TailoringRequirement> domain, @MappingTarget TailoringCatalogChapterEntity entity);
 
-    /**
-     * Ermittelt die Entitöt des im Domänen-Objekt verwendeten Logos.
-     *
-     * @param domain Quelle
-     * @return Entität des Logs aus der Datenbank
-     */
     LogoEntity resolve(Logo domain) {
         return nonNull(domain) ? logoRepository.findByName(domain.getName()) : null;
     }

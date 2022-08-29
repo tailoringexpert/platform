@@ -74,7 +74,7 @@ public class TailoringConfiguration {
 
     @Bean
     DocumentCreator projektPhaseKatalogSpreadsheetCreator() {
-        return new TailoringCatalogSpreadsheetCreator();
+        return new TailoringCatalogExcelDocumentCreator();
     }
 
     @Bean

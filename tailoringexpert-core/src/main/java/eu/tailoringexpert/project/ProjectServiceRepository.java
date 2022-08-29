@@ -49,8 +49,8 @@ public interface ProjectServiceRepository {
     /**
      * Persists provided project wPersistierung einese neuen Projektes.
      *
-     * @param project Das nei zu persistierende Project
-     * @return Daten des neuen Projektes
+     * @param project project to create
+     * @return created project
      */
     Project createProject(Project project);
 

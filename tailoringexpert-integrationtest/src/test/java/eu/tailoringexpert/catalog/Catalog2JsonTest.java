@@ -70,7 +70,7 @@ class Catalog2JsonTest {
 
     @Test
     @DirtiesContext
-    void katalog2Json() throws IOException {
+    void catalog2Json() throws IOException {
         // arrange
 
         // act

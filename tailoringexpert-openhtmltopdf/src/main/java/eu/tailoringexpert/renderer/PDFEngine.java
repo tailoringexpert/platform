@@ -38,7 +38,7 @@ import static java.lang.String.format;
 import static org.apache.pdfbox.io.MemoryUsageSetting.setupTempFileOnly;
 
 /**
- * Erzeugung der PDF File aus HTML Content.
+ * Engine for creating PDF output of HTML input.
  *
  * @author Michael Bädorf
  */

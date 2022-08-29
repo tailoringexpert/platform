@@ -34,15 +34,15 @@ import eu.tailoringexpert.repository.LogoRepository;
 import eu.tailoringexpert.screeningsheet.PlattformScreeningSheetParameterProvider;
 import eu.tailoringexpert.screeningsheet.PlattformSelectionVectorProvider;
 import eu.tailoringexpert.screeningsheet.SelectionVectorProvider;
-import eu.tailoringexpert.tailoring.CMDocumentCreator;
-import eu.tailoringexpert.tailoring.CMSpreadsheetCreator;
-import eu.tailoringexpert.tailoring.ComparisonDocumentCreator;
-import eu.tailoringexpert.tailoring.DRDDocumentCreator;
+import eu.tailoringexpert.tailoring.CMPDFDocumentCreator;
+import eu.tailoringexpert.tailoring.CMExcelDocumentCreator;
+import eu.tailoringexpert.tailoring.ComparisonPDFDocumentCreator;
+import eu.tailoringexpert.tailoring.DRDPDFDocumentCreator;
 import eu.tailoringexpert.tailoring.DocumentCreator;
 import eu.tailoringexpert.tailoring.DocumentService;
 import eu.tailoringexpert.tailoring.PlattformDocumentService;
-import eu.tailoringexpert.tailoring.TailoringCatalogDocumentCreator;
-import eu.tailoringexpert.tailoring.TailoringCatalogSpreadsheetCreator;
+import eu.tailoringexpert.tailoring.TailoringCatalogPDFDocumentCreator;
+import eu.tailoringexpert.tailoring.TailoringCatalogExcelDocumentCreator;
 import lombok.NonNull;
 import lombok.SneakyThrows;
 import lombok.extern.log4j.Log4j2;
@@ -153,7 +153,7 @@ public class PlattformConfiguration {
         @NonNull @Qualifier("plattformTemplateEngine") ThymeleafTemplateEngine templateEngine,
         @NonNull @Qualifier("plattformPdfEngine") PDFEngine pdfEngine,
         @NonNull BiFunction<Chapter<TailoringRequirement>, Collection<Phase>, Map<DRD, Set<String>>> drdProvider) {
-        return new TailoringCatalogDocumentCreator(templateEngine, pdfEngine, drdProvider);
+        return new TailoringCatalogPDFDocumentCreator(templateEngine, pdfEngine, drdProvider);
     }
 
     @Bean
@@ -161,7 +161,7 @@ public class PlattformConfiguration {
         @NonNull @Qualifier("plattformTemplateEngine") ThymeleafTemplateEngine templateEngine,
         @NonNull @Qualifier("plattformPdfEngine") PDFEngine pdfEngine,
         @NonNull BiFunction<Chapter<TailoringRequirement>, Collection<Phase>, Map<DRD, Set<String>>> drdProvider) {
-        return new CMDocumentCreator(templateEngine, pdfEngine, drdProvider);
+        return new CMPDFDocumentCreator(templateEngine, pdfEngine, drdProvider);
     }
 
     @Bean
@@ -169,7 +169,7 @@ public class PlattformConfiguration {
         @NonNull @Qualifier("plattformTemplateEngine") ThymeleafTemplateEngine templateEngine,
         @NonNull @Qualifier("plattformPdfEngine") PDFEngine pdfEngine,
         @NonNull BiFunction<Chapter<TailoringRequirement>, Collection<Phase>, Map<DRD, Set<String>>> drdProvider) {
-        return new DRDDocumentCreator(templateEngine, pdfEngine, drdProvider);
+        return new DRDPDFDocumentCreator(templateEngine, pdfEngine, drdProvider);
     }
 
     @Bean
@@ -177,19 +177,19 @@ public class PlattformConfiguration {
         @NonNull @Qualifier("plattformTemplateEngine") ThymeleafTemplateEngine templateEngine,
         @NonNull @Qualifier("plattformPdfEngine") PDFEngine pdfEngine,
         @NonNull BiFunction<Chapter<TailoringRequirement>, Collection<Phase>, Map<DRD, Set<String>>> drdProvider) {
-        return new ComparisonDocumentCreator(templateEngine, pdfEngine);
+        return new ComparisonPDFDocumentCreator(templateEngine, pdfEngine);
     }
 
     @Bean
     DocumentCreator plattformCMSpreadsheetCreator(
         @NonNull @Qualifier("plattformExcelSupplier") Function<String, File> plattformExcelSupplier,
         @NonNull BiFunction<Chapter<TailoringRequirement>, Collection<Phase>, Map<DRD, Set<String>>> drdProvider) {
-        return new CMSpreadsheetCreator(plattformExcelSupplier, drdProvider);
+        return new CMExcelDocumentCreator(plattformExcelSupplier, drdProvider);
     }
 
     @Bean
     DocumentCreator plattformTailoringCatalogSpreadsheetCreator() {
-        return new TailoringCatalogSpreadsheetCreator();
+        return new TailoringCatalogExcelDocumentCreator();
     }
 
     @Bean

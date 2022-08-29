@@ -8,12 +8,12 @@
  * it under the terms of the GNU General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/gpl-3.0.html>.
@@ -32,7 +32,6 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.java.Log;
 import org.springframework.hateoas.EntityModel;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -45,9 +44,13 @@ import java.io.IOException;
 import static eu.tailoringexpert.domain.ResourceMapper.SCREENINGSHEET;
 import static java.util.Optional.ofNullable;
 
-@Log
+/**
+ * REST-Controller for handling screeningsheets.
+ *
+ * @author Michael Bädorf
+ */
+@Tag(name = "ScreeningSheet Controller", description = "Handling screeningsheets")
 @RequiredArgsConstructor
-@Tag(name = "ScreeningSheet Controller", description = "Creating of screeningsheets")
 @RestController
 public class ScreeningSheetController {
 

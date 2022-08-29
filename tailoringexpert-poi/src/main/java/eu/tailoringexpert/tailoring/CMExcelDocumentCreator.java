@@ -57,9 +57,14 @@ import static java.util.stream.IntStream.range;
 import static org.apache.poi.ss.usermodel.FillPatternType.SOLID_FOREGROUND;
 import static org.apache.poi.ss.usermodel.IndexedColors.GREY_25_PERCENT;
 
+/**
+ * Create Excel Compliance Matrix file.
+ *
+ * @author Michael Bädorf
+ */
 @Log4j2
 @RequiredArgsConstructor
-public class CMSpreadsheetCreator implements DocumentCreator {
+public class CMExcelDocumentCreator implements DocumentCreator {
 
     @NonNull
     private Function<String, java.io.File> templateSupplier;

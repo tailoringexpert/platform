@@ -45,110 +45,46 @@ import org.mapstruct.MappingTarget;
 
 import static java.util.Objects.nonNull;
 
-
+/**
+ * Mapper used by {@link JPATailoringServiceRepository} to convert domain and entity objects.
+ *
+ * @author Michael Bädorf
+ */
 @Mapper(componentModel = "jsr330")
 public abstract class JPATailoringServiceRepositoryMapper {
 
     @Setter
     private LogoRepository logoRepository;
 
-    /**
-     * Erstelluing eines neuen Domänen-Objektes mit den Daten der Entität.
-     *
-     * @param entity Quelle
-     * @return Neu erestelltes Domänen-Objekt
-     */
-
     abstract Project toDomain(ProjectEntity entity);
 
-    /**
-     * Erstelluing eines neuen Domänen-Objektes mit den Daten der Entität.
-     *
-     * @param entity Quelle
-     * @return Neu erestelltes Domänen-Objekt
-     */
     abstract Tailoring toDomain(TailoringEntity entity);
 
-    /**
-     * Übernahme der Werte für
-     * <ul>
-     * <li>Catalog</li>
-     * <li>Selektionsvektor</li>
-     * <li>Status</li>
-     * </ul>
-     * in die Entität.
-     *
-     * @param domain Quelle
-     * @param entity Ziel
-     */
     @BeanMapping(ignoreByDefault = true)
     @Mapping(target = "catalog", source = "domain.catalog")
     @Mapping(target = "selectionVector", source = "domain.selectionVector")
     @Mapping(target = "state", source = "domain.state")
     abstract void addCatalog(Tailoring domain, @MappingTarget TailoringEntity entity);
 
-    /**
-     * Erstellung einer Entität mit den Daten des Domänen-Objektes.
-     *
-     * @param domain Quelle
-     * @param entity
-     */
     abstract void update(File domain, @MappingTarget FileEntity entity);
 
-
-    /**
-     * ScreeningSheet mit Selektionsvektor und Parametern, aber <strong>ohne</strong> die ScreeningSheet File.
-     *
-     * @param entity Quelle
-     * @return ScreeningSheet mit Selektionsvektor und Parametern, aber <strong>ohne</strong> die ScreeningSheet File.
-     */
     @BeanMapping(ignoreByDefault = true)
     @Mapping(target = "selectionVector", source = "entity.selectionVector")
     @Mapping(target = "parameters", source = "entity.parameters")
     abstract ScreeningSheet toScreeningSheetParameters(ScreeningSheetEntity entity);
 
-    /**
-     * Übernahme der Dokumentzeichung in die Entität.
-     *
-     * @param domain Quelle der zu übernehmenden Daten
-     * @param entity Aktualisuerungsziel
-     */
     abstract void updateDocumentSignature(DocumentSignature domain, @MappingTarget DocumentSignatureEntity entity);
 
-    /**
-     * Konvertiert die persistente Dokumentzeichnung in das korrespondierende Domänenobjekt.
-     *
-     * @param entity Quelle
-     * @return Neu erstelltes Domänenobjekt
-     */
     abstract DocumentSignature toDomain(DocumentSignatureEntity entity);
 
     @Mapping(target = "data", ignore = true)
     abstract File toDomain(FileEntity entity);
 
-    /**
-     * Konvertiert ein persistentes SelectionVector Profil in ein Domänenobjekt.
-     *
-     * @param entity Quelle
-     * @return Neu erstelltes Domänenobjekt
-     */
     abstract SelectionVectorProfile toDomain(SelectionVectorProfileEntity entity);
 
-    /**
-     * Konvertiert einen persistenten Dokumentzeichner in eine Dokumentzeichnung.
-     *
-     * @param entity Quelle
-     * @return Neu erstelltes Domänenobjekt
-     */
     @Mapping(target = "applicable", constant = "false")
     abstract DocumentSignature getDefaultSignatures(DocumentSigneeEntity entity);
 
-    /**
-     * Ermittelt die Entitöt des im Domänen-Objekt verwendeten Logos.
-     *
-     * @param domain Quelle
-     * @return Entität des Logs aus der Datenbank
-     */
     LogoEntity resolve(Logo domain) {
         return nonNull(domain) ? logoRepository.findByName(domain.getName()) : null;
     }

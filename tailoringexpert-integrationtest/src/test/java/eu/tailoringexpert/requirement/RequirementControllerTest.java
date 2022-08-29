@@ -149,7 +149,7 @@ class RequirementControllerTest {
 
     @Test
     @DirtiesContext
-    void createrRequirement_PredecessorRequirementA_NewRequirementA1CreatedAndAdded() throws IOException {
+    void createRequirement_PredecessorRequirementA_NewRequirementA1CreatedAndAdded() throws IOException {
         // arrange
         CreateProjectTO createdProjekt = projektCreator.get();
 

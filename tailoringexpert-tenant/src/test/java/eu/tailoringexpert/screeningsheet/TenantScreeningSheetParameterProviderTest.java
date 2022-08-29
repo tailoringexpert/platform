@@ -61,7 +61,7 @@ class TenantScreeningSheetParameterProviderTest {
         InputStream is = new ByteArrayInputStream("Blindobjekt".getBytes(UTF_8));
 
         // act
-        Collection<ScreeningSheetParameterEintrag> actual = provder.parse(is);
+        Collection<ScreeningSheetParameterField> actual = provder.parse(is);
 
         // assert
         verify(tenentScreeningSheetParameterProvider, times(0)).parse(is);
@@ -75,10 +75,10 @@ class TenantScreeningSheetParameterProviderTest {
         InputStream is = new ByteArrayInputStream("Blindobjekt".getBytes(UTF_8));
 
         given(tenentScreeningSheetParameterProvider.parse(is))
-            .willReturn(List.of(ScreeningSheetParameterEintrag.builder().category("Param1").name("Value1").build()));
+            .willReturn(List.of(ScreeningSheetParameterField.builder().category("Param1").name("Value1").build()));
 
         // act
-        Collection<ScreeningSheetParameterEintrag> actual = provder.parse(is);
+        Collection<ScreeningSheetParameterField> actual = provder.parse(is);
 
         // assert
         verify(tenentScreeningSheetParameterProvider, times(1)).parse(is);

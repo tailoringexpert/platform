@@ -95,33 +95,33 @@ class ScreeningSheetServiceImplTest {
             data = is.readAllBytes();
         }
 
-        List<ScreeningSheetParameterEintrag> screeningSheetParameters = List.of(
-            ScreeningSheetParameterEintrag.builder()
+        List<ScreeningSheetParameterField> screeningSheetParameters = List.of(
+            ScreeningSheetParameterField.builder()
                 .category("Produkttyp")
                 .name("SAT")
                 .label("Satellite")
                 .build(),
-            ScreeningSheetParameterEintrag.builder()
+            ScreeningSheetParameterField.builder()
                 .category("Einsatzzweck")
                 .name("Erdbeobachtung")
                 .label("Erdbeobachtung")
                 .build(),
-            ScreeningSheetParameterEintrag.builder()
+            ScreeningSheetParameterField.builder()
                 .category("Anwendungscharakter")
                 .name("wissenschaftlich")
                 .label("wissenschaftliche Anwendung")
                 .build(),
-            ScreeningSheetParameterEintrag.builder()
+            ScreeningSheetParameterField.builder()
                 .category("Lebensdauer")
                 .name("Dauer1")
                 .label("t < 2 Jahre")
                 .build(),
-            ScreeningSheetParameterEintrag.builder()
+            ScreeningSheetParameterField.builder()
                 .category("Programmatische Bewertung")
                 .name("Programmatik1")
                 .label("erforderlich")
                 .build(),
-            ScreeningSheetParameterEintrag.builder()
+            ScreeningSheetParameterField.builder()
                 .category("Kosten/Budget")
                 .name("Budget1")
                 .label("<2 Mio")
@@ -134,7 +134,7 @@ class ScreeningSheetServiceImplTest {
         ArgumentCaptor<Set<String>> parameterCaptor = ArgumentCaptor.forClass(Set.class);
         Collection<Parameter> parameter = screeningSheetParameters
             .stream()
-            .map(ScreeningSheetParameterEintrag::getName)
+            .map(ScreeningSheetParameterField::getName)
             .map(name -> Parameter.builder().name(name).build())
             .collect(toUnmodifiableSet());
         given(repositoryMock.getParameter(parameterCaptor.capture()))
@@ -151,7 +151,7 @@ class ScreeningSheetServiceImplTest {
         assertThat(actual).isNotNull();
 
         assertThat(parameterCaptor.getValue()).containsAll(screeningSheetParameters.stream()
-            .map(ScreeningSheetParameterEintrag::getName)
+            .map(ScreeningSheetParameterField::getName)
             .collect(toSet())
         );
 
@@ -193,13 +193,13 @@ class ScreeningSheetServiceImplTest {
             assert nonNull(is);
             data = is.readAllBytes();
         }
-        List<ScreeningSheetParameterEintrag> screeningSheetParameters = List.of(
-            ScreeningSheetParameterEintrag.builder()
+        List<ScreeningSheetParameterField> screeningSheetParameters = List.of(
+            ScreeningSheetParameterField.builder()
                 .category("Produkttyp")
                 .name("SAT")
                 .label("Satellit")
                 .build(),
-            ScreeningSheetParameterEintrag.builder()
+            ScreeningSheetParameterField.builder()
                 .category("Project")
                 .name("Kuerzel")
                 .label("DUMMY")

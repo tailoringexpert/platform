@@ -76,9 +76,14 @@ import static org.springframework.http.HttpStatus.BAD_REQUEST;
 import static org.springframework.http.HttpStatus.NO_CONTENT;
 import static org.springframework.http.ResponseEntity.notFound;
 
+/**
+ * REST-Controller for management of projects.
+ *
+ * @author Michael Bädorf
+ */
+@Tag(name = "Project Controller", description = "Management of projects")
 @Log4j2
 @AllArgsConstructor
-@Tag(name = "Project Controller", description = "Managements of projects")
 @RestController
 public class ProjectController {
 

@@ -24,9 +24,14 @@ package eu.tailoringexpert.screeningsheet;
 import lombok.Builder;
 import lombok.Value;
 
+/**
+ * Data object for screeningsheet parameters to pass to plattform.
+ *
+ * @author Michael Bädorf
+ */
 @Builder
 @Value
-public class ScreeningSheetParameterEintrag {
+public class ScreeningSheetParameterField {
 
     private String category;
     private String name;

@@ -36,7 +36,6 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
-import lombok.extern.java.Log;
 import org.springframework.hateoas.EntityModel;
 import org.springframework.hateoas.UriTemplate;
 import org.springframework.http.ResponseEntity;
@@ -49,9 +48,13 @@ import org.springframework.web.bind.annotation.RestController;
 
 import static org.springframework.http.ResponseEntity.notFound;
 
-@Log
+/**
+ * REST-Controller for handling requirements.
+ *
+ * @author Michael Bädorf
+ */
+@Tag(name = "Requirement Controller", description = "Management of requirements")
 @RequiredArgsConstructor
-@Tag(name = "Requirement Controller", description = "Verwaltung von Anforderungen")
 @RestController
 public class RequirementController {
 

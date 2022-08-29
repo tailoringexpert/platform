@@ -48,35 +48,34 @@ import static java.util.Collections.disjoint;
 import static java.util.Objects.isNull;
 import static java.util.stream.Collectors.toUnmodifiableSet;
 
+/**
+ * Mapper for converting data object in @see {@link TailoringService}.
+ *
+ * @author Michael Bädorf
+ */
 @Mapper
 @SuppressWarnings("java:S1610")
 public abstract class TailoringServiceMapper {
 
-    /**
-     * Erstellt ein neues Domänen-Objekt mit den Werten der Phasen.
-     *
-     * @param domain Quelle
-     * @return Das erstellte Domänen-Objekt
-     */
     @BeanMapping(ignoreByDefault = true)
     @Mapping(target = "name", source = "domain.name")
     @Mapping(target = "phases", source = "domain.phases")
     abstract TailoringInformation toTailoringInformation(Tailoring domain);
 
-    /**
-     * Konvertiert einen übergebenen Anforderungskatalog in einen projektspezifischen Anforderungskatalog.
-     *
-     * @param catalog         Der zu konvertierende Catalog
-     * @param screeningSheet  ScreeningSheet mit den Informationen für die Anwendbarkeit von Anforderungen
-     * @param selectionVector Selektionsvektor für die Anwendbarkeit von Anforderungen
-     * @return konvertierter Projektkatalog
-     */
     abstract Catalog<TailoringRequirement> toTailoringCatalog(
         Catalog<BaseRequirement> catalog,
         @Context ScreeningSheet screeningSheet,
         @Context SelectionVector selectionVector
     );
 
+    /**
+     * Function to set selected state of a requirement after value mapping has performed/finished.
+     *
+     * @param baseRequirement base requirement containing rules for selecting in automatic tailoring
+     * @param screeningSheet  screeningsheet to use
+     * @param selectionVector selectionvector to use for selecting the requirement
+     * @param builder         data object to set selected state
+     */
     @AfterMapping
     void toTailoringRequirement(
         BaseRequirement baseRequirement,
@@ -91,7 +90,7 @@ public abstract class TailoringServiceMapper {
             .collect(toUnmodifiableSet());
 
         Collection<Phase> phases = filterPhases(screeningSheet.getParameters());
-        boolean isRelevantPhase = containsScreeningPhase(phases, baseRequirement.getPhases());
+        boolean isRelevantPhase = containsPhases(phases, baseRequirement.getPhases());
         baseRequirement.getIdentifiers()
             .stream()
             .filter(identifier -> isRelevantPhase)
@@ -110,6 +109,12 @@ public abstract class TailoringServiceMapper {
             .ifPresentOrElse(applicability -> builder.selected(TRUE), () -> builder.selected(FALSE));
     }
 
+    /**
+     * Filters phases provided in parameters
+     *
+     * @param parameters parameters to filter phases
+     * @return collection containg only phase
+     */
     private Collection<Phase> filterPhases(Collection<ScreeningSheetParameter> parameters) {
         return (Collection<Phase>) parameters
             .stream()
@@ -119,15 +124,29 @@ public abstract class TailoringServiceMapper {
             .getValue();
     }
 
-    private boolean containsScreeningPhase(
+    /**
+     * Check, if phases of screening parameters exists in base catalog requirment phases.
+     *
+     * @param screeningPhases   phases provided in screeningsheet paranmeters
+     * @param requirementPhases phase defined in base catalog requirement
+     * @return
+     */
+    private boolean containsPhases(
         Collection<Phase> screeningPhases,
         Collection<Phase> requirementPhases) {
         return isNull(requirementPhases) || requirementPhases.isEmpty() ||
             !disjoint(requirementPhases, screeningPhases);
     }
 
-    private boolean containsAllLimitations(Collection<String> screeningParameter, Collection<String> requirements) {
-        return screeningParameter.containsAll(requirements);
+    /**
+     * Chek, if all limitation definined in requirement are fulfilled.
+     *
+     * @param screeningParameter
+     * @param requirement
+     * @return
+     */
+    private boolean containsAllLimitations(Collection<String> screeningParameter, Collection<String> requirement) {
+        return screeningParameter.containsAll(requirement);
     }
 
 }

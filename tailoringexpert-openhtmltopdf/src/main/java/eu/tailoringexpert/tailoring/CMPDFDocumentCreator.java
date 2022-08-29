@@ -46,13 +46,13 @@ import static java.util.Collections.emptyMap;
 import static java.util.Objects.nonNull;
 
 /**
- * Erzeugt eine neue PDF Compliance Matrix.
+ * Create PDF Compliance Matrix.
  *
  * @author Michael Bädorf
  */
 @RequiredArgsConstructor
 @Log4j2
-public class CMDocumentCreator implements DocumentCreator {
+public class CMPDFDocumentCreator implements DocumentCreator {
 
     @NonNull
     private HTMLTemplateEngine templateEngine;
@@ -113,5 +113,4 @@ public class CMDocumentCreator implements DocumentCreator {
                 .action(entry.getKey().getAction())
                 .build()));
     }
-
 }

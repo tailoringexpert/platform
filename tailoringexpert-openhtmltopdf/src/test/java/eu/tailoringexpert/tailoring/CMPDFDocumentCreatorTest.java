@@ -29,15 +29,18 @@ import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.fasterxml.jackson.module.paramnames.ParameterNamesModule;
 import eu.tailoringexpert.FileSaver;
 import eu.tailoringexpert.KatalogWebServerPortConsumer;
-import eu.tailoringexpert.domain.File;
+import eu.tailoringexpert.domain.Chapter;
 import eu.tailoringexpert.domain.DocumentSignature;
-import eu.tailoringexpert.domain.DocumentSignatureState;
-import eu.tailoringexpert.domain.Catalog;
-import eu.tailoringexpert.domain.Tailoring;
+import eu.tailoringexpert.domain.File;
 import eu.tailoringexpert.domain.TailoringRequirement;
 import eu.tailoringexpert.renderer.HTMLTemplateEngine;
 import eu.tailoringexpert.renderer.PDFEngine;
 import eu.tailoringexpert.renderer.ThymeleafTemplateEngine;
+import eu.tailoringexpert.domain.DRD;
+import eu.tailoringexpert.domain.DocumentSignatureState;
+import eu.tailoringexpert.domain.Catalog;
+import eu.tailoringexpert.domain.Phase;
+import eu.tailoringexpert.domain.Tailoring;
 import io.github.cdimascio.dotenv.Dotenv;
 import lombok.extern.log4j.Log4j2;
 import org.junit.jupiter.api.AfterAll;
@@ -48,13 +51,16 @@ import org.mockserver.client.MockServerClient;
 import org.thymeleaf.spring5.SpringTemplateEngine;
 import org.thymeleaf.templateresolver.FileTemplateResolver;
 
+import java.io.IOException;
 import java.io.InputStream;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.AbstractMap.SimpleEntry;
+import java.util.AbstractMap;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
+import java.util.function.BiFunction;
 
 import static eu.tailoringexpert.domain.Phase.A;
 import static eu.tailoringexpert.domain.Phase.B;
@@ -75,18 +81,17 @@ import static org.mockserver.model.HttpRequest.request;
 import static org.mockserver.model.HttpResponse.response;
 
 @Log4j2
-class TailoringCatalogDocumentCreatorTest {
+class CMPDFDocumentCreatorTest {
 
     static int mockServerPort = 1080;
     static MockServerClient mockServer;
     KatalogWebServerPortConsumer webServerPortConsumer;
     String templateHome;
     String assetHome;
-    DRDProvider drdProviderMock;
-    DRDApplicablePredicate drdApplicablePredicate;
     ObjectMapper objectMapper;
     FileSaver fileSaver;
-    TailoringCatalogDocumentCreator creator;
+    BiFunction<Chapter<TailoringRequirement>, Collection<Phase>, Map<DRD, Set<String>>> drdProviderMock;
+    CMPDFDocumentCreator creator;
 
     @BeforeAll
     static void beforeAll() {
@@ -125,16 +130,15 @@ class TailoringCatalogDocumentCreatorTest {
         HTMLTemplateEngine templateEngine = new ThymeleafTemplateEngine(springTemplateEngine);
 
         this.drdProviderMock = new DRDProvider(new DRDApplicablePredicate(Map.ofEntries(
-            new SimpleEntry<>(ZERO, unmodifiableCollection(asList("MDR"))),
-            new SimpleEntry<>(A, unmodifiableCollection(asList("SRR"))),
-            new SimpleEntry<>(B, unmodifiableCollection(asList("PDR"))),
-            new SimpleEntry<>(C, unmodifiableCollection(asList("CDR"))),
-            new SimpleEntry<>(D, unmodifiableCollection(asList("AR", "DRB", "FRR", "LRR"))),
-            new SimpleEntry<>(E, unmodifiableCollection(asList("ORR"))),
-            new SimpleEntry<>(F, unmodifiableCollection(asList("EOM")))
+            new AbstractMap.SimpleEntry<>(ZERO, unmodifiableCollection(asList("MDR"))),
+            new AbstractMap.SimpleEntry<>(A, unmodifiableCollection(asList("SRR"))),
+            new AbstractMap.SimpleEntry<>(B, unmodifiableCollection(asList("PDR"))),
+            new AbstractMap.SimpleEntry<>(C, unmodifiableCollection(asList("CDR"))),
+            new AbstractMap.SimpleEntry<>(D, unmodifiableCollection(asList("AR", "DRB", "FRR", "LRR"))),
+            new AbstractMap.SimpleEntry<>(E, unmodifiableCollection(asList("ORR"))),
+            new AbstractMap.SimpleEntry<>(F, unmodifiableCollection(asList("EOM")))
         )));
-
-        this.creator = new TailoringCatalogDocumentCreator(
+        this.creator = new CMPDFDocumentCreator(
             templateEngine,
             new PDFEngine("TailoringExpert", get(this.templateHome).toAbsolutePath().toString()),
             drdProviderMock
@@ -142,7 +146,7 @@ class TailoringCatalogDocumentCreatorTest {
     }
 
     @Test
-    void createDokument() throws Exception {
+    void createDokument() throws IOException {
         // arrange
         Catalog<TailoringRequirement> catalog;
         try (InputStream is = this.getClass().getResourceAsStream("/tailoringcatalog.json")) {
@@ -155,7 +159,7 @@ class TailoringCatalogDocumentCreatorTest {
         Collection<DocumentSignature> zeichnungen = of(
             DocumentSignature.builder()
                 .applicable(true)
-                .faculty("Software")
+                .faculty("Sofware")
                 .signee("Hans Dampf")
                 .state(DocumentSignatureState.AGREED)
                 .build()
@@ -192,6 +196,6 @@ class TailoringCatalogDocumentCreatorTest {
 
         // assert
         assertThat(actual).isNotNull();
-        fileSaver.accept("tailoringcatalog.pdf", actual.getData());
+        fileSaver.accept("cm.pdf", actual.getData());
     }
 }

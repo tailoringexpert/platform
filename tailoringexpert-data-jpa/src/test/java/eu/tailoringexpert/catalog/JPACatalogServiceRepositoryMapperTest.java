@@ -61,7 +61,7 @@ class JPACatalogServiceRepositoryMapperTest {
     }
 
     @Test
-    void createKatalog_KatalogNull_NullWirdZurueckGegeben() {
+    void createCatalog_CatalogNull_NullReturned() {
         // arrange
         Catalog<BaseRequirement> catalog = null;
 
@@ -73,7 +73,7 @@ class JPACatalogServiceRepositoryMapperTest {
     }
 
     @Test
-    void createKatalog_KatalogTocNull_KatalogDefinitionEntityOhneTocWirdErzeugt() {
+    void createCatalog_CatalogTocNull_BaseCatalogWithoutTocCreated() {
         // arrange
         Catalog<BaseRequirement> catalog = Catalog.<BaseRequirement>builder()
             .version("8.2.1")
@@ -91,7 +91,7 @@ class JPACatalogServiceRepositoryMapperTest {
     }
 
     @Test
-    void createKatalog_Katalog_KatalogDefinitionEntityWirdErzeugt() {
+    void createCatalog_CatalogValid_BaseCatalogEntityCreated() {
         // arrange
         Catalog<BaseRequirement> catalog = Catalog.<BaseRequirement>builder()
             .version("8.2.1")
@@ -118,7 +118,7 @@ class JPACatalogServiceRepositoryMapperTest {
     }
 
     @Test
-    void toDomain_KatalogDefinitionEntityNull_NullWirdZureuckGegeben() {
+    void createCatalog_BaseCatalogEntityNull_NullReturned() {
         // arrange
         BaseCatalogEntity katalog = null;
 
@@ -130,7 +130,7 @@ class JPACatalogServiceRepositoryMapperTest {
     }
 
     @Test
-    void toDomain_KatalogDefinitionEntityKeinToc_KatalogOhneTocWirdErzeugt() {
+    void createCatalog_BaseCatalogNoToc_CatalogWithoutTocCreated() {
         // arrange
         BaseCatalogEntity katalog = BaseCatalogEntity.builder()
             .version("8.2.1")
@@ -146,7 +146,7 @@ class JPACatalogServiceRepositoryMapperTest {
     }
 
     @Test
-    void toDomain_KatalogDefinitionEntity_KatalogWirdErzeugt() {
+    void createCatalog_BaseCatalogEntityValid_CatalogCreated() {
         // arrange
         BaseCatalogEntity katalog = BaseCatalogEntity.builder()
             .version("8.2.1")
@@ -163,7 +163,7 @@ class JPACatalogServiceRepositoryMapperTest {
     }
 
     @Test
-    void resolve_NullLogo_NullWirdZurueckgegeben() {
+    void resolve_LogoNull_NullReturned() {
         // arrange
         Logo logo = null;
 
@@ -176,7 +176,7 @@ class JPACatalogServiceRepositoryMapperTest {
     }
 
     @Test
-    void resolve_LogoUebergeben_LogoEntityWirdZurueckgegeben() {
+    void resolve_LogoProvided_LogoEntityReturned() {
         // arrange
         Logo logo = Logo.builder().name("ECSS").build();
 
@@ -193,7 +193,7 @@ class JPACatalogServiceRepositoryMapperTest {
     }
 
     @Test
-    void resolve_NullDRD_NullWirdZurueckgegeben() {
+    void resolve_DRDNull_NullReturned() {
         // arrange
         DRD drd = null;
 
@@ -206,7 +206,7 @@ class JPACatalogServiceRepositoryMapperTest {
     }
 
     @Test
-    void resolve_DRDUebergeben_ExistierendesDRDEntityWirdZurueckgegeben() {
+    void resolve_DRDValid_ExistingDRDReturned() {
         // arrange
         DRD drd = DRD.builder().number("drd-47.11").build();
 

@@ -8,12 +8,12 @@
  * it under the terms of the GNU General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/gpl-3.0.html>.
@@ -40,6 +40,11 @@ import static java.util.Optional.empty;
 import static java.util.Optional.of;
 import static java.util.Optional.ofNullable;
 
+/**
+ * Implementation of {@link RequirementServiceRepository}.
+ *
+ * @author Michael Bädorf
+ */
 @RequiredArgsConstructor
 @Transactional
 public class JPARequirementServiceRepository implements RequirementServiceRepository {
@@ -59,31 +64,30 @@ public class JPARequirementServiceRepository implements RequirementServiceReposi
         @NonNull String tailoring,
         @NonNull String chapter,
         @NonNull String position) {
-        ProjectEntity byKuerzel = projectRepository.findByIdentifier(project);
-        if (isNull(byKuerzel)) {
+        ProjectEntity byIdentifier = projectRepository.findByIdentifier(project);
+        if (isNull(byIdentifier)) {
             return empty();
         }
 
-        Optional<TailoringEntity> projektPhase = byKuerzel.getTailoring(tailoring);
-        if (projektPhase.isEmpty()) {
+        Optional<TailoringEntity> oTailoring = byIdentifier.getTailoring(tailoring);
+        if (oTailoring.isEmpty()) {
             return empty();
         }
 
-        Optional<TailoringCatalogChapterEntity> gruppe = projektPhase.get()
+        Optional<TailoringCatalogChapterEntity> oChapter = oTailoring.get()
             .getCatalog()
             .getToc()
             .getChapter(chapter);
-        if (gruppe.isEmpty()) {
+        if (oChapter.isEmpty()) {
             return empty();
         }
 
-        return ofNullable(mapper.toDomain(gruppe.get()
+        return ofNullable(mapper.toDomain(oChapter.get()
             .getRequirements()
             .stream()
             .filter(anforderung -> position.equals(anforderung.getPosition()))
             .findFirst()
             .orElse(null)));
-
     }
 
     /**
@@ -96,23 +100,23 @@ public class JPARequirementServiceRepository implements RequirementServiceReposi
         @NonNull String chapter,
         @NonNull TailoringRequirement requirement) {
 
-        Optional<TailoringCatalogChapterEntity> gruppe = findKapitel(project, tailoring, chapter);
-        if (gruppe.isEmpty()) {
+        Optional<TailoringCatalogChapterEntity> oChapter = findChapter(project, tailoring, chapter);
+        if (oChapter.isEmpty()) {
             return empty();
         }
 
-        Optional<TailoringRequirementEntity> eAnforderung = gruppe.get()
+        Optional<TailoringRequirementEntity> oRequirement = oChapter.get()
             .getRequirements()
             .stream()
             .filter(a -> requirement.getPosition().equals(a.getPosition()))
             .findFirst();
 
-        if (eAnforderung.isEmpty()) {
+        if (oRequirement.isEmpty()) {
             return empty();
         }
 
-        mapper.updateRequirement(requirement, eAnforderung.get());
-        return of(mapper.toDomain(eAnforderung.get()));
+        mapper.updateRequirement(requirement, oRequirement.get());
+        return of(mapper.toDomain(oRequirement.get()));
     }
 
     /**
@@ -124,8 +128,8 @@ public class JPARequirementServiceRepository implements RequirementServiceReposi
         @NonNull String tailoring,
         @NonNull String chapter) {
 
-        Optional<TailoringCatalogChapterEntity> anforderungGruppe = findKapitel(project, tailoring, chapter);
-        return ofNullable(mapper.toDomain(anforderungGruppe.orElse(null)));
+        Optional<TailoringCatalogChapterEntity> oChapter = findChapter(project, tailoring, chapter);
+        return ofNullable(mapper.toDomain(oChapter.orElse(null)));
     }
 
     /**
@@ -135,17 +139,17 @@ public class JPARequirementServiceRepository implements RequirementServiceReposi
     public Optional<Chapter<TailoringRequirement>> updateSelected(
         @NonNull String project,
         @NonNull String tailoring,
-        @NonNull Chapter<TailoringRequirement> gruppe) {
+        @NonNull Chapter<TailoringRequirement> chapter) {
 
-        Optional<TailoringCatalogChapterEntity> root = findKapitel(project, tailoring, gruppe.getNumber());
-        if (root.isEmpty()) {
+        Optional<TailoringCatalogChapterEntity> oChapter = findChapter(project, tailoring, chapter.getNumber());
+        if (oChapter.isEmpty()) {
             return empty();
         }
 
-        root.get().allChapters()
-            .forEachOrdered(entityGruppe -> {
-                Chapter<TailoringRequirement> domainGruppe = gruppe.getChapter(entityGruppe.getNumber());
-                entityGruppe.getRequirements()
+        oChapter.get().allChapters()
+            .forEachOrdered(subChapter -> {
+                Chapter<TailoringRequirement> domainGruppe = chapter.getChapter(subChapter.getNumber());
+                subChapter.getRequirements()
                     .stream()
                     .sorted(comparing(TailoringRequirementEntity::getPosition))
                     .forEachOrdered(anforderung -> mapper.updateRequirement(
@@ -153,8 +157,7 @@ public class JPARequirementServiceRepository implements RequirementServiceReposi
                         anforderung)
                     );
             });
-        return of(mapper.toDomain(root.get()));
-
+        return of(mapper.toDomain(oChapter.get()));
     }
 
     /**
@@ -164,27 +167,27 @@ public class JPARequirementServiceRepository implements RequirementServiceReposi
     public Optional<Chapter<TailoringRequirement>> updateChapter(
         @NonNull String project,
         @NonNull String tailoring,
-        @NonNull Chapter<TailoringRequirement> gruppe) {
+        @NonNull Chapter<TailoringRequirement> chapter) {
 
-        Optional<TailoringCatalogChapterEntity> kapitel = findKapitel(project, tailoring, gruppe.getNumber());
-        if (kapitel.isEmpty()) {
+        Optional<TailoringCatalogChapterEntity> oChapter = findChapter(project, tailoring, chapter.getNumber());
+        if (oChapter.isEmpty()) {
             return empty();
         }
-        mapper.updateChapter(gruppe, kapitel.get());
-        return of(mapper.toDomain(kapitel.get()));
+        mapper.updateChapter(chapter, oChapter.get());
+        return of(mapper.toDomain(oChapter.get()));
     }
 
-    private Optional<TailoringCatalogChapterEntity> findKapitel(
+    private Optional<TailoringCatalogChapterEntity> findChapter(
         String projekt,
-        String phase,
-        String kapitel) {
+        String tailoring,
+        String chapter) {
 
         ProjectEntity byKuerzel = projectRepository.findByIdentifier(projekt);
         if (isNull(byKuerzel)) {
             return empty();
         }
 
-        Optional<TailoringEntity> projektPhase = byKuerzel.getTailoring(phase);
+        Optional<TailoringEntity> projektPhase = byKuerzel.getTailoring(tailoring);
         if (projektPhase.isEmpty()) {
             return empty();
         }
@@ -192,6 +195,6 @@ public class JPARequirementServiceRepository implements RequirementServiceReposi
         return projektPhase.get()
             .getCatalog()
             .getToc()
-            .getChapter(kapitel);
+            .getChapter(chapter);
     }
 }

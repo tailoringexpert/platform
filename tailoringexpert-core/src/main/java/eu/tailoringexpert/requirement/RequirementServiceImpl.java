@@ -40,6 +40,11 @@ import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
 import static java.util.Optional.empty;
 
+/**
+ * Implementation of {@link RequirementService}.
+ *
+ * @author Michael Bädorf
+ */
 @Log4j2
 @RequiredArgsConstructor
 public class RequirementServiceImpl implements RequirementService {
@@ -53,17 +58,17 @@ public class RequirementServiceImpl implements RequirementService {
     @Override
     public Optional<TailoringRequirement> handleSelected(String project, String tailoring, String chapter, String position, Boolean selected) {
         log.info("STARTED  | trying to set selection state of requirements of {}:{}:{}.{} to {}", project, tailoring, chapter, position, selected);
-        Optional<TailoringRequirement> tailoringRequirment = repository.getRequirement(project, tailoring, chapter, position);
-        if (tailoringRequirment.isPresent()) {
-            log.info(tailoringRequirment.get().getSelected() + ": neu {}", selected);
-            if (!tailoringRequirment.get().getSelected().equals(selected)) {
-                TailoringRequirement requirement = handleSelected(tailoringRequirment.get(), selected, ZonedDateTime.now());
+        Optional<TailoringRequirement> tailoringRequirement = repository.getRequirement(project, tailoring, chapter, position);
+        if (tailoringRequirement.isPresent()) {
+            log.info(tailoringRequirement.get().getSelected() + ": neu {}", selected);
+            if (!tailoringRequirement.get().getSelected().equals(selected)) {
+                TailoringRequirement requirement = handleSelected(tailoringRequirement.get(), selected, ZonedDateTime.now());
                 Optional<TailoringRequirement> result = repository.updateRequirement(project, tailoring, chapter, requirement);
                 log.info("FINISHED | setting selection state of requirement {}:{}:{}.{} to {}", project, tailoring, chapter, position, selected);
                 return result;
             }
             log.info("FINISHED | no change in selection state of requirements of {}:{}:{}.{}", project, tailoring, chapter, position);
-            return tailoringRequirment;
+            return tailoringRequirement;
         }
         log.info("FINISHED | trying to set selection state of requirements of {}:{}:{}.{} to {}", project, tailoring, chapter, position, selected);
         return empty();
@@ -104,14 +109,14 @@ public class RequirementServiceImpl implements RequirementService {
             return empty();
         }
 
-        TailoringRequirement anforderung = requirement.get();
-        if (!anforderung.getText().equals(text)) {
-            anforderung.setText(text);
-            if (nonNull(anforderung.getReference())) {
-                anforderung.getReference().setChanged(true);
+        TailoringRequirement tailoringRequirement = requirement.get();
+        if (!tailoringRequirement.getText().equals(text)) {
+            tailoringRequirement.setText(text);
+            if (nonNull(tailoringRequirement.getReference())) {
+                tailoringRequirement.getReference().setChanged(true);
             }
-            anforderung.setTextChanged(ZonedDateTime.now());
-            return repository.updateRequirement(project, tailoring, chapter, anforderung);
+            tailoringRequirement.setTextChanged(ZonedDateTime.now());
+            return repository.updateRequirement(project, tailoring, chapter, tailoringRequirement);
         }
         log.info("FINISHED | text of requirements of {}:{}:{}.{} set to {}", project, tailoring, chapter, position, requirement.get().getText());
         return requirement;
@@ -125,12 +130,12 @@ public class RequirementServiceImpl implements RequirementService {
                                                             String chapter, String position,
                                                             String text) {
         log.info("STARTED  | trying to create requirement of {}:{}:{} after {} with text {}", project, tailoring, chapter, position, text);
-        Optional<Chapter<TailoringRequirement>> kapitel = repository.getChapter(project, tailoring, chapter);
-        if (kapitel.isEmpty()) {
+        Optional<Chapter<TailoringRequirement>> oChapter = repository.getChapter(project, tailoring, chapter);
+        if (oChapter.isEmpty()) {
             return empty();
         }
 
-        OptionalInt requirementPosition = kapitel.get().indexOfRequirement(position);
+        OptionalInt requirementPosition = oChapter.get().indexOfRequirement(position);
         if (requirementPosition.isEmpty()) {
             return empty();
         }
@@ -146,7 +151,7 @@ public class RequirementServiceImpl implements RequirementService {
         }
         TailoringRequirement toCreate = builder.build();
 
-        List<TailoringRequirement> requirements = kapitel.get().getRequirements();
+        List<TailoringRequirement> requirements = oChapter.get().getRequirements();
         requirements.add(requirementPosition.getAsInt() + 1, toCreate);
 
         // nachfolgende Positionen für neue Anforderungen anpassen
@@ -161,13 +166,13 @@ public class RequirementServiceImpl implements RequirementService {
                 }
             });
 
-        Optional<Chapter<TailoringRequirement>> updatedKapitel = repository.updateChapter(project, tailoring, kapitel.get());
-        if (updatedKapitel.isEmpty()) {
+        Optional<Chapter<TailoringRequirement>> updateChapter = repository.updateChapter(project, tailoring, oChapter.get());
+        if (updateChapter.isEmpty()) {
             return empty();
         }
 
         log.info("FINISHED | created new requirement  {}:{}:{}.{}", project, tailoring, chapter, toCreate.getPosition());
-        return updatedKapitel.get().getRequirement(toCreate.getPosition());
+        return updateChapter.get().getRequirement(toCreate.getPosition());
     }
 
     private Chapter<TailoringRequirement> handleSelected(Chapter<TailoringRequirement> chapter, Boolean selected, ZonedDateTime now) {

@@ -27,6 +27,11 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;
 
+/**
+ * Spring Data access layer of {@link DocumentSigneeEntity}.
+ *
+ * @author Michael Bädorf
+ */
 public interface DokumentSigneeRepository extends JpaRepository<DocumentSigneeEntity, Long> {
 
     String CACHE_DOCUMENTSIGNEE = "DocumentSigneeRepository#findAll";

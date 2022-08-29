@@ -58,6 +58,11 @@ import static java.util.Optional.empty;
 import static java.util.Optional.of;
 import static java.util.Optional.ofNullable;
 
+/**
+ * Implementation of {@link TailoringService}.
+ *
+ * @author Michael Bädorf
+ */
 @Log4j2
 @RequiredArgsConstructor
 public class TailoringServiceImpl implements TailoringService {
@@ -89,7 +94,7 @@ public class TailoringServiceImpl implements TailoringService {
                                      ScreeningSheet screeningSheet,
                                      SelectionVector applicableSelectionVector,
                                      Catalog<BaseRequirement> catalog) {
-        Catalog<TailoringRequirement> anforderungsCatalog = mapper.toTailoringCatalog(
+        Catalog<TailoringRequirement> tailoringCatalog = mapper.toTailoringCatalog(
             catalog, screeningSheet, applicableSelectionVector
         );
 
@@ -98,14 +103,14 @@ public class TailoringServiceImpl implements TailoringService {
             .identifier(identifier)
             .screeningSheet(screeningSheet)
             .selectionVector(applicableSelectionVector)
-            .catalog(anforderungsCatalog)
+            .catalog(tailoringCatalog)
             .signatures(repository.getDefaultSignatures())
             .state(TailoringState.ACTIVE);
 
         // prüfe, ob phase(n) bereits vorhanden
         screeningSheet.getParameters()
             .stream()
-            .filter(parameter -> "phase".equalsIgnoreCase(parameter.getCategory()))
+            .filter(parameter -> ScreeningSheet.PHASE.equalsIgnoreCase(parameter.getCategory()))
             .findFirst()
             .ifPresent(parameter -> result.phases((Collection<Phase>) parameter.getValue()));
 
@@ -118,16 +123,16 @@ public class TailoringServiceImpl implements TailoringService {
      */
     @Override
     @SneakyThrows
-    public Optional<Tailoring> addFile(String project, String tailoring, String dateiname, byte[] data) {
-        Optional<Tailoring> projektPhase = repository.getTailoring(project, tailoring);
-        if (projektPhase.isEmpty()) {
+    public Optional<Tailoring> addFile(String project, String tailoring, String filename, byte[] data) {
+        Optional<Tailoring> oTailoring = repository.getTailoring(project, tailoring);
+        if (oTailoring.isEmpty()) {
             return empty();
         }
 
 
         BigInteger hash = new BigInteger(1, MessageDigest.getInstance("MD5").digest(data));
         File file = File.builder()
-            .name(dateiname)
+            .name(filename)
             .data(data)
             .hash(hash.toString(16))
             .build();
@@ -139,14 +144,14 @@ public class TailoringServiceImpl implements TailoringService {
      */
     @Override
     public Optional<File> createRequirementDocument(String project, String tailoring) {
-        @SuppressWarnings("PMD.PrematureDeclaration") final LocalDateTime erstellungsZeitpunkt = LocalDateTime.now();
+        @SuppressWarnings("PMD.PrematureDeclaration") final LocalDateTime creationTimestamp = LocalDateTime.now();
 
-        Optional<Tailoring> projektPhase = repository.getTailoring(project, tailoring);
-        if (projektPhase.isEmpty()) {
+        Optional<Tailoring> oTailoring = repository.getTailoring(project, tailoring);
+        if (oTailoring.isEmpty()) {
             return empty();
         }
 
-        return documentService.createRequirementDocument(projektPhase.get(), erstellungsZeitpunkt);
+        return documentService.createRequirementDocument(oTailoring.get(), creationTimestamp);
     }
 
     /**
@@ -154,14 +159,14 @@ public class TailoringServiceImpl implements TailoringService {
      */
     @Override
     public Optional<File> createComparisonDocument(String project, String tailoring) {
-        @SuppressWarnings("PMD.PrematureDeclaration") final LocalDateTime erstellungsZeitpunkt = LocalDateTime.now();
+        @SuppressWarnings("PMD.PrematureDeclaration") final LocalDateTime creationTimestamp = LocalDateTime.now();
 
-        Optional<Tailoring> projektPhase = repository.getTailoring(project, tailoring);
-        if (projektPhase.isEmpty()) {
+        Optional<Tailoring> oTailoring = repository.getTailoring(project, tailoring);
+        if (oTailoring.isEmpty()) {
             return empty();
         }
 
-        return documentService.createComparisonDocument(projektPhase.get(), erstellungsZeitpunkt);
+        return documentService.createComparisonDocument(oTailoring.get(), creationTimestamp);
     }
 
     /**
@@ -169,11 +174,11 @@ public class TailoringServiceImpl implements TailoringService {
      */
     @Override
     public Optional<Catalog<TailoringRequirement>> getCatalog(@NonNull String project, @NonNull String tailoring) {
-        Optional<Tailoring> projektPhase = repository.getTailoring(project, tailoring);
-        if (projektPhase.isEmpty()) {
+        Optional<Tailoring> oTailoring = repository.getTailoring(project, tailoring);
+        if (oTailoring.isEmpty()) {
             return empty();
         }
-        return ofNullable(projektPhase.get().getCatalog());
+        return ofNullable(oTailoring.get().getCatalog());
     }
 
     /**
@@ -181,11 +186,11 @@ public class TailoringServiceImpl implements TailoringService {
      */
     @Override
     public Optional<List<TailoringRequirement>> getRequirements(@NonNull String project, @NonNull String tailoring, @NonNull String chapter) {
-        Optional<Chapter<TailoringRequirement>> oKapitel = getChapter(project, tailoring, chapter);
-        if (oKapitel.isEmpty()) {
+        Optional<Chapter<TailoringRequirement>> oChapter = getChapter(project, tailoring, chapter);
+        if (oChapter.isEmpty()) {
             return empty();
         }
-        return ofNullable(oKapitel.get().getRequirements());
+        return ofNullable(oChapter.get().getRequirements());
 
     }
 
@@ -194,12 +199,12 @@ public class TailoringServiceImpl implements TailoringService {
      */
     @Override
     public Optional<ScreeningSheet> getScreeningSheet(@NonNull String project, @NonNull String tailoring) {
-        Optional<Tailoring> projektPhase = repository.getTailoring(project, tailoring);
-        if (projektPhase.isEmpty()) {
+        Optional<Tailoring> oTailoring = repository.getTailoring(project, tailoring);
+        if (oTailoring.isEmpty()) {
             return empty();
         }
 
-        return ofNullable(projektPhase.get().getScreeningSheet());
+        return ofNullable(oTailoring.get().getScreeningSheet());
     }
 
     /**
@@ -207,12 +212,12 @@ public class TailoringServiceImpl implements TailoringService {
      */
     @Override
     public Optional<SelectionVector> getSelectionVector(@NonNull String project, @NonNull String tailoring) {
-        Optional<Tailoring> projektPhase = repository.getTailoring(project, tailoring);
-        if (projektPhase.isEmpty()) {
+        Optional<Tailoring> oTailoring = repository.getTailoring(project, tailoring);
+        if (oTailoring.isEmpty()) {
             return empty();
         }
 
-        return ofNullable(projektPhase.get().getSelectionVector());
+        return ofNullable(oTailoring.get().getSelectionVector());
     }
 
     /**
@@ -220,12 +225,12 @@ public class TailoringServiceImpl implements TailoringService {
      */
     @Override
     public Optional<Chapter<TailoringRequirement>> getChapter(@NonNull String project, @NonNull String tailoring, @NonNull String chapter) {
-        Optional<Tailoring> projektPhase = repository.getTailoring(project, tailoring);
-        if (projektPhase.isEmpty()) {
+        Optional<Tailoring> oTailoring = repository.getTailoring(project, tailoring);
+        if (oTailoring.isEmpty()) {
             return empty();
         }
 
-        return projektPhase.get().getCatalog().getChapter(chapter);
+        return oTailoring.get().getCatalog().getChapter(chapter);
     }
 
     /**
@@ -233,12 +238,12 @@ public class TailoringServiceImpl implements TailoringService {
      */
     @Override
     public Optional<Collection<DocumentSignature>> getDocumentSignatures(@NonNull String project, @NonNull String tailoring) {
-        Optional<Tailoring> projektPhase = repository.getTailoring(project, tailoring);
-        if (projektPhase.isEmpty()) {
+        Optional<Tailoring> oTailoring = repository.getTailoring(project, tailoring);
+        if (oTailoring.isEmpty()) {
             return empty();
         }
 
-        return ofNullable(projektPhase.get().getSignatures());
+        return ofNullable(oTailoring.get().getSignatures());
     }
 
     /**
@@ -262,24 +267,23 @@ public class TailoringServiceImpl implements TailoringService {
             return empty();
         }
 
-        Optional<Tailoring> phaseMitNeuemNamen = repository.getTailoring(project, name);
-        if (phaseMitNeuemNamen.isPresent()) {
+        Optional<Tailoring> tailoringWithNewName = repository.getTailoring(project, name);
+        if (tailoringWithNewName.isPresent()) {
             log.info("FINISHED | name not changed because it already exits");
             return empty();
         }
 
-        Optional<Tailoring> projektPhase = repository.updateName(project, tailoring, name);
-        Optional<TailoringInformation> result = projektPhase.map(updatedPhase -> mapper.toTailoringInformation(updatedPhase));
+        Optional<Tailoring> oTailoring = repository.updateName(project, tailoring, name);
+        Optional<TailoringInformation> result = oTailoring.map(updatedPhase -> mapper.toTailoringInformation(updatedPhase));
         log.info("FINISHED | Phase name changed from {} to {}", tailoring, name);
         return result;
     }
 
     /**
-     * @param project   Project, zum dem die Requirement gehört
-     * @param tailoring Phase des Projekts
+     * {@inheritDoc}
      */
     @Override
-    public void updateSelectedRequirements(@NonNull String project, @NonNull String tailoring, byte[] data) {
+    public void updateImportedRequirements(@NonNull String project, @NonNull String tailoring, byte[] data) {
         log.info("STARTED | trying update requirement of {}:{} with provided file", project, tailoring);
 
         if (isNull(data) || data.length == 0) {
@@ -287,17 +291,16 @@ public class TailoringServiceImpl implements TailoringService {
             return;
         }
 
-        Map<String, Collection<ImportRequirement>> importAnforderungen = tailoringAnforderungFileReader.apply(data);
-        importAnforderungen.entrySet().forEach(entry -> {
-            String kapitel = entry.getKey();
-            entry.getValue().forEach(anforderung -> {
-                if (YES.equalsIgnoreCase(anforderung.getApplicable()) ||
-                    NO.equalsIgnoreCase(anforderung.getApplicable())) {
-                    boolean anwendbar = YES.equalsIgnoreCase(anforderung.getApplicable());
-                    requirementService.handleSelected(project, tailoring, kapitel, anforderung.getPosition(), anwendbar);
+        Map<String, Collection<ImportRequirement>> importRequirements = tailoringAnforderungFileReader.apply(data);
+        importRequirements.entrySet().forEach(entry -> {
+            String chapter = entry.getKey();
+            entry.getValue().forEach(requirement -> {
+                if (YES.equalsIgnoreCase(requirement.getApplicable()) || NO.equalsIgnoreCase(requirement.getApplicable())) {
+                    boolean selected = YES.equalsIgnoreCase(requirement.getApplicable());
+                    requirementService.handleSelected(project, tailoring, chapter, requirement.getPosition(), selected);
 
-                    if (nonNull(anforderung.getText()) && !anforderung.getText().trim().isEmpty()) {
-                        requirementService.handleText(project, tailoring, kapitel, anforderung.getPosition(), anforderung.getText());
+                    if (nonNull(requirement.getText()) && !requirement.getText().trim().isEmpty()) {
+                        requirementService.handleText(project, tailoring, chapter, requirement.getPosition(), requirement.getText());
                     }
                 }
             });
@@ -312,8 +315,8 @@ public class TailoringServiceImpl implements TailoringService {
     @Override
     public Optional<Boolean> deleteTailoring(@NonNull String project, @NonNull String tailoring) {
         log.info("STARTED | trying to delete phase {} of project {}", tailoring, project);
-        Optional<Tailoring> projektPhase = repository.getTailoring(project, tailoring);
-        if (projektPhase.isEmpty()) {
+        Optional<Tailoring> oTailoring = repository.getTailoring(project, tailoring);
+        if (oTailoring.isEmpty()) {
             log.info("FINISHED | phase not existing. No deletion.");
             return empty();
         }
@@ -331,15 +334,15 @@ public class TailoringServiceImpl implements TailoringService {
     public Optional<File> createDocuments(@NonNull String project, @NonNull String tailoring) {
         @SuppressWarnings("PMD.PrematureDeclaration") final LocalDateTime erstellungsZeitpunkt = LocalDateTime.now();
 
-        Optional<Tailoring> projektPhase = repository.getTailoring(project, tailoring);
-        if (projektPhase.isEmpty()) {
+        Optional<Tailoring> oTailoring = repository.getTailoring(project, tailoring);
+        if (oTailoring.isEmpty()) {
             return empty();
         }
 
-        Collection<File> dokumente = documentService.createAll(projektPhase.get(), erstellungsZeitpunkt);
+        Collection<File> documents = documentService.createAll(oTailoring.get(), erstellungsZeitpunkt);
         ByteArrayOutputStream os = new ByteArrayOutputStream();
         ZipOutputStream zip = new ZipOutputStream(os);
-        dokumente.forEach(dokument -> addToZip(dokument, zip));
+        documents.forEach(dokument -> addToZip(dokument, zip));
         zip.close();
         return of(File.builder()
             .name(project + "-" + tailoring + ".zip")
@@ -347,12 +350,11 @@ public class TailoringServiceImpl implements TailoringService {
             .build());
     }
 
-
     /**
-     * Fügt eine File zum Zip hinzu.
+     * Add file to zip.
      *
-     * @param file Hinzuzufügende File
-     * @param zip  Zip, zu dem die File hinzugefügt werden soll
+     * @param file file to add
+     * @param zip  Zip, to add file to
      */
     @SneakyThrows
     void addToZip(File file, ZipOutputStream zip) {

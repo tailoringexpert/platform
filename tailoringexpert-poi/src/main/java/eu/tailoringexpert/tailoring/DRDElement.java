@@ -26,6 +26,11 @@ import lombok.Value;
 
 import java.util.Collection;
 
+/**
+ * Data element to be used for generating DRD document.
+ *
+ * @author Michael Bädorf
+ */
 @Value
 @Builder
 public class DRDElement {

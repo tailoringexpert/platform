@@ -39,9 +39,14 @@ import java.util.Map;
 import static java.util.Collections.emptyMap;
 import static java.util.Objects.nonNull;
 
+/**
+ * Create PDF document containg differences of automatic and manual tailoring.
+ *
+ * @author Michael Bädorf
+ */
 @RequiredArgsConstructor
 @Log4j2
-public class ComparisonDocumentCreator implements DocumentCreator {
+public class ComparisonPDFDocumentCreator implements DocumentCreator {
 
     @NonNull
     private HTMLTemplateEngine templateEngine;

@@ -35,7 +35,9 @@ import java.util.stream.Collectors;
 import static java.util.stream.Collectors.toUnmodifiableSet;
 
 /**
- * Prädikat, ob der Lieferzeitpunkt in den (übergebenen) Phasen enthalten ist.
+ * Predicate to check if delivery date is included in provided phases.
+ *
+ * @author Michael Bädorf
  */
 public class DRDApplicablePredicate implements BiPredicate<String, Collection<Phase>> {
 

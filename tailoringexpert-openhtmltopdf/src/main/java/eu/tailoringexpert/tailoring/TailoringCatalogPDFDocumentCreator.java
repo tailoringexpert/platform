@@ -35,7 +35,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 
 import java.util.Collection;
-import java.util.Comparator;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.LinkedList;
@@ -51,13 +50,13 @@ import static java.util.Objects.nonNull;
 import static java.util.stream.Collectors.toList;
 
 /**
- * Erzeugung eines PDF Anforderungkataloges.
+ * Create PDF requirement catalog file.
  *
  * @author Michael Bädorf
  */
 @Log4j2
 @RequiredArgsConstructor
-public class TailoringCatalogDocumentCreator implements DocumentCreator {
+public class TailoringCatalogPDFDocumentCreator implements DocumentCreator {
 
     @NonNull
     private HTMLTemplateEngine templateEngine;
@@ -67,9 +66,6 @@ public class TailoringCatalogDocumentCreator implements DocumentCreator {
 
     @NonNull
     private BiFunction<Chapter<TailoringRequirement>, Collection<Phase>, Map<DRD, Set<String>>> drdProvider;
-
-    private Comparator<DocumentSignature> zeichnungsComparator =
-        comparingInt(DocumentSignature::getPosition);
 
     private static final String REFERENZ_LOGO_LINK = "<img src=\"%s\" alt=\"%s\"></img><br/>";
 
