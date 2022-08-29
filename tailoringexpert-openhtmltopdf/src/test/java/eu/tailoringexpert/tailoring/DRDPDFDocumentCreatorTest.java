@@ -29,18 +29,16 @@ import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.fasterxml.jackson.module.paramnames.ParameterNamesModule;
 import eu.tailoringexpert.FileSaver;
 import eu.tailoringexpert.KatalogWebServerPortConsumer;
+import eu.tailoringexpert.domain.Catalog;
 import eu.tailoringexpert.domain.Chapter;
-import eu.tailoringexpert.domain.DocumentSignature;
+import eu.tailoringexpert.domain.DRD;
 import eu.tailoringexpert.domain.File;
+import eu.tailoringexpert.domain.Phase;
+import eu.tailoringexpert.domain.Tailoring;
 import eu.tailoringexpert.domain.TailoringRequirement;
 import eu.tailoringexpert.renderer.HTMLTemplateEngine;
 import eu.tailoringexpert.renderer.PDFEngine;
 import eu.tailoringexpert.renderer.ThymeleafTemplateEngine;
-import eu.tailoringexpert.domain.DRD;
-import eu.tailoringexpert.domain.DocumentSignatureState;
-import eu.tailoringexpert.domain.Catalog;
-import eu.tailoringexpert.domain.Phase;
-import eu.tailoringexpert.domain.Tailoring;
 import io.github.cdimascio.dotenv.Dotenv;
 import lombok.extern.log4j.Log4j2;
 import org.junit.jupiter.api.AfterAll;
@@ -55,33 +53,28 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.AbstractMap;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 import java.util.function.BiFunction;
 
-import static eu.tailoringexpert.domain.Phase.A;
-import static eu.tailoringexpert.domain.Phase.B;
-import static eu.tailoringexpert.domain.Phase.C;
-import static eu.tailoringexpert.domain.Phase.D;
-import static eu.tailoringexpert.domain.Phase.E;
-import static eu.tailoringexpert.domain.Phase.F;
-import static eu.tailoringexpert.domain.Phase.ZERO;
 import static java.nio.file.Files.readAllBytes;
 import static java.nio.file.Paths.get;
-import static java.util.Arrays.asList;
-import static java.util.Collections.unmodifiableCollection;
-import static java.util.List.of;
+import static java.util.Collections.emptySet;
+import static java.util.Map.entry;
+import static java.util.Map.ofEntries;
 import static java.util.Objects.nonNull;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.mock;
 import static org.mockserver.integration.ClientAndServer.startClientAndServer;
 import static org.mockserver.model.HttpRequest.request;
 import static org.mockserver.model.HttpResponse.response;
 
 @Log4j2
-class CMDocumentCreatorTest {
+class DRDPDFDocumentCreatorTest {
 
     static int mockServerPort = 1080;
     static MockServerClient mockServer;
@@ -91,7 +84,7 @@ class CMDocumentCreatorTest {
     ObjectMapper objectMapper;
     FileSaver fileSaver;
     BiFunction<Chapter<TailoringRequirement>, Collection<Phase>, Map<DRD, Set<String>>> drdProviderMock;
-    CMDocumentCreator creator;
+    DRDPDFDocumentCreator creator;
 
     @BeforeAll
     static void beforeAll() {
@@ -129,16 +122,8 @@ class CMDocumentCreatorTest {
 
         HTMLTemplateEngine templateEngine = new ThymeleafTemplateEngine(springTemplateEngine);
 
-        this.drdProviderMock = new DRDProvider(new DRDApplicablePredicate(Map.ofEntries(
-            new AbstractMap.SimpleEntry<>(ZERO, unmodifiableCollection(asList("MDR"))),
-            new AbstractMap.SimpleEntry<>(A, unmodifiableCollection(asList("SRR"))),
-            new AbstractMap.SimpleEntry<>(B, unmodifiableCollection(asList("PDR"))),
-            new AbstractMap.SimpleEntry<>(C, unmodifiableCollection(asList("CDR"))),
-            new AbstractMap.SimpleEntry<>(D, unmodifiableCollection(asList("AR", "DRB", "FRR", "LRR"))),
-            new AbstractMap.SimpleEntry<>(E, unmodifiableCollection(asList("ORR"))),
-            new AbstractMap.SimpleEntry<>(F, unmodifiableCollection(asList("EOM")))
-        )));
-        this.creator = new CMDocumentCreator(
+        this.drdProviderMock = mock(BiFunction.class);
+        this.creator = new DRDPDFDocumentCreator(
             templateEngine,
             new PDFEngine("TailoringExpert", get(this.templateHome).toAbsolutePath().toString()),
             drdProviderMock
@@ -146,7 +131,7 @@ class CMDocumentCreatorTest {
     }
 
     @Test
-    void createDokument() throws IOException {
+    void createDocument() throws IOException {
         // arrange
         Catalog<TailoringRequirement> catalog;
         try (InputStream is = this.getClass().getResourceAsStream("/tailoringcatalog.json")) {
@@ -156,19 +141,9 @@ class CMDocumentCreatorTest {
         }
         webServerPortConsumer.accept(catalog);
 
-        Collection<DocumentSignature> zeichnungen = of(
-            DocumentSignature.builder()
-                .applicable(true)
-                .faculty("Sofware")
-                .signee("Hans Dampf")
-                .state(DocumentSignatureState.AGREED)
-                .build()
-        );
 
         Tailoring tailoring = Tailoring.builder()
             .catalog(catalog)
-            .signatures(zeichnungen)
-            .phases(of(ZERO, A, B, C, D, E, F))
             .build();
 
         LocalDateTime now = LocalDateTime.now();
@@ -177,6 +152,17 @@ class CMDocumentCreatorTest {
         platzhalter.put("DATUM", now.format(DateTimeFormatter.ofPattern("dd.MM.YYYY")));
         platzhalter.put("DOKUMENT", "SAMPLE-XY-Z-1940/DV7");
         platzhalter.put("${DRD_DOCID}", "SAMPLE_DOC");
+
+        given(drdProviderMock.apply(any(), any()))
+            .willReturn(ofEntries(
+                    entry(
+                        DRD.builder()
+                            .title("Non-Conformance Report (NCR)")
+                            .number("03.01")
+                            .build(),
+                        emptySet())
+                )
+            );
 
         mockServer
             .when(request()
@@ -196,6 +182,7 @@ class CMDocumentCreatorTest {
 
         // assert
         assertThat(actual).isNotNull();
-        fileSaver.accept("cm.pdf", actual.getData());
+        fileSaver.accept("drd.pdf", actual.getData());
     }
+
 }

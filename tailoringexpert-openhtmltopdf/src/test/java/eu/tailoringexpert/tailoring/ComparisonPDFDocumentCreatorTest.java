@@ -56,12 +56,12 @@ import static java.util.Objects.nonNull;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.catchException;
 
-class ComparisonDocumentCreatorTest {
+class ComparisonPDFDocumentCreatorTest {
 
     String templateHome;
     ObjectMapper objectMapper;
     FileSaver fileSaver;
-    ComparisonDocumentCreator creator;
+    ComparisonPDFDocumentCreator creator;
 
     @BeforeAll
     static void beforeAll() {
@@ -91,7 +91,7 @@ class ComparisonDocumentCreatorTest {
 
         HTMLTemplateEngine templateEngine = new ThymeleafTemplateEngine(springTemplateEngine);
 
-        this.creator = new ComparisonDocumentCreator(
+        this.creator = new ComparisonPDFDocumentCreator(
             templateEngine,
             new PDFEngine("TailoringExpert", get(this.templateHome).toAbsolutePath().toString())
         );

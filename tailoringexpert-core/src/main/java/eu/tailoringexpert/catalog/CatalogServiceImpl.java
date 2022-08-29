@@ -34,6 +34,11 @@ import java.util.Optional;
 
 import static java.util.Optional.empty;
 
+/**
+ * Implementation of {@link CatalogService}.
+ *
+ * @author Michael Bädorf
+ */
 @Log4j2
 @RequiredArgsConstructor
 public class CatalogServiceImpl implements CatalogService {

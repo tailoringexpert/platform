@@ -24,5 +24,10 @@ package eu.tailoringexpert.repository;
 import eu.tailoringexpert.domain.TailoringEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 
+/**
+ * Spring Data access layer of {@link TailoringEntity}.
+ *
+ * @author Michael Bädorf
+ */
 public interface TailoringRepository extends JpaRepository<TailoringEntity, Long> {
 }

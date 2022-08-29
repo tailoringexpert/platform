@@ -29,11 +29,10 @@ import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.fasterxml.jackson.module.paramnames.ParameterNamesModule;
 import eu.tailoringexpert.FileSaver;
 import eu.tailoringexpert.KatalogWebServerPortConsumer;
-import eu.tailoringexpert.domain.Catalog;
-import eu.tailoringexpert.domain.Chapter;
-import eu.tailoringexpert.domain.DRD;
 import eu.tailoringexpert.domain.File;
-import eu.tailoringexpert.domain.Phase;
+import eu.tailoringexpert.domain.DocumentSignature;
+import eu.tailoringexpert.domain.DocumentSignatureState;
+import eu.tailoringexpert.domain.Catalog;
 import eu.tailoringexpert.domain.Tailoring;
 import eu.tailoringexpert.domain.TailoringRequirement;
 import eu.tailoringexpert.renderer.HTMLTemplateEngine;
@@ -49,42 +48,45 @@ import org.mockserver.client.MockServerClient;
 import org.thymeleaf.spring5.SpringTemplateEngine;
 import org.thymeleaf.templateresolver.FileTemplateResolver;
 
-import java.io.IOException;
 import java.io.InputStream;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.AbstractMap.SimpleEntry;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Set;
-import java.util.function.BiFunction;
 
+import static eu.tailoringexpert.domain.Phase.A;
+import static eu.tailoringexpert.domain.Phase.B;
+import static eu.tailoringexpert.domain.Phase.C;
+import static eu.tailoringexpert.domain.Phase.D;
+import static eu.tailoringexpert.domain.Phase.E;
+import static eu.tailoringexpert.domain.Phase.F;
+import static eu.tailoringexpert.domain.Phase.ZERO;
 import static java.nio.file.Files.readAllBytes;
 import static java.nio.file.Paths.get;
-import static java.util.Collections.emptySet;
-import static java.util.Map.entry;
-import static java.util.Map.ofEntries;
+import static java.util.Arrays.asList;
+import static java.util.Collections.unmodifiableCollection;
+import static java.util.List.of;
 import static java.util.Objects.nonNull;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.BDDMockito.given;
-import static org.mockito.Mockito.mock;
 import static org.mockserver.integration.ClientAndServer.startClientAndServer;
 import static org.mockserver.model.HttpRequest.request;
 import static org.mockserver.model.HttpResponse.response;
 
 @Log4j2
-class DRDDocumentCreatorTest {
+class TailoringCatalogPDFDocumentCreatorTest {
 
     static int mockServerPort = 1080;
     static MockServerClient mockServer;
     KatalogWebServerPortConsumer webServerPortConsumer;
     String templateHome;
     String assetHome;
+    DRDProvider drdProviderMock;
+    DRDApplicablePredicate drdApplicablePredicate;
     ObjectMapper objectMapper;
     FileSaver fileSaver;
-    BiFunction<Chapter<TailoringRequirement>, Collection<Phase>, Map<DRD, Set<String>>> drdProviderMock;
-    DRDDocumentCreator creator;
+    TailoringCatalogPDFDocumentCreator creator;
 
     @BeforeAll
     static void beforeAll() {
@@ -122,8 +124,17 @@ class DRDDocumentCreatorTest {
 
         HTMLTemplateEngine templateEngine = new ThymeleafTemplateEngine(springTemplateEngine);
 
-        this.drdProviderMock = mock(BiFunction.class);
-        this.creator = new DRDDocumentCreator(
+        this.drdProviderMock = new DRDProvider(new DRDApplicablePredicate(Map.ofEntries(
+            new SimpleEntry<>(ZERO, unmodifiableCollection(asList("MDR"))),
+            new SimpleEntry<>(A, unmodifiableCollection(asList("SRR"))),
+            new SimpleEntry<>(B, unmodifiableCollection(asList("PDR"))),
+            new SimpleEntry<>(C, unmodifiableCollection(asList("CDR"))),
+            new SimpleEntry<>(D, unmodifiableCollection(asList("AR", "DRB", "FRR", "LRR"))),
+            new SimpleEntry<>(E, unmodifiableCollection(asList("ORR"))),
+            new SimpleEntry<>(F, unmodifiableCollection(asList("EOM")))
+        )));
+
+        this.creator = new TailoringCatalogPDFDocumentCreator(
             templateEngine,
             new PDFEngine("TailoringExpert", get(this.templateHome).toAbsolutePath().toString()),
             drdProviderMock
@@ -131,7 +142,7 @@ class DRDDocumentCreatorTest {
     }
 
     @Test
-    void createDocument() throws IOException {
+    void createDokument() throws Exception {
         // arrange
         Catalog<TailoringRequirement> catalog;
         try (InputStream is = this.getClass().getResourceAsStream("/tailoringcatalog.json")) {
@@ -141,9 +152,19 @@ class DRDDocumentCreatorTest {
         }
         webServerPortConsumer.accept(catalog);
 
+        Collection<DocumentSignature> zeichnungen = of(
+            DocumentSignature.builder()
+                .applicable(true)
+                .faculty("Software")
+                .signee("Hans Dampf")
+                .state(DocumentSignatureState.AGREED)
+                .build()
+        );
 
         Tailoring tailoring = Tailoring.builder()
             .catalog(catalog)
+            .signatures(zeichnungen)
+            .phases(of(ZERO, A, B, C, D, E, F))
             .build();
 
         LocalDateTime now = LocalDateTime.now();
@@ -152,17 +173,6 @@ class DRDDocumentCreatorTest {
         platzhalter.put("DATUM", now.format(DateTimeFormatter.ofPattern("dd.MM.YYYY")));
         platzhalter.put("DOKUMENT", "SAMPLE-XY-Z-1940/DV7");
         platzhalter.put("${DRD_DOCID}", "SAMPLE_DOC");
-
-        given(drdProviderMock.apply(any(), any()))
-            .willReturn(ofEntries(
-                    entry(
-                        DRD.builder()
-                            .title("Non-Conformance Report (NCR)")
-                            .number("03.01")
-                            .build(),
-                        emptySet())
-                )
-            );
 
         mockServer
             .when(request()
@@ -182,7 +192,6 @@ class DRDDocumentCreatorTest {
 
         // assert
         assertThat(actual).isNotNull();
-        fileSaver.accept("drd.pdf", actual.getData());
+        fileSaver.accept("tailoringcatalog.pdf", actual.getData());
     }
-
 }

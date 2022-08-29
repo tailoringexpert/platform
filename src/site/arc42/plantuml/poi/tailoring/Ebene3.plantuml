@@ -13,11 +13,15 @@ package tailoring {
     interface "Function<String, File>" as templateSupplier {
     }
 
-    class CMSpreadsheetCreator {
-        templateEngine : ITemplateEngine
+    class TailoringCatalogExcelDocumentCreator {
     }
-    CMSpreadsheetCreator --> "1" templateSupplier : templateSupplier
-    CMSpreadsheetCreator --> "1" drdSupplier : drdProvider
+    DocumentCreator <|-- TailoringCatalogExcelDocumentCreator
+
+    class CMExcelDocumentCreator {
+    }
+    DocumentCreator <|-- CMExcelDocumentCreator
+    CMExcelDocumentCreator --> "1" templateSupplier : templateSupplier
+    CMExcelDocumentCreator --> "1" drdSupplier : drdProvider
 
     class DRDElement {
         title : String
@@ -27,7 +31,7 @@ package tailoring {
         action : String
     }
 
-    interface "Function<byte[], Map<String, Collection<ImportRequirement>>>" as requirmentFunction {
+    interface "Function<byte[], Map<String, Collection<ImportRequirement>>>" as requirementFunction {
     }
 
     class TailoringRequirementExcelFileReader {

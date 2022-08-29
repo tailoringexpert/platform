@@ -37,6 +37,7 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import org.springframework.hateoas.CollectionModel;
@@ -66,6 +67,12 @@ import static org.springframework.http.HttpStatus.BAD_REQUEST;
 import static org.springframework.http.HttpStatus.CREATED;
 import static org.springframework.http.ResponseEntity.notFound;
 
+/**
+ * REST-Controller for management of base catalogs.
+ *
+ * @author Michael Bädorf
+ */
+@Tag(name = "Catalog Controller", description = "Managements of base catalogs")
 @RequiredArgsConstructor
 @RestController
 public class CatalogController {
@@ -77,7 +84,7 @@ public class CatalogController {
     private CatalogService catalogService;
 
     @NonNull
-    private BaseCatalogRepository katalogDefinitionRepository;
+    private BaseCatalogRepository baseCatalogRepository;
 
     @NonNull
     private Function<String, MediaType> mediaTypeProvider;
@@ -109,7 +116,7 @@ public class CatalogController {
     @GetMapping(value = BASECATALOG, produces = {"application/hal+json"})
     public ResponseEntity<CollectionModel<EntityModel<BaseCatalogVersionResource>>> getCatalogs() {
         PathContextBuilder pathContext = PathContext.builder();
-        List<EntityModel<BaseCatalogVersionResource>> kataloge = katalogDefinitionRepository.findCatalogVersionBy()
+        List<EntityModel<BaseCatalogVersionResource>> kataloge = baseCatalogRepository.findCatalogVersionBy()
             .stream()
             .map(katalog -> EntityModel.of(mapper.toResource(pathContext, katalog)))
             .collect(toList());

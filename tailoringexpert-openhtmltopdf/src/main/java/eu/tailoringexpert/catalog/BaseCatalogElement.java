@@ -19,21 +19,27 @@
  * <http://www.gnu.org/licenses/gpl-3.0.html>.
  * #L%
  */
-package eu.tailoringexpert;
+package eu.tailoringexpert.catalog;
 
-import java.lang.annotation.Documented;
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
+import lombok.Builder;
+import lombok.Value;
+
+import java.util.Collection;
 
 /**
- * Annotation to indicate that interface has to be implemented by any tenant.
+ * Requirement data element to be used for generating base catalog document.
  *
  * @author Michael Bädorf
  */
-@Documented
-@Retention(RetentionPolicy.RUNTIME)
-@Target({ElementType.TYPE})
-public @interface TenantInterface {
+@Value
+@Builder
+public class BaseCatalogElement {
+
+    private String reference;
+    private String position;
+    private String chapter;
+    private String text;
+
+    private Collection<String> phases;
+    private Collection<String> identifiers;
 }

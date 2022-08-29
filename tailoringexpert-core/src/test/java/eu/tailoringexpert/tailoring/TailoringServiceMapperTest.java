@@ -55,7 +55,7 @@ class TailoringServiceMapperTest {
     }
 
     @Test
-    void convert_nullPhasenEinschraenkung_AnforderungAusgewaehlt() {
+    void convert_nullPhaseLimitation_RequirementSelected() {
         // arrange
         BaseRequirement requirement = BaseRequirement.builder()
             .text("Die erste Requirement")
@@ -135,7 +135,7 @@ class TailoringServiceMapperTest {
 
 
     @Test
-    void convert_leeePhasenEinschraenkung_AnforderungAusgewaehlt() {
+    void convert_EmptyPhaseLimitations_RequirementSelected() {
         // arrange
         BaseRequirement requirement = BaseRequirement.builder()
             .text("Die erste Requirement")
@@ -215,7 +215,7 @@ class TailoringServiceMapperTest {
     }
 
     @Test
-    void convert_erfuelltePhasenEinschraenkung_AnforderungAusgewaehlt() {
+    void convert_FulfilledPhaseLimitation_RequirementSelected() {
         // arrange
         BaseRequirement requirement = BaseRequirement.builder()
             .text("Die erste Requirement")
@@ -295,7 +295,7 @@ class TailoringServiceMapperTest {
     }
 
     @Test
-    void convert_erfuelltePhasenEinschraenkungFalscherIdenitifaktor_AnforderungNichtSAsugewaehlt() {
+    void convert_FulfilledPhaseLimitationWrongIdentifier_RequirementNotSelected() {
         // arrange
         BaseRequirement requirement = BaseRequirement.builder()
             .text("Die erste Requirement")
@@ -376,7 +376,7 @@ class TailoringServiceMapperTest {
 
 
     @Test
-    void convert_erfuelltePhasenEinschraenkungRichtigerIdenitifaktor_AnforderungAusgewaehlt() {
+    void convert_FulfilledPhaseLimitationAndIdentifier_RequirementSelected() {
         // arrange
         BaseRequirement requirement = BaseRequirement.builder()
             .text("Die erste Requirement")
@@ -544,7 +544,7 @@ class TailoringServiceMapperTest {
 
 
     @Test
-    void convert_nichtErfuelltePhasenEinschraenkung_AnforderungNichtAusgewaehlt() {
+    void convert_PhaseLimitationNotFulfilled_RequirementNotSelected() {
         // arrange
         BaseRequirement requirement = BaseRequirement.builder()
             .text("Die erste Requirement")
@@ -625,7 +625,7 @@ class TailoringServiceMapperTest {
     }
 
     @Test
-    void convert_keineLimitierungLevelErfuellt_AnforderungAusgewaehlt() {
+    void convert_NoPhaseLimitationLevelsDefined_RequirementSelected() {
         // arrange
         BaseRequirement requirement = BaseRequirement.builder()
             .text("Die erste Requirement")
@@ -786,7 +786,7 @@ class TailoringServiceMapperTest {
     }
 
     @Test
-    void convert_LimitierungLeerLevelErfuellt_AnforderungNichtAusgewaehlt() {
+    void convert_PhaseLimitationEmptyFulfilled_RequirementNotSelected() {
         // arrange
         BaseRequirement requirement = BaseRequirement.builder()
             .text("Die erste Requirement")
@@ -867,7 +867,7 @@ class TailoringServiceMapperTest {
     }
 
     @Test
-    void convert_LimitierungLeerLevelKleiner_AnforderungAusgewaehlt() {
+    void convert_PhaseLimitationEmptyLevelLower_RequirementSelected() {
         // arrange
         BaseRequirement requirement = BaseRequirement.builder()
             .text("Die erste Requirement")
@@ -948,7 +948,7 @@ class TailoringServiceMapperTest {
     }
 
     @Test
-    void toProjektKatalog() {
+    void toTailoringCatalog_ValidBaseCatalogInput_TailoringCatalogReturned() {
         // arrange
         Catalog<BaseRequirement> catalog = Catalog.<BaseRequirement>builder()
             .version("8.2.1")
@@ -1038,7 +1038,7 @@ class TailoringServiceMapperTest {
     }
 
     @Test
-    void toProjektPhaseAnforderung_ScreeningSheetOhnePhase_RuntimeExceptionWirdGeworfen() {
+    void toTailoringRequirement_ScreeningSheetWithoutPhase_RuntimeExceptionThrown() {
         // arrange
         BaseRequirement requirement = BaseRequirement.builder()
             .text("Die erste Requirement")
@@ -1079,7 +1079,7 @@ class TailoringServiceMapperTest {
     }
 
     @Test
-    void toProjektKatalog_AnforderungOhneLimitierung_AnforderungWirdAusgewaehlt() {
+    void toTailoringRequirement_RequirementWithoutLimitation_RequirementSelected() {
         // arrange
         BaseRequirement requirement = BaseRequirement.builder()
             .text("Die erste Requirement")
@@ -1159,8 +1159,9 @@ class TailoringServiceMapperTest {
         assertThat(actual.getSelected()).isTrue();
     }
 
+
     @Test
-    void toProjektKatalog_KatalogNull_NullWirdZurueckGegeben() {
+    void toTailoringCatalog_BaseCatalogNull_NullReturned() {
         // arrange
 
         // act
@@ -1174,7 +1175,7 @@ class TailoringServiceMapperTest {
     }
 
     @Test
-    void toProjektKatalog_KeineAnforderungGruppeVorhanden_KatalogMitNullGruppenZurueckGegeben() {
+    void toTailoringCatalog_NoRequirementsInChapter_TailoringCatalogTocWithNullChapterReturned() {
         // arrange
         Catalog<BaseRequirement> catalog = Catalog.<BaseRequirement>builder()
             .toc(Chapter.<BaseRequirement>builder().build())
@@ -1182,7 +1183,7 @@ class TailoringServiceMapperTest {
 
         // act
         Catalog<TailoringRequirement> actual = mapper.toTailoringCatalog(
-                catalog,
+            catalog,
             ScreeningSheet.builder().build(),
             SelectionVector.builder().build()
         );
@@ -1193,7 +1194,7 @@ class TailoringServiceMapperTest {
     }
 
     @Test
-    void toProjektKatalog_KeineAnforderngVorhanden_KatalogMitNullAnforderungListeZurueckGegeben() {
+    void toTailoringCatalog_NoRequirementsAvailable_TailoringCatalogWithNullRequirementsReturned() {
         // arrange
         Catalog<BaseRequirement> catalog = Catalog.<BaseRequirement>builder()
             .toc(Chapter.<BaseRequirement>builder().build())
@@ -1201,7 +1202,7 @@ class TailoringServiceMapperTest {
 
         // act
         Catalog<TailoringRequirement> actual = mapper.toTailoringCatalog(
-                catalog,
+            catalog,
             ScreeningSheet.builder().build(),
             SelectionVector.builder().build()
         );

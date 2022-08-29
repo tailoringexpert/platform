@@ -44,9 +44,14 @@ import java.util.function.BiFunction;
 import static java.util.Comparator.comparing;
 import static java.util.Objects.nonNull;
 
+/**
+ * Create a DRD PDF file.
+ *
+ * @author Michael Bädorf
+ */
 @RequiredArgsConstructor
 @Log4j2
-public class DRDDocumentCreator implements DocumentCreator {
+public class DRDPDFDocumentCreator implements DocumentCreator {
 
     @NonNull
     private HTMLTemplateEngine templateEngine;
@@ -57,6 +62,9 @@ public class DRDDocumentCreator implements DocumentCreator {
     @NonNull
     private BiFunction<Chapter<TailoringRequirement>, Collection<Phase>, Map<DRD, Set<String>>> drdProvider;
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public File createDocument(String docId,
                                Tailoring tailoring,
