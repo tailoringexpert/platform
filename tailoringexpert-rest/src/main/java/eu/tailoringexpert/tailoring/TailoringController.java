@@ -76,6 +76,7 @@ import static eu.tailoringexpert.domain.ResourceMapper.TAILORING_CATALOG_CHAPTER
 import static eu.tailoringexpert.domain.ResourceMapper.TAILORING_COMPARE;
 import static eu.tailoringexpert.domain.ResourceMapper.TAILORING_DOCUMENT;
 import static eu.tailoringexpert.domain.ResourceMapper.TAILORING_DOCUMENT_CATALOG;
+import static eu.tailoringexpert.domain.ResourceMapper.TAILORING_NAME;
 import static eu.tailoringexpert.domain.ResourceMapper.TAILORING_SCREENINGSHEET;
 import static eu.tailoringexpert.domain.ResourceMapper.TAILORING_SCREENINGSHEET_PDF;
 import static eu.tailoringexpert.domain.ResourceMapper.TAILORING_SELECTIONVECTOR;
@@ -406,7 +407,7 @@ public class TailoringController {
             content = @Content)
     })
     @PutMapping(value = TAILORING_SIGNATURE_FACULTY, produces = {"application/hal+json"})
-    public ResponseEntity<EntityModel<DocumentSignatureResource>> updateDokumentZeichnung(
+    public ResponseEntity<EntityModel<DocumentSignatureResource>> updateDocumentSignature(
         @Parameter(description = "Project identifier") @PathVariable String project,
         @Parameter(description = "Tailoring name") @PathVariable String tailoring,
         @Parameter(description = "Faculty of signature") @PathVariable String faculty,
@@ -432,7 +433,7 @@ public class TailoringController {
             responseCode = "404", description = "Tailoring does not exist",
             content = @Content)
     })
-    @PutMapping(value = ResourceMapper.TAILORING_NAME, produces = {"application/hal+json"})
+    @PutMapping(value = TAILORING_NAME, produces = {"application/hal+json"})
     public ResponseEntity<EntityModel<TailoringResource>> updateName(
         @Parameter(description = "Project identifier") @PathVariable String project,
         @Parameter(description = "Tailoring name") @PathVariable String tailoring,
@@ -547,7 +548,7 @@ public class TailoringController {
             content = @Content)
     })
     @GetMapping(value = ResourceMapper.SELECTIONVECTOR_PROFILE, produces = {"application/hal+json"})
-    public ResponseEntity<CollectionModel<EntityModel<SelectionVectorProfileResource>>> getProfile() {
+    public ResponseEntity<CollectionModel<EntityModel<SelectionVectorProfileResource>>> getProfiles() {
         PathContextBuilder pathContext = PathContext.builder();
         List<EntityModel<SelectionVectorProfileResource>> profile = tailoringServiceRepository.getSelectionVectorProfile()
             .stream()
@@ -562,7 +563,7 @@ public class TailoringController {
     @Operation(summary = "Update requirement state in accordance to provided file")
     @ApiResponse(responseCode = "202", description = "File evaluates")
     @PostMapping(ResourceMapper.TAILORING_REQUIREMENT_IMPORT)
-    public ResponseEntity<EntityModel<Void>> updateAnforderungen(
+    public ResponseEntity<EntityModel<Void>> updateRequirements(
         @Parameter(description = "Project identifier") @PathVariable String project,
         @Parameter(description = "Tailoring name") @PathVariable String tailoring,
         @RequestPart("datei") MultipartFile datei) throws IOException {

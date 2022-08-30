@@ -8,12 +8,12 @@
  * it under the terms of the GNU General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/gpl-3.0.html>.
@@ -75,24 +75,24 @@ class BaseCatalogRepositoryTest {
     }
 
     @Test
-    void save_GueltigerKatalog_KatalogWirdGespeichert() {
+    void save_ValidBaseCatalog_BaseCatalogSaved() {
         // arrange
-        BaseRequirementEntity anforderung = BaseRequirementEntity.builder()
+        BaseRequirementEntity requirement = BaseRequirementEntity.builder()
             .phase(A)
-            .text("Die erste Requirement")
+            .text("First requirement")
             .identifiers(Stream.of(
-                IdentifierEntity.builder()
-                    .type("W")
-                    .limitations(of("SAT"))
-                    .level(4)
-                    .build()
+                    IdentifierEntity.builder()
+                        .type("W")
+                        .limitations(of("SAT"))
+                        .level(4)
+                        .build()
                 ).collect(toSet())
             )
             .build();
 
         BaseCatalogChapterEntity toc = BaseCatalogChapterEntity.builder()
-            .requirements(asList(anforderung))
-            .name("Gruppe 1")
+            .requirements(asList(requirement))
+            .name("Chapter 1")
             .position(1)
             .build();
 
@@ -111,7 +111,7 @@ class BaseCatalogRepositoryTest {
 
     @Test
     @Transactional
-    void findByVersion_KatalogVorhanden_KatalogWirdZurueckGegeben() throws IOException {
+    void findByVersion_BaseCatalogExists_BaseCatalogReturned() throws IOException {
         // arrange
         repository.save(BaseCatalogEntity.builder()
             .version("7.2.1")
@@ -130,7 +130,7 @@ class BaseCatalogRepositoryTest {
 
     @Test
     @Transactional
-    void findKatalogVersionBy_2KatalogeVorhanden_KatalogListeMit2KatalogenWirdZurueckGegeben() throws IOException {
+    void findCatalogVersionBy_2BaseCatalogExists_ListWith2BaseCatalogsReturned() throws IOException {
         // arrange
         repository.save(BaseCatalogEntity.builder()
             .version("7.2.1")
@@ -150,7 +150,7 @@ class BaseCatalogRepositoryTest {
 
     @Test
     @Transactional
-    void setGueltigBisFuerNichtGesetztesGueltigBis_2GueltigeKatalogeVerhanden_2KatalogeBeendet() {
+    void setValidUntilForEmptyValidUntil_2ValidBaseCatalogExists_2BaseCatalogsEnded() {
         // arrange
         repository.save(BaseCatalogEntity.builder()
             .version("7.2.1")
@@ -159,10 +159,10 @@ class BaseCatalogRepositoryTest {
             .version("8.2.1")
             .build());
 
-        ZonedDateTime gueltigBis = ZonedDateTime.of(LocalDateTime.of(2021, 12, 31, 23, 59), ZoneId.of("Europe/Berlin"));
+        ZonedDateTime validUntil = ZonedDateTime.of(LocalDateTime.of(2021, 12, 31, 23, 59), ZoneId.of("Europe/Berlin"));
 
         // act
-        int actual = repository.setValidUntilForEmptyValidUntil(gueltigBis);
+        int actual = repository.setValidUntilForEmptyValidUntil(validUntil);
 
         // assert
         assertThat(actual).isEqualTo(2);
@@ -170,7 +170,7 @@ class BaseCatalogRepositoryTest {
 
     @Test
     @Transactional
-    void setGueltigBisFuerNichtGesetztesGueltigBis_1GueltigeKatalogeVerhanden_1KatalogeBeendet() {
+    void setValidUntilForEmptyValidUntil_1ValidBaseCatalogExists_1BaseCatalogsEnded() {
         // arrange
         repository.save(BaseCatalogEntity.builder()
             .version("7.2.1")

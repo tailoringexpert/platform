@@ -104,7 +104,7 @@ public class RequirementController {
             content = @Content)
     })
     @PutMapping(value = ResourceMapper.TAILORINGREQUIRMENT_SELECTED, produces = {"application/hal+json"})
-    public ResponseEntity<EntityModel<TailoringRequirementResource>> updateChapterRequirementsState(
+    public ResponseEntity<EntityModel<TailoringRequirementResource>> updateRequirementsState(
         @Parameter(description = "Project identifier") @PathVariable String project,
         @Parameter(description = "Tailoring name") @PathVariable String tailoring,
         @Parameter(description = "Chapter number") @PathVariable String chapter,
@@ -162,7 +162,7 @@ public class RequirementController {
             content = @Content)
     })
     @PutMapping(ResourceMapper.CHAPTER_SELECTED)
-    public ResponseEntity<EntityModel<TailoringCatalogChapterResource>> updateChapterRequirementsState(
+    public ResponseEntity<EntityModel<TailoringCatalogChapterResource>> updateRequirementsState(
         @Parameter(description = "Project identifier") @PathVariable String project,
         @Parameter(description = "Tailoring name") @PathVariable String tailoring,
         @Parameter(description = "Chapter number") @PathVariable String chapter,
@@ -192,7 +192,7 @@ public class RequirementController {
     })
     @PostMapping(value = ResourceMapper.TAILORINGREQUIRMENT, produces = {"application/hal+json"})
     @SneakyThrows
-    public ResponseEntity<EntityModel<TailoringRequirementResource>> createrRequirement(
+    public ResponseEntity<EntityModel<TailoringRequirementResource>> createRequirement(
         @Parameter(description = "Project identifier") @PathVariable String project,
         @Parameter(description = "Tailoring name") @PathVariable String tailoring,
         @Parameter(description = "Chapter number") @PathVariable String chapter,

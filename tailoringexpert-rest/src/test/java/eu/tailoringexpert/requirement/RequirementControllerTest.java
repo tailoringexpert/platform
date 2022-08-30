@@ -117,7 +117,7 @@ class RequirementControllerTest {
     }
 
     @Test
-    void getAnforderung_ProjektUndPhaseUndKapitelUndAnforderungVorhanden_StatusOKUndLinks() throws Exception {
+    void getRequirement_RequirementExists_StateOk() throws Exception {
         // arrange
         PathContextBuilder pathContext = PathContext.builder()
             .project("SAMPLE")
@@ -148,12 +148,12 @@ class RequirementControllerTest {
     }
 
     @Test
-    void getAnforderung_ProjektUndPhaseUndKapitelUndAnforderungNichtVorhanden_StatusNotFound() throws Exception {
+    void getRequirement_RequirementNotExists_StateNotFound() throws Exception {
         // arrange
         given(repositoryMock.getRequirement("SAMPLE", "master", "1.1", "a")).willReturn(Optional.empty());
 
         // act
-        ResultActions actual = mockMvc.perform(get("/projekt/{projekt}/tailoring/{tailoring}/katalog/{kapitel}/{anforderung}", "SAMPLE", "master", "1.1", "a")
+        ResultActions actual = mockMvc.perform(get("/project/{project}/tailoring/{tailoring}/katalog/{chapter}/{requirement}", "SAMPLE", "master", "1.1", "a")
             .accept(HAL_JSON_VALUE)
         );
 
@@ -163,7 +163,7 @@ class RequirementControllerTest {
     }
 
     @Test
-    void updateAnforderungStatus_ProjektUndPhaseUndKapitelUndAnforderungVorhanden_StatusOKUndLinks() throws Exception {
+    void updateRequirementsState_RequirementExists_StateOk() throws Exception {
         // arrange
         PathContextBuilder pathContext = PathContext.builder()
             .project("SAMPLE")
@@ -197,12 +197,12 @@ class RequirementControllerTest {
 
 
     @Test
-    void updateAnforderungStatus_ProjektUndPhaseUndKapitelUndAnforderungNichtVorhanden_StatusNotFound() throws Exception {
+    void updateRequirementsState_RequirementNotExists_StateNotFound() throws Exception {
         // arrange
         given(serviceMock.handleSelected("SAMPLE", "master", "1.1", "a", FALSE)).willReturn(Optional.empty());
 
         // act
-        ResultActions actual = mockMvc.perform(put("/projekt/{projekt}/tailoring/{tailoring}/katalog/{kapitel}/{anforderung}/ausgewaehlt/{ausgewaehlt}", "SAMPLE", "master", "1.1", "a", FALSE)
+        ResultActions actual = mockMvc.perform(put("/project/{project}/tailoring/{tailoring}/catalog/{chapter}/{requirement}/selected/{selected}", "SAMPLE", "master", "1.1", "a", FALSE)
             .accept(HAL_JSON_VALUE)
         );
 
@@ -212,7 +212,7 @@ class RequirementControllerTest {
     }
 
     @Test
-    void updateAnforderungText_ProjektUndPhaseUndKapitelUndAnforderungVorhanden_StatusOKUndLinks() throws Exception {
+    void updateRequirementText_RequirementExists_StateOk() throws Exception {
         // arrange
         PathContextBuilder pathContext = PathContext.builder()
             .project("SAMPLE")
@@ -247,12 +247,12 @@ class RequirementControllerTest {
     }
 
     @Test
-    void updateAnforderungText_ProjektUndPhaseUndKapitelUndAnforderungNichtVorhanden_StatusNotFound() throws Exception {
+    void updateRequirementText_RequirementNotExists_StateNotFound() throws Exception {
         // arrange
         given(serviceMock.handleText("SAMPLE", "master", "1.1", "a", "Dies ist ein neuer Text")).willReturn(Optional.empty());
 
         // act
-        ResultActions actual = mockMvc.perform(put("/projekt/{projekt}/tailoring/{tailoring}/katalog/{kapitel}/{anforderung}/text", "SAMPLE", "master", "1.1", "a")
+        ResultActions actual = mockMvc.perform(put("/project/{project}/tailoring/{tailoring}/catalog/{chapter}/{requirement}/text", "SAMPLE", "master", "1.1", "a")
             .accept(HAL_JSON_VALUE)
             .content(objectMapper.writeValueAsString("Dies ist ein neuer Text"))
             .contentType(MediaType.APPLICATION_JSON)
@@ -265,7 +265,7 @@ class RequirementControllerTest {
     }
 
     @Test
-    void updateKapitelAnforderungStatus_ProjektUndPhaseUndKapitelVorhanden_StatusOKUndLinks() throws Exception {
+    void updateRequirementsState_ChapterExists_StateOk() throws Exception {
         // arrange
         PathContextBuilder pathContext = PathContext.builder()
             .project("SAMPLE")
@@ -307,12 +307,12 @@ class RequirementControllerTest {
     }
 
     @Test
-    void updateKapitelAnforderungStatus_ProjektUndPhaseUndKapitelNichtVorhanden_StatusNotFound() throws Exception {
+    void updateRequirementsState_ChapterNotExists_StateNotFound() throws Exception {
         // arrange
         given(serviceMock.handleSelected("SAMPLE", "master", "1.1", TRUE)).willReturn(Optional.empty());
 
         // act
-        ResultActions actual = mockMvc.perform(put("/projekt/{projekt}/tailoring/{tailoring}/katalog/{kapitel}/ausgewaehlt/{ausgewaehlt}", "SAMPLE", "master", "1.1", TRUE)
+        ResultActions actual = mockMvc.perform(put("/project/{project}/tailoring/{tailoring}/catalog/{chapter}/selected/{selected}", "SAMPLE", "master", "1.1", TRUE)
             .accept(HAL_JSON_VALUE)
             .contentType(MediaType.APPLICATION_JSON)
 
@@ -324,7 +324,7 @@ class RequirementControllerTest {
     }
 
     @Test
-    void createAnforderung_ProjektUndPhaseUndKapitelVorhanden_StatusOKUndLinks() throws Exception {
+    void createRequirement_ChapterExists_StateOk() throws Exception {
         // arrange
         PathContextBuilder pathContext = PathContext.builder()
             .project("SAMPLE")
@@ -360,12 +360,12 @@ class RequirementControllerTest {
     }
 
     @Test
-    void createAnforderung_ProjektUndPhaseUndKapitelNichtVorhanden_StatusNotFound() throws Exception {
+    void createRequirement_ChapterNotExists_StateNotFound() throws Exception {
         // arrange
         given(serviceMock.createRequirement("SAMPLE", "master", "1.1", "a1", "Dies ist eine neue Requirement")).willReturn(Optional.empty());
 
         // act
-        ResultActions actual = mockMvc.perform(post("/projekt/{projekt}/tailoring/{tailoring}/katalog/{kapitel}/{anforderung}", "SAMPLE", "master", "1.1", "a1")
+        ResultActions actual = mockMvc.perform(post("/project/{project}/tailoring/{tailoring}/katalog/{kapitel}/{anforderung}", "SAMPLE", "master", "1.1", "a1")
             .accept(HAL_JSON_VALUE)
             .content(objectMapper.writeValueAsString("Dies ist eine neue Requirement"))
             .contentType(MediaType.APPLICATION_JSON)

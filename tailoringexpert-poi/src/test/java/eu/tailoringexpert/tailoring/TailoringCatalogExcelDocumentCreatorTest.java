@@ -83,7 +83,7 @@ class TailoringCatalogExcelDocumentCreatorTest {
     }
 
     @Test
-    void createDokument_ProjektPhaseVorhanden_ExcelDateiWirdErstellt() throws Exception {
+    void createDokument_TailoringExists_FileCreated() throws Exception {
         // arrange
         Catalog<TailoringRequirement> catalog;
         try (InputStream is = this.getClass().getResourceAsStream("/tailoringkatalog.json")) {
@@ -108,7 +108,7 @@ class TailoringCatalogExcelDocumentCreatorTest {
     }
 
     @Test
-    void createDokument_KeinTocVorhanden_LeereExcelWirdErstellt() throws Exception {
+    void createDocument_NoToc_EmptyFileCreated() throws Exception {
         // arrange
         Tailoring tailoring = Tailoring.builder()
             .catalog(Catalog.<TailoringRequirement>builder().build())
@@ -125,7 +125,7 @@ class TailoringCatalogExcelDocumentCreatorTest {
     }
 
     @Test
-    void createDokument_NullKapitelVorhanden_NullWirdZurueckGegeben() throws Exception {
+    void createDocument_ChapterNull_NullReturned() throws Exception {
         // arrange
         Tailoring tailoring = Tailoring.builder()
             .catalog(Catalog.<TailoringRequirement>builder()

@@ -110,7 +110,7 @@ class CMExcelDocumentCreatorTest {
     }
 
     @Test
-    void createDokument_AlleDatenOK_DateiWirdErstellt() throws IOException {
+    void createDocument_AllInputsProvided_FileCreated() throws IOException {
         // arrange
         Catalog<TailoringRequirement> catalog;
         try (InputStream is = this.getClass().getResourceAsStream("/tailoringkatalog.json")) {
@@ -151,7 +151,7 @@ class CMExcelDocumentCreatorTest {
     }
 
     @Test
-    void createDokument_TemplateNichtVorhanden_ExceptionWirdGeworfen() throws IOException {
+    void createDocument_TemplateNotExists_NullReturned() throws IOException {
         // arrange
         Catalog<TailoringRequirement> catalog;
         try (InputStream is = this.getClass().getResourceAsStream("/tailoringkatalog.json")) {

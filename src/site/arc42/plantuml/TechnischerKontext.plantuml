@@ -3,9 +3,9 @@
 
 [Tailoringexpert] <<system>> as tailoringexpert
 
-node Teamsite as teamsite {
+node Versionsverwaltung as versionsverwaltung {
 }
-tailoringexpert -- teamsite : file <
+tailoringexpert -- versionsverwaltung : file <
 
 node ECSS as ecss {
 }

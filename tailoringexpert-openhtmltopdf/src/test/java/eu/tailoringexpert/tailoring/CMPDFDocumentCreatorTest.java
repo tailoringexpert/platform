@@ -146,7 +146,7 @@ class CMPDFDocumentCreatorTest {
     }
 
     @Test
-    void createDokument() throws IOException {
+    void createDocument() throws IOException {
         // arrange
         Catalog<TailoringRequirement> catalog;
         try (InputStream is = this.getClass().getResourceAsStream("/tailoringcatalog.json")) {

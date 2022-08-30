@@ -8,12 +8,12 @@
  * it under the terms of the GNU General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/gpl-3.0.html>.
@@ -44,7 +44,7 @@ class PDFEngineTest {
     }
 
     @Test
-    void process_KeineDocId_NullPointerExceptionWirdGeworfen() {
+    void process_NoDocId_NullPointerExceptionThrown() {
         // arrange
 
         // act
@@ -55,7 +55,7 @@ class PDFEngineTest {
     }
 
     @Test
-    void process_KeinHTML_NullPointerExceptionWirdGeworfen() {
+    void process_NoHTML_NullPointerExceptionThrown() {
         // arrange
 
         // act
@@ -66,7 +66,7 @@ class PDFEngineTest {
     }
 
     @Test
-    void process_KeinSuffix_NullPointerExceptionWirdGeworfen() {
+    void process_Nouffix_NullPointerExceptionThrown() {
         // arrange
 
         // act
@@ -77,7 +77,7 @@ class PDFEngineTest {
     }
 
     @Test
-    void process_toByteArrayFehlerhaft_DateiIstNull() {
+    void process_toByteArrayWithError_NullReturned() {
         // arrange
 
         // act

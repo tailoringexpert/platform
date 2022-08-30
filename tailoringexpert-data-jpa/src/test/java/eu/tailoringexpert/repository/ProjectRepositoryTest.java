@@ -8,12 +8,12 @@
  * it under the terms of the GNU General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/gpl-3.0.html>.
@@ -54,7 +54,7 @@ class ProjectRepositoryTest {
     LiquibaseRunner liquibase;
 
     @Autowired
-    BaseCatalogRepository katalogDefinitionRepository;
+    BaseCatalogRepository baseCatalogRepository;
 
     @Autowired
     ProjectRepository repository;
@@ -70,7 +70,7 @@ class ProjectRepositoryTest {
     }
 
     @Test
-    void save_KatalogVorhanden_ProjektWordGespeichert() throws IOException {
+    void save_ProjectEntityValid_ProjectSaved() throws IOException {
         // arrange
 
         // act
@@ -95,7 +95,7 @@ class ProjectRepositoryTest {
 
     @Test
     @Transactional
-    void findByKuerzel_ProjektVorhanden_ProjektWirdZurueckGegeben() throws IOException {
+    void findByIdentifier_ProjectExists_ProjectReturned() throws IOException {
         // arrange
         repository.save(ProjectEntity.builder().identifier("SAMPLE").build());
         repository.save(ProjectEntity.builder().identifier("SAMPLE2").build());
@@ -110,9 +110,9 @@ class ProjectRepositoryTest {
 
     @Test
     @Transactional
-    void findProjektPhase_2PhasenVorhanden_GesuchtePhaseWirdZurueckGegeben() throws IOException {
+    void findTailoringe_2TailoringExists_RequestedTailoringReturned() throws IOException {
         // arrange
-        ProjectEntity projekt = ProjectEntity.builder()
+        ProjectEntity project = ProjectEntity.builder()
             .identifier("SAMPLE")
             .tailorings(Arrays.asList(
                 TailoringEntity.builder()
@@ -123,7 +123,7 @@ class ProjectRepositoryTest {
                     .build()
             ))
             .build();
-        repository.save(projekt);
+        repository.save(project);
 
         // act
         TailoringEntity actual = repository.findTailoring("SAMPLE", "master1");
@@ -134,7 +134,7 @@ class ProjectRepositoryTest {
 
     @Test
     @Transactional
-    void deleteByKuerzel_ProjektVorhanden_ProjektWirdGeloescht() throws IOException {
+    void deleteByIdentifier_ProjectExists_ProjectDeleted() throws IOException {
         // arrange
         repository.save(ProjectEntity.builder().identifier("SAMPLE").build());
         repository.save(ProjectEntity.builder().identifier("SAMPLE2").build());
@@ -148,5 +148,4 @@ class ProjectRepositoryTest {
             .isEqualTo(1);
         assertThat(repository.findByIdentifier("SAMPLE")).isNull();
     }
-
 }

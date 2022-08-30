@@ -35,6 +35,11 @@ import java.util.Arrays;
 
 import static java.util.Collections.singletonList;
 
+/**
+ * Security Configuration to be used on a local system.
+ *
+ * @author Michael Bädorf
+ */
 @Configuration
 @EnableWebSecurity
 @Log4j2

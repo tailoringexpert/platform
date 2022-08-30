@@ -73,38 +73,38 @@ class JPAProjectServiceRepositoryMapperTest {
 
 
     @Test
-    void toDomain_ProjektEntityNull_NullWirdZureuckGegeben() {
+    void toDomain_ProjectEntityNull_NullReturned() {
         // arrange
-        ProjectEntity projekt = null;
+        ProjectEntity project = null;
 
         // act
-        Project actual = mapper.toDomain(projekt);
+        Project actual = mapper.toDomain(project);
 
         // assert
         assertThat(actual).isNull();
     }
 
     @Test
-    void toDomain_ProjektPhaseEntityNull_NullWirdZureuckGegeben() {
+    void toDomain_TailoringEntityNull_NullReturned() {
         // arrange
-        TailoringEntity projektPhase = null;
+        TailoringEntity tailoring = null;
 
         // act
-        Tailoring actual = mapper.toDomain(projektPhase);
+        Tailoring actual = mapper.toDomain(tailoring);
 
         // assert
         assertThat(actual).isNull();
     }
 
     @Test
-    void toDomain_ProjektPhaseEntityMitPhasenVorhanden_ProjektPhaseMitPhasenListeWirdZureuckGegeben() {
+    void toDomain_TailoringEntityWithPhase_TailoringWithPhaseListReturned() {
         // arrange
-        TailoringEntity projektPhase = TailoringEntity.builder()
+        TailoringEntity tailoring = TailoringEntity.builder()
             .phases(asList(Phase.ZERO))
             .build();
 
         // act
-        Tailoring actual = mapper.toDomain(projektPhase);
+        Tailoring actual = mapper.toDomain(tailoring);
 
         // assert
         assertThat(actual).isNotNull();
@@ -112,7 +112,7 @@ class JPAProjectServiceRepositoryMapperTest {
     }
 
     @Test
-    void toEntity_ProjektPhaseMitPhasenVorhanden_ProjektPhaseEntityMitPhasenListeWirdZureuckGegeben() {
+    void toEntity_TailoringWithPhase_TailoringntityWithPhaseListReturned() {
         // arrange
         Tailoring tailoring = Tailoring.builder()
             .phases(asList(Phase.ZERO))
@@ -127,7 +127,7 @@ class JPAProjectServiceRepositoryMapperTest {
     }
 
     @Test
-    void toEntity_ProjektPhaseNull_NullWirdZureuckGegeben() {
+    void toEntity_TailoringNull_NullReturned() {
         // arrange
         Tailoring tailoring = null;
 
@@ -139,7 +139,7 @@ class JPAProjectServiceRepositoryMapperTest {
     }
 
     @Test
-    void toDomain_KatalogDefinitionEntityNull_NullWirdZureuckGegeben() {
+    void toDomain_BaseCatalogEntityNull_NullReturned() {
         // arrange
         BaseCatalogEntity katalog = null;
 
@@ -151,7 +151,7 @@ class JPAProjectServiceRepositoryMapperTest {
     }
 
     @Test
-    void createProjekt_ProjektNull_NullWirdZurueckGegeben() {
+    void createProjekt_ProjectNull_NullReturned() {
         // arrange
         Project project = null;
 
@@ -163,19 +163,19 @@ class JPAProjectServiceRepositoryMapperTest {
     }
 
     @Test
-    void getProjektInformationen_ProjektPhaseEntityNull_NullWirdZurueckGegebeb() {
+    void getTailoringInformationen_TailoringEntityNull_NullReturned() {
         // arrange
-        TailoringEntity projektPhase = null;
+        TailoringEntity tailoring = null;
 
         // act
-        TailoringInformation actual = mapper.getTailoringInformationen(projektPhase);
+        TailoringInformation actual = mapper.getTailoringInformationen(tailoring);
 
         // assert
         assertThat(actual).isNull();
     }
 
     @Test
-    void getProjektInformationen_ProjektPhaseEntityPhasenVorhanden_ProjektPhaseInformationMitPhasenListeWirdZurueckGegebeb() {
+    void getTailoringInformationen_TailoringEntityWithPhase_getTailoringInformationenWithPhaseListReturned() {
         // arrange
         TailoringEntity projektPhase = TailoringEntity.builder()
             .phases(asList(Phase.ZERO))
@@ -190,7 +190,7 @@ class JPAProjectServiceRepositoryMapperTest {
     }
 
     @Test
-    void getScreeningSheet_ScreeningSheetEntityNull_NullWirdZurueckGegeben() {
+    void getScreeningSheet_ScreeningSheetEntityNull_NullReturned() {
         ScreeningSheetEntity screeningSheet = null;
 
         // act
@@ -201,7 +201,7 @@ class JPAProjectServiceRepositoryMapperTest {
     }
 
     @Test
-    void getScreeningSheet_ScreeningSheetEntitySelektionsVektorAlleWerteNull_ScreeningSheetMit0WertenImSelektionsVektorWirdZurueckGegeben() {
+    void getScreeningSheet_ScreeningSheetEntitySelectionVectorAllValuesNull_ScreeningSheetWith0AllSelectionVectorParameterReturned() {
         ScreeningSheetEntity screeningSheet = ScreeningSheetEntity.builder()
             .selectionVector(SelectionVectorEntity.builder().build())
             .build();
@@ -224,7 +224,7 @@ class JPAProjectServiceRepositoryMapperTest {
     }
 
     @Test
-    void resolve_NullLogo_NullWirdZurueckgegeben() {
+    void resolve_LogoNull_NullReturned() {
         // arrange
         Logo logo = null;
 
@@ -237,7 +237,7 @@ class JPAProjectServiceRepositoryMapperTest {
     }
 
     @Test
-    void resolve_LogoUebergeben_LogoEntityWirdZurueckgegeben() {
+    void resolve_LogoExist_LogoEntityReturned() {
         // arrange
         Logo logo = Logo.builder().name("ECSS").build();
 
@@ -254,7 +254,7 @@ class JPAProjectServiceRepositoryMapperTest {
     }
 
     @Test
-    void resolve_NulKatalog_NullWirdZurueckgegeben() {
+    void resolve_BaseCatalogNull_NullReturned() {
         // arrange
         Catalog<BaseRequirement> catalog = null;
 
@@ -267,7 +267,7 @@ class JPAProjectServiceRepositoryMapperTest {
     }
 
     @Test
-    void resolve_KatalogUebergeben_KatalogEntityWirdZurueckgegeben() {
+    void resolve_BaseCatalogNotNull_BaseCatalogEntityReturned() {
         // arrange
         Catalog<BaseRequirement> catalog = Catalog.<BaseRequirement>builder().version("8.2.1").build();
 
@@ -284,7 +284,7 @@ class JPAProjectServiceRepositoryMapperTest {
     }
 
     @Test
-    void resolve_NullDRD_NullWirdZurueckgegeben() {
+    void resolve_DRDNull_NullReturned() {
         // arrange
         DRD drd = null;
 
@@ -297,7 +297,7 @@ class JPAProjectServiceRepositoryMapperTest {
     }
 
     @Test
-    void resolve_DRDUebergeben_DRDEntityWirdZurueckgegeben() {
+    void resolve_DRDNotNull_DRDEntityReturned() {
         // arrange
         DRD drd = DRD.builder().number("4711").build();
 

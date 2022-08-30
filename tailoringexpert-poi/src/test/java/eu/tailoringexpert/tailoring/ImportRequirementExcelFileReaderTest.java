@@ -46,7 +46,7 @@ class ImportRequirementExcelFileReaderTest {
     }
 
     @Test
-    void apply_ExceptionSimuliert_ExceptionWirdGeworfen() throws IOException {
+    void apply_ExceptionSimulated_ExceptionThrown() throws IOException {
         // arrange
         byte[] data;
         try (InputStream is = newInputStream(get("src/test/resources/leer.xlsx"))) {
@@ -62,7 +62,7 @@ class ImportRequirementExcelFileReaderTest {
     }
 
     @Test
-    void apply_GueltigeDatei_ZeileKorrektVerearbeitet() throws IOException {
+    void apply_InputFileValid_RowsCorrectProcessed() throws IOException {
         // arrange
         byte[] data;
         try (InputStream is = newInputStream(get("src/test/resources/TailoringImport.xlsx"))) {

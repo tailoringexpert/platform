@@ -115,7 +115,7 @@ class CatalogDocumentCreatorTest {
     }
 
     @Test
-    void createDokument() throws Exception {
+    void createDocument() throws Exception {
         // arrange
         Catalog<BaseRequirement> catalog;
         try (InputStream is = this.getClass().getResourceAsStream("/basecatalog.json")) {
@@ -154,7 +154,7 @@ class CatalogDocumentCreatorTest {
     }
 
     @Test
-    void createDokument_NullDocId_NullPointerExceptionWirdGeworfen() throws Exception {
+    void createDokument_DocIdNull_NullPointerExceptionThrown() throws Exception {
         // arrange
         Catalog<BaseRequirement> catalog;
         try (InputStream is = this.getClass().getResourceAsStream("/basecatalog.json")) {
@@ -173,7 +173,7 @@ class CatalogDocumentCreatorTest {
     }
 
     @Test
-    void createDokument_NullKatalog_NullPointerExceptionWirdGeworfen() throws Exception {
+    void createDocument_BaseCatalogNull_NullPointerExceptionThrown() throws Exception {
         // arrange
         Map<String, String> platzhalter = new HashMap<>();
 
@@ -185,7 +185,7 @@ class CatalogDocumentCreatorTest {
     }
 
     @Test
-    void createDokument_NullPlatzhalter_NullPointerExceptionWirdGeworfen() throws Exception {
+    void createDocument_PlaceholdersNull_NullPointerExceptionThrown() throws Exception {
         // arrange
         Catalog<BaseRequirement> catalog;
         try (InputStream is = this.getClass().getResourceAsStream("/basecatalog.json")) {

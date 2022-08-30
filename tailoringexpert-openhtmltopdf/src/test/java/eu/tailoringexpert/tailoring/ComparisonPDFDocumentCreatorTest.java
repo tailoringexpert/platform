@@ -98,7 +98,7 @@ class ComparisonPDFDocumentCreatorTest {
     }
 
     @Test
-    void createDokument() throws Exception {
+    void createDocument() throws Exception {
         // arrange
         Catalog<TailoringRequirement> catalog;
         try (InputStream is = this.getClass().getResourceAsStream("/tailoringcatalog.json")) {
@@ -180,7 +180,7 @@ class ComparisonPDFDocumentCreatorTest {
     }
 
     @Test
-    void createDokument_DocIdNull_NullWirdZurueckGegeben() {
+    void createDocument_DocIdNull_NullPointerExceptionThrown() {
         // arrange
 
         // act
@@ -191,7 +191,7 @@ class ComparisonPDFDocumentCreatorTest {
     }
 
     @Test
-    void createDokument_TailoringNull_NullWirdZurueckGegeben() {
+    void createDocument_TailoringNull_NullPointerExceptionThrown() {
         // arrange
 
         // act
@@ -202,7 +202,7 @@ class ComparisonPDFDocumentCreatorTest {
     }
 
     @Test
-    void createDokument_PlatzhalterNull_NullWirdZurueckGegeben() {
+    void createDocument_PlaceholdersNull_NullPointerExceptionThrown() {
         // arrange
 
         // act

@@ -53,30 +53,27 @@ import static org.mockito.Mockito.verify;
 class JPAProjectServiceRepositoryTest {
 
     ProjectRepository projectRepositoryMock;
-    BaseCatalogRepository katalogDefinitionRepositoryMock;
+    BaseCatalogRepository baseCatalogRepositoryMock;
     JPAProjectServiceRepositoryMapper mapperMock;
     JPAProjectServiceRepository repository;
 
     @BeforeEach
     void setup() {
         this.projectRepositoryMock = mock(ProjectRepository.class);
-        this.katalogDefinitionRepositoryMock = mock(BaseCatalogRepository.class);
+        this.baseCatalogRepositoryMock = mock(BaseCatalogRepository.class);
         this.mapperMock = mock(JPAProjectServiceRepositoryMapper.class);
         this.repository = new JPAProjectServiceRepository(
             this.mapperMock,
             this.projectRepositoryMock,
-            this.katalogDefinitionRepositoryMock
+            this.baseCatalogRepositoryMock
         );
     }
 
     @Test
-    void getKatalog_KatalogVersionNichtVorhanden_NullErgebnis() {
+    void getBaseCatalog_BaseCatalogNotExists_NullReturned() {
         // arrange
-        given(katalogDefinitionRepositoryMock.findByVersion("8.2.1"))
-            .willReturn(null);
-
-        given(mapperMock.toDomain((BaseCatalogEntity) null))
-            .willReturn(null);
+        given(baseCatalogRepositoryMock.findByVersion("8.2.1")).willReturn(null);
+        given(mapperMock.toDomain((BaseCatalogEntity) null)).willReturn(null);
 
         // act
         Catalog<BaseRequirement> actual = repository.getBaseCatalog("8.2.1");
@@ -86,14 +83,12 @@ class JPAProjectServiceRepositoryTest {
     }
 
     @Test
-    void getKatalog_KatalogVersionVorhanden_KatalogErgebnis() {
+    void getBaseCatalog_BasrCatalogExists_CatalogReturned() {
         // arrange
-        BaseCatalogEntity katalog = BaseCatalogEntity.builder().build();
-        given(katalogDefinitionRepositoryMock.findByVersion("8.2.1"))
-            .willReturn(katalog);
+        BaseCatalogEntity baseCatalog = BaseCatalogEntity.builder().build();
 
-        given(mapperMock.toDomain(katalog))
-            .willReturn(Catalog.<BaseRequirement>builder().build());
+        given(baseCatalogRepositoryMock.findByVersion("8.2.1")).willReturn(baseCatalog);
+        given(mapperMock.toDomain(baseCatalog)).willReturn(Catalog.<BaseRequirement>builder().build());
 
         // act
         Catalog<BaseRequirement> actual = repository.getBaseCatalog("8.2.1");
@@ -103,18 +98,14 @@ class JPAProjectServiceRepositoryTest {
     }
 
     @Test
-    void createProjekt_ProjektNichtNull_ProjektAngelegt() {
+    void createProject_ProjectNotNull_ProjectCreated() {
         // arrange
         Project project = Project.builder().build();
-        ProjectEntity projektToSave = ProjectEntity.builder().build();
-        given(mapperMock.createProject(project))
-            .willReturn(projektToSave);
+        ProjectEntity projectToSave = ProjectEntity.builder().build();
 
-        given(mapperMock.toDomain(projektToSave))
-            .willReturn(Project.builder().build());
-
-        given(projectRepositoryMock.save(projektToSave))
-            .willReturn(projektToSave);
+        given(mapperMock.createProject(project)).willReturn(projectToSave);
+        given(mapperMock.toDomain(projectToSave)).willReturn(Project.builder().build());
+        given(projectRepositoryMock.save(projectToSave)).willReturn(projectToSave);
 
         // act
         Project actual = repository.createProject(project);
@@ -124,10 +115,9 @@ class JPAProjectServiceRepositoryTest {
     }
 
     @Test
-    void deleteProjekt_ProjektVorhanden_ProjektGeloescht() {
+    void deleteProject_ProjectExists_ProjectDeleted() {
         // arrange
-        given(projectRepositoryMock.deleteByIdentifier("SAMPLE"))
-            .willReturn(1l);
+        given(projectRepositoryMock.deleteByIdentifier("SAMPLE")).willReturn(1l);
 
         // act
         boolean actual = repository.deleteProject("SAMPLE");
@@ -137,10 +127,9 @@ class JPAProjectServiceRepositoryTest {
     }
 
     @Test
-    void deleteProjekt_ProjektNichtVorhanden_KeinProjektGeloescht() {
+    void deleteProject_ProjectNotExists_NoProjectDeleted() {
         // arrange
-        given(projectRepositoryMock.deleteByIdentifier("SAMPLE"))
-            .willReturn(0l);
+        given(projectRepositoryMock.deleteByIdentifier("SAMPLE")).willReturn(0l);
 
         // act
         boolean actual = repository.deleteProject("SAMPLE");
@@ -150,13 +139,10 @@ class JPAProjectServiceRepositoryTest {
     }
 
     @Test
-    void getProjekt_ProjektNichtVorhanden_EmptyErgebnis() {
+    void getProject_ProjectNotExists_EmptyReturned() {
         // arrange
-        given(projectRepositoryMock.findByIdentifier("SAMPLE"))
-            .willReturn(null);
-
-        given(mapperMock.toDomain((ProjectEntity) null))
-            .willReturn(null);
+        given(projectRepositoryMock.findByIdentifier("SAMPLE")).willReturn(null);
+        given(mapperMock.toDomain((ProjectEntity) null)).willReturn(null);
 
         // act
         Optional<Project> actual = repository.getProject("SAMPLE");
@@ -166,14 +152,12 @@ class JPAProjectServiceRepositoryTest {
     }
 
     @Test
-    void getProjekt_ProjektVorhanden_ProjektErgebnis() {
+    void getProject_ProjectExists_ProjectReturned() {
         // arrange
         ProjectEntity projectEntity = ProjectEntity.builder().build();
-        given(projectRepositoryMock.findByIdentifier("SAMPLE"))
-            .willReturn(projectEntity);
 
-        given(mapperMock.toDomain(projectEntity))
-            .willReturn(Project.builder().build());
+        given(projectRepositoryMock.findByIdentifier("SAMPLE")).willReturn(projectEntity);
+        given(mapperMock.toDomain(projectEntity)).willReturn(Project.builder().build());
 
         // act
         Optional<Project> actual = repository.getProject("SAMPLE");
@@ -183,28 +167,25 @@ class JPAProjectServiceRepositoryTest {
     }
 
     @Test
-    void addProjektPhase_ProjektVorhanden_PhaseHinzugefuegt() {
+    void addTailoring_ProjectExists_TailoringAdded() {
         // arrange
         ProjectEntity projectEntity = ProjectEntity.builder().build();
-        given(projectRepositoryMock.findByIdentifier("SAMPLE"))
-            .willReturn(projectEntity);
+        given(projectRepositoryMock.findByIdentifier("SAMPLE")).willReturn(projectEntity);
 
         Tailoring tailoring = Tailoring.builder()
             .catalog(Catalog.<TailoringRequirement>builder().version("8.2.1").build())
             .build();
-        TailoringEntity projektPhaseToAdd = TailoringEntity.builder().build();
-        given(mapperMock.toEntity(tailoring))
-            .willReturn(projektPhaseToAdd);
+        TailoringEntity tailoringToAdd = TailoringEntity.builder().build();
 
-        given(mapperMock.toDomain(projektPhaseToAdd))
-            .willReturn(Tailoring.builder().build());
+        given(mapperMock.toEntity(tailoring)).willReturn(tailoringToAdd);
+        given(mapperMock.toDomain(tailoringToAdd)).willReturn(Tailoring.builder().build());
 
         // act
         Optional<Tailoring> actual = repository.addTailoring("SAMPLE", tailoring);
 
         // assert
         assertThat(actual).isPresent();
-        assertThat(projectEntity.getTailorings()).contains(projektPhaseToAdd);
+        assertThat(projectEntity.getTailorings()).contains(tailoringToAdd);
     }
 
     @Test
@@ -224,8 +205,7 @@ class JPAProjectServiceRepositoryTest {
                 )
             );
 
-        given(mapperMock.getTailoringInformationen(any(ProjectEntity.class)))
-            .willReturn(ProjectInformation.builder().build());
+        given(mapperMock.getTailoringInformationen(any(ProjectEntity.class))).willReturn(ProjectInformation.builder().build());
 
         // act
         Collection<ProjectInformation> actual = repository.getProjectInformations();
@@ -235,10 +215,9 @@ class JPAProjectServiceRepositoryTest {
     }
 
     @Test
-    void getScreeningSheet_ProjektNichtVorhanden_EmptyWirdZurueckGegeben() {
+    void getScreeningSheet_ProjectNotExists_EmptyReturned() {
         // arrange
-        given(projectRepositoryMock.findByIdentifier(anyString()))
-            .willReturn(null);
+        given(projectRepositoryMock.findByIdentifier(anyString())).willReturn(null);
 
         // act
         Optional<ScreeningSheet> actual = repository.getScreeningSheet("DUMMY");
@@ -250,85 +229,85 @@ class JPAProjectServiceRepositoryTest {
     }
 
     @Test
-    void getScreeningSheet_ProjektVorhanden_EmptyWirdZurueckGegeben() {
+    void getScreeningSheet_ProjectExists_ScreeningSheetReturned() {
         // arrange
-        ScreeningSheetEntity screeningSheet = ScreeningSheetEntity.builder().build().builder().build();
-        ProjectEntity projekt = ProjectEntity.builder()
+        ScreeningSheetEntity screeningSheet = ScreeningSheetEntity.builder().build();
+        ProjectEntity project = ProjectEntity.builder()
             .screeningSheet(screeningSheet)
             .build();
-        given(projectRepositoryMock.findByIdentifier(anyString()))
-            .willReturn(projekt);
+        given(projectRepositoryMock.findByIdentifier(anyString())).willReturn(project);
+        given(mapperMock.getScreeningSheet(screeningSheet)).willReturn(ScreeningSheet.builder().build());
 
         // act
         Optional<ScreeningSheet> actual = repository.getScreeningSheet("DUMMY");
 
         // assert
-        assertThat(actual).isEmpty();
+        assertThat(actual).isNotEmpty();
         verify(projectRepositoryMock, times(1)).findByIdentifier("DUMMY");
         verify(mapperMock, times(1)).getScreeningSheet(screeningSheet);
     }
 
     @Test
-    void getProjektInformation_KuerzelNull_OptionalEmptyWirdZurueckGegeben() {
+    void getProjectInformation_IdentifierNull_EmptyReturned() {
         // arrange
-        String projekt = null;
+        String project = null;
 
         ProjectEntity entity = null;
-        given(projectRepositoryMock.findByIdentifier(projekt)).willReturn(entity);
+        given(projectRepositoryMock.findByIdentifier(project)).willReturn(entity);
         given(mapperMock.getTailoringInformationen(entity)).willReturn(null);
 
         // act
-        Optional<ProjectInformation> actual = repository.getProjectInformation(projekt);
+        Optional<ProjectInformation> actual = repository.getProjectInformation(project);
 
         // assert
         assertThat(actual).isEmpty();
-        verify(projectRepositoryMock, times(1)).findByIdentifier(projekt);
+        verify(projectRepositoryMock, times(1)).findByIdentifier(project);
         verify(mapperMock, times(1)).getTailoringInformationen(entity);
 
     }
 
     @Test
-    void getProjektInformation_KuerzelVorhanden_OptionalWirdZurueckGegeben() {
+    void getProjectInformation_IdentifierExists_ProjectInformationReturned() {
         // arrange
-        String projekt = "DUMMY";
+        String project = "DUMMY";
 
         ProjectEntity entity = ProjectEntity.builder().identifier("DUMMY").build();
-        given(projectRepositoryMock.findByIdentifier(projekt)).willReturn(entity);
+        given(projectRepositoryMock.findByIdentifier(project)).willReturn(entity);
 
         ProjectInformation projectInformation = ProjectInformation.builder().identifier("DUMMY").build();
         given(mapperMock.getTailoringInformationen(entity)).willReturn(projectInformation);
 
         // act
-        Optional<ProjectInformation> actual = repository.getProjectInformation(projekt);
+        Optional<ProjectInformation> actual = repository.getProjectInformation(project);
 
         // assert
         assertThat(actual).isNotEmpty();
-        verify(projectRepositoryMock, times(1)).findByIdentifier(projekt);
+        verify(projectRepositoryMock, times(1)).findByIdentifier(project);
         verify(mapperMock, times(1)).getTailoringInformationen(entity);
 
     }
 
     @Test
-    void getScreeningSheetDatei_KuerzelNull_OptionalEmptyWirdZurueckGegeben() {
+    void getScreeningSheetFile_IdentifierNull_EmptyReturned() {
         // arrange
-        String projekt = null;
+        String project = null;
 
         ProjectEntity entity = null;
-        given(projectRepositoryMock.findByIdentifier(projekt)).willReturn(entity);
+        given(projectRepositoryMock.findByIdentifier(project)).willReturn(entity);
 
         // act
-        Optional<byte[]> actual = repository.getScreeningSheetFile(projekt);
+        Optional<byte[]> actual = repository.getScreeningSheetFile(project);
 
         // assert
         assertThat(actual).isEmpty();
-        verify(projectRepositoryMock, times(1)).findByIdentifier(projekt);
+        verify(projectRepositoryMock, times(1)).findByIdentifier(project);
 
     }
 
     @Test
-    void getScreeningSheetDatei_KuerzelVorhanden_OptionalWirdZurueckGegeben() {
+    void getScreeningSheetFile_ProjectExists_FileReturned() {
         // arrange
-        String projekt = "DUMMY";
+        String project = "DUMMY";
 
         ProjectEntity entity = ProjectEntity.builder()
             .identifier("DUMMY")
@@ -337,14 +316,14 @@ class JPAProjectServiceRepositoryTest {
                 .data("Hallo Du".getBytes(UTF_8))
                 .build())
             .build();
-        given(projectRepositoryMock.findByIdentifier(projekt)).willReturn(entity);
+        given(projectRepositoryMock.findByIdentifier(project)).willReturn(entity);
 
         // act
-        Optional<byte[]> actual = repository.getScreeningSheetFile(projekt);
+        Optional<byte[]> actual = repository.getScreeningSheetFile(project);
 
         // assert
         assertThat(actual).isNotEmpty();
-        verify(projectRepositoryMock, times(1)).findByIdentifier(projekt);
+        verify(projectRepositoryMock, times(1)).findByIdentifier(project);
 
     }
 

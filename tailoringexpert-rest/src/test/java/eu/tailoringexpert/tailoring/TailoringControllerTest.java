@@ -166,7 +166,7 @@ class TailoringControllerTest {
     }
 
     @Test
-    void getKatalog_ProjektUndPhaseNichtVorhanden_StatusNotFound() throws Exception {
+    void getCatalog_TailoringNotExists_StateNotFound() throws Exception {
         // arrange
         given(serviceMock.getCatalog("SAMPLE", "master")).willReturn(empty());
 
@@ -183,7 +183,7 @@ class TailoringControllerTest {
     }
 
     @Test
-    void getKatalog_ProjektUndPhaseVorhanden_StatusOKUndLinks() throws Exception {
+    void getCatalog_TailoringExists_StateOk() throws Exception {
         // arrange
         Catalog<TailoringRequirement> catalog = Catalog.<TailoringRequirement>builder()
             .toc(Chapter.<TailoringRequirement>builder().build())
@@ -209,7 +209,7 @@ class TailoringControllerTest {
     }
 
     @Test
-    void getKapitel_ProjektUndPhaseUndKapitelNichtVorhanden_StatusNotFound() throws Exception {
+    void getChapter_ChapterNotExists_StateNotFound() throws Exception {
         // arrange
         given(serviceMock.getChapter("SAMPLE", "master", "1.1")).willReturn(empty());
 
@@ -224,7 +224,7 @@ class TailoringControllerTest {
     }
 
     @Test
-    void getKapitel_ProjektUndPhaseUndKapitelVorhanden_StatusOKUndLinks() throws Exception {
+    void getChapter_TailoringExists_StateOk() throws Exception {
         // arrange
         Chapter<TailoringRequirement> gruppe = Chapter.<TailoringRequirement>builder()
             .number("1.1")
@@ -250,7 +250,7 @@ class TailoringControllerTest {
     }
 
     @Test
-    void getScreeningSheet_ProjektUndPhaseVorhanden_StatusOKUndLinks() throws Exception {
+    void getScreeningSheet_TailoringExists_StateOk() throws Exception {
         // arrange
         ScreeningSheet screeningSheet = ScreeningSheet.builder().build();
         given(serviceMock.getScreeningSheet("SAMPLE", "master"))
@@ -274,7 +274,7 @@ class TailoringControllerTest {
     }
 
     @Test
-    void getScreeningSheetDatei_ProjektUndPhaseNichtVorhanden_StatusNotFound() throws Exception {
+    void getScreeningSheetFile_TailoringNotExists_StatusNotFound() throws Exception {
         // arrange
         given(repositoryMock.getScreeningSheetFile("SAMPLE", "master")).willReturn(empty());
 
@@ -287,7 +287,7 @@ class TailoringControllerTest {
     }
 
     @Test
-    void getScreeningSheetDatei_ProjektUndPhaseVorhanden_DateiWirdZurueckGegeben() throws Exception {
+    void getScreeningSheetFile_TailoringExists_StateOkHeaderContentDisposition() throws Exception {
         // arrange
         byte[] data;
         try (InputStream is = newInputStream(Paths.get("src/test/resources/screeningsheet_0d.pdf"))) {
@@ -313,7 +313,7 @@ class TailoringControllerTest {
     }
 
     @Test
-    void getSelektionsVektor_ProjektUndPhaseNichtVorhanden_StatusNotDound() throws Exception {
+    void getSelectionVector_TailoringNotExists_StateNotFound() throws Exception {
         // arrange
         given(serviceMock.getSelectionVector("SAMPLE", "master")).willReturn(empty());
 
@@ -328,7 +328,7 @@ class TailoringControllerTest {
     }
 
     @Test
-    void getSelektionsVektor_ProjektUndPhaseVorhanden_StatusOKUndLinks() throws Exception {
+    void getSelectionVector_TailoringExists_StateOk() throws Exception {
         // arrange
         SelectionVector selectionVector = SelectionVector.builder().build();
         given(serviceMock.getSelectionVector("SAMPLE", "master")).willReturn(Optional.of(selectionVector));
@@ -351,7 +351,7 @@ class TailoringControllerTest {
     }
 
     @Test
-    void getProjektPhase_ProjektUndPhaseVorhanden_StatusOkUndLinks() throws Exception {
+    void getTailoring_TailoringExists_StateOk() throws Exception {
         // arrange
         Tailoring tailoring = Tailoring.builder().name("master").build();
         given(repositoryMock.getTailoring("SAMPLE", "master"))
@@ -375,13 +375,13 @@ class TailoringControllerTest {
     }
 
     @Test
-    void getProjektPhase_ProjektNichtVorhanden_StatusNotFound() throws Exception {
+    void getTailoring_TailoringNotExists_StateNotFound() throws Exception {
         // arrange
         given(repositoryMock.getProject("SAMPLE"))
             .willReturn(Optional.of(Project.builder().tailoring(Tailoring.builder().build()).build()));
 
         // act
-        ResultActions actual = mockMvc.perform(get("/project/{project}/phase/{phase}", "H3SAT", "master")
+        ResultActions actual = mockMvc.perform(get("/project/{project}/tailoring/{tailoring}", "SAMPLE2", "master")
             .contentType(APPLICATION_JSON)
             .accept(HAL_JSON_VALUE)
         );
@@ -392,24 +392,7 @@ class TailoringControllerTest {
     }
 
     @Test
-    void getProjektPhase_ProjektPhaseNichtVorhanden_StatusPreconditionFailed() throws Exception {
-        // arrange
-        given(repositoryMock.getProject("SAMPLE"))
-            .willReturn(Optional.of(Project.builder().tailoring(Tailoring.builder().name("master").build()).build()));
-
-        // act
-        ResultActions actual = mockMvc.perform(get("/project/{project}/phase/{phase}", "SAMPLE", "master1")
-            .contentType(APPLICATION_JSON)
-            .accept(HAL_JSON_VALUE)
-        );
-
-        // assert
-        actual.andExpect(status().isNotFound());
-        assertThatNoException();
-    }
-
-    @Test
-    void addFile_StatusOkUndLinks() throws Exception {
+    void addFile_TailoringExists_StateOk() throws Exception {
         // arrange
         byte[] data;
         try (InputStream is = newInputStream(Paths.get("src/test/resources/screeningsheet_0d.pdf"))) {
@@ -447,7 +430,7 @@ class TailoringControllerTest {
     }
 
     @Test
-    void addAttachment_ProjektUndPhaseNichtVorhanden_StatusNotFound() throws Exception {
+    void addFile_TailoringNotExists_StateNotFound() throws Exception {
         // arrange
         byte[] data;
         try (InputStream is = newInputStream(Paths.get("src/test/resources/screeningsheet_0d.pdf"))) {
@@ -478,7 +461,7 @@ class TailoringControllerTest {
     }
 
     @Test
-    void getAnforderungDokument_ProjektUndPhaseVorhanden_DateiWirdZurueckGegeben() throws Exception {
+    void createRequirementFile_TailoringExists_StateOkHeaderContentDisposition() throws Exception {
         // arrange
         byte[] data;
         try (InputStream is = newInputStream(Paths.get("src/test/resources/screeningsheet_0d.pdf"))) {
@@ -508,7 +491,7 @@ class TailoringControllerTest {
     }
 
     @Test
-    void getAnforderungDokument_ProjektUndPhaseNichtVorhanden_StatusNotFound() throws Exception {
+    void createRequirementFile_TailoringNotExists_StateNoFound() throws Exception {
         // arrange
         given(serviceMock.createRequirementDocument("SAMPLE", "master")).willReturn(empty());
 
@@ -524,7 +507,7 @@ class TailoringControllerTest {
     }
 
     @Test
-    void getAnforderungen_ProjektUndPhaseUndKapitelVorhanden_StatusOKUndLinks() throws Exception {
+    void getRequirements_ChapterExists_StateOk() throws Exception {
         // arrange
         TailoringRequirement anforderung = TailoringRequirement.builder()
             .position("a")
@@ -551,7 +534,7 @@ class TailoringControllerTest {
     }
 
     @Test
-    void getDokumentZeichnungen_ProjektUndPhaseVorhanden_StatusOKUndLinks() throws Exception {
+    void getSigntures_TailoringExists_StateOk() throws Exception {
         // arrange
         DocumentSignature zeichnung = DocumentSignature.builder()
             .faculty("Software")
@@ -577,7 +560,7 @@ class TailoringControllerTest {
     }
 
     @Test
-    void updateDokumentZeichnung_ProjektUndPhaseNichtVorhanden_StatusNotFound() throws Exception {
+    void updateDocumentSignature_TailoringNotExists_StateNotFound() throws Exception {
         // arrange
         DocumentSignature zeichnung = DocumentSignature.builder()
             .faculty("Software")
@@ -604,7 +587,7 @@ class TailoringControllerTest {
     }
 
     @Test
-    void updateDokumentZeichnung_ProjektUndPhaseVorhanden_StatusOKUndLinks() throws Exception {
+    void updateDocumentSignature_TailoringNotExists_StateOk() throws Exception {
         // arrange
         DocumentSignature zeichnung = DocumentSignature.builder()
             .faculty("Software")

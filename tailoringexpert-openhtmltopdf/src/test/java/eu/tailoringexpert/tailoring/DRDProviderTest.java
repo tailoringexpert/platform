@@ -99,7 +99,7 @@ class DRDProviderTest {
     }
 
     @Test
-    void doit() {
+    void apply_2SelectedRequirementsSameDRD_OneDRD0510Returned() {
         // arrange
         Chapter<TailoringRequirement> chapter = Chapter.<TailoringRequirement>builder()
             .number("5.1")
@@ -114,14 +114,14 @@ class DRDProviderTest {
                     ))
                     .build(),
                 TailoringRequirement.builder()
-                    .text("Anforderung2")
+                    .text("Requirement 2")
                     .selected(true)
                     .drds(asList(
                         DRD.builder().number("05.10").deliveryDate("SRR").build()
                     ))
                     .build(),
                 TailoringRequirement.builder()
-                    .text("Anforderung3")
+                    .text("Requirement 3")
                     .selected(true)
                     .drds(asList(
                         DRD.builder().number("05.10").deliveryDate("PDR").build()
