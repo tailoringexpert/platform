@@ -116,14 +116,14 @@ public class CatalogController {
     @GetMapping(value = BASECATALOG, produces = {"application/hal+json"})
     public ResponseEntity<CollectionModel<EntityModel<BaseCatalogVersionResource>>> getCatalogs() {
         PathContextBuilder pathContext = PathContext.builder();
-        List<EntityModel<BaseCatalogVersionResource>> kataloge = baseCatalogRepository.findCatalogVersionBy()
+        List<EntityModel<BaseCatalogVersionResource>> catalogs = baseCatalogRepository.findCatalogVersionBy()
             .stream()
             .map(katalog -> EntityModel.of(mapper.toResource(pathContext, katalog)))
             .collect(toList());
 
         return ResponseEntity
             .ok()
-            .body(CollectionModel.of(kataloge));
+            .body(CollectionModel.of(catalogs));
     }
 
     @Operation(summary = "Load base catalog of requested version")

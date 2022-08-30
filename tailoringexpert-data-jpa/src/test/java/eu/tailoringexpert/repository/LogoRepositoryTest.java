@@ -63,7 +63,7 @@ class LogoRepositoryTest {
 
     @Test
     @Transactional
-    void findByName_LogoVorhanden_LogoWirdZurueckGegeben() throws IOException {
+    void findByName_LogoExist_LogoEntityReturned() throws IOException {
         // arrange
         repository.save(LogoEntity.builder()
             .name("ecss")

@@ -142,7 +142,7 @@ class TailoringCatalogPDFDocumentCreatorTest {
     }
 
     @Test
-    void createDokument() throws Exception {
+    void createDocument() throws Exception {
         // arrange
         Catalog<TailoringRequirement> catalog;
         try (InputStream is = this.getClass().getResourceAsStream("/tailoringcatalog.json")) {

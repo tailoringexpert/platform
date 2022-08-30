@@ -138,7 +138,7 @@ class CatalogControllerTest {
     }
 
     @Test
-    void importKatalogDefinition_FehlerfreierImport_StatusNoContent() throws Exception {
+    void doImport_NoError_StateNoContent() throws Exception {
         // arrange
         Catalog<BaseRequirement> catalog = Catalog.<BaseRequirement>builder().build();
         given(serviceMock.doImport(catalog)).willReturn(TRUE);
@@ -159,7 +159,7 @@ class CatalogControllerTest {
     }
 
     @Test
-    void importKatalogDefinition_FehlerhafterImport_StatusBadRequest() throws Exception {
+    void doImport_Error_StateBadRequest() throws Exception {
         // arrange
         Catalog<BaseRequirement> catalog = Catalog.<BaseRequirement>builder().build();
         given(serviceMock.doImport(catalog)).willReturn(FALSE);
@@ -178,11 +178,11 @@ class CatalogControllerTest {
     }
 
     @Test
-    void getCatalog_NoError_StatusOKUndLinks() throws Exception {
+    void getCatalog_NoError_StateOK() throws Exception {
         // arrange
         PathContextBuilder pathContext = PathContext.builder();
 
-        BaseCatalogVersion katalog7 = new BaseCatalogVersion() {
+        BaseCatalogVersion baseeCatalog7 = new BaseCatalogVersion() {
             @Override
             public String getVersion() {
                 return "7.2.1";
@@ -198,7 +198,7 @@ class CatalogControllerTest {
                 return null;
             }
         };
-        BaseCatalogVersion katalog8 = new BaseCatalogVersion() {
+        BaseCatalogVersion baseCatalog8 = new BaseCatalogVersion() {
             @Override
             public String getVersion() {
                 return "8.2.1";
@@ -215,7 +215,7 @@ class CatalogControllerTest {
             }
         };
         ArgumentCaptor<BaseCatalogVersion> katalogCaptor = ArgumentCaptor.forClass(BaseCatalogVersion.class);
-        given(repositoryMock.findCatalogVersionBy()).willReturn(asList(katalog7, katalog8));
+        given(repositoryMock.findCatalogVersionBy()).willReturn(asList(baseeCatalog7, baseCatalog8));
 
         ArgumentCaptor<PathContextBuilder> pathContextCaptor = ArgumentCaptor.forClass(PathContextBuilder.class);
         given(mapperMock.toResource(pathContextCaptor.capture(), katalogCaptor.capture()))
@@ -237,7 +237,7 @@ class CatalogControllerTest {
     }
 
     @Test
-    void getKatalog_KatalogVorhanden_KatalogUndStatusOK() throws Exception {
+    void getCatalog_BaseCatalogExists_StateOk() throws Exception {
         // arrange
         Catalog<BaseRequirement> catalog = Catalog.<BaseRequirement>builder().build();
         given(serviceMock.getCatalog("42")).willReturn(of(catalog));
@@ -256,7 +256,7 @@ class CatalogControllerTest {
     }
 
     @Test
-    void getKatalog_KatalogNichtVorhanden_StatusNotFound() throws Exception {
+    void getCatalog_BaseCatalogNotExists_StateNotFound() throws Exception {
         // arrange
         Catalog<BaseRequirement> catalog = Catalog.<BaseRequirement>builder().build();
         given(serviceMock.getCatalog("42")).willReturn(empty());
@@ -275,7 +275,7 @@ class CatalogControllerTest {
     }
 
     @Test
-    void createVatalog_CatalogAvailable_DateiUndStatusOK() throws Exception {
+    void createCatalog_BaseCatalogExists_StateOK() throws Exception {
         // arrange
         byte[] data;
         // file content not important. only size of byte[]
@@ -306,7 +306,7 @@ class CatalogControllerTest {
     }
 
     @Test
-    void getJsonKatalog_CatalogNotAvailable_StateNotFound() throws Exception {
+    void getJsonKatalog_BaseCatalogNotExists_StateNotFound() throws Exception {
         // arrange
         given(serviceMock.getCatalog("8.2.1"))
             .willReturn(empty());
@@ -320,7 +320,7 @@ class CatalogControllerTest {
     }
 
     @Test
-    void getJsonKatalog_CatalogAvailable_StateOkAndFile() throws Exception {
+    void getJsonCatalog_BaseCatalogExists_StateOk() throws Exception {
         // arrange
         Catalog<BaseRequirement> catalog;
         try (InputStream is = newInputStream(Paths.get("src/test/resources/basecatalog.json"))) {

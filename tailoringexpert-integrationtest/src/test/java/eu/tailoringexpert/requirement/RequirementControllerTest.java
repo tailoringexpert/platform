@@ -88,7 +88,7 @@ class RequirementControllerTest {
 
 
         // act
-        ResponseEntity<EntityModel<TailoringCatalogChapterResource>> actual = controller.updateChapterRequirementsState(
+        ResponseEntity<EntityModel<TailoringCatalogChapterResource>> actual = controller.updateRequirementsState(
             "SAMPLE",
             createdProjekt.getTailoring(),
             "1.4",
@@ -110,7 +110,7 @@ class RequirementControllerTest {
         CreateProjectTO createdProjekt = projektCreator.get();
 
         // act
-        ResponseEntity<EntityModel<TailoringRequirementResource>> actual = controller.updateChapterRequirementsState(
+        ResponseEntity<EntityModel<TailoringRequirementResource>> actual = controller.updateRequirementsState(
             "SAMPLE",
             createdProjekt.getTailoring(),
             "1.4",
@@ -154,7 +154,7 @@ class RequirementControllerTest {
         CreateProjectTO createdProjekt = projektCreator.get();
 
         // act
-        ResponseEntity<EntityModel<TailoringRequirementResource>> actual = controller.createrRequirement(
+        ResponseEntity<EntityModel<TailoringRequirementResource>> actual = controller.createRequirement(
             "SAMPLE",
             createdProjekt.getTailoring(),
             "1.4",

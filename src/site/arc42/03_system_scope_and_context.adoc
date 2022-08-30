@@ -21,6 +21,6 @@ plantuml::plantuml/TechnischerKontext.plantuml[target="{plantumls-outdir}/03/Tec
 ==== Webbrowser (Fremdsystem)
 Die Kommunikation zwischen den Anwendern und dem System erfolgt über einen Webbrowser.
 
-==== Teamsite (Fremdsystem)
-Die Dokumentenvorlagen werden auf einer katalogversionspezifischen Teamsite zur
-Verfügung gestellt. Es handelt sich hierbei in der Regel im HTML Dateien
+==== Versionsverwaltung (Fremdsystem)
+Die Dokumentenvorlagen werden über eine Versionsverwaltung zur Verfügung gestellt.
+Es handelt sich hierbei in der Regel im HTML Dateien

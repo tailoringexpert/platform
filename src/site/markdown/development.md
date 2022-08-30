@@ -1,11 +1,11 @@
-# Implementierungsrichtlinien
+# Development policies
 
 ## Dependency Injection
 
-*   Dependency Injection(DI) ist über Java Konfiguration vorzunehmen.
-*   Autoconfiguration ist mit Ausnahme der Spring-Data-Repositories verboten
-*   Alle Konfiguratonen sind im _tailoring-bootapp_-Projekt abzulegen
-*   Jedes Paket bekommt seine eigne Konfiguration
+* Dependency Injection(DI) has to be performed via Java configuration
+* Autoconfiguration is forbidden except for Spring-Data-Repositories
+* All configurations shall be implemented in _tailoringexpert-bootapp_-module
+* Any package shall have a dedicated configuration class
 
 ## Webservices
 *	Für Webservices wird der Code-First Ansatz verfolgt. Eine wadl ist nicht händisch zu erzeugen.
@@ -14,7 +14,7 @@
 
 ## Lombok
 
-Zur Vermeidung der händsichen Implementierung von
+To avoid manual implementing of
 
 *	getter
 *	setter
@@ -22,7 +22,7 @@ Zur Vermeidung der händsichen Implementierung von
 *	hashCode
 *	toString
 
-ist [Lombok](https://projectlombok.org "Lombok") zu verwenden.
+[Lombok](https://projectlombok.org "Lombok") shall be used.
 
 
 ## Validierungen und Exceptionhandling

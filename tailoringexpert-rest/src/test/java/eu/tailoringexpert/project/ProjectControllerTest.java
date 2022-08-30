@@ -8,12 +8,12 @@
  * it under the terms of the GNU General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/gpl-3.0.html>.
@@ -128,13 +128,13 @@ class ProjectControllerTest {
         this.mockMvc = standaloneSetup(new ProjectController(
             mapperMock,
             projectServiceMock,
-                projectServiceRepositoryMock))
+            projectServiceRepositoryMock))
             .setMessageConverters(new MappingJackson2HttpMessageConverter(objectMapper), byteArrayHttpMessageConverter)
             .build();
     }
 
     @Test
-    void createProject() throws Exception {
+    void createProject_ValidCreateRequest_StateCreatedWithLocationHeader() throws Exception {
         // arrange
         byte[] data;
         try (InputStream is = newInputStream(Paths.get("src/test/resources/screeningsheet_0d.pdf"))) {
@@ -183,7 +183,7 @@ class ProjectControllerTest {
 
 
     @Test
-    void getProjekte() throws Exception {
+    void getProjects_ProjectsExist_StateOK() throws Exception {
         // arrange
         ProjectInformation projekt = ProjectInformation.builder().identifier("SAMPLE").build();
         given(projectServiceRepositoryMock.getProjectInformations()).willReturn(asList(projekt));
@@ -207,7 +207,7 @@ class ProjectControllerTest {
     }
 
     @Test
-    void getProjekt() throws Exception {
+    void getProject_ProjectExist_StateOK() throws Exception {
         // arrange
         ProjectInformation projekt = ProjectInformation.builder()
             .identifier("SAMPLE")
@@ -232,7 +232,7 @@ class ProjectControllerTest {
     }
 
     @Test
-    void getScreeningSheet() throws Exception {
+    void getScreeningSheet_ScreeningSheetExists_StateOK() throws Exception {
         // arrange
         ScreeningSheet screeningSheet = ScreeningSheet.builder().build();
         given(projectServiceRepositoryMock.getScreeningSheet("SAMPLE")).willReturn(Optional.of(screeningSheet));
@@ -255,7 +255,7 @@ class ProjectControllerTest {
     }
 
     @Test
-    void getScreeningSheetDatei() throws Exception {
+    void getScreeningSheetFile_FileExists_StateOKContentDispositionHeader() throws Exception {
         // arrange
         byte[] data;
         try (InputStream is = newInputStream(Paths.get("src/test/resources/screeningsheet_0d.pdf"))) {
@@ -280,7 +280,7 @@ class ProjectControllerTest {
     }
 
     @Test
-    void deleteProjekt_ProjektVorhanden_ProjektWurdeGeloescht() throws Exception {
+    void deleteProject_ProjectExists_StateNoContent() throws Exception {
         // arrange
         given(projectServiceMock.deleteProject("SAMPLE")).willReturn(true);
 
@@ -294,7 +294,7 @@ class ProjectControllerTest {
     }
 
     @Test
-    void deleteProjekt_ProjektNichtVorhanden_ProjektWurdeNichtGeloescht() throws Exception {
+    void deleteProjekt_ProjectNotExist_StateBadRequest() throws Exception {
         // arrange
         given(projectServiceMock.deleteProject("SAMPLE")).willReturn(false);
 
@@ -308,7 +308,7 @@ class ProjectControllerTest {
     }
 
     @Test
-    void copyProjekt_ProjektNichtVorhanden_ProjektWurdeNichtKopiert() throws Exception {
+    void copyProjekt_ProjectNotExists_StateNotFound() throws Exception {
         // arrange
         byte[] data;
         try (InputStream is = newInputStream(Paths.get("src/test/resources/screeningsheet_0d.pdf"))) {
@@ -336,7 +336,7 @@ class ProjectControllerTest {
     }
 
     @Test
-    void copyProjekt_ProjektVorhande_ProjektWurdeKopiert() throws Exception {
+    void copyProject_ProjectExists_StateCreatedLocationHeader() throws Exception {
         // arrange
         byte[] data;
         try (InputStream is = newInputStream(Paths.get("src/test/resources/screeningsheet_0d.pdf"))) {
@@ -374,7 +374,7 @@ class ProjectControllerTest {
     }
 
     @Test
-    void addNewProjektPhase_ProjektVorhanden_PhaseWurdeHinzugefuegt() throws Exception {
+    void addTailoring_ProjectExists_StateCreatedLocationHeader() throws Exception {
         // arrange
         byte[] data;
         try (InputStream is = newInputStream(Paths.get("src/test/resources/screeningsheet_0d.pdf"))) {
@@ -388,7 +388,7 @@ class ProjectControllerTest {
             .build();
         given(projectServiceMock.addTailoring("SAMPLE", "8.2.1", data, selectionVector)).willReturn(Optional.of(tailoring));
 
-        ProjectCreationRequest anlageRequest = ProjectCreationRequest.builder()
+        ProjectCreationRequest creationRequest = ProjectCreationRequest.builder()
             .catalog("8.2.1")
             .screeningSheet(ScreeningSheet.builder()
                 .parameters(Collections.emptyList())
@@ -400,7 +400,7 @@ class ProjectControllerTest {
 
         // act
         ResultActions actual = mockMvc.perform(post("/project/{project}/tailoring", "SAMPLE")
-            .content(objectMapper.writeValueAsString(anlageRequest))
+            .content(objectMapper.writeValueAsString(creationRequest))
             .contentType(MediaType.APPLICATION_JSON)
             .characterEncoding(StandardCharsets.UTF_8.displayName())
             .accept("application/hal+json")
@@ -416,7 +416,7 @@ class ProjectControllerTest {
     }
 
     @Test
-    void addNewProjektPhase_ProjektNichtVorhanden_PhaseWurdeNichtHinzugefuegt() throws Exception {
+    void addTailoring_ProjectNotExists_StateNotFound() throws Exception {
         // arrange
         byte[] data;
         try (InputStream is = newInputStream(Paths.get("src/test/resources/screeningsheet_0d.pdf"))) {
@@ -427,7 +427,7 @@ class ProjectControllerTest {
         SelectionVector selectionVector = SelectionVector.builder().build();
         given(projectServiceMock.addTailoring("SAMPLE", "8.2.1", data, selectionVector)).willReturn(Optional.empty());
 
-        ProjectCreationRequest anlageRequest = ProjectCreationRequest.builder()
+        ProjectCreationRequest creationRequest = ProjectCreationRequest.builder()
             .catalog("8.2.1")
             .screeningSheet(ScreeningSheet.builder()
                 .parameters(Collections.emptyList())
@@ -439,7 +439,7 @@ class ProjectControllerTest {
 
         // act
         ResultActions actual = mockMvc.perform(post("/project/{project}/tailoring", "SAMPLE")
-            .content(objectMapper.writeValueAsString(anlageRequest))
+            .content(objectMapper.writeValueAsString(creationRequest))
             .contentType(MediaType.APPLICATION_JSON)
             .characterEncoding(StandardCharsets.UTF_8.displayName())
             .accept("application/hal+json")
@@ -454,7 +454,7 @@ class ProjectControllerTest {
     }
 
     @Test
-    void getSelektionsVektor_SelektionsVektorVorhanden_SelektionsVektorWirdZureuckGegeben() throws Exception {
+    void getSelectionVector_SelectionVectorExists_StateOK() throws Exception {
         // arrange
         Project project = Project.builder()
             .identifier("SAMPLE")
@@ -483,7 +483,7 @@ class ProjectControllerTest {
     }
 
     @Test
-    void getSelektionsVektor_SelektionsVektorNichtVorhanden_SelektionsVektorWirdNichtZureuckGegeben() throws Exception {
+    void getSelectionVector_SelectionVectorNotExists_StateNotFound() throws Exception {
         // arrange
         given(projectServiceRepositoryMock.getProject("SAMPLE")).willReturn(Optional.empty());
 

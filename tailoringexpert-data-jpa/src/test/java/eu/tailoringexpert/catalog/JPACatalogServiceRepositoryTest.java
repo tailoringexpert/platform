@@ -8,12 +8,12 @@
  * it under the terms of the GNU General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/gpl-3.0.html>.
@@ -63,7 +63,7 @@ class JPACatalogServiceRepositoryTest {
     }
 
     @Test
-    void createKatalog_KatalogUebergeben_OptionalNullWirdZurueckGegeben() {
+    void createCatalog_BaseCatalogEntityNull_EmptyReturned() {
         // arrange
         given(baseCatalogRepositoryMock.setValidUntilForEmptyValidUntil(any())).willReturn(0);
 
@@ -90,7 +90,7 @@ class JPACatalogServiceRepositoryTest {
     }
 
     @Test
-    void createKatalog_KatalogUebergeben_OptionalNotNullWirdZurueckGegeben() {
+    void createCatalog_BaseCatalogEntityNoNull_OptionalNotNullWirdZurueckGegeben() {
         // arrange
         given(baseCatalogRepositoryMock.setValidUntilForEmptyValidUntil(any())).willReturn(0);
 
@@ -110,14 +110,15 @@ class JPACatalogServiceRepositoryTest {
         Optional<Catalog<BaseRequirement>> actual = repository.createCatalog(catalog, ZonedDateTime.now());
 
         // assert
-        assertThat(actual).isNotNull();
+        assertThat(actual).isPresent();
+//        isNotNull();
         verify(mapperMock, times(1)).createCatalog(catalog);
         verify(mapperMock, times(1)).createCatalog(savedKatalog);
         verify(baseCatalogRepositoryMock, times(1)).save(toSave);
     }
 
     @Test
-    void createKatalog_KatalogNichtUebergeben_OptionalNullWirdZurueckGegeben() {
+    void createCatalog_CatalogNull_OptionalNullReturnd() {
         // arrange
         Catalog<BaseRequirement> catalog = null;
 
@@ -133,7 +134,7 @@ class JPACatalogServiceRepositoryTest {
     }
 
     @Test
-    void createKatalog_KatalogMitDRDBereitsGespeichertUebergeben_DRDWirdNichtNochmalsGespeichertOptionalWirdZurueckGegeben() {
+    void createCatalog_CatalogExistingDRD_ExistingDRDNotCreated() {
         // arrange
         given(baseCatalogRepositoryMock.setValidUntilForEmptyValidUntil(any())).willReturn(0);
 
@@ -173,7 +174,7 @@ class JPACatalogServiceRepositoryTest {
     }
 
     @Test
-    void createKatalog_KatalogMitDRDNochNichtGespeichertUebergeben_DRDWirdGespeichertOptionalWirdZurueckGegeben() {
+    void createCatalog_CatalogNewDRD_NewDRDCreated() {
         // arrange
         given(baseCatalogRepositoryMock.setValidUntilForEmptyValidUntil(any())).willReturn(0);
 
@@ -218,7 +219,7 @@ class JPACatalogServiceRepositoryTest {
     }
 
     @Test
-    void getKatalog_UnbekannteVersion_EmptyWirdZurueckGegeben() {
+    void getCatalog_NonExistingVersion_EmptyReturned() {
         // arrange
         given(baseCatalogRepositoryMock.findByVersion("4711")).willReturn(null);
 
@@ -230,7 +231,7 @@ class JPACatalogServiceRepositoryTest {
     }
 
     @Test
-    void getKatalog_BekannteVersion_OptionalWirdZurueckGegeben() {
+    void getCatalog_ExisitingVersion_OptionalReturned() {
         // arrange
         BaseCatalogEntity baseCatalogEntity = BaseCatalogEntity.builder().build();
         given(baseCatalogRepositoryMock.findByVersion("4711")).willReturn(baseCatalogEntity);

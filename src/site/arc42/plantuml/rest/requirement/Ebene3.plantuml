@@ -16,10 +16,10 @@ package requirement {
 
     class RequirementController {
         +getRequirement(project : String , tailoring : String, chapter : String,requirement : String) : ResponseEntity<EntityModel<TailoringRequirementResource>>
-        +updateChapterRequirementsState(project : String , tailoring : String, chapter : String, requirement : String, ausgewaehlt : Boolean) : ResponseEntity<EntityModel<TailoringRequirementResource>>
-        +updateRequirementText(project : String , tailoring : String, chapter : String, anforderung : String, text : String) : ResponseEntity<EntityModel<TailoringRequirementResource>>
-        +updateChapterRequirementsState(project : String , phase : String, chapter : String, ausgewaehlt : Boolean) : ResponseEntity<EntityModel<TailoringCatalogChapterResource>>
-        +createrRequirement(project : String , tailoring : String, chapter : String, anforderung : String, text : String) : ResponseEntity<EntityModel<TailoringRequirementResource>>
+        +updateRequirementsState(project : String , tailoring : String, chapter : String, requirement : String, ausgewaehlt : Boolean) : ResponseEntity<EntityModel<TailoringRequirementResource>>
+        +updateRequirementText(project : String , tailoring : String, chapter : String, requirement : String, text : String) : ResponseEntity<EntityModel<TailoringRequirementResource>>
+        +updateRequirementsState(project : String , phase : String, chapter : String, ausgewaehlt : Boolean) : ResponseEntity<EntityModel<TailoringCatalogChapterResource>>
+        +createrRequirement(project : String , tailoring : String, chapter : String, requirement : String, text : String) : ResponseEntity<EntityModel<TailoringRequirementResource>>
     }
     RequirementController --> "1" ResourceMapper : mapper
     RequirementController --> "1" RequirementService : requirementService
