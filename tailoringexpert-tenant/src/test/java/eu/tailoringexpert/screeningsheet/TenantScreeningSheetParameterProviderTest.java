@@ -55,7 +55,7 @@ class TenantScreeningSheetParameterProviderTest {
     }
 
     @Test
-    void parse_MandantNichtVorhanden_EmptyWirdZurueckGegeben() {
+    void parse_TenantNotExists_EmptyReturned() {
         // arrange
         TenantContext.setCurrentTenant("INVALD");
         InputStream is = new ByteArrayInputStream("Blindobjekt".getBytes(UTF_8));
@@ -68,8 +68,9 @@ class TenantScreeningSheetParameterProviderTest {
         assertThat(actual).isEmpty();
     }
 
+
     @Test
-    void parse_MandantVorhanden_ErgebnisDesMandantAufrufsZurueckGegeben() {
+    void parse_TenantExists_TenantImplementationReturned() {
         // arrange
         TenantContext.setCurrentTenant("TENANT");
         InputStream is = new ByteArrayInputStream("Blindobjekt".getBytes(UTF_8));

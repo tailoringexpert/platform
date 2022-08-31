@@ -23,19 +23,19 @@ package tailoring {
         +getScreeningSheetFile(project : String, tailoring : String) : ResponseEntity<byte[]>
         +getSelectionVector(project : String, tailoring : String) :  ResponseEntity<EntityModel<SelectionVectorResource>>
         +getTailoring(project : String, tailoring : String): ResponseEntity<EntityModel<TailoringResource>>
-        +addFile(project : String, tailoring : String, datei : MultipartFile): ResponseEntity<EntityModel<Void>>
-        +createDokuments(project : String, tailoring : String) : ResponseEntity<byte[]>
-        +createRequirementFile(project : String, tailoring : String) : ResponseEntity<byte[]>
+        +postFile(project : String, tailoring : String, datei : MultipartFile): ResponseEntity<EntityModel<Void>>
+        +getDocuments(project : String, tailoring : String) : ResponseEntity<byte[]>
+        +getRequirementFile(project : String, tailoring : String) : ResponseEntity<byte[]>
         +getRequirements(project : String, tailoring : String, chapter : String ) : ResponseEntity<CollectionModel<EntityModel<TailoringRequirementResource>>>
         +getSigntures(project : String, tailoring : String) : ResponseEntity<CollectionModel<DocumentSignatureResource>>
         +updateDocumentSignature(project : String, tailoring : String, bereich : String, signature : DocumentSignature) : ResponseEntity<EntityModel<DocumentSignatureResource>>
-        +updateName(project : String, tailoring : String, name : String) : ResponseEntity<EntityModel<TailoringResource>>
+        +putName(project : String, tailoring : String, name : String) : ResponseEntity<EntityModel<TailoringResource>>
         +getAttachmentList(project : String, tailoring : String) : ResponseEntity<CollectionModel<FileResource>>
         +getAttachment(project : String, tailoring : String, name : String) : ResponseEntity<byte[]>
         +deleteAttachment(project : String, tailoring : String, name : String) : ResponseEntity<byte[]>
         +getComparisonDocument(project : String, tailoring : String, name : String) : ResponseEntity<byte[]>
         +getProfiles() : ResponseEntity<CollectionModel<EntityModel<SelectionVectorProfileResource>>>
-        +updateRequirements(project : String, tailoring : String, datei : MultipartFile) : ResponseEntity<EntityModel<Void>>
+        +postRequirements(project : String, tailoring : String, datei : MultipartFile) : ResponseEntity<EntityModel<Void>>
         +deleteTailoring(project : String, tailoring : String): ResponseEntity<EntityModel<Void>>
     }
 

@@ -33,6 +33,11 @@ import java.util.Optional;
 
 import static java.util.Objects.isNull;
 
+/**
+ * Proxy for providing tenant implementations of {@link DocumentService}.
+ *
+ * @author Michael Bädorf
+ */
 @RequiredArgsConstructor
 public class TenantDocumentService implements DocumentService {
 

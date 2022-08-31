@@ -8,12 +8,12 @@
  * it under the terms of the GNU General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/gpl-3.0.html>.
@@ -84,13 +84,13 @@ class RequirementControllerTest {
     @DirtiesContext
     void updateChapterRequirementsState_ValidChapter_AllRequirementsDeselected() throws IOException {
         // arrange
-        CreateProjectTO createdProjekt = projektCreator.get();
+        CreateProjectTO createdProject = projektCreator.get();
 
 
         // act
-        ResponseEntity<EntityModel<TailoringCatalogChapterResource>> actual = controller.updateRequirementsState(
+        ResponseEntity<EntityModel<TailoringCatalogChapterResource>> actual = controller.putRequirementsState(
             "SAMPLE",
-            createdProjekt.getTailoring(),
+            createdProject.getTailoring(),
             "1.4",
             FALSE
         );
@@ -107,12 +107,12 @@ class RequirementControllerTest {
     @DirtiesContext
     void updateChapterRequirementsState_RequirementSelected_RequirementChangedToDeselected() throws IOException {
         // arrange
-        CreateProjectTO createdProjekt = projektCreator.get();
+        CreateProjectTO createdProject = projektCreator.get();
 
         // act
-        ResponseEntity<EntityModel<TailoringRequirementResource>> actual = controller.updateRequirementsState(
+        ResponseEntity<EntityModel<TailoringRequirementResource>> actual = controller.putRequirementState(
             "SAMPLE",
-            createdProjekt.getTailoring(),
+            createdProject.getTailoring(),
             "1.4",
             "a",
             FALSE
@@ -130,12 +130,12 @@ class RequirementControllerTest {
     @DirtiesContext
     void updateRequirementText_NewTextGiven_RequirementTextUpdated() throws IOException {
         // arrange
-        CreateProjectTO createdProjekt = projektCreator.get();
+        CreateProjectTO createdProject = projektCreator.get();
 
         // act
-        ResponseEntity<EntityModel<TailoringRequirementResource>> actual = controller.updateRequirementText(
+        ResponseEntity<EntityModel<TailoringRequirementResource>> actual = controller.putRequirementText(
             "SAMPLE",
-            createdProjekt.getTailoring(),
+            createdProject.getTailoring(),
             "1.4",
             "a",
             "Dies ist ein neuer Text"
@@ -151,12 +151,12 @@ class RequirementControllerTest {
     @DirtiesContext
     void createRequirement_PredecessorRequirementA_NewRequirementA1CreatedAndAdded() throws IOException {
         // arrange
-        CreateProjectTO createdProjekt = projektCreator.get();
+        CreateProjectTO createdProject = projektCreator.get();
 
         // act
-        ResponseEntity<EntityModel<TailoringRequirementResource>> actual = controller.createRequirement(
+        ResponseEntity<EntityModel<TailoringRequirementResource>> actual = controller.postRequirement(
             "SAMPLE",
-            createdProjekt.getTailoring(),
+            createdProject.getTailoring(),
             "1.4",
             "a",
             "Dies ist eine neue Requirement"

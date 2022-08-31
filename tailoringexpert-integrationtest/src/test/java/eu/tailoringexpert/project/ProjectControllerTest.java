@@ -93,7 +93,7 @@ class ProjectControllerTest {
 
     @Test
     @DirtiesContext
-    void getProjects_ProjectsAvailable_ProjectListWitStateOKReturned() {
+    void getProjects_ProjectsExists_ProjectListWitStateOKReturned() {
         // arrange
         projektCreator.get();
 
@@ -107,7 +107,7 @@ class ProjectControllerTest {
 
     @Test
     @DirtiesContext
-    void createProject_ValidInputData_ProjectCreatedStateCreatedReturned() throws IOException {
+    void createProject_ValidRequest_ProjectCreatedStateCreatedReturned() throws IOException {
         // arrange
         byte[] data;
         try (InputStream is = newInputStream(get("src/test/resources/screeningsheet.pdf"))) {
@@ -137,7 +137,7 @@ class ProjectControllerTest {
             .build();
 
         // act
-        ResponseEntity<Void> actual = controller.createProject("8.2.1", request);
+        ResponseEntity<Void> actual = controller.postProject("8.2.1", request);
 
         // assert
         assertThat(actual.getStatusCode()).isEqualTo(CREATED);
@@ -147,24 +147,24 @@ class ProjectControllerTest {
     @DirtiesContext
     void getProject_ProjectExists_ProjectWithStateOKReturned() throws IOException {
         // arrange
-        CreateProjectTO createdProjekt = projektCreator.get();
+        CreateProjectTO createdProject = projektCreator.get();
 
         // act
-        ResponseEntity<EntityModel<ProjectResource>> actual = controller.getProject(createdProjekt.getProject());
+        ResponseEntity<EntityModel<ProjectResource>> actual = controller.getProject(createdProject.getProject());
 
         // assert
         assertThat(actual.getStatusCode()).isEqualTo(OK);
-        assertThat(actual.getBody().getContent().getName()).isEqualTo(createdProjekt.getProject());
+        assertThat(actual.getBody().getContent().getName()).isEqualTo(createdProject.getProject());
     }
 
     @Test
     @DirtiesContext
     void getScreeningSheet_ProjectScreeningSheetExists_ScreeningSheetValueWithoutRawDataReturned() throws IOException {
         // arrange
-        CreateProjectTO createdProjekt = projektCreator.get();
+        CreateProjectTO createdProject = projektCreator.get();
 
         // act
-        ResponseEntity<EntityModel<ScreeningSheetResource>> actual = controller.getScreeningSheet(createdProjekt.getProject());
+        ResponseEntity<EntityModel<ScreeningSheetResource>> actual = controller.getScreeningSheet(createdProject.getProject());
 
         // assert
         assertThat(actual.getStatusCode()).isEqualTo(OK);
@@ -180,7 +180,7 @@ class ProjectControllerTest {
     @DirtiesContext
     void getScreeningSheetFile_ProjectScreeningSheetExists_FileRawDataWithStateOKReturned() throws IOException {
         // arrange
-        CreateProjectTO createdProjekt = projektCreator.get();
+        CreateProjectTO createdProject = projektCreator.get();
 
         byte[] data;
         try (InputStream is = newInputStream(get("src/test/resources/screeningsheet.pdf"))) {
@@ -189,7 +189,7 @@ class ProjectControllerTest {
         }
 
         // act
-        ResponseEntity<byte[]> actual = controller.getScreeningSheetFile(createdProjekt.getProject());
+        ResponseEntity<byte[]> actual = controller.getScreeningSheetFile(createdProject.getProject());
 
         // assert
         assertThat(actual.getStatusCode()).isEqualTo(OK);
@@ -202,14 +202,14 @@ class ProjectControllerTest {
     @DirtiesContext
     void deleteProject_ProjectExists_ProjectDeletedStateNoContentReturned() throws IOException {
         // arrange
-        CreateProjectTO createdProjekt = projektCreator.get();
+        CreateProjectTO createdProject = projektCreator.get();
 
         // act
-        ResponseEntity<EntityModel<Void>> actual = controller.deleteProject(createdProjekt.getProject());
+        ResponseEntity<EntityModel<Void>> actual = controller.deleteProject(createdProject.getProject());
 
         // assert
         assertThat(actual.getStatusCode()).isEqualTo(HttpStatus.NO_CONTENT);
-        assertThat(controller.getProject(createdProjekt.getProject()).getStatusCode()).isEqualTo(NOT_FOUND);
+        assertThat(controller.getProject(createdProject.getProject()).getStatusCode()).isEqualTo(NOT_FOUND);
 
     }
 
@@ -217,7 +217,7 @@ class ProjectControllerTest {
     @DirtiesContext
     void copyProject_ProjectToCopyExists_ProjectCopyiedStateCreatedReturned() throws IOException {
         // arrange
-        CreateProjectTO createdProjekt = projektCreator.get();
+        CreateProjectTO createdProject = projektCreator.get();
 
         byte[] data;
         try (InputStream is = newInputStream(get("src/test/resources/screeningsheet2.pdf"))) {
@@ -228,7 +228,7 @@ class ProjectControllerTest {
         MockMultipartFile screeningsheet = new MockMultipartFile("datei", "screeningsheet2.pdf", "text/plain", data);
 
         // act
-        ResponseEntity<EntityModel<ProjectResource>> actual = controller.copyProject(createdProjekt.getProject(), screeningsheet);
+        ResponseEntity<EntityModel<ProjectResource>> actual = controller.copyProject(createdProject.getProject(), screeningsheet);
 
         // assert
         assertThat(actual.getStatusCode()).isEqualTo(CREATED);
@@ -241,7 +241,7 @@ class ProjectControllerTest {
     @DirtiesContext
     void addNewTailoring_ProjectExists_TailoringCreatedAddedToProjectStateOKReturned() throws IOException {
         // arrange
-        CreateProjectTO createdProjekt = projektCreator.get();
+        CreateProjectTO createdProject = projektCreator.get();
 
         byte[] data;
         try (InputStream is = newInputStream(get("src/test/resources/screeningsheet.pdf"))) {
@@ -272,12 +272,12 @@ class ProjectControllerTest {
             .build();
 
         // act
-        ResponseEntity<EntityModel<Void>> actual = controller.addNewTailoring(createdProjekt.getProject(), request);
+        ResponseEntity<EntityModel<Void>> actual = controller.postTailoring(createdProject.getProject(), request);
 
         // assert
         assertThat(actual.getStatusCode()).isEqualTo(CREATED);
 
-        ProjectResource resource = controller.getProject(createdProjekt.getProject()).getBody().getContent();
+        ProjectResource resource = controller.getProject(createdProject.getProject()).getBody().getContent();
         assertThat(resource.getTailorings()).hasSize(2);
 
         TailoringResource neuePhase = new ArrayList<TailoringResource>(resource.getTailorings()).get(1);
@@ -289,10 +289,10 @@ class ProjectControllerTest {
     @DirtiesContext
     void getSelectionVector_ProjectExists_SelectionVectorStateOKReturned() throws IOException {
         // arrange
-        CreateProjectTO createdProjekt = projektCreator.get();
+        CreateProjectTO createdProject = projektCreator.get();
 
         // act
-        ResponseEntity<EntityModel<SelectionVectorResource>> actual = controller.getSelectionVector(createdProjekt.getProject());
+        ResponseEntity<EntityModel<SelectionVectorResource>> actual = controller.getSelectionVector(createdProject.getProject());
 
         // assert
         assertThat(actual.getStatusCode()).isEqualTo(OK);

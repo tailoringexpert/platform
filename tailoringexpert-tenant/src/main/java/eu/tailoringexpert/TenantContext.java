@@ -31,8 +31,7 @@ import static lombok.AccessLevel.PRIVATE;
 
 
 /**
- * Container Objekt für die Speicherung einer Tenant Information im aktuellen
- * Thread.
+ * Container used for persisting tenant information of current thread.
  *
  * @author Michael Bädorf
  */

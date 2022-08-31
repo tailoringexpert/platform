@@ -80,7 +80,7 @@ public class PlattformConfiguration {
         return new @Tenant("plattform") ConcurrentMapCacheManager(
             BaseCatalogRepository.CACHE_BASECATALOG,
             BaseCatalogRepository.CACHE_BASECATALOGLIST,
-            JPAProjectServiceRepository.CACHE_KATALOG,
+            JPAProjectServiceRepository.CACHE_BASECATALOG,
             LogoRepository.CACHE_LOGO,
             DokumentSigneeRepository.CACHE_DOCUMENTSIGNEE
         ) {

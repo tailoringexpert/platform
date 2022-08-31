@@ -8,12 +8,12 @@
  * it under the terms of the GNU General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/gpl-3.0.html>.
@@ -26,7 +26,9 @@ import lombok.Getter;
 import org.springframework.http.HttpStatus;
 
 /**
- * Exception für die Verwendung in Tailoring RestConotroller.
+ * Exception for using in RESTController.
+ *
+ * @author Michael Bädof
  */
 public class ResourceException extends RuntimeException {
 
@@ -36,12 +38,12 @@ public class ResourceException extends RuntimeException {
     private final HttpStatus httpStatus;
 
     /**
-     * Erzeugt einen neue runtime exception mit dem übergebenen Fehlertext.
+     * Creates RuntimeException with provided message.
      * <p>
      * Der Auslöser wird nicht initialisiert und kann ggf. mittels {@link #initCause} gesetzt werden.
      *
-     * @param httpStatus Zu verwendender Http Status
-     * @param message    Meldungstext. Der Meldungstext wird für {@link #getMessage()} verwendet.
+     * @param httpStatus http state to return
+     * @param message    text to use. Text will be used as {@link #getMessage()}.
      */
     public ResourceException(HttpStatus httpStatus, String message) {
         super(message);

@@ -157,12 +157,12 @@ public class RequirementServiceImpl implements RequirementService {
         // nachfolgende Positionen für neue Anforderungen anpassen
         requirements.stream().skip(requirementPosition.getAsInt() + 2l)
             .takeWhile(this::isCustomRequirement)
-            .forEach(anforderung -> {
-                int i = parseInt(anforderung.getPosition().substring(position.length())) + 1;
+            .forEach(requirement -> {
+                int i = parseInt(requirement.getPosition().substring(position.length())) + 1;
                 if (isCustomRequirement(position)) {
-                    anforderung.setPosition(position.substring(0, position.length() - 1) + i);
+                    requirement.setPosition(position.substring(0, position.length() - 1) + i);
                 } else {
-                    anforderung.setPosition(position + i);
+                    requirement.setPosition(position + i);
                 }
             });
 

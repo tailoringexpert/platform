@@ -22,11 +22,11 @@ package catalog {
         -identifiers : Collection<String>
     }
 
-    class BaseCatalogDocumentCreator {
+    class BaseCatalogPDFDocumentCreator {
     }
-    DocumentCreator <|.. BaseCatalogDocumentCreator
-    BaseCatalogDocumentCreator --> "1" HTMLTemplateEngine : templateEngine
-    BaseCatalogDocumentCreator --> "1" PDFEngine : pdfEngine
+    DocumentCreator <|.. BaseCatalogPDFDocumentCreator
+    BaseCatalogPDFDocumentCreator --> "1" HTMLTemplateEngine : templateEngine
+    BaseCatalogPDFDocumentCreator --> "1" PDFEngine : pdfEngine
 
 }
 @enduml

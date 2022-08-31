@@ -163,7 +163,7 @@ class RequirementControllerTest {
     }
 
     @Test
-    void updateRequirementsState_RequirementExists_StateOk() throws Exception {
+    void putRequirementsState_RequirementExists_StateOk() throws Exception {
         // arrange
         PathContextBuilder pathContext = PathContext.builder()
             .project("SAMPLE")
@@ -197,7 +197,7 @@ class RequirementControllerTest {
 
 
     @Test
-    void updateRequirementsState_RequirementNotExists_StateNotFound() throws Exception {
+    void putRequirementsState_RequirementNotExists_StateNotFound() throws Exception {
         // arrange
         given(serviceMock.handleSelected("SAMPLE", "master", "1.1", "a", FALSE)).willReturn(Optional.empty());
 
@@ -212,7 +212,7 @@ class RequirementControllerTest {
     }
 
     @Test
-    void updateRequirementText_RequirementExists_StateOk() throws Exception {
+    void putRequirementText_RequirementExists_StateOk() throws Exception {
         // arrange
         PathContextBuilder pathContext = PathContext.builder()
             .project("SAMPLE")
@@ -247,7 +247,7 @@ class RequirementControllerTest {
     }
 
     @Test
-    void updateRequirementText_RequirementNotExists_StateNotFound() throws Exception {
+    void putRequirementText_RequirementNotExists_StateNotFound() throws Exception {
         // arrange
         given(serviceMock.handleText("SAMPLE", "master", "1.1", "a", "Dies ist ein neuer Text")).willReturn(Optional.empty());
 
@@ -265,7 +265,7 @@ class RequirementControllerTest {
     }
 
     @Test
-    void updateRequirementsState_ChapterExists_StateOk() throws Exception {
+    void putRequirementsState_ChapterExists_StateOk() throws Exception {
         // arrange
         PathContextBuilder pathContext = PathContext.builder()
             .project("SAMPLE")
@@ -307,7 +307,7 @@ class RequirementControllerTest {
     }
 
     @Test
-    void updateRequirementsState_ChapterNotExists_StateNotFound() throws Exception {
+    void putRequirementsState_ChapterNotExists_StateNotFound() throws Exception {
         // arrange
         given(serviceMock.handleSelected("SAMPLE", "master", "1.1", TRUE)).willReturn(Optional.empty());
 
@@ -324,7 +324,7 @@ class RequirementControllerTest {
     }
 
     @Test
-    void createRequirement_ChapterExists_StateOk() throws Exception {
+    void postRequirement_ChapterExists_StateOk() throws Exception {
         // arrange
         PathContextBuilder pathContext = PathContext.builder()
             .project("SAMPLE")
@@ -360,7 +360,7 @@ class RequirementControllerTest {
     }
 
     @Test
-    void createRequirement_ChapterNotExists_StateNotFound() throws Exception {
+    void postRequirement_ChapterNotExists_StateNotFound() throws Exception {
         // arrange
         given(serviceMock.createRequirement("SAMPLE", "master", "1.1", "a1", "Dies ist eine neue Requirement")).willReturn(Optional.empty());
 

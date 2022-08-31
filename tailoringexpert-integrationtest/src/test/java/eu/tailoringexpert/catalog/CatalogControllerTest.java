@@ -95,7 +95,7 @@ class CatalogControllerTest {
         }
 
         // act
-        ResponseEntity actual = controller.importCatalog(catalog);
+        ResponseEntity actual = controller.postCatalog(catalog);
 
         // assert
         assertThat(actual).isNotNull();
@@ -105,7 +105,7 @@ class CatalogControllerTest {
 
     @Test
     @DirtiesContext
-    void getCatalogs_ExistingsCatalogs_CatalogListReturned() throws IOException {
+    void getCatalogs_CatalogsExists_CatalogListReturned() throws IOException {
         // arrange
         Catalog<BaseRequirement> catalog;
         try (InputStream is = newInputStream(get("src/test/resources/basecatalog.json"))) {
@@ -114,7 +114,7 @@ class CatalogControllerTest {
             catalog = objectMapper.readValue(is, new TypeReference<Catalog<BaseRequirement>>() {
             });
         }
-        controller.importCatalog(catalog);
+        controller.postCatalog(catalog);
 
         // act
         ResponseEntity<CollectionModel<EntityModel<BaseCatalogVersionResource>>> actual = controller.getCatalogs();

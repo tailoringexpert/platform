@@ -54,7 +54,7 @@ class TenantTemplateEngineTest {
     }
 
     @Test
-    void process_TenantNichtVorhanden_NullWirdGeworfen() {
+    void process_TenantNotExists_EmptyReturned() {
         // arrange
         TenantContext.setCurrentTenant("INVALD");
 

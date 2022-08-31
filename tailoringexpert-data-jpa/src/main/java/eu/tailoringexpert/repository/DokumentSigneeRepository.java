@@ -36,6 +36,11 @@ public interface DokumentSigneeRepository extends JpaRepository<DocumentSigneeEn
 
     String CACHE_DOCUMENTSIGNEE = "DocumentSigneeRepository#findAll";
 
+    /**
+     * Load all signees stored in system.
+     *
+     * @return collection of all available signees
+     */
     @Cacheable(CACHE_DOCUMENTSIGNEE)
     @Override
     List<DocumentSigneeEntity> findAll();

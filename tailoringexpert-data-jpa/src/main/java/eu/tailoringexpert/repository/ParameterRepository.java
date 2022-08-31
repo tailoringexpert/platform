@@ -32,5 +32,11 @@ import java.util.Collection;
  * @author Michael Bädorf
  */
 public interface ParameterRepository extends JpaRepository<ParameterEntity, Long> {
+    /**
+     * Load parameter for all requested names.
+     *
+     * @param names names of parameter to load
+     * @return loaded parameters
+     */
     Collection<ParameterEntity> findByNameIn(Collection<String> names);
 }

@@ -205,7 +205,7 @@ class JPAProjectServiceRepositoryTest {
                 )
             );
 
-        given(mapperMock.getTailoringInformationen(any(ProjectEntity.class))).willReturn(ProjectInformation.builder().build());
+        given(mapperMock.getProjectInformationen(any(ProjectEntity.class))).willReturn(ProjectInformation.builder().build());
 
         // act
         Collection<ProjectInformation> actual = repository.getProjectInformations();
@@ -220,11 +220,11 @@ class JPAProjectServiceRepositoryTest {
         given(projectRepositoryMock.findByIdentifier(anyString())).willReturn(null);
 
         // act
-        Optional<ScreeningSheet> actual = repository.getScreeningSheet("DUMMY");
+        Optional<ScreeningSheet> actual = repository.getScreeningSheet("SAMPLE");
 
         // assert
         assertThat(actual).isEmpty();
-        verify(projectRepositoryMock, times(1)).findByIdentifier("DUMMY");
+        verify(projectRepositoryMock, times(1)).findByIdentifier("SAMPLE");
         verify(mapperMock, times(0)).getScreeningSheet(any());
     }
 
@@ -239,11 +239,11 @@ class JPAProjectServiceRepositoryTest {
         given(mapperMock.getScreeningSheet(screeningSheet)).willReturn(ScreeningSheet.builder().build());
 
         // act
-        Optional<ScreeningSheet> actual = repository.getScreeningSheet("DUMMY");
+        Optional<ScreeningSheet> actual = repository.getScreeningSheet("SAMPLE");
 
         // assert
         assertThat(actual).isNotEmpty();
-        verify(projectRepositoryMock, times(1)).findByIdentifier("DUMMY");
+        verify(projectRepositoryMock, times(1)).findByIdentifier("SAMPLE");
         verify(mapperMock, times(1)).getScreeningSheet(screeningSheet);
     }
 
@@ -254,7 +254,7 @@ class JPAProjectServiceRepositoryTest {
 
         ProjectEntity entity = null;
         given(projectRepositoryMock.findByIdentifier(project)).willReturn(entity);
-        given(mapperMock.getTailoringInformationen(entity)).willReturn(null);
+        given(mapperMock.getProjectInformationen(entity)).willReturn(null);
 
         // act
         Optional<ProjectInformation> actual = repository.getProjectInformation(project);
@@ -262,20 +262,20 @@ class JPAProjectServiceRepositoryTest {
         // assert
         assertThat(actual).isEmpty();
         verify(projectRepositoryMock, times(1)).findByIdentifier(project);
-        verify(mapperMock, times(1)).getTailoringInformationen(entity);
+        verify(mapperMock, times(1)).getProjectInformationen(entity);
 
     }
 
     @Test
     void getProjectInformation_IdentifierExists_ProjectInformationReturned() {
         // arrange
-        String project = "DUMMY";
+        String project = "SAMPLE";
 
-        ProjectEntity entity = ProjectEntity.builder().identifier("DUMMY").build();
+        ProjectEntity entity = ProjectEntity.builder().identifier("SAMPLE").build();
         given(projectRepositoryMock.findByIdentifier(project)).willReturn(entity);
 
-        ProjectInformation projectInformation = ProjectInformation.builder().identifier("DUMMY").build();
-        given(mapperMock.getTailoringInformationen(entity)).willReturn(projectInformation);
+        ProjectInformation projectInformation = ProjectInformation.builder().identifier("SAMPLE").build();
+        given(mapperMock.getProjectInformationen(entity)).willReturn(projectInformation);
 
         // act
         Optional<ProjectInformation> actual = repository.getProjectInformation(project);
@@ -283,7 +283,7 @@ class JPAProjectServiceRepositoryTest {
         // assert
         assertThat(actual).isNotEmpty();
         verify(projectRepositoryMock, times(1)).findByIdentifier(project);
-        verify(mapperMock, times(1)).getTailoringInformationen(entity);
+        verify(mapperMock, times(1)).getProjectInformationen(entity);
 
     }
 
@@ -307,13 +307,13 @@ class JPAProjectServiceRepositoryTest {
     @Test
     void getScreeningSheetFile_ProjectExists_FileReturned() {
         // arrange
-        String project = "DUMMY";
+        String project = "SAMPLE";
 
         ProjectEntity entity = ProjectEntity.builder()
-            .identifier("DUMMY")
+            .identifier("SAMPLE")
             .screeningSheet(ScreeningSheetEntity.builder()
                 .id(4711L)
-                .data("Hallo Du".getBytes(UTF_8))
+                .data("Hi there".getBytes(UTF_8))
                 .build())
             .build();
         given(projectRepositoryMock.findByIdentifier(project)).willReturn(entity);

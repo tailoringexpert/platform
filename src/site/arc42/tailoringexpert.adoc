@@ -25,7 +25,7 @@ toc::[]
 
 <<<<
 // 0. Änderungshistorie
-include::00_document_history.adoc[]
+include::00_document_history.adoc[Changelog]
 
 // numbering from here on
 :numbered:

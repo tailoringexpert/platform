@@ -64,12 +64,12 @@ public class JPARequirementServiceRepository implements RequirementServiceReposi
         @NonNull String tailoring,
         @NonNull String chapter,
         @NonNull String position) {
-        ProjectEntity byIdentifier = projectRepository.findByIdentifier(project);
-        if (isNull(byIdentifier)) {
+        ProjectEntity eProject = projectRepository.findByIdentifier(project);
+        if (isNull(eProject)) {
             return empty();
         }
 
-        Optional<TailoringEntity> oTailoring = byIdentifier.getTailoring(tailoring);
+        Optional<TailoringEntity> oTailoring = eProject.getTailoring(tailoring);
         if (oTailoring.isEmpty()) {
             return empty();
         }
@@ -85,7 +85,7 @@ public class JPARequirementServiceRepository implements RequirementServiceReposi
         return ofNullable(mapper.toDomain(oChapter.get()
             .getRequirements()
             .stream()
-            .filter(anforderung -> position.equals(anforderung.getPosition()))
+            .filter(requirement -> position.equals(requirement.getPosition()))
             .findFirst()
             .orElse(null)));
     }
@@ -148,13 +148,13 @@ public class JPARequirementServiceRepository implements RequirementServiceReposi
 
         oChapter.get().allChapters()
             .forEachOrdered(subChapter -> {
-                Chapter<TailoringRequirement> domainGruppe = chapter.getChapter(subChapter.getNumber());
+                Chapter<TailoringRequirement> domainChapter = chapter.getChapter(subChapter.getNumber());
                 subChapter.getRequirements()
                     .stream()
                     .sorted(comparing(TailoringRequirementEntity::getPosition))
-                    .forEachOrdered(anforderung -> mapper.updateRequirement(
-                        domainGruppe.getRequirement(anforderung.getPosition()).get(),
-                        anforderung)
+                    .forEachOrdered(requirement -> mapper.updateRequirement(
+                        domainChapter.getRequirement(requirement.getPosition()).get(),
+                        requirement)
                     );
             });
         return of(mapper.toDomain(oChapter.get()));
@@ -178,21 +178,21 @@ public class JPARequirementServiceRepository implements RequirementServiceReposi
     }
 
     private Optional<TailoringCatalogChapterEntity> findChapter(
-        String projekt,
+        String project,
         String tailoring,
         String chapter) {
 
-        ProjectEntity byKuerzel = projectRepository.findByIdentifier(projekt);
-        if (isNull(byKuerzel)) {
+        ProjectEntity eProject = projectRepository.findByIdentifier(project);
+        if (isNull(eProject)) {
             return empty();
         }
 
-        Optional<TailoringEntity> projektPhase = byKuerzel.getTailoring(tailoring);
-        if (projektPhase.isEmpty()) {
+        Optional<TailoringEntity> oTailoring = eProject.getTailoring(tailoring);
+        if (oTailoring.isEmpty()) {
             return empty();
         }
 
-        return projektPhase.get()
+        return oTailoring.get()
             .getCatalog()
             .getToc()
             .getChapter(chapter);

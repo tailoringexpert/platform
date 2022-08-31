@@ -35,7 +35,7 @@ import java.util.Optional;
 public interface ProjectService {
 
     /**
-     * Creates a new project.
+     * Create a new project.
      *
      * @param catalog                   Version of base catalog to use to create initial tailoring
      * @param screeningSheet            Screeningsheet to evaluate for tailoring parameters
@@ -45,7 +45,7 @@ public interface ProjectService {
     CreateProjectTO createProject(String catalog, byte[] screeningSheet, SelectionVector applicableSelectionVector);
 
     /**
-     * Creates a new tailoring and adds to project.
+     * Create a new tailoring and adds to project.
      *
      * @param project                   Identifier of project to add tailoring for
      * @param catalog                   Version of base catalog to use to create tailoring
@@ -56,7 +56,7 @@ public interface ProjectService {
     Optional<Tailoring> addTailoring(String project, String catalog, byte[] screeningSheetData, SelectionVector applicableSelectionVector);
 
     /**
-     * Creates (full) copy of provided project.
+     * Create (full) copy of provided project.
      * Screeningsheets of tailorings will be replaced with provided data.
      *
      * @param project        Identifier of project to copy
@@ -66,7 +66,7 @@ public interface ProjectService {
     Optional<Project> copyProject(String project, byte[] screeningSheet);
 
     /**
-     * Deletes a project.
+     * Delete a project.
      *
      * @param project Name of project to delete
      * @return true, if project is deleted, false in all other cases

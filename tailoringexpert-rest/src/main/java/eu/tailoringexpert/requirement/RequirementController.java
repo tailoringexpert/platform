@@ -46,6 +46,10 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import static eu.tailoringexpert.domain.ResourceMapper.CHAPTER_SELECTED;
+import static eu.tailoringexpert.domain.ResourceMapper.TAILORINGREQUIRMENT;
+import static eu.tailoringexpert.domain.ResourceMapper.TAILORINGREQUIRMENT_SELECTED;
+import static eu.tailoringexpert.domain.ResourceMapper.TAILORINGREQUIRMENT_TEXT;
 import static org.springframework.http.ResponseEntity.notFound;
 
 /**
@@ -77,7 +81,7 @@ public class RequirementController {
             responseCode = "404", description = "Requirement nicht vorhanden",
             content = @Content)
     })
-    @GetMapping(value = ResourceMapper.TAILORINGREQUIRMENT, produces = {"application/hal+json"})
+    @GetMapping(value = TAILORINGREQUIRMENT, produces = {"application/hal+json"})
     public ResponseEntity<EntityModel<TailoringRequirementResource>> getRequirement(
         @Parameter(description = "Project identifier") @PathVariable String project,
         @Parameter(description = "Tailoring name") @PathVariable String tailoring,
@@ -95,7 +99,7 @@ public class RequirementController {
             .orElseGet(() -> notFound().build());
     }
 
-    @Operation(summary = "Chnage selection state of all requirements in chapter and all subchapters")
+    @Operation(summary = "Change selection state of all requirements in chapter and all subchapters")
     @ApiResponses(value = {
         @ApiResponse(
             responseCode = "200", description = "State changed"),
@@ -103,8 +107,8 @@ public class RequirementController {
             responseCode = "404", description = "Requirement does not exist",
             content = @Content)
     })
-    @PutMapping(value = ResourceMapper.TAILORINGREQUIRMENT_SELECTED, produces = {"application/hal+json"})
-    public ResponseEntity<EntityModel<TailoringRequirementResource>> updateRequirementsState(
+    @PutMapping(value = TAILORINGREQUIRMENT_SELECTED, produces = {"application/hal+json"})
+    public ResponseEntity<EntityModel<TailoringRequirementResource>> putRequirementState(
         @Parameter(description = "Project identifier") @PathVariable String project,
         @Parameter(description = "Tailoring name") @PathVariable String tailoring,
         @Parameter(description = "Chapter number") @PathVariable String chapter,
@@ -132,8 +136,8 @@ public class RequirementController {
             responseCode = "404", description = "Requirement does not exist",
             content = @Content)
     })
-    @PutMapping(ResourceMapper.TAILORINGREQUIRMENT_TEXT)
-    public ResponseEntity<EntityModel<TailoringRequirementResource>> updateRequirementText(
+    @PutMapping(TAILORINGREQUIRMENT_TEXT)
+    public ResponseEntity<EntityModel<TailoringRequirementResource>> putRequirementText(
         @Parameter(description = "Project identifier") @PathVariable String project,
         @Parameter(description = "Tailoring name") @PathVariable String tailoring,
         @Parameter(description = "Chapter number") @PathVariable String chapter,
@@ -161,8 +165,8 @@ public class RequirementController {
             responseCode = "404", description = "Chapter does not exist",
             content = @Content)
     })
-    @PutMapping(ResourceMapper.CHAPTER_SELECTED)
-    public ResponseEntity<EntityModel<TailoringCatalogChapterResource>> updateRequirementsState(
+    @PutMapping(CHAPTER_SELECTED)
+    public ResponseEntity<EntityModel<TailoringCatalogChapterResource>> putRequirementsState(
         @Parameter(description = "Project identifier") @PathVariable String project,
         @Parameter(description = "Tailoring name") @PathVariable String tailoring,
         @Parameter(description = "Chapter number") @PathVariable String chapter,
@@ -190,9 +194,9 @@ public class RequirementController {
             responseCode = "404", description = "Tailoring does not exist",
             content = @Content)
     })
-    @PostMapping(value = ResourceMapper.TAILORINGREQUIRMENT, produces = {"application/hal+json"})
+    @PostMapping(value = TAILORINGREQUIRMENT, produces = {"application/hal+json"})
     @SneakyThrows
-    public ResponseEntity<EntityModel<TailoringRequirementResource>> createRequirement(
+    public ResponseEntity<EntityModel<TailoringRequirementResource>> postRequirement(
         @Parameter(description = "Project identifier") @PathVariable String project,
         @Parameter(description = "Tailoring name") @PathVariable String tailoring,
         @Parameter(description = "Chapter number") @PathVariable String chapter,
@@ -205,7 +209,7 @@ public class RequirementController {
             .chapter(chapter);
         return requirementService.createRequirement(project, tailoring, chapter, requirement, text)
             .map(erstellteAnforderung -> ResponseEntity
-                .created(UriTemplate.of(ResourceMapper.TAILORINGREQUIRMENT).expand(pathContext.build().parameter()))
+                .created(UriTemplate.of(TAILORINGREQUIRMENT).expand(pathContext.build().parameter()))
                 .body(EntityModel.of(mapper.toResource(pathContext, erstellteAnforderung))))
             .orElseGet(() -> notFound().build());
     }
