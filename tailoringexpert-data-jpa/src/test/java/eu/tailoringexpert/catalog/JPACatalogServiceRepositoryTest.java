@@ -111,7 +111,6 @@ class JPACatalogServiceRepositoryTest {
 
         // assert
         assertThat(actual).isPresent();
-//        isNotNull();
         verify(mapperMock, times(1)).createCatalog(catalog);
         verify(mapperMock, times(1)).createCatalog(savedKatalog);
         verify(baseCatalogRepositoryMock, times(1)).save(toSave);

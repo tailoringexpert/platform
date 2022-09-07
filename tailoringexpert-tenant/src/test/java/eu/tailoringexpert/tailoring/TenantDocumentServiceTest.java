@@ -54,7 +54,7 @@ class TenantDocumentServiceTest {
     }
 
     @Test
-    void createAnforderungDokument_MandantNichtVorhanden_EmptyWirdZurueckGegeben() {
+    void createRequirementDocument_TenantNotExists_EmptyReturned() {
         // arrange
         TenantContext.setCurrentTenant("INVALD");
         Tailoring tailoring = Tailoring.builder().build();
@@ -69,7 +69,7 @@ class TenantDocumentServiceTest {
     }
 
     @Test
-    void createAnforderungDokument_MandantVorhanden_ErgebnisDesMandantAufrufsZurueckGegeben() {
+    void createRequirementDocument_TenantExists_TenantImplementationReturned() {
         // arrange
         TenantContext.setCurrentTenant("TENANT");
         Tailoring tailoring = Tailoring.builder().build();
@@ -87,7 +87,7 @@ class TenantDocumentServiceTest {
     }
 
     @Test
-    void createVergleichsDokument_MandantNichtVorhanden_EmptyWirdZurueckGegeben() {
+    void createComparisonDocument_TenantNotExists_EmptyReturned() {
         // arrange
         TenantContext.setCurrentTenant("INVALD");
         Tailoring tailoring = Tailoring.builder().build();
@@ -101,8 +101,9 @@ class TenantDocumentServiceTest {
         verify(tenentDocumentServiceMock, times(0)).createComparisonDocument(tailoring, erstellungsZeitpunt);
     }
 
+
     @Test
-    void createVergleichsDokument_MandantVorhanden_ErgebnisDesMandantAufrufsZurueckGegeben() {
+    void createComparisonDocument_TenantExists_TenantImplementationReturned() {
         // arrange
         TenantContext.setCurrentTenant("TENANT");
         Tailoring tailoring = Tailoring.builder().build();
@@ -120,7 +121,7 @@ class TenantDocumentServiceTest {
     }
 
     @Test
-    void createAll_MandantNichtVorhanden_EmptyWirdZurueckGegeben() {
+    void createAll_TenantNotExists_EmptyReturned() {
         // arrange
         TenantContext.setCurrentTenant("INVALD");
         Tailoring tailoring = Tailoring.builder().build();
@@ -135,7 +136,7 @@ class TenantDocumentServiceTest {
     }
 
     @Test
-    void createAll_MandantVorhanden_ErgebnisDesMandantAufrufsZurueckGegeben() {
+    void createAll_TenantExists_TenantImplementationReturned() {
         // arrange
         TenantContext.setCurrentTenant("TENANT");
         Tailoring tailoring = Tailoring.builder().build();

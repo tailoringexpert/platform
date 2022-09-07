@@ -62,24 +62,24 @@ class JPATailoringServiceRepositoryMapperTest {
 
 
     @Test
-    void toDomain_ProjektEntityNichtVorhanden_NullWirdZurueckGegeben() {
+    void toDomain_ProjectEntityNull_NullReturned() {
         // arrange
-        ProjectEntity projekt = null;
+        ProjectEntity entity = null;
 
         // act
-        Project actual = mapper.toDomain(projekt);
+        Project actual = mapper.toDomain(entity);
 
         //assert
         assertThat(actual).isNull();
     }
 
     @Test
-    void toDomain_ProjektPhaseEntityNichtVorhanden_NullWirdZurueckGegeben() {
+    void toDomain_TailoringEntityNull_NullReturned() {
         // arrange
-        TailoringEntity projektPhase = null;
+        TailoringEntity entity = null;
 
         // act
-        Tailoring actual = mapper.toDomain(projektPhase);
+        Tailoring actual = mapper.toDomain(entity);
 
         //assert
         assertThat(actual).isNull();
@@ -87,37 +87,37 @@ class JPATailoringServiceRepositoryMapperTest {
 
 
     @Test
-    void addKatalog_ProjektPhaseNichtVorhanden_EntityWieVorher() {
+    void updateTailoring_TailoringNull_EntityNotUpdated() {
         // arrange
-        TailoringCatalogEntity katalog = TailoringCatalogEntity.builder().version("NaN").build();
+        TailoringCatalogEntity catalog = TailoringCatalogEntity.builder().version("NaN").build();
         TailoringEntity entity = new TailoringEntity();
-        entity.setCatalog(katalog);
+        entity.setCatalog(catalog);
 
         // act
-        mapper.addCatalog(null, entity);
+        mapper.updateTailoring(null, entity);
 
         // assert
-        assertThat(entity.getCatalog()).isEqualTo(katalog);
+        assertThat(entity.getCatalog()).isEqualTo(catalog);
     }
 
     @Test
-    void addKatalog_ProjektPhaseKatalogNichtVorhanden_EntityKatalogWordNullGesetzt() {
+    void updateTailoring_TailoringCatalogNull_EntityCatalogNullUpdated() {
         // arrange
         Tailoring domain = Tailoring.builder().catalog(null).build();
 
-        TailoringCatalogEntity katalog = TailoringCatalogEntity.builder().version("NaN").build();
+        TailoringCatalogEntity catalog = TailoringCatalogEntity.builder().version("NaN").build();
         TailoringEntity entity = new TailoringEntity();
-        entity.setCatalog(katalog);
+        entity.setCatalog(catalog);
 
         // act
-        mapper.addCatalog(domain, entity);
+        mapper.updateTailoring(domain, entity);
 
         // assert
         assertThat(entity.getCatalog()).isNull();
     }
 
     @Test
-    void addKatalog_ProjektPhaseEntityNichtVorhanden_NullWirdZurueckGegeben() {
+    void updateTailoring_TailoringNotNull_OnlyCatalogSelectionVectorStateUpdated() {
         // arrange
         Tailoring domain = Tailoring.builder()
             .catalog(Catalog.<TailoringRequirement>builder()
@@ -146,15 +146,17 @@ class JPATailoringServiceRepositoryMapperTest {
         TailoringEntity entity = new TailoringEntity();
 
         // act
-        mapper.addCatalog(domain, entity);
+        mapper.updateTailoring(domain, entity);
 
         //assert
         assertThat(entity.getName()).isNull();
+        assertThat(entity.getSelectionVector()).isNotNull();
+        assertThat(entity.getState()).isEqualTo(TailoringState.ACTIVE);
         assertThat(entity.getCatalog().getVersion()).isEqualTo(domain.getCatalog().getVersion());
     }
 
     @Test
-    void resolve_NullLogo_NullWirdZurueckgegeben() {
+    void resolve_LogoNull_NullReturned() {
         // arrange
         Logo logo = null;
 
@@ -167,7 +169,7 @@ class JPATailoringServiceRepositoryMapperTest {
     }
 
     @Test
-    void resolve_LogoUebergeben_LogoEntityWirdZurueckgegeben() {
+    void resolve_LogoNotNull_LogoEntityReturned() {
         // arrange
         Logo logo = Logo.builder().name("ECSS").build();
 

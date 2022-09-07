@@ -8,12 +8,12 @@
  * it under the terms of the GNU General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/gpl-3.0.html>.
@@ -66,7 +66,7 @@ class JPARequirementServiceRepositoryTest {
     }
 
     @Test
-    void getAnforderung_ProjektNichtVorhanden_EmptyErgebniss() {
+    void getRequirement_ProjectNotExists_EmptyReturned() {
         // arrange
         when(projectRepositoryMock.findByIdentifier("SAMPLE")).thenReturn(null);
 
@@ -78,7 +78,7 @@ class JPARequirementServiceRepositoryTest {
     }
 
     @Test
-    void getAnforderung_ProjektNichtUebergeben_NullPointerExceptionWirdGeworfen() {
+    void getRequirement_ProjektNull_NullPointerExceptionThrown() {
         // arrange
 
         // act
@@ -89,7 +89,7 @@ class JPARequirementServiceRepositoryTest {
     }
 
     @Test
-    void getAnforderung_PhaseNichtUebergeben_NullPointerExceptionWirdGeworfen() {
+    void getRequirement_TailoringNull_NullPointerExceptionThrown() {
         // arrange
 
         // act
@@ -100,7 +100,7 @@ class JPARequirementServiceRepositoryTest {
     }
 
     @Test
-    void getAnforderung_KapitelNichtUebergeben_NullPointerExceptionWirdGeworfen() {
+    void getRequirement_ChapterNull_NullPointerExceptionThrown() {
         // arrange
 
         // act
@@ -111,7 +111,7 @@ class JPARequirementServiceRepositoryTest {
     }
 
     @Test
-    void getAnforderung_PositionNichtUebergeben_NullPointerExceptionWirdGeworfen() {
+    void getRequirement_PositionNull_NullPointerExceptionThrown() {
         // arrange
 
         // act
@@ -122,9 +122,9 @@ class JPARequirementServiceRepositoryTest {
     }
 
     @Test
-    void getAnforderung_PhaseNichtVorhanden_EmptyErgebniss() {
+    void getRequirement_TailoringNotExists_EmptyReturned() {
         // arrange
-        ProjectEntity projekt = ProjectEntity.builder()
+        ProjectEntity project = ProjectEntity.builder()
             .identifier("SAMPLE")
             .tailorings(asList(
                 TailoringEntity.builder()
@@ -135,8 +135,7 @@ class JPARequirementServiceRepositoryTest {
                     .build()
             ))
             .build();
-        given(projectRepositoryMock.findByIdentifier("SAMPLE"))
-            .willReturn(projekt);
+        given(projectRepositoryMock.findByIdentifier("SAMPLE")).willReturn(project);
 
         // act
         Optional<TailoringRequirement> actual = repository.getRequirement("SAMPLE", "master1", "1.2.1", "b");
@@ -146,9 +145,9 @@ class JPARequirementServiceRepositoryTest {
     }
 
     @Test
-    void getAnforderung_KapitelNichtVorhanden_EmptyErgebniss() {
+    void getRequirement_ChapterNotExists_EmptyReturned() {
         // arrange
-        ProjectEntity projekt = ProjectEntity.builder()
+        ProjectEntity project = ProjectEntity.builder()
             .identifier("SAMPLE")
             .tailorings(asList(
                 TailoringEntity.builder()
@@ -177,8 +176,7 @@ class JPARequirementServiceRepositoryTest {
                     .build()
             ))
             .build();
-        given(projectRepositoryMock.findByIdentifier("SAMPLE"))
-            .willReturn(projekt);
+        given(projectRepositoryMock.findByIdentifier("SAMPLE")).willReturn(project);
 
         // act
         Optional<TailoringRequirement> actual = repository.getRequirement("SAMPLE", "master", "1.1.2", "b");
@@ -188,9 +186,9 @@ class JPARequirementServiceRepositoryTest {
     }
 
     @Test
-    void getAnforderung_AnforderungNichtVorhanden_EmptyErgebniss() {
+    void getRequirement_RequirementNoExists_EmptyReturned() {
         // arrange
-        ProjectEntity projekt = ProjectEntity.builder()
+        ProjectEntity project = ProjectEntity.builder()
             .identifier("SAMPLE")
             .tailorings(asList(
                 TailoringEntity.builder()
@@ -224,8 +222,7 @@ class JPARequirementServiceRepositoryTest {
                     .build()
             ))
             .build();
-        given(projectRepositoryMock.findByIdentifier("SAMPLE"))
-            .willReturn(projekt);
+        given(projectRepositoryMock.findByIdentifier("SAMPLE")).willReturn(project);
 
         // act
         Optional<TailoringRequirement> actual = repository.getRequirement("SAMPLE", "master", "1.1", "b");
@@ -235,9 +232,9 @@ class JPARequirementServiceRepositoryTest {
     }
 
     @Test
-    void getAnforderung() {
+    void getRequirement_RequirementExists_RequirementReturned() {
         // arrange
-        ProjectEntity projekt = ProjectEntity.builder()
+        ProjectEntity project = ProjectEntity.builder()
             .identifier("SAMPLE")
             .tailorings(asList(
                 TailoringEntity.builder()
@@ -311,8 +308,7 @@ class JPARequirementServiceRepositoryTest {
                         .build())
                     .build()))
             .build();
-        given(projectRepositoryMock.findByIdentifier("SAMPLE"))
-            .willReturn(projekt);
+        given(projectRepositoryMock.findByIdentifier("SAMPLE")).willReturn(project);
 
         // act
         Optional<TailoringRequirement> actual = repository.getRequirement("SAMPLE", "master1", "1.2.1", "b");
@@ -323,7 +319,7 @@ class JPARequirementServiceRepositoryTest {
 
 
     @Test
-    void updateAnforderung_ProjektNichtUebergeben_NullPointerExceptionWirdGeworfen() {
+    void updateRequirement_ProjectNull_NullPointerExceptionThrown() {
         // arrange
 
         // act
@@ -334,7 +330,7 @@ class JPARequirementServiceRepositoryTest {
     }
 
     @Test
-    void updateAnforderung_PhaseNichtUebergeben_NullPointerExceptionWirdGeworfen() {
+    void updateRequirement_TailoringNull_NullPointerExceptionThrown() {
         // arrange
 
         // act
@@ -345,7 +341,7 @@ class JPARequirementServiceRepositoryTest {
     }
 
     @Test
-    void updateAnforderung_KapitelNichtUebergeben_NullPointerExceptionWirdGeworfen() {
+    void updateRequirement_ChapterNull_NullPointerExceptionThrown() {
         // arrange
 
         // act
@@ -356,7 +352,7 @@ class JPARequirementServiceRepositoryTest {
     }
 
     @Test
-    void updateAnforderung_AnforderungNichtUebergeben_NullPointerExceptionWirdGeworfen() {
+    void updateRequirement_RequirementNull_NullPointerExceptionThrown() {
         // arrange
 
         // act
@@ -367,24 +363,25 @@ class JPARequirementServiceRepositoryTest {
     }
 
     @Test
-    void updateAnforderung_GruppeNichtVorhanden_EmptyErgebnis() {
+    void updateRequirement_ChapterNotExists_EmptyReturned() {
+        // arrange
         when(projectRepositoryMock.findByIdentifier("SAMPLE")).thenReturn(null);
 
-        TailoringRequirement anforderung = TailoringRequirement.builder()
+        TailoringRequirement requirement = TailoringRequirement.builder()
             .position("a")
             .build();
 
         // act
-        Optional<TailoringRequirement> actual = repository.updateRequirement("SAMPLE", "master", "1.1", anforderung);
+        Optional<TailoringRequirement> actual = repository.updateRequirement("SAMPLE", "master", "1.1", requirement);
 
         // assert
         assertThat(actual).isEmpty();
     }
 
     @Test
-    void updateAnforderung_AnforderungNichtVorhanden_EmptyErgebnis() {
+    void updateRequirement_RequirementNotExists_EmptyReturned() {
         // arrange
-        ProjectEntity projekt = ProjectEntity.builder()
+        ProjectEntity project = ProjectEntity.builder()
             .identifier("SAMPLE")
             .tailorings(asList(
                 TailoringEntity.builder()
@@ -413,28 +410,27 @@ class JPARequirementServiceRepositoryTest {
                     .build()
             ))
             .build();
-        given(projectRepositoryMock.findByIdentifier("SAMPLE"))
-            .willReturn(projekt);
+        given(projectRepositoryMock.findByIdentifier("SAMPLE")).willReturn(project);
 
 
-        TailoringRequirement anforderung = TailoringRequirement.builder()
+        TailoringRequirement requirement = TailoringRequirement.builder()
             .position("b")
             .build();
 
         // act
-        Optional<TailoringRequirement> actual = repository.updateRequirement("SAMPLE", "master", "1.1", anforderung);
+        Optional<TailoringRequirement> actual = repository.updateRequirement("SAMPLE", "master", "1.1", requirement);
 
         // assert
         assertThat(actual).isEmpty();
     }
 
     @Test
-    void updateAnforderung_AnforderungVorhanden_WerteWurdenUebernommen() {
+    void updateRequirement_RequirementExists_RequirementUpdated() {
         // arrange
-        TailoringRequirementEntity anforderungToUpdate = TailoringRequirementEntity.builder()
+        TailoringRequirementEntity requirementToUpdate = TailoringRequirementEntity.builder()
             .position("a")
             .build();
-        ProjectEntity projekt = ProjectEntity.builder()
+        ProjectEntity project = ProjectEntity.builder()
             .identifier("SAMPLE")
             .tailorings(asList(
                 TailoringEntity.builder()
@@ -450,7 +446,7 @@ class JPARequirementServiceRepositoryTest {
                                         TailoringCatalogChapterEntity.builder()
                                             .number("1.1")
                                             .requirements(asList(
-                                                anforderungToUpdate
+                                                requirementToUpdate
                                             ))
                                             .build()
                                     ))
@@ -461,27 +457,24 @@ class JPARequirementServiceRepositoryTest {
                     .build()
             ))
             .build();
-        given(projectRepositoryMock.findByIdentifier("SAMPLE"))
-            .willReturn(projekt);
+        given(projectRepositoryMock.findByIdentifier("SAMPLE")).willReturn(project);
 
-        TailoringRequirement anforderung = TailoringRequirement.builder()
+        TailoringRequirement requirement = TailoringRequirement.builder()
             .position("a")
             .build();
-        given(mapperMock.toDomain(anforderungToUpdate))
-            .willReturn(anforderung);
+        given(mapperMock.toDomain(requirementToUpdate)).willReturn(requirement);
 
         // act
-        Optional<TailoringRequirement> actual = repository.updateRequirement("SAMPLE", "master", "1.1", anforderung);
+        Optional<TailoringRequirement> actual = repository.updateRequirement("SAMPLE", "master", "1.1", requirement);
 
         // assert
         assertThat(actual).isPresent();
-        verify(mapperMock, timeout(1))
-            .updateRequirement(anforderung, anforderungToUpdate);
+        verify(mapperMock, timeout(1)).updateRequirement(requirement, requirementToUpdate);
     }
 
 
     @Test
-    void getKapitel_ProjektNichtUebergeben_NullPointerExceptionWirdGeworfen() {
+    void getChapter_ProjectNull_NullPointerExceptionThrown() {
         // arrange
 
         // act
@@ -492,7 +485,7 @@ class JPARequirementServiceRepositoryTest {
     }
 
     @Test
-    void getKapitel_PhaseNichtUebergeben_NullPointerExceptionWirdGeworfen() {
+    void getChapter_TailoringNull_NullPointerExceptionThrown() {
         // arrange
 
         // act
@@ -503,7 +496,7 @@ class JPARequirementServiceRepositoryTest {
     }
 
     @Test
-    void getKapitel_KapitelNichtUebergeben_NullPointerExceptionWirdGeworfen() {
+    void getChapter_ChapterNull_NullPointerExceptionThrown() {
         // arrange
 
         // act
@@ -514,10 +507,10 @@ class JPARequirementServiceRepositoryTest {
     }
 
     @Test
-    void getKapitel_KapitelVorhanden_DomaenenobjektWirdZurueckGegeben() {
+    void getChapter_ChapterExists_MappedDomainObjectReturned() {
 
         // arrange
-        TailoringCatalogChapterEntity gruppe = TailoringCatalogChapterEntity.builder()
+        TailoringCatalogChapterEntity chapter = TailoringCatalogChapterEntity.builder()
             .number("1")
             .chapters(asList(
                 TailoringCatalogChapterEntity.builder()
@@ -525,7 +518,7 @@ class JPARequirementServiceRepositoryTest {
                     .build()
             ))
             .build();
-        ProjectEntity projekt = ProjectEntity.builder()
+        ProjectEntity project = ProjectEntity.builder()
             .identifier("SAMPLE")
             .tailorings(asList(
                 TailoringEntity.builder()
@@ -535,18 +528,16 @@ class JPARequirementServiceRepositoryTest {
                     .catalog(TailoringCatalogEntity.builder()
                         .toc(TailoringCatalogChapterEntity.builder()
                             .chapters(asList(
-                                gruppe)
+                                chapter)
                             )
                             .build())
                         .build())
                     .build()
             ))
             .build();
-        given(projectRepositoryMock.findByIdentifier("SAMPLE"))
-            .willReturn(projekt);
+        given(projectRepositoryMock.findByIdentifier("SAMPLE")).willReturn(project);
 
-        given(mapperMock.toDomain(gruppe))
-            .willReturn(Chapter.<TailoringRequirement>builder().build());
+        given(mapperMock.toDomain(chapter)).willReturn(Chapter.<TailoringRequirement>builder().build());
 
         // act
         Optional<Chapter<TailoringRequirement>> actual = repository.getChapter("SAMPLE", "master", "1.1");
@@ -556,9 +547,9 @@ class JPARequirementServiceRepositoryTest {
     }
 
     @Test
-    void getKapitel_KapitelNichtVorhanden_EmptyErgebnis() {
+    void getChapter_ChapterNotExists_EmptyReturned() {
         // arrange
-        TailoringCatalogChapterEntity gruppe = TailoringCatalogChapterEntity.builder()
+        TailoringCatalogChapterEntity chapter = TailoringCatalogChapterEntity.builder()
             .number("1")
             .chapters(asList(
                 TailoringCatalogChapterEntity.builder()
@@ -566,7 +557,7 @@ class JPARequirementServiceRepositoryTest {
                     .build()
             ))
             .build();
-        ProjectEntity projekt = ProjectEntity.builder()
+        ProjectEntity project = ProjectEntity.builder()
             .identifier("SAMPLE")
             .tailorings(asList(
                 TailoringEntity.builder()
@@ -576,18 +567,16 @@ class JPARequirementServiceRepositoryTest {
                     .catalog(TailoringCatalogEntity.builder()
                         .toc(TailoringCatalogChapterEntity.builder()
                             .chapters(asList(
-                                gruppe)
+                                chapter)
                             )
                             .build())
                         .build())
                     .build()
             ))
             .build();
-        given(projectRepositoryMock.findByIdentifier("SAMPLE"))
-            .willReturn(projekt);
+        given(projectRepositoryMock.findByIdentifier("SAMPLE")).willReturn(project);
 
-        given(mapperMock.toDomain(gruppe))
-            .willReturn(Chapter.<TailoringRequirement>builder().build());
+        given(mapperMock.toDomain(chapter)).willReturn(Chapter.<TailoringRequirement>builder().build());
 
         // act
         Optional<Chapter<TailoringRequirement>> actual = repository.getChapter("SAMPLE", "master", "1.2");
@@ -597,7 +586,7 @@ class JPARequirementServiceRepositoryTest {
     }
 
     @Test
-    void updateKapitel_ProjektNichtUebergeben_NullPointerExceptionWirdGeworfen() {
+    void updateChapter_ProjectNull_NullPointerExceptionThrown() {
         // arrange
 
         // act
@@ -608,7 +597,7 @@ class JPARequirementServiceRepositoryTest {
     }
 
     @Test
-    void updateKapitel_PhaseNichtUebergeben_NullPointerExceptionWirdGeworfen() {
+    void updateChapter_TailoringNull_NullPointerExceptionThrown() {
         // arrange
 
         // act
@@ -619,7 +608,7 @@ class JPARequirementServiceRepositoryTest {
     }
 
     @Test
-    void updateKapitel_KapitelNichtUebergeben_NullPointerExceptionWirdGeworfen() {
+    void updateChapter_ChapterNull_NullPointerExceptionThrown() {
         // arrange
 
         // act
@@ -631,9 +620,9 @@ class JPARequirementServiceRepositoryTest {
 
 
     @Test
-    void updateKapitel_KapitelNichtVorhanden_EmptyErgebnis() {
+    void updateChapter_ChapterNotExists_EmptyReturned() {
         // arrange
-        TailoringCatalogChapterEntity gruppe = TailoringCatalogChapterEntity.builder()
+        TailoringCatalogChapterEntity chapterToUpdate = TailoringCatalogChapterEntity.builder()
             .number("1")
             .chapters(asList(
                 TailoringCatalogChapterEntity.builder()
@@ -641,7 +630,7 @@ class JPARequirementServiceRepositoryTest {
                     .build()
             ))
             .build();
-        ProjectEntity projekt = ProjectEntity.builder()
+        ProjectEntity project = ProjectEntity.builder()
             .identifier("SAMPLE")
             .tailorings(asList(
                 TailoringEntity.builder()
@@ -651,15 +640,14 @@ class JPARequirementServiceRepositoryTest {
                     .catalog(TailoringCatalogEntity.builder()
                         .toc(TailoringCatalogChapterEntity.builder()
                             .chapters(asList(
-                                gruppe)
+                                chapterToUpdate)
                             )
                             .build())
                         .build())
                     .build()
             ))
             .build();
-        given(projectRepositoryMock.findByIdentifier("SAMPLE"))
-            .willReturn(projekt);
+        given(projectRepositoryMock.findByIdentifier("SAMPLE")).willReturn(project);
 
         Chapter<TailoringRequirement> chapter = Chapter.<TailoringRequirement>builder()
             .number("2")
@@ -673,9 +661,9 @@ class JPARequirementServiceRepositoryTest {
     }
 
     @Test
-    void updateKapitel_KapitelVorhanden_WerteUebernommen() {
+    void updateChapter_ChapterExists_ChapterUpdated() {
         // arrange
-        TailoringCatalogChapterEntity kapitelToUpdate = TailoringCatalogChapterEntity.builder()
+        TailoringCatalogChapterEntity chapterToUpdate = TailoringCatalogChapterEntity.builder()
             .number("1")
             .chapters(asList(
                 TailoringCatalogChapterEntity.builder()
@@ -683,7 +671,7 @@ class JPARequirementServiceRepositoryTest {
                     .build()
             ))
             .build();
-        ProjectEntity projekt = ProjectEntity.builder()
+        ProjectEntity project = ProjectEntity.builder()
             .identifier("SAMPLE")
             .tailorings(asList(
                 TailoringEntity.builder()
@@ -693,34 +681,31 @@ class JPARequirementServiceRepositoryTest {
                     .catalog(TailoringCatalogEntity.builder()
                         .toc(TailoringCatalogChapterEntity.builder()
                             .chapters(asList(
-                                kapitelToUpdate)
+                                chapterToUpdate)
                             )
                             .build())
                         .build())
                     .build()
             ))
             .build();
-        given(projectRepositoryMock.findByIdentifier("SAMPLE"))
-            .willReturn(projekt);
+        given(projectRepositoryMock.findByIdentifier("SAMPLE")).willReturn(project);
 
         Chapter<TailoringRequirement> chapter = Chapter.<TailoringRequirement>builder()
             .number("1.1")
             .build();
 
-        given(mapperMock.toDomain(kapitelToUpdate))
-            .willReturn(chapter);
+        given(mapperMock.toDomain(chapterToUpdate)).willReturn(chapter);
 
         // act
         Optional<Chapter<TailoringRequirement>> actual = repository.updateChapter("SAMPLE", "master", chapter);
 
         // assert
         assertThat(actual).isPresent();
-        verify(mapperMock, times(1))
-            .updateChapter(chapter, kapitelToUpdate);
+        verify(mapperMock, times(1)).updateChapter(chapter, chapterToUpdate);
     }
 
     @Test
-    void updateAusgewaehlt_ProjektNichtUebergeben_NullPointerExceptionWirdGeworfen() {
+    void updateSelected_ProjectNull_NullPointerExceptionThrown() {
         // arrange
 
         // act
@@ -731,18 +716,18 @@ class JPARequirementServiceRepositoryTest {
     }
 
     @Test
-    void updateAusgewaehlt_PhasetNichtUebergeben_NullPointerExceptionWirdGeworfen() {
+    void updateSelected_TailoringNull_NullPointerExceptionThrown() {
         // arrange
 
         // act
-
         Throwable actual = catchThrowable(() -> repository.updateSelected("DUMMY", null, Chapter.<TailoringRequirement>builder().build()));
+
         // assert
         assertThat(actual).isInstanceOf(NullPointerException.class);
     }
 
     @Test
-    void updateAusgewaehlt_GruppeNichtUebergeben_NullPointerExceptionWirdGeworfen() {
+    void updateSelected_ChapterNull_NullPointerExceptionThrown() {
         // arrange
 
         // act
@@ -754,9 +739,9 @@ class JPARequirementServiceRepositoryTest {
 
 
     @Test
-    void updateAusgewaehlt_KapitelNichtVorhanden_EmptyErgebnis() {
+    void updateSelected_ChapterNotExists_EmptyReturned() {
         // arrange
-        TailoringCatalogChapterEntity gruppe = TailoringCatalogChapterEntity.builder()
+        TailoringCatalogChapterEntity projectChapter = TailoringCatalogChapterEntity.builder()
             .number("1")
             .chapters(asList(
                 TailoringCatalogChapterEntity.builder()
@@ -764,7 +749,8 @@ class JPARequirementServiceRepositoryTest {
                     .build()
             ))
             .build();
-        ProjectEntity projekt = ProjectEntity.builder()
+
+        ProjectEntity project = ProjectEntity.builder()
             .identifier("SAMPLE")
             .tailorings(asList(
                 TailoringEntity.builder()
@@ -774,15 +760,14 @@ class JPARequirementServiceRepositoryTest {
                     .catalog(TailoringCatalogEntity.builder()
                         .toc(TailoringCatalogChapterEntity.builder()
                             .chapters(asList(
-                                gruppe)
+                                projectChapter)
                             )
                             .build())
                         .build())
                     .build()
             ))
             .build();
-        given(projectRepositoryMock.findByIdentifier("SAMPLE"))
-            .willReturn(projekt);
+        given(projectRepositoryMock.findByIdentifier("SAMPLE")).willReturn(project);
 
         Chapter<TailoringRequirement> chapter = Chapter.<TailoringRequirement>builder()
             .number("2")
@@ -797,30 +782,30 @@ class JPARequirementServiceRepositoryTest {
     }
 
     @Test
-    void updateAusgewaehlt_KapitelVorhanden_AuswahlUebernommen() {
+    void updateSelected_ChapterExists_SelectionUpdated() {
         // arrange
-        TailoringRequirementEntity anforderungAToUpdate = TailoringRequirementEntity.builder()
+        TailoringRequirementEntity requirementAToUpdate = TailoringRequirementEntity.builder()
             .position("a")
             .selected(Boolean.TRUE)
             .build();
-        TailoringRequirementEntity anforderungBToUpdate = TailoringRequirementEntity.builder()
+        TailoringRequirementEntity requirementBToUpdate = TailoringRequirementEntity.builder()
             .position("b")
             .selected(Boolean.FALSE)
             .build();
 
-        TailoringCatalogChapterEntity gruppe = TailoringCatalogChapterEntity.builder()
+        TailoringCatalogChapterEntity projectChapter = TailoringCatalogChapterEntity.builder()
             .number("1")
             .chapters(asList(
                 TailoringCatalogChapterEntity.builder()
                     .number("1.1")
                     .requirements(asList(
-                        anforderungAToUpdate,
-                        anforderungBToUpdate
+                        requirementAToUpdate,
+                        requirementBToUpdate
                     ))
                     .build()
             ))
             .build();
-        ProjectEntity projekt = ProjectEntity.builder()
+        ProjectEntity project = ProjectEntity.builder()
             .identifier("SAMPLE")
             .tailorings(asList(
                 TailoringEntity.builder()
@@ -830,46 +815,39 @@ class JPARequirementServiceRepositoryTest {
                     .catalog(TailoringCatalogEntity.builder()
                         .toc(TailoringCatalogChapterEntity.builder()
                             .chapters(asList(
-                                gruppe)
+                                projectChapter)
                             )
                             .build())
                         .build())
                     .build()
             ))
             .build();
-        given(projectRepositoryMock.findByIdentifier("SAMPLE"))
-            .willReturn(projekt);
+        given(projectRepositoryMock.findByIdentifier("SAMPLE")).willReturn(project);
 
-        TailoringRequirement anforderungA = TailoringRequirement.builder()
+        TailoringRequirement requirementA = TailoringRequirement.builder()
             .position("a")
             .selected(Boolean.TRUE)
             .build();
-        TailoringRequirement anforderungB = TailoringRequirement.builder()
+        TailoringRequirement requirementB = TailoringRequirement.builder()
             .position("b")
             .selected(Boolean.TRUE)
             .build();
         Chapter<TailoringRequirement> chapter = Chapter.<TailoringRequirement>builder()
             .number("1.1")
             .requirements(asList(
-                anforderungA,
-                anforderungB
+                requirementA,
+                requirementB
             ))
             .build();
-
-        given(mapperMock.toDomain(gruppe))
-            .willReturn(chapter);
+        given(mapperMock.toDomain(projectChapter)).willReturn(chapter);
 
         // act
         Optional<Chapter<TailoringRequirement>> actual = repository.updateSelected("SAMPLE", "master", chapter);
 
         // assert
         assertThat(actual).isNotEmpty();
-
-        verify(mapperMock, times(1))
-            .updateRequirement(anforderungA, anforderungAToUpdate);
-
-        verify(mapperMock, times(1))
-            .updateRequirement(anforderungB, anforderungBToUpdate);
+        verify(mapperMock, times(1)).updateRequirement(requirementA, requirementAToUpdate);
+        verify(mapperMock, times(1)).updateRequirement(requirementB, requirementBToUpdate);
 
     }
 }

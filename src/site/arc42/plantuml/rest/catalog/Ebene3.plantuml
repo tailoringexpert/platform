@@ -17,7 +17,7 @@ package catalog {
     }
 
     class CatalogController {
-        +importKatalog(catalog : Catalog<BaseRequirement>) : ResponseEntity<Void>
+        +postCatalog(catalog : Catalog<BaseRequirement>) : ResponseEntity<Void>
         +getCatalogs() : ResponseEntity<CollectionModel<EntityModel<BaseCatalogVersionResource>>>
         +getPrintCatalog(version : String) : ResponseEntity<Catalog<BaseRequirement>>
         +getOutputKatalog(version : String) : ResponseEntity<byte[]>

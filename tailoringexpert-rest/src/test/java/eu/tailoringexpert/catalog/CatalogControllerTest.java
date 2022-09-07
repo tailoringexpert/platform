@@ -138,7 +138,7 @@ class CatalogControllerTest {
     }
 
     @Test
-    void doImport_NoError_StateNoContent() throws Exception {
+    void postCatalog_NoError_StateNoContent() throws Exception {
         // arrange
         Catalog<BaseRequirement> catalog = Catalog.<BaseRequirement>builder().build();
         given(serviceMock.doImport(catalog)).willReturn(TRUE);
@@ -159,7 +159,7 @@ class CatalogControllerTest {
     }
 
     @Test
-    void doImport_Error_StateBadRequest() throws Exception {
+    void postCatalog_Error_StateBadRequest() throws Exception {
         // arrange
         Catalog<BaseRequirement> catalog = Catalog.<BaseRequirement>builder().build();
         given(serviceMock.doImport(catalog)).willReturn(FALSE);

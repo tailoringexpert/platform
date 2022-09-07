@@ -20,9 +20,9 @@ Profile shall contain following `liquibase` properties:
 Following an example for creating user and schema using MySQL/MariaDB:
 
 ```
-CREATE USER 'tailoringexpert'@'%' IDENTIFIED BY 'test1234';
+CREATE USER 'tailoringexpert'@'localhost' IDENTIFIED BY 'test1234';
 CREATE DATABASE TAILORINGEXPERT CHARACTER SET utf8mb4;
-GRANT ALL PRIVILEGES ON TAILORINGEXPERT.* TO 'tailoringexpert'@'%;'
+GRANT ALL PRIVILEGES ON TAILORINGEXPERT.* TO 'tailoringexpert'@'localhost';
 ```
 
 Adapt user and schema to needed values.

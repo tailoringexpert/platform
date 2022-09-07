@@ -26,6 +26,7 @@ import eu.tailoringexpert.domain.FileResource;
 import eu.tailoringexpert.domain.DocumentSignature;
 import eu.tailoringexpert.domain.DocumentSignatureResource;
 import eu.tailoringexpert.domain.SelectionVectorProfileResource;
+import eu.tailoringexpert.domain.Tailoring;
 import eu.tailoringexpert.domain.TailoringCatalogResource;
 import eu.tailoringexpert.domain.MediaTypeProvider;
 import eu.tailoringexpert.domain.PathContext;
@@ -65,9 +66,11 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.function.Function;
 
+import static eu.tailoringexpert.domain.ResourceMapper.TAILORING;
 import static eu.tailoringexpert.domain.ResourceMapper.TAILORING_ATTACHMENTS;
 import static eu.tailoringexpert.domain.ResourceMapper.TAILORING_ATTACHMENT;
 import static eu.tailoringexpert.domain.ResourceMapper.TAILORING_CATALOG;
@@ -77,6 +80,7 @@ import static eu.tailoringexpert.domain.ResourceMapper.TAILORING_COMPARE;
 import static eu.tailoringexpert.domain.ResourceMapper.TAILORING_DOCUMENT;
 import static eu.tailoringexpert.domain.ResourceMapper.TAILORING_DOCUMENT_CATALOG;
 import static eu.tailoringexpert.domain.ResourceMapper.TAILORING_NAME;
+import static eu.tailoringexpert.domain.ResourceMapper.TAILORING_REQUIREMENT_IMPORT;
 import static eu.tailoringexpert.domain.ResourceMapper.TAILORING_SCREENINGSHEET;
 import static eu.tailoringexpert.domain.ResourceMapper.TAILORING_SCREENINGSHEET_PDF;
 import static eu.tailoringexpert.domain.ResourceMapper.TAILORING_SELECTIONVECTOR;
@@ -84,12 +88,15 @@ import static eu.tailoringexpert.domain.ResourceMapper.TAILORING_SIGNATURE;
 import static eu.tailoringexpert.domain.ResourceMapper.TAILORING_SIGNATURE_FACULTY;
 import static java.util.stream.Collectors.toList;
 import static org.springframework.hateoas.EntityModel.of;
+import static org.springframework.hateoas.server.mvc.BasicLinkBuilder.linkToCurrentMapping;
 import static org.springframework.http.HttpHeaders.ACCESS_CONTROL_EXPOSE_HEADERS;
 import static org.springframework.http.HttpHeaders.CONTENT_DISPOSITION;
 import static org.springframework.http.HttpStatus.NOT_FOUND;
 import static org.springframework.http.HttpStatus.OK;
 import static org.springframework.http.HttpStatus.PRECONDITION_FAILED;
+import static org.springframework.http.ResponseEntity.created;
 import static org.springframework.http.ResponseEntity.notFound;
+import static org.springframework.http.ResponseEntity.ok;
 
 
 /**
@@ -132,9 +139,8 @@ public class TailoringController {
             .tailoring(tailoring);
 
         return tailoringService.getCatalog(project, tailoring)
-            .map(projektPhase -> ResponseEntity
-                .ok()
-                .body(of(mapper.toResource(pathContext, projektPhase))))
+            .map(serviceResult -> ok()
+                .body(of(mapper.toResource(pathContext, serviceResult))))
             .orElseGet(() -> notFound().build());
     }
 
@@ -157,8 +163,7 @@ public class TailoringController {
             .tailoring(tailoring);
 
         return tailoringService.getChapter(project, tailoring, chapter)
-            .map(k -> ResponseEntity
-                .ok()
+            .map(k -> ok()
                 .body(of(mapper.toResource(pathContext, k))))
             .orElseGet(() -> notFound().build());
     }
@@ -181,8 +186,7 @@ public class TailoringController {
             .tailoring(tailoring);
 
         return tailoringService.getScreeningSheet(project, tailoring)
-            .map(screeningSheet -> ResponseEntity
-                .ok()
+            .map(screeningSheet -> ok()
                 .body(of(mapper.toResource(pathContext, screeningSheet))))
             .orElseGet(() -> notFound().build());
     }
@@ -202,8 +206,7 @@ public class TailoringController {
         @Parameter(description = "Project identifier") @PathVariable String project,
         @Parameter(description = "Tailoring name") @PathVariable String tailoring) {
         return tailoringServiceRepository.getScreeningSheetFile(project, tailoring)
-            .map(daten -> ResponseEntity
-                .ok()
+            .map(daten -> ok()
                 .header(CONTENT_DISPOSITION, ContentDisposition.builder(MediaTypeProvider.FORM_DATA).name(MediaTypeProvider.ATTACHMENT).filename("screeningsheet.pdf").build().toString())
                 .header(ACCESS_CONTROL_EXPOSE_HEADERS, CONTENT_DISPOSITION)
                 .contentType(MediaType.APPLICATION_PDF)
@@ -230,8 +233,7 @@ public class TailoringController {
             .tailoring(tailoring);
 
         return tailoringService.getSelectionVector(project, tailoring)
-            .map(selektionsVektor -> ResponseEntity
-                .ok()
+            .map(selektionsVektor -> ok()
                 .body(of(mapper.toResource(pathContext, selektionsVektor))))
             .orElseGet(() -> notFound().build());
     }
@@ -245,7 +247,7 @@ public class TailoringController {
             responseCode = "404", description = "Tailoring does not exist",
             content = @Content)
     })
-    @GetMapping(value = ResourceMapper.TAILORING, produces = {"application/hal+json"})
+    @GetMapping(value = TAILORING, produces = {"application/hal+json"})
     public ResponseEntity<EntityModel<TailoringResource>> getTailoring(
         @Parameter(description = "Project identifier") @PathVariable String project,
         @Parameter(description = "Tailoring name") @PathVariable String tailoring) {
@@ -254,8 +256,7 @@ public class TailoringController {
             .tailoring(tailoring);
 
         return tailoringServiceRepository.getTailoring(project, tailoring)
-            .map(loaded -> ResponseEntity
-                .ok()
+            .map(loaded -> ok()
                 .body(of(mapper.toResource(pathContext, loaded))))
             .orElseGet(() -> notFound().build());
     }
@@ -270,23 +271,24 @@ public class TailoringController {
             content = @Content)
     })
     @PostMapping(value = TAILORING_ATTACHMENTS, produces = {"application/hal+json"})
-    public ResponseEntity<EntityModel<Void>> addFile(
+    public ResponseEntity<EntityModel<Void>> postFile(
         @Parameter(description = "Project identifier") @PathVariable String project,
         @Parameter(description = "Tailoring name") @PathVariable String tailoring,
         @Parameter(description = "File to add") @RequestPart("datei") MultipartFile file) throws IOException {
-        PathContextBuilder pathContext = PathContext.builder()
+        Optional<Tailoring> serviceResult = tailoringService.addFile(project, tailoring, file.getOriginalFilename(), file.getBytes());
+
+        if (serviceResult.isEmpty()) {
+            return notFound().build();
+        }
+
+        Map<String, String> parameters = PathContext.builder()
             .project(project)
-            .tailoring(tailoring);
-
-        return tailoringService.addFile(project, tailoring, file.getOriginalFilename(), file.getBytes()).isPresent() ?
-            ResponseEntity.created(UriTemplate.of(ResourceMapper.TAILORINGREQUIRMENT).expand(pathContext.build().parameter())).build() :
-            notFound().build();
-//            .map(projektPhase -> ResponseEntity
-//                .created(UriTemplate.of(ResourceMapper.TAILORINGREQUIRMENT).expand(pathContext.build().parameter()))
-//                .created(linkTo(methodOn(TailoringController.class).createDokuments(project, tailoring)).toUri()))
-//                .body(of(mapper.toResource(pathContext, projektPhase))))
-
-//            .orElseGet(() -> notFound().build());
+            .tailoring(tailoring)
+            .build()
+            .parameter();
+        parameters.put("name", file.getOriginalFilename());
+        return created(UriTemplate.of(linkToCurrentMapping().toString() + "/" + TAILORING_ATTACHMENT).expand(parameters))
+            .build();
     }
 
     @Operation(summary = "Generate all (tenant) documents of a specified tailoring.")
@@ -300,12 +302,11 @@ public class TailoringController {
     })
     @GetMapping(TAILORING_DOCUMENT)
     @ResponseBody
-    public ResponseEntity<byte[]> createDokuments(
+    public ResponseEntity<byte[]> getDocuments(
         @Parameter(description = "Project identifier") @PathVariable String project,
         @Parameter(description = "Tailoring name") @PathVariable String tailoring) {
         return tailoringService.createDocuments(project, tailoring)
-            .map(dokument -> ResponseEntity
-                .ok()
+            .map(dokument -> ok()
                 .header(CONTENT_DISPOSITION, ContentDisposition.builder(MediaTypeProvider.FORM_DATA).name(MediaTypeProvider.ATTACHMENT).filename(dokument.getName()).build().toString())
                 .header(ACCESS_CONTROL_EXPOSE_HEADERS, CONTENT_DISPOSITION)
                 .contentType(mediaTypeProvider.apply(dokument.getType()))
@@ -325,12 +326,11 @@ public class TailoringController {
     })
     @GetMapping(TAILORING_DOCUMENT_CATALOG)
     @ResponseBody
-    public ResponseEntity<byte[]> createRequirementFile(
+    public ResponseEntity<byte[]> getRequirementFile(
         @Parameter(description = "Project identifier") @PathVariable String project,
         @Parameter(description = "Tailoring name") @PathVariable String tailoring) {
         return tailoringService.createRequirementDocument(project, tailoring)
-            .map(dokument -> ResponseEntity
-                .ok()
+            .map(dokument -> ok()
                 .header(CONTENT_DISPOSITION, ContentDisposition.builder(MediaTypeProvider.FORM_DATA).name(MediaTypeProvider.ATTACHMENT).filename(dokument.getName()).build().toString())
                 .header(ACCESS_CONTROL_EXPOSE_HEADERS, CONTENT_DISPOSITION)
                 .contentType(mediaTypeProvider.apply(dokument.getType()))
@@ -360,8 +360,7 @@ public class TailoringController {
             .tailoring(tailoring)
             .chapter(chapter);
 
-        return ResponseEntity
-            .ok()
+        return ok()
             .body(CollectionModel.of(
                 tailoringService.getRequirements(project, tailoring, chapter)
                     .stream()
@@ -387,8 +386,7 @@ public class TailoringController {
             .project(project)
             .tailoring(tailoring);
 
-        return ResponseEntity
-            .ok()
+        return ok()
             .body(CollectionModel.of(
                 tailoringService.getDocumentSignatures(project, tailoring)
                     .stream()
@@ -417,8 +415,7 @@ public class TailoringController {
             .tailoring(tailoring);
 
         return tailoringService.updateDocumentSignature(project, tailoring, signature)
-            .map(zeichnung -> ResponseEntity
-                .ok()
+            .map(zeichnung -> ok()
                 .body(of(mapper.toResource(pathContext, zeichnung))))
             .orElseGet(() -> notFound().build());
 
@@ -434,7 +431,7 @@ public class TailoringController {
             content = @Content)
     })
     @PutMapping(value = TAILORING_NAME, produces = {"application/hal+json"})
-    public ResponseEntity<EntityModel<TailoringResource>> updateName(
+    public ResponseEntity<EntityModel<TailoringResource>> putName(
         @Parameter(description = "Project identifier") @PathVariable String project,
         @Parameter(description = "Tailoring name") @PathVariable String tailoring,
         @Parameter(description = "New tailoring name") @RequestBody String name) {
@@ -443,8 +440,7 @@ public class TailoringController {
             .tailoring(name);
 
         return tailoringService.updateName(project, tailoring, name)
-            .map(projektPhase -> ResponseEntity
-                .ok()
+            .map(projektPhase -> ok()
                 .body(of(mapper.toResource(pathContext, projektPhase))))
             .orElseThrow(() -> new ResourceException(PRECONDITION_FAILED, "Name could not be updated"));
 
@@ -467,13 +463,15 @@ public class TailoringController {
             .project(project)
             .tailoring(tailoring);
 
-        return ResponseEntity
-            .ok()
-            .body(CollectionModel.of(
-                tailoringServiceRepository.getFileList(project, tailoring)
-                    .stream()
-                    .map(domain -> mapper.toResource(pathContext, domain))
-                    .collect(toList())));
+        return tailoringServiceRepository.getFileList(project, tailoring)
+            .map(data -> ok()
+                .body(CollectionModel.of(
+                    data.stream()
+                        .map(domain -> mapper.toResource(pathContext, domain))
+                        .collect(toList())
+                ))
+            )
+            .orElseGet(() -> notFound().build());
     }
 
     @GetMapping(TAILORING_ATTACHMENT)
@@ -483,8 +481,7 @@ public class TailoringController {
         @Parameter(description = "Tailoring name") @PathVariable String tailoring,
         @Parameter(description = "Name of File") @PathVariable String name) {
         return tailoringServiceRepository.getFile(project, tailoring, name)
-            .map(daten -> ResponseEntity
-                .ok()
+            .map(daten -> ok()
                 .header(CONTENT_DISPOSITION, ContentDisposition.builder(MediaTypeProvider.FORM_DATA).name(MediaTypeProvider.ATTACHMENT).filename(name).build().toString())
                 .header(ACCESS_CONTROL_EXPOSE_HEADERS, CONTENT_DISPOSITION)
                 .contentType(mediaTypeProvider.apply(daten.getType()))
@@ -508,7 +505,7 @@ public class TailoringController {
         @Parameter(description = "Tailoring name") @PathVariable String tailoring,
         @Parameter(description = "Filename") @PathVariable("name") String name) {
         return tailoringServiceRepository.deleteFile(project, tailoring, name) ?
-            ResponseEntity.ok().build() :
+            ok().build() :
             notFound().build();
     }
 
@@ -527,8 +524,7 @@ public class TailoringController {
         @Parameter(description = "Project identifier") @PathVariable String project,
         @Parameter(description = "Tailoring name") @PathVariable String tailoring) {
         return tailoringService.createComparisonDocument(project, tailoring)
-            .map(dokument -> ResponseEntity
-                .ok()
+            .map(dokument -> ok()
                 .header(CONTENT_DISPOSITION, ContentDisposition.builder(MediaTypeProvider.FORM_DATA).name(MediaTypeProvider.ATTACHMENT).filename(dokument.getName()).build().toString())
                 .header(ACCESS_CONTROL_EXPOSE_HEADERS, CONTENT_DISPOSITION)
                 .contentType(mediaTypeProvider.apply(dokument.getType()))
@@ -555,15 +551,14 @@ public class TailoringController {
             .map(profil -> of(mapper.toResource(pathContext, profil)))
             .collect(toList());
 
-        return ResponseEntity
-            .ok()
+        return ok()
             .body(CollectionModel.of(profile));
     }
 
     @Operation(summary = "Update requirement state in accordance to provided file")
     @ApiResponse(responseCode = "202", description = "File evaluates")
-    @PostMapping(ResourceMapper.TAILORING_REQUIREMENT_IMPORT)
-    public ResponseEntity<EntityModel<Void>> updateRequirements(
+    @PostMapping(TAILORING_REQUIREMENT_IMPORT)
+    public ResponseEntity<EntityModel<Void>> postRequirements(
         @Parameter(description = "Project identifier") @PathVariable String project,
         @Parameter(description = "Tailoring name") @PathVariable String tailoring,
         @RequestPart("datei") MultipartFile datei) throws IOException {
@@ -580,10 +575,10 @@ public class TailoringController {
             responseCode = "404", description = "Tailoring does not exist",
             content = @Content)
     })
-    @DeleteMapping(ResourceMapper.TAILORING)
+    @DeleteMapping(TAILORING)
     public ResponseEntity<EntityModel<Void>> deleteTailoring(
-        @Parameter(description = "fachlicher Projektschlüssel") @PathVariable String project,
-        @Parameter(description = "Identifier des Tailorings") @PathVariable String tailoring) {
+        @Parameter(description = "Project identifier") @PathVariable String project,
+        @Parameter(description = "Tailoring name") @PathVariable String tailoring) {
         Optional<Boolean> deleted = tailoringService.deleteTailoring(project, tailoring);
         return ResponseEntity.status(deleted.isPresent() ? OK : NOT_FOUND).build();
     }

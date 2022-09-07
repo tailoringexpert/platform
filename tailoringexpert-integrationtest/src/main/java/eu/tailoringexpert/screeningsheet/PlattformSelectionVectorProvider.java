@@ -47,8 +47,6 @@ public class PlattformSelectionVectorProvider implements SelectionVectorProvider
 
     @Override
     public SelectionVector apply(Collection<Parameter> parameterNames) {
-
-
         return SelectionVector.builder()
             .level(PRODUCTASSURANCE, 5)
             .level(QUALITYASSURANCE, 5)

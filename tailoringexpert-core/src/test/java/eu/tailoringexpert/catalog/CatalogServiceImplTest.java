@@ -61,8 +61,7 @@ class CatalogServiceImplTest {
     void doImport_CatalogProvided_ImportSuccessful() {
         // arrange
         Catalog<BaseRequirement> catalog = Catalog.<BaseRequirement>builder().build();
-        given(repositoryMock.createCatalog(eq(catalog), any()))
-            .willReturn(of(catalog));
+        given(repositoryMock.createCatalog(eq(catalog), any())).willReturn(of(catalog));
 
         ZonedDateTime now = ZonedDateTime.of(
             LocalDateTime.of(2020, 12, 1, 8, 0, 0),
@@ -74,12 +73,11 @@ class CatalogServiceImplTest {
         try (MockedStatic<ZonedDateTime> dateTimeMock = mockStatic(ZonedDateTime.class)) {
             dateTimeMock.when(ZonedDateTime::now).thenReturn(now);
             actual = service.doImport(catalog);
-            verify(repositoryMock, times(1))
-                .createCatalog(catalog, now);
         }
 
         // assert
         assertThat(actual).isTrue();
+        verify(repositoryMock, times(1)).createCatalog(catalog, now);
     }
 
     @Test
@@ -132,11 +130,9 @@ class CatalogServiceImplTest {
     @Test
     void createCatalog_CatalogExists_FileReturned() {
         // arrange
-        given(repositoryMock.getCatalog(any()))
-            .willReturn(of(Catalog.<BaseRequirement>builder().build()));
+        given(repositoryMock.getCatalog(any())).willReturn(of(Catalog.<BaseRequirement>builder().build()));
 
-        given(documentServiceMock.createCatalog(any(), any()))
-            .willReturn(of(File.builder().build()));
+        given(documentServiceMock.createCatalog(any(), any())).willReturn(of(File.builder().build()));
 
         // act
         Optional<File> actual = service.createCatalog("8.2.1");

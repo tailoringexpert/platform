@@ -32,6 +32,11 @@ import java.util.Map;
 import static java.util.Collections.emptyList;
 import static java.util.Objects.isNull;
 
+/**
+ * Proxy for providing tenant implementations of {@link ScreeningSheetParameterProvider}.
+ *
+ * @author Michael Bädorf
+ */
 @RequiredArgsConstructor
 public class TenantScreeningSheetParameterProvider implements ScreeningSheetParameterProvider {
 

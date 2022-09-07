@@ -9,7 +9,64 @@
 
 ## Development policies
 
-[development policies](src/site/markdown/development.md "Entwicklungsrichtlinien") shall be used.
+### Dependency Injection
+
+Tailoringexport plattform is realized using Spring. Following rules shall be followed:
+
+* Dependency Injection(DI) has to be performed via Java configuration
+* autoconfiguration is forbidden except for Spring-Data-Repositories
+* all configurations shall be implemented in _tailoringexpert-bootapp_-module
+* any package shall have a dedicated configuration class
+
+### Webservices
+*	Code first approach, no manual created webservice descriptor.
+*	Webservices are to be implemented as `RestController` in `tailoringexpert-rest` module
+*	Webservices are to be documented using **OpenApi** annotations
+
+### Lombok
+
+To avoid manual implementing of
+
+*	getter
+*	setter
+*	equals
+*	hashCode
+*	toString
+
+[Lombok](https://projectlombok.org "Lombok") shall be used.
+
+### Datatype mapping
+
+To reduce manual effort for converting different data types, [Mapstruct](https://mapstruct.org/) shall be used.
+Each service which needs datatype conversation shall define a mapper class named 
+  
+> ServiceNameMapper
+
+in same package as service.
+
+### Validation and Exceptionhandling
+
+In case no data will be returned due unknown paths (project, tailoring, ...) _Optional_ shall be return.
+RestController shall return _404_ in case of _Optional.empty_.
+
+### Business/Domain core
+
+Business core must not have external dependencies except 
+
+* lombok
+* mapstruct
+* log4j2
+
+### Data/Domain objects
+
+Data/Domain objects of all layers shall be created in package _domain_.
+
+## Persistence
+
+Persistence objects and database access shall be implemented in _tailoring-data-jpa_.
+Dataobjects shall be created in package _domain_, spring data acces in _repository_
+OR-Mapping is to be implemented via annotations.
+
 
 ## Use Cases
 

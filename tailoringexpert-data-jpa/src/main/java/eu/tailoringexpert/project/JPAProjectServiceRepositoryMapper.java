@@ -80,7 +80,7 @@ public abstract class JPAProjectServiceRepositoryMapper {
     @Mapping(target = "identifier", source = "entity.identifier")
     @Mapping(target = "creationTimestamp", source = "entity.creationTimestamp")
     @Mapping(target = "tailorings", source = "entity.tailorings")
-    abstract ProjectInformation getTailoringInformationen(ProjectEntity entity);
+    abstract ProjectInformation getProjectInformationen(ProjectEntity entity);
 
     /**
      * Erstellt ein neues Domänen-Objekt mit den Werten der Phasen.
@@ -92,7 +92,7 @@ public abstract class JPAProjectServiceRepositoryMapper {
     @Mapping(target = "name", source = "entity.name")
     @Mapping(target = "phases", source = "entity.phases")
     @Mapping(target = "catalogVersion", source = "entity.catalog.version")
-    abstract TailoringInformation getTailoringInformationen(TailoringEntity entity);
+    abstract TailoringInformation getProjectInformationen(TailoringEntity entity);
 
     @Mapping(target = "data", ignore = true)
     abstract ScreeningSheet getScreeningSheet(ScreeningSheetEntity entity);

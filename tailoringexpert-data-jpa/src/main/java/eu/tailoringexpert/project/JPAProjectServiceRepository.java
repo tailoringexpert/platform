@@ -55,7 +55,7 @@ import static java.util.stream.Collectors.toList;
 @Transactional
 public class JPAProjectServiceRepository implements ProjectServiceRepository {
 
-    public static final String CACHE_KATALOG = "ProjectServiceRepository#Catalog";
+    public static final String CACHE_BASECATALOG = "ProjectServiceRepository#BaseCatalog";
 
     @NonNull
     private JPAProjectServiceRepositoryMapper mapper;
@@ -69,7 +69,7 @@ public class JPAProjectServiceRepository implements ProjectServiceRepository {
     /**
      * {@inheritDoc}
      */
-    @Cacheable(CACHE_KATALOG)
+    @Cacheable(CACHE_BASECATALOG)
     @Override
     public Catalog<BaseRequirement> getBaseCatalog(String version) {
         BaseCatalogEntity entity = baseCatalogRepository.findByVersion(version);
@@ -81,9 +81,9 @@ public class JPAProjectServiceRepository implements ProjectServiceRepository {
      */
     @Override
     public Project createProject(Project project) {
-        ProjectEntity result = mapper.createProject(project);
-        result = projectRepository.save(result);
-        return mapper.toDomain(result);
+        ProjectEntity toSave = mapper.createProject(project);
+        toSave = projectRepository.save(toSave);
+        return mapper.toDomain(toSave);
     }
 
     /**
@@ -108,11 +108,11 @@ public class JPAProjectServiceRepository implements ProjectServiceRepository {
      */
     @Override
     public Optional<Tailoring> addTailoring(String project, Tailoring tailoring) {
-        ProjectEntity projekt = projectRepository.findByIdentifier(project);
+        ProjectEntity eProject = projectRepository.findByIdentifier(project);
         TailoringEntity eTailoring = mapper.toEntity(tailoring);
 
-        projekt.setTailorings(isNull(projekt.getTailorings()) ? new ArrayList<>() : new ArrayList<>(projekt.getTailorings()));
-        projekt.getTailorings().add(eTailoring);
+        eProject.setTailorings(isNull(eProject.getTailorings()) ? new ArrayList<>() : new ArrayList<>(eProject.getTailorings()));
+        eProject.getTailorings().add(eTailoring);
 
         projectRepository.flush();
         return ofNullable(mapper.toDomain(eTailoring));
@@ -125,7 +125,7 @@ public class JPAProjectServiceRepository implements ProjectServiceRepository {
     public Collection<ProjectInformation> getProjectInformations() {
         return projectRepository.findAll()
             .stream()
-            .map(mapper::getTailoringInformationen)
+            .map(mapper::getProjectInformationen)
             .collect(toList());
     }
 
@@ -134,7 +134,7 @@ public class JPAProjectServiceRepository implements ProjectServiceRepository {
      */
     @Override
     public Optional<ProjectInformation> getProjectInformation(String project) {
-        return ofNullable(mapper.getTailoringInformationen(projectRepository.findByIdentifier(project)));
+        return ofNullable(mapper.getProjectInformationen(projectRepository.findByIdentifier(project)));
     }
 
     /**

@@ -30,9 +30,9 @@ import java.util.Map;
 import static java.util.Objects.isNull;
 
 /**
- * Mandantenfähige Template-Engine.
+ * Proxy for providing tenant implementations of {@link HTMLTemplateEngine}.
  *
- * @author baed_mi
+ * @author Michael Bädorf
  */
 @RequiredArgsConstructor
 public class TenantTemplateEngine implements HTMLTemplateEngine {

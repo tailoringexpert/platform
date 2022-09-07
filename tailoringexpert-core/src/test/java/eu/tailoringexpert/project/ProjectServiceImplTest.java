@@ -67,7 +67,6 @@ import static org.mockito.Mockito.verify;
 class ProjectServiceImplTest {
 
     private ProjectServiceImpl service;
-
     private TailoringService tailoringServiceMock;
     private ScreeningSheetService screeningSheetServiceMock;
     private ProjectServiceRepository repositoryMock;
@@ -251,8 +250,7 @@ class ProjectServiceImplTest {
         boolean actual = service.deleteProject("SAMPLE");
 
         // assert
-        verify(repositoryMock, times(1))
-            .deleteProject("SAMPLE");
+        verify(repositoryMock, times(1)).deleteProject("SAMPLE");
         assertThat(actual).isTrue();
     }
 
@@ -265,8 +263,7 @@ class ProjectServiceImplTest {
         boolean actual = service.deleteProject("SAMPLE");
 
         // assert
-        verify(repositoryMock, times(0))
-            .deleteProject("SAMPLE");
+        verify(repositoryMock, times(0)).deleteProject("SAMPLE");
         assertThat(actual).isFalse();
     }
 

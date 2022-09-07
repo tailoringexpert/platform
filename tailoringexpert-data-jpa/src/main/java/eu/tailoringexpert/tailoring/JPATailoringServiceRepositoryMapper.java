@@ -64,7 +64,7 @@ public abstract class JPATailoringServiceRepositoryMapper {
     @Mapping(target = "catalog", source = "domain.catalog")
     @Mapping(target = "selectionVector", source = "domain.selectionVector")
     @Mapping(target = "state", source = "domain.state")
-    abstract void addCatalog(Tailoring domain, @MappingTarget TailoringEntity entity);
+    abstract void updateTailoring(Tailoring domain, @MappingTarget TailoringEntity entity);
 
     abstract void update(File domain, @MappingTarget FileEntity entity);
 
