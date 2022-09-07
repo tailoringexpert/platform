@@ -34,6 +34,12 @@ import org.springframework.transaction.annotation.Transactional;
 public interface LogoRepository extends JpaRepository<LogoEntity, Long> {
     String CACHE_LOGO = "LogoRepository#Name";
 
+    /**
+     * Load a logo.
+     *
+     * @param name name of logo to load
+     * @return loaded logo
+     */
     @Cacheable(CACHE_LOGO)
     @Transactional(readOnly = true)
     LogoEntity findByName(String name);

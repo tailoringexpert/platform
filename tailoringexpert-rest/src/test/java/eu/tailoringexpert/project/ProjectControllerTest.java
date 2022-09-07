@@ -134,7 +134,7 @@ class ProjectControllerTest {
     }
 
     @Test
-    void createProject_ValidCreateRequest_StateCreatedWithLocationHeader() throws Exception {
+    void postProject_ValidCreateRequest_StateCreatedWithLocationHeader() throws Exception {
         // arrange
         byte[] data;
         try (InputStream is = newInputStream(Paths.get("src/test/resources/screeningsheet_0d.pdf"))) {
@@ -374,7 +374,7 @@ class ProjectControllerTest {
     }
 
     @Test
-    void addTailoring_ProjectExists_StateCreatedLocationHeader() throws Exception {
+    void postTailoring_ProjectExists_StateCreatedLocationHeader() throws Exception {
         // arrange
         byte[] data;
         try (InputStream is = newInputStream(Paths.get("src/test/resources/screeningsheet_0d.pdf"))) {
@@ -416,7 +416,7 @@ class ProjectControllerTest {
     }
 
     @Test
-    void addTailoring_ProjectNotExists_StateNotFound() throws Exception {
+    void postTailoring_ProjectNotExists_StateNotFound() throws Exception {
         // arrange
         byte[] data;
         try (InputStream is = newInputStream(Paths.get("src/test/resources/screeningsheet_0d.pdf"))) {

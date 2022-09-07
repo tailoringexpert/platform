@@ -108,7 +108,7 @@ class ScreeningSheetControllerTest {
     }
 
     @Test
-    void createScreeningSheet_ScreeningSheetUploaded_StateOk() throws Exception {
+    void postScreeningSheet_ScreeningSheetUploaded_StateOk() throws Exception {
         // arrange
         PathContextBuilder pathContext = PathContext.builder();
 
@@ -144,7 +144,7 @@ class ScreeningSheetControllerTest {
     }
 
     @Test
-    void createScreeningSheet_ScreeningSheetNotCreated_StateNotFound() throws Exception {
+    void postScreeningSheet_ScreeningSheetNotCreated_StateNotFound() throws Exception {
         // arrange
         byte[] data;
         try (InputStream is = newInputStream(get("src/test/resources/screeningsheet_0d.pdf"))) {

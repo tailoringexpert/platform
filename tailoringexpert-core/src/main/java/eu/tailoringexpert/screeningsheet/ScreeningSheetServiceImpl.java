@@ -88,17 +88,17 @@ public class ScreeningSheetServiceImpl implements ScreeningSheetService {
             .collect(toList());
 
         // phasen konvertieren und an liste hinzufügen
-        List<Phase> phase = screeningSheetParameters
+        List<Phase> phases = screeningSheetParameters
             .stream()
             .filter(entry -> "phase".equalsIgnoreCase(entry.getCategory()))
             .map(entry -> Phase.fromString(entry.getName()))
             .filter(Objects::nonNull)
             .sorted(comparing(Phase::ordinal))
             .collect(toCollection(LinkedList::new));
-        if (!phase.isEmpty()) {
+        if (!phases.isEmpty()) {
             screeningSheetParameter.add(ScreeningSheetParameter.builder()
                 .category(ScreeningSheet.PHASE.substring(0, 1).toUpperCase(Locale.ROOT) + ScreeningSheet.PHASE.substring(1))
-                .value(phase)
+                .value(phases)
                 .build());
         }
 
@@ -126,11 +126,11 @@ public class ScreeningSheetServiceImpl implements ScreeningSheetService {
             .build();
     }
 
-    private Collection<Parameter> getParameter(Collection<ScreeningSheetParameterField> screeningSheetEingabeParameter) {
-        Set<String> parameterNamen = screeningSheetEingabeParameter
+    private Collection<Parameter> getParameter(Collection<ScreeningSheetParameterField> screeningSheetParameters) {
+        Set<String> parameterNames = screeningSheetParameters
             .stream()
             .map(ScreeningSheetParameterField::getName)
             .collect(toUnmodifiableSet());
-        return repository.getParameter(parameterNamen);
+        return repository.getParameter(parameterNames);
     }
 }

@@ -43,16 +43,40 @@ public interface BaseCatalogRepository extends JpaRepository<BaseCatalogEntity, 
     String CACHE_BASECATALOG = "BaseCatalogRepository#BaseCatalog";
     String CACHE_BASECATALOGLIST = "BaseCatalogRepository#BaseCatalogList";
 
+    /**
+     * Load a dedicated base catalog.
+     *
+     * @param version version of base catalog to load
+     * @return loaded base catalog
+     */
     @Cacheable(CACHE_BASECATALOG)
     BaseCatalogEntity findByVersion(String version);
 
+    /**
+     * Loads "pure" version and validities of all defined base catalogs.
+     *
+     * @return collection of base catalog versions defined in system
+     */
     @Cacheable(CACHE_BASECATALOGLIST)
     Collection<BaseCatalogVersion> findCatalogVersionBy();
 
+    /**
+     * Set the valid until date of all base catalogs where valid until is open (Null).
+     *
+     * @param pointOfTime end validity of base catalog
+     * @return number of updated base catalogs
+     */
     @Modifying
     @Query("update Catalog c set c.validUntil=:validUntil where c.validUntil is Null")
     int setValidUntilForEmptyValidUntil(@Param("validUntil") ZonedDateTime pointOfTime);
 
+    /**
+     * Save a base catalog.
+     *
+     * @param entity to save
+     * @param <S>
+     * @return saved base catalog
+     */
     @Override
     @CacheEvict(value = {CACHE_BASECATALOGLIST, CACHE_BASECATALOG}, allEntries = true)
     <S extends BaseCatalogEntity> S save(S entity);

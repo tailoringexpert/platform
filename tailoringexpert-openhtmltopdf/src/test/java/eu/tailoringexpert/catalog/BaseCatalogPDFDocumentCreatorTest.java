@@ -61,7 +61,7 @@ import static org.mockserver.model.HttpRequest.request;
 import static org.mockserver.model.HttpResponse.response;
 
 @Log4j2
-class CatalogDocumentCreatorTest {
+class BaseCatalogPDFDocumentCreatorTest {
 
     static int mockServerPort = 1080;
     static MockServerClient mockServer;
@@ -70,7 +70,7 @@ class CatalogDocumentCreatorTest {
     String assetHome;
     ObjectMapper objectMapper;
     FileSaver fileSaver;
-    BaseCatalogDocumentCreator creator;
+    BaseCatalogPDFDocumentCreator creator;
 
     @BeforeAll
     static void beforeAll() {
@@ -108,7 +108,7 @@ class CatalogDocumentCreatorTest {
 
         HTMLTemplateEngine templateEngine = new ThymeleafTemplateEngine(springTemplateEngine);
 
-        this.creator = new BaseCatalogDocumentCreator(
+        this.creator = new BaseCatalogPDFDocumentCreator(
             templateEngine,
             new PDFEngine("TailoringExpert", get(this.templateHome).toAbsolutePath().toString())
         );

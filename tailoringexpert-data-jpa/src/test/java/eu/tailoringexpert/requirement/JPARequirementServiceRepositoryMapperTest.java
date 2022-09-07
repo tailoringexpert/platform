@@ -48,7 +48,7 @@ class JPARequirementServiceRepositoryMapperTest {
     }
 
     @Test
-    void resolve_NullLogo_NullWirdZurueckgegeben() {
+    void resolve_LogoNull_NullReturned() {
         // arrange
         Logo logo = null;
 
@@ -61,7 +61,7 @@ class JPARequirementServiceRepositoryMapperTest {
     }
 
     @Test
-    void resolve_LogoUebergeben_LogoEntityWirdZurueckgegeben() {
+    void resolve_LogoNotNull_LogoEntityReturned() {
         // arrange
         Logo logo = Logo.builder().name("ECSS").build();
 

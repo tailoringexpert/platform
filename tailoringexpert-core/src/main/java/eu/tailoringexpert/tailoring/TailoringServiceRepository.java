@@ -122,7 +122,7 @@ public interface TailoringServiceRepository {
      * @param tailoring tailoring name
      * @return List of files without file data
      */
-    List<File> getFileList(String project, String tailoring);
+    Optional<List<File>> getFileList(String project, String tailoring);
 
     /**
      * Load a file.

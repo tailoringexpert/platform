@@ -45,7 +45,7 @@ class JPAScreeningSheetServiceRepositoryMapperTest {
     }
 
     @Test
-    void toDomain_MatrixDatenTyp_DoubleArrayWertWirdZurueckGegeben() {
+    void toDomain_MatrixParameterType_DoubleArrayValueReturned() {
         // arrange
         ParameterEntity entity = ParameterEntity.builder()
             .category("Einsatzort")
@@ -63,7 +63,7 @@ class JPAScreeningSheetServiceRepositoryMapperTest {
     }
 
     @Test
-    void toDomain_SkalarDatenTyp_IntegerWertWirZurueckGegeben() {
+    void toDomain_ScalarParameterTyep_IntegerValueReturned() {
         // arrange
         ParameterEntity entity = ParameterEntity.builder()
             .category("Einsatzort")

@@ -31,6 +31,12 @@ import org.springframework.data.jpa.repository.JpaRepository;
  */
 public interface DRDRepository extends JpaRepository<DRDEntity, Long> {
 
+    /**
+     * Load a DRD.
+     *
+     * @param number number of DRD to load
+     * @return loaded DRD
+     */
     DRDEntity findByNumber(String number);
 
 }

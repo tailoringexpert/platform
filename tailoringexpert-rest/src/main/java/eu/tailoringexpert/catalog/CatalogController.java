@@ -66,6 +66,7 @@ import static org.springframework.http.HttpHeaders.CONTENT_DISPOSITION;
 import static org.springframework.http.HttpStatus.BAD_REQUEST;
 import static org.springframework.http.HttpStatus.CREATED;
 import static org.springframework.http.ResponseEntity.notFound;
+import static org.springframework.http.ResponseEntity.ok;
 
 /**
  * REST-Controller for management of base catalogs.
@@ -100,7 +101,7 @@ public class CatalogController {
             responseCode = "400", description = "Catalog not imported")
     })
     @PostMapping(value = BASECATALOG, produces = {"application/hal+json"})
-    public ResponseEntity<Void> importCatalog(
+    public ResponseEntity<Void> postCatalog(
         @Parameter(description = "Base catalog to import") @RequestBody Catalog<BaseRequirement> catalog) {
         return ResponseEntity
             .status(catalogService.doImport(catalog) ? CREATED : BAD_REQUEST)
@@ -121,8 +122,7 @@ public class CatalogController {
             .map(katalog -> EntityModel.of(mapper.toResource(pathContext, katalog)))
             .collect(toList());
 
-        return ResponseEntity
-            .ok()
+        return ok()
             .body(CollectionModel.of(catalogs));
     }
 
@@ -139,8 +139,7 @@ public class CatalogController {
     public ResponseEntity<Catalog<BaseRequirement>> getCatalog(
         @Parameter(description = "Requested base catalog version") @PathVariable String version) {
         return catalogService.getCatalog(version)
-            .map(katalog -> ResponseEntity
-                .ok()
+            .map(katalog -> ok()
                 .body(katalog))
             .orElseGet(() -> notFound().build());
 
@@ -158,8 +157,7 @@ public class CatalogController {
     public ResponseEntity<byte[]> getPrintCatalog(
         @Parameter(description = "Requested base catalog version") @PathVariable String version) {
         return catalogService.createCatalog(version)
-            .map(dokument -> ResponseEntity
-                .ok()
+            .map(dokument -> ok()
                 .header(CONTENT_DISPOSITION, ContentDisposition.builder(MediaTypeProvider.FORM_DATA).name(MediaTypeProvider.ATTACHMENT).filename(dokument.getName()).build().toString())
                 .header(ACCESS_CONTROL_EXPOSE_HEADERS, CONTENT_DISPOSITION)
                 .contentType(mediaTypeProvider.apply(dokument.getType()))
@@ -185,8 +183,7 @@ public class CatalogController {
         }
 
         byte[] data = objectMapper.writeValueAsBytes(result.get());
-        return ResponseEntity
-            .ok()
+        return ok()
             .header(CONTENT_DISPOSITION, ContentDisposition.builder(MediaTypeProvider.FORM_DATA).name(MediaTypeProvider.ATTACHMENT).filename("katalog_v" + version + ".json").build().toString())
             .header(ACCESS_CONTROL_EXPOSE_HEADERS, CONTENT_DISPOSITION)
             .contentType(mediaTypeProvider.apply("json"))

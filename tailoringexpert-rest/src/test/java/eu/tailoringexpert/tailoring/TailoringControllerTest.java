@@ -392,7 +392,7 @@ class TailoringControllerTest {
     }
 
     @Test
-    void addFile_TailoringExists_StateOk() throws Exception {
+    void postFile_TailoringExists_StateOk() throws Exception {
         // arrange
         byte[] data;
         try (InputStream is = newInputStream(Paths.get("src/test/resources/screeningsheet_0d.pdf"))) {
@@ -422,15 +422,15 @@ class TailoringControllerTest {
 
         // assert
         actual
-            .andExpect(status().isCreated());
-//            .andExpect(header().string("Location", "http://localhost/project/SAMPLE/tailoring/master/document"));
+            .andExpect(status().isCreated())
+            .andExpect(header().string("Location", "http://localhost/project/SAMPLE/tailoring/master/attachment/DUMMY_CM.pdf"));
 
         verify(serviceMock, times(1)).addFile("SAMPLE", "master", "DUMMY_CM.pdf", data);
 //        assertThat(pathContextCaptor.getValue().build()).isEqualTo(PathContext.builder().project("SAMPLE").tailoring("master").build());
     }
 
     @Test
-    void addFile_TailoringNotExists_StateNotFound() throws Exception {
+    void postFile_TailoringNotExists_StateNotFound() throws Exception {
         // arrange
         byte[] data;
         try (InputStream is = newInputStream(Paths.get("src/test/resources/screeningsheet_0d.pdf"))) {
@@ -461,7 +461,7 @@ class TailoringControllerTest {
     }
 
     @Test
-    void createRequirementFile_TailoringExists_StateOkHeaderContentDisposition() throws Exception {
+    void getRequirementFile_TailoringExists_StateOkHeaderContentDisposition() throws Exception {
         // arrange
         byte[] data;
         try (InputStream is = newInputStream(Paths.get("src/test/resources/screeningsheet_0d.pdf"))) {
@@ -491,7 +491,7 @@ class TailoringControllerTest {
     }
 
     @Test
-    void createRequirementFile_TailoringNotExists_StateNoFound() throws Exception {
+    void getRequirementFile_TailoringNotExists_StateNoFound() throws Exception {
         // arrange
         given(serviceMock.createRequirementDocument("SAMPLE", "master")).willReturn(empty());
 
@@ -616,7 +616,7 @@ class TailoringControllerTest {
     }
 
     @Test
-    void updateName_AlleParameterVorhanden_StatusOKUndLinks() throws Exception {
+    void putName_TailoringExistsNewNameNotUsed_StateOk() throws Exception {
         // arrange
         TailoringInformation projektPhase = TailoringInformation.builder()
             .name("test")
@@ -645,7 +645,7 @@ class TailoringControllerTest {
     }
 
     @Test
-    void updateName_PhaseNichtVorhanden_StatusNotFound() throws Exception {
+    void putName_TailoringNotExists_StateNotFound() throws Exception {
         // arrange
         given(serviceMock.updateName("SAMPLE", "master", "test"))
             .willReturn(empty());
@@ -666,13 +666,13 @@ class TailoringControllerTest {
 
 
     @Test
-    void getAttachmentList_TailoringExist_StatusOKUndLinks() throws Exception {
+    void getAttachmentList_TailoringExist_StateOk() throws Exception {
         // arrange
         File file1 = File.builder().build();
         File file2 = File.builder().build();
 
         given(repositoryMock.getFileList("SAMPLE", "master"))
-            .willReturn(of(file1, file2));
+            .willReturn(Optional.of(of(file1, file2)));
 
         ArgumentCaptor<PathContextBuilder> pathContextCaptor = forClass(PathContextBuilder.class);
         given(mapperMock.toResource(pathContextCaptor.capture(), any(File.class)))
@@ -692,9 +692,9 @@ class TailoringControllerTest {
     }
 
     @Test
-    void getAttachmentList_ProjektUndPhaseNichtVorhanden_StatusOK() throws Exception {
+    void getAttachmentList_TailoringNotExists_StateOk() throws Exception {
         // arrange
-        given(repositoryMock.getFileList("SAMPLE", "master")).willReturn(emptyList());
+        given(repositoryMock.getFileList("SAMPLE", "master")).willReturn(empty());
 
         ArgumentCaptor<PathContextBuilder> pathContextCaptor = forClass(PathContextBuilder.class);
         given(mapperMock.toResource(pathContextCaptor.capture(), any(File.class)))
@@ -706,14 +706,14 @@ class TailoringControllerTest {
         );
 
         // assert
-        actual.andExpect(status().isOk());
+        actual.andExpect(status().isNotFound());
 
         verify(repositoryMock, times(1)).getFileList("SAMPLE", "master");
         verify(mapperMock, times(0)).toResource(pathContextCaptor.capture(), any(File.class));
     }
 
     @Test
-    void getProfile_KeineProfileVorhanden_StatusOK() throws Exception {
+    void getProfiles_NoProfilesExists_StateOk() throws Exception {
         // arrange
         given(repositoryMock.getSelectionVectorProfile()).willReturn(emptyList());
 
@@ -730,7 +730,7 @@ class TailoringControllerTest {
     }
 
     @Test
-    void getProfile_2ProfileVorhanden_StatusOK() throws Exception {
+    void getProfiles_ProfilesExists_StateOkK() throws Exception {
         // arrange
         given(repositoryMock.getSelectionVectorProfile()).willReturn(asList(
             SelectionVectorProfile.builder().build(),
@@ -790,7 +790,7 @@ class TailoringControllerTest {
     }
 
     @Test
-    void getDokument_KeinDokumentVorhanden_StatusNotFound() throws Exception {
+    void getAttachment_AttachmentNotExists_StateNotFound() throws Exception {
         // arrange
         given(repositoryMock.getFile("SAMPLE", "master", "DOCID-42.pdf")).willReturn(empty());
 
@@ -804,7 +804,7 @@ class TailoringControllerTest {
     }
 
     @Test
-    void getDokument_DokumentVorhanden_StatusOK() throws Exception {
+    void getAttachment_AttachmentExists_StateOk() throws Exception {
         // arrange
         given(repositoryMock.getFile("SAMPLE", "master", "DOCID-42.pdf")).willReturn(Optional.of(
                 File.builder()
@@ -827,7 +827,7 @@ class TailoringControllerTest {
     }
 
     @Test
-    void deleteTailoring_TailoringNichtVorhanden_StatusNotFound() throws Exception {
+    void deleteTailoring_TailoringNotExists_StateNotFound() throws Exception {
         // arrange
         given(serviceMock.deleteTailoring("SAMPLE", "master")).willReturn(empty());
 
@@ -841,7 +841,7 @@ class TailoringControllerTest {
     }
 
     @Test
-    void deleteTailoring_TailoringVorhanden_StatusOK() throws Exception {
+    void deleteTailoring_TailoringExists_StateOk() throws Exception {
         // arrange
         given(serviceMock.deleteTailoring("SAMPLE", "master")).willReturn(Optional.of(TRUE));
 
@@ -855,7 +855,7 @@ class TailoringControllerTest {
     }
 
     @Test
-    void updateAnforderungen_DateiLeer_StatusAccepted() throws Exception {
+    void postRequirements_FileEmpty_StateAccepted() throws Exception {
         // arrange
         MockMultipartFile dokument = new MockMultipartFile("datei", "DUMMY_CM.pdf",
             "text/plain", (byte[]) null);
@@ -872,7 +872,7 @@ class TailoringControllerTest {
     }
 
     @Test
-    void updateAnforderungen_DateiNichtLeer_StatusAccepted() throws Exception {
+    void postRequirements_FileNotEmpty_StateAccepted() throws Exception {
         // arrange
         MockMultipartFile dokument = new MockMultipartFile("datei", "DUMMY_CM.pdf",
             "text/plain", "Excel Import File".getBytes(UTF_8));
@@ -889,11 +889,11 @@ class TailoringControllerTest {
     }
 
     @Test
-    void getDokumente_ProjektOderTailoringNichtVorhanden_StatusNotFound() throws Exception {
+    void getDocuments_TailoringNotExists_StateNotFound() throws Exception {
         // arrange
         given(serviceMock.createDocuments("SAMPLE", "master")).willReturn(empty());
         // act
-        ResultActions actual = mockMvc.perform(get("/project/{project}/tailoring/{tailoring}/dokument", "SAMPLE", "master"));
+        ResultActions actual = mockMvc.perform(get("/project/{project}/tailoring/{tailoring}/document", "SAMPLE", "master"));
 
         // assert
         actual.andExpect(status().isNotFound());
@@ -901,7 +901,7 @@ class TailoringControllerTest {
     }
 
     @Test
-    void getDokumente_ProjektUndTailoringNichtVorhanden_StatusOKUndDate() throws Exception {
+    void getDocuments_TailoringExists_StateOk() throws Exception {
         // arrange
         byte[] data;
         // file content not important. only size of byte[]
@@ -934,12 +934,12 @@ class TailoringControllerTest {
     }
 
     @Test
-    void deleteDokument_ProjektOderTailoringOderDokumentNichtVorhanden_StatusNotFound() throws Exception {
+    void deleteAttachment_AttachmentNotExists_StateNotFound() throws Exception {
         // arrange
         given(repositoryMock.deleteFile("SAMPLE", "master", "SAMPLE-CM-4711.pdf")).willReturn(false);
         // act
         ResultActions actual = mockMvc.perform(delete(
-            "/project/{project}/tailoring/{tailoring}/document/{name}",
+            "/project/{project}/tailoring/{tailoring}/attachment/{name}",
             "SAMPLE", "master", "SAMPLE-CM-4711.pdf")
         );
 
@@ -949,7 +949,7 @@ class TailoringControllerTest {
     }
 
     @Test
-    void deleteDokument_ProjektTailoringDokumentVorhanden_StatusOkDokumentGeloescht() throws Exception {
+    void deleteAttachment_AttachmentExists_StateOk() throws Exception {
         // arrange
         given(repositoryMock.deleteFile("SAMPLE", "master", "SAMPLE-CM-4711.pdf")).willReturn(true);
         // act

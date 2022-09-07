@@ -54,7 +54,7 @@ class TenantDocumentServiceTest {
     }
 
     @Test
-    void createKatalog_MandantNichtVorhanden_EmptyWirdZurueckGegeben() {
+    void createCatalog_TenantNotExists_EmptyReturned() {
         // arrange
         TenantContext.setCurrentTenant("INVALD");
         Catalog<BaseRequirement> catalog = Catalog.<BaseRequirement>builder().build();
@@ -69,7 +69,7 @@ class TenantDocumentServiceTest {
     }
 
     @Test
-    void createKatalog_MandantVorhanden_ErgebnisDesMandantAufrufsZurueckGegeben() {
+    void createCatalog_TenantExists_TenantImplementationReturned() {
         // arrange
         TenantContext.setCurrentTenant("TENANT");
         Catalog<BaseRequirement> catalog = Catalog.<BaseRequirement>builder().build();

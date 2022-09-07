@@ -65,7 +65,7 @@ import static java.util.stream.Collectors.toCollection;
  */
 @Log4j2
 @RequiredArgsConstructor
-public class BaseCatalogDocumentCreator implements DocumentCreator {
+public class BaseCatalogPDFDocumentCreator implements DocumentCreator {
 
     @NonNull
     private HTMLTemplateEngine templateEngine;

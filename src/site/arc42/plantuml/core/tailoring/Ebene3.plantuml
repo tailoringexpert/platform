@@ -61,7 +61,7 @@ package tailoring {
         getScreeningSheetFile(project : String, tailoring : String): Optional<byte[]>
         updateDocumentSignature(project : String, tailoring : String, signature : DocumentSignature) : Optional<DocumentSignature>
         updateName(project : String, tailoring : String, name : String) : Optional<Tailoring>
-        getFileList(project : String, tailoring : String): List<File>
+        getFileList(project : String, tailoring : String): Optional<List<File>>
         getFile(project : String, tailoring : String, name : String) : Optional<File>
         deleteFile(project : String, tailoring : String, name : String) : boolean
         getSelectionVectorProfile() : Collection<SelectionVectorProfile>

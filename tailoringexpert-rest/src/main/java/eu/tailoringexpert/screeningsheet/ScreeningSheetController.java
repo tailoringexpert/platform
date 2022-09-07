@@ -70,7 +70,7 @@ public class ScreeningSheetController {
             content = @Content)
     })
     @PostMapping(value = SCREENINGSHEET, produces = {"application/hal+json"})
-    public ResponseEntity<EntityModel<ScreeningSheetResource>> createScreeningSheet(
+    public ResponseEntity<EntityModel<ScreeningSheetResource>> postScreeningSheet(
         @RequestPart("datei") MultipartFile file) throws IOException {
         return ofNullable(screeningSheetService.createScreeningSheet(file.getBytes()))
             .map(screeningSheet -> ResponseEntity

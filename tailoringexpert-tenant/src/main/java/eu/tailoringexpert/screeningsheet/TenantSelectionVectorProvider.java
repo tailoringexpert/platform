@@ -32,6 +32,11 @@ import java.util.Map;
 
 import static java.util.Objects.nonNull;
 
+/**
+ * Proxy for providing tenant implementations of {@link SelectionVectorProvider}.
+ *
+ * @author Michael Bädorf
+ */
 @RequiredArgsConstructor
 public class TenantSelectionVectorProvider implements SelectionVectorProvider {
 

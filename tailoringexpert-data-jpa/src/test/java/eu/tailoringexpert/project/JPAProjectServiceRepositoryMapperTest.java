@@ -168,7 +168,7 @@ class JPAProjectServiceRepositoryMapperTest {
         TailoringEntity tailoring = null;
 
         // act
-        TailoringInformation actual = mapper.getTailoringInformationen(tailoring);
+        TailoringInformation actual = mapper.getProjectInformationen(tailoring);
 
         // assert
         assertThat(actual).isNull();
@@ -182,7 +182,7 @@ class JPAProjectServiceRepositoryMapperTest {
             .build();
 
         // act
-        TailoringInformation actual = mapper.getTailoringInformationen(projektPhase);
+        TailoringInformation actual = mapper.getProjectInformationen(projektPhase);
 
         // assert
         assertThat(actual).isNotNull();

@@ -27,13 +27,13 @@ package project {
 
     class ProjectController {
         +getProjects() : ResponseEntity<CollectionModel<EntityModel<ProjectResource>>>
-        +createProject(version : String, request : ProjectCreationRequest) : ResponseEntity<Void>
+        +postProject(version : String, request : ProjectCreationRequest) : ResponseEntity<Void>
         +getProject(project : String): ResponseEntity<EntityModel<ProjectResource>>
         +getScreeningSheet(project : String) : ResponseEntity<EntityModel<ScreeningSheetResource>>
         +getScreeningSheetFile(project : String) : ResponseEntity<byte[]>
         +deleteProject(project : String) : ResponseEntity<Void>
         +copyProject(project : String, screeningSheet : MultipartFile) : ResponseEntity<EntityModel<ProjectResource>>
-        +addNewTailoring(project : String, request : ProjektAnlageRequest) : ResponseEntity<Void>
+        +postTailoring(project : String, request : ProjektAnlageRequest) : ResponseEntity<Void>
         +getSelectionVector(project : String) : ResponseEntity<EntityModel<SelectionVectorResource>>
     }
     ProjectController --> "1" ResourceMapper : mapper

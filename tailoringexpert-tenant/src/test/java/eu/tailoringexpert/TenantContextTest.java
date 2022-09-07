@@ -43,7 +43,7 @@ class TenantContextTest {
     }
 
     @Test
-    void registerTenant_TenantNull_TenantNichtHinzugefuegt() {
+    void registerTenant_TenantNull_TenantNotAdded() {
         // arrange
 
         // act
@@ -55,7 +55,7 @@ class TenantContextTest {
 
 
     @Test
-    void registerTenant_TenantLeerString_TenantNichtHinzugefuegt() {
+    void registerTenant_TenantEmptyString_TenantNotAdded() {
         // arrange
 
         // act
@@ -66,7 +66,7 @@ class TenantContextTest {
     }
 
     @Test
-    void registerTenant_TenantGueltig_TenantNichtHinzugefuegt() {
+    void registerTenant_TenantValid_TenantAdded() {
         // arrange
 
         // act
@@ -77,7 +77,7 @@ class TenantContextTest {
     }
 
     @Test
-    void getRegisteredTenants_KeineTenantsRegistriert_MapLeer() {
+    void getRegisteredTenants_NoTentanRegistered_EmptySet() {
         // arrange
 
         // act
@@ -87,7 +87,7 @@ class TenantContextTest {
     }
 
     @Test
-    void getRegisteredTenants_2TenantsRegistriert_MapMit2Eintraegen() {
+    void getRegisteredTenants_2TenantsRegistriered_SetContains2Tenants() {
         // arrange
 
         // act
@@ -100,7 +100,7 @@ class TenantContextTest {
     }
 
     @Test
-    void getRegisteredTenants_1TenantsDoppeltRegistriert_MapMit1Eintrag() {
+    void getRegisteredTenants_TenantRegisteredTwice_SetWithUniqueTenant() {
         // arrange
 
         // act
@@ -113,7 +113,7 @@ class TenantContextTest {
     }
 
     @Test
-    void setCurrentTenant_TenantNichtGesetzt_NullTenantGesetzt() {
+    void setCurrentTenant_TenantNotSet_CurrentTenantNull() {
         // arrange
 
         // act
@@ -123,7 +123,7 @@ class TenantContextTest {
     }
 
     @Test
-    void setCurrentTenant_TenantNull_NullTenantGesetzt() {
+    void setCurrentTenant_TenantNull_CurrentTenantNull() {
         // arrange
 
         // act
@@ -134,7 +134,7 @@ class TenantContextTest {
     }
 
     @Test
-    void setCurrentTenant_TenantMitName_NameGesetzt() {
+    void setCurrentTenant_TenantSet_TenantIsCurrentTenant() {
         // arrange
 
         // act

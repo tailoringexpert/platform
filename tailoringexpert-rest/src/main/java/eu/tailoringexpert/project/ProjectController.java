@@ -122,7 +122,7 @@ public class ProjectController {
     })
     @PostMapping(value = PROJECT_NEW, produces = {"application/hal+json"})
     @SneakyThrows
-    public ResponseEntity<Void> createProject(
+    public ResponseEntity<Void> postProject(
         @Parameter(description = "Base catalog for project creation") @PathVariable String version,
         @Parameter(description = "New project configuration data") @RequestBody ProjectCreationRequest request) {
         CreateProjectTO projekt = projectService.createProject(version, request.getScreeningSheet().getData(), request.getSelectionVector());
@@ -244,16 +244,16 @@ public class ProjectController {
             content = @Content(mediaType = "application/json+hal", schema = @Schema(implementation = Void.class)))
     })
     @PostMapping(value = TAILORINGS, produces = {"application/hal+json"})
-    public ResponseEntity<EntityModel<Void>> addNewTailoring(
+    public ResponseEntity<EntityModel<Void>> postTailoring(
         @Parameter(description = "Project identifier") @PathVariable String project,
         @RequestBody ProjectCreationRequest request) {
-        Optional<Tailoring> projektPhase = projectService.addTailoring(project, request.getCatalog(), request.getScreeningSheet().getData(), request.getSelectionVector());
-        if (projektPhase.isEmpty()) {
+        Optional<Tailoring> result = projectService.addTailoring(project, request.getCatalog(), request.getScreeningSheet().getData(), request.getSelectionVector());
+        if (result.isEmpty()) {
             return notFound()
                 .build();
         }
         return ResponseEntity
-            .created(linkTo(methodOn(TailoringController.class).getTailoring(project, projektPhase.get().getName())).toUri())
+            .created(linkTo(methodOn(TailoringController.class).getTailoring(project, result.get().getName())).toUri())
             .build();
 
     }
