@@ -33,7 +33,7 @@ activate ProjektService
 
 ProjektService -> ProjektServiceRepository : getProjekt
 activate ProjektServiceRepository
-ProjektServiceRepository -> ProjektRepository : findByKuerzel
+ProjektServiceRepository -> ProjektRepository : findByIdentifier
 activate ProjektRepository
 ProjektRepository -> db
 activate db

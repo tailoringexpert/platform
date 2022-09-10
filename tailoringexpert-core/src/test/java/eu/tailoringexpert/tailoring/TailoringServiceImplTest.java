@@ -323,7 +323,7 @@ class TailoringServiceImplTest {
             .name("master1")
             .catalog(catalog)
             .screeningSheet(ScreeningSheet.builder()
-                .parameters(asList(ScreeningSheetParameter.builder().category(ScreeningSheetDataProviderSupplier.Kuerzel.getName()).value("SAMPLE").build()))
+                .parameters(asList(ScreeningSheetParameter.builder().category(ScreeningSheetDataProviderSupplier.Identifier.getName()).value("SAMPLE").build()))
                 .build())
             .signatures(zeichnungen)
             .build();

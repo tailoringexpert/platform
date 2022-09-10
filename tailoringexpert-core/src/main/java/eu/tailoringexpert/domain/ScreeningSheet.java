@@ -25,29 +25,21 @@ import lombok.Builder;
 import lombok.Data;
 
 import java.io.Serializable;
+import java.util.Collection;
 import java.util.List;
-import java.util.Optional;
 
 @Data
 @Builder
 public class ScreeningSheet implements Serializable {
     private static final long serialVersionUID = 3465063609780635739L;
 
-    public static final String KUERZEL = "kuerzel";
-    public static final String LANGNAME = "langname";
-    public static final String KURZNAME = "kurzname";
-    public static final String IDENTIFIER = "identifier";
+    public static final String PROJECT = "project";
     public static final String PHASE = "phase";
 
     private byte[] data;
+    private String project;
     private List<ScreeningSheetParameter> parameters;
     private SelectionVector selectionVector;
+    private Collection<Phase> phases;
 
-    public String getIdentifier() {
-        Optional<ScreeningSheetParameter> result = parameters.stream()
-            .filter(parameter -> KUERZEL.equalsIgnoreCase(parameter.getCategory()))
-            .findFirst();
-
-        return result.isPresent() ? (String) result.get().getValue() : null;
-    }
 }

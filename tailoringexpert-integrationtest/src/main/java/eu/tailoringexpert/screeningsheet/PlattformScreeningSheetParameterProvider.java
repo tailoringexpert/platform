@@ -22,6 +22,7 @@
 package eu.tailoringexpert.screeningsheet;
 
 import eu.tailoringexpert.Tenant;
+import eu.tailoringexpert.domain.ScreeningSheet;
 import lombok.extern.log4j.Log4j2;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.pdmodel.interactive.form.PDCheckBox;
@@ -34,6 +35,8 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
+
+import static eu.tailoringexpert.domain.ScreeningSheet.PHASE;
 
 @Log4j2
 @Tenant("plattform")
@@ -50,16 +53,17 @@ public class PlattformScreeningSheetParameterProvider implements ScreeningSheetP
 
         List<PDField> textfelder = filterTextfelder(fields);
         Collection<ScreeningSheetParameterField> result = new ArrayList<>();
-        result.addAll(mapFields(textfelder, "Project", "Kuerzel"));
+
+        result.addAll(mapFields(textfelder, "Project", ScreeningSheet.PROJECT));
 
         List<PDField> selectedParameters = filterCheckedCheckboxes(fields);
-        result.addAll(mapFields(selectedParameters, "phase", "0"));
-        result.addAll(mapFields(selectedParameters, "phase", "A"));
-        result.addAll(mapFields(selectedParameters, "phase", "B"));
-        result.addAll(mapFields(selectedParameters, "phase", "C"));
-        result.addAll(mapFields(selectedParameters, "phase", "D"));
-        result.addAll(mapFields(selectedParameters, "phase", "E"));
-        result.addAll(mapFields(selectedParameters, "phase", "F"));
+        result.addAll(mapFields(selectedParameters, PHASE, "0"));
+        result.addAll(mapFields(selectedParameters, PHASE, "A"));
+        result.addAll(mapFields(selectedParameters, PHASE, "B"));
+        result.addAll(mapFields(selectedParameters, PHASE, "C"));
+        result.addAll(mapFields(selectedParameters, PHASE, "D"));
+        result.addAll(mapFields(selectedParameters, PHASE, "E"));
+        result.addAll(mapFields(selectedParameters, PHASE, "F"));
 
         return result;
     }
@@ -84,7 +88,7 @@ public class PlattformScreeningSheetParameterProvider implements ScreeningSheetP
         String category,
         String name) {
         return fields.stream()
-            .filter(field -> name.equals(field.getPartialName()))
+            .filter(field -> name.equalsIgnoreCase(field.getPartialName()))
             .map(field -> ScreeningSheetParameterField.builder()
                 .category(category)
                 .name(field.getPartialName())

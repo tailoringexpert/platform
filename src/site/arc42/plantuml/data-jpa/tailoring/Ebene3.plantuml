@@ -35,6 +35,7 @@ package tailoring {
         {abstract} updateTailoring(domain : Tailoring,  entity : TailoringEntity) : void
         {abstract} update(file : File, entity : FileEntity) : void
         {abstract} toScreeningSheetParameters(entity : ScreeningSheetEntity) : ScreeningSheet
+        toScreeningSheetParameters(entity : ScreeningSheetEntity, resource : ScreeningSheetBuilder) : void
         {abstract} updateDocumentSignature(domain : DokumentZeichnung, entity : DokumentZeichnungEntity) : void
         {abstract} toDomain(entity : DocumentSignatureEntity) : DocumentSignature
         {abstract} toDomain(entity : FileEntity) : File
