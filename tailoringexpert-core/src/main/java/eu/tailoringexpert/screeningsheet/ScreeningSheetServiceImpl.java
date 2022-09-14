@@ -80,6 +80,13 @@ public class ScreeningSheetServiceImpl implements ScreeningSheetService {
     @Override
     public ScreeningSheet createScreeningSheet(@NonNull byte[] rawData) {
         Collection<ScreeningSheetParameterField> screeningSheetParameters = screeningSheetParameterProvider.parse(new ByteArrayInputStream(rawData));
+
+        String identifier = screeningSheetParameters.stream()
+            .filter(parameter -> ScreeningSheet.PROJECT.equalsIgnoreCase(parameter.getName()))
+            .findFirst()
+            .map(ScreeningSheetParameterField::getLabel)
+            .orElseThrow(() -> new RuntimeException("Screeningsheet doesn't contain a project name!"));
+
         Collection<Parameter> parameters = getParameter(screeningSheetParameters);
 
         List<ScreeningSheetParameter> screeningSheetParameter = parameters
@@ -90,7 +97,7 @@ public class ScreeningSheetServiceImpl implements ScreeningSheetService {
         // phasen konvertieren und an liste hinzufügen
         List<Phase> phases = screeningSheetParameters
             .stream()
-            .filter(entry -> "phase".equalsIgnoreCase(entry.getCategory()))
+            .filter(entry -> ScreeningSheet.PHASE.equalsIgnoreCase(entry.getCategory()))
             .map(entry -> Phase.fromString(entry.getName()))
             .filter(Objects::nonNull)
             .sorted(comparing(Phase::ordinal))
@@ -107,7 +114,8 @@ public class ScreeningSheetServiceImpl implements ScreeningSheetService {
             .map(Parameter::getName)
             .collect(Collectors.toUnmodifiableList());
 
-//         Parameter, die nicht aus der DB stammen, da sie keinen Einfluss auf Berechnung Selektionsvektor haben
+
+        // all parameter not defined in db, which have no effect on calculating a selectionvector
         screeningSheetParameter.addAll(screeningSheetParameters
             .stream()
             .filter(entry -> !ScreeningSheet.PHASE.equalsIgnoreCase(entry.getCategory()) && !parameterConfigurationWithoutValues.contains(entry.getName()))
@@ -120,7 +128,9 @@ public class ScreeningSheetServiceImpl implements ScreeningSheetService {
         SelectionVector selectionVector = selectionVectorProvider.apply(parameters);
 
         return ScreeningSheet.builder()
+            .project(identifier)
             .data(rawData)
+            .phases(phases)
             .parameters(screeningSheetParameter)
             .selectionVector(selectionVector)
             .build();

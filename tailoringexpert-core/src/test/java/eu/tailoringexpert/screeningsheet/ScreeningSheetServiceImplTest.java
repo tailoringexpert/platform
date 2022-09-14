@@ -32,7 +32,6 @@ import org.mockito.ArgumentCaptor;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
@@ -171,7 +170,13 @@ class ScreeningSheetServiceImplTest {
         }
 
         given(screeningDataProviderMock.parse(any()))
-            .willReturn(new ArrayList<>());
+            .willReturn(List.of(
+                ScreeningSheetParameterField.builder()
+                    .category("Project")
+                    .name(ScreeningSheet.PROJECT)
+                    .label("Sample")
+                    .build()
+            ));
 
         given(repositoryMock.getParameter(anyCollection()))
             .willReturn(Collections.emptyList());
@@ -195,13 +200,18 @@ class ScreeningSheetServiceImplTest {
         }
         List<ScreeningSheetParameterField> screeningSheetParameters = List.of(
             ScreeningSheetParameterField.builder()
+                .category("Project")
+                .name(ScreeningSheet.PROJECT)
+                .label("Sample")
+                .build(),
+            ScreeningSheetParameterField.builder()
                 .category("Produkttyp")
                 .name("SAT")
                 .label("Satellit")
                 .build(),
             ScreeningSheetParameterField.builder()
                 .category("Project")
-                .name("Kuerzel")
+                .name("Identifier")
                 .label("DUMMY")
                 .build()
         );
@@ -223,7 +233,7 @@ class ScreeningSheetServiceImplTest {
         // assert
         assertThat(actual).isNotNull();
         assertThat(actual.getData()).isEqualTo(data);
-        assertThat(actual.getParameters()).hasSize(2);
+        assertThat(actual.getParameters()).hasSize(3);
         verify(repositoryMock, times(1)).getParameter(anyCollection());
     }
 
@@ -236,6 +246,20 @@ class ScreeningSheetServiceImplTest {
 
         // assert
         assertThat(actual).isInstanceOf(NullPointerException.class);
+        verify(repositoryMock, times(0)).getParameter(anyCollection());
+    }
+
+    @Test
+    void createScreeningSheet_ProjectNull_RuntimeExceptionThrown() throws IOException {
+        // arrange
+
+        given(screeningDataProviderMock.parse(any())).willReturn(Collections.emptyList());
+
+        // act
+        Throwable actual = catchThrowable(() -> service.createScreeningSheet(null));
+
+        // assert
+        assertThat(actual).isInstanceOf(RuntimeException.class);
         verify(repositoryMock, times(0)).getParameter(anyCollection());
     }
 

@@ -298,7 +298,7 @@ class ResourceMapperTest {
             .project("SAMPLE");
 
         ScreeningSheetParameter parameter = ScreeningSheetParameter.builder()
-            .category("Kuerzel")
+            .category("Identifier")
             .value("SAMPLE")
             .build();
 
@@ -369,7 +369,7 @@ class ResourceMapperTest {
 
 
         ScreeningSheetParameter parameter = ScreeningSheetParameter.builder()
-            .category("Kuerzel")
+            .category("Identifier")
             .value("SAMPLE")
             .build();
 
@@ -408,7 +408,7 @@ class ResourceMapperTest {
             .tailoring("master");
 
         ScreeningSheetParameter parameter = ScreeningSheetParameter.builder()
-            .category("Kuerzel")
+            .category("Identifier")
             .value("SAMPLE")
             .build();
 

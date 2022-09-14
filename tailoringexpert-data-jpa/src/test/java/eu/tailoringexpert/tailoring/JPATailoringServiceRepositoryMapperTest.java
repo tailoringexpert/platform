@@ -28,6 +28,8 @@ import eu.tailoringexpert.domain.LogoEntity;
 import eu.tailoringexpert.domain.Project;
 import eu.tailoringexpert.domain.ProjectEntity;
 import eu.tailoringexpert.domain.ScreeningSheet;
+import eu.tailoringexpert.domain.ScreeningSheetEntity;
+import eu.tailoringexpert.domain.ScreeningSheetParameterEntity;
 import eu.tailoringexpert.domain.SelectionVector;
 import eu.tailoringexpert.domain.Tailoring;
 import eu.tailoringexpert.domain.TailoringRequirement;
@@ -39,7 +41,10 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.util.Arrays;
+import java.util.List;
 
+import static eu.tailoringexpert.domain.Phase.F;
+import static eu.tailoringexpert.domain.Phase.ZERO;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
@@ -183,5 +188,86 @@ class JPATailoringServiceRepositoryMapperTest {
         assertThat(actual).isNotNull();
         assertThat(actual.getName()).isEqualTo("ECSS");
         verify(logoRepositoryMock, times(1)).findByName("ECSS");
+    }
+
+    @Test
+    void toScreeningSheetParameters_ProjectNotNull_IdentifierNotNull() {
+        // arrange
+        ScreeningSheetEntity entity = ScreeningSheetEntity.builder()
+            .parameters(List.of(
+                ScreeningSheetParameterEntity.builder()
+                    .category(ScreeningSheet.PROJECT)
+                    .value("Sample")
+                    .build()
+            ))
+            .build();
+
+        // act
+        ScreeningSheet actual = mapper.toScreeningSheetParameters(entity);
+
+        // assert
+        assertThat(actual).isNotNull();
+        assertThat(actual.getProject()).isEqualTo("Sample");
+    }
+
+    @Test
+    void toScreeningSheetParameters_ProjectNull_IdentifierNull() {
+        // arrange
+        ScreeningSheetEntity entity = ScreeningSheetEntity.builder()
+            .parameters(List.of(
+                ScreeningSheetParameterEntity.builder()
+                    .category("Project lead")
+                    .value("Someone")
+                    .build()
+            ))
+            .build();
+
+        // act
+        ScreeningSheet actual = mapper.toScreeningSheetParameters(entity);
+
+        // assert
+        assertThat(actual).isNotNull();
+        assertThat(actual.getProject()).isNull();
+    }
+
+    @Test
+    void toScreeningSheetParameters_PhasesNull_PhasesEmptyList() {
+        // arrange
+        ScreeningSheetEntity entity = ScreeningSheetEntity.builder()
+            .parameters(List.of(
+                ScreeningSheetParameterEntity.builder()
+                    .category("Project lead")
+                    .value("Someone")
+                    .build()
+            ))
+            .build();
+
+        // act
+        ScreeningSheet actual = mapper.toScreeningSheetParameters(entity);
+
+        // assert
+        assertThat(actual).isNotNull();
+        assertThat(actual.getPhases()).isEmpty();
+    }
+
+    @Test
+    void toScreeningSheetParameters_PhasesNotNull_PhasesList() {
+        // arrange
+        ScreeningSheetEntity entity = ScreeningSheetEntity.builder()
+            .parameters(List.of(
+                ScreeningSheetParameterEntity.builder()
+                    .category(ScreeningSheet.PHASE)
+                    .value(List.of("F", "ZERO"))
+                    .build()
+                ))
+            .build();
+
+        // act
+        ScreeningSheet actual = mapper.toScreeningSheetParameters(entity);
+
+        // assert
+        assertThat(actual).isNotNull();
+        assertThat(actual.getPhases()).hasSize(2);
+        assertThat(actual.getPhases()).containsExactly(ZERO, F);
     }
 }

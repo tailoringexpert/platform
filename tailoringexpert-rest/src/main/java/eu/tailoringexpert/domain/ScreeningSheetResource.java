@@ -40,14 +40,16 @@ import static java.util.Objects.nonNull;
 public class ScreeningSheetResource extends RepresentationModel<ScreeningSheetResource> {
 
     private byte[] data;
+    private String project;
     private List<ScreeningSheetParameterResource> parameters;
     private SelectionVectorResource selectionVector;
 
     @Builder
-    public ScreeningSheetResource(byte[] data, List<ScreeningSheetParameterResource> parameters, SelectionVectorResource selectionVector, List<Link> links) {
+    public ScreeningSheetResource(byte[] data, String project, List<ScreeningSheetParameterResource> parameters, SelectionVectorResource selectionVector, List<Link> links) {
         super();
 
         this.data = nonNull(data) ? data.clone() : data;
+        this.project = project;
         this.parameters = parameters;
         this.selectionVector = selectionVector;
         if (nonNull(links)) {

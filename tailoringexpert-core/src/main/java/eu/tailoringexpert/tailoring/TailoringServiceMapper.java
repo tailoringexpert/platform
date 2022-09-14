@@ -41,7 +41,6 @@ import org.mapstruct.MappingTarget;
 import java.util.Collection;
 import java.util.Set;
 
-import static eu.tailoringexpert.domain.ScreeningSheet.PHASE;
 import static java.lang.Boolean.FALSE;
 import static java.lang.Boolean.TRUE;
 import static java.util.Collections.disjoint;
@@ -89,7 +88,7 @@ public abstract class TailoringServiceMapper {
             .map(String.class::cast)
             .collect(toUnmodifiableSet());
 
-        Collection<Phase> phases = filterPhases(screeningSheet.getParameters());
+        Collection<Phase> phases = screeningSheet.getPhases();
         boolean isRelevantPhase = containsPhases(phases, baseRequirement.getPhases());
         baseRequirement.getIdentifiers()
             .stream()
@@ -107,21 +106,6 @@ public abstract class TailoringServiceMapper {
             })
             .findFirst()
             .ifPresentOrElse(applicability -> builder.selected(TRUE), () -> builder.selected(FALSE));
-    }
-
-    /**
-     * Filters phases provided in parameters
-     *
-     * @param parameters parameters to filter phases
-     * @return collection containg only phase
-     */
-    private Collection<Phase> filterPhases(Collection<ScreeningSheetParameter> parameters) {
-        return (Collection<Phase>) parameters
-            .stream()
-            .filter(parameter -> PHASE.equalsIgnoreCase(parameter.getCategory()))
-            .findFirst()
-            .orElseThrow(RuntimeException::new)
-            .getValue();
     }
 
     /**

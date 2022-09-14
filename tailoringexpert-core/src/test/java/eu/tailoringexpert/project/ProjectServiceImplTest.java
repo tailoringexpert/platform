@@ -301,7 +301,7 @@ class ProjectServiceImplTest {
         ScreeningSheet screeningSheet = ScreeningSheet.builder()
             .parameters(asList(
                 ScreeningSheetParameter.builder()
-                    .category("kuerzel")
+                    .category("identifier")
                     .value("ANDERES PROJEKT")
                     .build()
             ))
@@ -334,7 +334,7 @@ class ProjectServiceImplTest {
         ScreeningSheet screeningSheet = ScreeningSheet.builder()
             .parameters(asList(
                 ScreeningSheetParameter.builder()
-                    .category("kuerzel")
+                    .category("identifier")
                     .value("ANDERES PROJEKT")
                     .build()
             ))
@@ -372,7 +372,8 @@ class ProjectServiceImplTest {
 
         ArgumentCaptor<String> projektPhaseNameCaptor = ArgumentCaptor.forClass(String.class);
         ScreeningSheet screeningSheet = ScreeningSheet.builder()
-            .parameters(asList(ScreeningSheetParameter.builder().category(ScreeningSheetDataProviderSupplier.Kuerzel.getName()).value("SAMPLE").build()))
+            .project("SAMPLE")
+            .parameters(asList(ScreeningSheetParameter.builder().category(ScreeningSheetDataProviderSupplier.Identifier.getName()).value("SAMPLE").build()))
             .selectionVector(SelectionVector.builder().build())
             .build();
         given(screeningSheetServiceMock.createScreeningSheet(data)).willReturn(screeningSheet);
@@ -423,7 +424,8 @@ class ProjectServiceImplTest {
 
         SelectionVector selectionVector = SelectionVector.builder().build();
         ScreeningSheet screeningSheet = ScreeningSheet.builder()
-            .parameters(asList(ScreeningSheetParameter.builder().category(ScreeningSheetDataProviderSupplier.Kuerzel.getName()).value("SAMPLE").build()))
+            .project("SAMPLE")
+            .parameters(asList(ScreeningSheetParameter.builder().category(ScreeningSheetDataProviderSupplier.Identifier.getName()).value("SAMPLE").build()))
             .selectionVector(selectionVector)
             .build();
         given(screeningSheetServiceMock.createScreeningSheet(data)).willReturn(screeningSheet);
@@ -450,7 +452,7 @@ class ProjectServiceImplTest {
     }
 
     @Test
-    void copyProjekt_ProjectNotExisting_ProjectcopyNotCreated() throws IOException {
+    void copyProject_ProjectNotExisting_ProjectcopyNotCreated() throws IOException {
         // arrange
         byte[] data;
         try (InputStream is = newInputStream(get("src/test/resources/screeningsheet.pdf"))) {
@@ -469,7 +471,7 @@ class ProjectServiceImplTest {
     }
 
     @Test
-    void copyProjekt_ProjectExists_ProjectcopyCreated() throws IOException {
+    void copyProject_ProjectExists_ProjectcopyCreated() throws IOException {
         // arrange
         byte[] data = newInputStream(get("src/test/resources/screeningsheet.pdf")).readAllBytes();
 
@@ -499,11 +501,11 @@ class ProjectServiceImplTest {
 
         given(screeningSheetServiceMock.createScreeningSheet(data))
             .willReturn(ScreeningSheet.builder()
-                .parameters(asList(ScreeningSheetParameter.builder().category(ScreeningSheetDataProviderSupplier.Kuerzel.getName()).value("H3SAT").build()))
+                .parameters(asList(ScreeningSheetParameter.builder().category(ScreeningSheetDataProviderSupplier.Identifier.getName()).value("H3SAT").build()))
                 .build());
 
-        ArgumentCaptor<Project> projektKopieCaptor = ArgumentCaptor.forClass(Project.class);
-        given(repositoryMock.createProject(projektKopieCaptor.capture()))
+        ArgumentCaptor<Project> projectCopyCaptor = ArgumentCaptor.forClass(Project.class);
+        given(repositoryMock.createProject(projectCopyCaptor.capture()))
             .willAnswer(invocation -> invocation.getArgument(0));
 
         // act
@@ -511,6 +513,6 @@ class ProjectServiceImplTest {
 
         // assert
         assertThat(actual).isPresent();
-        assertThat(projektKopieCaptor.getValue().getTailorings()).hasSize(2);
+        assertThat(projectCopyCaptor.getValue().getTailorings()).hasSize(2);
     }
 }

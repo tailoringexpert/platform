@@ -142,7 +142,7 @@ class ComparisonPDFDocumentCreatorTest {
                 .build(),
 
             ScreeningSheetParameter.builder()
-                .category("Kuerzel")
+                .category("Identifier")
                 .value("DUMMY")
                 .build(),
             ScreeningSheetParameter.builder()

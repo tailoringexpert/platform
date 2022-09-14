@@ -50,6 +50,6 @@ public class Project implements Serializable {
 
     public void setScreeningSheet(ScreeningSheet screeningSheet) {
         this.screeningSheet = screeningSheet;
-        this.identifier = this.screeningSheet.getIdentifier();
+        this.identifier = this.screeningSheet.getProject();
     }
 }

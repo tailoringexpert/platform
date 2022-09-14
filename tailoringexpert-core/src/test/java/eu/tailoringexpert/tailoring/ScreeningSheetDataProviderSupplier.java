@@ -33,7 +33,7 @@ public enum ScreeningSheetDataProviderSupplier {
     ProgrammatischeBewertung("programmatischebewertung"),
     Langname("langname"),
     Kurzname("kurzname"),
-    Kuerzel("kuerzel"),
+    Identifier("identifier"),
     Projektleiter("projektleiter"),
     Abteilung("abteilung"),
     Phase("phase");

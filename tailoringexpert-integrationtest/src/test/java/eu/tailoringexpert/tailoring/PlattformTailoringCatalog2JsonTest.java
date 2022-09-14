@@ -94,10 +94,10 @@ class PlattformTailoringCatalog2JsonTest {
         }
 
         SelectionVector selectionVector = screeningSheetService.calculateSelectionVector(data);
-        CreateProjectTO projekt = projectService.createProject("8.2.1", data, selectionVector);
+        CreateProjectTO project = projectService.createProject("8.2.1", data, selectionVector);
 
         // act
-        Optional<Catalog<TailoringRequirement>> actual = projektPhaseService.getCatalog(projekt.getProject(), projekt.getTailoring());
+        Optional<Catalog<TailoringRequirement>> actual = projektPhaseService.getCatalog(project.getProject(), project.getTailoring());
 
         // assert
         assertThat(actual).isPresent();
