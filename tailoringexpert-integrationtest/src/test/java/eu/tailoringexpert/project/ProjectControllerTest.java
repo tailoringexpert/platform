@@ -50,6 +50,7 @@ import org.springframework.web.context.request.ServletRequestAttributes;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.List;
 
 import static eu.tailoringexpert.domain.Phase.A;
 import static eu.tailoringexpert.domain.Phase.B;
@@ -73,7 +74,7 @@ class ProjectControllerTest {
     private DBSetupRunner dbSetupRunner;
 
     @Autowired
-    private ProjectCreator projektCreator;
+    private ProjectCreator projectCreator;
 
     @Autowired
     private ProjectController controller;
@@ -95,7 +96,7 @@ class ProjectControllerTest {
     @DirtiesContext
     void getProjects_ProjectsExists_ProjectListWitStateOKReturned() {
         // arrange
-        projektCreator.get();
+        projectCreator.get();
 
         // act
         ResponseEntity<CollectionModel<EntityModel<ProjectResource>>> actual = controller.getProjects();
@@ -130,6 +131,7 @@ class ProjectControllerTest {
 
         ProjectCreationRequest request = ProjectCreationRequest.builder()
             .screeningSheet(ScreeningSheet.builder()
+                .phases(List.of(ZERO, A, B, C, D))
                 .data(data)
                 .selectionVector(selectionVector)
                 .build())
@@ -147,7 +149,7 @@ class ProjectControllerTest {
     @DirtiesContext
     void getProject_ProjectExists_ProjectWithStateOKReturned() throws IOException {
         // arrange
-        CreateProjectTO createdProject = projektCreator.get();
+        CreateProjectTO createdProject = projectCreator.get();
 
         // act
         ResponseEntity<EntityModel<ProjectResource>> actual = controller.getProject(createdProject.getProject());
@@ -161,7 +163,7 @@ class ProjectControllerTest {
     @DirtiesContext
     void getScreeningSheet_ProjectScreeningSheetExists_ScreeningSheetValueWithoutRawDataReturned() throws IOException {
         // arrange
-        CreateProjectTO createdProject = projektCreator.get();
+        CreateProjectTO createdProject = projectCreator.get();
 
         // act
         ResponseEntity<EntityModel<ScreeningSheetResource>> actual = controller.getScreeningSheet(createdProject.getProject());
@@ -180,7 +182,7 @@ class ProjectControllerTest {
     @DirtiesContext
     void getScreeningSheetFile_ProjectScreeningSheetExists_FileRawDataWithStateOKReturned() throws IOException {
         // arrange
-        CreateProjectTO createdProject = projektCreator.get();
+        CreateProjectTO createdProject = projectCreator.get();
 
         byte[] data;
         try (InputStream is = newInputStream(get("src/test/resources/screeningsheet.pdf"))) {
@@ -202,7 +204,7 @@ class ProjectControllerTest {
     @DirtiesContext
     void deleteProject_ProjectExists_ProjectDeletedStateNoContentReturned() throws IOException {
         // arrange
-        CreateProjectTO createdProject = projektCreator.get();
+        CreateProjectTO createdProject = projectCreator.get();
 
         // act
         ResponseEntity<EntityModel<Void>> actual = controller.deleteProject(createdProject.getProject());
@@ -217,7 +219,7 @@ class ProjectControllerTest {
     @DirtiesContext
     void copyProject_ProjectToCopyExists_ProjectCopyiedStateCreatedReturned() throws IOException {
         // arrange
-        CreateProjectTO createdProject = projektCreator.get();
+        CreateProjectTO createdProject = projectCreator.get();
 
         byte[] data;
         try (InputStream is = newInputStream(get("src/test/resources/screeningsheet2.pdf"))) {
@@ -241,7 +243,7 @@ class ProjectControllerTest {
     @DirtiesContext
     void addNewTailoring_ProjectExists_TailoringCreatedAddedToProjectStateOKReturned() throws IOException {
         // arrange
-        CreateProjectTO createdProject = projektCreator.get();
+        CreateProjectTO createdProject = projectCreator.get();
 
         byte[] data;
         try (InputStream is = newInputStream(get("src/test/resources/screeningsheet.pdf"))) {
@@ -289,7 +291,7 @@ class ProjectControllerTest {
     @DirtiesContext
     void getSelectionVector_ProjectExists_SelectionVectorStateOKReturned() throws IOException {
         // arrange
-        CreateProjectTO createdProject = projektCreator.get();
+        CreateProjectTO createdProject = projectCreator.get();
 
         // act
         ResponseEntity<EntityModel<SelectionVectorResource>> actual = controller.getSelectionVector(createdProject.getProject());

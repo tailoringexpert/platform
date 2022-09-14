@@ -28,21 +28,30 @@ import eu.tailoringexpert.domain.DocumentSignatureEntity;
 import eu.tailoringexpert.domain.File;
 import eu.tailoringexpert.domain.Logo;
 import eu.tailoringexpert.domain.LogoEntity;
+import eu.tailoringexpert.domain.Phase;
 import eu.tailoringexpert.domain.Project;
 import eu.tailoringexpert.domain.ProjectEntity;
 import eu.tailoringexpert.domain.ScreeningSheet;
+import eu.tailoringexpert.domain.ScreeningSheet.ScreeningSheetBuilder;
 import eu.tailoringexpert.domain.ScreeningSheetEntity;
+import eu.tailoringexpert.domain.ScreeningSheetParameterEntity;
 import eu.tailoringexpert.domain.SelectionVectorProfile;
 import eu.tailoringexpert.domain.SelectionVectorProfileEntity;
 import eu.tailoringexpert.domain.Tailoring;
 import eu.tailoringexpert.domain.TailoringEntity;
 import eu.tailoringexpert.repository.LogoRepository;
 import lombok.Setter;
+import org.mapstruct.AfterMapping;
 import org.mapstruct.BeanMapping;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;
 
+import java.util.Collection;
+import java.util.LinkedList;
+import java.util.stream.Collectors;
+
+import static java.util.Comparator.comparing;
 import static java.util.Objects.nonNull;
 
 /**
@@ -73,6 +82,25 @@ public abstract class JPATailoringServiceRepositoryMapper {
     @Mapping(target = "parameters", source = "entity.parameters")
     abstract ScreeningSheet toScreeningSheetParameters(ScreeningSheetEntity entity);
 
+    @AfterMapping
+    void toScreeningSheetParameters(ScreeningSheetEntity entity, @MappingTarget ScreeningSheetBuilder resource) {
+        entity.getParameters()
+            .stream()
+            .filter(parameter -> ScreeningSheet.PROJECT.equalsIgnoreCase(parameter.getCategory()))
+            .findFirst()
+            .ifPresent(parameter -> resource.project(parameter.getValue().toString()));
+
+        resource.phases((Collection<Phase>) entity.getParameters()
+            .stream()
+            .filter(parameter -> ScreeningSheet.PHASE.equalsIgnoreCase(parameter.getCategory()))
+            .map(ScreeningSheetParameterEntity::getValue)
+            .map(Collection.class::cast)
+            .flatMap(Collection::stream)
+            .map(phase -> Phase.valueOf((String) phase))
+            .sorted(comparing(Phase::ordinal))
+            .collect(Collectors.toCollection(LinkedList::new)));
+    }
+
     abstract void updateDocumentSignature(DocumentSignature domain, @MappingTarget DocumentSignatureEntity entity);
 
     abstract DocumentSignature toDomain(DocumentSignatureEntity entity);
@@ -88,4 +116,6 @@ public abstract class JPATailoringServiceRepositoryMapper {
     LogoEntity resolve(Logo domain) {
         return nonNull(domain) ? logoRepository.findByName(domain.getName()) : null;
     }
+
+
 }

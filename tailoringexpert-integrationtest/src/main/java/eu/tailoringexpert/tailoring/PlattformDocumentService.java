@@ -88,11 +88,11 @@ public class PlattformDocumentService implements DocumentService {
     @Override
     public Optional<File> createComparisonDocument(Tailoring tailoring, LocalDateTime creationTimestamp) {
         Map<String, String> platzhalter = new HashMap<>();
-        platzhalter.put(PARAMETER_PROJEKT, tailoring.getScreeningSheet().getIdentifier());
+        platzhalter.put(PARAMETER_PROJEKT, tailoring.getScreeningSheet().getProject());
         platzhalter.put(PARAMETER_DATUM, creationTimestamp.format(DateTimeFormatter.ofPattern(PATTERN_DATUM)));
 
         String docId = String.format("%s-AR-ZS-DLR-%s-DV-Tailoring-Diffs",
-            tailoring.getScreeningSheet().getIdentifier(),
+            tailoring.getScreeningSheet().getProject(),
             tailoring.getIdentifier());
         File dokument = comparisionDocumentCreator.createDocument(docId, tailoring, platzhalter);
 
@@ -116,14 +116,14 @@ public class PlattformDocumentService implements DocumentService {
 
     Optional<File> createDRDDokument(Tailoring tailoring, LocalDateTime currentTime) {
         Map<String, String> platzhalter = new HashMap<>();
-        platzhalter.put(PARAMETER_PROJEKT, tailoring.getScreeningSheet().getIdentifier());
+        platzhalter.put(PARAMETER_PROJEKT, tailoring.getScreeningSheet().getProject());
         platzhalter.put(PARAMETER_DATUM, currentTime.format(DateTimeFormatter.ofPattern(PATTERN_DATUM)));
         platzhalter.put(PARAMETER_DOKUMENT, String.format("%s-AR-ZS-DLR-%s-DV",
-            tailoring.getScreeningSheet().getIdentifier(),
+            tailoring.getScreeningSheet().getProject(),
             tailoring.getIdentifier()));
 
         String docId = String.format(FORMAT_BASIS_DATEINAME,
-            tailoring.getScreeningSheet().getIdentifier(),
+            tailoring.getScreeningSheet().getProject(),
             tailoring.getIdentifier(),
             "DRD");
         File dokument = drdDocumentCreator.createDocument(docId, tailoring, platzhalter);
@@ -133,22 +133,22 @@ public class PlattformDocumentService implements DocumentService {
 
     Optional<File> createCMDokument(Tailoring tailoring, LocalDateTime currentTime) {
         String docId = String.format(FORMAT_BASIS_DATEINAME,
-            tailoring.getScreeningSheet().getIdentifier(),
+            tailoring.getScreeningSheet().getProject(),
             tailoring.getIdentifier(),
             "CM");
 
         String katalogDocId = String.format(FORMAT_BASIS_DATEINAME,
-            tailoring.getScreeningSheet().getIdentifier(),
+            tailoring.getScreeningSheet().getProject(),
             tailoring.getIdentifier(),
             "Product Assurance Safety Sustainability Requirements");
 
         String drdDocId = String.format(FORMAT_BASIS_DATEINAME,
-            tailoring.getScreeningSheet().getIdentifier(),
+            tailoring.getScreeningSheet().getProject(),
             tailoring.getIdentifier(),
             "DRD");
 
         Map<String, String> platzhalter = new HashMap<>();
-        platzhalter.put(PARAMETER_PROJEKT, tailoring.getScreeningSheet().getIdentifier());
+        platzhalter.put(PARAMETER_PROJEKT, tailoring.getScreeningSheet().getProject());
         platzhalter.put(PARAMETER_DATUM, currentTime.format(DateTimeFormatter.ofPattern(PATTERN_DATUM)));
         platzhalter.put(PARAMETER_DOKUMENT, docId);
         platzhalter.put("KATALOG_DOCID", katalogDocId);
@@ -162,11 +162,11 @@ public class PlattformDocumentService implements DocumentService {
 
     Optional<File> createCMSpreadsheetDokument(Tailoring tailoring, LocalDateTime currentTime) {
         Map<String, String> platzhalter = new HashMap<>();
-        platzhalter.put(PARAMETER_PROJEKT, tailoring.getScreeningSheet().getIdentifier());
+        platzhalter.put(PARAMETER_PROJEKT, tailoring.getScreeningSheet().getProject());
         platzhalter.put(PARAMETER_DATUM, currentTime.format(DateTimeFormatter.ofPattern(PATTERN_DATUM)));
 
         String docId = String.format(FORMAT_BASIS_DATEINAME,
-            tailoring.getScreeningSheet().getIdentifier(),
+            tailoring.getScreeningSheet().getProject(),
             tailoring.getIdentifier(),
             "CM");
 
@@ -178,11 +178,11 @@ public class PlattformDocumentService implements DocumentService {
 
     Optional<File> createTailoringRequirementDokument(Tailoring tailoring, LocalDateTime currentTime) {
         Map<String, String> platzhalter = new HashMap<>();
-        platzhalter.put(PARAMETER_PROJEKT, tailoring.getScreeningSheet().getIdentifier());
+        platzhalter.put(PARAMETER_PROJEKT, tailoring.getScreeningSheet().getProject());
         platzhalter.put(PARAMETER_DATUM, currentTime.format(DateTimeFormatter.ofPattern(PATTERN_DATUM)));
 
         String docId = String.format(FORMAT_BASIS_DATEINAME,
-            tailoring.getScreeningSheet().getIdentifier(),
+            tailoring.getScreeningSheet().getProject(),
             tailoring.getIdentifier(),
             "CONFIG");
 
@@ -194,23 +194,23 @@ public class PlattformDocumentService implements DocumentService {
 
     Optional<File> createTailoringRequirementDocument(Tailoring tailoring, LocalDateTime currentTime, boolean internal) {
         String docId = String.format(FORMAT_BASIS_DATEINAME,
-            tailoring.getScreeningSheet().getIdentifier(),
+            tailoring.getScreeningSheet().getProject(),
             tailoring.getIdentifier(),
             "Product Assurance Safety Sustainability Requirements");
 
         String drdDocId = String.format(FORMAT_BASIS_DATEINAME,
-            tailoring.getScreeningSheet().getIdentifier(),
+            tailoring.getScreeningSheet().getProject(),
             tailoring.getIdentifier(),
             "DRD");
 
         Map<String, String> platzhalter = new HashMap<>();
-        platzhalter.put(PARAMETER_PROJEKT, tailoring.getScreeningSheet().getIdentifier());
+        platzhalter.put(PARAMETER_PROJEKT, tailoring.getScreeningSheet().getProject());
         platzhalter.put(PARAMETER_DATUM, currentTime.format(DateTimeFormatter.ofPattern(PATTERN_DATUM)));
         platzhalter.put(PARAMETER_DRD_DOCID, drdDocId);
         platzhalter.put(PARAMETER_SHOWALL, Boolean.toString(internal));
 
         platzhalter.put(PARAMETER_DOKUMENT, String.format("%s-AR-ZS-DLR-%s-DV",
-            tailoring.getScreeningSheet().getIdentifier(),
+            tailoring.getScreeningSheet().getProject(),
             tailoring.getIdentifier())
         );
 

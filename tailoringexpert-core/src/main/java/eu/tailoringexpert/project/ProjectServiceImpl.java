@@ -70,12 +70,12 @@ public class ProjectServiceImpl implements ProjectService {
 
         Project project = repository.createProject(Project.builder()
             .screeningSheet(screeningSheet)
-            .identifier(screeningSheet.getIdentifier())
+            .identifier(screeningSheet.getProject())
             .tailoring(tailoring)
             .build()
         );
 
-        log.info("Project {} with phases {} created with catalog {}", screeningSheet.getIdentifier(), tailoring.getPhases(), catalogVersion);
+        log.info("Project {} with phases {} created with catalog {}", screeningSheet.getProject(), tailoring.getPhases(), catalogVersion);
         return CreateProjectTO.builder()
             .project(project.getIdentifier())
             .tailoring(tailoring.getName())
@@ -115,8 +115,8 @@ public class ProjectServiceImpl implements ProjectService {
 
         ScreeningSheet screeningSheet = screeningSheetService.createScreeningSheet(screeningSheetData);
         // nur hinzufüegen, wenn "richtiges" Project
-        if (!project.equals(screeningSheet.getIdentifier())) {
-            log.error("ABORTED  | screeningsheet defines phase of project {} instead of {}", screeningSheet.getIdentifier(), project);
+        if (!project.equals(screeningSheet.getProject())) {
+            log.error("ABORTED  | screeningsheet defines phase of project {} instead of {}", screeningSheet.getProject(), project);
             return empty();
         }
 
@@ -168,7 +168,7 @@ public class ProjectServiceImpl implements ProjectService {
 
         ScreeningSheet screeningSheet = screeningSheetService.createScreeningSheet(screeningSheetData);
         projectCopy.setScreeningSheet(screeningSheet);
-        projectCopy.setIdentifier(screeningSheet.getIdentifier());
+        projectCopy.setIdentifier(screeningSheet.getProject());
 
         projectCopy.getTailorings()
             .forEach(tailorings -> {
@@ -177,7 +177,7 @@ public class ProjectServiceImpl implements ProjectService {
             });
 
         Optional<Project> result = of(repository.createProject(projectCopy));
-        log.info("FINISHED | project {} copied to {}", project, screeningSheet.getIdentifier());
+        log.info("FINISHED | project {} copied to {}", project, screeningSheet.getProject());
         return result;
     }
 }

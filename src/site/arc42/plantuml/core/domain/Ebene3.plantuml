@@ -82,11 +82,14 @@ package domain {
     }
 
     class ScreeningSheet {
+        +{static} PROJECT : String = "project"
+        +{static} PHASE : String = "phase"
         data : byte[]
-        getIdentifier() : String
+        project : String
     }
     ScreeningSheet --> "1" SelectionVector : selectionsVector
     ScreeningSheet -->  "0..*" ScreeningSheetParameter : parameters
+    ScreeningSheet -->  "0..*" Phase : phases
 
     class File {
         name : String
