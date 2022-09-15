@@ -21,6 +21,7 @@
  */
 package eu.tailoringexpert.screeningsheet;
 
+import eu.tailoringexpert.TailoringexpertException;
 import eu.tailoringexpert.domain.Parameter;
 import eu.tailoringexpert.domain.Phase;
 import eu.tailoringexpert.domain.ScreeningSheet;
@@ -81,11 +82,12 @@ public class ScreeningSheetServiceImpl implements ScreeningSheetService {
     public ScreeningSheet createScreeningSheet(@NonNull byte[] rawData) {
         Collection<ScreeningSheetParameterField> screeningSheetParameters = screeningSheetParameterProvider.parse(new ByteArrayInputStream(rawData));
 
-        String identifier = screeningSheetParameters.stream()
+        String project = screeningSheetParameters.stream()
             .filter(parameter -> ScreeningSheet.PROJECT.equalsIgnoreCase(parameter.getName()))
             .findFirst()
             .map(ScreeningSheetParameterField::getLabel)
-            .orElseThrow(() -> new RuntimeException("Screeningsheet doesn't contain a project name!"));
+            .filter(label -> !label.isEmpty())
+            .orElseThrow(() -> new TailoringexpertException("Screeningsheet doesn't contain a project name!"));
 
         Collection<Parameter> parameters = getParameter(screeningSheetParameters);
 
@@ -128,7 +130,7 @@ public class ScreeningSheetServiceImpl implements ScreeningSheetService {
         SelectionVector selectionVector = selectionVectorProvider.apply(parameters);
 
         return ScreeningSheet.builder()
-            .project(identifier)
+            .project(project)
             .data(rawData)
             .phases(phases)
             .parameters(screeningSheetParameter)

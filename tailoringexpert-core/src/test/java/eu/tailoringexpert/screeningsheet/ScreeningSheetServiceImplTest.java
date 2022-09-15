@@ -21,6 +21,7 @@
  */
 package eu.tailoringexpert.screeningsheet;
 
+import eu.tailoringexpert.TailoringexpertException;
 import eu.tailoringexpert.domain.Parameter;
 import eu.tailoringexpert.domain.ScreeningSheet;
 import eu.tailoringexpert.domain.ScreeningSheetParameter;
@@ -250,16 +251,16 @@ class ScreeningSheetServiceImplTest {
     }
 
     @Test
-    void createScreeningSheet_ProjectNull_RuntimeExceptionThrown() throws IOException {
+    void createScreeningSheet_ProjectNull_TailoringexpertExceptionThrown() {
         // arrange
 
         given(screeningDataProviderMock.parse(any())).willReturn(Collections.emptyList());
 
         // act
-        Throwable actual = catchThrowable(() -> service.createScreeningSheet(null));
+        Throwable actual = catchThrowable(() -> service.createScreeningSheet(new byte[0]));
 
         // assert
-        assertThat(actual).isInstanceOf(RuntimeException.class);
+        assertThat(actual).isInstanceOf(TailoringexpertException.class);
         verify(repositoryMock, times(0)).getParameter(anyCollection());
     }
 

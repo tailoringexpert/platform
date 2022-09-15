@@ -29,12 +29,20 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 
 import java.util.Arrays;
 
+import static org.springframework.http.HttpStatus.PRECONDITION_FAILED;
+
 /**
  * Advice für die Behandlung von Exceptions in Tailoring RestController.
  */
 @ControllerAdvice
 @Log4j2
 public class ExceptionHandlerAdvice {
+
+    @ExceptionHandler(TailoringexpertException.class)
+    public ResponseEntity<String> handleException(TailoringexpertException e) {
+        log.catching(e);
+        return ResponseEntity.status(PRECONDITION_FAILED).body(e.getMessage());
+    }
 
     /**
      * Behandlung einer Exception vom Typ {@link ResourceException}.
