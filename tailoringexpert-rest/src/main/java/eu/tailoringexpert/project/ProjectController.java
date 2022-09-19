@@ -125,9 +125,10 @@ public class ProjectController {
     public ResponseEntity<Void> postProject(
         @Parameter(description = "Base catalog for project creation") @PathVariable String version,
         @Parameter(description = "New project configuration data") @RequestBody ProjectCreationRequest request) {
-        CreateProjectTO projekt = projectService.createProject(version, request.getScreeningSheet().getData(), request.getSelectionVector());
+        CreateProjectTO project = projectService.createProject(version, request.getScreeningSheet().getData(), request.getSelectionVector(), request.getNote());
+
         return ResponseEntity
-            .created(mapper.createLink(ResourceMapper.REL_SELF, linkToCurrentMapping().toString(), PROJECT, Map.of("project", projekt.getProject())).toUri())
+            .created(mapper.createLink(ResourceMapper.REL_SELF, linkToCurrentMapping().toString(), PROJECT, Map.of("project", project.getProject())).toUri())
             .build();
     }
 

@@ -19,8 +19,8 @@ package project {
     CreateProjectTO --> "1" SelectionVector : selectionVector
 
     interface ProjectService {
-        createProject(catalog : String, screeningSheet : byte[], applicableSelectionVector : SelectionVector) : CreateProjectTO
-        addTailoring(project : String, catalog : String, screeningSheetData : byte[], applicableSelectionVector : SelectionVector) : Optional<Tailoring>
+        createProject(catalog : String, screeningSheet : byte[], applicableSelectionVector : SelectionVector, note : String) : CreateProjectTO
+        addTailoring(project : String, catalog : String, screeningSheetData : byte[], applicableSelectionVector : SelectionVector, note : String) : Optional<Tailoring>
         copyProject(project : String, screeningSheet: byte[]) : Optional<Project>
         deleteProject(project : String) : boolean
     }

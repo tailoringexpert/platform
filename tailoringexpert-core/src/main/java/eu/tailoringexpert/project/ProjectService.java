@@ -42,7 +42,7 @@ public interface ProjectService {
      * @param applicableSelectionVector electionvector to use for making requirements applicable
      * @return Minimal data of created project
      */
-    CreateProjectTO createProject(String catalog, byte[] screeningSheet, SelectionVector applicableSelectionVector);
+    CreateProjectTO createProject(String catalog, byte[] screeningSheet, SelectionVector applicableSelectionVector, String note);
 
     /**
      * Create a new tailoring and adds to project.

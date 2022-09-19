@@ -25,20 +25,35 @@ import lombok.Builder;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Value;
+import org.springframework.hateoas.Link;
 import org.springframework.hateoas.RepresentationModel;
 import org.springframework.hateoas.server.core.Relation;
 
-import java.util.Map;
+import java.util.List;
+
+import static java.util.Objects.nonNull;
 
 @Value
 @Getter
-@Builder
 @EqualsAndHashCode(callSuper = false)
-@Relation(itemRelation = "selectionVectorProfile", collectionRelation = "selectionVectorProfiles")
-public class SelectionVectorProfileResource extends RepresentationModel<SelectionVectorProfileResource> {
+@Relation(itemRelation = "note", collectionRelation = "notes")
+public class NoteResource extends RepresentationModel<NoteResource> {
 
-    private String name;
-    private Map<String, Integer> levels;
+    Integer number;
+    String text;
+    String creationTimestamp;
+
+    @Builder
+    public NoteResource(Integer number, String text, String creationTimestamp, List<Link> links) {
+        super();
+
+        this.number = number;
+        this.text = text;
+        this.creationTimestamp = creationTimestamp;
+
+        if (nonNull(links)) {
+            add(links);
+        }
+    }
 
 }
-

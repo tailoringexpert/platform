@@ -41,6 +41,7 @@ package tailoring {
         {abstract} toDomain(entity : FileEntity) : File
         {abstract} toDomain(entity : SelektionVectorProfileEntity) : SelectionVectorProfile
         {abstract} getDefaultSignatures(entity : DocumentSigneeEntity) : DocumentSignee
+        {abstract} toEntity(entity : Note) : NoteEntity
         resolve(domain: Logo) : LogoEntity
     }
     JPAProjektServiceRepositoryMapper -->  "1" LogoRepository : logoRepository

@@ -149,7 +149,7 @@ class ProjectControllerTest {
             .selectionVector(selectionVector)
             .build();
 
-        given(projectServiceMock.createProject("8.2.1", data, selectionVector)).willReturn(createProject);
+        given(projectServiceMock.createProject("8.2.1", data, selectionVector, null)).willReturn(createProject);
 
         ProjectCreationRequest anlageRequest = ProjectCreationRequest.builder()
             .screeningSheet(ScreeningSheet.builder()
@@ -178,7 +178,7 @@ class ProjectControllerTest {
             .andExpect(status().isCreated())
             .andExpect(header().string("Location", "http://localhost/project/SAMPLE"));
 
-        verify(projectServiceMock, times(1)).createProject("8.2.1", data, selectionVector);
+        verify(projectServiceMock, times(1)).createProject("8.2.1", data, selectionVector, null);
     }
 
 

@@ -32,6 +32,8 @@ import eu.tailoringexpert.domain.FileResource;
 import eu.tailoringexpert.domain.DocumentSignatureResource;
 import eu.tailoringexpert.domain.File;
 import eu.tailoringexpert.domain.DocumentSignature;
+import eu.tailoringexpert.domain.Note;
+import eu.tailoringexpert.domain.NoteResource;
 import eu.tailoringexpert.domain.SelectionVectorProfileResource;
 import eu.tailoringexpert.domain.TailoringCatalogResource;
 import eu.tailoringexpert.domain.PathContext;
@@ -70,6 +72,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Paths;
 import java.text.SimpleDateFormat;
+import java.util.List;
 import java.util.Optional;
 import java.util.function.Function;
 
@@ -960,6 +963,85 @@ class TailoringControllerTest {
 
         // assert
         actual.andExpect(status().isOk());
+        assertThatNoException();
+    }
+
+    @Test
+    void getNotes_TailoringNotExists_StateNotFound() throws Exception {
+        // arrange
+        given(serviceMock.getNotes("SAMPLE", "master")).willReturn(empty());
+
+        ArgumentCaptor<PathContextBuilder> pathContextCaptor = forClass(PathContextBuilder.class);
+
+        // act
+        ResultActions actual = mockMvc.perform(get("/project/{project}/tailoring/{tailoring}/note", "SAMPLE", "master")
+            .contentType(APPLICATION_JSON)
+            .accept(HAL_JSON_VALUE)
+        );
+
+        // assert
+        actual.andExpect(status().isNotFound());
+        verify(serviceMock, times(1)).getNotes("SAMPLE", "master");
+        verify(mapperMock, times(0)).toResource(pathContextCaptor.capture(), any(Note.class));
+    }
+
+    @Test
+    void getNotes_TailoringExists_StateOk() throws Exception {
+        // arrange
+        Note note = Note.builder().number(1).build();
+        given(serviceMock.getNotes("SAMPLE", "master")).willReturn(Optional.of(of(note)));
+        ArgumentCaptor<PathContextBuilder> pathContextCaptor = forClass(PathContextBuilder.class);
+        given(mapperMock.toResource(pathContextCaptor.capture(), eq(note)))
+            .willReturn(NoteResource.builder().build());
+
+        // act
+        ResultActions actual = mockMvc.perform(get("/project/{project}/tailoring/{tailoring}/note", "SAMPLE", "master")
+            .contentType(APPLICATION_JSON)
+            .accept(HAL_JSON_VALUE)
+        );
+
+        // assert
+        actual.andExpect(status().isOk());
+        verify(serviceMock, times(1)).getNotes("SAMPLE", "master");
+        verify(mapperMock, times(1)).toResource(pathContextCaptor.capture(), eq(note));
+    }
+
+    @Test
+    void getNote_NoteExists_StateOk() throws Exception {
+        // arrange
+        Note note = Note.builder().number(1).build();
+
+        given(serviceMock.getNote("SAMPLE", "master", 1)).willReturn(Optional.of(note));
+
+        ArgumentCaptor<PathContextBuilder> pathContextCaptor = forClass(PathContextBuilder.class);
+        given(mapperMock.toResource(pathContextCaptor.capture(), eq(note)))
+            .willReturn(NoteResource.builder().build());
+
+        // act
+        ResultActions actual = mockMvc.perform(get("/project/{project}/tailoring/{tailoring}/note/{note}", "SAMPLE", "master", 1)
+            .contentType(APPLICATION_JSON)
+            .accept(HAL_JSON_VALUE)
+        );
+
+        // assert
+        actual.andExpect(status().isOk());
+        verify(serviceMock, times(1)).getNote("SAMPLE", "master", 1);
+        verify(mapperMock, times(1)).toResource(pathContextCaptor.capture(), eq(note));
+    }
+
+    @Test
+    void getNote_NoteNotExists_StateNotFound() throws Exception {
+        // arrange
+        given(serviceMock.getNote("SAMPLE", "master", 1)).willReturn(empty());
+
+        // act
+        ResultActions actual = mockMvc.perform(get("/project/{project}/tailoring/{tailoring}/note/{note}", "SAMPLE", "master", 1)
+            .contentType(APPLICATION_JSON)
+            .accept(HAL_JSON_VALUE)
+        );
+
+        // assert
+        actual.andExpect(status().isNotFound());
         assertThatNoException();
     }
 }

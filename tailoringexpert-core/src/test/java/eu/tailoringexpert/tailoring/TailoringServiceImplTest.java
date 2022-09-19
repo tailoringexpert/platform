@@ -22,6 +22,7 @@
 package eu.tailoringexpert.tailoring;
 
 import eu.tailoringexpert.domain.BaseRequirement;
+import eu.tailoringexpert.domain.Note;
 import eu.tailoringexpert.requirement.RequirementService;
 import eu.tailoringexpert.domain.Catalog;
 import eu.tailoringexpert.domain.Chapter;
@@ -38,6 +39,7 @@ import eu.tailoringexpert.domain.TailoringInformation;
 import lombok.extern.log4j.Log4j2;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.mockito.ArgumentCaptor;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
@@ -67,6 +69,7 @@ import static java.util.Optional.empty;
 import static java.util.Optional.of;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.catchThrowable;
+import static org.mockito.ArgumentCaptor.forClass;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.eq;
@@ -1161,4 +1164,92 @@ class TailoringServiceImplTest {
         zin.close();
         return result;
     }
+
+    @Test
+    void getNote_TailoringNotExists_EmptyReturned() {
+        // arrange
+        given(repositoryMock.getTailoring(any(), any())).willReturn(empty());
+
+        // act
+        Optional<Note> actual = service.getNote("Dummy", "master1", 1);
+
+        // assert
+        assertThat(actual).isEmpty();
+        verify(repositoryMock, times(1)).getTailoring("Dummy", "master1");
+    }
+
+    @Test
+    void getNote_TailoringNoteNotExists_EmptyReturned() {
+        // arrange
+        given(repositoryMock.getTailoring(any(), any())).willReturn(of(
+            Tailoring.builder().notes(List.of(Note.builder().number(1).text("demo").build())).build()
+        ));
+
+        // act
+        Optional<Note> actual = service.getNote("Dummy", "master", 2);
+
+        // assert
+        assertThat(actual).isEmpty();
+        verify(repositoryMock, times(1)).getTailoring("Dummy", "master");
+    }
+
+    @Test
+    void getNote_TailoringWithNote_NoteReturned() {
+        // arrange
+        given(repositoryMock.getTailoring(any(), any())).willReturn(of(
+            Tailoring.builder().notes(List.of(Note.builder().number(1).text("demo").build())).build()
+        ));
+
+        // act
+        Optional<Note> actual = service.getNote("Dummy", "master", 1);
+
+        // assert
+        assertThat(actual).isNotEmpty();
+        assertThat(actual.get().getNumber()).isEqualTo(1);
+        verify(repositoryMock, times(1)).getTailoring("Dummy", "master");
+    }
+
+    @Test
+    void addNote_TailoringNotExists_EmptyReturned() {
+        // arrange
+        given(repositoryMock.getTailoring(any(), any())).willReturn(empty());
+
+        // act
+        Optional<TailoringInformation> actual = service.addNote("Dummy", "master", "This a demo note");
+
+        // assert
+        assertThat(actual).isEmpty();
+        verify(repositoryMock, times(1)).getTailoring("Dummy", "master");
+    }
+
+    @Test
+    void addNote_TailoringExists_NoteAdded() {
+        // arrange
+        Note note1 = Note.builder().number(1).text("demo").build();
+        List<Note> notes = new ArrayList<>();
+        notes.add(note1);
+        Tailoring tailoring = Tailoring.builder().notes(notes).build();
+        given(repositoryMock.getTailoring(any(), any())).willReturn(of(tailoring));
+
+        ArgumentCaptor<Note> noteCaptor = forClass(Note.class);
+        given(repositoryMock.addNote(eq("Dummy"), eq("master"), noteCaptor.capture()))
+            .willAnswer(invocation -> {
+                    tailoring.getNotes().add(noteCaptor.getValue());
+                    return of(tailoring);
+                }
+            );
+
+        given(mapperMock.toTailoringInformation(any())).willReturn(TailoringInformation.builder().build());
+
+        // act
+        Optional<TailoringInformation> actual = service.addNote("Dummy", "master", "This the second demo note");
+
+        // assert
+        assertThat(actual).isNotEmpty();
+        assertThat(tailoring.getNotes()).hasSize(2);
+        assertThat(tailoring.getNotes()).containsExactly(note1, noteCaptor.getValue());
+        verify(repositoryMock, times(1)).getTailoring("Dummy", "master");
+        verify(mapperMock, times(1)).toTailoringInformation(any());
+    }
+
 }

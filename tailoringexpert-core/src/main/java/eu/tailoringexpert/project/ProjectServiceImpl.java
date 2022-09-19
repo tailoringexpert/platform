@@ -23,6 +23,7 @@ package eu.tailoringexpert.project;
 
 import eu.tailoringexpert.domain.BaseRequirement;
 import eu.tailoringexpert.domain.Catalog;
+import eu.tailoringexpert.domain.Note;
 import eu.tailoringexpert.domain.Project;
 import eu.tailoringexpert.domain.ScreeningSheet;
 import eu.tailoringexpert.domain.SelectionVector;
@@ -33,11 +34,14 @@ import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 
+import java.time.ZonedDateTime;
+import java.util.List;
 import java.util.Optional;
 
 import static java.lang.Integer.parseInt;
 import static java.util.Comparator.comparingInt;
 import static java.util.Objects.isNull;
+import static java.util.Objects.nonNull;
 import static java.util.Optional.empty;
 import static java.util.Optional.of;
 
@@ -63,10 +67,19 @@ public class ProjectServiceImpl implements ProjectService {
      * {@inheritDoc}
      */
     @Override
-    public CreateProjectTO createProject(String catalogVersion, byte[] screeningSheetData, SelectionVector applicableSelectionVector) {
+    public CreateProjectTO createProject(String catalogVersion, byte[] screeningSheetData, SelectionVector applicableSelectionVector, String note) {
         Catalog<BaseRequirement> catalog = repository.getBaseCatalog(catalogVersion);
         ScreeningSheet screeningSheet = screeningSheetService.createScreeningSheet(screeningSheetData);
+
         Tailoring tailoring = tailoringService.createTailoring("master", "1000", screeningSheet, applicableSelectionVector, catalog);
+        if (nonNull(note)) {
+            tailoring.setNotes(List.of(Note.builder()
+                .number(1)
+                .text(note)
+                .creationTimestamp(ZonedDateTime.now())
+                .build())
+            );
+        }
 
         Project project = repository.createProject(Project.builder()
             .screeningSheet(screeningSheet)
@@ -140,6 +153,8 @@ public class ProjectServiceImpl implements ProjectService {
             applicableSelectionVector,
             baseCatalog
         );
+
+
 
         Optional<Tailoring> result = repository.addTailoring(project, tailoring);
         log.info("FINISHED | adding phase {} to project {}", tailoringName, project);

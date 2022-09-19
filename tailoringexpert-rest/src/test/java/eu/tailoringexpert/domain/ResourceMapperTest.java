@@ -32,6 +32,7 @@ import org.springframework.web.context.request.ServletRequestAttributes;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 
@@ -274,8 +275,24 @@ class ResourceMapperTest {
             Link.of("http://localhost/project/SAMPLE/tailoring/master/name", "name"),
             Link.of("http://localhost/project/SAMPLE/tailoring/master/requirement/import", "import"),
             Link.of("http://localhost/catalog/8.2.1/pdf", "basecatalog"),
-            Link.of("http://localhost/project/SAMPLE/tailoring/master/attachment", "attachment")
+            Link.of("http://localhost/project/SAMPLE/tailoring/master/attachment", "attachment"),
+            Link.of("http://localhost/project/SAMPLE/tailoring/master/note", "note")
         );
+    }
+
+    @Test
+    void toResource_ScreeningSheet_NoLinksReturned() {
+        // arrange
+        PathContextBuilder pathContext = PathContext.builder();
+        ScreeningSheet screeningSheet = ScreeningSheet.builder()
+            .build();
+
+        // act
+        ScreeningSheetResource actual = mapper.toResource(pathContext, screeningSheet);
+
+        // assert
+        assertThat(actual).isNotNull();
+        assertThat(actual.getLinks()).isEmpty();
     }
 
     @Test
@@ -317,7 +334,7 @@ class ResourceMapperTest {
         assertThat(actual.getParameters()).isNotNull();
         assertThat(actual.getParameters()).hasSize(1);
         assertThat(actual.getParameters()).containsOnly(ScreeningSheetParameterResource.builder()
-            .bezeichnung(parameter.getCategory())
+            .label(parameter.getCategory())
             .value(parameter.getValue())
             .build());
 
@@ -388,7 +405,7 @@ class ResourceMapperTest {
         assertThat(actual.getParameters()).isNotNull();
         assertThat(actual.getParameters()).hasSize(1);
         assertThat(actual.getParameters()).containsOnly(ScreeningSheetParameterResource.builder()
-            .bezeichnung(parameter.getCategory())
+            .label(parameter.getCategory())
             .value(parameter.getValue())
             .build());
         assertThat(actual.getData()).isEqualTo(data);
@@ -427,7 +444,7 @@ class ResourceMapperTest {
         assertThat(actual.getParameters()).isNotNull();
         assertThat(actual.getParameters()).hasSize(1);
         assertThat(actual.getParameters()).containsOnly(ScreeningSheetParameterResource.builder()
-            .bezeichnung(parameter.getCategory())
+            .label(parameter.getCategory())
             .value(parameter.getValue())
             .build());
 
@@ -542,7 +559,8 @@ class ResourceMapperTest {
             Link.of("http://localhost/project/SAMPLE/tailoring/master/document/catalog", "tailoringcatalog"),
             Link.of("http://localhost/project/SAMPLE/tailoring/master/compare", "compare"),
             Link.of("http://localhost/project/SAMPLE/tailoring/master/requirement/import", "import"),
-            Link.of("http://localhost/catalog/8.2.1/pdf", "basecatalog")
+            Link.of("http://localhost/catalog/8.2.1/pdf", "basecatalog"),
+            Link.of("http://localhost/project/SAMPLE/tailoring/master/note", "note")
         );
     }
 
@@ -800,4 +818,52 @@ class ResourceMapperTest {
         );
     }
 
+    @Test
+    void toResource_Note_DatenUndLinksOK() {
+        // arrange
+        PathContextBuilder pathContext = PathContext.builder()
+            .project("SAMPLE")
+            .tailoring("master")
+            .note("1");
+
+        Note domain = Note.builder()
+            .number(1)
+            .text("Demotext")
+            .creationTimestamp(ZonedDateTime.now())
+            .build();
+
+        // act
+        NoteResource actual = mapper.toResource(pathContext, domain);
+
+        // assert
+        assertThat(actual).isNotNull();
+
+        assertThat(actual.getLinks()).containsExactlyInAnyOrder(
+            Link.of("http://localhost/project/SAMPLE/tailoring/master/note/1", "self")
+        );
+    }
+
+    @Test
+    void toResource_File_DatenUndLinksOK() {
+        // arrange
+        PathContextBuilder pathContext = PathContext.builder()
+            .project("SAMPLE")
+            .tailoring("master")
+            .note("1");
+
+        File domain = File.builder()
+            .name("demo.pdf")
+            .data("demo.pdf".getBytes(StandardCharsets.UTF_8))
+            .build();
+
+        // act
+        FileResource actual = mapper.toResource(pathContext, domain);
+
+        // assert
+        assertThat(actual).isNotNull();
+
+        assertThat(actual.getLinks()).containsExactlyInAnyOrder(
+            Link.of("http://localhost/project/SAMPLE/tailoring/master/attachment/demo.pdf", "self")
+        );
+    }
 }

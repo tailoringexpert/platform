@@ -26,6 +26,7 @@ import eu.tailoringexpert.domain.Catalog;
 import eu.tailoringexpert.domain.File;
 import eu.tailoringexpert.domain.DocumentSignature;
 import eu.tailoringexpert.domain.Chapter;
+import eu.tailoringexpert.domain.Note;
 import eu.tailoringexpert.domain.ScreeningSheet;
 import eu.tailoringexpert.domain.SelectionVector;
 import eu.tailoringexpert.domain.Tailoring;
@@ -188,4 +189,34 @@ public interface TailoringService {
      * @return true, if deleted
      */
     Optional<Boolean> deleteTailoring(String project, String tailoring);
+
+    /**
+     * Add note to tailoring.
+     *
+     * @param project   project identifier
+     * @param tailoring tailorig to add note to
+     * @param note      note/text to add
+     * @return in case of successful add tailoring, otherwise empty
+     */
+    Optional<TailoringInformation> addNote(String project, String tailoring, String note);
+
+    /**
+     * Get all notes of project tailoring.
+     *
+     * @param project   project identifier
+     * @param tailoring tailoring to get notes of
+     * @return
+     */
+    Optional<Collection<Note>> getNotes(String project, String tailoring);
+
+    /**
+     * Get a note of project tailoring identified by its number.
+     *
+     * @param project   project identifier
+     * @param tailoring tailoring to get note of
+     * @param note      note/text number to get
+     * @return
+     */
+    Optional<Note> getNote(String project, String tailoring, Integer note);
+
 }

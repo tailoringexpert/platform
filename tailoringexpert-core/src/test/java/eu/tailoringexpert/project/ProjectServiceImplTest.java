@@ -25,6 +25,7 @@ import eu.tailoringexpert.domain.BaseRequirement;
 import eu.tailoringexpert.domain.Catalog;
 import eu.tailoringexpert.domain.Identifier;
 import eu.tailoringexpert.domain.Chapter;
+import eu.tailoringexpert.domain.Note;
 import eu.tailoringexpert.domain.Phase;
 import eu.tailoringexpert.domain.Project;
 import eu.tailoringexpert.domain.ScreeningSheet;
@@ -55,6 +56,7 @@ import static java.util.Optional.empty;
 import static java.util.Optional.of;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.catchThrowable;
+import static org.mockito.ArgumentCaptor.forClass;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.eq;
@@ -126,7 +128,7 @@ class ProjectServiceImplTest {
     }
 
     @Test
-    void createProject_AllParameterValidProvided_ProjectIsCreated() throws IOException {
+    void createProject_AllParameterValidProvidedNoNote_ProjectIsCreated() throws IOException {
         // arrange
         byte[] data;
         try (InputStream is = newInputStream(get("src/test/resources/screeningsheet.pdf"))) {
@@ -218,21 +220,129 @@ class ProjectServiceImplTest {
             .state(TailoringState.CREATED)
             .build());
 
-        given(repositoryMock.createProject( any(Project.class))).willReturn(Project.builder()
+        ArgumentCaptor<Project> projectCaptor = forClass(Project.class);
+        given(repositoryMock.createProject(projectCaptor.capture())).willReturn(Project.builder()
             .identifier("SAMPLE")
             .tailoring(Tailoring.builder()
                 .screeningSheet(screeningSheet)
                 .build())
             .build());
 
-
         // act
-        CreateProjectTO actual = service.createProject("1", data, selectionVector);
+        CreateProjectTO actual = service.createProject("1", data, selectionVector, null);
 
         // assert
         assertThat(actual.getProject()).isNotBlank();
+        assertThat(projectCaptor.getValue().getTailorings().iterator().next().getNotes()).isNull();
+    }
 
-        log.info(actual.toString());
+    @Test
+    void createProject_AllParameterValidProvidedWithNote_ProjectIsCreated() throws IOException {
+        // arrange
+        byte[] data;
+        try (InputStream is = newInputStream(get("src/test/resources/screeningsheet.pdf"))) {
+            assert nonNull(is);
+            data = is.readAllBytes();
+        }
+
+        Catalog<BaseRequirement> catalog = Catalog.<BaseRequirement>builder()
+            .toc(Chapter.<BaseRequirement>builder()
+                .chapters(asList(Chapter.<BaseRequirement>builder()
+                    .name("General")
+                    .requirements(asList(
+                        BaseRequirement.builder()
+                            .text("First Requirement")
+                            .position("a")
+                            .identifiers(asList(
+                                Identifier.builder()
+                                    .type("Q")
+                                    .level(4)
+                                    .limitations(asList("SAT", "LEO"))
+                                    .build()
+                            ))
+                            .build()))
+                    .build()))
+                .build())
+            .build();
+        given(repositoryMock.getBaseCatalog(anyString())).willReturn(catalog);
+
+        SelectionVector selectionVector = SelectionVector.builder()
+            .level("G", 1)
+            .level("E", 2)
+            .level("M", 3)
+            .level("P", 4)
+            .level("A", 5)
+            .level("Q", 6)
+            .level("S", 7)
+            .level("W", 8)
+            .level("O", 9)
+            .level("R", 10)
+            .build();
+
+        ScreeningSheet screeningSheet = ScreeningSheet.builder()
+            .data(data)
+            .parameters(asList(
+                ScreeningSheetParameter.builder()
+                    .category(ScreeningSheetDataProviderSupplier.Kurzname.getName())
+                    .value("SAMPLE")
+                    .build(),
+                ScreeningSheetParameter.builder()
+                    .category(ScreeningSheetDataProviderSupplier.Produkttyp.getName())
+                    .value("SAT")
+                    .build(),
+                ScreeningSheetParameter.builder()
+                    .category(ScreeningSheetDataProviderSupplier.Einsatzzweck.getName())
+                    .value("Erdbeobachtungssatellit")
+                    .build(),
+                ScreeningSheetParameter.builder()
+                    .category(ScreeningSheetDataProviderSupplier.Phase.getName())
+                    .value(asList(E, F))
+                    .build(),
+                ScreeningSheetParameter.builder()
+                    .category(ScreeningSheetDataProviderSupplier.Einsatzort.getName())
+                    .value("LEO")
+                    .build(),
+                ScreeningSheetParameter.builder()
+                    .category(ScreeningSheetDataProviderSupplier.Anwendungscharakter.getName())
+                    .value("wissenschaftlich")
+                    .build(),
+                ScreeningSheetParameter.builder()
+                    .category(ScreeningSheetDataProviderSupplier.Kostenorientierug.getName())
+                    .value("150 <= k")
+                    .build(),
+                ScreeningSheetParameter.builder()
+                    .category(ScreeningSheetDataProviderSupplier.Lebensdauer.getName())
+                    .value("15 Jahre < t")
+                    .build(),
+                ScreeningSheetParameter.builder()
+                    .category(ScreeningSheetDataProviderSupplier.ProgrammatischeBewertung.getName())
+                    .value("erforderlich")
+                    .build()
+            ))
+            .selectionVector(selectionVector)
+            .build();
+        given(screeningSheetServiceMock.createScreeningSheet(any())).willReturn(screeningSheet);
+
+        given(tailoringServiceMock.createTailoring(any(), any(), eq(screeningSheet), any(), eq(catalog))).willReturn(Tailoring.builder()
+            .screeningSheet(screeningSheet)
+            .phases(asList())
+            .state(TailoringState.CREATED)
+            .build());
+
+        ArgumentCaptor<Project> projectCaptor = forClass(Project.class);
+        given(repositoryMock.createProject(projectCaptor.capture())).willReturn(Project.builder()
+            .identifier("SAMPLE")
+            .tailoring(Tailoring.builder()
+                .screeningSheet(screeningSheet)
+                .build())
+            .build());
+
+        // act
+        CreateProjectTO actual = service.createProject("1", data, selectionVector, "Sample Note");
+
+        // assert
+        assertThat(actual.getProject()).isNotBlank();
+        assertThat(projectCaptor.getValue().getTailorings().iterator().next().getNotes()).hasSize(1);
     }
 
     @Test
@@ -266,6 +376,27 @@ class ProjectServiceImplTest {
         verify(repositoryMock, times(0)).deleteProject("SAMPLE");
         assertThat(actual).isFalse();
     }
+
+    @Test
+    void addTailoring_WrongProject_TailoringNotAdded() throws IOException {
+        // arrange
+        byte[] data;
+        try (InputStream is = newInputStream(get("src/test/resources/screeningsheet2.pdf"))) {
+            assert nonNull(is);
+            data = is.readAllBytes();
+        }
+
+        given(repositoryMock.getProject("DUMMY")).willReturn(empty());
+
+        // act
+        Optional<Tailoring> actual = service.addTailoring("DUMMY", "8.2.1", data, SelectionVector.builder().build());
+
+        // assert
+        assertThat(actual).isEmpty();
+        verify(repositoryMock, times(0)).getProject("8.2.1");
+        verify(repositoryMock, times(0)).addTailoring(anyString(), any());
+    }
+
 
     @Test
     void addTailoring_ProjectNotExists_TailoringNotAdded() throws IOException {

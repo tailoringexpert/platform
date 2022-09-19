@@ -27,6 +27,8 @@ import eu.tailoringexpert.domain.DocumentSignature;
 import eu.tailoringexpert.domain.DocumentSignatureEntity;
 import eu.tailoringexpert.domain.DocumentSigneeEntity;
 import eu.tailoringexpert.domain.DocumentSignatureState;
+import eu.tailoringexpert.domain.Note;
+import eu.tailoringexpert.domain.NoteEntity;
 import eu.tailoringexpert.domain.Project;
 import eu.tailoringexpert.domain.ProjectEntity;
 import eu.tailoringexpert.domain.ScreeningSheet;
@@ -41,7 +43,9 @@ import eu.tailoringexpert.repository.SelectionVectorProfileRepository;
 import eu.tailoringexpert.repository.TailoringRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.mockito.ArgumentCaptor;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
@@ -51,8 +55,12 @@ import java.util.Set;
 
 import static java.nio.charset.StandardCharsets.UTF_8;
 import static java.util.Arrays.asList;
+import static java.util.List.copyOf;
+import static java.util.Optional.of;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.ArgumentCaptor.forClass;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
@@ -668,6 +676,47 @@ class JPATailoringServiceRepositoryTest {
 
         // assert
         assertThat(actual).isTrue();
+    }
+
+    @Test
+    void addNote_TailoringNotExists_EmptyReturned() {
+        // arrange
+        Note note = Note.builder().build();
+        given(projectRepositoryMock.findTailoring("SAMPLE", "master"))
+            .willReturn(null);
+
+        // act
+        Optional<Tailoring> actual = repository.addNote("SAMPLE", "master", note);
+
+        // assert
+        assertThat(actual).isEmpty();
+    }
+
+    @Test
+    void addNote_TailoringExists_NoteAddedTailoringReturned() {
+        // arrange
+        List<NoteEntity> notes = new ArrayList<>();
+        notes.add(NoteEntity.builder().number(1).text("Note1").build());
+        Note note = Note.builder().number(2).text("Note 2").build();
+
+        TailoringEntity tailoring = TailoringEntity.builder().notes(notes).build();
+        given(projectRepositoryMock.findTailoring("SAMPLE", "master")).willReturn(tailoring);
+
+        given(mapperMock.toEntity(note)).willAnswer(invocation -> {
+            Note toAdd = invocation.getArgument(0);
+            return NoteEntity.builder().number(toAdd.getNumber()).text(toAdd.getText()).build();
+        });
+
+        given(mapperMock.toDomain(tailoring)).willReturn(Tailoring.builder().build());
+
+        // act
+        Optional<Tailoring> actual = repository.addNote("SAMPLE", "master", note);
+
+        // assert
+        assertThat(actual).isNotEmpty();
+        assertThat(tailoring.getNotes()).hasSize(2);
+        assertThat(List.copyOf(tailoring.getNotes()).get(1).getNumber()).isEqualTo(2);
+        assertThat(List.copyOf(tailoring.getNotes()).get(1).getText()).isEqualTo("Note 2");
     }
 
 }
