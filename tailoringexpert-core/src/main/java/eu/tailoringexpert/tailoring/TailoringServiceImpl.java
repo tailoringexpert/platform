@@ -332,7 +332,7 @@ public class TailoringServiceImpl implements TailoringService {
      * {@inheritDoc}
      */
     @Override
-    public Optional<TailoringInformation> addNote(String project, String tailoring, String note) {
+    public Optional<Note> addNote(String project, String tailoring, String note) {
         Optional<Tailoring> oTailoring = repository.getTailoring(project, tailoring);
         if (oTailoring.isEmpty()) {
             log.info("FINISHED | tailoring not existing. Not adding.");
@@ -340,15 +340,20 @@ public class TailoringServiceImpl implements TailoringService {
         }
 
         Collection<Note> notes = oTailoring.get().getNotes();
-        Optional<Tailoring> updatedTailoring = repository.addNote(project, tailoring, Note.builder()
+        Note noteToAdd = Note.builder()
             .number(nonNull(notes) ? notes.size() + 1 : 1)
             .text(note)
             .creationTimestamp(ZonedDateTime.now())
-            .build());
+            .build();
 
-        Optional<TailoringInformation> result = updatedTailoring.map(t -> mapper.toTailoringInformation(t));
-        log.info("FINISHED | addNote tailoring {}.", result.get());
-        return result;
+        Optional<Tailoring> updatedTailoring = repository.addNote(project, tailoring, noteToAdd);
+        if (updatedTailoring.isEmpty()) {
+            log.info("FINISHED | addNote tailoring {}.not added", noteToAdd);
+        }
+
+        log.info("FINISHED | addNote tailoring {} added", noteToAdd);
+
+        return of(noteToAdd);
     }
 
     /**

@@ -25,6 +25,7 @@ import eu.tailoringexpert.ResourceException;
 import eu.tailoringexpert.domain.FileResource;
 import eu.tailoringexpert.domain.DocumentSignature;
 import eu.tailoringexpert.domain.DocumentSignatureResource;
+import eu.tailoringexpert.domain.Note;
 import eu.tailoringexpert.domain.NoteResource;
 import eu.tailoringexpert.domain.SelectionVectorProfileResource;
 import eu.tailoringexpert.domain.Tailoring;
@@ -71,6 +72,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.function.Function;
 
+import static eu.tailoringexpert.domain.ResourceMapper.PROJECT;
 import static eu.tailoringexpert.domain.ResourceMapper.TAILORING;
 import static eu.tailoringexpert.domain.ResourceMapper.TAILORING_ATTACHMENTS;
 import static eu.tailoringexpert.domain.ResourceMapper.TAILORING_ATTACHMENT;
@@ -97,6 +99,7 @@ import static org.springframework.http.HttpHeaders.CONTENT_DISPOSITION;
 import static org.springframework.http.HttpStatus.NOT_FOUND;
 import static org.springframework.http.HttpStatus.OK;
 import static org.springframework.http.HttpStatus.PRECONDITION_FAILED;
+import static org.springframework.http.MediaType.TEXT_PLAIN_VALUE;
 import static org.springframework.http.ResponseEntity.created;
 import static org.springframework.http.ResponseEntity.notFound;
 import static org.springframework.http.ResponseEntity.ok;
@@ -613,6 +616,7 @@ public class TailoringController {
             )
             .orElseGet(() -> notFound().build());
     }
+
     @Operation(summary = "Load note of a tailoring")
     @ApiResponses(value = {
         @ApiResponse(
@@ -639,5 +643,33 @@ public class TailoringController {
 
     }
 
+    @Operation(summary = "Add a new note totailoring")
+    @ApiResponses(value = {
+        @ApiResponse(
+            responseCode = "201", description = "Note added",
+            content = @Content(mediaType = "application/json+hal", schema = @Schema(implementation = Void.class))),
+        @ApiResponse(
+            responseCode = "404", description = "Tailoring does not exist",
+            content = @Content)
+    })
+    @PostMapping(value = TAILORING_NOTES, consumes = TEXT_PLAIN_VALUE)
+    public ResponseEntity<EntityModel<Void>> postNote(
+        @Parameter(description = "Project identifier") @PathVariable String project,
+        @Parameter(description = "Tailoring name") @PathVariable String tailoring,
+        @Parameter(description = "Text of note to add") @RequestBody String note) {
+        PathContextBuilder pathContext = PathContext.builder()
+            .project(project)
+            .tailoring(tailoring);
 
+        Optional<Note> addedNote = tailoringService.addNote(project, tailoring, note);
+        if (addedNote.isEmpty()) {
+            return notFound().build();
+        }
+
+        return created(mapper.createLink(ResourceMapper.REL_SELF, linkToCurrentMapping().toString(),
+                    TAILORING_NOTE,
+                    pathContext.note(addedNote.get().getNumber().toString()).build().parameter())
+                .toUri())
+            .build();
+    }
 }

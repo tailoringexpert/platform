@@ -1215,7 +1215,7 @@ class TailoringServiceImplTest {
         given(repositoryMock.getTailoring(any(), any())).willReturn(empty());
 
         // act
-        Optional<TailoringInformation> actual = service.addNote("Dummy", "master", "This a demo note");
+        Optional<Note> actual = service.addNote("Dummy", "master", "This a demo note");
 
         // assert
         assertThat(actual).isEmpty();
@@ -1242,14 +1242,13 @@ class TailoringServiceImplTest {
         given(mapperMock.toTailoringInformation(any())).willReturn(TailoringInformation.builder().build());
 
         // act
-        Optional<TailoringInformation> actual = service.addNote("Dummy", "master", "This the second demo note");
+        Optional<Note> actual = service.addNote("Dummy", "master", "This the second demo note");
 
         // assert
         assertThat(actual).isNotEmpty();
         assertThat(tailoring.getNotes()).hasSize(2);
         assertThat(tailoring.getNotes()).containsExactly(note1, noteCaptor.getValue());
         verify(repositoryMock, times(1)).getTailoring("Dummy", "master");
-        verify(mapperMock, times(1)).toTailoringInformation(any());
     }
 
 }

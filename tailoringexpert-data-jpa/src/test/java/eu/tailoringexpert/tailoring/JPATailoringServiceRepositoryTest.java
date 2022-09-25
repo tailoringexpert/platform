@@ -715,8 +715,8 @@ class JPATailoringServiceRepositoryTest {
         // assert
         assertThat(actual).isNotEmpty();
         assertThat(tailoring.getNotes()).hasSize(2);
-        assertThat(List.copyOf(tailoring.getNotes()).get(1).getNumber()).isEqualTo(2);
-        assertThat(List.copyOf(tailoring.getNotes()).get(1).getText()).isEqualTo("Note 2");
+        assertThat(copyOf(tailoring.getNotes()).get(1).getNumber()).isEqualTo(2);
+        assertThat(copyOf(tailoring.getNotes()).get(1).getText()).isEqualTo("Note 2");
     }
 
 }

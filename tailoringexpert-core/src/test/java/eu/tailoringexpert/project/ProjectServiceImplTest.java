@@ -501,7 +501,7 @@ class ProjectServiceImplTest {
 
         given(repositoryMock.getBaseCatalog("8.2.1")).willReturn(Catalog.<BaseRequirement>builder().build());
 
-        ArgumentCaptor<String> projektPhaseNameCaptor = ArgumentCaptor.forClass(String.class);
+        ArgumentCaptor<String> projektPhaseNameCaptor = forClass(String.class);
         ScreeningSheet screeningSheet = ScreeningSheet.builder()
             .project("SAMPLE")
             .parameters(asList(ScreeningSheetParameter.builder().category(ScreeningSheetDataProviderSupplier.Identifier.getName()).value("SAMPLE").build()))
@@ -561,7 +561,7 @@ class ProjectServiceImplTest {
             .build();
         given(screeningSheetServiceMock.createScreeningSheet(data)).willReturn(screeningSheet);
 
-        ArgumentCaptor<String> projektPhaseNameCaptor = ArgumentCaptor.forClass(String.class);
+        ArgumentCaptor<String> projektPhaseNameCaptor = forClass(String.class);
         given(tailoringServiceMock.createTailoring(projektPhaseNameCaptor.capture(), any(), any(), any(), any())).willAnswer(invocation ->
             Tailoring.builder()
                 .name(invocation.getArgument(0))
@@ -635,7 +635,7 @@ class ProjectServiceImplTest {
                 .parameters(asList(ScreeningSheetParameter.builder().category(ScreeningSheetDataProviderSupplier.Identifier.getName()).value("H3SAT").build()))
                 .build());
 
-        ArgumentCaptor<Project> projectCopyCaptor = ArgumentCaptor.forClass(Project.class);
+        ArgumentCaptor<Project> projectCopyCaptor = forClass(Project.class);
         given(repositoryMock.createProject(projectCopyCaptor.capture()))
             .willAnswer(invocation -> invocation.getArgument(0));
 

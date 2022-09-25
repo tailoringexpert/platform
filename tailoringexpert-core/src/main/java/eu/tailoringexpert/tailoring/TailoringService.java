@@ -198,7 +198,7 @@ public interface TailoringService {
      * @param note      note/text to add
      * @return in case of successful add tailoring, otherwise empty
      */
-    Optional<TailoringInformation> addNote(String project, String tailoring, String note);
+    Optional<Note> addNote(String project, String tailoring, String note);
 
     /**
      * Get all notes of project tailoring.

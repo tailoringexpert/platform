@@ -398,6 +398,8 @@ class ProjectControllerTest {
             .selectionVector(selectionVector)
             .build();
 
+        given(mapperMock.createLink(any(), any(), any(), any())).willReturn(Link.of("http://localhost/project/SAMPLE/tailoring/master1"));
+
         // act
         ResultActions actual = mockMvc.perform(post("/project/{project}/tailoring", "SAMPLE")
             .content(objectMapper.writeValueAsString(creationRequest))

@@ -44,6 +44,7 @@ import lombok.SneakyThrows;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.hateoas.CollectionModel;
 import org.springframework.hateoas.EntityModel;
+import org.springframework.hateoas.Link;
 import org.springframework.http.ContentDisposition;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -57,6 +58,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.net.URI;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -65,11 +67,12 @@ import static eu.tailoringexpert.domain.ResourceMapper.PROJECT;
 import static eu.tailoringexpert.domain.ResourceMapper.PROJECTS;
 import static eu.tailoringexpert.domain.ResourceMapper.PROJECT_NEW;
 import static eu.tailoringexpert.domain.ResourceMapper.PROJECT_SCREENINGSHEET;
+import static eu.tailoringexpert.domain.ResourceMapper.PROJECT_SCREENINGSHEET_PDF;
+import static eu.tailoringexpert.domain.ResourceMapper.PROJECT_SELECTIONVECTOR;
+import static eu.tailoringexpert.domain.ResourceMapper.TAILORING;
 import static eu.tailoringexpert.domain.ResourceMapper.TAILORINGS;
 import static java.util.stream.Collectors.toList;
 import static org.springframework.hateoas.server.mvc.BasicLinkBuilder.linkToCurrentMapping;
-import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
-import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 import static org.springframework.http.HttpHeaders.ACCESS_CONTROL_EXPOSE_HEADERS;
 import static org.springframework.http.HttpHeaders.CONTENT_DISPOSITION;
 import static org.springframework.http.HttpStatus.BAD_REQUEST;
@@ -181,7 +184,7 @@ public class ProjectController {
             responseCode = "200", description = "Screeningsheet file loaded",
             content = @Content(mediaType = "application/json+hal", schema = @Schema(implementation = byte[].class)))
     })
-    @GetMapping(ResourceMapper.PROJECT_SCREENINGSHEET_PDF)
+    @GetMapping(PROJECT_SCREENINGSHEET_PDF)
     @ResponseBody
     public ResponseEntity<byte[]> getScreeningSheetFile(
         @Parameter(description = "Project identifier") @PathVariable String project) {
@@ -248,15 +251,23 @@ public class ProjectController {
     public ResponseEntity<EntityModel<Void>> postTailoring(
         @Parameter(description = "Project identifier") @PathVariable String project,
         @RequestBody ProjectCreationRequest request) {
+
         Optional<Tailoring> result = projectService.addTailoring(project, request.getCatalog(), request.getScreeningSheet().getData(), request.getSelectionVector());
         if (result.isEmpty()) {
             return notFound()
                 .build();
         }
-        return ResponseEntity
-            .created(linkTo(methodOn(TailoringController.class).getTailoring(project, result.get().getName())).toUri())
-            .build();
 
+        PathContextBuilder pathContext = PathContext.builder()
+            .project(project)
+            .tailoring(result.get().getName());
+
+        return ResponseEntity
+            .created(mapper.createLink(ResourceMapper.REL_SELF, linkToCurrentMapping().toString(),
+                    TAILORING,
+                    pathContext.build().parameter())
+                .toUri())
+            .build();
     }
 
     @Operation(summary = "Load selection vector of project")
@@ -268,7 +279,7 @@ public class ProjectController {
             responseCode = "404", description = "selection vector not loaded",
             content = @Content)
     })
-    @GetMapping(value = ResourceMapper.PROJECT_SELECTIONVECTOR, produces = {"application/hal+json"})
+    @GetMapping(value = PROJECT_SELECTIONVECTOR, produces = {"application/hal+json"})
     public ResponseEntity<EntityModel<SelectionVectorResource>> getSelectionVector(
         @Parameter(description = "fachlicher Projektschlüssel")
         @PathVariable("project") String project) {

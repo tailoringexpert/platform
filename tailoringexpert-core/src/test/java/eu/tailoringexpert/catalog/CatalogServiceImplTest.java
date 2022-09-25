@@ -118,7 +118,7 @@ class CatalogServiceImplTest {
     @Test
     void createCatalog_CatalogNotExisting_EmptyReturned() {
         // arrange
-        given(repositoryMock.getCatalog(any())).willReturn(Optional.empty());
+        given(repositoryMock.getCatalog(any())).willReturn(empty());
 
         // act
         Optional<File> actual = service.createCatalog("8.2.1");

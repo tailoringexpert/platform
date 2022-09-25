@@ -55,6 +55,7 @@ import lombok.extern.log4j.Log4j2;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
+import org.springframework.hateoas.Link;
 import org.springframework.hateoas.mediatype.MessageResolver;
 import org.springframework.hateoas.mediatype.hal.CurieProvider;
 import org.springframework.hateoas.mediatype.hal.Jackson2HalModule;
@@ -62,6 +63,7 @@ import org.springframework.hateoas.server.core.EvoInflectorLinkRelationProvider;
 import org.springframework.http.ContentDisposition;
 import org.springframework.http.MediaType;
 import org.springframework.http.converter.ByteArrayHttpMessageConverter;
+import org.springframework.http.converter.StringHttpMessageConverter;
 import org.springframework.http.converter.json.Jackson2ObjectMapperBuilder;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.mock.web.MockMultipartFile;
@@ -70,6 +72,7 @@ import org.springframework.test.web.servlet.ResultActions;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Paths;
 import java.text.SimpleDateFormat;
 import java.util.List;
@@ -110,9 +113,12 @@ import static org.springframework.http.MediaType.APPLICATION_PDF;
 import static org.springframework.http.MediaType.IMAGE_JPEG;
 import static org.springframework.http.MediaType.IMAGE_PNG;
 import static org.springframework.http.MediaType.MULTIPART_FORM_DATA;
+import static org.springframework.http.MediaType.TEXT_PLAIN;
+import static org.springframework.http.MediaType.TEXT_PLAIN_VALUE;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.multipart;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.header;
@@ -163,7 +169,7 @@ class TailoringControllerTest {
             repositoryMock,
             mediaTypeProviderMock))
             .setControllerAdvice(new ExceptionHandlerAdvice())
-            .setMessageConverters(new MappingJackson2HttpMessageConverter(objectMapper), byteArrayHttpMessageConverter).build()
+            .setMessageConverters(new MappingJackson2HttpMessageConverter(objectMapper), byteArrayHttpMessageConverter, new StringHttpMessageConverter()).build()
 
         ;
     }
@@ -1043,5 +1049,38 @@ class TailoringControllerTest {
         // assert
         actual.andExpect(status().isNotFound());
         assertThatNoException();
+    }
+
+    @Test
+    void postNote_TailoringNotExists_StateNotFound() throws Exception {
+        // arrange
+        given(serviceMock.addNote("SAMPLE", "master", "Hello")).willReturn(empty());
+
+        // act
+        ResultActions actual = mockMvc.perform(post("/project/{project}/tailoring/{tailoring}/note", "SAMPLE", "master")
+            .content("Hello")
+            .contentType(TEXT_PLAIN_VALUE)
+        );
+
+        // assert
+        actual.andExpect(status().isNotFound());
+        assertThatNoException();
+    }
+
+    @Test
+    void postNote_TailoringExists_StateCreated() throws Exception {
+        // arrange
+        given(serviceMock.addNote("SAMPLE", "master", "Hello")).willReturn(Optional.of(Note.builder().number(2).build()));
+        given(mapperMock.createLink(any(), any(), any(), any())).willReturn(Link.of("/project/SAMPLE/tailoring/master/note/2"));
+
+        // act
+        ResultActions actual = mockMvc.perform(post("/project/{project}/tailoring/{tailoring}/note", "SAMPLE", "master")
+            .contentType("text/plain")
+            .content("Hello")
+        );
+
+        // assert
+        actual.andExpect(status().isCreated());
+        verify(serviceMock, times(1)).addNote("SAMPLE", "master", "Hello");
     }
 }
