@@ -652,7 +652,7 @@ public class TailoringController {
             responseCode = "404", description = "Tailoring does not exist",
             content = @Content)
     })
-    @PostMapping(value = TAILORING_NOTES, consumes = TEXT_PLAIN_VALUE)
+    @PostMapping(value = TAILORING_NOTES)
     public ResponseEntity<EntityModel<Void>> postNote(
         @Parameter(description = "Project identifier") @PathVariable String project,
         @Parameter(description = "Tailoring name") @PathVariable String tailoring,

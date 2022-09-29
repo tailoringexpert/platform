@@ -95,6 +95,7 @@ public class TailoringServiceImpl implements TailoringService {
                                      String identifier,
                                      ScreeningSheet screeningSheet,
                                      SelectionVector applicableSelectionVector,
+                                     String note,
                                      Catalog<BaseRequirement> catalog) {
         Catalog<TailoringRequirement> tailoringCatalog = mapper.toTailoringCatalog(
             catalog, screeningSheet, applicableSelectionVector
@@ -116,6 +117,11 @@ public class TailoringServiceImpl implements TailoringService {
             .findFirst()
             .ifPresent(parameter -> result.phases((Collection<Phase>) parameter.getValue()));
 
+        result.notes(nonNull(note) ? List.of(Note.builder()
+            .number(1)
+            .text(note)
+            .creationTimestamp(ZonedDateTime.now())
+            .build()) : null);
 
         return result.build();
     }

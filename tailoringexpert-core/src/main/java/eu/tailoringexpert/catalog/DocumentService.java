@@ -21,6 +21,7 @@
  */
 package eu.tailoringexpert.catalog;
 
+import eu.tailoringexpert.TenantInterface;
 import eu.tailoringexpert.domain.BaseRequirement;
 import eu.tailoringexpert.domain.Catalog;
 import eu.tailoringexpert.domain.File;
@@ -33,6 +34,7 @@ import java.util.Optional;
  *
  * @author Michael Bädorf
  */
+@TenantInterface
 public interface DocumentService {
 
     /**

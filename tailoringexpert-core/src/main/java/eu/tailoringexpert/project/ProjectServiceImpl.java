@@ -71,15 +71,7 @@ public class ProjectServiceImpl implements ProjectService {
         Catalog<BaseRequirement> catalog = repository.getBaseCatalog(catalogVersion);
         ScreeningSheet screeningSheet = screeningSheetService.createScreeningSheet(screeningSheetData);
 
-        Tailoring tailoring = tailoringService.createTailoring("master", "1000", screeningSheet, applicableSelectionVector, catalog);
-        if (nonNull(note)) {
-            tailoring.setNotes(List.of(Note.builder()
-                .number(1)
-                .text(note)
-                .creationTimestamp(ZonedDateTime.now())
-                .build())
-            );
-        }
+        Tailoring tailoring = tailoringService.createTailoring("master", "1000", screeningSheet, applicableSelectionVector, note, catalog);
 
         Project project = repository.createProject(Project.builder()
             .screeningSheet(screeningSheet)
@@ -113,7 +105,7 @@ public class ProjectServiceImpl implements ProjectService {
      * {@inheritDoc}
      */
     @Override
-    public Optional<Tailoring> addTailoring(String project, String catalog, byte[] screeningSheetData, SelectionVector applicableSelectionVector) {
+    public Optional<Tailoring> addTailoring(String project, String catalog, byte[] screeningSheetData, SelectionVector applicableSelectionVector, String note) {
         log.info("STARTED  | adding tailoring to project {}", project);
         Optional<Project> oProject = repository.getProject(project);
         if (oProject.isEmpty()) {
@@ -151,10 +143,9 @@ public class ProjectServiceImpl implements ProjectService {
             identifier.orElse("1000"),
             screeningSheet,
             applicableSelectionVector,
+            note,
             baseCatalog
         );
-
-
 
         Optional<Tailoring> result = repository.addTailoring(project, tailoring);
         log.info("FINISHED | adding phase {} to project {}", tailoringName, project);

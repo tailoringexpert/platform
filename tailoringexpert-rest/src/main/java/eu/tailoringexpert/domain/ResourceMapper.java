@@ -385,6 +385,7 @@ public abstract class ResourceMapper {
         pathContext.note(domain.getNumber().toString());
     }
 
+    @Mapping(target = "creationTimestamp", source = "creationTimestamp", dateFormat = "dd.MM.yyyy HH:mm")
     public abstract NoteResource toResource(@Context PathContextBuilder pathContext, Note domain);
 
     @AfterMapping

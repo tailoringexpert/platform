@@ -849,7 +849,7 @@ class TailoringServiceImplTest {
         given(mapperMock.toTailoringCatalog(catalog, screeningSheet, anzuwendenderSelectionVector)).willReturn(Catalog.<TailoringRequirement>builder().build());
 
         // act
-        Tailoring actual = service.createTailoring("master1", "1000", screeningSheet, anzuwendenderSelectionVector, catalog);
+        Tailoring actual = service.createTailoring("master1", "1000", screeningSheet, anzuwendenderSelectionVector, null, catalog);
 
         // assert
         assertThat(actual.getName()).isEqualTo("master1");

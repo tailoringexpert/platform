@@ -252,7 +252,7 @@ public class ProjectController {
         @Parameter(description = "Project identifier") @PathVariable String project,
         @RequestBody ProjectCreationRequest request) {
 
-        Optional<Tailoring> result = projectService.addTailoring(project, request.getCatalog(), request.getScreeningSheet().getData(), request.getSelectionVector());
+        Optional<Tailoring> result = projectService.addTailoring(project, request.getCatalog(), request.getScreeningSheet().getData(), request.getSelectionVector(), request.getNote());
         if (result.isEmpty()) {
             return notFound()
                 .build();

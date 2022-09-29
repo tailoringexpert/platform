@@ -52,10 +52,11 @@ public interface TailoringService {
      * @param identifier                DocID identifier
      * @param screeningSheet            screeningsheet of tailoring
      * @param applicableSelectionVector selection vector to use of selecting requirements
+     * @param note                      note to add to tailoring
      * @param catalog                   Base catalog to use for creating the tailoring
      * @return Create tailoring
      */
-    Tailoring createTailoring(String name, String identifier, ScreeningSheet screeningSheet, SelectionVector applicableSelectionVector, Catalog<BaseRequirement> catalog);
+    Tailoring createTailoring(String name, String identifier, ScreeningSheet screeningSheet, SelectionVector applicableSelectionVector, String note, Catalog<BaseRequirement> catalog);
 
     /**
      * Add a file to tailoring

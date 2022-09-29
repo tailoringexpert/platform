@@ -214,7 +214,7 @@ class ProjectServiceImplTest {
             .build();
         given(screeningSheetServiceMock.createScreeningSheet(any())).willReturn(screeningSheet);
 
-        given(tailoringServiceMock.createTailoring(any(), any(), eq(screeningSheet), any(), eq(catalog))).willReturn(Tailoring.builder()
+        given(tailoringServiceMock.createTailoring(any(), any(), eq(screeningSheet), any(), any(), eq(catalog))).willReturn(Tailoring.builder()
             .screeningSheet(screeningSheet)
             .phases(asList())
             .state(TailoringState.CREATED)
@@ -323,7 +323,7 @@ class ProjectServiceImplTest {
             .build();
         given(screeningSheetServiceMock.createScreeningSheet(any())).willReturn(screeningSheet);
 
-        given(tailoringServiceMock.createTailoring(any(), any(), eq(screeningSheet), any(), eq(catalog))).willReturn(Tailoring.builder()
+        given(tailoringServiceMock.createTailoring(any(), any(), eq(screeningSheet), any(), any(), eq(catalog))).willReturn(Tailoring.builder()
             .screeningSheet(screeningSheet)
             .phases(asList())
             .state(TailoringState.CREATED)
@@ -342,7 +342,6 @@ class ProjectServiceImplTest {
 
         // assert
         assertThat(actual.getProject()).isNotBlank();
-        assertThat(projectCaptor.getValue().getTailorings().iterator().next().getNotes()).hasSize(1);
     }
 
     @Test
@@ -389,7 +388,7 @@ class ProjectServiceImplTest {
         given(repositoryMock.getProject("DUMMY")).willReturn(empty());
 
         // act
-        Optional<Tailoring> actual = service.addTailoring("DUMMY", "8.2.1", data, SelectionVector.builder().build());
+        Optional<Tailoring> actual = service.addTailoring("DUMMY", "8.2.1", data, SelectionVector.builder().build(), null);
 
         // assert
         assertThat(actual).isEmpty();
@@ -410,7 +409,7 @@ class ProjectServiceImplTest {
         given(repositoryMock.getProject("DUMMY")).willReturn(empty());
 
         // act
-        Optional<Tailoring> actual = service.addTailoring("DUMMY", "8.2.1", data, SelectionVector.builder().build());
+        Optional<Tailoring> actual = service.addTailoring("DUMMY", "8.2.1", data, SelectionVector.builder().build(), null);
 
         // assert
         assertThat(actual).isEmpty();
@@ -441,12 +440,12 @@ class ProjectServiceImplTest {
         given(screeningSheetServiceMock.createScreeningSheet(data)).willReturn(screeningSheet);
 
         // act
-        Optional<Tailoring> actual = service.addTailoring("DUMMY", "8.2.1", data, SelectionVector.builder().build());
+        Optional<Tailoring> actual = service.addTailoring("DUMMY", "8.2.1", data, SelectionVector.builder().build(), null);
 
         // assert
         assertThat(actual).isEmpty();
         verify(repositoryMock, times(1)).getBaseCatalog("8.2.1");
-        verify(tailoringServiceMock, times(0)).createTailoring(any(), any(), any(), any(), any());
+        verify(tailoringServiceMock, times(0)).createTailoring(any(), any(), any(), any(), any(), any());
         verify(repositoryMock, times(0)).addTailoring(anyString(), any());
     }
 
@@ -474,12 +473,12 @@ class ProjectServiceImplTest {
         given(screeningSheetServiceMock.createScreeningSheet(data)).willReturn(screeningSheet);
 
         // act
-        Optional<Tailoring> actual = service.addTailoring("DUMMY", "8.2.1", data, SelectionVector.builder().build());
+        Optional<Tailoring> actual = service.addTailoring("DUMMY", "8.2.1", data, SelectionVector.builder().build(), null);
 
         // assert
         assertThat(actual).isEmpty();
         verify(repositoryMock, times(1)).getBaseCatalog("8.2.1");
-        verify(tailoringServiceMock, times(0)).createTailoring(any(), any(), any(), any(), any());
+        verify(tailoringServiceMock, times(0)).createTailoring(any(), any(), any(), any(), any(), any());
         verify(repositoryMock, times(0)).addTailoring(anyString(), any());
     }
 
@@ -509,7 +508,7 @@ class ProjectServiceImplTest {
             .build();
         given(screeningSheetServiceMock.createScreeningSheet(data)).willReturn(screeningSheet);
 
-        given(tailoringServiceMock.createTailoring(projektPhaseNameCaptor.capture(), any(), eq(screeningSheet), any(), any())).willAnswer(invocation ->
+        given(tailoringServiceMock.createTailoring(projektPhaseNameCaptor.capture(), any(), eq(screeningSheet), any(), any(), any())).willAnswer(invocation ->
             Tailoring.builder()
                 .name(invocation.getArgument(0))
                 .identifier(invocation.getArgument(1))
@@ -522,7 +521,7 @@ class ProjectServiceImplTest {
 
 
         // act
-        Optional<Tailoring> actual = service.addTailoring("SAMPLE", "8.2.1", data, screeningSheet.getSelectionVector());
+        Optional<Tailoring> actual = service.addTailoring("SAMPLE", "8.2.1", data, screeningSheet.getSelectionVector(), null);
 
         // assert
         verify(repositoryMock, times(1)).getBaseCatalog("8.2.1");
@@ -562,7 +561,7 @@ class ProjectServiceImplTest {
         given(screeningSheetServiceMock.createScreeningSheet(data)).willReturn(screeningSheet);
 
         ArgumentCaptor<String> projektPhaseNameCaptor = forClass(String.class);
-        given(tailoringServiceMock.createTailoring(projektPhaseNameCaptor.capture(), any(), any(), any(), any())).willAnswer(invocation ->
+        given(tailoringServiceMock.createTailoring(projektPhaseNameCaptor.capture(), any(), any(), any(), any(), any())).willAnswer(invocation ->
             Tailoring.builder()
                 .name(invocation.getArgument(0))
                 .screeningSheet(screeningSheet)
@@ -574,7 +573,7 @@ class ProjectServiceImplTest {
             .willReturn(of(Tailoring.builder().build()));
 
         // act
-        Optional<Tailoring> actual = service.addTailoring("SAMPLE", "8.2.1", data, selectionVector);
+        Optional<Tailoring> actual = service.addTailoring("SAMPLE", "8.2.1", data, selectionVector, null);
 
         // assert
         assertThat(projektPhaseNameCaptor.getValue()).isEqualTo("master1");
