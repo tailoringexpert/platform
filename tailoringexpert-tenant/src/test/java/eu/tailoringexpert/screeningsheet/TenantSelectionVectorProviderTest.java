@@ -33,6 +33,7 @@ import java.util.Map;
 
 import static java.util.Collections.emptyList;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.catchException;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.any;
 import static org.mockito.Mockito.mock;
@@ -54,15 +55,15 @@ class TenantSelectionVectorProviderTest {
 
 
     @Test
-    void apply_TenantNotExists_EmptyReturned() {
+    void apply_TenantNotExists_NoSuchMethodExceptionThrown() {
         // arrange
         TenantContext.setCurrentTenant("INVALD");
 
         // act
-        SelectionVector actual = service.apply(emptyList());
+        Exception actual = catchException(() -> service.apply(emptyList()));
 
         // assert
-        assertThat(actual).isNull();
+        assertThat(actual).isInstanceOf(NoSuchMethodException.class);
         verify(tenentSelectionVectorProvider, times(0)).apply(any());
     }
 

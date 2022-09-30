@@ -32,6 +32,7 @@ import java.util.Map;
 
 import static java.util.Collections.emptyMap;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.catchException;
 import static org.mockito.ArgumentMatchers.anyMap;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.eq;
@@ -54,15 +55,15 @@ class TenantTemplateEngineTest {
     }
 
     @Test
-    void process_TenantNotExists_EmptyReturned() {
+    void process_TenantNotExists_NoSuchMethodExceptionThrown() {
         // arrange
         TenantContext.setCurrentTenant("INVALD");
 
         // act
-        String actual = engine.process("template", emptyMap());
+        Exception actual = catchException(() -> engine.process("template", emptyMap()));
 
         // assert
-        assertThat(actual).isNull();
+        assertThat(actual).isInstanceOf(NoSuchMethodException.class);
         verify(tenantTemplateEngineMock, times(0)).process("template", emptyMap());
 
     }
@@ -82,15 +83,15 @@ class TenantTemplateEngineTest {
     }
 
     @Test
-    void toXHTML_TenantNichtVorhanden_NullWirdGeworfen() {
+    void toXHTML_TenantNichtVorhanden_NoSuchMethodExceptionThrown() {
         // arrange
         TenantContext.setCurrentTenant("INVALD");
 
         // act
-        String actual = engine.toXHTML("HTML", emptyMap());
+        Exception actual = catchException(() -> engine.toXHTML("HTML", emptyMap()));
 
         // assert
-        assertThat(actual).isNull();
+        assertThat(actual).isInstanceOf(NoSuchMethodException.class);
         verify(tenantTemplateEngineMock, times(0)).toXHTML("HTML", emptyMap());
 
     }
