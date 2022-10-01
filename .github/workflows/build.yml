@@ -74,6 +74,9 @@ jobs:
     - name: Checkout
       uses: actions/checkout@v3
 
+    - name: Branch name
+      run: echo running on branch ${GITHUB_REF##*/}
+
     - name: Checkout badges branch dedicated to storing badges only
       uses: actions/checkout@v3
       with:
