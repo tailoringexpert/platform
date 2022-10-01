@@ -21,6 +21,8 @@
  */
 package eu.tailoringexpert.screeingsheet;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import eu.tailoringexpert.domain.DatenType;
 import eu.tailoringexpert.domain.Parameter;
@@ -32,6 +34,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.catchThrowable;
 
 @Log4j2
 class JPAScreeningSheetServiceRepositoryMapperTest {
@@ -63,7 +66,7 @@ class JPAScreeningSheetServiceRepositoryMapperTest {
     }
 
     @Test
-    void toDomain_ScalarParameterTyep_IntegerValueReturned() {
+    void toDomain_ScalarParameterType_IntegerValueReturned() {
         // arrange
         ParameterEntity entity = ParameterEntity.builder()
             .category("Einsatzort")
@@ -80,4 +83,23 @@ class JPAScreeningSheetServiceRepositoryMapperTest {
         assertThat((Integer) actual.getValue()).isEqualTo(1);
 
     }
+
+    @Test
+    void toDomain_MatrixParameterTypeInvalidJson_JsonMappingExceptionThrown() throws JsonProcessingException {
+        // arrange
+        String value = "[[]";
+        ParameterEntity entity = ParameterEntity.builder()
+            .category("Einsatzort")
+            .name("LEO")
+            .parameterType(DatenType.MATRIX)
+            .value(value)
+            .build();
+
+        // act
+        Throwable actual = catchThrowable(() -> mapper.toDomain(entity));
+
+        // assert
+        assertThat(actual).isInstanceOf(JsonMappingException.class);
+    }
+
 }

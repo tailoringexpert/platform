@@ -21,6 +21,7 @@ package project {
 
     class ProjectCreationRequest {
         catalog : String
+        note : String
     }
     ProjectCreationRequest -> "1" ScreeningSheet : screeningSheet
     ProjectCreationRequest -> "1" SelectionVector : selectionVector

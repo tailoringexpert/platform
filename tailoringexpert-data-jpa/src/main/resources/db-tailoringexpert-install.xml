@@ -32,6 +32,7 @@
     <include file="db-tailoringexpert/install/tab/documentsignature.xml"/>
     <include file="db-tailoringexpert/install/tab/file.xml"/>
     <include file="db-tailoringexpert/install/tab/documentsignee.xml"/>
+    <include file="db-tailoringexpert/install/tab/note.xml"/>
 
     <include file="db-tailoringexpert/install/cst/baserequirement.xml"/>
     <include file="db-tailoringexpert/install/cst/baserequirement_phase.xml"/>
@@ -51,4 +52,5 @@
     <include file="db-tailoringexpert/install/cst/selectionvectorparameter.xml"/>
     <include file="db-tailoringexpert/install/cst/selectionvectorprofile.xml"/>
     <include file="db-tailoringexpert/install/cst/selectionvectorprofileparameter.xml"/>
+    <include file="db-tailoringexpert/install/cst/note.xml"/>
 </databaseChangeLog>

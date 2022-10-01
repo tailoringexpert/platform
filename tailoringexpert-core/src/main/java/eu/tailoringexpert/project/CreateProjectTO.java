@@ -40,5 +40,4 @@ public class CreateProjectTO implements Serializable {
     private String project;
     private String tailoring;
     private SelectionVector selectionVector;
-
 }

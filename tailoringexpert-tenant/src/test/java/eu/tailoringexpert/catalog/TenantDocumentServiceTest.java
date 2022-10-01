@@ -35,6 +35,7 @@ import java.util.Optional;
 import static java.util.Map.ofEntries;
 import static java.util.Optional.of;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.catchException;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
@@ -54,17 +55,17 @@ class TenantDocumentServiceTest {
     }
 
     @Test
-    void createCatalog_TenantNotExists_EmptyReturned() {
+    void createCatalog_TenantNotExists_NoSuchMethodExceptionThrown() {
         // arrange
         TenantContext.setCurrentTenant("INVALD");
         Catalog<BaseRequirement> catalog = Catalog.<BaseRequirement>builder().build();
         LocalDateTime erstellungsZeitpunt = LocalDateTime.now();
 
         // act
-        Optional<File> actual = service.createCatalog(catalog, erstellungsZeitpunt);
+        Exception actual = catchException(() -> service.createCatalog(catalog, erstellungsZeitpunt));
 
         // assert
-        assertThat(actual).isEmpty();
+        assertThat(actual).isInstanceOf(NoSuchMethodException.class);
         verify(tenentDocumentServiceMock, times(0)).createCatalog(catalog, erstellungsZeitpunt);
     }
 

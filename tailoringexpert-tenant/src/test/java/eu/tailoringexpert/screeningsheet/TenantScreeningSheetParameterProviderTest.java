@@ -35,6 +35,7 @@ import java.util.Map;
 
 import static java.nio.charset.StandardCharsets.UTF_8;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.catchException;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
@@ -55,17 +56,17 @@ class TenantScreeningSheetParameterProviderTest {
     }
 
     @Test
-    void parse_TenantNotExists_EmptyReturned() {
+    void parse_TenantNotExists_NoSuchMethodExceptionThrown() {
         // arrange
         TenantContext.setCurrentTenant("INVALD");
         InputStream is = new ByteArrayInputStream("Blindobjekt".getBytes(UTF_8));
 
         // act
-        Collection<ScreeningSheetParameterField> actual = provder.parse(is);
+        Exception actual = catchException(() -> provder.parse(is));
 
         // assert
+        assertThat(actual).isInstanceOf(NoSuchMethodException.class);
         verify(tenentScreeningSheetParameterProvider, times(0)).parse(is);
-        assertThat(actual).isEmpty();
     }
 
 

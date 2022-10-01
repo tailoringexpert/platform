@@ -28,6 +28,8 @@ import eu.tailoringexpert.domain.DocumentSignatureEntity;
 import eu.tailoringexpert.domain.File;
 import eu.tailoringexpert.domain.Logo;
 import eu.tailoringexpert.domain.LogoEntity;
+import eu.tailoringexpert.domain.Note;
+import eu.tailoringexpert.domain.NoteEntity;
 import eu.tailoringexpert.domain.Phase;
 import eu.tailoringexpert.domain.Project;
 import eu.tailoringexpert.domain.ProjectEntity;
@@ -112,6 +114,8 @@ public abstract class JPATailoringServiceRepositoryMapper {
 
     @Mapping(target = "applicable", constant = "false")
     abstract DocumentSignature getDefaultSignatures(DocumentSigneeEntity entity);
+
+    abstract NoteEntity toEntity(Note domain);
 
     LogoEntity resolve(Logo domain) {
         return nonNull(domain) ? logoRepository.findByName(domain.getName()) : null;

@@ -41,6 +41,8 @@ package domain {
         +{static} TAILORING_CATALOG_CHAPTER_REQUIREMENT = "project/{project}/tailoring/{tailoring}/catalog/{chapter}/requirement" : String
         +{static} TAILORING_ATTACHMENTS = "project/{project}/tailoring/{tailoring}/attachment" : String
         +{static} TAILORING_ATTACHMENT = "project/{project}/tailoring/{tailoring}/attachment/{name}" : String
+        +{static} TAILORING_NOTES = "project/{project}/tailoring/{tailoring}/note" : String
+        +{static} TAILORING_NOTE = "project/{project}/tailoring/{tailoring}/note/{note}" : String
         +{static} BASECATALOG = "catalog" : String
         +{static} BASECATALOG_VERSION = "catalog/{version}" : String
         +{static} BASECATALOG_VERION_PDF = "catalog/{version}/pdf" : String
@@ -67,6 +69,7 @@ package domain {
         -{static} REL_NAME = "name" : String
         -{static} REL_IMPORT = "import" : String
         -{static} REL_ATTACHMENT = "attachment" : String
+        -{static} REL_NOTE = "note" : String
         
         .. ProjektInformation ..
         updatePathContext(pathContext : PathContextBuilder, domain : ProjektInformation): void
@@ -110,12 +113,15 @@ package domain {
         +{abstract}  toResource(pathContext : PathContextBuilder, domain :  Catalog<TailoringRequirement>) : TailoringCatalogResource
         #addLinks(pathContext : PathContextBuilder, resource : TailoringCatalogResourceBuilder) : void
         .. Selectionvectorprofile ..
-        updatePathContext(pathContext : PathContextBuilder, domain : SelectionVectorProfiel): void
+        updatePathContext(pathContext : PathContextBuilder, domain : SelectionVectorProfile): void
         +{abstract}  toResource(pathContext : PathContextBuilder, domain : SelectionVectorProfile) : SelectionVectorProfileResource
         #addLinks(pathContext : PathContextBuilder, resource : SelectionVectorProfileResourceBuilder) : void
+        .. Note ..
+        updatePathContext(pathContext : PathContextBuilder, domain : Note): void
+        +{abstract}  toResource(pathContext : PathContextBuilder, domain : Note) : SelectionVectorProfileResource
+        #addLinks(pathContext : PathContextBuilder, resource : NoteResourceBuilder) : void
 
         +createLink(rel : String, baseUri : String, path: String, parameter : Map<String, String>) : Link
-
     }
 
     class FileResource {
@@ -145,7 +151,8 @@ package domain {
         project : String
         tailoring : String
         chapter : String
-        requirment : String
+        requirement : String
+        note : String
         selected : Boolean
     }
 
@@ -187,6 +194,12 @@ package domain {
     }
     RepresentationModel <|-- BaseCatalogVersionResource
 
+    class NoteResource {
+        number : Integer
+        text : String
+        creationTimestamp : String
+    }
+
     class TailoringResource {
         name : String
     }
@@ -194,6 +207,7 @@ package domain {
     TailoringResource --> "1" TailoringState : state
     TailoringResource --> "1..*" Phase : phases
     TailoringResource --> "1" TailoringCatalogResource : catalog
+    TailoringResource --> "0..*" NoteResource : notes
 
     class ScreeningSheetParameterResource {
         label : String

@@ -44,6 +44,9 @@ package tailoring {
         updateName(project : String, tailoring : String, name : String) : Optional<Tailoring>
         updateSelectedRequirements(project : String, tailoring : String, data : byte[]) : void
         deleteTailoring(project : String, tailoring : String) : Optional<Boolean>
+        addNote(project : String, tailoring : String, note : String) : Optional<TailoringInformation>
+        getNotes(project : String, tailoring : String) : Optional<Collection<Note>>
+        getNote(project : String, tailoring : String, note : Integer) : Optional<Note>
     }
 
     abstract class TailoringServiceMapper {
@@ -67,6 +70,7 @@ package tailoring {
         getSelectionVectorProfile() : Collection<SelectionVectorProfile>
         getDefaultSignatures() : Collection<DocumentSignature>
         deleteTailoring(project : String, tailoring : String)
+        addNote(project : String, tailoring : String, note : Note) : Optional<Tailoring>
     }
 
     interface DocumentService {

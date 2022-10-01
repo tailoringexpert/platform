@@ -21,7 +21,6 @@
  */
 package eu.tailoringexpert.tailoring;
 
-import lombok.SneakyThrows;
 import lombok.extern.log4j.Log4j2;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
@@ -44,7 +43,6 @@ import static org.apache.poi.ss.usermodel.Row.MissingCellPolicy.CREATE_NULL_AS_B
 public class TailoringRequirementExcelFileReader implements Function<byte[], Map<String, Collection<ImportRequirement>>> {
 
     @Override
-    @SneakyThrows
     public Map<String, Collection<ImportRequirement>> apply(byte[] data) {
         Map<String, Collection<ImportRequirement>> result = new HashMap<>();
 
@@ -83,8 +81,10 @@ public class TailoringRequirementExcelFileReader implements Function<byte[], Map
                     }
                 }
             }
+            return result;
+        } catch (Exception e) {
+            log.catching(e);
         }
-
-        return result;
+        return null;
     }
 }

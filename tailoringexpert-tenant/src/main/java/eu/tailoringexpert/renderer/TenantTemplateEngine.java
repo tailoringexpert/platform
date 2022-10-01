@@ -24,6 +24,7 @@ package eu.tailoringexpert.renderer;
 import eu.tailoringexpert.TenantContext;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
+import lombok.SneakyThrows;
 
 import java.util.Map;
 
@@ -44,22 +45,24 @@ public class TenantTemplateEngine implements HTMLTemplateEngine {
      * {@inheritDoc}
      */
     @Override
+    @SneakyThrows
     public String process(String template, Map<String, Object> variables) {
-        HTMLTemplateEngine engine = tenantEngine.get(TenantContext.getCurrentTenant());
-        if (isNull(engine)) {
-            return null;
-        }
-
+        HTMLTemplateEngine engine = getTenantImplementation();
         return engine.process(template, variables);
     }
 
     @Override
+    @SneakyThrows
     public String toXHTML(String text, Map<String, String> placeholders) {
-        HTMLTemplateEngine engine = tenantEngine.get(TenantContext.getCurrentTenant());
-        if (isNull(engine)) {
-            return null;
-        }
-
+        HTMLTemplateEngine engine = getTenantImplementation();
         return engine.toXHTML(text, placeholders);
+    }
+
+    private HTMLTemplateEngine getTenantImplementation() throws NoSuchMethodException {
+        HTMLTemplateEngine result = tenantEngine.get(TenantContext.getCurrentTenant());
+        if (isNull(result)) {
+            throw new NoSuchMethodException("Tenant " + TenantContext.getCurrentTenant() + " does not implement " + HTMLTemplateEngine.class.getName());
+        }
+        return result;
     }
 }

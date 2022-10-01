@@ -37,6 +37,8 @@ package tailoring {
         +getProfiles() : ResponseEntity<CollectionModel<EntityModel<SelectionVectorProfileResource>>>
         +postRequirements(project : String, tailoring : String, datei : MultipartFile) : ResponseEntity<EntityModel<Void>>
         +deleteTailoring(project : String, tailoring : String): ResponseEntity<EntityModel<Void>>
+        +getNotes(project : String, tailoring : String): ResponseEntity<CollectionModel<NoteResource>>
+        +getNote(project : String, tailoring : String, note: Integer): ResponseEntity<EntityModel<NoteResource>>
     }
 
 

@@ -24,12 +24,12 @@ package eu.tailoringexpert.screeningsheet;
 import eu.tailoringexpert.TenantContext;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
+import lombok.SneakyThrows;
 
 import java.io.InputStream;
 import java.util.Collection;
 import java.util.Map;
 
-import static java.util.Collections.emptyList;
 import static java.util.Objects.isNull;
 
 /**
@@ -44,11 +44,17 @@ public class TenantScreeningSheetParameterProvider implements ScreeningSheetPara
     private final Map<String, ScreeningSheetParameterProvider> tenantProvider;
 
     @Override
+    @SneakyThrows
     public Collection<ScreeningSheetParameterField> parse(InputStream is) {
-        ScreeningSheetParameterProvider provider = tenantProvider.get(TenantContext.getCurrentTenant());
-        if (isNull(provider)) {
-            return emptyList();
-        }
+        ScreeningSheetParameterProvider provider = getTenantImplementation();
         return provider.parse(is);
+    }
+
+    private ScreeningSheetParameterProvider getTenantImplementation() throws NoSuchMethodException {
+        ScreeningSheetParameterProvider result = tenantProvider.get(TenantContext.getCurrentTenant());
+        if (isNull(result)) {
+            throw new NoSuchMethodException("Tenant " + TenantContext.getCurrentTenant() + " does not implement " + ScreeningSheetParameterProvider.class.getName());
+        }
+        return result;
     }
 }
