@@ -25,6 +25,7 @@ import eu.tailoringexpert.domain.FileEntity;
 import eu.tailoringexpert.domain.File;
 import eu.tailoringexpert.domain.DocumentSignature;
 import eu.tailoringexpert.domain.DocumentSignatureEntity;
+import eu.tailoringexpert.domain.Note;
 import eu.tailoringexpert.domain.Project;
 import eu.tailoringexpert.domain.ProjectEntity;
 import eu.tailoringexpert.domain.ScreeningSheet;
@@ -297,6 +298,19 @@ public class JPATailoringServiceRepository implements TailoringServiceRepository
             return true;
         }
         return false;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public Optional<Tailoring> addNote(String project, String tailoring, Note note) {
+        Optional<TailoringEntity> oTailoring = findTailoring(project, tailoring);
+        if (oTailoring.isPresent()) {
+            oTailoring.get().getNotes().add(mapper.toEntity(note));
+            return of(mapper.toDomain(oTailoring.get()));
+        }
+        return empty();
     }
 
     private Optional<ProjectEntity> findProject(String project) {

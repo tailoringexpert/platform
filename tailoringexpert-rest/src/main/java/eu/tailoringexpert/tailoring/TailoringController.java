@@ -25,6 +25,8 @@ import eu.tailoringexpert.ResourceException;
 import eu.tailoringexpert.domain.FileResource;
 import eu.tailoringexpert.domain.DocumentSignature;
 import eu.tailoringexpert.domain.DocumentSignatureResource;
+import eu.tailoringexpert.domain.Note;
+import eu.tailoringexpert.domain.NoteResource;
 import eu.tailoringexpert.domain.SelectionVectorProfileResource;
 import eu.tailoringexpert.domain.Tailoring;
 import eu.tailoringexpert.domain.TailoringCatalogResource;
@@ -80,6 +82,8 @@ import static eu.tailoringexpert.domain.ResourceMapper.TAILORING_COMPARE;
 import static eu.tailoringexpert.domain.ResourceMapper.TAILORING_DOCUMENT;
 import static eu.tailoringexpert.domain.ResourceMapper.TAILORING_DOCUMENT_CATALOG;
 import static eu.tailoringexpert.domain.ResourceMapper.TAILORING_NAME;
+import static eu.tailoringexpert.domain.ResourceMapper.TAILORING_NOTE;
+import static eu.tailoringexpert.domain.ResourceMapper.TAILORING_NOTES;
 import static eu.tailoringexpert.domain.ResourceMapper.TAILORING_REQUIREMENT_IMPORT;
 import static eu.tailoringexpert.domain.ResourceMapper.TAILORING_SCREENINGSHEET;
 import static eu.tailoringexpert.domain.ResourceMapper.TAILORING_SCREENINGSHEET_PDF;
@@ -581,5 +585,89 @@ public class TailoringController {
         @Parameter(description = "Tailoring name") @PathVariable String tailoring) {
         Optional<Boolean> deleted = tailoringService.deleteTailoring(project, tailoring);
         return ResponseEntity.status(deleted.isPresent() ? OK : NOT_FOUND).build();
+    }
+
+    @Operation(summary = "Load notes of a tailoring")
+    @ApiResponses(value = {
+        @ApiResponse(
+            responseCode = "200", description = "Tailoring loaded",
+            content = @Content(mediaType = "application/json+hal", schema = @Schema(implementation = NoteResource.class))),
+        @ApiResponse(
+            responseCode = "404", description = "Tailoring does not exist",
+            content = @Content)
+    })
+    @GetMapping(value = TAILORING_NOTES, produces = {"application/hal+json"})
+    public ResponseEntity<CollectionModel<NoteResource>> getNotes(
+        @Parameter(description = "Project identifier") @PathVariable String project,
+        @Parameter(description = "Tailoring name") @PathVariable String tailoring) {
+        PathContextBuilder pathContext = PathContext.builder()
+            .project(project)
+            .tailoring(tailoring);
+
+        return tailoringService.getNotes(project, tailoring)
+            .map(data -> ok()
+                .body(CollectionModel.of(
+                    data.stream()
+                        .map(domain -> mapper.toResource(pathContext, domain))
+                        .collect(toList())
+                ))
+            )
+            .orElseGet(() -> notFound().build());
+    }
+
+    @Operation(summary = "Load note of a tailoring")
+    @ApiResponses(value = {
+        @ApiResponse(
+            responseCode = "200", description = "Tailoring loaded",
+            content = @Content(mediaType = "application/json+hal", schema = @Schema(implementation = NoteResource.class))),
+        @ApiResponse(
+            responseCode = "404", description = "Note does not exist",
+            content = @Content)
+    })
+    @GetMapping(value = TAILORING_NOTE, produces = {"application/hal+json"})
+    public ResponseEntity<EntityModel<NoteResource>> getNote(
+        @Parameter(description = "Project identifier") @PathVariable String project,
+        @Parameter(description = "Tailoring name") @PathVariable String tailoring,
+        @Parameter(description = "Number of note") @PathVariable Integer note) {
+        PathContextBuilder pathContext = PathContext.builder()
+            .project(project)
+            .tailoring(tailoring)
+            .note(note.toString());
+
+        return tailoringService.getNote(project, tailoring, note)
+            .map(loaded -> ok()
+                .body(of(mapper.toResource(pathContext, loaded))))
+            .orElseGet(() -> notFound().build());
+
+    }
+
+    @Operation(summary = "Add a new note totailoring")
+    @ApiResponses(value = {
+        @ApiResponse(
+            responseCode = "201", description = "Note added",
+            content = @Content(mediaType = "application/json+hal", schema = @Schema(implementation = Void.class))),
+        @ApiResponse(
+            responseCode = "404", description = "Tailoring does not exist",
+            content = @Content)
+    })
+    @PostMapping(TAILORING_NOTES)
+    public ResponseEntity<EntityModel<Void>> postNote(
+        @Parameter(description = "Project identifier") @PathVariable String project,
+        @Parameter(description = "Tailoring name") @PathVariable String tailoring,
+        @Parameter(description = "Text of note to add") @RequestBody String note) {
+        Optional<Note> addedNote = tailoringService.addNote(project, tailoring, note);
+        if (addedNote.isEmpty()) {
+            return notFound().build();
+        }
+
+        PathContextBuilder pathContext = PathContext.builder()
+            .project(project)
+            .tailoring(tailoring);
+
+        return created(mapper.createLink(ResourceMapper.REL_SELF, linkToCurrentMapping().toString(),
+                TAILORING_NOTE,
+                pathContext.note(addedNote.get().getNumber().toString()).build().parameter())
+            .toUri())
+            .build();
     }
 }

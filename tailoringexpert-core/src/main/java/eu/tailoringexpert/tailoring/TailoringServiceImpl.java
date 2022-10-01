@@ -21,6 +21,7 @@
  */
 package eu.tailoringexpert.tailoring;
 
+import eu.tailoringexpert.domain.Note;
 import eu.tailoringexpert.requirement.RequirementService;
 import eu.tailoringexpert.domain.Catalog;
 import eu.tailoringexpert.domain.File;
@@ -44,6 +45,7 @@ import java.io.ByteArrayOutputStream;
 import java.math.BigInteger;
 import java.security.MessageDigest;
 import java.time.LocalDateTime;
+import java.time.ZonedDateTime;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
@@ -93,6 +95,7 @@ public class TailoringServiceImpl implements TailoringService {
                                      String identifier,
                                      ScreeningSheet screeningSheet,
                                      SelectionVector applicableSelectionVector,
+                                     String note,
                                      Catalog<BaseRequirement> catalog) {
         Catalog<TailoringRequirement> tailoringCatalog = mapper.toTailoringCatalog(
             catalog, screeningSheet, applicableSelectionVector
@@ -114,6 +117,11 @@ public class TailoringServiceImpl implements TailoringService {
             .findFirst()
             .ifPresent(parameter -> result.phases((Collection<Phase>) parameter.getValue()));
 
+        result.notes(nonNull(note) ? List.of(Note.builder()
+            .number(1)
+            .text(note)
+            .creationTimestamp(ZonedDateTime.now())
+            .build()) : null);
 
         return result.build();
     }
@@ -314,15 +322,79 @@ public class TailoringServiceImpl implements TailoringService {
      */
     @Override
     public Optional<Boolean> deleteTailoring(@NonNull String project, @NonNull String tailoring) {
-        log.info("STARTED | trying to delete phase {} of project {}", tailoring, project);
+        log.info("STARTED | trying to delete tailoring {} of project {}", tailoring, project);
         Optional<Tailoring> oTailoring = repository.getTailoring(project, tailoring);
         if (oTailoring.isEmpty()) {
-            log.info("FINISHED | phase not existing. No deletion.");
+            log.info("FINISHED | tailoring not existing. No deletion.");
             return empty();
         }
 
         Optional<Boolean> result = of(repository.deleteTailoring(project, tailoring));
-        log.info("FINISHED | deleting phase {}.", result.get());
+        log.info("FINISHED | deleting tailoring {}.", result.get());
+        return result;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public Optional<Note> addNote(String project, String tailoring, String note) {
+        Optional<Tailoring> oTailoring = repository.getTailoring(project, tailoring);
+        if (oTailoring.isEmpty()) {
+            log.info("FINISHED | tailoring not existing. Not adding.");
+            return empty();
+        }
+
+        Collection<Note> notes = oTailoring.get().getNotes();
+        Note noteToAdd = Note.builder()
+            .number(nonNull(notes) ? notes.size() + 1 : 1)
+            .text(note)
+            .creationTimestamp(ZonedDateTime.now())
+            .build();
+
+        Optional<Tailoring> updatedTailoring = repository.addNote(project, tailoring, noteToAdd);
+        if (updatedTailoring.isEmpty()) {
+            log.info("FINISHED | addNote tailoring {}.not added", noteToAdd);
+        }
+
+        log.info("FINISHED | addNote tailoring {} added", noteToAdd);
+
+        return of(noteToAdd);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public Optional<Note> getNote(String project, String tailoring, Integer note) {
+        Optional<Tailoring> oTailoring = repository.getTailoring(project, tailoring);
+        if (oTailoring.isEmpty()) {
+            log.info("FINISHED | tailoring not existing. Not adding.");
+            return empty();
+        }
+
+        Optional<Note> result = oTailoring.get().getNotes().stream()
+            .filter(n -> note.equals(n.getNumber()))
+            .findFirst();
+
+        log.info("FINISHED | getNote tailoring {}.", result.isPresent() ? result.get() : "does not exists");
+        return result;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public Optional<Collection<Note>> getNotes(String project, String tailoring) {
+        Optional<Tailoring> oTailoring = repository.getTailoring(project, tailoring);
+        if (oTailoring.isEmpty()) {
+            log.info("FINISHED | tailoring not existing. Not adding.");
+            return empty();
+        }
+
+        Optional<Collection<Note>> result = ofNullable(oTailoring.get().getNotes());
+
+        log.info("FINISHED | getNote tailoring {}.", result.isPresent() ? result.get() : "does not exists");
         return result;
     }
 

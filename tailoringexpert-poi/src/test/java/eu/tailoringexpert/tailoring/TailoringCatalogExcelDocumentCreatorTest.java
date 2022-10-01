@@ -28,7 +28,6 @@ import com.fasterxml.jackson.datatype.jdk8.Jdk8Module;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.fasterxml.jackson.module.paramnames.ParameterNamesModule;
 import eu.tailoringexpert.domain.Catalog;
-import eu.tailoringexpert.domain.Chapter;
 import eu.tailoringexpert.domain.File;
 import eu.tailoringexpert.domain.Tailoring;
 import eu.tailoringexpert.domain.TailoringRequirement;
@@ -105,43 +104,5 @@ class TailoringCatalogExcelDocumentCreatorTest {
         assertThat(actual).isNotNull();
         fileSaver.accept("43.xlsx", actual.getData());
 
-    }
-
-    @Test
-    void createDocument_NoToc_EmptyFileCreated() throws Exception {
-        // arrange
-        Tailoring tailoring = Tailoring.builder()
-            .catalog(Catalog.<TailoringRequirement>builder().build())
-            .signatures(emptyList())
-            .phases(Arrays.asList(ZERO, A, B, C, D, E, F))
-            .build();
-
-        // act
-        File actual = creator.createDocument("42", tailoring, emptyMap());
-
-        // assert
-        assertThat(actual).isNotNull();
-        fileSaver.accept("leer.xlsx", actual.getData());
-    }
-
-    @Test
-    void createDocument_ChapterNull_NullReturned() throws Exception {
-        // arrange
-        Tailoring tailoring = Tailoring.builder()
-            .catalog(Catalog.<TailoringRequirement>builder()
-                .toc(Chapter.<TailoringRequirement>builder()
-                    .chapters(null)
-                    .build())
-                .build())
-
-            .signatures(emptyList())
-            .phases(Arrays.asList(ZERO, A, B, C, D, E, F))
-            .build();
-
-        // act
-        File actual = creator.createDocument("42", tailoring, emptyMap());
-
-        // assert
-        assertThat(actual).isNull();
     }
 }

@@ -57,10 +57,8 @@ public class TailoringCatalogExcelDocumentCreator implements DocumentCreator {
         try (Workbook wb = new XSSFWorkbook()) {
             Sheet sheet = createSheet(wb, tailoring);
 
-            if (nonNull(tailoring.getCatalog().getToc())) {
-                tailoring.getCatalog().getToc().getChapters()
-                    .forEach(gruppe -> addChapter(gruppe, sheet));
-            }
+            tailoring.getCatalog().getToc().getChapters()
+                .forEach(gruppe -> addChapter(gruppe, sheet));
 
             range(0, sheet.getRow(0).getPhysicalNumberOfCells())
                 .forEach(sheet::autoSizeColumn);

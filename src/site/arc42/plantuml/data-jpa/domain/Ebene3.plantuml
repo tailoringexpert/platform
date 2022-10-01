@@ -168,6 +168,13 @@ package domain {
     }
     DocumentSigneeEntity --> "1" DocumentSignatureType : type
 
+    class NoteEntity {
+        id : Long <<Pk>>
+        number : Integer
+        text : String
+        creationTimestamp : ZonedDateTime
+    }
+
     class TailoringEntity {
         id : Long <<Pk>>
         identifier : String
@@ -182,6 +189,7 @@ package domain {
     TailoringEntity --> "1" TailoringState : state
     TailoringEntity --> "1..*" DocumentSignatureEntity : signatures
     TailoringEntity --> "0..*" DocumentEntity : documents
+    TailoringEntity --> "0..*" NoteEntity : notes
 
     class TailoringCatalogueEntity {
         id : Long <<PK>>

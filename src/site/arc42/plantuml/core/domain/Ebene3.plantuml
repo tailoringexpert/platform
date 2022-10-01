@@ -98,6 +98,12 @@ package domain {
         +getType() : String
     }
 
+    class Note {
+        number : Integer
+        text : String
+        creationTimestamp : ZonedDateTime
+    }
+
     enum TailoringState {
         CREATED
         ACTIVE
@@ -115,6 +121,7 @@ package domain {
     Tailoring --> "1" TailoringState : state
     Tailoring --> "0..*" File : files
     Tailoring --> "1..*" DocumentSignature : signatures
+    Tailoring --> "0..*" Note : notes
 
     class Project {
         identifier : String

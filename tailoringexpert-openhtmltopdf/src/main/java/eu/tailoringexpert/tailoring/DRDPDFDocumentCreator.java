@@ -42,7 +42,6 @@ import java.util.Set;
 import java.util.function.BiFunction;
 
 import static java.util.Comparator.comparing;
-import static java.util.Objects.nonNull;
 
 /**
  * Create a DRD PDF file.
@@ -78,9 +77,7 @@ public class DRDPDFDocumentCreator implements DocumentCreator {
         parameter.put("drds", drds);
 
         Catalog<TailoringRequirement> catalog = tailoring.getCatalog();
-        if (nonNull(catalog.getToc())) {
-            addDRD(catalog.getToc(), catalog.getVersion(), drds, tailoring.getPhases());
-        }
+        addDRD(catalog.getToc(), catalog.getVersion(), drds, tailoring.getPhases());
 
         String html = templateEngine.process(catalog.getVersion() + "/drd", parameter);
         File result = pdfEngine.process(docId, html, catalog.getVersion() + "/drd");

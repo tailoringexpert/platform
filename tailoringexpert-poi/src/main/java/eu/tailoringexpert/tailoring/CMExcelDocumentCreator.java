@@ -84,8 +84,7 @@ public class CMExcelDocumentCreator implements DocumentCreator {
                                Map<String, String> placeholders) {
 
         try {
-            FileBuilder result = builder()
-                .name(docId + ".xlsx");
+            FileBuilder result = builder().name(docId + ".xlsx");
 
             java.io.File template = templateSupplier.apply(tailoring.getCatalog().getVersion() + "/cm.xlsx");
             try (Workbook wb = new XSSFWorkbook(newInputStream(template.toPath()))) {

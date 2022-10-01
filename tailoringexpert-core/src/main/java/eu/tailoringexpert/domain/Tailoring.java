@@ -41,4 +41,5 @@ public class Tailoring implements Serializable {
     private TailoringState state;
     private Collection<File> files;
     private Collection<DocumentSignature> signatures;
+    private Collection<Note> notes;
 }

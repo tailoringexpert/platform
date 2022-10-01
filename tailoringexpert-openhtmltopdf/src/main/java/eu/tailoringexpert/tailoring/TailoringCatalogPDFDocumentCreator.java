@@ -90,16 +90,13 @@ public class TailoringCatalogPDFDocumentCreator implements DocumentCreator {
         Map<String, String> bookmarks = new LinkedHashMap<>();
         parameter.put("bookmarks", bookmarks);
 
-        if (nonNull(tailoring.getCatalog().getToc())) {
-            tailoring.getCatalog().getToc().getChapters()
-                .forEach(chapter -> {
-                        bookmarks.put(chapter.getNumber(), chapter.getName());
-                        addChapter(chapter, 1, requirements, placeholders);
-                    }
-                );
-
-            addDRD(tailoring.getCatalog().getToc(), drds, tailoring.getPhases());
-        }
+        tailoring.getCatalog().getToc().getChapters()
+            .forEach(chapter -> {
+                    bookmarks.put(chapter.getNumber(), chapter.getName());
+                    addChapter(chapter, 1, requirements, placeholders);
+                }
+            );
+        addDRD(tailoring.getCatalog().getToc(), drds, tailoring.getPhases());
 
         parameter.put("signatures", tailoring.getSignatures().stream()
             .sorted(comparingInt(DocumentSignature::getPosition))

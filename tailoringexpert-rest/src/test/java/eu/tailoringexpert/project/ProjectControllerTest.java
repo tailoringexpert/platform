@@ -149,7 +149,7 @@ class ProjectControllerTest {
             .selectionVector(selectionVector)
             .build();
 
-        given(projectServiceMock.createProject("8.2.1", data, selectionVector)).willReturn(createProject);
+        given(projectServiceMock.createProject("8.2.1", data, selectionVector, null)).willReturn(createProject);
 
         ProjectCreationRequest anlageRequest = ProjectCreationRequest.builder()
             .screeningSheet(ScreeningSheet.builder()
@@ -178,7 +178,7 @@ class ProjectControllerTest {
             .andExpect(status().isCreated())
             .andExpect(header().string("Location", "http://localhost/project/SAMPLE"));
 
-        verify(projectServiceMock, times(1)).createProject("8.2.1", data, selectionVector);
+        verify(projectServiceMock, times(1)).createProject("8.2.1", data, selectionVector, null);
     }
 
 
@@ -386,7 +386,7 @@ class ProjectControllerTest {
         Tailoring tailoring = Tailoring.builder()
             .name("master1")
             .build();
-        given(projectServiceMock.addTailoring("SAMPLE", "8.2.1", data, selectionVector)).willReturn(Optional.of(tailoring));
+        given(projectServiceMock.addTailoring("SAMPLE", "8.2.1", data, selectionVector, null)).willReturn(Optional.of(tailoring));
 
         ProjectCreationRequest creationRequest = ProjectCreationRequest.builder()
             .catalog("8.2.1")
@@ -397,6 +397,8 @@ class ProjectControllerTest {
                 .build())
             .selectionVector(selectionVector)
             .build();
+
+        given(mapperMock.createLink(any(), any(), any(), any())).willReturn(Link.of("http://localhost/project/SAMPLE/tailoring/master1"));
 
         // act
         ResultActions actual = mockMvc.perform(post("/project/{project}/tailoring", "SAMPLE")
@@ -411,7 +413,7 @@ class ProjectControllerTest {
             .andExpect(status().isCreated())
             .andExpect(header().string("Location", "http://localhost/project/SAMPLE/tailoring/master1"));
 
-        verify(projectServiceMock, times(1)).addTailoring("SAMPLE", "8.2.1", data, selectionVector);
+        verify(projectServiceMock, times(1)).addTailoring("SAMPLE", "8.2.1", data, selectionVector, null);
         verify(mapperMock, times(0)).toResource(any(), any(Tailoring.class));
     }
 
@@ -425,7 +427,7 @@ class ProjectControllerTest {
         }
 
         SelectionVector selectionVector = SelectionVector.builder().build();
-        given(projectServiceMock.addTailoring("SAMPLE", "8.2.1", data, selectionVector)).willReturn(Optional.empty());
+        given(projectServiceMock.addTailoring("SAMPLE", "8.2.1", data, selectionVector, "Test")).willReturn(Optional.empty());
 
         ProjectCreationRequest creationRequest = ProjectCreationRequest.builder()
             .catalog("8.2.1")
@@ -435,6 +437,7 @@ class ProjectControllerTest {
                 .selectionVector(selectionVector)
                 .build())
             .selectionVector(selectionVector)
+            .note("Test")
             .build();
 
         // act
@@ -449,7 +452,7 @@ class ProjectControllerTest {
         actual
             .andExpect(status().isNotFound());
 
-        verify(projectServiceMock, times(1)).addTailoring("SAMPLE", "8.2.1", data, selectionVector);
+        verify(projectServiceMock, times(1)).addTailoring("SAMPLE", "8.2.1", data, selectionVector, "Test");
         verify(mapperMock, times(0)).toResource(any(), any(Tailoring.class));
     }
 

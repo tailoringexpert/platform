@@ -61,25 +61,18 @@ public class ComparisonPDFDocumentCreator implements DocumentCreator {
     public File createDocument(@NonNull String docId,
                                @NonNull Tailoring tailoring,
                                @NonNull Map<String, String> placeholders) {
-        try {
-            Map<String, Object> parameter = new HashMap<>(placeholders);
+        Map<String, Object> parameter = new HashMap<>(placeholders);
 
-            Collection<ComparisionElement> requirements = new LinkedList<>();
-            parameter.put("screeningsheet", tailoring.getScreeningSheet().getParameters());
+        Collection<ComparisionElement> requirements = new LinkedList<>();
+        parameter.put("screeningsheet", tailoring.getScreeningSheet().getParameters());
 
-            parameter.put("requirements", requirements);
-            if (nonNull(tailoring.getCatalog().getToc())) {
-                tailoring.getCatalog().getToc().getChapters()
-                    .forEach(chapter -> addChapter(chapter, requirements));
-            }
+        parameter.put("requirements", requirements);
+        tailoring.getCatalog().getToc().getChapters()
+            .forEach(chapter -> addChapter(chapter, requirements));
 
-            String html = templateEngine.process(tailoring.getCatalog().getVersion() + "/comparision", parameter);
+        String html = templateEngine.process(tailoring.getCatalog().getVersion() + "/comparision", parameter);
 
-            return pdfEngine.process(docId, html, tailoring.getCatalog().getVersion());
-        } catch (Exception e) {
-            log.catching(e);
-        }
-        return null;
+        return pdfEngine.process(docId, html, tailoring.getCatalog().getVersion());
     }
 
     void addChapter(Chapter<TailoringRequirement> chapter, Collection<ComparisionElement> rows) {

@@ -57,6 +57,6 @@ public class ProjectCreator implements Supplier<CreateProjectTO> {
             data = is.readAllBytes();
         }
 
-        return projectService.createProject("8.2.1", data, screeningSheetService.calculateSelectionVector(data));
+        return projectService.createProject("8.2.1", data, screeningSheetService.calculateSelectionVector(data), null);
     }
 }

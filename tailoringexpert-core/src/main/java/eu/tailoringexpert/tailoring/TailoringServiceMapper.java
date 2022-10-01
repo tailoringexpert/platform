@@ -37,6 +37,7 @@ import org.mapstruct.Context;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;
+import org.mapstruct.NullValueMappingStrategy;
 
 import java.util.Collection;
 import java.util.Set;
@@ -52,7 +53,7 @@ import static java.util.stream.Collectors.toUnmodifiableSet;
  *
  * @author Michael Bädorf
  */
-@Mapper
+@Mapper(nullValueIterableMappingStrategy = NullValueMappingStrategy.RETURN_DEFAULT)
 @SuppressWarnings("java:S1610")
 public abstract class TailoringServiceMapper {
 

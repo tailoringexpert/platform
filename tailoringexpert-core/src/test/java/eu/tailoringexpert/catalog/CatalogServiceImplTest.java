@@ -33,6 +33,7 @@ import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.util.Optional;
 
+import static java.util.Optional.empty;
 import static java.util.Optional.of;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.catchThrowable;
@@ -117,7 +118,7 @@ class CatalogServiceImplTest {
     @Test
     void createCatalog_CatalogNotExisting_EmptyReturned() {
         // arrange
-        given(repositoryMock.getCatalog(any())).willReturn(Optional.empty());
+        given(repositoryMock.getCatalog(any())).willReturn(empty());
 
         // act
         Optional<File> actual = service.createCatalog("8.2.1");
@@ -139,6 +140,22 @@ class CatalogServiceImplTest {
 
         // assert
         assertThat(actual).isNotEmpty();
+        verify(repositoryMock, times(1)).getCatalog("8.2.1");
+        verify(documentServiceMock, times(1)).createCatalog(any(), any());
+    }
+
+    @Test
+    void createCatalog_DocumentServiceEmptyResult_EmptyReturned() {
+        // arrange
+        given(repositoryMock.getCatalog(any())).willReturn(of(Catalog.<BaseRequirement>builder().build()));
+
+        given(documentServiceMock.createCatalog(any(), any())).willReturn(empty());
+
+        // act
+        Optional<File> actual = service.createCatalog("8.2.1");
+
+        // assert
+        assertThat(actual).isEmpty();
         verify(repositoryMock, times(1)).getCatalog("8.2.1");
         verify(documentServiceMock, times(1)).createCatalog(any(), any());
     }

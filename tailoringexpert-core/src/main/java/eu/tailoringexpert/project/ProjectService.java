@@ -40,9 +40,10 @@ public interface ProjectService {
      * @param catalog                   Version of base catalog to use to create initial tailoring
      * @param screeningSheet            Screeningsheet to evaluate for tailoring parameters
      * @param applicableSelectionVector electionvector to use for making requirements applicable
+     * @param note                      Note on created tailoring
      * @return Minimal data of created project
      */
-    CreateProjectTO createProject(String catalog, byte[] screeningSheet, SelectionVector applicableSelectionVector);
+    CreateProjectTO createProject(String catalog, byte[] screeningSheet, SelectionVector applicableSelectionVector, String note);
 
     /**
      * Create a new tailoring and adds to project.
@@ -51,9 +52,10 @@ public interface ProjectService {
      * @param catalog                   Version of base catalog to use to create tailoring
      * @param screeningSheetData        Screeningsheet to evaluate for tailoring parameters
      * @param applicableSelectionVector Selectionvector to use for making requirements applicable
+     * @param note                      Note on created tailoring
      * @return added new tailoring
      */
-    Optional<Tailoring> addTailoring(String project, String catalog, byte[] screeningSheetData, SelectionVector applicableSelectionVector);
+    Optional<Tailoring> addTailoring(String project, String catalog, byte[] screeningSheetData, SelectionVector applicableSelectionVector, String note);
 
     /**
      * Create (full) copy of provided project.

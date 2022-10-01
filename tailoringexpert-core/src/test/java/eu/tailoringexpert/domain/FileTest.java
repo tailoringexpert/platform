@@ -76,4 +76,18 @@ class FileTest {
         // assert
         assertThat(actual).isEqualTo("hallo.du");
     }
+
+    @Test
+    void getName_NoFileTypeEnding_NameReturned() throws IOException {
+        // arrange
+        File file = File.builder()
+            .name("hallodu")
+            .build();
+
+        // act
+        String actual = file.getName();
+
+        // assert
+        assertThat(actual).isEqualTo("hallodu");
+    }
 }

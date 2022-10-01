@@ -25,13 +25,13 @@ import eu.tailoringexpert.TenantContext;
 import eu.tailoringexpert.domain.File;
 import eu.tailoringexpert.domain.Tailoring;
 import lombok.RequiredArgsConstructor;
+import lombok.SneakyThrows;
 
 import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.Map;
 import java.util.Optional;
 
-import static java.util.Collections.emptyList;
 import static java.util.Objects.isNull;
 
 /**
@@ -45,29 +45,31 @@ public class TenantDocumentService implements DocumentService {
     private final Map<String, DocumentService> tenantService;
 
     @Override
+    @SneakyThrows
     public Optional<File> createRequirementDocument(Tailoring tailoring, LocalDateTime creationTimestamp) {
-        DocumentService service = tenantService.get(TenantContext.getCurrentTenant());
-        if (isNull(service)) {
-            return Optional.empty();
-        }
+        DocumentService service = getTenantImplementation();
         return service.createRequirementDocument(tailoring, creationTimestamp);
     }
 
     @Override
+    @SneakyThrows
     public Optional<File> createComparisonDocument(Tailoring tailoring, LocalDateTime creationTimestamp) {
-        DocumentService service = tenantService.get(TenantContext.getCurrentTenant());
-        if (isNull(service)) {
-            return Optional.empty();
-        }
+        DocumentService service = getTenantImplementation();
         return service.createComparisonDocument(tailoring, creationTimestamp);
     }
 
     @Override
+    @SneakyThrows
     public Collection<File> createAll(Tailoring tailoring, LocalDateTime creationTimestamp) {
-        DocumentService service = tenantService.get(TenantContext.getCurrentTenant());
-        if (isNull(service)) {
-            return emptyList();
-        }
+        DocumentService service = getTenantImplementation();
         return service.createAll(tailoring, creationTimestamp);
+    }
+
+    private DocumentService getTenantImplementation() throws NoSuchMethodException {
+        DocumentService result = tenantService.get(TenantContext.getCurrentTenant());
+        if (isNull(result)) {
+            throw new NoSuchMethodException("Tenant " + TenantContext.getCurrentTenant() + " does not implement " + DocumentService.class.getName());
+        }
+        return result;
     }
 }

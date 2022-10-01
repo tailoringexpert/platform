@@ -23,6 +23,7 @@ package eu.tailoringexpert.tailoring;
 
 import eu.tailoringexpert.domain.File;
 import eu.tailoringexpert.domain.DocumentSignature;
+import eu.tailoringexpert.domain.Note;
 import eu.tailoringexpert.domain.Project;
 import eu.tailoringexpert.domain.ScreeningSheet;
 import eu.tailoringexpert.domain.SelectionVectorProfile;
@@ -166,6 +167,18 @@ public interface TailoringServiceRepository {
      * @return true, if deleted
      */
     boolean deleteTailoring(String project, String tailoring);
+
+    /**
+     * Add note to tailoring.
+     *
+     * @param project   project identifier
+     * @param tailoring tailoring to add note to
+     * @param note      Note to add
+     * @return In case successful adding tailoring, otherwise empty
+     */
+    Optional<Tailoring> addNote(String project, String tailoring, Note note);
+
+
 }
 
 

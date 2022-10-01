@@ -87,7 +87,7 @@ class ScreeningSheetServiceImplTest {
     }
 
     @Test
-    void calculateSelectionVector_DateaExists_SelectionvectorCalculated() throws IOException {
+    void calculateSelectionVector_DataExists_SelectionvectorCalculated() throws IOException {
         // arrange
         byte[] data;
         try (InputStream is = newInputStream(get("src/test/resources/screeningsheet.pdf"))) {
@@ -214,8 +214,17 @@ class ScreeningSheetServiceImplTest {
                 .category("Project")
                 .name("Identifier")
                 .label("DUMMY")
+                .build(),
+            ScreeningSheetParameterField.builder()
+                .category(ScreeningSheet.PHASE)
+                .name("A")
+                .build(),
+            ScreeningSheetParameterField.builder()
+                .category(ScreeningSheet.PHASE)
+                .name("ZERO")
                 .build()
         );
+
         given(screeningDataProviderMock.parse(any())).willReturn(screeningSheetParameters);
 
         Collection<Parameter> parameter = Arrays.asList(
@@ -234,7 +243,7 @@ class ScreeningSheetServiceImplTest {
         // assert
         assertThat(actual).isNotNull();
         assertThat(actual.getData()).isEqualTo(data);
-        assertThat(actual.getParameters()).hasSize(3);
+        assertThat(actual.getParameters()).hasSize(4);
         verify(repositoryMock, times(1)).getParameter(anyCollection());
     }
 
@@ -263,6 +272,4 @@ class ScreeningSheetServiceImplTest {
         assertThat(actual).isInstanceOf(TailoringexpertException.class);
         verify(repositoryMock, times(0)).getParameter(anyCollection());
     }
-
-
 }

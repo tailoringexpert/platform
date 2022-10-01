@@ -40,6 +40,7 @@ public class PathContext {
     String chapter;
     String requirment;
     Boolean selected;
+    String note;
 
     public Map<String, String> parameter() {
         final HashMap<String, String> result = new HashMap<>();
@@ -49,6 +50,7 @@ public class PathContext {
         result.put("chapter", chapter);
         result.put("requirement", requirment);
         result.put("selected", Objects.nonNull(selected) ? selected.toString() : null);
+        result.put("note", note);
         return result;
     }
 }

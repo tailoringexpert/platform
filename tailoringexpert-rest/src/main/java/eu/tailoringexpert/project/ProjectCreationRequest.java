@@ -33,5 +33,6 @@ public class ProjectCreationRequest {
     String catalog;
     ScreeningSheet screeningSheet;
     SelectionVector selectionVector;
+    String note;
 
 }

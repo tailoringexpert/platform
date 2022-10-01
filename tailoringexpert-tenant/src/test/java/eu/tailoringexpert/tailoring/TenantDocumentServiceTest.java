@@ -35,6 +35,7 @@ import java.util.Map;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.catchException;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
@@ -54,17 +55,17 @@ class TenantDocumentServiceTest {
     }
 
     @Test
-    void createRequirementDocument_TenantNotExists_EmptyReturned() {
+    void createRequirementDocument_TenantNotExists_NoSuchMethodExceptionThrown() {
         // arrange
         TenantContext.setCurrentTenant("INVALD");
         Tailoring tailoring = Tailoring.builder().build();
         LocalDateTime erstellungsZeitpunt = LocalDateTime.now();
 
         // act
-        Optional<File> actual = service.createRequirementDocument(tailoring, erstellungsZeitpunt);
+        Exception actual = catchException(() -> service.createRequirementDocument(tailoring, erstellungsZeitpunt));
 
         // assert
-        assertThat(actual).isEmpty();
+        assertThat(actual).isInstanceOf(NoSuchMethodException.class);
         verify(tenentDocumentServiceMock, times(0)).createRequirementDocument(tailoring, erstellungsZeitpunt);
     }
 
@@ -87,17 +88,17 @@ class TenantDocumentServiceTest {
     }
 
     @Test
-    void createComparisonDocument_TenantNotExists_EmptyReturned() {
+    void createComparisonDocument_TenantNotExists_NoSuchMethodExceptionThrown() {
         // arrange
         TenantContext.setCurrentTenant("INVALD");
         Tailoring tailoring = Tailoring.builder().build();
         LocalDateTime erstellungsZeitpunt = LocalDateTime.now();
 
         // act
-        Optional<File> actual = service.createComparisonDocument(tailoring, erstellungsZeitpunt);
+        Exception actual = catchException(() -> service.createComparisonDocument(tailoring, erstellungsZeitpunt));
 
         // assert
-        assertThat(actual).isEmpty();
+        assertThat(actual).isInstanceOf(NoSuchMethodException.class);
         verify(tenentDocumentServiceMock, times(0)).createComparisonDocument(tailoring, erstellungsZeitpunt);
     }
 
@@ -121,18 +122,18 @@ class TenantDocumentServiceTest {
     }
 
     @Test
-    void createAll_TenantNotExists_EmptyReturned() {
+    void createAll_TenantNotExists_NoSuchMethodExceptionThrown() {
         // arrange
         TenantContext.setCurrentTenant("INVALD");
         Tailoring tailoring = Tailoring.builder().build();
         LocalDateTime erstellungsZeitpunt = LocalDateTime.now();
 
         // act
-        Collection<File> actual = service.createAll(tailoring, erstellungsZeitpunt);
+        Exception actual = catchException(() -> service.createAll(tailoring, erstellungsZeitpunt));
 
         // assert
+        assertThat(actual).isInstanceOf(NoSuchMethodException.class);
         verify(tenentDocumentServiceMock, times(0)).createAll(tailoring, erstellungsZeitpunt);
-        assertThat(actual).isEmpty();
     }
 
     @Test
