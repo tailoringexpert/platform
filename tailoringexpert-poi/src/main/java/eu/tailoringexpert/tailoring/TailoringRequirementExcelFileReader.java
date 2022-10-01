@@ -21,7 +21,6 @@
  */
 package eu.tailoringexpert.tailoring;
 
-import lombok.SneakyThrows;
 import lombok.extern.log4j.Log4j2;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;

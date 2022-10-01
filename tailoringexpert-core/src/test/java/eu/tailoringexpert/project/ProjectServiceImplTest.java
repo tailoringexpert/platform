@@ -25,7 +25,6 @@ import eu.tailoringexpert.domain.BaseRequirement;
 import eu.tailoringexpert.domain.Catalog;
 import eu.tailoringexpert.domain.Identifier;
 import eu.tailoringexpert.domain.Chapter;
-import eu.tailoringexpert.domain.Note;
 import eu.tailoringexpert.domain.Phase;
 import eu.tailoringexpert.domain.Project;
 import eu.tailoringexpert.domain.ScreeningSheet;

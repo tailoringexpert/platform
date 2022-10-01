@@ -24,7 +24,6 @@ package eu.tailoringexpert.tailoring;
 import eu.tailoringexpert.TenantContext;
 import eu.tailoringexpert.domain.File;
 import eu.tailoringexpert.domain.Tailoring;
-import eu.tailoringexpert.screeningsheet.SelectionVectorProvider;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 
@@ -33,7 +32,6 @@ import java.util.Collection;
 import java.util.Map;
 import java.util.Optional;
 
-import static java.util.Collections.emptyList;
 import static java.util.Objects.isNull;
 
 /**

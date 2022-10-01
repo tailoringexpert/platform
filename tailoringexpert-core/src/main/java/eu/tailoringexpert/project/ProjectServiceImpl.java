@@ -23,7 +23,6 @@ package eu.tailoringexpert.project;
 
 import eu.tailoringexpert.domain.BaseRequirement;
 import eu.tailoringexpert.domain.Catalog;
-import eu.tailoringexpert.domain.Note;
 import eu.tailoringexpert.domain.Project;
 import eu.tailoringexpert.domain.ScreeningSheet;
 import eu.tailoringexpert.domain.SelectionVector;
@@ -34,14 +33,11 @@ import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 
-import java.time.ZonedDateTime;
-import java.util.List;
 import java.util.Optional;
 
 import static java.lang.Integer.parseInt;
 import static java.util.Comparator.comparingInt;
 import static java.util.Objects.isNull;
-import static java.util.Objects.nonNull;
 import static java.util.Optional.empty;
 import static java.util.Optional.of;
 

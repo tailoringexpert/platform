@@ -29,7 +29,6 @@ import org.springframework.hateoas.Link;
 import org.springframework.hateoas.RepresentationModel;
 import org.springframework.hateoas.server.core.Relation;
 
-import java.time.ZonedDateTime;
 import java.util.List;
 
 import static java.util.Objects.nonNull;
