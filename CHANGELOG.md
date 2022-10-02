@@ -1,11 +1,13 @@
 # Changelog
 
-## [Unreleased](https://github.com/tailoringexpert/plattform/tree/HEAD)
+## [v0.0.1](https://github.com/tailoringexpert/plattform/tree/v0.0.1) (10.02.2022)
 
-[Full Changelog](https://github.com/tailoringexpert/plattform/compare/ef72a8e508e9e6d79bd268aba4ef257b48bb1a9d...HEAD)
+[Full Changelog](https://github.com/tailoringexpert/plattform/compare/ef72a8e508e9e6d79bd268aba4ef257b48bb1a9d...v0.0.1)
 
 **Closed issues:**
 
+- Check link creation in rest module [\#34](https://github.com/tailoringexpert/plattform/issues/34)
+- Add notes to tailoring [\#31](https://github.com/tailoringexpert/plattform/issues/31)
 - Add a generic TailoringexpertException [\#28](https://github.com/tailoringexpert/plattform/issues/28)
 - Rename screeningsheet parameter "kuerzel" to "identifier" [\#22](https://github.com/tailoringexpert/plattform/issues/22)
 - Cleanup refactoring [\#20](https://github.com/tailoringexpert/plattform/issues/20)
