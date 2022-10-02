@@ -1,0 +1,35 @@
+@startuml level1.png
+skinparam componentStyle uml2
+
+component [tailoringexpert-core]
+component [tailoringexpert-data-jpa]
+component [tailoringexpert-selektionsvektor-ejml]
+component [tailoringexpert-screeningsheetdata-pdfbox]
+component [tailoringexpert-generator-docx4j]
+component [tailoringexpert-rest]
+component [tailoringexpert-integrationtest]
+component [tailoringexpert-acceptancetest]
+
+
+
+
+[tailoringexpert-data-jpa] ..|> [tailoringexpert-core]
+[tailoringexpert-selektionsvektor-ejml] ..|> [tailoringexpert-core]
+[tailoringexpert-screeningsheetdata-pdfbox] ..|> [tailoringexpert-core]
+[tailoringexpert-generator-docx4j] ..|> [tailoringexpert-core]
+
+[tailoringexpert-acceptancetest] ..> [tailoringexpert-core] : <<use>>
+[tailoringexpert-acceptancetest] ..> [tailoringexpert-data-jpa] : <<use>>
+[tailoringexpert-acceptancetest] ..> [tailoringexpert-screeningsheetdata-pdfbox] : <<use>>
+[tailoringexpert-acceptancetest] ..> [tailoringexpert-selektionsvektor-ejml] : <<use>>
+
+[tailoringexpert-rest] ..> [tailoringexpert-core] : <<use>>
+[tailoringexpert-rest] ..> [tailoringexpert-data-jpa] : <<use>>
+
+[tailoringexpert-integrationtest] ..> [tailoringexpert-core] : <<use>>
+[tailoringexpert-integrationtest] ..> [tailoringexpert-data-jpa] : <<use>>
+[tailoringexpert-integrationtest] ..> [tailoringexpert-screeningsheetdata-pdfbox] : <<use>>
+[tailoringexpert-integrationtest] ..> [tailoringexpert-selektionsvektor-ejml] : <<use>>
+[tailoringexpert-integrationtest] ..> [tailoringexpert-generator-docx4j] : <<use>>
+
+@enduml

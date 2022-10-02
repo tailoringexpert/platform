@@ -1,0 +1,26 @@
+[[section-system-scope-and-context]]
+== Kontextabgrenzung
+
+=== Fachlicher Kontext
+
+.Fachlicher Kontext
+plantuml::plantuml/FachlicherKontext.plantuml[target="{plantumls-outdir}/03/FachlicherKontext", format=svg, opts="inline", alt="Class diagram", width=300, height=200]
+
+==== Anwender (Benutzer)
+Mitarbeiter, der project- und phasenspezfische Anforderungskataloge erstellt
+
+==== DRD (Fremdsystem)
+DRD sind zu verwendende oder Beispielvorlagen für den Auftragnehmer für die Erstellung
+der durch das Tailoring angeforderten Dokumente.
+
+
+=== Technischer Kontext
+.Technischer Kontext
+plantuml::plantuml/TechnischerKontext.plantuml[target="{plantumls-outdir}/03/TechnischerKontext", format=svg, alt="Class diagram", width=300, height=200]
+
+==== Webbrowser (Fremdsystem)
+Die Kommunikation zwischen den Anwendern und dem System erfolgt über einen Webbrowser.
+
+==== Versionsverwaltung (Fremdsystem)
+Die Dokumentenvorlagen werden über eine Versionsverwaltung zur Verfügung gestellt.
+Es handelt sich hierbei in der Regel im HTML Dateien

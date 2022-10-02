@@ -1,0 +1,48 @@
+@startuml Ebene3.png
+hide empty members
+
+package screeningsheet {
+    class ScreeningSheetParameterEintrag {
+        cateory : String
+        name : String
+        label : String
+    }
+
+    interface ScreeningSheetParameterProvider {
+        parse(is : InputStream) :  Collection<ScreeningSheetParameterEintrag>
+    }
+
+    abstract class ScreeningSheetServiceMapper {
+        abstract createScreeningSheet(parameter : Parameter) : ScreeningSheetParameter
+    }
+
+    interface ScreeningSheetService {
+        calculateSelectionVector(rawData : byte[]) : SelectionVector
+        createScreeningSheet(rawData : byte[]) : ScreeningSheet
+    }
+
+    interface ScreeningSheetServiceRepository {
+        getParameter(names : Collection<String>) : Collection<Parameter>
+    }
+
+    interface "Function<T, R>" as Function{
+        apply(t : T) : R
+    }
+    interface SelectionVectorProvider<Collection<Parameter>, SelectionVector> {
+    }
+    Function <|-- SelectionVectorProvider
+
+
+    class ScreeningSheetServiceImpl {
+    }
+    ScreeningSheetService <|-- ScreeningSheetServiceImpl
+    ScreeningSheetServiceImpl --> "1" ScreeningSheetServiceMapper : mapper
+    ScreeningSheetServiceImpl --> "1" ScreeningSheetServiceRepository : repository
+    ScreeningSheetServiceImpl --> "1" "Function<InputStream, Map<String, Object>>"  : screeningDataProvider
+    ScreeningSheetServiceImpl --> "1" SelektionsVektorProvider : selektionsVectorProvider
+
+
+
+
+}
+@enduml

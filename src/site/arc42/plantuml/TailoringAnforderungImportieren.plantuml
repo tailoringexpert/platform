@@ -1,0 +1,80 @@
+@startuml ProjektAnlegen.png
+skinparam BoxPadding 10
+
+actor ARZS
+
+
+box rest
+    boundary TailoringController
+end box
+
+box core
+    control TailoringService
+    control AnforderungService
+end box
+
+box poi
+    control TailoringAnforderungExcelFileReader
+end box
+
+box data-jpa
+    control TailoringServiceRepository
+    control AnforderungServiceRepository
+end box
+
+box rdbms
+    database tailoringexpert as db
+end box
+
+ARZS -> TailoringController : POST projekt/{projekt}/tailoring/{tailoring}/anforderungen/import
+activate TailoringController
+    TailoringController -> TailoringService : updateAusgewaehlteAnforderungen (\n\tProjekt,\n\tTailoring,\n\tExcel byte[]\n)
+    activate TailoringService
+        TailoringService -> TailoringAnforderungExcelFileReader : apply(byte[])
+        activate TailoringAnforderungExcelFileReader
+            TailoringAnforderungExcelFileReader --> TailoringService : Map<Kapitel, ImportAnforderungen>>
+        deactivate TailoringAnforderungExcelFileReader
+        loop alle Kapitel
+            loop alle ImportAnforderungen
+                TailoringService -> AnforderungService : handleAusgewaehlt(\n\tprojekt,\n\ttailoring,\n\tkapitel,\n\tposition,\n\tanwendbar\n)
+                activate AnforderungService
+                    alt Anforderung vorhanden
+                        alt Anforderungsauswahl geändert
+                            AnforderungService -> AnforderungServiceRepository : updateAnforderung(\n\tprojekt,\n\ttailoring,\n\tkapitel,\n\tanforderung\n)
+                            activate AnforderungServiceRepository
+                                AnforderungServiceRepository -> db : save(TailoringAnforderungEntity)
+                                activate db
+                                    db --> AnforderungServiceRepository : TailoringAnforderungEntity
+                                deactivate db
+                                AnforderungServiceRepository --> AnforderungService : Optional<TailoringAnforderung>
+                            deactivate AnforderungServiceRepository
+                        end
+                    end
+                    AnforderungService --> TailoringService : Optional<TailoringAnforderung>
+                deactivate AnforderungService
+
+                alt Anforderungstext geändert
+                    TailoringService -> AnforderungService : handleText(\n\tprojekt,\n\ttailoring,\n\tkapitel,\n\tposition,\n\tanwendbar\n)
+                    activate AnforderungService
+                        AnforderungService -> AnforderungServiceRepository : updateAnforderung(\n\tprojekt,\n\ttailoring,\n\tkapitel,\n\tanforderung\n)
+                        activate AnforderungServiceRepository
+                            AnforderungServiceRepository -> db : save(TailoringAnforderungEntity)
+                            activate db
+                                db --> AnforderungServiceRepository : TailoringAnforderungEntity
+                            deactivate db
+                            AnforderungServiceRepository --> AnforderungService : Optional<TailoringAnforderung>
+                        deactivate AnforderungServiceRepository
+                    deactivate AnforderungService
+                end
+            end
+        end
+        TailoringService --> TailoringController
+    deactivate TailoringService
+    TailoringController --> ARZS : HTTP.ACCEPTED
+deactivate TailoringController
+
+
+
+
+
+@enduml

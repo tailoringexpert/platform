@@ -1,0 +1,20 @@
+@startuml
+
+
+[Tailoringexpert] <<system>> as tailoringexpert
+
+node Versionsverwaltung as versionsverwaltung {
+}
+tailoringexpert -- versionsverwaltung : file <
+
+node ECSS as ecss {
+}
+tailoringexpert -- ecss : file <
+
+node Webbrower  as webbrowser {
+}
+webbrowser - tailoring
+
+
+
+@enduml

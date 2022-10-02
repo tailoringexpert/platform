@@ -1,0 +1,18 @@
+extends: default
+
+page:
+  layout: portrait
+  size: A4
+
+header:
+  height: 0.75in
+  image-vertical-align: 2 # # (1)
+
+footer:
+  recto:
+    right:
+      content: '{document-title} | *{page-number}*'
+  verso:
+    left:
+      content:  '*{page-number}* | {document-title}'
+

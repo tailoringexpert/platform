@@ -1,0 +1,42 @@
+[[section-glossary]]
+== Glossar
+
+[options="header" cols="40%,60%" ]
+|===
+|Begriff
+|Definition
+
+| Architecture Decision Records (ADR)
+| Architecture Decision Records (ADR) sind Templates, mit deren Hilfe grundlegende Architekturentscheidungen strukturiert
+festgehalten werden, so dass fundierte Entscheidungen über Änderungen auch dann getroffen unf nachvollzogen werden können.
+
+| _Dependency Injection_
+| _Als Dependency Injection (DI, englisch dependency ‚Abhängigkeit‘ und injection ‚Injektion‘, deutsch Abhängigkeitsinjektion oder Einbringen von Abhängigkeiten)
+wird in der objektorientierten Programmierung ein Entwurfsmuster bezeichnet, welches die Abhängigkeiten eines Objekts zur Laufzeit reglementiert:
+Benötigt ein Objekt beispielsweise bei seiner Initialisierung ein anderes Objekt, ist diese Abhängigkeit an einem zentralen Ort hinterlegt – es wird also nicht vom initialisierten Objekt selbst erzeugt_
+
+|_https://www.docx4java.org/trac/docx4j[docx4j]_
+|_(Open Source) Library für die Erzeugung von MS Office Dokumenten_
+
+| _HTML_
+| _HTML (HTML, englisch für Hypertext-Auszeichnungssprache) ist eine textbasierte Auszeichnungssprache zur Strukturierung
+elektronischer Dokumente wie Texte mit Hyperlinks, Bildern und anderen Inhalten._
+
+
+| _Java Persistence API (JPA)_
+| _Die Java Persistence API (JPA) ist eine Schnittstelle für Java-Anwendungen, die die Zuordnung und die Übertragung von Objekten zu Datenbankeinträgen vereinfacht.
+Sie vereinfacht die Lösung des Problems der objektrelationalen Abbildung, das darin besteht, Laufzeit-Objekte einer Java-Anwendung über eine einzelne Sitzung hinaus zu speichern (Persistenz), wobei relationale Datenbanken eingesetzt werden können, die ursprünglich nicht für objektorientierte Datenstrukturen vorgesehen sind._
+
+
+|_https://www.projectlombok.org[lombok]_
+|_Project Lombok ist eine Java-Bibliothek, die hilft typischen Java Boilerplate Code für Datenobjekt annotationsbasiert statt manuell zu erstellen._
+
+|_https://mapstruct.org[MapStruct]_
+|_Library für die Erzeugung von Datenobjektmappings. Die Mappings werden zur Compile-Zeit aus im Code befindlichen Annotation zu Java Quellcode konvertiert. Somit ist das erzeugte Mapping auch debugbar_
+| _Spring Data JPA_
+| _Spring Data JPA erleichtert die einfache Implementierung von JPA-basierten Repository und smiut das Erstellen von Spring-basierten Anwendungen, die Datenzugriffstechnologien verwenden._
+
+|_https://github.com/danfickle/openhtmltopdf[openhtmltopdf]_
+|_Library für die Erzeugung von PDF Dokumenten aus HTML Code._
+
+|===

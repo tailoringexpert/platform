@@ -1,0 +1,50 @@
+@startuml
+hide empty members
+
+package eu.tailoringexpert {
+    package domain {
+        interface ResourceMapper
+    }
+}
+
+package tailoring {
+
+
+    interface TailoringService {
+    }
+
+    interface TailoringServiceRepository {
+    }
+
+    class TailoringController {
+        +getCatalog(project : String, tailoring: String) : ResponseEntity<EntityModel<TailoringCatalogResource>>
+        +getChapter(project : String, tailoring : String, chapter : String) : ResponseEntity<EntityModel<TailoringCatalogChapterResource>>
+        +getScreeningSheet(project : String, tailoring : String) : ResponseEntity<EntityModel<ScreeningSheetResource>
+        +getScreeningSheetFile(project : String, tailoring : String) : ResponseEntity<byte[]>
+        +getSelectionVector(project : String, tailoring : String) :  ResponseEntity<EntityModel<SelectionVectorResource>>
+        +getTailoring(project : String, tailoring : String): ResponseEntity<EntityModel<TailoringResource>>
+        +postFile(project : String, tailoring : String, datei : MultipartFile): ResponseEntity<EntityModel<Void>>
+        +getDocuments(project : String, tailoring : String) : ResponseEntity<byte[]>
+        +getRequirementFile(project : String, tailoring : String) : ResponseEntity<byte[]>
+        +getRequirements(project : String, tailoring : String, chapter : String ) : ResponseEntity<CollectionModel<EntityModel<TailoringRequirementResource>>>
+        +getSigntures(project : String, tailoring : String) : ResponseEntity<CollectionModel<DocumentSignatureResource>>
+        +updateDocumentSignature(project : String, tailoring : String, bereich : String, signature : DocumentSignature) : ResponseEntity<EntityModel<DocumentSignatureResource>>
+        +putName(project : String, tailoring : String, name : String) : ResponseEntity<EntityModel<TailoringResource>>
+        +getAttachmentList(project : String, tailoring : String) : ResponseEntity<CollectionModel<FileResource>>
+        +getAttachment(project : String, tailoring : String, name : String) : ResponseEntity<byte[]>
+        +deleteAttachment(project : String, tailoring : String, name : String) : ResponseEntity<byte[]>
+        +getComparisonDocument(project : String, tailoring : String, name : String) : ResponseEntity<byte[]>
+        +getProfiles() : ResponseEntity<CollectionModel<EntityModel<SelectionVectorProfileResource>>>
+        +postRequirements(project : String, tailoring : String, datei : MultipartFile) : ResponseEntity<EntityModel<Void>>
+        +deleteTailoring(project : String, tailoring : String): ResponseEntity<EntityModel<Void>>
+        +getNotes(project : String, tailoring : String): ResponseEntity<CollectionModel<NoteResource>>
+        +getNote(project : String, tailoring : String, note: Integer): ResponseEntity<EntityModel<NoteResource>>
+    }
+
+
+    TailoringController --> "1" ResourceMapper : mapper
+    TailoringController --> "1" TailoringService : TailoringService
+    TailoringController --> "1" TailoringServiceRepository : TailoringServiceRepository
+
+}
+@enduml

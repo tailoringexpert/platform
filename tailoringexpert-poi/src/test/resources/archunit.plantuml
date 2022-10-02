@@ -1,0 +1,8 @@
+@startuml
+
+[Domain] <<..domain..>>
+
+[Tailoring] <<..tailoring..>>
+[Domain] <-- [Tailoring]
+
+@enduml

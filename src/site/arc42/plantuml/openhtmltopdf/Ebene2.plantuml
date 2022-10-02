@@ -1,0 +1,22 @@
+@startuml Ebene2.png
+
+skinparam componentStyle uml2
+'skinparam component {
+'  BorderColor #grey
+'  BackgroundColor #white
+'}
+component [generator-openhtmltopdf] {
+    [domain]
+
+    [renderer]
+
+    [catalog]
+    [domain] <-- [catalog]
+    [renderer] <-- [catalog]
+    [tailoring] <-- [catalog]
+
+    [tailoring]
+    [domain] <-- [tailoring]
+
+}
+@enduml

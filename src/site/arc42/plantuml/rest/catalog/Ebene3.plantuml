@@ -1,0 +1,32 @@
+@startuml
+hide empty members
+
+package eu.tailoringexpert {
+    package domain {
+        abstract class ResourceMapper
+        class MediaTypeProvider
+    }
+}
+
+package catalog {
+
+    interface CatalogService {
+    }
+
+    interface CatalogRepository {
+    }
+
+    class CatalogController {
+        +postCatalog(catalog : Catalog<BaseRequirement>) : ResponseEntity<Void>
+        +getCatalogs() : ResponseEntity<CollectionModel<EntityModel<BaseCatalogVersionResource>>>
+        +getPrintCatalog(version : String) : ResponseEntity<Catalog<BaseRequirement>>
+        +getOutputKatalog(version : String) : ResponseEntity<byte[]>
+    }
+
+
+    CatalogController --> "1" ResourceMapper : mapper
+    CatalogController --> "1" CatalogService : catalogService
+    CatalogController --> "1" CatalogRepository : catalogRepository
+    CatalogController --> "1" MediaTypeProvider : mediaTypeProvider
+}
+@enduml

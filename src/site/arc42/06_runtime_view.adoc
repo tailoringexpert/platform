@@ -1,0 +1,50 @@
+[[section-runtime-view]]
+== Laufzeitsicht
+
+
+IMPORTANT: Die Darstellung der Sequenzdiagramme behandeln immer nur den Standardfall, dass alle Daten korrekt und in der Datenbank vorhanden sind!
+
+
+=== Projekt anlegen
+Ein Projekt wird von einem Benutzer eigentlich in zwei Schritten angelegt:
+
+1. Hochladen und automatisiertes auswerten eines Screeningsheets
+2. Eigentliches Anlegen eines Projektes mit dem anzuwendenden Selektionsvektor sowie nochmals den
+Rohdaten des Screeningsheets.
+Das Screeningsheet wird deshalb nochmals übertragen, ob manipulierte automatisch ermittelte Selektionsvektorwerte
+zu verhinden. Hierfür wird das Screeningsheet bei der "eigentlichen" Anlage des Projektes nochmals ausgewertet.
+
+==== Schnittstellen Sicht
+Diese Ansicht ist eine vereinfachte Ansicht. Interne Ausrufe sowie Aufrufe zu Spring Repositories
+und der Datenbank werden, ausser für das Speichern, in dieser Darstellung weggelassen.
+
+.Ablauf Projekt anlegen (Schnittstellen Sicht)
+plantuml::plantuml/ProjektAnlegenHighLevel.plantuml[target="{plantumls-outdir}/06/ProjektAnlegenHighLevel", format=svg, alt="Projekt anlegen"]
+
+
+==== Detailierte Sicht
+In dieser Ansicht werden alle Schritte in den einzelnen Funktionen dargestellt.
+
+.Ablauf Projekt anlegen (Detailierte Sicht)
+plantuml::plantuml/ProjektAnlegen.plantuml[target="{plantumls-outdir}/06/ProjektAnlegen", format=svg, alt="Projekt anlegen"]
+
+
+=== Tailoring Anforderungen importieren
+
+.Ablauf Tailoring Anforderungen importieren
+plantuml::plantuml/TailoringAnforderungImportieren.plantuml[target="{plantumls-outdir}/06/TailoringAnforderungImportieren", format=svg, alt="Projekt anlegen"]
+
+
+=== Projekt kopieren
+.Ablauf Projekt kopieren
+plantuml::plantuml/ProjektKopieren.plantuml[target="{plantumls-outdir}/06/ProjektKopieren", format=svg, alt="Projekt kopieren"]
+
+Bei der Kopie eines bestehenden Projektes werden alle Phasen, nicht jedoch die bereits erstellten Dokumente, mitkopiert.
+Für alle Phasen wird das übergebene Screeningsheet angehangen.
+
+WARNING: Der Selektionsvektor kann bei den kopierten Phasen nicht geändert werden!
+
+=== Projektphase anlegen
+
+
+=== Neue Anforderung hinzufügen

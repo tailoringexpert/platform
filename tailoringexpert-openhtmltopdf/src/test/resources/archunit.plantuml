@@ -1,0 +1,14 @@
+@startuml
+
+[Domain] <<..domain..>>
+[Renderer] <<..renderer..>>
+
+[Tailoring] <<..tailoring..>>
+[Domain] <-- [Tailoring]
+[Renderer] <-- [Tailoring]
+
+[Catalog] <<..catalog..>>
+[Domain] <-- [Catalog]
+[Renderer] <-- [Catalog]
+
+@enduml

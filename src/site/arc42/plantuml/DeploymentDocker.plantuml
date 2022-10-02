@@ -1,0 +1,75 @@
+@startuml Deployment.png
+
+    cloud intranet as "Intranet" {
+    }
+
+    node Host as Host <<device>> {
+
+    note "CPU: i5-6500T 2,5GHz\nRAM: 8GB" as N2
+
+
+    node ReverseProxy as "Reverse Proxy" <<Docker>> {
+    }
+
+    node Tailoring as Tailoring <<Docker Compose>> {
+        node WebServer as "Web-Server" <<Docker>>{
+        }
+        node App as App <<Docker>> {
+            artifact tailoringexpert.jar
+        }
+
+    }
+
+    node RDBMS as "RDBMS" <<Docker>> {
+        collections Databases as "Datenbanken"
+    }
+
+    storage WebServerAssets as "Assets" <<Docker Volume>> {
+        folder assets {
+            folder tenantX {
+                collections tenantXHTML as "Katalog Versionen"
+            }
+            folder tenantY {
+                collections tenantYHTML as "Katalog Versionen"
+            }
+        }
+
+        folder www {
+            collections webcontent as "Web Frontend"
+        }
+    }
+
+    storage TailoringData as "Tailoring Daten" <<Docker Volume>> {
+        folder config {
+            collections ConfigDateien as "Konfigurations Dateien"
+            folder lib {
+                collections TenantXLibs as "TenantX Implementierungen"
+            }
+        }
+        folder data {
+            folder tenants {
+                collections TenantXConfig as "TenantX Datenbankkonfiguration"
+                collections TenantYConfig as "TenantY Datenbankkonfiguration"
+            }
+        }
+    }
+
+
+    storage RDBMSData as "RDBMS Speicher" <<Docker Volume>> {
+    }
+
+
+    WebServer --> WebServerAssets
+    WebServer .[hidden]right.> App
+    App --> TailoringData
+    App -right-> RDBMS
+    RDBMS --> RDBMSData
+
+    ReverseProxy -0)- App : "8443"
+    ReverseProxy -0)- WebServer : "80, 443"
+
+    intranet  -0)- ReverseProxy : "80, 443"
+  }
+  
+
+@enduml

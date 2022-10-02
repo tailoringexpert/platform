@@ -1,0 +1,27 @@
+// asciidoc settings for DE (German)
+// ==================================
+// toc-title definition MUST follow document title without blank line!
+:toc-title: Inhaltsverzeichnis
+:toclevels: 3
+// enable table-of-contents
+:toc:
+
+:caution-caption: Achtung
+:important-caption: Wichtig
+:note-caption: Hinweis
+:tip-caption: Tip
+:warning-caption: Warnung
+
+:appendix-caption: Anhang
+:example-caption: Beispiel
+:figure-caption: Abbildung
+:table-caption: Tabelle
+:icons: font
+
+:pdf-themesdir: themes
+:pdf-theme: tailoringexpert
+
+// where are images located?:
+
+:plantumls-outdir: ./generated/plantuml
+:imagesdir: ./images

@@ -1,0 +1,227 @@
+[[section-betriebskonzept]]
+== Beschreibung
+
+Für Projekte im nationalen Programm werden durch die Abteilung AR-ZS Produktsicherungsanforderungen gestellt.
+Dies basieren auf einem zwischen AR-ZS un der deutschen Raumfahrtindustrie abgestimmten (Gesamt-)Anforderungskatalog.
+Die Anforderungen dieses Gesamtkatalogs basieren hauptsächlich auf anderen etablierten Standards, wie
+
+* ECSS
+* ISO
+* NIST
+* etc.
+
+Anhängig von Projektparametern werden Anforderungen aus dem Gesamtkatalog automatisch anwendbar gemacht.
+Die Anwendbarkeit von Anforderungen kann auch im Nachgang manuell geändert werden.
+Aus den für das Projekt anwendbaren Anforderungen werden dann
+
+* ein Katalog und
+* eine Compliance Matrix
+
+erstellt.
+
+== Betriebskonzept
+
+Die Anwendung besteht technisch aus zwei Teilen:
+
+1. einer Opensource Plattform (Nutzungsrechte geklärt, Lizenz GPL 3)
+2. Erweiterungen für die Abteilung AR-ZS
+
+In der ersten Phase soll die Anwendung/Plattform nur von der Abteilung AR-ZS betrieben und genutzt werden.
+
+=== Katalogversionen
+
+Wie in der Beschreibung bereits erwähnt besteht der Gesamtkatalog aus einer Vielzahl von referenzierten Standards.
+Diese unterlagen auch der Aktualisierung. Eine Anpassung/neue Version des Gesamtkatalogs entsteht erst durch Abstimmung
+mit der Industrie.
+Dies ist nicht Teil der Plattform und wird deshalb auch nicht betracht!
+Einzig er abgestimmte Katalog muss in das System eingespielt werden. Hierfür gibt es einen entsprechenden Webservice.
+
+
+=== Systemlast
+
+Die Abteilung AR-ZS besteht z. Z. aus 7 Mitarbeitern.
+Diese 7 Mitarbeiten sollen gleichzeitig Projekte tailorn können.
+Damit ergibt sich zu Beginn eine Systemlast von max. 10 Benutzern.
+
+=== Verfügbarkeit
+
+Das System muss während der Kernarbeitszeiten funktioneren.
+Ein Start/Wiederanlauf in dieser Zeit wird durch die Abteilung durchgeführt.
+Eine 24/7 Verfügbarkeit ist nicht notwendig und auch nicht geplant.
+
+=== Backupstrategie
+
+==== Statische Anwendungsdaten
+
+Statische Anwendungsdaten, wie
+
+* DRD Vorlagen
+* Grafiken
+* Fonts
+
+werden über das DLR gitlab auf das Zielsystem eingespielt.
+Diese Daten verändern sich während der Betriebszeit nicht. Eine Änderung dieser Daten wird nur durch eine neue
+Katalogversion initiert. In diesem Fall werden die Daten wieder über das gitlab eingespielt.
+
+Es ist nicht vorgesehen, ein eigenes Backup für diese Daten durchzuführen. Hier wird der Service der DLR gitlab
+Installation verwendet.
+
+==== Dynamische Anwendungsdaten
+
+Unter dynamsichen Anwendungsdaten werden die eigentlichen Tailorings verstanden.
+Diese sind in einer MariaDB Datenbank gespeichert.
+Es ist geplant, diese Daten periodisch mittels
+
+    mysqldump
+
+zu sichern und diese ins DLR gitlab zu laden.
+Im gitlab beträgt die maximal Größe eines Repositories 10GB, die max Dateigröße 2GB.
+Dies sollte mittelfristig ausreichend sein.
+Sollte die Kapazität nicht mehr ausreichen, so kann auf ein Fileshare zurück gegriffen werden.
+
+Für das Wiederherstellen eine Backups muss der Dump aus dem gitlab geladen und mittels
+
+    mysqldump
+
+wieder zurück gespielt werden.
+Wie schon bei den statischen Daten wird kein Backup des gitlab Backups durchgeührt.
+
+== Schutzbedarfsanalyse
+
+Die Plattform soll im Intranet betrieben werden. Zugang zu der Anwendung sollen zunächst nur Mitarbeiter der Abteilung
+AR-ZS haben.
+Die Anwendung soll in Docker Containern in einer VM betrieben werden. Es ist beabsichtigt, nur einem beschränkten
+Benutzerkreis einen ssh-Zugang hierzu zu geben. Zudem soll der ssh Zugang mittels 2FA weiter abgesichert werden.
+Nach aussen (Intranet) sollen nur die Ports 22 (ssh, ggf. aus Security Gründen abweichend) und 443 (https) sichtbar sein.
+Es ist weiter geplant, diese über eine LDAP Abfrage zu gewährleisten. Für eine Übergangszeit kann jedoch ggf.
+eine Basic Auth des Webservers verwendet werden.
+
+Sowohl die Plattform aus auch die Erweiterungen der Abteilung AR-ZS werden mittel des Maven Plugin
+org.owasp:dependency-check-maven geprüft.
+Hiermit werden die verwendeten Libraries auf bekannte Vulneranbilitäten geprüft.
+Damit sollten weitere Einfallstore identifiziert und eleminert werden.
+
+== Rollout Strategie
+
+Nach Abschluß der ersten Phase wird das Opensource Repository der Plattform in github auf Public gestellt.
+Damit soll ich der Einsatz und die Mitarbeit von Personen an der Plattform erhöhen.
+Ebenfalls nach Abschluß der ersten Phase wird geprüft, ob das AR-ZS Repository mit den Implementierungen für
+die Plattform im DLR weiter sichtbar gemacht wird.
+
+Es ist dann zu prüfen, wie weit zusätzlich zur Dokumentation Hilfestellung für die Integration neuer Mandanten
+geleistet werden kann.
+Es ist NICHT vorgesehen, dass AR-ZS als Dienstleister für den Betrieb und die Hilfstellung anderer Mandanten agiert!
+Auch ist noch nicht klar, wie viele Mandanten auf dem AR-ZS betrieben werden sollen. Ggf. muss hier dann eine
+größere Strategie erarbeitet werden!
+Dies ist jedoch nicht im Scope der Einführungsphase bei AR-ZS.
+
+== Support
+
+=== Intern
+
+Es ist vorgesehen, die Plattform bei AR-ZS einem User Experience Test zu unterziehen.
+Die Erkenntnisse hieraus sollen als Hilfeseiten in die Plattform integriert werden.
+Ein Austausch/Support innerhalb der Abteilung ist angestrebt.
+
+=== Handbücher
+
+Es werden technische Architekturbeschreibungen nach arc42 erstellt.
+Ein Benutzerhandbuch wird nicht geschrieben.
+
+=== Schulungen
+
+Schulungen mit einem definierten Schulungskonzept sind nicht vorgesehen.
+Innerhalb der Abteilung sind vielmehr Workshops/Hands-On angedacht.
+Selbst bei Öffnung der Plattform wird die Abzeilung keine Schulungen anbieten.
+
+==== UHD
+
+Als Unterstützung durch UHD wird "lediglich" die Verfügbarbar und der Zugang zur VM gesehen.
+Eine Hilfstellung in Dockerfragen wäre zwar wünschenswert, wird aber nicht erwartet.
+
+== Bugfixing
+
+Für das Beheben von Fehlern werden von der Abteilung im Schnitt 1PT pro Monat veranschlagt und "freigegeben".
+
+== Weiterentwicklung
+
+Die Weiterentwicklung findet anforderungsbasiert statt.
+Dies kann im Moment noch nicht definiert werden.
+
+== Betriebsumgebung
+
+Er wird zunächst "nur" die Einführungsphase betrachtet.
+Dies beinhaltet den Betrieb für AR-ZS ohne Anbindung weiterer Mandanten.
+Die Plattform wird auf zwei VMs betrieben
+
+1. tailoringexpert-dev -> Entwicklungs-/Testumgebung
+2. tailoringexpert -> Produktionsumgebung
+
+Beide Ebenen haben zunächst die gleiche Konfiguration
+
+=== VM
+
+[cols="h,d"]
+|===
+| CPU
+| min i5-6500T 2,5GHz
+
+| Arbeitsspeicher
+| min 8GB
+
+| Datenspeicher
+|
+
+| Betriebssystem
+| Linux
+
+ | benötigte Root Rechte
+a|
+* Anlage von Systembenutzer für Docker Container
+* ggf. apt zur Installation von Paketen
+
+| zusätzlich installierte Software
+| Docker
+
+| ssh Anbindung
+| für benannte Benutzer im Intranet
+
+| Erreichbarkeit
+| intranet
+
+| Rechner-/Hostname
+| tailoringexpert bzw. tailoringexpert-dev
+
+| Zertifikat benötigt
+| ja
+
+|===
+
+=== Funktionale Comet Benutzer
+
+Es wird immer mindestes ein funktionaler funktionaler Comet Benutzer benötigt.
+Es ist zu prüfen, ob pro Umgebung ein anderer Benutzer verwendet werden soll/muss.
+
+[cols="h,d"]
+|===
+
+| arzs_ldap
+| funktionaler Benutzer für LDAP Abfrage
+
+| arzs_tailoring
+| funktionaler Benutzer für den Zugriff auf das DLR gitlab
+
+|===
+
+=== Verfügbarkeit
+
+[cols="h,d"]
+|===
+| Nutzer
+| "zunächst" nur AR-ZS < 10
+
+| Verfügbarkeit
+| "normale" Verfügbarkeit, kein 24/7
+
+| Ausfallsicherheit/Wiederstart
+| zu normalen Arbeitszeiten durch die Abteilung
