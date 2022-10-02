@@ -1,0 +1,50 @@
+@startuml Ebene3.png
+hide empty members
+
+package repository {
+    interface BaseCatalogRepository
+    interface LogoRepository
+    interface ProjectRepository
+    interface DRDRepository
+}
+package project {
+
+    interface ProjectServiceRepository {
+        getBaseCatalog(version : String) : Catalog<BaseRequirement>
+        createProject(catalog : String, project : Project) : Project
+        createProject(project : Project) : Project
+        deleteProject(project : String): boolean
+        getProject(project : String) : Optional<Project>
+        addTailoring(project : String, tailoring : Tailoring) : Optional<Tailoring>
+        getProjectInformations() : Collection<ProjectInformation>
+        getProjectInformation(project : String) : Optional<ProjectInformation>
+        getScreeningSheetFile(project : String) : Optional<byte[]>
+        getScreeningSheet(project : String) : Optional<ScreeningSheet>
+    }
+
+    abstract class JPAProjectServiceRepositoryMapper {
+        {abstract} toDomain(entity : ProjectEntity) : Project
+        {abstract} toEntity(domain : Tailoring) : TailoringEntity
+        {abstract} toDomain(entity : TailoringEntity) : Tailoring
+        {abstract} toDomain(entity : BaseCatalogEntity) : Catalog<BaseCatalogRequirement>
+        {abstract} createProject(domain : Project) : ProjectEntity
+        {abstract} getProjectInformationen(entity : ProjectEntity) : ProjectInformation
+        {abstract} getTailoringInformationen(entity : TailoringEntity) : TailoringInformation
+        {abstract} getScreeningSheet(entity : ScreeningSheetEntity) : ScreeningSheet
+        resolve(domain : Catalog<BaseCatalogRequirement>) : BaseCatalogEntity
+        resolve(domain : Logo) : LogoEntity
+        resolve(domain : DRD) : DRDEntity
+    }
+    JPAProjectServiceRepositoryMapper --> "1" LogoRepository : logoRepository
+    JPAProjectServiceRepositoryMapper --> "1" BaseCatalogRepository : baseCatalogRepository
+    JPAProjectServiceRepositoryMapper --> "1" DRDRepository : drdRepository
+
+    class JPAProjectServiceRepository {
+    }
+    ProjectServiceRepository <|.. JPAProjectServiceRepository
+    JPAProjectServiceRepository --> "1" JPAProjectServiceRepositoryMapper : mapper
+    JPAProjectServiceRepository --> "1" ProjectRepository : projektRepository
+    JPAProjectServiceRepository --> "1" BaseCatalogRepository : baseCatalogRepository
+
+}
+@enduml

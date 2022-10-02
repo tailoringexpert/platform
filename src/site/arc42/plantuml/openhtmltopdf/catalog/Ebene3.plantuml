@@ -1,0 +1,32 @@
+@startuml Ebene3.png
+hide empty members
+
+package renderer {
+    interface HTMLTemplateEngine
+    class PDFEngine
+}
+
+package catalog {
+
+    interface DocumentCreator {
+        createDocument(docId : String, catalog : Catalog<BaseRequirement>, placeholders : Map<String, String>) : File
+    }
+
+    class BaseCatalogElement {
+        -reference : String
+        -position : String
+        -chapter : String
+        -text : String
+        -applicable : boolean
+        -phases : Collection<String>
+        -identifiers : Collection<String>
+    }
+
+    class BaseCatalogPDFDocumentCreator {
+    }
+    DocumentCreator <|.. BaseCatalogPDFDocumentCreator
+    BaseCatalogPDFDocumentCreator --> "1" HTMLTemplateEngine : templateEngine
+    BaseCatalogPDFDocumentCreator --> "1" PDFEngine : pdfEngine
+
+}
+@enduml

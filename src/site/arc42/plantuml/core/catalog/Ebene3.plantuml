@@ -1,0 +1,31 @@
+@startuml Ebene3.png
+hide empty members
+
+package catalog {
+
+    interface DocumentCreator {
+        createDocument(docId : String, catalog : Catalog<BaseRequirement>, placeholders : Map<String, String>) : File
+    }
+
+    interface DocumentService {
+        createCatalog(catalog : Catalog<BaseRequirement>, creationTimestamp : LocalDateTime) : Optional<File>
+    }
+
+    interface CatalogService {
+        doImport(katalog : Catalog<BaseCatalogRequirement>) : boolean
+        getCatalog(version : String) : Optional<Catalog<BaseRequirement>>
+        createCatalog(version : String) : Optional<File>
+    }
+
+    interface CatalogServiceRepository {
+        createCatalog(catalog : Catalog<BaseRequirement>, validFrom : ZonedDateTime) : Optional<Catalog<BaseRequirement>>
+        getCatalog(version : String) : Optional<Catalog<BaseRequirement>>
+    }
+
+    class CatalogServiceImpl {
+    }
+    CatalogService <|-- CatalogServiceImpl
+    CatalogServiceImpl --> "1" CatalogServiceRepository : repository
+
+}
+@enduml

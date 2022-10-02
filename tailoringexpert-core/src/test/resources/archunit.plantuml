@@ -1,0 +1,39 @@
+@startuml
+
+skinparam componentStyle uml2
+'skinparam component {
+'  BorderColor #grey
+'  BackgroundColor #white
+'}
+
+[Domain] <<..domain..>>
+[Renderer] <<..renderer..>>
+[Repository] <<..repository..>>
+
+[Requirement] <<..requirement..>>
+[Domain] <-- [Requirement]
+[Repository] <-- [Requirement]
+
+[ScreeningSheet] <<..screeningsheet..>>
+[Domain] <-- [ScreeningSheet]
+[Repository] <-- [ScreeningSheet]
+
+[Tailoring] <<..tailoring..>>
+[Domain] <-- [Tailoring]
+[Repository] <-- [Tailoring]
+[Renderer] <-- [Tailoring]
+[ScreeningSheet] <-- [Tailoring]
+[Requirement] <-- [Tailoring]
+
+[Project] <<..project..>>
+[Domain] <-- [Project]
+[Repository]  <- [Project]
+[ScreeningSheet] <-- [Project]
+[Tailoring] <-- [Project]
+
+[Catalog] <<..catalog..>>
+[Domain] <-- [Catalog]
+[Repository] <-- [Catalog]
+[Renderer] <-- [Catalog]
+
+@enduml

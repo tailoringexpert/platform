@@ -1,0 +1,55 @@
+@startuml Ebene3.png
+hide empty members
+
+package repository {
+    interface JpaRepository<T, ID>
+
+    interface DokumentSigneeRepository<DocumentSigneeEntity, Long> {
+        CACHE_SIGNEE : String = "DocumentSigneeRepository#findAll"
+        findAll() : List<DocumentSigneeEntity>
+    }
+    JpaRepository <|-- DocumentSigneeRepository
+
+    interface DRDRepository<DRDEntity, Long> {
+        findByNumber(nummbr : String) : DRDEntity
+    }
+    JpaRepository <|-- DRDRepository
+
+    interface BaseCatalogRepository<BaseCatalogEntity, Long> {
+        CACHE_BASECATALOG : String = "BaseCatalogRepository#BaseCatalog"
+        CACHE_BASECATALOGLIST : String = "BaseCatalogRepository#BaseCatalogList"
+        findByVersion(version : String) : BaseCatalogEntity
+        findCatalogVersionBy() : Collection<KatalogVersion>
+        setValidUntilForEmptyValidUntil(pointOfTime : ZonedDateTime) : int
+        save( entity : S) : <S extends BaseCatalogEntity>
+    }
+    JpaRepository <|-- BaseCatalogRepository
+
+    interface LogoRepository<LogoEntity, Long> {
+        CACHE_LOGO : String = "LogoRepository#Name"
+        findByName(name : String) : LogoEntity
+    }
+    JpaRepository <|-- LogoRepository
+
+    interface ParameterRepository<ParameterEntity, Long> {
+        findByNameIn(names : Collection<String>) : Collection<ParameterEntity>
+    }
+    JpaRepository <|-- ParameterRepository
+
+    interface TailoringRepository<TailoringEntity, Long> {
+    }
+    JpaRepository <|-- TailoringRepository
+
+    interface ProjectRepository<ProjectEntity, Long> {
+        findByIdentifier(project : String) : ProjectEntity
+        deleteByIdentifier(project : String) : Long
+        findTailoring(project : String, tailoring : String) : TailoringEntity
+    }
+    JpaRepository <|-- ProjectRepository
+
+    interface SelectionVectorProfileRepository<SelectionVektorProfileEntity, Long> {
+    }
+    JpaRepository <|-- SelectionVectorProfileRepository
+
+}
+@enduml

@@ -1,0 +1,98 @@
+@startuml Ebene3.png
+hide empty members
+
+package eu.tailoringexpert {
+    package screeningsheet {
+        interface ScreeningSheetService
+    }
+}
+
+package tailoring {
+
+    interface "BiPredicate<T, U>" as AnwendbarBiFunction {
+        test(t: T, u : U) : boolean
+    }
+    class DRDApplicablePredicate<String, Collection<Phase>> {
+    }
+    AnwendbarBiFunction <|.. DRDApplicablePredicate
+
+    interface "BiFunction<T, U, R>" as DRDProviderBiFunction {
+        apply(var1 : T, var2 : U) : R
+    }
+    class "DRDProvider<Chapter<TailoringRequirement>, Map<DRD, Set<String>>" as DRDProvider{
+    }
+    DRDProviderBiFunction <|.. DRDProvider
+    DRDProvider --> "1" DRDApplicablePredicate : predicate
+
+    interface DocumentCreator {
+        createDocument(docId : String, tailoring : Tailoring, placeholders : Map<String, String>) : File
+    }
+
+    interface TailoringService {
+        createTailoring(name : String, identifier : String, screeningSheetData : byte[], applicableSelectionVectore : SelectionVector, catalog : Catalog<BaseRequirement>) : Tailoring
+        addFile(project : String, tailoring : String, name : String, data : byte[]) Optional<Tailoring>
+        createRequirementDocument(project : String, tailoring : String): Optional<File>
+        createComparisonDocument(project : String, tailoring : String): Optional<File>
+        createDocuments(project : String, tailoring : String): Optional<File>
+        getCatalog(project : String, tailoring : String) :   Optional<Catalog<TailoringRequirement>>
+        getRequirements(project : String, tailoring : String, chapter : String) : Optional<List<TailoringRequirement>>
+        getScreeningSheet(project : String, tailoring : String) : Optional<ScreeningSheet>
+        getSelectionVector(project : String, tailoring : String) : Optional<SelectionVector>
+        getChapter(project : String, tailoring : String, chapter : String) : Optional<Chapter<TailoringRequirement>>
+        getDocumentSignatures(project : String, tailoring : String) : Optional<Collection<DokumentSignature>>
+        updateDocumentSignature(project : String, tailoring : String, signature : DocumentSignature) : Optional<DocumentSignature>
+        updateName(project : String, tailoring : String, name : String) : Optional<Tailoring>
+        updateSelectedRequirements(project : String, tailoring : String, data : byte[]) : void
+        deleteTailoring(project : String, tailoring : String) : Optional<Boolean>
+        addNote(project : String, tailoring : String, note : String) : Optional<TailoringInformation>
+        getNotes(project : String, tailoring : String) : Optional<Collection<Note>>
+        getNote(project : String, tailoring : String, note : Integer) : Optional<Note>
+    }
+
+    abstract class TailoringServiceMapper {
+        toTailoringInformation(domain : Tailoring) : TailoringInformation
+        toTailoringCatalog(catalog : Catalog<BaseRequirement>, screeningSheet : ScreeningSheet, selectionVector : SelectionVector) : Catalog<TailoringRequirement>
+        toTailoringRequirement(baseRequirement : BaseRequirement, screeningSheet: ScreeningSheet, selectionVector : SelectionVector, builder : TailoringRequirementBuilder) : void
+    }
+
+    interface TailoringServiceRepository {
+        getProject(project : String) : Optional<Project>
+        updateTailoring(project : String, tailoring : Tailoring) : Tailoring
+        updateFile(project : String, tailoring : String, file : File) : Tailoring
+        getTailoring(project : String, tailoring : String): Optional<Tailoring>
+        getScreeningSheet(project : String, tailoring : String): Optional<ScreeningSheet>
+        getScreeningSheetFile(project : String, tailoring : String): Optional<byte[]>
+        updateDocumentSignature(project : String, tailoring : String, signature : DocumentSignature) : Optional<DocumentSignature>
+        updateName(project : String, tailoring : String, name : String) : Optional<Tailoring>
+        getFileList(project : String, tailoring : String): Optional<List<File>>
+        getFile(project : String, tailoring : String, name : String) : Optional<File>
+        deleteFile(project : String, tailoring : String, name : String) : boolean
+        getSelectionVectorProfile() : Collection<SelectionVectorProfile>
+        getDefaultSignatures() : Collection<DocumentSignature>
+        deleteTailoring(project : String, tailoring : String)
+        addNote(project : String, tailoring : String, note : Note) : Optional<Tailoring>
+    }
+
+    interface DocumentService {
+        createRequirementDocument(tailoring : Tailoring, creationTimestamp : LocalDateTime): Optional<File>
+        createComparisonDocument(tailoring : Tailoring, creationTimestamp : LocalDateTime): Optional<File>
+        createAll(tailoring : Tailoring, creationTimestamp : LocalDateTime): Optional<File>
+    }
+
+    class ImportRequirement {
+        label : String
+        position : String
+        applicable : String
+        text : String
+    }
+
+    class TailoringServiceImpl {
+    }
+    TailoringService <|-- TailoringServiceImpl
+    TailoringServiceImpl --> "1" TailoringServiceRepository : repository
+    TailoringServiceImpl --> "1" TailoringServiceMapper : mapper
+    TailoringServiceImpl --> "1" DokumentService : dokumentService
+    TailoringServiceImpl --> "1" AnforderungService : anforderungService
+    TailoringServiceImpl --> "1" "Function<byte[], Map<String, Collection<TailoringAnforderung>>>" : tailoringAnforderungFileReader
+}
+@enduml

@@ -1,0 +1,247 @@
+@startuml Ebene3.png
+skinparam componentStyle uml2
+'skinparam linetype ortho
+
+component [spring-hateoas] {
+    package org.springframework.hateoas {
+        class RepresentationModel
+        class Link
+    }
+}
+
+
+package domain {
+
+    abstract class ResourceMapper {
+        ..URL..
+        +{static} PROJECTS = "projects" : String
+        +{static} PROJECT_NEW =  "catalog/{version}/project": String
+        +{static} PROJECT = "project/{project}" : String
+        +{static} PROJECT_SELECTIONVECTOR = "project/{project}/selectionvector" : String
+        +{static} PROJECT_SCREENINGSHEET = "project/{project}/screeningsheet" : String
+        +{static} PROJECT_SCREENINGSHEET_PDF = "project/{project}/screeningsheet/pdf" : String
+        +{static} TAILORINGREQUIREMENT = "project/{project}/tailoring/{tailoring}/chapter/{chapter}/{requirement}" : String
+        +{static} TAILORINGREQUIRMENT_SELECTED = "project/{project}/tailoring/{tailoring}/catalog/{chapter}/{requirement}/selected/{selected}" : String
+        +{static} TAILORINGREQUIRMENT_TEXT = "project/{project}/tailoring/{tailoring}/catalog/{chapter}/{requirement}/text" : String
+        +{static} CHAPTER_SELECTED = "project/{project}/tailoring/{tailoring}/catalog/{chapter}/selected/{selected}" : String
+        +{static} TAILORINGS = "project/{project}/tailoring" : String
+        +{static} TAILORING = "project/{project}/tailoring/{tailoring]" : String
+        +{static} TAILORING_SCREENINGSHEET = "project/{project}/tailoring/{tailoring}/screeningsheet" : String
+        +{static} String TAILORING_REQUIREMENT_IMPORT = "project/{project}/tailoring/{tailoring}/requirement/import" : String
+        +{static} TAILORING_SCREENINGSHEET_PDF = "project/{project}/tailoring/{tailoring}/screeningsheet/pdf" : String
+        +{static} TAILORING_SELECTIONVECTOR = "project/{project}/tailoring/{tailoring}/selectionvector" : String
+        +{static} TAILORING_NAME = "project/{project}/tailoring/{tailoring}/name" : String
+        +{static} TAILORING_SIGNATURE = "project/{project}/tailoring/{tailoring}/signature" : String
+        +{static} TAILORING_SIGNATURE_FACULTY = "project/{project}/tailoring/{tailoring}/signature/{faculty}" : String
+        +{static} TAILORING_DOCUMENT = "project/{project}/tailoring/{tailoring}/document" : String
+        +{static} TAILORING_DOCUMENT_CATALOG = "project/{project}/tailoring/{tailoring}/document/catalog" : String
+        +{static} TAILORING_COMPARE = "project/{project}/tailoring/{tailoring}/compare" : String
+        +{static} TAILORING_CATALOG = "project/{project}/tailoring/{tailoring}/catalog" : String
+        +{static} TAILORING_CATALOG_CHAPTER = "project/{project}/tailoring/{tailoring}/catalog/{chapter}" : String
+        +{static} TAILORING_CATALOG_CHAPTER_REQUIREMENT = "project/{project}/tailoring/{tailoring}/catalog/{chapter}/requirement" : String
+        +{static} TAILORING_ATTACHMENTS = "project/{project}/tailoring/{tailoring}/attachment" : String
+        +{static} TAILORING_ATTACHMENT = "project/{project}/tailoring/{tailoring}/attachment/{name}" : String
+        +{static} TAILORING_NOTES = "project/{project}/tailoring/{tailoring}/note" : String
+        +{static} TAILORING_NOTE = "project/{project}/tailoring/{tailoring}/note/{note}" : String
+        +{static} BASECATALOG = "catalog" : String
+        +{static} BASECATALOG_VERSION = "catalog/{version}" : String
+        +{static} BASECATALOG_VERION_PDF = "catalog/{version}/pdf" : String
+        +{static} BASECATALOG_VERION_JSON = "catalog/{version}/json" : String
+        +{static} SCREENINGSHEET = "screeningsheet" : String
+        +{static} SELECTIONVECTOR_PROFILE = "selectionvector" : String
+            
+        ..Rel..
+        +{static} REL_SELF = "self" : String
+        +{static} REL_SCREENINGSHEET = "screeningsheet" : String
+        +{static} REL_SELECTIONVECTOR = "selectionvector" : String
+        +{static} REL_TAILORING = "tailoring" : String
+        +{static} REL_KATALOG = "catalog" : String
+        +{static} REL_PDF = "pdf" : String
+        +{static} REL_JSON = "json" : String
+        +{static} REL_TAILORINGCATALOG_DOCUMENT = "tailoringcatalog" : String
+        +{static} REL_BASECATALOG_DOCUMENT = "basecatalog" : String
+        +{static} REL_SIGNATURE = "signature" : String
+        +{static} REL_KAPITEL = "chapter" : String
+        +{static} REL_TEXT = "text" : String
+        +{static} REL_SELECTED = "selected" : String
+        +{static} REL_DOCUMENT = "document" : String
+        +{static} REL_COMPARE = "compare" : String
+        -{static} REL_NAME = "name" : String
+        -{static} REL_IMPORT = "import" : String
+        -{static} REL_ATTACHMENT = "attachment" : String
+        -{static} REL_NOTE = "note" : String
+        
+        .. ProjektInformation ..
+        updatePathContext(pathContext : PathContextBuilder, domain : ProjektInformation): void
+        +{abstract} toResource(pathContext :  PathContextBuilder, domain : ProjektInformation) : ProjektInformationResource
+         addLinks(pathContext : PathContextBuilder, resource : ProjektInformationResourceBuilder) : void
+        .. ScreeningSheet ..
+        updatePathContext(pathContext : PathContextBuilder, domain : ScreeningSheet): void
+        +{abstract}  toResource(pathContext : PathContextBuilder, domain : ScreeningSheet) : ScreeningSheetResource
+        #addLinks(pathContext : PathContextBuilder, resource : ScreeningSheetResourceBuilder) : void
+        +toResource(pathContext : PathContextBuilder, parameters: List<ScreeningSheetParameter>) : List<ScreeningSheetParameterResource>
+        .. Project ..
+        updatePathContext(pathContext : PathContextBuilder, domain : Project): void
+        +{abstract}  toResource(pathContext : PathContextBuilder, domain : Project) : ProjectResource
+        #addLinks(pathContext : PathContextBuilder, resource : ProjektResourceBuilder) : void
+        .. Tailoring ..
+        updatePathContext(pathContext : PathContextBuilder, domain : Tailoring): void
+        +{abstract}  toResource(pathContext : PathContextBuilder, domain : Tailoring) : TailoringResource
+        #addLinks(pathContext : PathContextBuilder, resource : TailoringResourceBuilder) : void
+        .. TailoringChapter ..
+        updatePathContext(pathContext : PathContextBuilder, domain : Chapter<TailoringRequirement>): void
+        +{abstract}  toResource(pathContext : PathContextBuilder, domain : Chapter<TailoringRequirement>) : TailoringCatalogChapterResource
+        #addLinks(pathContext : PathContextBuilder, resource : TailoringKapitelResourceBuilder) : void
+        ..TailoringRequirement ..
+        updatePathContext(pathContext : PathContextBuilder, domain : TailoringRequirement): void
+        +{abstract}  toResource(pathContext : PathContextBuilder, domain : TailoringRequirement) : TailoringRequirementResource
+        #addLinks(pathContext : PathContextBuilder, resource : TailoringRequirementResourceBuilder) : void
+        .. DocumentSignature ..
+        updatePathContext(pathContext : PathContextBuilder, domain : DocumentSignature): void
+        +{abstract}  toResource(pathContext : PathContextBuilder, domain : DocumentSignature) : DocumentSignatureResource
+        #addLinks(pathContext : PathContextBuilder, resource : DocumentSignatureResourceBuilder) : void
+        .. File ..
+        updatePathContext(pathContext : PathContextBuilder, domain : File): void
+        +{abstract}  toResource(pathContext : PathContextBuilder, domain : File) : FileResource
+        #addLinks(pathContext : PathContextBuilder, resource : FileResourceBuilder) : void
+        .. Selectioncvector ..
+        updatePathContext(pathContext : PathContextBuilder, domain : SelectionVector): void
+        +{abstract}  toResource(pathContext : PathContextBuilder, domain : SelectionVector) : SelectionVectorResource
+        #addLinks(pathContext : PathContextBuilder, resource : SelectionVectorResourceBuilder) : void
+        .. Catalog ..
+        updatePathContext(pathContext : PathContextBuilder, domain :  Catalog<TailoringRequirement>): void
+        +{abstract}  toResource(pathContext : PathContextBuilder, domain :  Catalog<TailoringRequirement>) : TailoringCatalogResource
+        #addLinks(pathContext : PathContextBuilder, resource : TailoringCatalogResourceBuilder) : void
+        .. Selectionvectorprofile ..
+        updatePathContext(pathContext : PathContextBuilder, domain : SelectionVectorProfile): void
+        +{abstract}  toResource(pathContext : PathContextBuilder, domain : SelectionVectorProfile) : SelectionVectorProfileResource
+        #addLinks(pathContext : PathContextBuilder, resource : SelectionVectorProfileResourceBuilder) : void
+        .. Note ..
+        updatePathContext(pathContext : PathContextBuilder, domain : Note): void
+        +{abstract}  toResource(pathContext : PathContextBuilder, domain : Note) : SelectionVectorProfileResource
+        #addLinks(pathContext : PathContextBuilder, resource : NoteResourceBuilder) : void
+
+        +createLink(rel : String, baseUri : String, path: String, parameter : Map<String, String>) : Link
+    }
+
+    class FileResource {
+        name : String
+        type : String
+        hash : String
+    }
+    RepresentationModel <|-- DokumentResource
+
+    enum DocumentSignatureState {
+        PREPARED("Prepared"),
+        AGREED("Agreed"),
+        RELEASED("Released");
+    }
+
+    class DocumentSignatureResource {
+        faculty : String
+        signee : String
+        applicable : Boolean
+    }
+    DocumentSignatureResource --> "1" DocumentSignatureState : state
+    RepresentationModel <|-- DocumentSignatureResource
+
+
+    class PathContext {
+        catalog : String
+        project : String
+        tailoring : String
+        chapter : String
+        requirement : String
+        note : String
+        selected : Boolean
+    }
+
+    class SelectionVector {
+    }
+
+    class ProjectResource {
+        name : String
+        projectManager : String
+        creationTimestamp : String
+        catalogVersion : String
+    }
+    RepresentationModel <|-- ProjectResource
+    ProjectResource --> "1..*" TailoringResource : tailorings
+
+
+    class TailoringRequirementResource {
+        text : String
+        position : String
+        reference : String
+        selected : Boolean
+        changed : Boolean
+    }
+    RepresentationModel <|-- TailoringRequirementResource
+
+    class TailoringCatalogChapterResource {
+        name : String
+        chapter : String
+        chapterName : String
+    }
+    RepresentationModel <|-- TailoringCatalogChapterResource
+    TailoringCatalogChapterResource --> "0..*" TailoringCatalogChapterResource : chapters
+    TailoringCatalogChapterResource --> "0..*" TailoringRequirementResource : requirements
+    class BaseCatalogVersionResource {
+        version : String
+        validFrom : LocalDate
+        validUntil : LocalDate
+        standard : Boolean
+    }
+    RepresentationModel <|-- BaseCatalogVersionResource
+
+    class NoteResource {
+        number : Integer
+        text : String
+        creationTimestamp : String
+    }
+
+    class TailoringResource {
+        name : String
+    }
+    RepresentationModel <|-- TailoringResource
+    TailoringResource --> "1" TailoringState : state
+    TailoringResource --> "1..*" Phase : phases
+    TailoringResource --> "1" TailoringCatalogResource : catalog
+    TailoringResource --> "0..*" NoteResource : notes
+
+    class ScreeningSheetParameterResource {
+        label : String
+        value : Object
+    }
+    RepresentationModel <|-- ScreeningSheetParameterResource
+
+    class ScreeningSheetResource {
+        data : byte[]
+    }
+    RepresentationModel <|-- ScreeningSheetResource
+    ScreeningSheetResource --> "1..*" ScreeningSheetParameterResource : parameters
+    ScreeningSheetResource --> "1" SelectionVectorResource : selectionVector
+
+
+    class SelectionVectorResource {
+        levels : Map<String, Integer>
+    }
+    RepresentationModel <|-- SelektionsVektorResource
+
+    class SelectionVektorProfileResource {
+        name : String
+        levels : Map<String, Integer>
+    }
+    RepresentationModel <|-- SelectionVektorProfileResource
+
+    interface "Function<String, MediaType>" as mediaTypeFunction {
+    }
+    class MediaTypeProvider {
+        FORM_DATA : String = "form-data"
+        ATTACHMENT : String = "attachment"
+    }
+    mediaTypeFunction <|-- MediaTypeProvider
+
+}
+hide empty members
+@enduml

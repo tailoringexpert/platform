@@ -1,0 +1,26 @@
+@startuml Ebene3.png
+hide empty members
+
+package repository {
+    interface ParameterRepository
+}
+
+package screeningsheet {
+    interface ScreeningSheetServiceRepository {
+        getParameter(names : Collection<String>) : Collection<Parameter>
+    }
+
+    abstract class JPAScreeningSheetServiceRepositoryMapper {
+        {abstract} toDomain(entity : ParameterEntity) : Parameter
+        {abstract} toDomain(entity : ParameterEntity, domain : ParameterBuilder) : void
+        toDomain(entity : ParameterEntity, domain : ParameterBuilder) : void
+    }
+
+    class JPAScreeningSheetServiceRepository {
+    }
+    ScreeningSheetServiceRepository <|.. JPAScreeningSheetServiceRepository
+    JPAScreeningSheetServiceRepository --> "1" JPAScreeningSheetServiceRepositoryMapper : mapper
+    JPAScreeningSheetServiceRepository --> "1" ParameterRepository : parameterRepository
+
+}
+@enduml

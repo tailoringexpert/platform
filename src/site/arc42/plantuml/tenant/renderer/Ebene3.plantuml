@@ -1,0 +1,16 @@
+@startuml Ebene3.png
+hide empty members
+
+package renderer {
+
+    interface HTMLTemplateEngine {
+        process(template : String, Map<String, Object> variables) : String
+        toXHTML(text :String, placeholders : Map<String, String>) : String
+    }
+
+    class TenantTemplateEngine {
+        tenantEngine :  Map<String, HTMLTemplateEngine>
+    }
+    HTMLTemplateEngine <|.. TenantTemplateEngine
+}
+@enduml

@@ -1,0 +1,242 @@
+<!DOCTYPE html SYSTEM "http://www.thymeleaf.org/dtd/xhtml1-strict-thymeleaf-4.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8"/>
+    <title th:text="${titel}">Compliance Matrix</title>
+    <meta name="description" th:content="${beschreibung}" content="DRD Katalog für"/>
+    <meta name="author" content="TailoringExpert"/>
+    <meta name="subject" content="Compliance Matrix"/>
+
+    <link rel="stylesheet" type="text/css" href="css/page.css"/>
+
+    <style>
+        .drd-tabelle th {
+            background-color: silver;
+            vertical-align: top;
+        }
+
+        .drd-tabelle td {
+            background-color: lightgoldenrodyellow;
+            vertical-align: top;
+        }
+
+        .box {
+            font-size: 1.17em;
+            font-weight: bolder;
+            padding: 10px;
+            background-color: rgb(210, 233, 255)
+        }
+
+        .kapitelEbene1 {
+            background-color: LightBlue;
+        }
+        .kapitelEbene2 {
+            background-color: LightGreen;
+        }
+    </style>
+    <bookmarks>
+        <bookmark name="Introduction" href="#introduction"/>
+        <bookmark name="Applicable Documents" href="#documents"/>
+        <bookmark name="Requirements Compliance Matrix" href="#cm"/>
+        <bookmark name="DRD" href="#drd"/>
+    </bookmarks>
+</head>
+<body>
+
+<div style="position: running(dokument_datum);font-size:x-small;border-bottom: 1px solid black;">
+    <span th:text="${DOKUMENT}"/><br/>
+    <span th:text="${DATUM}"/>
+</div>
+
+<div style="position: running(logo)">
+    <img class="logo" src="css/img/logo.png" alt="Logo"/>
+</div>
+
+<header-box>
+    <h1>TailoringExpert<br/>Product Assurance</h1>
+    <h2>Sample Department</h2>
+</header-box>
+
+<div style="position: running(dokumenttyp_projekt);font-size:x-small;border-top: 1px solid black">
+    <span>Title: Product Assurance, Safety &amp; Sustainability Requirements</span><br/>
+    <span th:text="${PROJEKT}"/>
+</div>
+
+<title-box>
+    <dokument-typ>Compliance Matrix (CM)</dokument-typ>
+    <dokument-subtyp>Product Assurance, Safety &amp; Sustainability Requirements</dokument-subtyp>
+    <dokument-project>for [[${PROJEKT}]]</dokument-project>
+    <dokument-release>[[${DOKUMENT}]] [[${DATUM}]]</dokument-release>
+</title-box>
+
+
+<page-after>
+    <div style="width: 60%;margin:auto;text-align:center">
+        <hr/>
+        <dokument-typ>Compliance Matrix (CM)</dokument-typ>
+        <dokument-subtyp>Product Assurance, Safety &amp; Sustainability Requirements</dokument-subtyp>
+        <dokument-project>for [[${PROJEKT}]]</dokument-project>
+        <hr/>
+    </div>
+
+    <div style="width: 80%;margin:auto;margin-top: 250px; ">
+        <table border="1px" class="center" style="table-layout:fixed;border-collapse:collapse;width:100%">
+            <thead>
+            <tr>
+                <th colspan="4">Supplier</th>
+            </tr>
+            <tr>
+                <th style="width:20%">Orig</th>
+                <th style="width:40%">Name</th>
+                <th style="width:25%">Signature</th>
+                <th style="width:15%">Date</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+                <td style="width:20%">Product Assurance</td>
+                <td style="width:40%"></td>
+                <td style="width:25%"></td>
+                <td style="width:15%"></td>
+            </tr>
+            <tr>
+                <td style="width:20%">Project Management</td>
+                <td style="width:40%"></td>
+                <td style="width:25%"></td>
+                <td style="width:15%"></td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <div style="width: 80%;margin:auto;margin-top: 50px; ">
+        <table border="1px" class="center" style="table-layout:fixed;border-collapse:collapse;width:100%">
+            <thead>
+            <tr>
+                <th colspan="4">Customer</th>
+            </tr>
+            <tr>
+                <th style="width:20%">Orig</th>
+                <th style="width:40%">Name</th>
+                <th style="width:25%">Signature</th>
+                <th style="width:15%">Date</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each=" signature : ${signatures}">
+                <td style="width:20%" th:text="${signature.state}">Status</td>
+                <td style="width:40%" th:utext="${signature.signee}">Name</td>
+                <td style="width:25%"></td>
+                <td style="width:15%"></td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+</page-after>
+
+<page-after id="introduction">
+    <h1>Introduction</h1>
+    <p>
+        This Compliance Matrix presents the formal agreement between the customer and the supplier to each requirement
+        of
+        the Product Assurance Safety and sustainability Requirements (HRWS-RD-PS-1940/DV7).</p>
+    <p>
+        The compliance status (including “P” and “N” in the column COMPLIANCE STATUS) are agreed as described in the
+        column REMARKS and are accepted as such by signature of all parties.
+    </p>
+    <p>
+        This document will be used together with the original Product Assurance and Safety Requirements to establish
+        the Product Assurance Plan (PAP) of the supplier in the course of the project.
+    </p>
+    <p>
+        Together with the issue of the Product Assurance Plan the supplier will deliver an update of the Compliance
+        Matrix by filling out the column CROSS REFERENCE with the applicable paragraph of the applied suppliers Product
+        Assurance Plan.
+    </p>
+    <p>
+        The following abbreviations are used :
+    <ol>
+        <li>Y = yes, full compliant</li>
+        <li>N = not compliant (the reasons of non compliance are inserted into column REMARKS)</li>
+        <li>P = partial compliant (all deviations are inserted into column REMARKS)</li>
+        <li>N/A = not applicable (the reasons for not applicability are inserted into column REMARKS)</li>
+    </ol>
+    </p>
+</page-after>
+
+<page-after>
+    <h1 id="documents">Applicable Documents</h1>
+    <table>
+        <tbody>
+        <tr>
+            <td width="30%">HRWS-RD-PS-1940/DV7 [[${DATUM}]]</td>
+            <td width="70%">Product Assurance, Safety &amp; Sustainability Requirements for [[${PROJEKT}]]</td>
+        </tr>
+        <tr>
+            <td>HRWS-RD-PS-1940/DV7- DRD</td>
+            <td>DRD to the Product Assurance, Safety &amp; Sustainability Requirements for [[${PROJEKT}]]</td>
+        </tr>
+        </tbody>
+    </table>
+</page-after>
+
+<page-after id="toc">
+    <h2>Table of Content</h2>
+    <ul class="toc">
+        <li><a href="#introduction">Introduction</a></li>
+        <li><a href="#documents">Applicable Documents</a></li>
+        <li><a href="#cm">Requirements Compliance Matrix</a></li>
+        <li><a href="#drd">DRD</a></li>
+    </ul>
+</page-after>
+
+<page-after id="cm">
+    <h1>Requirements Compliance Matrix</h1>
+    <table width="100%" border="1px" style="border-collapse: collapse;">
+        <thead>
+        <tr style="background-color:LightYellow">
+            <th style="width:11%;">DLR Requirem. para.</th>
+            <th style="width:35%;">Title</th>
+            <th style="width:7%">Compliance Status</th>
+            <th style="width:7%">Cross Reference</th>
+            <th style="width:35%">Remarks</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="chapter : ${chapters}" th:classappend="${chapter.level<3}?'kapitelEbene' + ${chapter.level}">
+            <td th:utext="${chapter.number}">Referenz</td>
+            <td th:utext="${chapter.name}" th:attrappend="colspan=${chapter.level<3}?4">Position</td>
+            <td th:if="${chapter.level}>2"></td>
+            <td th:if="${chapter.level}>2"></td>
+            <td th:if="${chapter.level}>2"></td>
+        </tr>
+        </tbody>
+    </table>
+</page-after>
+
+<page-after id="drd">
+    <h1>DRD</h1>
+    <table class="drd-tabelle">
+        <thead>
+        <tr class="drd">
+            <th style="width:21%">Title</th>
+            <th style="width:21%">Due Date</th>
+            <th style="width:21%">PA-Req't.</th>
+            <th style="width:15%">DRD No</th>
+            <th style="width:21%">DLR Action</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="drd : ${drds}">
+            <td th:text="${drd.title}"></td>
+            <td th:text="${drd.deliveryDate}"></td>
+            <td th:utext="${#strings.listJoin(drd.requirements, ',<br/>')}"></td>
+            <td th:text="${drd.number}"></td>
+            <td th:text="${drd.action}"></td>
+        </tr>
+        </tbody>
+    </table>
+</page-after>
+</body>
+
+</html>

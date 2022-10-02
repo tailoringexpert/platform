@@ -1,0 +1,31 @@
+@startuml Ebene2.png
+
+skinparam componentStyle uml2
+'skinparam component {
+'  BorderColor #grey
+'  BackgroundColor #white
+'}
+component core {
+    [domain]
+
+    [renderer]
+
+    [catalog]
+    [domain] <-- [catalog]
+
+    [requirement]
+    [domain] <-- [requirement]
+
+    [screeningsheet]
+    [domain] <-- [screeningsheet]
+
+    [tailoring]
+    [domain] <-- [tailoring]
+    [screeningsheet] <-- [tailoring]
+
+    [projekt]
+    [domain] <-- [project]
+    [screeningsheet] <-- [project]
+    [tailoring] <-- [project]
+}
+@enduml

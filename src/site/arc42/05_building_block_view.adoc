@@ -1,0 +1,469 @@
+[[section-building-block-view]]
+== Bausteinsicht
+Dieser Abschnitt beschreibt die Zerlegung von Tailoring in Module.
+
+=== Whitebox Gesamtsystem
+.Whitebox Gesamtsystem
+plantuml::plantuml/TailoringWhitebox.plantuml[target="{plantumls-outdir}/05/TailoringWhitebox",format=svg, alt="Bausteisicht Ebene 1]"]
+
+Begründung:: Die Zerlegung in Module erfolgt nach Aspekten den hexagonalen Architektur.
+
+Enthaltene Bausteine::
+
+|===
+| **Name** | **Verantwortung**
+| _xref:_whitebox_tailoringexpert_core[tailoringexpert-core]_ |_Fachlicher Kern des Systems_
+| _xref:_whitebox_tailoringexpert_tenant[tailoringexpert-tenant]_ |_Implementierung der Mandantenproxies_
+| _xref:_whitebox_tailoringexpert_data_jpa[tailoringexpert-data-jpa]_ | _Datenzugriffsmodul_
+| _xref:_whitebox_tailoringexpert_openhtmltopdf[tailoringexpert-openhtmltopdf]_ | _Generierung von Ausgabedokumenten für den Auftragsnehmer_
+| _xref:_whitebox_tailoringexpert_poi[tailoringexpert-poi]_ | _Verarbeitung von Tailoringanforderungen sowie Ausgabe einzelner Dokumente in Excel_
+| _xref:_whitebox_tailoringexpert_rest[tailoringexpert-rest]_ | _Bereitstellung einer REST-Schnittstelle für das Gesamtsystem_
+| _xref:_whitebox_tailoringexpert_web[tailoringexpert-web]_ | _Vue Frontend des Systems/Platform_
+|===
+
+
+==== tailoringexpert-core
+Das Modul ist der fachliche Kern des Gesamtsystems. Alle Geschäftsprozesse werden hier umgesetzt.
+
+Für extern benötigte Dienste oder Daten stellt dieses Modul Schnittstellen zur Verfügung. Ebenso werden hier Schnittstellen für Multi-Mandantenfähigkeit definiert.
+
+Das Modul hat weder Abhängigkeiten zu Fremd-Libraries noch zu anderen Modulen.
+
+==== tailoringexpert-tenant
+Das Modul implementiert die Proxies für den Zugriff auf mandantenspezifische Schnittstellenimplementierungen.
+
+==== tailoringexpert-data-jpa
+Das Modul implementiert die Datenzugriffsschnittstellen des _tailoring-core_ Moduls.
+
+Der Datenzugriff erfolgt über JPA mittels _Spring Data JPA_.
+
+==== tailoringexpert-openhtmltopdf
+Modul für die Erzeugung von Ausgabedokumenten für den Auftragnehmer.
+
+Hier werden PDF Dateien mittels _openhtmltopdf_ erstellt.
+
+==== tailoringexpert-poi
+Modul für Import/Export der Anforderungen eines Tailorings.
+
+Hier werden XLSX Dateien mittels _poi_ verarbeitet.
+
+==== tailoringexpert-rest
+Bereitstellung einer REST-Schnittstelle für das Gesamtsystem.
+
+Die REST-Schnittstelle wird über _Spring WebMVC_ zur Vefügung gestellt.
+
+Die Antworten sind _HATEOAS_ konform, so dass alle erlaubten Aktionen über Links der Antwort beigefügt sind.
+
+==== tailoringexpert-web
+Frontend für den Zugriff auf das Gesamtsystem. Wird als Single-Page App implementiert und als externes System nicht
+weiter in der Architekturdokumentation betrachtet.
+
+
+=== Ebene 2
+
+==== Whitebox _tailoringexpert-core_
+.Whitebox tailoringexpert-core
+plantuml::plantuml/core/Ebene2.plantuml[target="{plantumls-outdir}/05/core", format=svg, alt="Whitebox tailoringexpert-core Ebene 2"]
+
+Enthaltene Bausteine::
+
+|===
+| **Name** | **Verantwortung**
+
+|_xref:_whitebox_tailoringexpert_coredomain[domain]_
+|_Domänenobjekte des fachlichen Kerns_
+
+|_xref:_whitebox_tailoringexpert_corerequirement[requirement]_
+|_Services für die Be-/Verarbeitung von Anforderungen_
+
+|_xref:_whitebox_tailoringexpert_corecatalog[catalog]_
+|_Service für den Import eines neuen Anforderungkatalogs_
+
+|_xref:_whitebox_tailoringexpert_coreproject[project]_
+|_Services für die Be-/Verarbeitung von Projekten_
+
+|_xref:_whitebox_tailoringexpert_corerenderer[renderer]_
+|_Services für Bereitstellung von Rendering Engines für den Dokumentexport_
+
+|_xref:_whitebox_tailoringexpert_coretailoring[tailoring]_
+|_Services für die Be-/Verarbeitung von Tailorings_
+
+|_xref:_whitebox_tailoringexpert_corescreeningsheet[screeningsheet]_
+|_Services für die Verarbeitung von Screeningsheets_
+|===
+
+==== Whitebox _tailoringexpert-tenant_
+.Whitebox tailoringexpert-tenant
+plantuml::plantuml/tenant/Ebene2.plantuml[target="{plantumls-outdir}/05/tenant", format=svg, alt="Whitebox tailoringexpert-tenant Ebene 2"]
+
+Enthaltene Bausteine::
+
+|===
+| **Name** | **Verantwortung**
+
+|_xref:_whitebox_tailoringexpert_tenanttailoring[tailoring]_
+|_Proxies für die mandantenspezifischen Template-Engines und Dokumentenservices_
+
+|_xref:_whitebox_tailoringexpert_tenantkatalog[catalog]_
+|_Proxies für die mandantenspzezifischen Gesamtkatalogerstellung_
+
+|_xref:_whitebox_tailoringexpert_tenantrenderer[renderer]_
+|_Proxies für die mandantenspzezifischen Selektion von Renderern für die Ausgabedokumente_
+
+|_xref:_whitebox_tailoringexpert_tenantscreeningsheet[screeningsheet]_
+|_Proxies für die mandantenspzezifischen Verarbeitung von Screeningsheets_
+|===
+
+==== Whitebox _tailoringexpert-data-jpa_
+.tailoringexpert-data_jpa Ebene 2
+plantuml::plantuml/data-jpa/Ebene2.plantuml[target="{plantumls-outdir}/05/data-jpa", format=svg, alt="Whitebox tailoringexpert-data-jpa Ebene 2"]
+
+Begründung:: Die Zerlegung Unterkomponenten erfolgt in Anlehung an den fachlichen Kern (_tailoring-core_). Dadurch wird ein einheitlicher Paketzugriff realisiert.
+Die Schnittstelle zur Datenbank ist in _Spring Data JPA Repositories_ in der Komponente _repository_ gekapselt.
+
+Enthaltene Bausteine::
+|===
+| **Name** | **Verantwortung**
+
+|_xref:_whitebox_tailoringexpert_data_jpadomain[domain]_
+|_Entitäten des Systems_
+
+|_xref:_whitebox_tailoringexpert_data_jparepository[repository]_
+|_Datenzugriffschicht mittels **Spring Data JPA** der Entitäten_
+
+|_xref:_whitebox_tailoringexpert_data_jparequirement[requirement]_
+|_Implementierungsschicht der Schnittstelle **AnforderungServiceRepository**_
+
+|_xref:_whitebox_tailoringexpert_data_jpacatalog[catalog]_
+|_Implementierungsschicht der Schnittstelle **KatalogServiceRepository**_
+
+|_xref:_whitebox_tailoringexpert_data_jpaproject[project]_
+|_Implementierungsschicht der Schnittstelle **ProjektServiceRepository**_
+
+|_xref:_whitebox_tailoringexpert_data_jpatailoring[tailoring]_
+|_Implementierungsschicht der Schnittstelle **TailoringServiceRepository**_
+
+|_xref:_whitebox_tailoringexpert_data_jpascreeningsheet[screeningsheet]_
+|_Implementierungsschicht der Schnittstelle **ScreeningSheetServiceRepository**_
+
+|===
+
+Wichtige Schnittstellen::
+
+|===
+| Schnittstelle | Beschreibung
+
+| --
+|
+|===
+
+
+==== Whitebox _tailoringexpert-openhtmltopdf_
+.tailoringexpert-openhtmltopdf Ebene 2
+plantuml::plantuml/openhtmltopdf/Ebene2.plantuml[target="{plantumls-outdir}/05/generator/openhtmltopdf", format=svg, alt="Whitebox tailoringexpert-openhtmltopdf Ebene 2]"]
+
+Begründung:: Die Zerlegung Unterkomponenten erfolgt in Anlehnung an den fachlichen Kern (_tailoringexpert-core_). Dadurch wird ein einheitlicher Paketzugriff realisiert.
+
+Enthaltene Bausteine::
+
+|===
+| **Name** | **Verantwortung**
+
+| _xref:_whitebox_tailoringexpert_openhtmltopdftailoring[tailoring]_
+|_Implementierungsschicht der Schnittstelle **DocumentCreator**_
+
+| _xref:_whitebox_tailoringexpert_openhtmltopdfcatalog[catalog]_
+|_Implementierungsschicht der Schnittstelle für die Gesamtkatalogerstellung **DocumentCreator**_
+
+| _xref:_whitebox_tailoringexpert_openhtmltopdfrenderer[renderer]_
+|_Implementierungsschicht der zu verwendenden Renderer Schnittstellen**_
+|===
+
+Wichtige Schnittstellen::
+
+|===
+| Schnittstelle | Beschreibung
+
+| --
+|
+|===
+
+
+==== Whitebox _tailoringexpert-poi_
+.tailoringexpert-generator-poi Ebene 2
+plantuml::plantuml/poi/Ebene2.plantuml[target="{plantumls-outdir}/05/generator/poi", format=svg, alt="Whitebox tailoringexpert-poi Ebene 2]"]
+
+Begründung:: Die Zerlegung Unterkomponenten erfolgt in Anlehung an den fachlichen Kern (_tailoring-core_). Dadurch wird ein einheitlicher Paketzugriff realisiert.
+
+Enthaltene Bausteine::
+
+|===
+| **Name** | **Verantwortung**
+
+| _xref:_whitebox_tailoringexpert_poitailoring[tailoring]_
+|_Implementierungsschicht der Schnittstelle **DocumentCreator**_
+|===
+
+Wichtige Schnittstellen::
+
+|===
+| Schnittstelle | Beschreibung
+
+| --
+|
+|===
+
+==== Whitebox _tailoringexpert-rest_
+.tailoringexpert-rest Ebene 2
+plantuml::plantuml/rest/Ebene2.plantuml[target="{plantumls-outdir}/05/rest", format=svg, alt="Whitebox tailoringexpert-rest Ebene 2]"]
+
+Begründung:: Die Zerlegung Unterkomponenten erfolgt in Anlehnung an den fachlichen Kern (_tailoringexpert-core_).
+Dadurch wird ein einheitlicher Paketzugriff realisiert.
+Die HATEOAS Links werden im _domain_ Paket über den ResourceMapper erzeugt. Im Mapper sind entsprechende Path Elemente als
+Konstanten definiert. Diese sind in den Controllern für das Mapping zu verwenden.
+
+|===
+| **Name** | **Verantwortung**
+
+|_xref:_whitebox_tailoringexpert_restrequirement[requirement]_
+|_REST-Schnittstelle für die Be-/Verarbeitung von Anforderungen_
+
+|_xref:_whitebox_tailoringexpert_restdomain[domain]_
+|_Domänenobjekte der Komponente und ResozrceMapper für die Erzuegung der HATEOAS Links_
+
+|_xref:_whitebox_tailoringexpert_restcatalog[catalog]_
+|_REST-Schnittstelle für den Import neuer Kataloge_
+
+|_xref:_whitebox_tailoringexpert_restproject[project]_
+|_REST-Schnittstelle  für die Be-/Verarbeitung von Projekten_
+
+|_xref:_whitebox_tailoringexpert_resttailoring[tailoring]_
+|_REST-Schnittstelle für die Be-/Verarbeitung von Projektphasen_
+
+|_xref:_whitebox_tailoringexpert_restscreeningsheet[screeningsheet]_
+|_REST-Schnittstelle für die Verarbeitung von Screeningsheets_
+
+|===
+
+Wichtige Schnittstellen::
+|===
+| Schnittstelle | Beschreibung
+
+ | GET /
+a| Ermittlung der Haupt-Urls der Anwendung
+
+* Verfügbare Katalogversionen
+* Vorhandene Projekte
+* Hochladen von Screningsheets
+* Berechnung eines Selektionsvektors
+
+ | POST <REL>
+ |
+|===
+
+Folgende Rels sind für die HATEOAS Links im jeweiligen Kontext definiert:
+|===
+| Schnittstelle | Beschreibung
+
+| self
+| Die Resource im aktuellen Kontext
+
+| screeningsheet
+| Projekt und/oder Tailoring Screeningsheet
+
+| selectionvector
+| Projekt und/oder Tailoing Selektionsvektor
+
+| tailoring
+| Projekttailoring
+
+| catalog
+| Tailoringkatalog
+
+| pdf
+| Gesamtkatalog als PDF
+
+| json
+| Gesamtkatalog als JSON
+
+| tailoringcatalog
+| Printkatalog des Tailoring
+
+| basecatalog
+| Printversion des Gesamtkatalogs
+
+| signature
+|
+
+| chapter
+|
+
+| text
+|
+
+| selected
+|
+
+| document
+|
+
+| compare
+|
+
+| name
+|
+
+| import
+|
+
+| attachment
+|
+
+|===
+
+Alle im Kontext einer Resource möglichen Links werden als URLs in den Serverantwortern unter _links_ zur Verfügung gestellt.
+
+=== Ebene 3
+
+==== Whitebox _tailoringexpert-core:domain_
+.tailoringexpert-core:domain
+plantuml::plantuml/core/domain/Ebene3.plantuml[target="{plantumls-outdir}/05/core/domain", format=svg, alt="Whitebox tailoringexpert-core:domain Ebene 3]"]
+
+
+==== Whitebox _tailoringexpert-core:project_
+.tailoringexpert-core:project
+plantuml::plantuml/core/project/Ebene3.plantuml[target="{plantumls-outdir}/05/core/project", format=svg, alt="Whitebox tailoringexpert-core:project Ebene 3]"]
+
+==== Whitebox _tailoringexpert-core:tailoring_
+.tailoringexpert-core:tailoring
+plantuml::plantuml/core/tailoring/Ebene3.plantuml[target="{plantumls-outdir}/05/core/tailoring", format=svg, alt="Whitebox tailoringexpert-core:tailoring Ebene 3]"]
+
+Wichtige Schnittstellen::
+
+|===
+| Schnittstelle | Beschreibung | Mandantspezifische Implementierung erforderlich
+
+| DokumentCreator
+| Interface für die Erstellung eines Dokumentes
+|
+| DokumentService
+| Interface für die Erstellung aller Mandantenspezifischen Dokumente.
+
+| X
+|===
+
+==== Whitebox _tailoringexpert-core:requirement_
+.tailoringexpert-core:requirement
+plantuml::plantuml/core/requirement/Ebene3.plantuml[target="{plantumls-outdir}/05/core/anforderung", format=svg, alt="Whitebox tailoringexpert-core:requirement"]
+
+==== Whitebox _tailoringexpert-core:screeningsheet_
+.tailoringexpert-core:screeningsheet
+plantuml::plantuml/core/screeningsheet/Ebene3.plantuml[target="{plantumls-outdir}/05/core/screeningsheet", format=svg, alt="Whitebox tailoringexpert-core:screeningsheet"]
+
+Wichtige Schnittstellen::
+
+|===
+| Schnittstelle | Beschreibung | Mandantspezifische Implementierung erforderlich
+
+| ScreeningSheetParameterProvider
+| Interface für die Extraktion der Mandantenspezifischen Parameter aus einem Screeningsheet.
+| X
+| SelektionsVektorProvider
+| Interface für die Mandantenspezifische Ermittlung des Selektionsvektors.
+| X
+
+|===
+
+==== Whitebox _tailoringexpert-core:catalog_
+.tailoringexpert-core:catalog
+plantuml::plantuml/core/catalog/Ebene3.plantuml[target="{plantumls-outdir}/05/core/catalog", format=svg, alt="Whitebox tailoringexpert-core:catalog"]
+
+==== Whitebox _tailoringexpert-core:renderer_
+.tailoringexpert-core:renderer
+plantuml::plantuml/core/renderer/Ebene3.plantuml[target="{plantumls-outdir}/05/core/renderer", format=svg, alt="Whitebox tailoringexpert-core:renderer"]
+
+==== Whitebox _tailoringexpert-data-jpa:domain_
+.tailoringexpert-data-jpa:domain
+plantuml::plantuml/data-jpa/domain/Ebene3.plantuml[target="{plantumls-outdir}/05/data-jpa/domain", format=svg, alt="Whitebox tailoringexpert-data-jpa:domain"]
+
+==== Whitebox _tailoringexpert-data-jpa:repository_
+.tailoringexpert-data-jpa:repository
+plantuml::plantuml/data-jpa/repository/Ebene3.plantuml[target="{plantumls-outdir}/05/data-jpa/repository", format=svg, alt="Whitebox tailoringexpert-data-jpa:repository"]
+
+==== Whitebox _tailoringexpert-data-jpa:project_
+.tailoringexpert-data-jpa:project
+plantuml::plantuml/data-jpa/project/Ebene3.plantuml[target="{plantumls-outdir}/05/data-jpa/project", format=svg, alt="Whitebox tailoringexpert-data-jpa:project"]
+
+==== Whitebox _tailoringexpert-data-jpa:catalog_
+.tailoringexpert-data-jpa:catalog
+plantuml::plantuml/data-jpa/catalog/Ebene3.plantuml[target="{plantumls-outdir}/05/data-jpa/catalog", format=svg, alt="Whitebox tailoringexpert-data-jpa:catalog"]
+
+==== Whitebox _tailoringexpert-data-jpa:tailoring_
+.tailoringexpert-data-jpa:tailoring
+plantuml::plantuml/data-jpa/tailoring/Ebene3.plantuml[target="{plantumls-outdir}/05/data-jpa/tailoring", format=svg,, alt="Whitebox tailoringexpert-data-jpa:tailoring"]
+
+==== Whitebox _tailoringexpert-data-jpa:requirement_
+.tailoringexpert-data-jpa:requirement
+plantuml::plantuml/data-jpa/requirement/Ebene3.plantuml[target="{plantumls-outdir}/05/data-jpa/requirement", format=svg, alt="Whitebox tailoringexpert-data-jpa:requirement"]
+
+==== Whitebox _tailoringexpert-data-jpa:screeningsheet_
+.tailoringexpert-data-jpa:screeningsheet
+plantuml::plantuml/data-jpa/screeningsheet/Ebene3.plantuml[target="{plantumls-outdir}/05/data-jpa/screeningsheet", format=svg, alt="Whitebox tailoringexpert-data-jpa:screeningsheet"]
+
+==== Whitebox _tailoringexpert-openhtmltopdf:tailoring_
+.tailoringexpert-openhtmltopdf:tailoring
+plantuml::plantuml/openhtmltopdf/tailoring/Ebene3.plantuml[target="{plantumls-outdir}/05/generator-openhtmltopdf/tailoring", format=svg, alt=Whitebox tailoringexpert-openhtmltopdf:tailoring"]
+
+==== Whitebox _tailoringexpert-openhtmltopdf:catalog_
+.tailoringexpert-openhtmltopdf:catalog
+plantuml::plantuml/openhtmltopdf/catalog/Ebene3.plantuml[target="{plantumls-outdir}/05/generator-openhtmltopdf/catalog", format=svg, alt=Whitebox tailoringexpert-openhtmltopdf:catalog"]
+
+
+==== Whitebox _tailoringexpert-rest:requirement_
+.tailoringexpert-rest:requirement
+plantuml::plantuml/rest/requirement/Ebene3.plantuml[target="{plantumls-outdir}/05/rest/requirement", format=svg, alt=Whitebox tailoringexpert-rest:requirement"]
+
+==== Whitebox _tailoringexpert-rest:domain_
+.tailoringexpert-rest:domain
+plantuml::plantuml/rest/domain/Ebene3.plantuml[target="{plantumls-outdir}/05/rest/domain", format=svg, alt=Whitebox tailoringexpert-rest:domain"]
+
+==== Whitebox _tailoringexpert-rest:catalog_
+.tailoringexpert-rest:catalog
+plantuml::plantuml/rest/catalog/Ebene3.plantuml[target="{plantumls-outdir}/05/rest/catalog", format=svg, alt=Whitebox tailoringexpert-rest:catalog"]
+
+==== Whitebox _tailoringexpert-rest:project_
+.tailoringexpert-rest:project
+plantuml::plantuml/rest/project/Ebene3.plantuml[target="{plantumls-outdir}/05/rest/project", format=svg, alt=Whitebox tailoringexpert-rest:project"]
+
+==== Whitebox _tailoringexpert-rest:tailoring_
+.tailoringexpert-rest:tailoring
+.tailoringexpert-rest:tailoring
+plantuml::plantuml/rest/tailoring/Ebene3.plantuml[target="{plantumls-outdir}/05/rest/tailoring", format=svg, alt=Whitebox tailoringexpert-rest:tailoring"]
+
+==== Whitebox _tailoringexpert-rest:screeningsheet_
+.tailoringexpert-rest:screeningsheet
+plantuml::plantuml/rest/screeningsheet/Ebene3.plantuml[target="{plantumls-outdir}/05/rest/screeningsheet", format=svg, alt=Whitebox tailoringexpert-rest:screeningsheet"]
+
+
+==== Whitebox _tailoringexpert-tenant:catalog_
+.tailoringexpert-tenant:catalog
+plantuml::plantuml/tenant/catalog/Ebene3.plantuml[target="{plantumls-outdir}/05/tenant/catalog", format=svg, alt=Whitebox tailoringexpert-tenant:catalog"]
+
+==== Whitebox _tailoringexpert-tenant:renderer_
+.tailoringexpert-tenant:renderer
+plantuml::plantuml/tenant/renderer/Ebene3.plantuml[target="{plantumls-outdir}/05/tenant/renderer", format=svg, alt=Whitebox tailoringexpert-tenant:renderer"]
+
+==== Whitebox _tailoringexpert-tenant:screeningsheet_
+.tailoringexpert-tenant:screeningsheet
+plantuml::plantuml/tenant/screeningsheet/Ebene3.plantuml[target="{plantumls-outdir}/05/tenant/screeningsheet", format=svg, alt=Whitebox tailoringexpert-tenant:screeningsheet"]
+
+==== Whitebox _tailoringexpert-tenant:tailoring_
+.tailoringexpert-tenant:tailoring
+plantuml::plantuml/tenant/tailoring/Ebene3.plantuml[target="{plantumls-outdir}/05/tenant/tailoring", format=svg, alt=Whitebox tailoringexpert-tenant:tailoring"]
+
+
+_<Whitebox-Template>_
+
+==== Whitebox <_Baustein y.1_>
+
+_<Whitebox-Template>_

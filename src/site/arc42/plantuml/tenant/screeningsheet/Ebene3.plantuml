@@ -1,0 +1,24 @@
+@startuml Ebene3.png
+hide empty members
+
+package screeningsheet {
+
+    interface ScreeningSheetParameterProvider {
+        parse(is : InputStream) : Map<String, Object>
+    }
+
+    class TenantScreeningSheetParameterProvider {
+        tenantProvider : Map<String, ScreeningSheetParameterProvider>
+    }
+    ScreeningSheetParameterProvider <|.. TenantScreeningSheetParameterProvider
+
+    interface "SelectionVectorProvider<Collection<Parameter>, SelectionVector>"  as selectionVectorProvider{
+        apply(t : Collection<Parameter>) : SelectionVector
+    }
+    class TenantSelectionVectorProvider {
+    }
+    selectionVectorProvider <|.. TenantSelectionVectorProvider
+
+
+}
+@enduml

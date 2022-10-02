@@ -1,0 +1,15 @@
+@startuml Ebene3.png
+hide empty members
+
+package renderer {
+    class ThymeleafTemplateEngine {
+        templateEngine : ITemplateEngine
+        toXHTML(text : String, platzhalter :  Map<String, String>) : String
+    }
+    HTMLTemplateEngine <|.. ThymeleafTemplateEngine
+    class PDFEngine {
+        baseUri : String
+        process(docId : String, html : String, pfadSuffix : String) :  File
+    }
+}
+@enduml

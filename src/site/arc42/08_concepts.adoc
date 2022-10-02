@@ -1,0 +1,99 @@
+[[section-concepts]]
+== Querschnittliche Konzepte
+
+
+=== Erzeugung von Datenobjekten
+
+Für Datenobjekte (veränderlich/nicht veränderlich) sind Zugriffs- und Vergleichoperationen mittels https://projectlombok.org[Lombok] zu erzeugen.
+Dies reduziert den zu wartenden Code erheblich. Zudem sind Methoden wie
+
+- equals
+- hashCode
+- toString
+
+konstistent und nach bewährten Mustern umgesetzt.
+Wenn immer es möglich ist, soll mit nicht veränderlichen Value statt mit änderbaren Datenobjekten gearbeitet werden.
+Für den Zugriff auf die Datenbank mit dem Persistenz-Provider ist dies nicht möglich. Für Entitäten sind deshalb immer Vakue-Objekte mit zugehörigem Builder zu erzeugen.
+
+=== Datentypen
+
+Die Domänenobjekt des fachlichen Kerns sollen keine technischen Aspekte, wie z.B. Ids für den Datenbankzugriff,
+enthalten. Für die Speicherung in der Persistenzschicht sollen aber technische IDs für den schnellen Zugriff auf der Datenbank enthalten sein.
+
+=== Entitäten
+Die Entitäten sind mittels Annotationen innerhalb des Pakets _domain_ der _tailoring-data-jpa_ Komponente zu erstellen.
+Für größtmögliche Portabilität zwischen den Datenbanken wird als _ID_-Generator eine Sequenztabelle verwendet.
+
+=== Datentypkonvertierung
+Konvertierungen zwischen Datentypen soll nicht manuell durchgeführt werden, da hier der Pflege- und Navigationsaufwand
+nicht unerheblich ist. Hierfür ist https://mapstruct.org[MapStruct] zu verwenden. Mit MapStruct können
+annotationsbasiert Datenobjekte konvertiert werden.
+
+=== Autorisierung und Authentifizierung
+Die Anwendung implementiert keine eigene Benutzerverwaltung. Es wird davon ausgegangen, dass eine Authentifizierung
+mittels _.htaccess_ Datei ausreichend ist.
+
+=== Dependency Injection
+Es soll nach Möglichkeit immer nur gegen Schnittstellen entwickelt werden. Die zu verwendenden Implementierungen der Schnittstellen werden konfiguriert.
+Um einen besseren Überblick zu behalten, wie die Anwendung konfiguriert ist, ist die annotationsbasierte Konfiguration grundsätzlich verboten.
+Für jedes Paket ist im _tailoring-bootapp_-Projekt eine Java Konfigurations durchzuführen.
+
+=== Datenbankversionierung
+Für die Verwaltung der Datenbankskripte, und damit der Datenbankversion, wird https://www.liquibase.org[liquibase] verwendet.
+Die Datenbankskripte sind in der Komponente _tailoring-data-jpa_ zu pflegen.
+
+=== Testen der Architektur
+Bestimmte Aspekte der Architektur werden automatisiert werden den Builds mittels https://www.archunit.org[archunit] getestet.
+archunit stellt eine relativ einfache API zur Verfügung, um die wichtigsten Aspekte wie z.B.
+
+* Paketzyklen
+* erlaubte Paketzugriffe
+* Verwendung von nicht erlaubten Annotationen
+
+zu erkennen.
+
+Zudem können bestimmte Tests mittels https://www.plantuml.com[plantuml] graphisch konfiguriert werden.
+Für jede Komponente ist im Basispaket ein Test _ArchitectureTest_ zu definieren.
+
+=== Webservices
+WebServices werden als REST-Services unter Beachtung von _HATEOAS (Hypermedia as the engine of application state)_ als
+Spring WebMVC _RestController_ mittels Code-First Ansatz umgesetzt und mit **OpenApi** Annotationen dokumentiert.
+
+=== Mandantenproxies
+Mandantenproxies kapseln den Zugriff auf die mandantenspefischen Implementierungen
+Hier
+[source,java]
+----
+@RequiredArgsConstructor
+public class MandantenspezifischeFunktionalitaetImpl implements MandantenspezifischeFunktionalitaet {
+
+    @NonNull
+    private final Map<String, MandantenspezifischeFunktionalitaet> tenantService;
+
+    @Override
+    public MandantenspezifischeFunktionalitaetReturnWert mandantenspezifischeFunktionalitaet(InputStream is) {
+        MandantenspezifischeFunktionalitaet provider = tenantService.get(TenantContext.getCurrentTenant());
+        return nonNull(provider) ? provider.mandantenspezifischeFunktionalitaet(is) : null;
+    }
+}
+----
+
+In den Springkonfigurationen sind dies Proxies wie folgt zu definieren:
+[source,java]
+----
+@Bean
+@Primary
+MandantenspezifischeFunktionalitaet mandantenspezifischeFunktionalitaet(ListableBeanFactory beanFactory) {
+    Map<String, MandantenspezifischeFunktionalitaet> services = Tenants.get(beanFactory, MandantenspezifischeFunktionalitaet.class);
+    return new TenantTemplateEngine(services);
+}
+----
+
+[source,java]
+----
+@Tenant("tenant")
+@RequiredArgsConstructor
+public class TenantMandantenspezifischeFunktionalitaet implements MandantenspezifischeFunktionalitaet {
+    ...
+}
+----

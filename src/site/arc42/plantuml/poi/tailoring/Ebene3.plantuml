@@ -1,0 +1,41 @@
+@startuml Ebene3.png
+hide empty members
+
+package tailoring {
+
+    interface DocumentCreator {
+        createDocument(docId : String, tailoring : Tailoring, placeholders : Map<String, String>) : File
+    }
+
+    interface "BiFunction<Kapitel<TailoringRequirement>, Collection<Phase>, Map<DRD, Set<String>>>" as drdSupplier {
+    }
+
+    interface "Function<String, File>" as templateSupplier {
+    }
+
+    class TailoringCatalogExcelDocumentCreator {
+    }
+    DocumentCreator <|-- TailoringCatalogExcelDocumentCreator
+
+    class CMExcelDocumentCreator {
+    }
+    DocumentCreator <|-- CMExcelDocumentCreator
+    CMExcelDocumentCreator --> "1" templateSupplier : templateSupplier
+    CMExcelDocumentCreator --> "1" drdSupplier : drdProvider
+
+    class DRDElement {
+        title : String
+        deliveryDate : String
+        requirements : Collection<String>
+        number: String
+        action : String
+    }
+
+    interface "Function<byte[], Map<String, Collection<ImportRequirement>>>" as requirementFunction {
+    }
+
+    class TailoringRequirementExcelFileReader {
+    }
+    requirementFunction <|.. TailoringRequirementExcelFileReader
+}
+@enduml

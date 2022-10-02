@@ -1,0 +1,50 @@
+@startuml Ebene3.png
+hide empty members
+
+package eu.tailoringexpert {
+    package screeningsheet {
+        interface ScreeningSheetService
+    }
+    package tailoring {
+        interface TailoringService
+    }
+}
+
+package project {
+
+    class CreateProjectTO {
+        project : String
+        tailoring : String
+    }
+    CreateProjectTO --> "1" SelectionVector : selectionVector
+
+    interface ProjectService {
+        createProject(catalog : String, screeningSheet : byte[], applicableSelectionVector : SelectionVector, note : String) : CreateProjectTO
+        addTailoring(project : String, catalog : String, screeningSheetData : byte[], applicableSelectionVector : SelectionVector, note : String) : Optional<Tailoring>
+        copyProject(project : String, screeningSheet: byte[]) : Optional<Project>
+        deleteProject(project : String) : boolean
+    }
+
+    interface ProjectServiceRepository {
+        getBaseCatalog(version : String) : Catalog<BaseRequirement>
+        createProject(catalog : String, project : Project) : Project
+        createProject(project : Project) : Project
+        deleteProject(project : String): boolean
+        getProject(project : String) : Optional<Project>
+        addTailoring(project : String, tailoring : Tailoring) : Optional<Tailoring>
+        getProjectInformations() : Collection<ProjectInformation>
+        getProjectInformation(project : String) : Optional<ProjectInformation>
+        getScreeningSheetFile(project : String) : Optional<byte[]>
+        getScreeningSheet(project : String) : Optional<ScreeningSheet>
+    }
+
+    class ProjectServiceImpl {
+    }
+
+    ProjectService <|-- ProjectServiceImpl
+    ProjectServiceImpl --> "1" ProjectServiceRepository : repository
+    ProjectServiceImpl --> "1" ScreeningSheetService : screeningSheetService
+    ProjectServiceImpl --> "1" TailoringService : tailoringService
+
+}
+@enduml

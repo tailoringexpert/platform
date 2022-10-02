@@ -1,0 +1,181 @@
+@startuml Ebene3.png
+skinparam componentStyle uml2
+
+package domain {
+
+    class Logo {
+        name : String
+        url : String
+    }
+
+    class Reference {
+      text : String
+      geaendert: Boolean
+    }
+    changed --> "0..1" Logo : logo
+
+    abstract class Requirement{
+      text: String
+      position : String
+    }
+    Requirement --> "0..1" Reference : reference
+    Requirement --> "0..*" DRD : drds
+
+    class DRD {
+        numer : String
+        title : String
+        deliveryDate : String
+        action : String
+    }
+    class Identifier {
+        type : String
+        level : int
+        limitations : Collection<String>
+    }
+
+    enum Phase {
+        ZERO("0")
+        A("A")
+        B("B")
+        C("C")
+        D("D")
+        E("E")
+        F("F")
+    }
+
+    class BaseRequirement {
+    }
+    Requirement <|-- BaseRequirement
+    BaseRequirement --> "0..*" Identifier : identifiers
+    BaseRequirement --> "0...*" Phase : phases
+
+
+    class Chapter<T extends Requirement> {
+        name : String
+        position : int
+        number : String
+    }
+    Chapter --> "0..*" Chapter : chapters
+    Chapter --> "0..*" Requirement : requirements
+
+    class TailoringRequirement {
+        selected : Boolean
+        selectionChanged : ZonedDateTime
+        textChanged : ZonedDateTime
+    }
+    Requirement <|-- TailoringRequirement
+
+    class Catalog<T extends Requirement> {
+        version : String
+    }
+    Catalog --> "1" Chapter : toc
+
+
+    class SelectionVector {
+        levels : Map<String, Integer>
+        getLevel(type : String) : int
+    }
+
+    class SelectionVectorProfile {
+        name: String
+        levels : Map<String, Integer>
+    }
+
+    class ScreeningSheet {
+        +{static} PROJECT : String = "project"
+        +{static} PHASE : String = "phase"
+        data : byte[]
+        project : String
+    }
+    ScreeningSheet --> "1" SelectionVector : selectionsVector
+    ScreeningSheet -->  "0..*" ScreeningSheetParameter : parameters
+    ScreeningSheet -->  "0..*" Phase : phases
+
+    class File {
+        name : String
+        daten:  byte[]
+        hash : String
+        +getType() : String
+    }
+
+    class Note {
+        number : Integer
+        text : String
+        creationTimestamp : ZonedDateTime
+    }
+
+    enum TailoringState {
+        CREATED
+        ACTIVE
+    }
+
+    class Tailoring {
+        name : String
+        identifier : String
+    }
+
+    Tailoring --> "1" SelectionVector : selectionVector
+    Tailoring --> "1" ScreeningSheet : screeningSheet
+    Tailoring --> "1..*" Phase : phases
+    Tailoring --> "1" "Catalog<TailoringRequirement>" : catalog
+    Tailoring --> "1" TailoringState : state
+    Tailoring --> "0..*" File : files
+    Tailoring --> "1..*" DocumentSignature : signatures
+    Tailoring --> "0..*" Note : notes
+
+    class Project {
+        identifier : String
+        creationTimestamp : ZonedDateTime
+    }
+    Project --> "1..*" Tailoring : tailorings
+    Project --> "1" ScreeningSheet : screeningSheet
+    Project --> "1" "Catalog<BaseRequirement>" : catalog
+
+    enum DatenTyp {
+        SKALAR
+        MATRIX
+    }
+
+    class Parameter {
+        parameterType : String
+        name : String
+        label: String
+        value : Object
+        position : int
+    }
+    Parameter --> "1" DatenType : datenType
+
+    enum DocumentSignatureState {
+        PREPARED("Prepared")
+        AGREED("Agreed")
+        RELEASED("Released")
+    }
+
+    class DocumentSignature {
+        faculty : String
+        signee : String
+        applicable : Boolean
+        position : int
+    }
+    DocumentSignature --> "1" DocumentSignatureState : status
+
+    class TailoringInformation<<Projection>> {
+        name : String
+        catalogVersion : String
+    }
+    TailoringInformation --> "1.." Phase : phases
+
+    class ProjectInformation<<Projection>> {
+        identifier : String
+        catalogVersion : Sting
+        creationTimestamp : ZonedDateTime
+    }
+    ProjectInformation --> "1..*" TailoringInformation : tailorings
+
+    class ScreeningSheetParameter {
+        category : String
+        value : Object
+    }
+}
+hide empty members
+@enduml

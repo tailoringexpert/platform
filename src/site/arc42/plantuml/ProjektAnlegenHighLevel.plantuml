@@ -1,0 +1,73 @@
+@startuml ProjektAnlegen.png
+skinparam BoxPadding 10
+
+actor ARZS
+
+
+box rest
+    boundary ScreeningSheetController
+    boundary ProjektController
+end box
+
+box core
+    control ProjektService
+    control ScreeningSheetService
+    control TailoringService
+end box
+
+box data-jpa
+    control ScreeningSheetServiceRepository
+    control ProjektServiceRepository
+    control ProjektRepository
+end box
+
+box rdbms
+    database tailoringexpert as db
+end box
+
+ARZS -> ScreeningSheetController : POST /screeningsheet
+activate ScreeningSheetController
+    ScreeningSheetController -> ScreeningSheetService : createScreeningSheet (byte[])
+    activate ScreeningSheetService
+        ScreeningSheetService -> ScreeningSheetServiceRepository : getParameter(Set<String>)
+        activate ScreeningSheetServiceRepository
+            ScreeningSheetServiceRepository --> ScreeningSheetService : Collection<Parameter>
+        deactivate ScreeningSheetServiceRepository
+    ScreeningSheetService --> ScreeningSheetController : ScreeningSheet
+    deactivate ScreeningSheetService
+deactivate ScreeningSheetController
+
+ARZS -> ProjektController : POST /projekt/{katolgversion}
+activate ProjektController
+
+ProjektController -> ProjektService : createProjekt(\n\tkatalogVersion,\n\tscreeningsheet byte[],\n\tselektionsVerktor\n)
+activate ProjektService
+    ProjektService -> ProjektServiceRepository : getKatalog(katalogVersion)
+    activate ProjektServiceRepository
+        ProjektServiceRepository --> ProjektService : Katalog<KatalogAnforderung>
+    deactivate ProjektServiceRepository
+    ProjektService -> ScreeningSheetService : createScreeningSheet
+    activate ScreeningSheetService
+        ScreeningSheetService --> ProjektService : ScreeningSheet
+    deactivate ScreeningSheetService
+    ProjektService -> TailoringService : createTailoring(\n\t"master",\n\t"1000",\n\tscreeningsheet,\n\tanzuwendender SelektionsVektor,\n\tGesamtkatalog\n)
+    activate TailoringService
+    TailoringService --> ProjektService : Tailoring
+    deactivate TailoringService
+    ProjektService -> ProjektServiceRepository : createProjekt(KatalogVersion, projekt)
+    activate ProjektServiceRepository
+        ProjektServiceRepository --> ProjektRepository : save
+        activate ProjektRepository
+            ProjektRepository --> db
+            ProjektRepository --> ProjektServiceRepository : ProjektEntity
+        deactivate ProjektRepository
+        ProjektServiceRepository --> ProjektService : Projekt
+    deactivate ProjektServiceRepository
+    ProjektService --> ProjektController
+    deactivate ProjektService
+    ProjektController --> ARZS
+  deactivate ProjektController
+
+
+
+@enduml

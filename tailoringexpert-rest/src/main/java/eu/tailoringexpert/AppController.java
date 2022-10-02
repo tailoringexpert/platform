@@ -1,0 +1,80 @@
+/*-
+ * #%L
+ * TailoringExpert
+ * %%
+ * Copyright (C) 2022 Michael Bädorf and others
+ * %%
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public
+ * License along with this program.  If not, see
+ * <http://www.gnu.org/licenses/gpl-3.0.html>.
+ * #L%
+ */
+package eu.tailoringexpert;
+
+import eu.tailoringexpert.domain.ResourceMapper;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.ArraySchema;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
+import lombok.NonNull;
+import lombok.RequiredArgsConstructor;
+import org.springframework.hateoas.CollectionModel;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+import java.util.Collections;
+import java.util.Map;
+
+import static eu.tailoringexpert.domain.ResourceMapper.BASECATALOG;
+import static eu.tailoringexpert.domain.ResourceMapper.PROJECT;
+import static eu.tailoringexpert.domain.ResourceMapper.SCREENINGSHEET;
+import static eu.tailoringexpert.domain.ResourceMapper.SELECTIONVECTOR_PROFILE;
+import static org.springframework.hateoas.CollectionModel.empty;
+import static org.springframework.hateoas.server.mvc.BasicLinkBuilder.linkToCurrentMapping;
+
+/**
+ * REST-Controller for providing main rels of plattform.
+ *
+ * @author Michael Bädorf
+ */
+@Tag(name = "App Controller", description = "Main controller to retrieve top level resource urls")
+@RestController
+@RequiredArgsConstructor
+public class AppController {
+
+    @NonNull
+    private ResourceMapper mapper;
+
+    @Operation(summary = "Retrieve main urls of application")
+    @ApiResponses(value = {
+        @ApiResponse(responseCode = "200", description = "Links to to level resources",
+            content = @Content(array = @ArraySchema(schema = @Schema(implementation = CollectionModel.class))))
+    })
+    @GetMapping(value = "/", produces = {"application/hal+json"})
+    public <T> ResponseEntity<CollectionModel<T>> getLinks() {
+        Map<String, String> parameter = Collections.emptyMap();
+        return ResponseEntity
+            .ok()
+            .body(empty(
+                    mapper.createLink("catalog", linkToCurrentMapping().toString(), BASECATALOG, parameter),
+                    mapper.createLink("project", linkToCurrentMapping().toString(), PROJECT, parameter),
+                    mapper.createLink("screeningsheet", linkToCurrentMapping().toString(), SCREENINGSHEET, parameter),
+                    mapper.createLink("selectionvector", linkToCurrentMapping().toString(), SELECTIONVECTOR_PROFILE, parameter)
+                )
+            );
+    }
+}

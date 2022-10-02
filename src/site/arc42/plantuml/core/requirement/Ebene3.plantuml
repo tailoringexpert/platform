@@ -1,0 +1,27 @@
+@startuml Ebene3.png
+hide empty members
+
+package requirement {
+
+    interface RequirementService {
+        handleSelected(project : String, tailoring : String, chapter : String, position : String, selected : Boolean) : Optional<TailoringRequirement>;
+        handleSelected(project : String, tailoring : String, chapter : String, selected : Boolean) : Optional<Chapter<TailoringRequirement>>
+        handleText(project : String, tailoring : String, chapter : String, position : String, text : String) : Optional<TailoringRequirement>
+        createRequirement(project : String, tailoring : String, chapter : String, position : String, text : String) : Optional<TailoringRequirement>
+    }
+
+    interface RequirementServiceRepository {
+        getRequirement(project : String, tailoring : String, chapter : String, position : String) : Optional<TailoringRequirement>
+        getChapter(project : String, tailoring : String, chapter : String) : Optional<Chpter<TailoringRequirement>>
+        updateRequirement(project : String, tailoring : String, requirement : TailoringRequirement) : Optional<TailoringRequirement>
+        updateSelected(project : String, tailoring : String, chapter : Optional<Chapter<TailoringRequirement>) : Optional<Chapter<TailoringRequirement>>
+        updateChapter(project : String, tailoring : String, chapter : Chapter<TailoringRequirement>) : Optional<Chapter<TailoringRequirement>>
+    }
+
+    class RequirementServiceImpl {
+    }
+    RequirementService <|-- RequirementServiceImpl
+    RequirementServiceImpl --> "1" RequirementServiceRepository : repository
+
+}
+@enduml
