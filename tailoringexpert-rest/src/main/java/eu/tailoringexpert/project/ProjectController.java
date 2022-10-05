@@ -146,7 +146,7 @@ public class ProjectController {
 
         PathContextBuilder pathContextBuilder = PathContext.builder();
         Optional<ProjectInformation> result = projectServiceRepository.getProjectInformation(project);
-        result.ifPresent(pi -> pathContextBuilder.catalog(pi.getCatalogVersion()));
+//        result.ifPresent(pi -> pathContextBuilder.catalog(pi.getCatalogVersion()));
 
         return result.map(pi -> ResponseEntity
                 .ok()

@@ -32,14 +32,54 @@ import java.util.Collection;
 public class Tailoring implements Serializable {
     private static final long serialVersionUID = 8340200071078309053L;
 
+    /**
+     * Identifier used as doc id.
+     */
     private String identifier;
+
+    /**
+     * Name of the tailoring.
+     */
     private String name;
+
+    /**
+     * Applied selectionvector.
+     */
     private SelectionVector selectionVector;
+
+    /**
+     * Input screeningsheet.
+     */
     private ScreeningSheet screeningSheet;
+
+    /**
+     * Phases of tailoring.
+     */
     private Collection<Phase> phases;
+
+    /**
+     * Complete catalog of requirements with applicated state.
+     */
     private Catalog<TailoringRequirement> catalog;
+
+    /**
+     * State of tailoring.
+     */
     private TailoringState state;
+
+    /**
+     * Attached files to tailoring.
+     */
     private Collection<File> files;
+
+    /**
+     * Signatures to be used for document generation.
+     */
+
     private Collection<DocumentSignature> signatures;
+
+    /**
+     * Notes of tailoring.
+     */
     private Collection<Note> notes;
 }
