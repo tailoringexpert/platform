@@ -33,15 +33,36 @@ import static java.util.Objects.nonNull;
 public class File implements Serializable {
     private static final long serialVersionUID = 8862689823397074307L;
 
+    /**
+     * Name of the file
+     */
     String name;
+
+    /**
+     * Content of the file.
+     */
     byte[] data;
+
+    /**
+     * Checksum/Hash of the file.
+     */
     String hash;
 
 
+    /**
+     * Returns length of file.
+     *
+     * @return length of file
+     */
     public long getLength() {
         return nonNull(data) ? data.length : 0;
     }
 
+    /**
+     * Get type/file extension of file.
+     *
+     * @return test after last .
+     */
     public String getType() {
         int index = name.lastIndexOf('.');
         return index > -1 ? name.substring(index + 1) : null;

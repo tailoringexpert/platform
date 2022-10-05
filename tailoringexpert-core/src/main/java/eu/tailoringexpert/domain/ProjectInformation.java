@@ -33,9 +33,19 @@ import java.util.Collection;
 public class ProjectInformation implements Serializable {
     private static final long serialVersionUID = 5425428859919793419L;
 
+    /**
+     * Unique identifier of project.
+     */
     private String identifier;
-    private String catalogVersion;
+
+    /**
+     * Creation timestamp of project.
+     */
     private ZonedDateTime creationTimestamp;
+
+    /**
+     * Tailorings of the project.
+     */
     private Collection<TailoringInformation> tailorings;
 
 }
