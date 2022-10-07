@@ -90,7 +90,7 @@
         <maven-licence-plugin.verision>2.0.0</maven-licence-plugin.verision>
         <maven-source-plugin.version>3.2.1</maven-source-plugin.version>
         <maven-surefire-plugin.version>2.22.2</maven-surefire-plugin.version>
-        <maven-release-plugin.version>2.5.3</maven-release-plugin.version>
+        <maven-release-plugin.version>3.0.0-M6</maven-release-plugin.version>
         <maven-release-plugin.goal>install</maven-release-plugin.goal>
     </properties>
 
@@ -362,7 +362,7 @@
                 </configuration>
                 <executions>
                     <execution>
-                        <phase>${dependency-check-maven.version}</phase>
+                        <phase>${dependency-check-maven.phase}</phase>
                         <goals>
                             <goal>check</goal>
                         </goals>
