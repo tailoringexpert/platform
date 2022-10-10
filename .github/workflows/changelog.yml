@@ -1,18 +1,39 @@
-name: changelog
+# This is a basic workflow that is manually triggered
+
+name: Manual workflow
+
+# Controls when the action will run. Workflow runs when manually triggered using the UI
+# or API.
 on:
   workflow_dispatch:
     inputs:
-      tag:
-        description: 'Tag name'
+      version:
+        description: 'Version number'     
         required: true
+
 jobs:
-  changelog:
-    runs-on: ubuntu-20.04
+  evaluate-release-manager:
+    runs-on: ubuntu-latest
     steps:
+      - name: Evaluate release manager
+        id: check_release_manager
+        run: echo ::set-output name=status::${{contains(secrets.RELEASE_MANAGER, github.actor)}}       
+      - name: Show evaluation result
+        run: echo "User ${{github.actor}} is release manager ${{steps.check_release_manager.outputs.status}}"
+      
+    outputs:
+      status: ${{steps.check_release_manager.outputs.status }}        
+
+  create-changelog:
+    runs-on: ubuntu-latest
+    needs: evaluate-release-manager
+    
+    if: ${{needs.evaluate-release-manager.outputs.status == 'true'}}
+    steps:  
       - name: Show user inputs
         run: |
-          echo "Tag: ${{ github.event.inputs.tag }}"
-            
+          echo "Version: ${{ github.event.inputs.version }}" 
+        
       - name: Create tag
         uses: actions/github-script@v5
         with:
@@ -20,9 +41,9 @@ jobs:
             github.rest.git.createRef({
               owner: context.repo.owner,
               repo: context.repo.repo,
-              ref: 'refs/tags/${{ github.event.inputs.tag }}',
+              ref: 'refs/tags/v${{ github.event.inputs.version }}',
               sha: context.sha
-            })            
+            })
 
       - name: Checkout
         uses: actions/checkout@v3
@@ -37,10 +58,10 @@ jobs:
           prWoLabels: false
           unreleased: false
           dateFormat: "%m.%d.%Y"
-          excludeLabels: "duplicate,question,invalid,wontfix,weekly-digest,dependencies,ci"
+          excludeLabels: "duplicate,question,invalid,wontfix,weekly-digest,dependencies"
           output: "CHANGELOG.md"
 
-      - name: Commit and push CHANGELOG.md
+      - name: Commit and push changelog
         if: ${{ github.event_name != 'pull_request' }}
         run: |
           if [[ `git status --porcelain CHANGELOG.md` ]]; then
@@ -58,6 +79,6 @@ jobs:
             github.rest.git.deleteRef({
               owner: context.repo.owner,
               repo: context.repo.repo,
-              ref: 'tags/${{ github.event.inputs.tag }}',
+              ref: 'tags/v${{ github.event.inputs.version }}',
               sha: context.sha
-            })
+            })      
