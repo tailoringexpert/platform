@@ -63,7 +63,6 @@ public class TailoringCatalogExcelDocumentCreator implements DocumentCreator {
             range(0, sheet.getRow(0).getPhysicalNumberOfCells())
                 .forEach(sheet::autoSizeColumn);
 
-
             byte[] content;
             try (ByteArrayOutputStream os = new ByteArrayOutputStream()) {
                 wb.write(os);
@@ -78,9 +77,15 @@ public class TailoringCatalogExcelDocumentCreator implements DocumentCreator {
             log.catching(e);
         }
         return null;
-
     }
 
+    /**
+     * Add chapter to sheet object.
+     * All subchapter will be evaluated as well.
+     *
+     * @param chapter chapter evaluate
+     * @param sheet   sheet to add elements to
+     */
     private void addChapter(Chapter<TailoringRequirement> chapter, Sheet sheet) {
         addRow(sheet, chapter.getName(), chapter.getNumber(), "");
         chapter.getRequirements().forEach(
@@ -93,6 +98,12 @@ public class TailoringCatalogExcelDocumentCreator implements DocumentCreator {
         }
     }
 
+    /**
+     * Create sheet in workbook.
+     *
+     * @param wb workbook to add worksheet
+     * @return created worksheet
+     */
     private Sheet createSheet(Workbook wb, Tailoring tailoring) {
         Sheet result = wb.createSheet(tailoring.getName() + "-" + tailoring.getCatalog().getVersion());
 

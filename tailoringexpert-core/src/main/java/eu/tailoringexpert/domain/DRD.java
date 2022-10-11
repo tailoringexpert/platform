@@ -38,12 +38,12 @@ public class DRD implements Serializable {
     private static final long serialVersionUID = 259056135676816215L;
 
     /**
-     * Number of the DRD.
+     * Number of the drd.
      */
     private String number;
 
     /**
-     * Title of the DRD.
+     * Title of the drd.
      */
     private String title;
 
