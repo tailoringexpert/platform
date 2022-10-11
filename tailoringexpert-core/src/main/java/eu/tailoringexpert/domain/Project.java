@@ -51,15 +51,15 @@ public class Project implements Serializable {
     private ScreeningSheet screeningSheet;
 
     /**
-     * Creation timestamp of project.
-     */
-    private ZonedDateTime creationTimestamp;
-
-    /**
      * Tailorings of the project.
      */
     @Singular(value = "tailoring", ignoreNullCollections = true)
     private Collection<Tailoring> tailorings = new ArrayList<>();
+
+    /**
+     * Creation timestamp of project.
+     */
+    private ZonedDateTime creationTimestamp;
 
     /**
      * Sets the screeningsheet used to create the project.

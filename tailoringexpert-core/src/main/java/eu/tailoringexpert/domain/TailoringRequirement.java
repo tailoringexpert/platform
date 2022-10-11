@@ -33,7 +33,7 @@ public class TailoringRequirement extends Requirement implements Serializable {
     private static final long serialVersionUID = 3399819648313645377L;
 
     /**
-     * State of requirement is selected.
+     * State if requirement is selected.
      */
     private Boolean selected;
 

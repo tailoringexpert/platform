@@ -46,7 +46,7 @@ public abstract class Requirement implements Serializable {
     private Reference reference;
 
     /**
-     * List of drd requirement shall be part of.
+     * List of DRDs requirement shall be part of.
      */
     private Collection<DRD> drds;
 

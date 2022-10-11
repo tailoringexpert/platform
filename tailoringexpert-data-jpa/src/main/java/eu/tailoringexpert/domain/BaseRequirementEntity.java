@@ -59,6 +59,9 @@ import static javax.persistence.GenerationType.TABLE;
 public class BaseRequirementEntity implements Serializable {
     private static final long serialVersionUID = -1863038272996727592L;
 
+    /**
+     * Technical ID.
+     */
     @Id
     @TableGenerator(name = "SEQ_BASEREQUIREMENT", table = "SEQUENCE", pkColumnName = "SEQ_NAME",
         valueColumnName = "SEQ_COUNT", pkColumnValue = "SEQ_BASEREQUIREMENT", initialValue = 1)
@@ -66,17 +69,36 @@ public class BaseRequirementEntity implements Serializable {
     @Column(name = "REQUIREMENT_ID")
     private Long id;
 
+    /**
+     * Text of the requirement.
+     */
     @Column(name = "TEXT")
     private String text;
 
+    /**
+     * Position (in chpater) of requirement.
+     */
+    @Column(name = "POSITION")
+    private String position;
+
+    /**
+     * Requirement origin.
+     */
     @Embedded
     @AssociationOverride(name = "logo",
         joinColumns = @JoinColumn(name = "REFERENCELOGO_ID"))
     private ReferenceEntity reference;
 
-    @Column(name = "POSITION")
-    private String position;
+    /**
+     * Identifiers this requirement shall be selected automatically.
+     */
+    @OneToMany(cascade = ALL, orphanRemoval = true, fetch = LAZY)
+    @JoinColumn(name = "REQUIREMENT_ID", referencedColumnName = "REQUIREMENT_ID", nullable = false)
+    private Set<IdentifierEntity> identifiers;
 
+    /**
+     * Phases the requirement belongs to.
+     */
     @Singular(value = "phase", ignoreNullCollections = true)
     @ElementCollection
     @CollectionTable(
@@ -87,10 +109,9 @@ public class BaseRequirementEntity implements Serializable {
     @Enumerated(STRING)
     private List<Phase> phases;
 
-    @OneToMany(cascade = ALL, orphanRemoval = true, fetch = LAZY)
-    @JoinColumn(name = "REQUIREMENT_ID", referencedColumnName = "REQUIREMENT_ID", nullable = false)
-    private Set<IdentifierEntity> identifiers;
-
+    /**
+     * List of drd requirement shall be part of.
+     */
     @OneToMany(cascade = ALL, orphanRemoval = true, fetch = LAZY)
     @JoinTable(
         name = "BASEREQUIREMENT_DRD",

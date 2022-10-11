@@ -34,7 +34,6 @@ public class SelectionVectorProfile implements Serializable {
     private static final long serialVersionUID = -1352079152835438873L;
 
     /**
-     * +
      * Name of the profile.
      */
     private String name;

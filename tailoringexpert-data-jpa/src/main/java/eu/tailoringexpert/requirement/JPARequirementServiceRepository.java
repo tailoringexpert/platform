@@ -177,6 +177,14 @@ public class JPARequirementServiceRepository implements RequirementServiceReposi
         return of(mapper.toDomain(oChapter.get()));
     }
 
+    /**
+     * Load a requested tailoring catalog chapter.
+     *
+     * @param project   project tailoring belongs to
+     * @param tailoring tailoring chapter belongs to
+     * @param chapter   requested chapter
+     * @return if exists the (fullqualified) chapter, otherwise empty
+     */
     private Optional<TailoringCatalogChapterEntity> findChapter(
         String project,
         String tailoring,

@@ -48,7 +48,6 @@ public class File implements Serializable {
      */
     String hash;
 
-
     /**
      * Returns length of file.
      *

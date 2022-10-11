@@ -45,6 +45,9 @@ import static javax.persistence.GenerationType.TABLE;
 public class LogoEntity implements Serializable {
     private static final long serialVersionUID = -3332883257422644229L;
 
+    /**
+     * Technical ID.
+     */
     @Id
     @TableGenerator(name = "SEQ_LOGO", table = "SEQUENCE", pkColumnName = "SEQ_NAME",
         valueColumnName = "SEQ_COUNT", pkColumnValue = "SEQ_LOGO", initialValue = 1)
@@ -52,9 +55,15 @@ public class LogoEntity implements Serializable {
     @Column(name = "LOGO_ID")
     private Long id;
 
+    /**
+     * Name of the logo.
+     */
     @Column(name = "NAME")
     private String name;
 
+    /**
+     * Url of the logo.
+     */
     @Column(name = "URL")
     private String url;
 }

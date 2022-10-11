@@ -68,15 +68,14 @@ public class Tailoring implements Serializable {
     private TailoringState state;
 
     /**
+     * Signatures to be used for document generation.
+     */
+    private Collection<DocumentSignature> signatures;
+
+    /**
      * Attached files to tailoring.
      */
     private Collection<File> files;
-
-    /**
-     * Signatures to be used for document generation.
-     */
-
-    private Collection<DocumentSignature> signatures;
 
     /**
      * Notes of tailoring.
