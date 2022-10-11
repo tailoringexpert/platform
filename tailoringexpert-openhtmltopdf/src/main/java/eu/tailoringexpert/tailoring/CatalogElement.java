@@ -33,9 +33,29 @@ import lombok.Value;
 @Builder
 public class CatalogElement {
 
+    /**
+     * Text of element origin.
+     */
     private String reference;
+
+    /**
+     * Position to render element at.
+     */
     private String position;
+
+    /**
+     * Chapter of element.
+     */
     private String chapter;
+
+    /**
+     * Outputtext.
+     */
     private String text;
+
+    /**
+     * +
+     * State if element shall be shown.
+     */
     private boolean applicable;
 }

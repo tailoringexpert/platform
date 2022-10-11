@@ -36,7 +36,7 @@ public abstract class Requirement implements Serializable {
     private String text;
 
     /**
-     * Position (in chpater) of requirement.
+     * Position (in chapter) of requirement.
      */
     private String position;
 

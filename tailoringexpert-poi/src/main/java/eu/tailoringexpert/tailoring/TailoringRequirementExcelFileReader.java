@@ -42,6 +42,9 @@ import static org.apache.poi.ss.usermodel.Row.MissingCellPolicy.CREATE_NULL_AS_B
 @Log4j2
 public class TailoringRequirementExcelFileReader implements Function<byte[], Map<String, Collection<ImportRequirement>>> {
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public Map<String, Collection<ImportRequirement>> apply(byte[] data) {
         Map<String, Collection<ImportRequirement>> result = new HashMap<>();

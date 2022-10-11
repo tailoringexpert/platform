@@ -117,6 +117,13 @@ public class CMExcelDocumentCreator implements DocumentCreator {
 
     }
 
+    /**
+     * Evaluate all applicable DRD in chapter for given phases and add them to row object.
+     *
+     * @param chapter chapter to retrieve requirements DRDs of
+     * @param rows    object to add DRDs to
+     * @param phases  phase of tailoring to use of applicabilty check
+     */
     void addDRD(Chapter<TailoringRequirement> chapter, Collection<DRDElement> rows, Collection<Phase> phases) {
         drdProvider.apply(chapter, phases)
             .entrySet()
@@ -181,6 +188,14 @@ public class CMExcelDocumentCreator implements DocumentCreator {
         row.getCell(4).setCellStyle(cellStyle);
     }
 
+    /**
+     * Add chapter to sheet object.
+     * All subchapter will be evaluated as well.
+     *
+     * @param chapter chapter evaluate
+     * @param level   chapter level
+     * @param sheet   sheet to add elements to
+     */
     private void addChapter(Chapter<TailoringRequirement> chapter, int level, Sheet sheet) {
         addRow(sheet, level, chapter.getNumber(), chapter.getName());
         if (nonNull(chapter.getChapters())) {
