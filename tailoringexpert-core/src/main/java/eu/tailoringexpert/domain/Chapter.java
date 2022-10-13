@@ -43,12 +43,37 @@ import static java.util.stream.Stream.of;
 public class Chapter<T extends Requirement> implements Serializable {
     private static final long serialVersionUID = -3448078519876131441L;
 
+    /**
+     * Name of chapter.
+     */
     private String name;
+
+    /**
+     * Position in chapter list.
+     */
     private int position;
+
+    /**
+     * (Full) Number of chapter.
+     */
     private String number;
+
+    /**
+     * List of subchapters.
+     */
     private List<Chapter<T>> chapters;
+
+    /**
+     * Requirements defined in chapter.
+     */
     private List<T> requirements;
 
+    /**
+     * Get a chapter identified by chapter number.
+     *
+     * @param number number of chapter to get
+     * @return Chapter if exists
+     */
     public Chapter<T> getChapter(String number) {
         return allChapters()
             .filter(chapter -> number.equals(chapter.getNumber()))
@@ -56,6 +81,11 @@ public class Chapter<T extends Requirement> implements Serializable {
             .orElse(null);
     }
 
+    /**
+     * All chapters including subchapters.
+     *
+     * @return Stream of complete/all chapters of catalog.
+     */
     public Stream<Chapter<T>> allChapters() {
         return Stream.concat(
             of(this),
@@ -63,11 +93,22 @@ public class Chapter<T extends Requirement> implements Serializable {
 
     }
 
+    /**
+     * All requirements of chapter and all subchapters.
+     *
+     * @return Stream of all requirements
+     */
     public Stream<T> allRequirements() {
         return allChapters()
-            .flatMap(h -> nonNull(h.requirements) ? h.requirements.stream() : Stream.empty());
+            .flatMap(chapter -> nonNull(chapter.requirements) ? chapter.requirements.stream() : Stream.empty());
     }
 
+    /**
+     * Get requirements of chapter.
+     *
+     * @param position position in chapter of requirement to get
+     * @return requirement if exists, otherwiese empty
+     */
     public Optional<T> getRequirement(String position) {
         return requirements
             .stream()
@@ -75,6 +116,12 @@ public class Chapter<T extends Requirement> implements Serializable {
             .findFirst();
     }
 
+    /**
+     * Get the index of the requirement at requested position in chapter.
+     *
+     * @param position position of requirement to get index of
+     * @return index of requirement in requirement list
+     */
     public OptionalInt indexOfRequirement(String position) {
         return IntStream.range(0, requirements.size())
             .filter(i -> position.equals(requirements.get(i).getPosition()))

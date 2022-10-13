@@ -39,8 +39,19 @@ import static java.util.Objects.nonNull;
 @Relation(itemRelation = "note", collectionRelation = "notes")
 public class NoteResource extends RepresentationModel<NoteResource> {
 
+    /**
+     * Number of note.
+     */
     Integer number;
+
+    /**
+     * Text of note.
+     */
     String text;
+
+    /**
+     * Creation timestamp of note.
+     */
     String creationTimestamp;
 
     @Builder

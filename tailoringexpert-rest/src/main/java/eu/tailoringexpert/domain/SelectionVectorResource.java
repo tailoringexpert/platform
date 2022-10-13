@@ -40,6 +40,9 @@ import static java.util.Objects.nonNull;
 @Relation(itemRelation = "selectionVector", collectionRelation = "selectionVectors")
 public class SelectionVectorResource extends RepresentationModel<SelectionVectorResource> {
 
+    /**
+     * Mapping between defined categories and levels.
+     */
     private Map<String, Integer> levels;
 
     @Builder

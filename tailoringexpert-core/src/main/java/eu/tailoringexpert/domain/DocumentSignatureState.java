@@ -27,14 +27,14 @@ public enum DocumentSignatureState {
     AGREED("Agreed"),
     RELEASED("Released");
 
-    private final String beschreibung;
+    private final String description;
 
-    DocumentSignatureState(String beschreibung) {
-        this.beschreibung = beschreibung;
+    DocumentSignatureState(String description) {
+        this.description = description;
     }
 
-    public String getBeschreibung() {
-        return beschreibung;
+    public String getDescription() {
+        return description;
     }
 
 }

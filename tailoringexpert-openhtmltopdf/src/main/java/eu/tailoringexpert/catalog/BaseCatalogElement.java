@@ -35,11 +35,30 @@ import java.util.Collection;
 @Builder
 public class BaseCatalogElement {
 
+    /**
+     * Requirement origin.
+     */
     private String reference;
+
+    /**
+     * Position (in chapter) of requirement.
+     */
+
     private String position;
     private String chapter;
+
+    /**
+     * Text of the requirement.
+     */
     private String text;
 
-    private Collection<String> phases;
+    /**
+     * Identifiers this requirement shall be selected automatically.
+     */
     private Collection<String> identifiers;
+    
+    /**
+     * Phases the requirement belongs to.
+     */
+    private Collection<String> phases;
 }

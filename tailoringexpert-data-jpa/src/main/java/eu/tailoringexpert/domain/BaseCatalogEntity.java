@@ -58,6 +58,9 @@ import static javax.persistence.GenerationType.TABLE;
 public class BaseCatalogEntity implements Serializable {
     private static final long serialVersionUID = -6960103411041929370L;
 
+    /**
+     * Technical ID.
+     */
     @Id
     @TableGenerator(name = "SEQ_BASECATALOG", table = "SEQUENCE", pkColumnName = "SEQ_NAME",
         valueColumnName = "SEQ_COUNT", pkColumnValue = "SEQ_BASECATALOG", initialValue = 1)
@@ -65,15 +68,27 @@ public class BaseCatalogEntity implements Serializable {
     @Column(name = "CATALOG_ID")
     private Long id;
 
+    /**
+     * Version of the catalog.
+     */
     @Column(name = "VERSION")
     private String version;
 
+    /**
+     * Date catalog validity starts.
+     */
     @Column(name = "VALIDFROM")
     private ZonedDateTime validFrom;
 
+    /**
+     * Date catalog validity ends.
+     */
     @Column(name = "VALIDUNTIL")
     private ZonedDateTime validUntil;
 
+    /**
+     * Table of contents of catalog.
+     */
     @OneToOne(cascade = ALL, fetch = LAZY)
     @JoinColumn(name = "CHAPTER_ID")
     private BaseCatalogChapterEntity toc;

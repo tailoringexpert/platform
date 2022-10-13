@@ -284,7 +284,6 @@ public class JPATailoringServiceRepository implements TailoringServiceRepository
             .stream()
             .map(mapper::getDefaultSignatures)
             .collect(Collectors.toList());
-
     }
 
     /**
@@ -313,10 +312,23 @@ public class JPATailoringServiceRepository implements TailoringServiceRepository
         return empty();
     }
 
+    /**
+     * Loads project with provided project identifoer.
+     *
+     * @param project identifier of project to load
+     * @return Loaded project
+     */
     private Optional<ProjectEntity> findProject(String project) {
         return ofNullable(projectRepository.findByIdentifier(project));
     }
 
+    /**
+     * Loads tailoring of a project.
+     *
+     * @param project   identifier of project tailoring belongs to
+     * @param tailoring name of tailoring to load
+     * @return Loaded tailoring
+     */
     private Optional<TailoringEntity> findTailoring(String project, String tailoring) {
         if (isNull(project) || isNull(tailoring)) {
             return empty();

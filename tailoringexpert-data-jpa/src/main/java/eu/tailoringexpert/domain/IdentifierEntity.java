@@ -49,6 +49,9 @@ import static javax.persistence.GenerationType.TABLE;
 public class IdentifierEntity implements Serializable {
     private static final long serialVersionUID = 7005585376849837188L;
 
+    /**
+     * Technical ID.
+     */
     @Id
     @TableGenerator(name = "SEQ_IDENTIFIER", table = "SEQUENCE", pkColumnName = "SEQ_NAME",
         valueColumnName = "SEQ_COUNT", pkColumnValue = "SEQ_IDENTIFIER", initialValue = 1)
@@ -56,12 +59,21 @@ public class IdentifierEntity implements Serializable {
     @Column(name = "IDENTIFIER_ID")
     private Long id;
 
+    /**
+     * Type of requirement.
+     */
     @Column(name = "TYPE")
     private String type;
 
+    /**
+     * Level to select requirement on.
+     */
     @Column(name = "LEVEL")
     private int level;
 
+    /**
+     * List of strings identicating that a requirement shall be selected, e.g SAT.
+     */
     @ElementCollection
     @CollectionTable(
         name = "IDENTIFIER_LIMITATION",

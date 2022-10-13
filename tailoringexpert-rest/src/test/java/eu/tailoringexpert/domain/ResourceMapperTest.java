@@ -137,7 +137,6 @@ class ResourceMapperTest {
 
         ProjectInformation projekt = ProjectInformation.builder()
             .identifier("SAMPLE")
-            .catalogVersion("8.2.1")
             .tailorings(asList(
                 TailoringInformation.builder().name("master").build(),
                 TailoringInformation.builder().name("master1").build()
@@ -150,7 +149,6 @@ class ResourceMapperTest {
         // assert
         assertThat(actual).isNotNull();
         assertThat(actual.getName()).isEqualTo(projekt.getIdentifier());
-        assertThat(actual.getCatalogVersion()).isEqualTo(projekt.getCatalogVersion());
         assertThat(actual.getTailorings()).hasSize(2);
         assertThat(actual.getTailorings()).extracting("name").containsExactlyInAnyOrder("master", "master1");
 
@@ -171,7 +169,6 @@ class ResourceMapperTest {
 
         ProjectInformation projekt = ProjectInformation.builder()
             .identifier("SAMPLE")
-            .catalogVersion("8.2.1")
             .tailorings(null)
             .build();
 
@@ -181,7 +178,6 @@ class ResourceMapperTest {
         // assert
         assertThat(actual).isNotNull();
         assertThat(actual.getName()).isEqualTo(projekt.getIdentifier());
-        assertThat(actual.getCatalogVersion()).isEqualTo(projekt.getCatalogVersion());
         assertThat(actual.getTailorings()).isNull();
 
         assertThat(actual.getLinks()).containsExactlyInAnyOrder(
@@ -202,7 +198,6 @@ class ResourceMapperTest {
         ZonedDateTime now = ZonedDateTime.now();
         ProjectInformation projekt = ProjectInformation.builder()
             .identifier("SAMPLE")
-            .catalogVersion("8.2.1")
             .creationTimestamp(now)
             .tailorings(asList(
                 TailoringInformation.builder().name("master").build(),
@@ -216,7 +211,6 @@ class ResourceMapperTest {
         // assert
         assertThat(actual).isNotNull();
         assertThat(actual.getName()).isEqualTo(projekt.getIdentifier());
-        assertThat(actual.getCatalogVersion()).isEqualTo(projekt.getCatalogVersion());
         assertThat(actual.getCreationTimestamp()).isEqualTo(DateTimeFormatter.ofPattern("dd.MM.yyyy").format(now));
         assertThat(actual.getTailorings()).hasSize(2);
         assertThat(actual.getTailorings()).extracting("name").containsExactlyInAnyOrder("master", "master1");

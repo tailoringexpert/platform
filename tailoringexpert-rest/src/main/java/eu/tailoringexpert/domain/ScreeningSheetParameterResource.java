@@ -35,6 +35,13 @@ import org.springframework.hateoas.server.core.Relation;
 @Relation(itemRelation = "screeningSheetParameter", collectionRelation = "screeningSheetParameters")
 public class ScreeningSheetParameterResource extends RepresentationModel<ScreeningSheetParameterResource> {
 
+    /**
+     * Label to show.
+     */
     private String label;
+
+    /**
+     * Value of the parameter.
+     */
     private Object value;
 }
