@@ -33,13 +33,39 @@ import java.util.List;
 public class ScreeningSheet implements Serializable {
     private static final long serialVersionUID = 3465063609780635739L;
 
+    /**
+     * Name of the mandatory project parameter.
+     */
     public static final String PROJECT = "project";
+
+    /**
+     * Name of the mandatory phases parameter.
+     */
     public static final String PHASE = "phase";
 
+    /**
+     * Raw data of the file.
+     */
     private byte[] data;
+
+    /**
+     * Name of the project screeningsheet belongs to.
+     */
     private String project;
+
+    /**
+     * Parameters extracted of screeningsheet.
+     */
     private List<ScreeningSheetParameter> parameters;
+
+    /**
+     * Calculated selectionvector wit screeningsheet parameters.
+     */
     private SelectionVector selectionVector;
+
+    /**
+     * Phases of tailoring.
+     */
     private Collection<Phase> phases;
 
 }

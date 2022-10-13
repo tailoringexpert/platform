@@ -35,6 +35,13 @@ import java.io.Serializable;
 public class Logo implements Serializable {
     private static final long serialVersionUID = -2820043366633512591L;
 
+    /**
+     * Name of the logo.
+     */
     private String name;
+
+    /**
+     * Url of the logo.
+     */
     private String url;
 }

@@ -37,8 +37,23 @@ import java.io.Serializable;
 public class DRD implements Serializable {
     private static final long serialVersionUID = 259056135676816215L;
 
+    /**
+     * Number of the drd.
+     */
     private String number;
+
+    /**
+     * Title of the drd.
+     */
     private String title;
+
+    /**
+     * Definition when to deliver the document.
+     */
     private String deliveryDate;
+
+    /**
+     * What to do.
+     */
     private String action;
 }

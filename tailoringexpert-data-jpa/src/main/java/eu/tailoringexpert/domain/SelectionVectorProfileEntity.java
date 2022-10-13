@@ -50,6 +50,9 @@ import static javax.persistence.GenerationType.TABLE;
 public class SelectionVectorProfileEntity implements Serializable {
     private static final long serialVersionUID = -5062851233486910911L;
 
+    /**
+     * Technical ID.
+     */
     @Id
     @TableGenerator(name = "SEQ_SELECTIONVECTORPROFILE", table = "SEQUENCE", pkColumnName = "SEQ_NAME",
         valueColumnName = "SEQ_COUNT", pkColumnValue = "SEQ_SELECTIONVECTORPROFILE", initialValue = 1)
@@ -57,9 +60,15 @@ public class SelectionVectorProfileEntity implements Serializable {
     @Column(name = "SELECTIONVECTORPROFILE_ID")
     private Long id;
 
+    /**
+     * Name of the profile.
+     */
     @Column(name = "NAME")
     private String name;
 
+    /**
+     * Mapping between types and levels.
+     */
     @ElementCollection
     @MapKeyColumn(name = "TYPE")
     @Column(name = "LEVEL")

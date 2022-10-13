@@ -39,9 +39,24 @@ import static java.util.Objects.nonNull;
 @Relation(itemRelation = "screeningSheet", collectionRelation = "screeningSheets")
 public class ScreeningSheetResource extends RepresentationModel<ScreeningSheetResource> {
 
+    /**
+     * Raw data of the file.
+     */
     private byte[] data;
+
+    /**
+     * Name of the project screeningsheet belongs to.
+     */
     private String project;
+
+    /**
+     * Parameters extracted of screeningsheet.
+     */
     private List<ScreeningSheetParameterResource> parameters;
+
+    /**
+     * Calculated selectionvector wit screeningsheet parameters.
+     */
     private SelectionVectorResource selectionVector;
 
     @Builder

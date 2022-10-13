@@ -45,6 +45,9 @@ import static javax.persistence.GenerationType.TABLE;
 public class DRDEntity implements Serializable {
     private static final long serialVersionUID = 8011082379683283709L;
 
+    /**
+     * Technical ID.
+     */
     @Id
     @TableGenerator(name = "SEQ_DRD", table = "SEQUENCE", pkColumnName = "SEQ_NAME",
         valueColumnName = "SEQ_COUNT", pkColumnValue = "SEQ_DRD", initialValue = 1)
@@ -52,15 +55,27 @@ public class DRDEntity implements Serializable {
     @Column(name = "DRD_ID")
     private Long id;
 
+    /**
+     * Number of the DRD.
+     */
     @Column(name = "NUMBER")
     private String number;
 
+    /**
+     * Title of the DRD.
+     */
     @Column(name = "TITLE")
     private String title;
 
+    /**
+     * Definition when to deliver the document.
+     */
     @Column(name = "DELIVERYDATE")
     private String deliveryDate;
 
+    /**
+     * What to do.
+     */
     @Column(name = "ACTION")
     private String action;
 }

@@ -88,6 +88,12 @@ public class DRDPDFDocumentCreator implements DocumentCreator {
     }
 
 
+    /**
+     * @param chapter
+     * @param catalogVersion catalog version used for constructing DRD fragment
+     * @param rows           collection to add drd fragments to
+     * @param phases         phase of tailoring to use of applicabilty check
+     */
     void addDRD(Chapter<TailoringRequirement> chapter, String catalogVersion, Collection<DRDFragment> rows, Collection<Phase> phases) {
         drdProvider.apply(chapter, phases)
             .keySet()

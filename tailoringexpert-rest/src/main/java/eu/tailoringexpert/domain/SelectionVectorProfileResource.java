@@ -37,7 +37,14 @@ import java.util.Map;
 @Relation(itemRelation = "selectionVectorProfile", collectionRelation = "selectionVectorProfiles")
 public class SelectionVectorProfileResource extends RepresentationModel<SelectionVectorProfileResource> {
 
+    /**
+     * Name of the profile.
+     */
     private String name;
+
+    /**
+     * Mapping between types and levels.
+     */
     private Map<String, Integer> levels;
 
 }

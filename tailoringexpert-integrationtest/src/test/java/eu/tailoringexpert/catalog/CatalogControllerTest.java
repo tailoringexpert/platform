@@ -95,7 +95,7 @@ class CatalogControllerTest {
         }
 
         // act
-        ResponseEntity actual = controller.postCatalog(catalog);
+        ResponseEntity actual = controller.postBaseCatalog(catalog);
 
         // assert
         assertThat(actual).isNotNull();
@@ -114,10 +114,10 @@ class CatalogControllerTest {
             catalog = objectMapper.readValue(is, new TypeReference<Catalog<BaseRequirement>>() {
             });
         }
-        controller.postCatalog(catalog);
+        controller.postBaseCatalog(catalog);
 
         // act
-        ResponseEntity<CollectionModel<EntityModel<BaseCatalogVersionResource>>> actual = controller.getCatalogs();
+        ResponseEntity<CollectionModel<EntityModel<BaseCatalogVersionResource>>> actual = controller.getBaseCatalogs();
 
         // assert
         assertThat(actual).isNotNull();

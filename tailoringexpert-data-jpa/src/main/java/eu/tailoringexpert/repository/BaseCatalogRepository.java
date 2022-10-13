@@ -67,7 +67,7 @@ public interface BaseCatalogRepository extends JpaRepository<BaseCatalogEntity, 
      * @return number of updated base catalogs
      */
     @Modifying
-    @Query("update Catalog c set c.validUntil=:validUntil where c.validUntil is Null")
+    @Query("update #{#entityName} c set c.validUntil=:validUntil where c.validUntil is Null")
     int setValidUntilForEmptyValidUntil(@Param("validUntil") ZonedDateTime pointOfTime);
 
     /**

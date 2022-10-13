@@ -53,6 +53,9 @@ import static javax.persistence.GenerationType.TABLE;
 public class BaseCatalogChapterEntity implements Serializable {
     private static final long serialVersionUID = 8843674935264907440L;
 
+    /**
+     * Technical ID.
+     */
     @Id
     @TableGenerator(name = "SEQ_BASECATALOGCHAPTER", table = "SEQUENCE", pkColumnName = "SEQ_NAME",
         valueColumnName = "SEQ_COUNT", pkColumnValue = "SEQ_BASECATALOGCHAPTER", initialValue = 1)
@@ -60,20 +63,35 @@ public class BaseCatalogChapterEntity implements Serializable {
     @Column(name = "CHAPTER_ID")
     private Long id;
 
+    /**
+     * Name of chapter.
+     */
     @Column(name = "NAME")
     private String name;
 
+    /**
+     * Position in chapter list.
+     */
     @Column(name = "POSITION")
     private int position;
 
+    /**
+     * (Full) Number of chapter.
+     */
     @Column(name = "NUMBER")
     private String number;
 
+    /**
+     * List of subchapters.
+     */
     @OneToMany(cascade = ALL, fetch = LAZY)
     @JoinColumn(name = "PARENTCHAPTER_ID", referencedColumnName = "CHAPTER_ID")
     @OrderColumn(name = "CHAPTER_ORDER")
     private List<BaseCatalogChapterEntity> chapters;
 
+    /**
+     * Requirements defined in chapter.
+     */
     @OneToMany(cascade = ALL, orphanRemoval = true, fetch = LAZY)
     @JoinColumn(name = "CHAPTER_ID", referencedColumnName = "CHAPTER_ID", nullable = false)
     @OrderColumn(name = "REQUIREMENT_ORDER")

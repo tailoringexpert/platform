@@ -8,12 +8,12 @@
  * it under the terms of the GNU General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/gpl-3.0.html>.
@@ -28,6 +28,11 @@ import com.fasterxml.jackson.module.paramnames.ParameterNamesModule;
 import eu.tailoringexpert.domain.ResourceMapperImpl;
 import io.swagger.v3.oas.models.OpenAPI;
 import io.swagger.v3.oas.models.info.Info;
+import io.swagger.v3.oas.models.info.License;
+import io.swagger.v3.oas.models.media.StringSchema;
+import io.swagger.v3.oas.models.parameters.Parameter;
+import org.springdoc.core.customizers.OperationCustomizer;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.Ordered;
@@ -55,7 +60,6 @@ import static com.fasterxml.jackson.databind.SerializationFeature.FAIL_ON_EMPTY_
 import static com.fasterxml.jackson.databind.SerializationFeature.INDENT_OUTPUT;
 import static java.util.Arrays.asList;
 import static java.util.Locale.GERMANY;
-import static java.util.Objects.isNull;
 
 @Configuration
 public class RestConfiguration {
@@ -108,20 +112,37 @@ public class RestConfiguration {
              */
             @Override
             protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain) throws ServletException, IOException {
-                final String tenant = request.getHeader("X-Tenant");
-                TenantContext.setCurrentTenant(isNull(tenant) ? "arzs" : tenant);
+                final String tenant = request.getHeader("x-tenant");
+                TenantContext.setCurrentTenant(tenant);
                 chain.doFilter(request, response);
             }
         };
     }
 
     @Bean
-    public OpenAPI customOpenAPI() {
+    public OpenAPI customOpenAPI(@Value("${app.version}") String version) {
         return new OpenAPI().info(
             new Info()
                 .title("Tailoring API")
-                .version("0.0.1")
-                .description("Tailoring (HATEOAS) API"));
+                .version(version)
+                .description("Tailoringexpert is a multi tenant plattform to create easily, fast and reproduceable requirement documentation based on a general requirement catalog on a limited set of parameters, which characterize the specific project.")
+                .license(new License()
+                    .name("GNU General Public License v3.0")
+                    .url("https://www.gnu.org/licenses/gpl-3.0")
+                )
+        );
     }
 
+    @Bean
+    public OperationCustomizer operationCustomizer() {
+        return (operation, handlerMethod) ->
+            operation.addParametersItem(
+                new Parameter()
+                    .in("header")
+                    .required(true)
+                    .description("Tenant using API")
+                    .name("X-Tenant")
+                    .schema(new StringSchema())
+            );
+    }
 }

@@ -8,12 +8,12 @@
  * it under the terms of the GNU General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/gpl-3.0.html>.
@@ -52,6 +52,9 @@ import static javax.persistence.GenerationType.TABLE;
 public class ScreeningSheetEntity implements Serializable {
     private static final long serialVersionUID = -9115350427459379777L;
 
+    /**
+     * Technical ID.
+     */
     @Id
     @TableGenerator(name = "SEQ_SCREENINGSHEET", table = "SEQUENCE", pkColumnName = "SEQ_NAME",
         valueColumnName = "SEQ_COUNT", pkColumnValue = "SEQ_SCREENINGSHEET", initialValue = 1)
@@ -59,14 +62,23 @@ public class ScreeningSheetEntity implements Serializable {
     @Column(name = "SCREENINGSHEET_ID")
     private Long id;
 
+    /**
+     * Raw data of the file.
+     */
     @Column(name = "DATA")
     private byte[] data;
 
+    /**
+     * Parameters extracted of screeningsheet.
+     */
     @OneToMany(cascade = ALL, fetch = LAZY)
     @JoinColumn(name = "SCREENINGSHEET_ID", referencedColumnName = "SCREENINGSHEET_ID", nullable = false)
     @OrderColumn(name = "POSITION")
     private List<ScreeningSheetParameterEntity> parameters;
 
+    /**
+     * Calculated selectionvector wit screeningsheet parameters.
+     */
     @OneToOne(cascade = ALL)
     @JoinColumn(name = "SELEKTIONVECTOR_ID")
     private SelectionVectorEntity selectionVector;

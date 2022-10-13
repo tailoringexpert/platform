@@ -74,9 +74,8 @@
         <mapstruct.version>1.5.2.Final</mapstruct.version>
 
         <!-- plugins -->
-
         <jacoco-maven-plugin.version>0.8.8</jacoco-maven-plugin.version>
-        <liquibase-maven-plugin.version>4.16.1</liquibase-maven-plugin.version>
+        <liquibase-maven-plugin.version>4.17.0</liquibase-maven-plugin.version>
         <spring-boot-maven-plugin.version>2.7.4</spring-boot-maven-plugin.version>
         <springdoc-openapi-maven-plugin.version>1.4</springdoc-openapi-maven-plugin.version>
 
@@ -90,7 +89,7 @@
         <maven-licence-plugin.verision>2.0.0</maven-licence-plugin.verision>
         <maven-source-plugin.version>3.2.1</maven-source-plugin.version>
         <maven-surefire-plugin.version>2.22.2</maven-surefire-plugin.version>
-        <maven-release-plugin.version>2.5.3</maven-release-plugin.version>
+        <maven-release-plugin.version>3.0.0-M6</maven-release-plugin.version>
         <maven-release-plugin.goal>install</maven-release-plugin.goal>
     </properties>
 
@@ -194,6 +193,7 @@
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-compiler-plugin</artifactId>
+                    <version>${maven-compiler-plugin.version}</version>
                     <configuration>
                         <annotationProcessorPaths>
                             <path>
@@ -220,6 +220,7 @@
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-source-plugin</artifactId>
+                    <version>${maven-source-plugin.version}</version>
                     <executions>
                         <execution>
                             <id>attach-sources</id>
@@ -362,7 +363,7 @@
                 </configuration>
                 <executions>
                     <execution>
-                        <phase>${dependency-check-maven.version}</phase>
+                        <phase>${dependency-check-maven.phase}</phase>
                         <goals>
                             <goal>check</goal>
                         </goals>
@@ -382,7 +383,7 @@
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>license-maven-plugin</artifactId>
-                <version>2.0.0</version>
+                <version>${maven-licence-plugin.verision}</version>
                 <configuration>
                     <dryRun>false</dryRun>
                     <addJavaLicenseAfterPackage>false</addJavaLicenseAfterPackage>
@@ -448,7 +449,6 @@
                         <extensions>true</extensions>
                         <configuration>
                             <finalName>tailoringexpert-plattform</finalName>
-                            <doclint>none</doclint>
                             <sourcepath>
                                 ${project.build.directory}/generated-sources/delombok:${project.build.directory}/generated-sources/annotations
                             </sourcepath>

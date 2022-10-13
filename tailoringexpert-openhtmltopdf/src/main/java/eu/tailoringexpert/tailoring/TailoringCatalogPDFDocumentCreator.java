@@ -108,26 +108,38 @@ public class TailoringCatalogPDFDocumentCreator implements DocumentCreator {
         log.traceExit("Finished creating requirements document {}", docId);
 
         return result;
-
     }
 
-
-    void addChapter(Chapter<TailoringRequirement> chapters, int level, Collection<CatalogElement> rows, Map<String, String> placeholders) {
+    /**
+     * Add chapter and all requirement to rows object.
+     * All subchapter will be evaluated as well.
+     *
+     * @param chapter chapter evaluate
+     * @param level   chapter level
+     * @param rows    collection to add elements to
+     */
+    void addChapter(Chapter<TailoringRequirement> chapter, int level, Collection<CatalogElement> rows, Map<String, String> placeholders) {
         rows.add(CatalogElement.builder()
-            .text(templateEngine.toXHTML(chapters.getNumber() + " " + chapters.getName(), emptyMap()))
-            .chapter(chapters.getNumber())
+            .text(templateEngine.toXHTML(chapter.getNumber() + " " + chapter.getName(), emptyMap()))
+            .chapter(chapter.getNumber())
             .applicable(true)
             .build());
-        chapters.getRequirements()
+        chapter.getRequirements()
             .forEach(requirement -> addRequirement(requirement, rows, placeholders));
         final AtomicInteger nextLevel = new AtomicInteger(level + 1);
-        if (nonNull(chapters.getChapters())) {
-            chapters.getChapters()
-                .forEach(chapter -> addChapter(chapter, nextLevel.get(), rows, placeholders));
+        if (nonNull(chapter.getChapters())) {
+            chapter.getChapters()
+                .forEach(subChapter -> addChapter(subChapter, nextLevel.get(), rows, placeholders));
         }
-
     }
 
+    /**
+     * Add a evaluated requirement to rows collection.
+     *
+     * @param requirement  requirement to build row object of
+     * @param rows         collection to add to
+     * @param placeholders placeholders to use for evaluation in requirement text
+     */
     void addRequirement(TailoringRequirement requirement, Collection<CatalogElement> rows, Map<String, String> placeholders) {
         StringBuilder referenzText = new StringBuilder();
         if (nonNull(requirement.getReference())) {
@@ -147,6 +159,13 @@ public class TailoringCatalogPDFDocumentCreator implements DocumentCreator {
             .build());
     }
 
+    /**
+     * Evaluate all applicable DRD in chapter for given phases and add them to row object.
+     *
+     * @param chapter chapter to retrieve requirements DRDs of
+     * @param rows    object to add DRDs to
+     * @param phases  phase of tailoring to use of applicabilty check
+     */
     void addDRD(Chapter<TailoringRequirement> chapter, Collection<DRDElement> rows, Collection<Phase> phases) {
         drdProvider.apply(chapter, phases)
             .entrySet()

@@ -45,6 +45,9 @@ import static javax.persistence.GenerationType.TABLE;
 public class FileEntity implements Serializable {
     private static final long serialVersionUID = -2130704173973857598L;
 
+    /**
+     * Technical ID.
+     */
     @Id
     @TableGenerator(name = "SEQ_FILE", table = "SEQUENCE", pkColumnName = "SEQ_NAME",
         valueColumnName = "SEQ_COUNT", pkColumnValue = "SEQ_FILE", initialValue = 1)
@@ -52,12 +55,21 @@ public class FileEntity implements Serializable {
     @Column(name = "FILE_ID")
     private Long id;
 
+    /**
+     * Name of the file
+     */
     @Column(name = "NAME")
     private String name;
 
+    /**
+     * Content of the file.
+     */
     @Column(name = "DATA")
     private byte[] data;
 
+    /**
+     * Checksum/Hash of the file.
+     */
     @Column(name = "MD5")
     private String hash;
 }
