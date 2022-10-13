@@ -40,20 +40,29 @@ import static java.util.Objects.nonNull;
 @Relation(itemRelation = "project", collectionRelation = "projects")
 public class ProjectResource extends RepresentationModel<ProjectResource> {
 
+    /**
+     * Unique identifier of project.
+     */
     String name;
     String projectManager;
+
+    /**
+     * Tailorings of the project.
+     */
     Collection<TailoringResource> tailorings;
+
+    /**
+     * Creation timestamp of project.
+     */
     String creationTimestamp;
-    String catalogVersion;
 
     @Builder
-    public ProjectResource(String name, String projectManager, String creationTimestamp, Collection<TailoringResource> tailorings, String catalogVersion, List<Link> links) {
+    public ProjectResource(String name, String projectManager, String creationTimestamp, Collection<TailoringResource> tailorings, List<Link> links) {
         super();
         this.name = name;
         this.projectManager = projectManager;
         this.creationTimestamp = creationTimestamp;
         this.tailorings = tailorings;
-        this.catalogVersion = catalogVersion;
         if (nonNull(links)) {
             add(links);
         }

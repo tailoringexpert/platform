@@ -89,8 +89,8 @@ public abstract class ResourceMapper {
     public static final String TAILORING_NOTE = "project/{project}/tailoring/{tailoring}/note/{note}";
     public static final String BASECATALOG = "catalog";
     public static final String BASECATALOG_VERSION = "catalog/{version}";
-    public static final String BASECATALOG_VERION_PDF = "catalog/{version}/pdf";
-    public static final String BASECATALOG_VERION_JSON = "catalog/{version}/json";
+    public static final String BASECATALOG_VERSION_PDF = "catalog/{version}/pdf";
+    public static final String BASECATALOG_VERSION_JSON = "catalog/{version}/json";
 
     public static final String SCREENINGSHEET = "screeningsheet";
     public static final String SELECTIONVECTOR_PROFILE = "selectionvector";
@@ -133,8 +133,8 @@ public abstract class ResourceMapper {
         resource.links(asList(
             linkToCurrentMapping().slash(resolveParameter(PROJECT_NEW, context.parameter())).withRel(PROJECTS),
             createLink(REL_SELF, baseUri, BASECATALOG_VERSION, parameter),
-            createLink(REL_PDF, baseUri, BASECATALOG_VERION_PDF, parameter),
-            createLink(REL_JSON, baseUri, BASECATALOG_VERION_JSON, parameter)
+            createLink(REL_PDF, baseUri, BASECATALOG_VERSION_PDF, parameter),
+            createLink(REL_JSON, baseUri, BASECATALOG_VERSION_JSON, parameter)
         ));
     }
 
@@ -198,7 +198,7 @@ public abstract class ResourceMapper {
                 createLink(REL_KATALOG, baseUri, TAILORING_CATALOG, parameter),
                 createLink(REL_NAME, baseUri, TAILORING_NAME, parameter),
                 createLink(REL_IMPORT, baseUri, TAILORING_REQUIREMENT_IMPORT, parameter),
-                createLink(REL_BASECATALOG_DOCUMENT, baseUri, BASECATALOG_VERION_PDF, parameter),
+                createLink(REL_BASECATALOG_DOCUMENT, baseUri, BASECATALOG_VERSION_PDF, parameter),
                 createLink(REL_ATTACHMENT, baseUri, TAILORING_ATTACHMENTS, parameter),
                 createLink(REL_NOTE, baseUri, TAILORING_NOTES, parameter)
             )

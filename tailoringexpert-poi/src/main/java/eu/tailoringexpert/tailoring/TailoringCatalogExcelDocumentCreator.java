@@ -120,10 +120,17 @@ public class TailoringCatalogExcelDocumentCreator implements DocumentCreator {
         row.getCell(2).setCellStyle(headerCellStyle);
         result.setAutoFilter(new CellRangeAddress(0, 0, 0, 2));
 
-
         return result;
     }
 
+    /**
+     * Add a row to provided sheet with provided parameters.
+     *
+     * @param sheet      sheet to add row to
+     * @param label      value of cell 0
+     * @param position   value of cell 1
+     * @param applicable value of cell 2
+     */
     private void addRow(Sheet sheet, String label, String position, String applicable) {
         Row row = sheet.createRow((short) sheet.getLastRowNum() + 1);
         row.createCell(0).setCellValue(label);
