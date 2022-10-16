@@ -71,6 +71,11 @@
             <artifactId>spring-boot-starter-security</artifactId>
         </dependency>
 
+        <dependency>
+            <groupId>com.github.ulisesbocchio</groupId>
+            <artifactId>jasypt-spring-boot-starter</artifactId>
+        </dependency>
+
         <!-- db -->
         <dependency>
             <groupId>org.mariadb.jdbc</groupId>
