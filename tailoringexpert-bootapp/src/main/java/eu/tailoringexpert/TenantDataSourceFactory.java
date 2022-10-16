@@ -23,6 +23,9 @@ package eu.tailoringexpert;
 
 import lombok.NoArgsConstructor;
 import lombok.extern.log4j.Log4j2;
+import org.jasypt.encryption.StringEncryptor;
+import org.jasypt.properties.EncryptableProperties;
+import org.jasypt.properties.PropertyValueEncryptionUtils;
 import org.springframework.jdbc.datasource.DriverManagerDataSource;
 
 import javax.sql.DataSource;
@@ -55,7 +58,7 @@ public class TenantDataSourceFactory {
      * @return
      * @throws IOException
      */
-    public static DataSource dataSource(final DataSource defaultDataSource, final String tenantConfigDir)
+    public static DataSource dataSource(final DataSource defaultDataSource, final String tenantConfigDir, StringEncryptor encryptor)
         throws IOException {
         log.info("Suche Tenant DB-Konfigurationen in " + Paths.get(tenantConfigDir).toFile());
 
@@ -65,9 +68,9 @@ public class TenantDataSourceFactory {
                 .filter(file -> "db.properties".equalsIgnoreCase(file.getName()))
                 .forEach(propertyFile -> {
                     try {
-                        final Properties tenantProperties = loadProperties(propertyFile);
+                        final Properties tenantProperties = loadProperties(propertyFile, encryptor);
                         final String tenantId = tenantProperties.getProperty("name");
-                        final DataSource tenantDataSource = buildDataSource(tenantProperties);
+                        final DataSource tenantDataSource = buildDataSource(tenantProperties, encryptor);
                         resolvedDataSources.put(tenantId, tenantDataSource);
                         TenantContext.registerTenant(tenantId);
                     } catch (final IOException e) {
@@ -92,7 +95,7 @@ public class TenantDataSourceFactory {
         return result;
     }
 
-    private static DataSource buildDataSource(final Properties properties) {
+    private static DataSource buildDataSource(final Properties properties, final StringEncryptor encryptor) {
         final DriverManagerDataSource result = new DriverManagerDataSource();
         result.setDriverClassName(properties.getProperty("spring.datasource.driver-class-name"));
         result.setUrl(properties.getProperty("spring.datasource.url"));
@@ -103,20 +106,20 @@ public class TenantDataSourceFactory {
     }
 
     /**
-     * Lädt ein Propertyfile und führt eine Platzhalterersetzung durch.
+     * Load propertyfile and replaces placeholder.
      *
-     * @param file Die zu ladenende Propertydatei
-     * @return Properties mit ersetzten Platzhaltern
+     * @param file property file to load
+     * @return properties with replaced placeholders
      * @throws IOException Fehler beim einlesen der File
      */
-    private static Properties loadProperties(final File file) throws IOException {
-        final Properties result = new Properties();
+    private static Properties loadProperties(final File file, final StringEncryptor encryptor) throws IOException {
+        final Properties properties = new Properties();
         try (InputStream fis = newInputStream(file.toPath())) {
-            result.load(fis);
+            properties.load(fis);
         }
 
-        result.entrySet().forEach(entry -> entry.setValue(resolvePlaceholder(entry.getValue().toString())));
-        return result;
+        properties.entrySet().forEach(entry -> entry.setValue(resolvePlaceholder(entry.getValue().toString())));
+        return new EncryptableProperties(properties, encryptor);
     }
 
     /**
