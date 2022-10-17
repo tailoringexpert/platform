@@ -3,8 +3,7 @@
                    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
                    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
 
-    <changeSet id="Table: TAILORING" author="Michael Baedorf">
-        <comment>Table: TAILORING</comment>
+    <changeSet id="1" author="Michael Baedorf">
         <createTable tableName="TAILORING">
             <column name="TAILORING_ID" type="BIGINT">
                 <constraints primaryKey="true" nullable="false"/>
@@ -21,41 +20,37 @@
         </createTable>
     </changeSet>
 
-    <changeSet id="Constraint: FK_TAILORING_PROJECT" author="Michael Baedorf">
-        <comment>Constraint: FK_TAILORING_PROJECT</comment>
+    <changeSet id="2" author="Michael Baedorf">
         <addForeignKeyConstraint constraintName="FK_TAILORING_PROJECT"
                                  baseTableName="TAILORING" baseColumnNames="PROJECT_ID"
                                  referencedTableName="PROJECT"
                                  referencedColumnNames="PROJECT_ID"/>
     </changeSet>
 
-    <changeSet id="Constraint: FK_TAILORING_TAILORINGCATALOG" author="Michael Baedorf">
-        <comment>Constraint: FK_TAILORING_TAILORINGCATALOG</comment>
+    <changeSet id="3" author="Michael Baedorf">
         <addForeignKeyConstraint constraintName="FK_TAILORING_TAILORINGCATALOG"
                                  baseTableName="TAILORING" baseColumnNames="TAILORINGCATALOG_ID"
                                  referencedTableName="TAILORINGCATALOG"
                                  referencedColumnNames="CATALOG_ID"/>
     </changeSet>
 
-    <changeSet id="Constraint: FK_TAILORING_SCREENINGSHEET" author="Michael Baedorf">
-        <comment>Constraint: FK_TAILORING_SCREENINGSHEET</comment>
+    <changeSet id="4" author="Michael Baedorf">
         <addForeignKeyConstraint constraintName="FK_TAILORING_SCREENINGSHEET"
                                  baseTableName="TAILORING" baseColumnNames="SCREENINGSHEET_ID"
                                  referencedTableName="SCREENINGSHEET"
                                  referencedColumnNames="SCREENINGSHEET_ID"/>
     </changeSet>
 
-    <changeSet id="Constraint: FK_TAILORING_SELECTIONVECTOR" author="Michael Baedorf">
-        <comment>Constraint: FK_TAILORING_SELECTIONVECTOR</comment>
+    <changeSet id="5" author="Michael Baedorf">
         <addForeignKeyConstraint constraintName="FK_TAILORING_SELECTIONVECTOR"
                                  baseTableName="TAILORING" baseColumnNames="SELECTIONVECTOR_ID"
                                  referencedTableName="SELECTIONVECTOR"
                                  referencedColumnNames="SELECTIONVECTOR_ID"/>
     </changeSet>
 
-    <changeSet id="Constraint: UC_TAILORING_IDENTIFIER" author="Michael Baedorf">
-        <comment>Constraint: UC_TAILORING_IDENTIFIER</comment>
+    <changeSet id="6" author="Michael Baedorf">
         <addUniqueConstraint constraintName="UC_TAILORING_IDENTIFIER"
                              tableName="TAILORING" columnNames="PROJECT_ID, IDENTIFER"/>
     </changeSet>
+
 </databaseChangeLog>

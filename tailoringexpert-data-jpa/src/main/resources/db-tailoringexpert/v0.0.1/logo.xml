@@ -8,7 +8,7 @@
     <property name="blob_type" value="LONGBLOB" dbms="mariadb"/>
     <property name="blob_type" value="BLOB" dbms="h2"/>
 
-    <changeSet id="TX4" author="Michael Baedorf">
+    <changeSet id="1" author="Michael Baedorf">
         <createTable tableName="LOGO">
             <column name="LOGO_ID" type="BIGINT">
                 <constraints primaryKey="true" nullable="false"/>

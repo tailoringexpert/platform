@@ -23,6 +23,7 @@ package eu.tailoringexpert.catalog;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import eu.tailoringexpert.DBSetupRunner;
 import eu.tailoringexpert.LiquibaseRunner;
 import eu.tailoringexpert.SpringTestConfiguration;
 import eu.tailoringexpert.TenantContext;
@@ -58,6 +59,8 @@ import static org.springframework.http.HttpStatus.OK;
 @EnableTransactionManagement
 class CatalogControllerTest {
 
+    @Autowired
+    private DBSetupRunner dbSetupRunner;
     @Autowired
     LiquibaseRunner liquibase;
 

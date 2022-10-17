@@ -3,7 +3,7 @@
                    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
                    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
 
-    <changeSet id="Table: BASEGREQUIREMENT_PHASE" author="Michael Baedorf">
+    <changeSet id="1" author="Michael Baedorf">
         <createTable tableName="BASEREQUIREMENT_PHASE">
             <column name="REQUIREMENT_ID" type="BIGINT">
                 <constraints primaryKey="true" nullable="false"/>
@@ -14,7 +14,7 @@
         </createTable>
     </changeSet>
 
-    <changeSet id="Constraint: FK_BASEREQUIREMENTPHASE_REQUIREMENT" author="Michael Baedorf">
+    <changeSet id="2" author="Michael Baedorf">
         <addForeignKeyConstraint constraintName="FK_BASEREQUIREMENT_PHASE"
                                  baseTableName="BASEREQUIREMENT_PHASE" baseColumnNames="REQUIREMENT_ID"
                                  referencedTableName="BASEREQUIREMENT"

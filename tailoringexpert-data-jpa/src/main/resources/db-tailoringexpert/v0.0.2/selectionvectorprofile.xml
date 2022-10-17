@@ -3,7 +3,7 @@
                    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
                    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
 
-    <changeSet id="ISSUE: #52" author="Michael Baedorf">
+    <changeSet id="1" author="Michael Baedorf">
         <comment>columns for github issue #52</comment>
         <addColumn tableName="SELECTIONVECTORPROFILE">
             <column name="INTERNALKEY" type="VARCHAR(255)"/>
@@ -13,7 +13,7 @@
         </rollback>
     </changeSet>
 
-    <changeSet id="Constraint: UC_SELECTIONVECTORPROFILE_INTERNALKEY" author="Michael Baedorf">
+    <changeSet id="2" author="Michael Baedorf">
         <comment>unique constrints for github issue #52</comment>
         <addUniqueConstraint constraintName="UC_SELECTIONVECTORPROFILE_INTERNALKEY"
                              tableName="SELECTIONVECTORPROFILE"

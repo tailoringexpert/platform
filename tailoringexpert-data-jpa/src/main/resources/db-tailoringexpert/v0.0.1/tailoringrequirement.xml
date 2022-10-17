@@ -4,8 +4,7 @@
                    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
          http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
 
-    <changeSet id="Table: TAILORINGREQUIREMENT" author="Michael Baedorf">
-        <comment>Table: TAILORINGREQUIREMENT</comment>
+    <changeSet id="1" author="Michael Baedorf">
         <createTable tableName="TAILORINGREQUIREMENT">
             <column name="REQUIREMENT_ID" type="BIGINT">
                 <constraints primaryKey="true" nullable="false"/>
@@ -23,8 +22,7 @@
         </createTable>
     </changeSet>
 
-    <changeSet id="Constraint: FK_TAILORINGREQUIREMENT_CHAPTER" author="Michael Baedorf">
-        <comment>Constraint: FK_TAILORINGREQUIREMENT_CHAPTER</comment>
+    <changeSet id="2" author="Michael Baedorf">
         <addForeignKeyConstraint constraintName="FK_TAILORINGREQUIREMENT_CHAPTER"
                                  baseTableName="TAILORINGREQUIREMENT" baseColumnNames="CHAPTER_ID"
                                  referencedTableName="TAILORINGCATALOGCHAPTER"

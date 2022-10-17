@@ -8,7 +8,7 @@
     <property name="blob_type" value="LONGBLOB" dbms="mariadb"/>
     <property name="blob_type" value="BLOB" dbms="h2"/>
 
-    <changeSet id="TX2: FILE" author="Michael Baedorf">
+    <changeSet id="1" author="Michael Baedorf">
         <createTable tableName="FILE">
             <column name="FILE_ID" type="BIGINT">
                 <constraints primaryKey="true" nullable="false"/>
@@ -22,8 +22,7 @@
         </createTable>
     </changeSet>
 
-    <changeSet id="TX3" author="Michael Baedorf">
-        <comment>Constraint: FK_FILE_TAILORING</comment>
+    <changeSet id="2" author="Michael Baedorf">
         <addForeignKeyConstraint constraintName="FK_FILE_TAILORING"
                                  baseTableName="FILE"
                                  baseColumnNames="TAILORING_ID"

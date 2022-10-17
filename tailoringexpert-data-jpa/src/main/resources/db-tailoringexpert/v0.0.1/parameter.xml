@@ -4,7 +4,7 @@
   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
          http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
 
-  <changeSet id="Table: PARAMETER" author="Michael Baedorf">
+  <changeSet id="1" author="Michael Baedorf">
     <createTable tableName="PARAMETER">
       <column name="PARAMETER_ID" type="BIGINT">
         <constraints primaryKey="true" nullable="false" />

@@ -3,7 +3,7 @@
                    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
                    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
 
-    <changeSet id="Table: BASECATALOG" author="Michael Baedorf">
+    <changeSet id="1" author="Michael Baedorf">
         <createTable tableName="BASECATALOG">
             <column name="CATALOG_ID" type="BIGINT">
                 <constraints primaryKey="true" nullable="false"/>
@@ -15,11 +15,11 @@
         </createTable>
     </changeSet>
 
-    <changeSet id="Constraint: UC_BASECATALOGVERSION" author="Michael Baedorf">
+    <changeSet id="2" author="Michael Baedorf">
         <addUniqueConstraint constraintName="UC_BASECATALOGVERSION" tableName="BASECATALOG" columnNames="VERSION"/>
     </changeSet>
 
-    <changeSet id="Constraint: FK_BASECATALOG_CHAPTER" author="Michael Baedorf">
+    <changeSet id="3" author="Michael Baedorf">
         <addForeignKeyConstraint constraintName="FK_BASECATALOG_CHAPTER"
                                  baseTableName="BASECATALOG" baseColumnNames="CHAPTER_ID"
                                  referencedTableName="BASECATALOGCHAPTER"

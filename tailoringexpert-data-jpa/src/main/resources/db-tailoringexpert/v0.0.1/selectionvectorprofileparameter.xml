@@ -2,8 +2,8 @@
 <databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
                    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
                    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
-    <changeSet id="Table: SELECTIONVECTORPROFILEPARAMETER" author="Michael Baedorf">
-        <comment>Table: SELECTIONVECTORPROFILEPARAMETER</comment>
+
+    <changeSet id="1" author="Michael Baedorf">
         <createTable tableName="SELECTIONVECTORPROFILEPARAMETER">
             <column name="SELECTIONVECTORPROFILE_ID" type="BIGINT">
                 <constraints primaryKey="true" nullable="false"/>
@@ -17,8 +17,7 @@
         </createTable>
     </changeSet>
 
-    <changeSet id="Constraint: FK_SELECTIONVECTORPROFILEPARAMATER_SELECTIONVECTORPROFILE" author="Michael Baedorf">
-        <comment>Constraint: FK_SELECTIONVECTORPROFILEPARAMATER_SELECTIONVECTORPROFILE</comment>
+    <changeSet id="2" author="Michael Baedorf">
         <addForeignKeyConstraint constraintName="FK_SELECTIONVECTORPROFILEPARAMATER_SELECTIONVECTORPROFILE"
                                  baseTableName="SELECTIONVECTORPROFILEPARAMETER"
                                  baseColumnNames="SELECTIONVECTORPROFILE_ID"

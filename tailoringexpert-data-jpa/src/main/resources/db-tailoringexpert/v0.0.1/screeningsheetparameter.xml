@@ -4,8 +4,7 @@
                    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
          http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
 
-    <changeSet id="Table: SCREENINGSHEETPARAMETER" author="Michael Baedorf">
-        <comment>Table: SCREENINGSHEETPARAMETER</comment>
+    <changeSet id="1" author="Michael Baedorf">
         <createTable tableName="SCREENINGSHEETPARAMETER">
             <column name="SCREENINGSHEETPARAMETER_ID" type="BIGINT">
                 <constraints primaryKey="true" nullable="false"/>
@@ -17,7 +16,6 @@
             <column name="POSITION" type="BIGINT"/>
             <column name="SCREENINGSHEET_ID" type="BIGINT"/>
         </createTable>
-
     </changeSet>
 
 </databaseChangeLog>

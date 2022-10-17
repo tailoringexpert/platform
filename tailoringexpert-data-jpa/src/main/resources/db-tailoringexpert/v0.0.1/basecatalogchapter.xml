@@ -4,7 +4,7 @@
                    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
          http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
 
-    <changeSet id="Table: BASECATALOGCHAPTER" author="Michael Baedorf">
+    <changeSet id="1" author="Michael Baedorf">
         <createTable tableName="BASECATALOGCHAPTER">
             <column name="CHAPTER_ID" type="BIGINT">
                 <constraints primaryKey="true" nullable="false"/>
@@ -17,7 +17,7 @@
         </createTable>
     </changeSet>
 
-    <changeSet id="Constraint: FK_BASECATALOGCHAPTER_PARENTCHAPTER" author="Michael Baedorf">
+    <changeSet id="2" author="Michael Baedorf">
         <addForeignKeyConstraint constraintName="FK_BASECATALOGCHAPTER_PARENTCHAPTER"
                                  baseTableName="BASECATALOGCHAPTER"
                                  baseColumnNames="PARENTCHAPTER_ID"

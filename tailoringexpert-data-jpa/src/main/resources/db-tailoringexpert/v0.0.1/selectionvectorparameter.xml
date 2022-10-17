@@ -3,8 +3,7 @@
                    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
                    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
 
-    <changeSet id="Table: SELECTIONVECTORPARAMETER" author="Michael Baedorf">
-        <comment>Table: SELECTIONVECTORPARAMETER</comment>
+    <changeSet id="1" author="Michael Baedorf">
         <createTable tableName="SELECTIONVECTORPARAMETER">
             <column name="SELECTIONVECTOR_ID" type="BIGINT">
                 <constraints primaryKey="true" nullable="false"/>
@@ -18,11 +17,11 @@
         </createTable>
     </changeSet>
 
-    <changeSet id="Constraint: FK_SELECTIONVECTORPARAMETER_SELECTIONVECTOR" author="Michael Baedorf">
-        <comment>Constraint: FK_SELECTIONVECTORPARAMETER_SELECTIONVECTOR</comment>
+    <changeSet id="2" author="Michael Baedorf">
         <addForeignKeyConstraint constraintName="FK_SELECTIONVECTORPARAMETER_SELECTIONVECTOR"
                                  baseTableName="SELECTIONVECTORPARAMETER" baseColumnNames="SELECTIONVECTOR_ID"
                                  referencedTableName="SELECTIONVECTOR"
                                  referencedColumnNames="SELECTIONVECTOR_ID"/>
     </changeSet>
+
 </databaseChangeLog>
