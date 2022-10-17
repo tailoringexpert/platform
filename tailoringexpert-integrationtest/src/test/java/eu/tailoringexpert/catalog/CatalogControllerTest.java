@@ -73,7 +73,7 @@ class CatalogControllerTest {
 
         TenantContext.setCurrentTenant("plattform");
         liquibase.dropAll();
-        liquibase.runChangelog("db-tailoringexpert-plattform-install.xml", "db-tailoringexpert-plattform-update.xml");
+        liquibase.runChangelog("db-tailoringexpert-plattform-root.xml");
 
         RequestContextHolder.setRequestAttributes(
             new ServletRequestAttributes(new MockHttpServletRequest())

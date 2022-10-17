@@ -6,6 +6,8 @@
 
 	<include file="db-tailoringexpert/v0.0.2/selectionvectorprofile.xml"/>
 
-	<changeSet author="MajorVersion" id="0.0.2"/>
+	<changeSet id="Release 0.0.2" author="Michael Baedorf">
+		<tagDatabase tag="0.0.2" />
+	</changeSet>
 
 </databaseChangeLog>

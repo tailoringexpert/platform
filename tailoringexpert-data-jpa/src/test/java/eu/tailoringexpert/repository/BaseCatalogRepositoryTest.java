@@ -69,7 +69,7 @@ class BaseCatalogRepositoryTest {
         log.debug("setup started");
 
         liquibase.dropAll();
-        liquibase.runChangelog("db-tailoringexpert-install.xml");
+        liquibase.runChangelog("db-tailoringexpert-root.xml");
 
         log.debug("setup completed");
     }

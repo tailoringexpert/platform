@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
+
+    <changeSet id="Table: TAILORING_PHASE" author="Michael Baedorf">
+        <comment>Table: TAILORING_PHASE</comment>
+        <createTable tableName="TAILORING_PHASE">
+            <column name="TAILORING_ID" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="PHASE" type="VARCHAR(8)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="PHASE_ORDER" type="BIGINT"/>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="Constraint: FK_TAILORING_PHASE" author="Michael Baedorf">
+        <comment>Constraint: FK_TAILORING_PHASE</comment>
+        <addForeignKeyConstraint constraintName="FK_TAILORING_PHASE"
+                                 baseTableName="TAILORING_PHASE" baseColumnNames="TAILORING_ID"
+                                 referencedTableName="TAILORING"
+                                 referencedColumnNames="TAILORING_ID"/>
+    </changeSet>
+</databaseChangeLog>

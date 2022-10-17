@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
+
+    <changeSet id="Table: TAILORINGCATALOG" author="Michael Baedorf">
+        <comment>Table: TAILORINGCATALOG</comment>
+        <createTable tableName="TAILORINGCATALOG">
+            <column name="CATALOG_ID" type="BIGINT">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="VERSION" type="VARCHAR(16)"/>
+            <column name="CHAPTER_ID" type="BIGINT"/>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="Constraint: FK_TAILORINGCATALOG_CHAPTER" author="Michael Baedorf">
+        <comment>Constraint: FK_TAILORINGCATALOG_CHAPTER</comment>
+        <addForeignKeyConstraint constraintName="FK_TAILORINGCATALOG_CHAPTER"
+                                 baseTableName="TAILORINGCATALOG" baseColumnNames="CHAPTER_ID"
+                                 referencedTableName="TAILORINGCATALOGCHAPTER"
+                                 referencedColumnNames="CHAPTER_ID"/>
+    </changeSet>
+
+</databaseChangeLog>

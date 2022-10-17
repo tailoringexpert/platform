@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+         http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
+
+    <changeSet id="Table: TAILORINGCATALOGCHAPTER" author="Michael Baedorf">
+        <createTable tableName="TAILORINGCATALOGCHAPTER">
+            <column name="CHAPTER_ID" type="BIGINT">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="NAME" type="VARCHAR(255)"/>
+            <column name="POSITION" type="BIGINT"/>
+            <column name="NUMBER" type="VARCHAR(16)"/>
+            <column name="CHAPTER_ORDER" type="BIGINT"/>
+            <column name="PARENTCHAPTER_ID" type="BIGINT"/>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="Constraint: FK_TAILORINGCATALOGCHAPTER_PARENTCHAPTER" author="Michael Baedorf">
+        <comment>Constraint: FK_TAILORINGCATALOGCHAPTER_PARENTCHAPTER</comment>
+        <addForeignKeyConstraint constraintName="FK_TAILORINGCATALOGCHAPTER_PARENTCHAPTER"
+                                 baseTableName="TAILORINGCATALOGCHAPTER"
+                                 baseColumnNames="PARENTCHAPTER_ID"
+                                 referencedTableName="TAILORINGCATALOGCHAPTER"
+                                 referencedColumnNames="CHAPTER_ID"/>
+    </changeSet>
+
+</databaseChangeLog>
