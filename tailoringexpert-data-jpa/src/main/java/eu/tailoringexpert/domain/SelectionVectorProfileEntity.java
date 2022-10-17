@@ -61,11 +61,16 @@ public class SelectionVectorProfileEntity implements Serializable {
     private Long id;
 
     /**
-     * Name of the profile.
+     * (Display) Name of the profile.
      */
     @Column(name = "NAME")
     private String name;
 
+    /**
+     * Internal (business) key of profile
+     */
+    @Column(name = "INTERNALKEY")
+    private String internalKey;
     /**
      * Mapping between types and levels.
      */
