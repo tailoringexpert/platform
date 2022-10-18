@@ -58,7 +58,7 @@ public class DBSetupRunner implements CommandLineRunner {
             log.finest("Datenbank nicht vorhanden!");
         }
 
-        liquibase.runChangelog("db-tailoringexpert-plattform-install.xml", "db-tailoringexpert-plattform-update.xml");
+        liquibase.runChangelog("db-tailoringexpert-plattform.changelog-root.xml");
 
         try (InputStream is = newInputStream(get("src/test/resources/basecatalog.json"))) {
             assert nonNull(is);

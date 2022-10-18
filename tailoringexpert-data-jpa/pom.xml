@@ -93,20 +93,7 @@
                         <configuration>
                             <arguments>
                                 <argument>liquibase:dropAll</argument>
-                                <argument>-Dliquibase.changeLogFile=db-tailoringexpert-install.xml</argument>
-                                <argument>-P ${db}</argument>
-                            </arguments>
-                        </configuration>
-                    </execution>
-                    <execution>
-                        <id>install</id>
-                        <goals>
-                            <goal>exec</goal>
-                        </goals>
-                        <configuration>
-                            <arguments>
-                                <argument>liquibase:update</argument>
-                                <argument>-Dliquibase.changeLogFile=db-tailoringexpert-install.xml</argument>
+                                <argument>-Dliquibase.changeLogFile=db-tailoringexpert.changelog-root.xml</argument>
                                 <argument>-P ${db}</argument>
                             </arguments>
                         </configuration>
@@ -119,7 +106,7 @@
                         <configuration>
                             <arguments>
                                 <argument>liquibase:update</argument>
-                                <argument>-Dliquibase.changeLogFile=db-tailoringexpert-update.xml</argument>
+                                <argument>-Dliquibase.changeLogFile=db-tailoringexpert.changelog-root.xml</argument>
                                 <argument>-P ${db}</argument>
                             </arguments>
                         </configuration>

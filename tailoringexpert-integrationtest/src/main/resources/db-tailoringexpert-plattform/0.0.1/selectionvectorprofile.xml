@@ -1,0 +1,298 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+         http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
+
+    <changeSet id="1" author="tailoringexpert-plattform">
+        <insert tableName="SELECTIONVECTORPROFILE">
+            <column name="SELECTIONVECTORPROFILE_ID"
+                    valueComputed=" ( select SEQ_COUNT from SEQUENCE where SEQ_NAME='SEQ_SELECTIONVECTORPROFILE' )"/>
+            <column name="NAME" value="Low"/>
+        </insert>
+
+        <insert tableName="SELECTIONVECTORPROFILEPARAMETER">
+            <column name="SELECTIONVECTORPROFILE_ID"
+                    valueComputed=" ( select SEQ_COUNT from SEQUENCE where SEQ_NAME='SEQ_SELECTIONVECTORPROFILE' )"/>
+            <column name="TYPE" value="A"/>
+            <column name="LEVEL" value="1"/>
+        </insert>
+
+        <insert tableName="SELECTIONVECTORPROFILEPARAMETER">
+            <column name="SELECTIONVECTORPROFILE_ID"
+                    valueComputed=" ( select SEQ_COUNT from SEQUENCE where SEQ_NAME='SEQ_SELECTIONVECTORPROFILE' )"/>
+            <column name="TYPE" value="Q"/>
+            <column name="LEVEL" value="1"/>
+        </insert>
+
+        <insert tableName="SELECTIONVECTORPROFILEPARAMETER">
+            <column name="SELECTIONVECTORPROFILE_ID"
+                    valueComputed=" ( select SEQ_COUNT from SEQUENCE where SEQ_NAME='SEQ_SELECTIONVECTORPROFILE' )"/>
+            <column name="TYPE" value="M"/>
+            <column name="LEVEL" value="1"/>
+        </insert>
+
+        <insert tableName="SELECTIONVECTORPROFILEPARAMETER">
+            <column name="SELECTIONVECTORPROFILE_ID"
+                    valueComputed=" ( select SEQ_COUNT from SEQUENCE where SEQ_NAME='SEQ_SELECTIONVECTORPROFILE' )"/>
+            <column name="TYPE" value="R"/>
+            <column name="LEVEL" value="1"/>
+        </insert>
+
+        <insert tableName="SELECTIONVECTORPROFILEPARAMETER">
+            <column name="SELECTIONVECTORPROFILE_ID"
+                    valueComputed=" ( select SEQ_COUNT from SEQUENCE where SEQ_NAME='SEQ_SELECTIONVECTORPROFILE' )"/>
+            <column name="TYPE" value="E"/>
+            <column name="LEVEL" value="1"/>
+        </insert>
+
+        <insert tableName="SELECTIONVECTORPROFILEPARAMETER">
+            <column name="SELECTIONVECTORPROFILE_ID"
+                    valueComputed=" ( select SEQ_COUNT from SEQUENCE where SEQ_NAME='SEQ_SELECTIONVECTORPROFILE' )"/>
+            <column name="TYPE" value="P"/>
+            <column name="LEVEL" value="1"/>
+        </insert>
+
+        <insert tableName="SELECTIONVECTORPROFILEPARAMETER">
+            <column name="SELECTIONVECTORPROFILE_ID"
+                    valueComputed=" ( select SEQ_COUNT from SEQUENCE where SEQ_NAME='SEQ_SELECTIONVECTORPROFILE' )"/>
+            <column name="TYPE" value="W"/>
+            <column name="LEVEL" value="1"/>
+        </insert>
+
+        <insert tableName="SELECTIONVECTORPROFILEPARAMETER">
+            <column name="SELECTIONVECTORPROFILE_ID"
+                    valueComputed=" ( select SEQ_COUNT from SEQUENCE where SEQ_NAME='SEQ_SELECTIONVECTORPROFILE' )"/>
+            <column name="TYPE" value="S"/>
+            <column name="LEVEL" value="1"/>
+        </insert>
+
+        <insert tableName="SELECTIONVECTORPROFILEPARAMETER">
+            <column name="SELECTIONVECTORPROFILE_ID"
+                    valueComputed=" ( select SEQ_COUNT from SEQUENCE where SEQ_NAME='SEQ_SELECTIONVECTORPROFILE' )"/>
+            <column name="TYPE" value="J"/>
+            <column name="LEVEL" value="1"/>
+        </insert>
+
+        <insert tableName="SELECTIONVECTORPROFILEPARAMETER">
+            <column name="SELECTIONVECTORPROFILE_ID"
+                    valueComputed=" ( select SEQ_COUNT from SEQUENCE where SEQ_NAME='SEQ_SELECTIONVECTORPROFILE' )"/>
+            <column name="TYPE" value="F"/>
+            <column name="LEVEL" value="1"/>
+        </insert>
+
+        <insert tableName="SELECTIONVECTORPROFILEPARAMETER">
+            <column name="SELECTIONVECTORPROFILE_ID"
+                    valueComputed=" ( select SEQ_COUNT from SEQUENCE where SEQ_NAME='SEQ_SELECTIONVECTORPROFILE' )"/>
+            <column name="TYPE" value="C"/>
+            <column name="LEVEL" value="1"/>
+        </insert>
+
+        <insert tableName="SELECTIONVECTORPROFILEPARAMETER">
+            <column name="SELECTIONVECTORPROFILE_ID"
+                    valueComputed=" ( select SEQ_COUNT from SEQUENCE where SEQ_NAME='SEQ_SELECTIONVECTORPROFILE' )"/>
+            <column name="TYPE" value="B"/>
+            <column name="LEVEL" value="1"/>
+        </insert>
+
+        <update tableName="SEQUENCE">
+            <column name="SEQ_COUNT" valueComputed="SEQ_COUNT+1"/>
+            <where>SEQ_NAME='SEQ_SELECTIONVECTORPROFILE'</where>
+        </update>
+    </changeSet>
+
+    <changeSet id="2" author="tailoringexpert-plattform">
+        <insert tableName="SELECTIONVECTORPROFILE">
+            <column name="SELECTIONVECTORPROFILE_ID"
+                    valueComputed=" ( select SEQ_COUNT from SEQUENCE where SEQ_NAME='SEQ_SELECTIONVECTORPROFILE' )"/>
+            <column name="NAME" value="Middle"/>
+        </insert>
+
+        <insert tableName="SELECTIONVECTORPROFILEPARAMETER">
+            <column name="SELECTIONVECTORPROFILE_ID"
+                    valueComputed=" ( select SEQ_COUNT from SEQUENCE where SEQ_NAME='SEQ_SELECTIONVECTORPROFILE' )"/>
+            <column name="TYPE" value="A"/>
+            <column name="LEVEL" value="5"/>
+        </insert>
+
+        <insert tableName="SELECTIONVECTORPROFILEPARAMETER">
+            <column name="SELECTIONVECTORPROFILE_ID"
+                    valueComputed=" ( select SEQ_COUNT from SEQUENCE where SEQ_NAME='SEQ_SELECTIONVECTORPROFILE' )"/>
+            <column name="TYPE" value="Q"/>
+            <column name="LEVEL" value="5"/>
+        </insert>
+
+        <insert tableName="SELECTIONVECTORPROFILEPARAMETER">
+            <column name="SELECTIONVECTORPROFILE_ID"
+                    valueComputed=" ( select SEQ_COUNT from SEQUENCE where SEQ_NAME='SEQ_SELECTIONVECTORPROFILE' )"/>
+            <column name="TYPE" value="M"/>
+            <column name="LEVEL" value="5"/>
+        </insert>
+
+        <insert tableName="SELECTIONVECTORPROFILEPARAMETER">
+            <column name="SELECTIONVECTORPROFILE_ID"
+                    valueComputed=" ( select SEQ_COUNT from SEQUENCE where SEQ_NAME='SEQ_SELECTIONVECTORPROFILE' )"/>
+            <column name="TYPE" value="R"/>
+            <column name="LEVEL" value="5"/>
+        </insert>
+
+        <insert tableName="SELECTIONVECTORPROFILEPARAMETER">
+            <column name="SELECTIONVECTORPROFILE_ID"
+                    valueComputed=" ( select SEQ_COUNT from SEQUENCE where SEQ_NAME='SEQ_SELECTIONVECTORPROFILE' )"/>
+            <column name="TYPE" value="E"/>
+            <column name="LEVEL" value="5"/>
+        </insert>
+
+        <insert tableName="SELECTIONVECTORPROFILEPARAMETER">
+            <column name="SELECTIONVECTORPROFILE_ID"
+                    valueComputed=" ( select SEQ_COUNT from SEQUENCE where SEQ_NAME='SEQ_SELECTIONVECTORPROFILE' )"/>
+            <column name="TYPE" value="P"/>
+            <column name="LEVEL" value="5"/>
+        </insert>
+
+        <insert tableName="SELECTIONVECTORPROFILEPARAMETER">
+            <column name="SELECTIONVECTORPROFILE_ID"
+                    valueComputed=" ( select SEQ_COUNT from SEQUENCE where SEQ_NAME='SEQ_SELECTIONVECTORPROFILE' )"/>
+            <column name="TYPE" value="W"/>
+            <column name="LEVEL" value="5"/>
+        </insert>
+
+        <insert tableName="SELECTIONVECTORPROFILEPARAMETER">
+            <column name="SELECTIONVECTORPROFILE_ID"
+                    valueComputed=" ( select SEQ_COUNT from SEQUENCE where SEQ_NAME='SEQ_SELECTIONVECTORPROFILE' )"/>
+            <column name="TYPE" value="S"/>
+            <column name="LEVEL" value="5"/>
+        </insert>
+
+        <insert tableName="SELECTIONVECTORPROFILEPARAMETER">
+            <column name="SELECTIONVECTORPROFILE_ID"
+                    valueComputed=" ( select SEQ_COUNT from SEQUENCE where SEQ_NAME='SEQ_SELECTIONVECTORPROFILE' )"/>
+            <column name="TYPE" value="J"/>
+            <column name="LEVEL" value="5"/>
+        </insert>
+
+        <insert tableName="SELECTIONVECTORPROFILEPARAMETER">
+            <column name="SELECTIONVECTORPROFILE_ID"
+                    valueComputed=" ( select SEQ_COUNT from SEQUENCE where SEQ_NAME='SEQ_SELECTIONVECTORPROFILE' )"/>
+            <column name="TYPE" value="F"/>
+            <column name="LEVEL" value="5"/>
+        </insert>
+
+        <insert tableName="SELECTIONVECTORPROFILEPARAMETER">
+            <column name="SELECTIONVECTORPROFILE_ID"
+                    valueComputed=" ( select SEQ_COUNT from SEQUENCE where SEQ_NAME='SEQ_SELECTIONVECTORPROFILE' )"/>
+            <column name="TYPE" value="C"/>
+            <column name="LEVEL" value="5"/>
+        </insert>
+
+        <insert tableName="SELECTIONVECTORPROFILEPARAMETER">
+            <column name="SELECTIONVECTORPROFILE_ID"
+                    valueComputed=" ( select SEQ_COUNT from SEQUENCE where SEQ_NAME='SEQ_SELECTIONVECTORPROFILE' )"/>
+            <column name="TYPE" value="B"/>
+            <column name="LEVEL" value="5"/>
+        </insert>
+
+        <update tableName="SEQUENCE">
+            <column name="SEQ_COUNT" valueComputed="SEQ_COUNT+1"/>
+            <where>SEQ_NAME='SEQ_SELECTIONVECTORPROFILE'</where>
+        </update>
+    </changeSet>
+
+    <changeSet id="3" author="tailoringexpert-plattform">
+        <insert tableName="SELECTIONVECTORPROFILE">
+            <column name="SELECTIONVECTORPROFILE_ID"
+                    valueComputed=" ( select SEQ_COUNT from SEQUENCE where SEQ_NAME='SEQ_SELECTIONVECTORPROFILE' )"/>
+            <column name="NAME" value="High"/>
+        </insert>
+
+        <insert tableName="SELECTIONVECTORPROFILEPARAMETER">
+            <column name="SELECTIONVECTORPROFILE_ID"
+                    valueComputed=" ( select SEQ_COUNT from SEQUENCE where SEQ_NAME='SEQ_SELECTIONVECTORPROFILE' )"/>
+            <column name="TYPE" value="A"/>
+            <column name="LEVEL" value="10"/>
+        </insert>
+
+        <insert tableName="SELECTIONVECTORPROFILEPARAMETER">
+            <column name="SELECTIONVECTORPROFILE_ID"
+                    valueComputed=" ( select SEQ_COUNT from SEQUENCE where SEQ_NAME='SEQ_SELECTIONVECTORPROFILE' )"/>
+            <column name="TYPE" value="Q"/>
+            <column name="LEVEL" value="10"/>
+        </insert>
+
+        <insert tableName="SELECTIONVECTORPROFILEPARAMETER">
+            <column name="SELECTIONVECTORPROFILE_ID"
+                    valueComputed=" ( select SEQ_COUNT from SEQUENCE where SEQ_NAME='SEQ_SELECTIONVECTORPROFILE' )"/>
+            <column name="TYPE" value="M"/>
+            <column name="LEVEL" value="10"/>
+        </insert>
+
+        <insert tableName="SELECTIONVECTORPROFILEPARAMETER">
+            <column name="SELECTIONVECTORPROFILE_ID"
+                    valueComputed=" ( select SEQ_COUNT from SEQUENCE where SEQ_NAME='SEQ_SELECTIONVECTORPROFILE' )"/>
+            <column name="TYPE" value="R"/>
+            <column name="LEVEL" value="10"/>
+        </insert>
+
+        <insert tableName="SELECTIONVECTORPROFILEPARAMETER">
+            <column name="SELECTIONVECTORPROFILE_ID"
+                    valueComputed=" ( select SEQ_COUNT from SEQUENCE where SEQ_NAME='SEQ_SELECTIONVECTORPROFILE' )"/>
+            <column name="TYPE" value="E"/>
+            <column name="LEVEL" value="10"/>
+        </insert>
+
+        <insert tableName="SELECTIONVECTORPROFILEPARAMETER">
+            <column name="SELECTIONVECTORPROFILE_ID"
+                    valueComputed=" ( select SEQ_COUNT from SEQUENCE where SEQ_NAME='SEQ_SELECTIONVECTORPROFILE' )"/>
+            <column name="TYPE" value="P"/>
+            <column name="LEVEL" value="10"/>
+        </insert>
+
+        <insert tableName="SELECTIONVECTORPROFILEPARAMETER">
+            <column name="SELECTIONVECTORPROFILE_ID"
+                    valueComputed=" ( select SEQ_COUNT from SEQUENCE where SEQ_NAME='SEQ_SELECTIONVECTORPROFILE' )"/>
+            <column name="TYPE" value="W"/>
+            <column name="LEVEL" value="10"/>
+        </insert>
+
+        <insert tableName="SELECTIONVECTORPROFILEPARAMETER">
+            <column name="SELECTIONVECTORPROFILE_ID"
+                    valueComputed=" ( select SEQ_COUNT from SEQUENCE where SEQ_NAME='SEQ_SELECTIONVECTORPROFILE' )"/>
+            <column name="TYPE" value="S"/>
+            <column name="LEVEL" value="10"/>
+        </insert>
+
+        <insert tableName="SELECTIONVECTORPROFILEPARAMETER">
+            <column name="SELECTIONVECTORPROFILE_ID"
+                    valueComputed=" ( select SEQ_COUNT from SEQUENCE where SEQ_NAME='SEQ_SELECTIONVECTORPROFILE' )"/>
+            <column name="TYPE" value="J"/>
+            <column name="LEVEL" value="10"/>
+        </insert>
+
+        <insert tableName="SELECTIONVECTORPROFILEPARAMETER">
+            <column name="SELECTIONVECTORPROFILE_ID"
+                    valueComputed=" ( select SEQ_COUNT from SEQUENCE where SEQ_NAME='SEQ_SELECTIONVECTORPROFILE' )"/>
+            <column name="TYPE" value="F"/>
+            <column name="LEVEL" value="10"/>
+        </insert>
+
+        <insert tableName="SELECTIONVECTORPROFILEPARAMETER">
+            <column name="SELECTIONVECTORPROFILE_ID"
+                    valueComputed=" ( select SEQ_COUNT from SEQUENCE where SEQ_NAME='SEQ_SELECTIONVECTORPROFILE' )"/>
+            <column name="TYPE" value="C"/>
+            <column name="LEVEL" value="10"/>
+        </insert>
+
+        <insert tableName="SELECTIONVECTORPROFILEPARAMETER">
+            <column name="SELECTIONVECTORPROFILE_ID"
+                    valueComputed=" ( select SEQ_COUNT from SEQUENCE where SEQ_NAME='SEQ_SELECTIONVECTORPROFILE' )"/>
+            <column name="TYPE" value="B"/>
+            <column name="LEVEL" value="10"/>
+        </insert>
+
+        <update tableName="SEQUENCE">
+            <column name="SEQ_COUNT" valueComputed="SEQ_COUNT+1"/>
+            <where>SEQ_NAME='SEQ_SELECTIONVECTORPROFILE'</where>
+        </update>
+    </changeSet>
+
+</databaseChangeLog>
