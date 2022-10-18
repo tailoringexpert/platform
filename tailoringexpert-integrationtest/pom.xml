@@ -101,20 +101,7 @@
                         <configuration>
                             <arguments>
                                 <argument>liquibase:dropAll</argument>
-                                <argument>-Dliquibase.changeLogFile=db-tailoringexpert-plattform-install.xml</argument>
-                                <argument>-P ${db}</argument>
-                            </arguments>
-                        </configuration>
-                    </execution>
-                    <execution>
-                        <id>install</id>
-                        <goals>
-                            <goal>exec</goal>
-                        </goals>
-                        <configuration>
-                            <arguments>
-                                <argument>liquibase:update</argument>
-                                <argument>-Dliquibase.changeLogFile=db-tailoringexpert-plattform-install.xml</argument>
+                                <argument>-Dliquibase.changeLogFile=db-tailoringexpert-plattform.changelog-install.xml</argument>
                                 <argument>-P ${db}</argument>
                             </arguments>
                         </configuration>
@@ -127,7 +114,7 @@
                         <configuration>
                             <arguments>
                                 <argument>liquibase:update</argument>
-                                <argument>-Dliquibase.changeLogFile=db-tailoringexpert-plattform-update.xml</argument>
+                                <argument>-Dliquibase.changeLogFile=db-tailoringexpert-plattform.changelog-root.xml</argument>
                                 <argument>-P ${db}</argument>
                             </arguments>
                         </configuration>
@@ -140,7 +127,7 @@
                         <configuration>
                             <arguments>
                                 <argument>liquibase:update</argument>
-                                <argument>-Dliquibase.changeLogFile=db-tailoringexpert-plattform-devupdate.xml
+                                <argument>-Dliquibase.changeLogFile=db-tailoringexpert-plattform.changelog-devupdate.xml
                                 </argument>
                                 <argument>-P ${db}</argument>
                             </arguments>

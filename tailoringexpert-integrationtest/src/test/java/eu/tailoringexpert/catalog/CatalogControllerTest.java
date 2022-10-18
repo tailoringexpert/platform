@@ -23,6 +23,7 @@ package eu.tailoringexpert.catalog;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import eu.tailoringexpert.DBSetupRunner;
 import eu.tailoringexpert.LiquibaseRunner;
 import eu.tailoringexpert.SpringTestConfiguration;
 import eu.tailoringexpert.TenantContext;
@@ -59,6 +60,8 @@ import static org.springframework.http.HttpStatus.OK;
 class CatalogControllerTest {
 
     @Autowired
+    private DBSetupRunner dbSetupRunner;
+    @Autowired
     LiquibaseRunner liquibase;
 
     @Autowired
@@ -72,8 +75,10 @@ class CatalogControllerTest {
         log.debug("setup started");
 
         TenantContext.setCurrentTenant("plattform");
+
+        // not using dbrunner because it also import a basecatalog
         liquibase.dropAll();
-        liquibase.runChangelog("db-tailoringexpert-plattform-install.xml", "db-tailoringexpert-plattform-update.xml");
+        liquibase.runChangelog("db-tailoringexpert-plattform.changelog-root.xml");
 
         RequestContextHolder.setRequestAttributes(
             new ServletRequestAttributes(new MockHttpServletRequest())

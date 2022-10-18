@@ -54,8 +54,10 @@ public class CatalogServiceImpl implements CatalogService {
      */
     @Override
     public boolean doImport(@NonNull Catalog<BaseRequirement> catalog) {
-        final ZonedDateTime jetzt = ZonedDateTime.now();
-        return repository.createCatalog(catalog, jetzt).isPresent();
+        final ZonedDateTime now = ZonedDateTime.now();
+        Optional<Catalog<BaseRequirement>> result = repository.createCatalog(catalog, now);
+        log.info("Catalog version {} {} imported",catalog.getVersion(), result.isPresent() ? " sucessful" : " not");
+        return result.isPresent();
     }
 
     /**
@@ -71,8 +73,7 @@ public class CatalogServiceImpl implements CatalogService {
      */
     @Override
     public Optional<File> createCatalog(String version) {
-        @SuppressWarnings("PMD.PrematureDeclaration")
-        final LocalDateTime creationTimestamp = LocalDateTime.now();
+        @SuppressWarnings("PMD.PrematureDeclaration") final LocalDateTime creationTimestamp = LocalDateTime.now();
         log.info("STARTED | trying to create output document of catalogue version {}", version);
 
         Optional<Catalog<BaseRequirement>> catalog = repository.getCatalog(version);
