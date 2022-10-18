@@ -56,7 +56,7 @@ class LogoRepositoryTest {
         log.debug("setup started");
 
         liquibase.dropAll();
-        liquibase.runChangelog("db-tailoringexpert-root.xml");
+        liquibase.runChangelog("db-tailoringexpert.changelog-root.xml");
 
         log.debug("setup completed");
     }

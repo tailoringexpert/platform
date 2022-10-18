@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+         http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
+
+    <changeSet id="3" author="tailoringexpert">
+        <createTable tableName="BASEREQUIREMENT">
+            <column name="REQUIREMENT_ID" type="BIGINT">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+
+            <column name="TEXT" type="CLOB"/>
+            <column name="POSITION" type="VARCHAR(2)"/>
+            <column name="REFERENCE" type="VARCHAR(256)"/>
+            <column name="REFERENCE_CHANGED"  type="BOOLEAN"/>
+            <column name="REFERENCELOGO_ID"  type="BIGINT"/>
+            <column name="REQUIREMENT_ORDER" type="BIGINT"/>
+            <column name="CHAPTER_ID" type="BIGINT"/>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="4" author="tailoringexpert">
+        <addForeignKeyConstraint constraintName="FK_BASEREQUIREMENT_CHAPTER"
+                                 baseTableName="BASEREQUIREMENT" baseColumnNames="CHAPTER_ID"
+                                 referencedTableName="BASECATALOGCHAPTER"
+                                 referencedColumnNames="CHAPTER_ID"/>
+    </changeSet>
+
+    <changeSet id="5" author="tailoringexpert">
+        <addForeignKeyConstraint constraintName="FK_LOGO"
+                                 baseTableName="BASEREQUIREMENT" baseColumnNames="REFERENCELOGO_ID"
+                                 referencedTableName="LOGO"
+                                 referencedColumnNames="LOGO_ID"/>
+    </changeSet>
+
+</databaseChangeLog>
