@@ -269,19 +269,19 @@ Folgende Rels sind für die HATEOAS Links im jeweiligen Kontext definiert:
 | Die Resource im aktuellen Kontext
 
 | screeningsheet
-| Projekt und/oder Tailoring Screeningsheet
+| Projekt bzw. Tailoring Screeningsheet
 
 | selectionvector
-| Projekt und/oder Tailoing Selektionsvektor
+| Projekt und/oder Tailoring Selektionsvektor
 
 | tailoring
 | Projekttailoring
 
 | catalog
-| Tailoringkatalog
+| Abhängig vom Kontext der Basis- bzw. Tailoringkatalog
 
 | pdf
-| Gesamtkatalog als PDF
+| Der Tailoringkatalog als PDF
 
 | json
 | Gesamtkatalog als JSON
@@ -293,35 +293,85 @@ Folgende Rels sind für die HATEOAS Links im jeweiligen Kontext definiert:
 | Printversion des Gesamtkatalogs
 
 | signature
-|
+| Unterschriftendaten für ein Dokument
 
 | chapter
-|
+| Ein Kapitel des Katalogs
 
 | text
-|
+| Text einer Anforderung
 
 | selected
-|
+| Status der Selektion einer Anforderung
 
 | document
 |
 
 | compare
-|
+| Vergleich zwischen automatisiertem und manuellen Tailoring
 
 | name
-|
+| Name des Tailoring
 
 | import
-|
+| Import einer Excel Anforderungsdatei
 
 | attachment
-|
+| Dateien als Anhang zu einem Tailoring
 
 |===
 
 Alle im Kontext einer Resource möglichen Links werden als URLs in den Serverantwortern unter _links_ zur Verfügung gestellt.
+
+
+|===
+
+| Beschreibung| Einzeln | Liste
+
+| Versionsinformationen eines Baiskatalogs
+| baseCatalogVersion
+| baseCatalogVersions
+
+| Signatur für ein Dokument
+| signature
+| signatures
+
+| Dateianhang zum Tailoring
+| file
+| files
+
+| Notiz zum Tailoring
+| note
+| notes
+
+| Projekt mit zugehörigen Tailorings
+| project
+| projects
+
+| Parameter eines Screeningsheets
+| screeningSheetParameter
+| screeningSheetParameters
+
+| Screeningsheet eines Tailorings
+| screeningSheet
+| screeningSheets
+
+| Vordefinierter Wert eines Selektionsvektors
+| selectionVectorProfile
+| selectionVectorProfiles
+
+| Kapitel eines Tailoring(katalogs)
+| tailoringCatalogChapter
+| tailoringCatalogChapters
+
+| Anforderung eines Tailoring(katalogs)
+| tailoringRequirment
+| tailoringRequirments
+
+| Tailoring
+| tailoring
+| tailorings
+|===
 
 === Ebene 3
 
