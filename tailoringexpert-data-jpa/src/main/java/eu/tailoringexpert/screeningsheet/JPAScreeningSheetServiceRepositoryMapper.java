@@ -34,6 +34,7 @@ import org.mapstruct.MappingTarget;
 
 import static eu.tailoringexpert.domain.DatenType.MATRIX;
 import static eu.tailoringexpert.domain.DatenType.SKALAR;
+import static eu.tailoringexpert.domain.DatenType.STRING;
 import static java.lang.Integer.valueOf;
 
 /**
@@ -63,6 +64,8 @@ public abstract class JPAScreeningSheetServiceRepositoryMapper {
             domain.value(valueOf(entity.getValue()));
         } else if (MATRIX == entity.getParameterType()) {
             domain.value(mapper.readValue(entity.getValue(), double[][].class));
+        } else if(STRING == entity.getParameterType()) {
+            domain.value(entity.getValue());
         }
     }
 }

@@ -22,7 +22,6 @@
 package eu.tailoringexpert;
 
 import com.ulisesbocchio.jasyptspringboot.annotation.EnableEncryptableProperties;
-import com.ulisesbocchio.jasyptspringboot.annotation.EncryptablePropertySource;
 import lombok.NonNull;
 import lombok.extern.log4j.Log4j2;
 import org.jasypt.encryption.StringEncryptor;
