@@ -21,7 +21,6 @@
  */
 package eu.tailoringexpert.repository;
 
-import eu.tailoringexpert.domain.ProjectEntity;
 import eu.tailoringexpert.domain.SelectionVectorProfileEntity;
 import lombok.extern.log4j.Log4j2;
 import org.junit.jupiter.api.BeforeEach;
@@ -44,7 +43,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 @TestPropertySource("classpath:h2.properties")
 @EnableTransactionManagement
 @DirtiesContext
-public class SelectionVectorProfileRepositoryTest {
+class SelectionVectorProfileRepositoryTest {
 
     @Autowired
     LiquibaseRunner liquibase;
