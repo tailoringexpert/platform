@@ -8,12 +8,12 @@
  * it under the terms of the GNU General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/gpl-3.0.html>.
@@ -25,6 +25,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import eu.tailoringexpert.Tenant;
 import eu.tailoringexpert.domain.ResourceMapper;
 import eu.tailoringexpert.repository.ParameterRepository;
+import eu.tailoringexpert.repository.SelectionVectorProfileRepository;
 import lombok.NonNull;
 import org.springframework.beans.factory.ListableBeanFactory;
 import org.springframework.context.annotation.Bean;
@@ -86,6 +87,18 @@ public class ScreeningSheetConfiguration {
         @NonNull ResourceMapper mapper,
         @NonNull ScreeningSheetService screeningSheetService) {
         return new ScreeningSheetController(mapper, screeningSheetService);
+    }
+
+    @Bean
+    JPASelectionVectorProviderRepositoryMapper selectionVectorProviderRepositoryMapper() {
+        return new JPASelectionVectorProviderRepositoryMapperImpl();
+    }
+
+    @Bean
+    SelectionVectorProviderRepository selectionVectorProviderRepository(
+        @NonNull SelectionVectorProfileRepository selectionVectorProfileRepository,
+        @NonNull JPASelectionVectorProviderRepositoryMapper mapper) {
+        return new JPASelectionVectorProviderRepository(mapper, selectionVectorProfileRepository);
     }
 
     private <T> Map<String, T> getTenantImplementierungen(ListableBeanFactory beanFactory, Class<T> clz) {

@@ -102,4 +102,21 @@ class JPAScreeningSheetServiceRepositoryMapperTest {
         assertThat(actual).isInstanceOf(JsonMappingException.class);
     }
 
+    @Test
+    void toDomain_StringParameter_StringValueReturned() {
+        ParameterEntity entity = ParameterEntity.builder()
+            .category("Einsatzort")
+            .name("LEO")
+            .parameterType(DatenType.STRING)
+            .value("I'm a happy String")
+            .build();
+
+        // act
+        Parameter actual = mapper.toDomain(entity);
+
+        // assert
+        assertThat(actual.getValue()).isInstanceOf(String.class);
+        assertThat((String) actual.getValue()).isEqualTo("I'm a happy String");
+    }
+
 }

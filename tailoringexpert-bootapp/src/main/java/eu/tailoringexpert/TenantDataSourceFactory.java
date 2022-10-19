@@ -25,7 +25,6 @@ import lombok.NoArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.jasypt.encryption.StringEncryptor;
 import org.jasypt.properties.EncryptableProperties;
-import org.jasypt.properties.PropertyValueEncryptionUtils;
 import org.springframework.jdbc.datasource.DriverManagerDataSource;
 
 import javax.sql.DataSource;
@@ -70,7 +69,7 @@ public class TenantDataSourceFactory {
                     try {
                         final Properties tenantProperties = loadProperties(propertyFile, encryptor);
                         final String tenantId = tenantProperties.getProperty("name");
-                        final DataSource tenantDataSource = buildDataSource(tenantProperties, encryptor);
+                        final DataSource tenantDataSource = buildDataSource(tenantProperties);
                         resolvedDataSources.put(tenantId, tenantDataSource);
                         TenantContext.registerTenant(tenantId);
                     } catch (final IOException e) {
@@ -95,7 +94,7 @@ public class TenantDataSourceFactory {
         return result;
     }
 
-    private static DataSource buildDataSource(final Properties properties, final StringEncryptor encryptor) {
+    private static DataSource buildDataSource(final Properties properties) {
         final DriverManagerDataSource result = new DriverManagerDataSource();
         result.setDriverClassName(properties.getProperty("spring.datasource.driver-class-name"));
         result.setUrl(properties.getProperty("spring.datasource.url"));

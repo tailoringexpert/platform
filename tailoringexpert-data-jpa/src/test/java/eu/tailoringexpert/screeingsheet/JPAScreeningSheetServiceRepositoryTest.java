@@ -24,6 +24,7 @@ package eu.tailoringexpert.screeingsheet;
 import eu.tailoringexpert.domain.Parameter;
 import eu.tailoringexpert.domain.ParameterEntity;
 import eu.tailoringexpert.repository.ParameterRepository;
+import eu.tailoringexpert.repository.SelectionVectorProfileRepository;
 import eu.tailoringexpert.screeningsheet.JPAScreeningSheetServiceRepository;
 import eu.tailoringexpert.screeningsheet.JPAScreeningSheetServiceRepositoryMapper;
 import org.junit.jupiter.api.BeforeEach;
@@ -42,9 +43,10 @@ import static org.mockito.Mockito.verify;
 
 class JPAScreeningSheetServiceRepositoryTest {
 
-    private JPAScreeningSheetServiceRepositoryMapper mapperMock;
-    private ParameterRepository parameterRepositoryMock;
-    private JPAScreeningSheetServiceRepository repository;
+    JPAScreeningSheetServiceRepositoryMapper mapperMock;
+    ParameterRepository parameterRepositoryMock;
+    SelectionVectorProfileRepository selectionVectorProfileRepositoryMock;
+    JPAScreeningSheetServiceRepository repository;
 
     @BeforeEach
     void setup() {
@@ -74,6 +76,6 @@ class JPAScreeningSheetServiceRepositoryTest {
 
         // assert
         assertThat(actual).hasSize(3);
-        verify(mapperMock, times(3)).toDomain(any());
+        verify(mapperMock, times(3)).toDomain(any(ParameterEntity.class));
     }
 }
