@@ -74,7 +74,7 @@ class CatalogControllerTest {
 
         // not using dbrunner because it also import a basecatalog
         liquibase.dropAll();
-        liquibase.runChangelog("db-tailoringexpert-plattform.changelog-root.xml");
+        liquibase.runChangelog("db-tailoringexpert-plattform/tailoringexpert-plattform.changelog-root.xml");
 
         RequestContextHolder.setRequestAttributes(
             new ServletRequestAttributes(new MockHttpServletRequest())

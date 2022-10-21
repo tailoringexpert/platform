@@ -64,7 +64,7 @@ class ProjectRepositoryTest {
         log.debug("setup started");
 
         liquibase.dropAll();
-        liquibase.runChangelog("db-tailoringexpert.changelog-root.xml");
+        liquibase.runChangelog("db-tailoringexpert/tailoringexpert.changelog-root.xml");
 
         log.debug("setup completed");
     }

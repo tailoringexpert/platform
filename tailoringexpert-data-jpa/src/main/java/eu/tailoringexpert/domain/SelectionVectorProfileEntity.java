@@ -8,12 +8,12 @@
  * it under the terms of the GNU General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/gpl-3.0.html>.
@@ -30,6 +30,7 @@ import javax.persistence.CollectionTable;
 import javax.persistence.Column;
 import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
@@ -39,6 +40,7 @@ import javax.persistence.TableGenerator;
 import java.io.Serializable;
 import java.util.Map;
 
+import static javax.persistence.FetchType.EAGER;
 import static javax.persistence.GenerationType.TABLE;
 
 @Data
@@ -74,10 +76,10 @@ public class SelectionVectorProfileEntity implements Serializable {
     /**
      * Mapping between types and levels.
      */
-    @ElementCollection
     @MapKeyColumn(name = "TYPE")
     @Column(name = "LEVEL")
     @CollectionTable(name = "SELECTIONVECTORPROFILEPARAMETER", joinColumns = @JoinColumn(name = "SELECTIONVECTORPROFILE_ID"))
+    @ElementCollection(fetch = EAGER)
     private Map<String, Integer> levels;
 }
 

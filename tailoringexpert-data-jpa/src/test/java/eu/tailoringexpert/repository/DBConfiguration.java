@@ -71,13 +71,8 @@ public class DBConfiguration {
 
 
     @Bean
-    JpaVendorAdapter jpaAdapter(
-        @Value("${spring.jpa.generate-ddl}") boolean generateDdl,
-        @Value("${spring.jpa.show-sql}") boolean showSql) {
-        HibernateJpaVendorAdapter result = new HibernateJpaVendorAdapter();
-        result.setGenerateDdl(generateDdl);
-        result.setShowSql(showSql);
-        return result;
+    JpaVendorAdapter jpaAdapter() {
+        return  new HibernateJpaVendorAdapter();
     }
 
     @Bean
