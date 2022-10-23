@@ -24,12 +24,9 @@ package eu.tailoringexpert.repository;
 import eu.tailoringexpert.domain.ProjectEntity;
 import eu.tailoringexpert.domain.TailoringEntity;
 import lombok.extern.log4j.Log4j2;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
-import org.springframework.test.annotation.DirtiesContext;
-import org.springframework.test.context.TestPropertySource;
+import org.springframework.test.annotation.Rollback;
 import org.springframework.test.context.junit.jupiter.SpringJUnitConfig;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 import org.springframework.transaction.annotation.Transactional;
@@ -44,30 +41,16 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 @Log4j2
 @SpringJUnitConfig(classes = {DBConfiguration.class})
-@EnableJpaRepositories
-@TestPropertySource("classpath:h2.properties")
 @EnableTransactionManagement
-@DirtiesContext
+@Transactional
+@Rollback
 class ProjectRepositoryTest {
-
-    @Autowired
-    LiquibaseRunner liquibase;
 
     @Autowired
     BaseCatalogRepository baseCatalogRepository;
 
     @Autowired
     ProjectRepository repository;
-
-    @BeforeEach
-    void setup() {
-        log.debug("setup started");
-
-        liquibase.dropAll();
-        liquibase.runChangelog("db-tailoringexpert/tailoringexpert.changelog-root.xml");
-
-        log.debug("setup completed");
-    }
 
     @Test
     void save_ProjectEntityValid_ProjectSaved() throws IOException {
@@ -94,7 +77,6 @@ class ProjectRepositoryTest {
     }
 
     @Test
-    @Transactional
     void findByIdentifier_ProjectExists_ProjectReturned() throws IOException {
         // arrange
         repository.save(ProjectEntity.builder().identifier("SAMPLE").build());
@@ -109,7 +91,6 @@ class ProjectRepositoryTest {
     }
 
     @Test
-    @Transactional
     void findTailoringe_2TailoringExists_RequestedTailoringReturned() throws IOException {
         // arrange
         ProjectEntity project = ProjectEntity.builder()
@@ -133,7 +114,6 @@ class ProjectRepositoryTest {
     }
 
     @Test
-    @Transactional
     void deleteByIdentifier_ProjectExists_ProjectDeleted() throws IOException {
         // arrange
         repository.save(ProjectEntity.builder().identifier("SAMPLE").build());

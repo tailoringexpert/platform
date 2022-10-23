@@ -33,9 +33,14 @@ import lombok.extern.log4j.Log4j2;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.liquibase.LiquibaseAutoConfiguration;
+import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.test.annotation.DirtiesContext;
+import org.springframework.test.annotation.Rollback;
 import org.springframework.test.context.junit.jupiter.SpringJUnitConfig;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
 
 import java.io.IOException;
 import java.util.function.BiConsumer;
@@ -43,8 +48,9 @@ import java.util.function.BiConsumer;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @Log4j2
-@SpringJUnitConfig(classes = {SpringTestConfiguration.class})
+@SpringJUnitConfig(classes = {SpringTestConfiguration.class, LiquibaseAutoConfiguration.class})
 @EnableTransactionManagement
+@Rollback
 class Catalog2JsonTest {
 
     @Autowired
@@ -63,13 +69,14 @@ class Catalog2JsonTest {
         log.debug("setup started");
 
         TenantContext.setCurrentTenant("plattform");
-        dbSetupRunner.run();
+        RequestContextHolder.setRequestAttributes(
+            new ServletRequestAttributes(new MockHttpServletRequest())
+        );
 
         log.debug("setup completed");
     }
 
     @Test
-    @DirtiesContext
     void catalog2Json() throws IOException {
         // arrange
 

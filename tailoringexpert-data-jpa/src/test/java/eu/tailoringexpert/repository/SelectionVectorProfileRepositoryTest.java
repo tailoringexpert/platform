@@ -23,12 +23,9 @@ package eu.tailoringexpert.repository;
 
 import eu.tailoringexpert.domain.SelectionVectorProfileEntity;
 import lombok.extern.log4j.Log4j2;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
-import org.springframework.test.annotation.DirtiesContext;
-import org.springframework.test.context.TestPropertySource;
+import org.springframework.test.annotation.Rollback;
 import org.springframework.test.context.junit.jupiter.SpringJUnitConfig;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 import org.springframework.transaction.annotation.Transactional;
@@ -39,30 +36,15 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 @Log4j2
 @SpringJUnitConfig(classes = {DBConfiguration.class})
-@EnableJpaRepositories
-@TestPropertySource("classpath:h2.properties")
 @EnableTransactionManagement
-@DirtiesContext
+@Transactional
+@Rollback
 class SelectionVectorProfileRepositoryTest {
-
-    @Autowired
-    LiquibaseRunner liquibase;
 
     @Autowired
     SelectionVectorProfileRepository repository;
 
-    @BeforeEach
-    void setup() {
-        log.debug("setup started");
-
-        liquibase.dropAll();
-        liquibase.runChangelog("db-tailoringexpert/tailoringexpert.changelog-root.xml");
-
-        log.debug("setup completed");
-    }
-
     @Test
-    @Transactional
     void findByInternalKey_InternalKeyExists_SelectionVectorProfileReturned() throws IOException {
         // arrange
         repository.save(SelectionVectorProfileEntity.builder().name("Profile1").internalKey("PROFILE1").build());

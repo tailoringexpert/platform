@@ -36,6 +36,7 @@ import org.springframework.context.annotation.Import;
 import org.springframework.context.annotation.Primary;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
+import org.springframework.test.annotation.DirtiesContext;
 
 import javax.sql.DataSource;
 import java.io.File;
@@ -49,6 +50,7 @@ import static java.util.Map.entry;
     "classpath:application-dev.properties"
 })
 @EnableJpaRepositories("eu.tailoringexpert.repository")
+@DirtiesContext
 @EnableCaching
 @Import({
     App.class
@@ -56,6 +58,10 @@ import static java.util.Map.entry;
 
 @Log4j2
 public class SpringTestConfiguration {
+
+    static {
+        System.setProperty("liquibase.secureParsing", "false");
+    }
 
     @Bean
     @Primary
