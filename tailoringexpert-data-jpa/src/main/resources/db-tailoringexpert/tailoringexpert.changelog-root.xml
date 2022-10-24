@@ -4,7 +4,7 @@
                    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
          http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
 
-    <include file="db-tailoringexpert/0.0.1/db-tailoringexpert.changelog-0.0.1.xml"/>
-    <include file="db-tailoringexpert/0.0.2/db-tailoringexpert.changelog-0.0.2.xml"/>
+    <include file="db-tailoringexpert/0.0.1/tailoringexpert.changelog-0.0.1.xml"/>
+    <include file="db-tailoringexpert/0.0.2/tailoringexpert.changelog-0.0.2.xml"/>
 
 </databaseChangeLog>
