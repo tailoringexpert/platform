@@ -21,7 +21,7 @@
  */
 package eu.tailoringexpert.requirement;
 
-import eu.tailoringexpert.DBSetupRunner;
+import eu.tailoringexpert.BaseCatalogImport;
 import eu.tailoringexpert.ProjectCreator;
 import eu.tailoringexpert.SpringTestConfiguration;
 import eu.tailoringexpert.TenantContext;
@@ -37,7 +37,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.junit.jupiter.SpringJUnitConfig;
-import org.springframework.transaction.annotation.EnableTransactionManagement;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
@@ -50,14 +49,15 @@ import static java.util.stream.Stream.of;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.http.HttpStatus.CREATED;
 import static org.springframework.http.HttpStatus.OK;
+import static org.springframework.test.annotation.DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD;
 
 @Log4j2
 @SpringJUnitConfig(classes = {SpringTestConfiguration.class})
-@EnableTransactionManagement
+@DirtiesContext(classMode = AFTER_EACH_TEST_METHOD)
 class RequirementControllerTest {
 
     @Autowired
-    private DBSetupRunner dbSetupRunner;
+    BaseCatalogImport baseCatalog;
 
     @Autowired
     private ProjectCreator projektCreator;
@@ -65,23 +65,20 @@ class RequirementControllerTest {
     @Autowired
     private RequirementController controller;
 
-
     @BeforeEach
     void setup() throws Exception {
         log.debug("setup started");
 
         TenantContext.setCurrentTenant("plattform");
-        dbSetupRunner.run();
-
         RequestContextHolder.setRequestAttributes(
             new ServletRequestAttributes(new MockHttpServletRequest())
         );
+        baseCatalog.get();
 
         log.debug("setup completed");
     }
 
     @Test
-    @DirtiesContext
     void updateChapterRequirementsState_ValidChapter_AllRequirementsDeselected() throws IOException {
         // arrange
         CreateProjectTO createdProject = projektCreator.get();
@@ -104,7 +101,6 @@ class RequirementControllerTest {
     }
 
     @Test
-    @DirtiesContext
     void updateChapterRequirementsState_RequirementSelected_RequirementChangedToDeselected() throws IOException {
         // arrange
         CreateProjectTO createdProject = projektCreator.get();
@@ -127,7 +123,6 @@ class RequirementControllerTest {
 
 
     @Test
-    @DirtiesContext
     void updateRequirementText_NewTextGiven_RequirementTextUpdated() throws IOException {
         // arrange
         CreateProjectTO createdProject = projektCreator.get();
@@ -148,7 +143,6 @@ class RequirementControllerTest {
     }
 
     @Test
-    @DirtiesContext
     void createRequirement_PredecessorRequirementA_NewRequirementA1CreatedAndAdded() throws IOException {
         // arrange
         CreateProjectTO createdProject = projektCreator.get();

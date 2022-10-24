@@ -23,7 +23,6 @@ package eu.tailoringexpert.catalog;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import eu.tailoringexpert.LiquibaseRunner;
 import eu.tailoringexpert.SpringTestConfiguration;
 import eu.tailoringexpert.TenantContext;
 import eu.tailoringexpert.domain.BaseCatalogVersionResource;
@@ -33,16 +32,12 @@ import lombok.extern.log4j.Log4j2;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.autoconfigure.liquibase.LiquibaseAutoConfiguration;
 import org.springframework.hateoas.CollectionModel;
 import org.springframework.hateoas.EntityModel;
 import org.springframework.http.ResponseEntity;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.test.annotation.DirtiesContext;
-import org.springframework.test.annotation.Rollback;
 import org.springframework.test.context.junit.jupiter.SpringJUnitConfig;
-import org.springframework.transaction.annotation.EnableTransactionManagement;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
@@ -55,15 +50,12 @@ import static java.util.Objects.nonNull;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.http.HttpStatus.CREATED;
 import static org.springframework.http.HttpStatus.OK;
+import static org.springframework.test.annotation.DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD;
 
 @Log4j2
-@SpringJUnitConfig(classes = {SpringTestConfiguration.class, LiquibaseAutoConfiguration.class})
-//@EnableTransactionManagement
-@Transactional
-@Rollback
+@SpringJUnitConfig(classes = {SpringTestConfiguration.class})
+@DirtiesContext(classMode = AFTER_EACH_TEST_METHOD)
 class CatalogControllerTest {
-    @Autowired
-    LiquibaseRunner liquibase;
 
     @Autowired
     private ObjectMapper objectMapper;

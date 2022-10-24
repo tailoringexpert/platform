@@ -21,24 +21,18 @@
  */
 package eu.tailoringexpert.repository;
 
-import lombok.NonNull;
 import org.springframework.boot.autoconfigure.domain.EntityScan;
 import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration;
 import org.springframework.boot.autoconfigure.liquibase.LiquibaseAutoConfiguration;
 import org.springframework.boot.autoconfigure.orm.jpa.HibernateJpaAutoConfiguration;
-import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
-import org.springframework.test.context.TestPropertySource;
-
-import javax.sql.DataSource;
 
 @Configuration
 @Import({LiquibaseAutoConfiguration.class, DataSourceAutoConfiguration.class, HibernateJpaAutoConfiguration.class})
 @PropertySource("classpath:h2.properties")
-@TestPropertySource("classpath:h2.properties")
 @EnableJpaRepositories("eu.tailoringexpert.repository")
 @EntityScan("eu.tailoringexpert.domain")
 public class DBConfiguration {
