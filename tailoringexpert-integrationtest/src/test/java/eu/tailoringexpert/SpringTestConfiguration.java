@@ -29,15 +29,16 @@ import io.github.cdimascio.dotenv.Dotenv;
 import lombok.NonNull;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.autoconfigure.liquibase.LiquibaseAutoConfiguration;
 import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 import org.springframework.context.annotation.Primary;
 import org.springframework.context.annotation.PropertySource;
-import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
+import org.springframework.test.annotation.Rollback;
+import org.springframework.transaction.annotation.EnableTransactionManagement;
 
-import javax.sql.DataSource;
 import java.io.File;
 import java.util.Map;
 
@@ -48,14 +49,19 @@ import static java.util.Map.entry;
     "classpath:application.properties",
     "classpath:application-dev.properties"
 })
-@EnableJpaRepositories("eu.tailoringexpert.repository")
 @EnableCaching
 @Import({
-    App.class
+    App.class,
+    LiquibaseAutoConfiguration.class
 })
-
+@EnableTransactionManagement
+@Rollback
 @Log4j2
 public class SpringTestConfiguration {
+
+    static {
+        System.setProperty("liquibase.secureParsing", "false");
+    }
 
     @Bean
     @Primary
@@ -68,22 +74,16 @@ public class SpringTestConfiguration {
     }
 
     @Bean
-    ProjectCreator projektCreator(@NonNull ProjectService projectService,
+    ProjectCreator projectCreator(@NonNull ProjectService projectService,
                                   @NonNull ScreeningSheetService screeningSheetService) {
         return new ProjectCreator(projectService, screeningSheetService);
     }
 
     @Bean
-    LiquibaseRunner liquibaseRunner(@NonNull DataSource dataSource) {
-        return new LiquibaseRunner(dataSource);
-    }
-
-    @Bean
-    DBSetupRunner dbSetup(
-        @NonNull LiquibaseRunner liquibaseRunner,
+    BaseCatalogImport baseCatalogImport(
         @NonNull ObjectMapper objectMapper,
         @NonNull CatalogService catalogService) {
-        return new DBSetupRunner(liquibaseRunner, objectMapper, catalogService);
+        return new BaseCatalogImport(objectMapper, catalogService);
     }
 
     @Bean

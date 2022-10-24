@@ -23,7 +23,6 @@ package eu.tailoringexpert.catalog;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import eu.tailoringexpert.LiquibaseRunner;
 import eu.tailoringexpert.SpringTestConfiguration;
 import eu.tailoringexpert.TenantContext;
 import eu.tailoringexpert.domain.BaseCatalogVersionResource;
@@ -39,7 +38,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.junit.jupiter.SpringJUnitConfig;
-import org.springframework.transaction.annotation.EnableTransactionManagement;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
@@ -52,13 +50,12 @@ import static java.util.Objects.nonNull;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.http.HttpStatus.CREATED;
 import static org.springframework.http.HttpStatus.OK;
+import static org.springframework.test.annotation.DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD;
 
 @Log4j2
 @SpringJUnitConfig(classes = {SpringTestConfiguration.class})
-@EnableTransactionManagement
+@DirtiesContext(classMode = AFTER_EACH_TEST_METHOD)
 class CatalogControllerTest {
-    @Autowired
-    LiquibaseRunner liquibase;
 
     @Autowired
     private ObjectMapper objectMapper;
@@ -71,11 +68,6 @@ class CatalogControllerTest {
         log.debug("setup started");
 
         TenantContext.setCurrentTenant("plattform");
-
-        // not using dbrunner because it also import a basecatalog
-        liquibase.dropAll();
-        liquibase.runChangelog("db-tailoringexpert-plattform.changelog-root.xml");
-
         RequestContextHolder.setRequestAttributes(
             new ServletRequestAttributes(new MockHttpServletRequest())
         );
@@ -84,7 +76,6 @@ class CatalogControllerTest {
     }
 
     @Test
-    @DirtiesContext
     void importCatalog_NewVersion_CatalogImported() throws IOException {
         // arrange
         Catalog<BaseRequirement> catalog;
@@ -105,7 +96,6 @@ class CatalogControllerTest {
 
 
     @Test
-    @DirtiesContext
     void getCatalogs_CatalogsExists_CatalogListReturned() throws IOException {
         // arrange
         Catalog<BaseRequirement> catalog;

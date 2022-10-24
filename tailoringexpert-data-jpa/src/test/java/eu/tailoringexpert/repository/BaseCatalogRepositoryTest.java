@@ -27,12 +27,9 @@ import eu.tailoringexpert.domain.BaseCatalogVersion;
 import eu.tailoringexpert.domain.IdentifierEntity;
 import eu.tailoringexpert.domain.BaseCatalogChapterEntity;
 import lombok.extern.log4j.Log4j2;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
-import org.springframework.test.annotation.DirtiesContext;
-import org.springframework.test.context.TestPropertySource;
+import org.springframework.test.annotation.Rollback;
 import org.springframework.test.context.junit.jupiter.SpringJUnitConfig;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 import org.springframework.transaction.annotation.Transactional;
@@ -50,29 +47,15 @@ import static java.util.Set.of;
 import static java.util.stream.Collectors.toSet;
 import static org.assertj.core.api.Assertions.assertThat;
 
-
 @Log4j2
-@SpringJUnitConfig(classes = {DBConfiguration.class})
-@EnableJpaRepositories
-@TestPropertySource("classpath:h2.properties")
+@SpringJUnitConfig({DBConfiguration.class})
 @EnableTransactionManagement
-@DirtiesContext
+@Transactional
+@Rollback
 class BaseCatalogRepositoryTest {
-    @Autowired
-    LiquibaseRunner liquibase;
 
     @Autowired
     BaseCatalogRepository repository;
-
-    @BeforeEach
-    void setup() {
-        log.debug("setup started");
-
-        liquibase.dropAll();
-        liquibase.runChangelog("db-tailoringexpert.changelog-root.xml");
-
-        log.debug("setup completed");
-    }
 
     @Test
     void save_ValidBaseCatalog_BaseCatalogSaved() {
@@ -110,7 +93,6 @@ class BaseCatalogRepositoryTest {
     }
 
     @Test
-    @Transactional
     void findByVersion_BaseCatalogExists_BaseCatalogReturned() throws IOException {
         // arrange
         repository.save(BaseCatalogEntity.builder()
@@ -129,7 +111,6 @@ class BaseCatalogRepositoryTest {
     }
 
     @Test
-    @Transactional
     void findCatalogVersionBy_2BaseCatalogExists_ListWith2BaseCatalogsReturned() throws IOException {
         // arrange
         repository.save(BaseCatalogEntity.builder()
@@ -149,7 +130,6 @@ class BaseCatalogRepositoryTest {
     }
 
     @Test
-    @Transactional
     void setValidUntilForEmptyValidUntil_2ValidBaseCatalogExists_2BaseCatalogsEnded() {
         // arrange
         repository.save(BaseCatalogEntity.builder()
@@ -169,7 +149,6 @@ class BaseCatalogRepositoryTest {
     }
 
     @Test
-    @Transactional
     void setValidUntilForEmptyValidUntil_1ValidBaseCatalogExists_1BaseCatalogsEnded() {
         // arrange
         repository.save(BaseCatalogEntity.builder()
@@ -189,3 +168,4 @@ class BaseCatalogRepositoryTest {
         assertThat(actual).isEqualTo(1);
     }
 }
+

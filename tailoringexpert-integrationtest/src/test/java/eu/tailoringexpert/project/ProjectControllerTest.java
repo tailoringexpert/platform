@@ -21,7 +21,7 @@
  */
 package eu.tailoringexpert.project;
 
-import eu.tailoringexpert.DBSetupRunner;
+import eu.tailoringexpert.BaseCatalogImport;
 import eu.tailoringexpert.ProjectCreator;
 import eu.tailoringexpert.SpringTestConfiguration;
 import eu.tailoringexpert.TenantContext;
@@ -43,7 +43,6 @@ import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.junit.jupiter.SpringJUnitConfig;
-import org.springframework.transaction.annotation.EnableTransactionManagement;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
@@ -64,14 +63,15 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.http.HttpStatus.CREATED;
 import static org.springframework.http.HttpStatus.NOT_FOUND;
 import static org.springframework.http.HttpStatus.OK;
+import static org.springframework.test.annotation.DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD;
 
 @Log4j2
 @SpringJUnitConfig(classes = {SpringTestConfiguration.class})
-@EnableTransactionManagement
+@DirtiesContext(classMode = AFTER_EACH_TEST_METHOD)
 class ProjectControllerTest {
 
     @Autowired
-    private DBSetupRunner dbSetupRunner;
+    BaseCatalogImport baseCatalog;
 
     @Autowired
     private ProjectCreator projectCreator;
@@ -84,16 +84,15 @@ class ProjectControllerTest {
         log.debug("setup started");
 
         TenantContext.setCurrentTenant("plattform");
-        dbSetupRunner.run();
         RequestContextHolder.setRequestAttributes(
             new ServletRequestAttributes(new MockHttpServletRequest())
         );
+        baseCatalog.get();
 
         log.debug("setup completed");
     }
 
     @Test
-    @DirtiesContext
     void getProjects_ProjectsExists_ProjectListWitStateOKReturned() {
         // arrange
         projectCreator.get();
@@ -107,7 +106,6 @@ class ProjectControllerTest {
     }
 
     @Test
-    @DirtiesContext
     void createProject_ValidRequest_ProjectCreatedStateCreatedReturned() throws IOException {
         // arrange
         byte[] data;
@@ -146,7 +144,6 @@ class ProjectControllerTest {
     }
 
     @Test
-    @DirtiesContext
     void getProject_ProjectExists_ProjectWithStateOKReturned() throws IOException {
         // arrange
         CreateProjectTO createdProject = projectCreator.get();
@@ -160,7 +157,6 @@ class ProjectControllerTest {
     }
 
     @Test
-    @DirtiesContext
     void getScreeningSheet_ProjectScreeningSheetExists_ScreeningSheetValueWithoutRawDataReturned() throws IOException {
         // arrange
         CreateProjectTO createdProject = projectCreator.get();
@@ -179,7 +175,6 @@ class ProjectControllerTest {
     }
 
     @Test
-    @DirtiesContext
     void getScreeningSheetFile_ProjectScreeningSheetExists_FileRawDataWithStateOKReturned() throws IOException {
         // arrange
         CreateProjectTO createdProject = projectCreator.get();
@@ -201,7 +196,6 @@ class ProjectControllerTest {
     }
 
     @Test
-    @DirtiesContext
     void deleteProject_ProjectExists_ProjectDeletedStateNoContentReturned() throws IOException {
         // arrange
         CreateProjectTO createdProject = projectCreator.get();
@@ -216,7 +210,6 @@ class ProjectControllerTest {
     }
 
     @Test
-    @DirtiesContext
     void copyProject_ProjectToCopyExists_ProjectCopyiedStateCreatedReturned() throws IOException {
         // arrange
         CreateProjectTO createdProject = projectCreator.get();
@@ -240,7 +233,6 @@ class ProjectControllerTest {
     }
 
     @Test
-    @DirtiesContext
     void addNewTailoring_ProjectExists_TailoringCreatedAddedToProjectStateOKReturned() throws IOException {
         // arrange
         CreateProjectTO createdProject = projectCreator.get();
@@ -288,7 +280,6 @@ class ProjectControllerTest {
     }
 
     @Test
-    @DirtiesContext
     void getSelectionVector_ProjectExists_SelectionVectorStateOKReturned() throws IOException {
         // arrange
         CreateProjectTO createdProject = projectCreator.get();

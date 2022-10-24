@@ -22,7 +22,7 @@
 package eu.tailoringexpert.catalog;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import eu.tailoringexpert.DBSetupRunner;
+import eu.tailoringexpert.BaseCatalogImport;
 import eu.tailoringexpert.FileSaver;
 import eu.tailoringexpert.SpringTestConfiguration;
 import eu.tailoringexpert.TenantContext;
@@ -33,22 +33,25 @@ import lombok.extern.log4j.Log4j2;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.junit.jupiter.SpringJUnitConfig;
-import org.springframework.transaction.annotation.EnableTransactionManagement;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
 
 import java.io.IOException;
 import java.util.function.BiConsumer;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.springframework.test.annotation.DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD;
 
 @Log4j2
 @SpringJUnitConfig(classes = {SpringTestConfiguration.class})
-@EnableTransactionManagement
+@DirtiesContext(classMode = AFTER_EACH_TEST_METHOD)
 class Catalog2JsonTest {
 
     @Autowired
-    private DBSetupRunner dbSetupRunner;
+    BaseCatalogImport baseCatalog;
 
     @Autowired
     private ObjectMapper objectMapper;
@@ -63,13 +66,15 @@ class Catalog2JsonTest {
         log.debug("setup started");
 
         TenantContext.setCurrentTenant("plattform");
-        dbSetupRunner.run();
+        RequestContextHolder.setRequestAttributes(
+            new ServletRequestAttributes(new MockHttpServletRequest())
+        );
+        baseCatalog.get();
 
         log.debug("setup completed");
     }
 
     @Test
-    @DirtiesContext
     void catalog2Json() throws IOException {
         // arrange
 
