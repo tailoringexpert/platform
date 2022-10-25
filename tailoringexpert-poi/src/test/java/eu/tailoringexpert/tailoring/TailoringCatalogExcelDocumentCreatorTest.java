@@ -105,4 +105,16 @@ class TailoringCatalogExcelDocumentCreatorTest {
         fileSaver.accept("43.xlsx", actual.getData());
 
     }
+
+    @Test
+    void createDokument_TailoringCatalogNull_NullReturned() throws Exception {
+        // arrange
+
+        // act
+        File actual = creator.createDocument("4711", Tailoring.builder().build(), emptyMap());
+
+        // assert
+        assertThat(actual).isNull();
+    }
+
 }

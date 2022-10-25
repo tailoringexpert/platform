@@ -38,6 +38,7 @@ import org.springframework.context.annotation.Primary;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.test.annotation.Rollback;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.io.File;
 import java.util.Map;
@@ -55,6 +56,7 @@ import static java.util.Map.entry;
     LiquibaseAutoConfiguration.class
 })
 @EnableTransactionManagement
+@Transactional
 @Rollback
 @Log4j2
 public class SpringTestConfiguration {
