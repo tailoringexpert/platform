@@ -22,8 +22,11 @@
 package eu.tailoringexpert.tailoring;
 
 import lombok.extern.log4j.Log4j2;
+import org.apache.poi.ss.usermodel.WorkbookFactory;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.mockito.MockedStatic;
+import org.mockito.Mockito;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -34,6 +37,7 @@ import static java.nio.file.Files.newInputStream;
 import static java.nio.file.Paths.get;
 import static java.util.Objects.nonNull;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.ArgumentMatchers.any;
 
 @Log4j2
 class ImportRequirementExcelFileReaderTest {
@@ -76,5 +80,25 @@ class ImportRequirementExcelFileReaderTest {
         // assert
         actual.entrySet().forEach(entry -> entry.getValue().forEach(log::info));
         assertThat(actual).isNotEmpty();
+    }
+
+    @Test
+    void apply_WorkbookFactoryException_NullReturned() throws Exception {
+        // arrange
+        byte[] data;
+        try (InputStream is = newInputStream(get("src/test/resources/TailoringImport.xlsx"))) {
+            assert nonNull(is);
+            data = is.readAllBytes();
+        }
+
+        // act
+        Map<String, Collection<ImportRequirement>> actual;
+        try (MockedStatic<WorkbookFactory> wf = Mockito.mockStatic(WorkbookFactory.class)) {
+            wf.when(() -> WorkbookFactory.create(any(InputStream.class))).thenThrow(new IOException());
+            actual = excel.apply(data);
+        }
+
+        // assert
+        assertThat(actual).isNull();
     }
 }

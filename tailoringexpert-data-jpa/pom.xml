@@ -93,7 +93,7 @@
                         <configuration>
                             <arguments>
                                 <argument>liquibase:dropAll</argument>
-                                <argument>-Dliquibase.changeLogFile=db-tailoringexpert/tailoringexpert.changelog-root.xml</argument>
+                                <argument>-Dliquibase.changeLogFile=db-tailoringexpert/db.changelog-root.xml</argument>
                                 <argument>-P ${db}</argument>
                             </arguments>
                         </configuration>
@@ -106,7 +106,7 @@
                         <configuration>
                             <arguments>
                                 <argument>liquibase:update</argument>
-                                <argument>-Dliquibase.changeLogFile=db-tailoringexpert/tailoringexpert.changelog-root.xml</argument>
+                                <argument>-Dliquibase.changeLogFile=db-tailoringexpert/db.changelog-root.xml</argument>
                                 <argument>-P ${db}</argument>
                             </arguments>
                         </configuration>
