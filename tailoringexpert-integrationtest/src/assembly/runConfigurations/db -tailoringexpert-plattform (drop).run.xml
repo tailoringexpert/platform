@@ -1,5 +1,5 @@
 <component name="ProjectRunConfigurationManager">
-  <configuration default="false" name="db-tailoringexpert (install)" type="MavenRunConfiguration" factoryName="Maven">
+  <configuration default="false" name="db -tailoringexpert-plattform (drop)" type="MavenRunConfiguration" factoryName="Maven">
     <MavenSettings>
       <option name="myGeneralSettings">
         <MavenGeneralSettings>
@@ -30,18 +30,18 @@
             <list>
               <option value="-Ddependency-check-maven.phase=deploy" />
               <option value="-DskipTests" />
-              <option value="install" />
-              <option value="exec:exec@update" />
+              <option value="exec:exec@dropAll" />
+              <option value="-DskipTests" />
             </list>
           </option>
           <option name="pomFileName" />
           <option name="profilesMap">
             <map>
-              <entry key="tailoringexpert.local" value="true" />
+              <entry key="tailoringexpert-plattform.local" value="true" />
             </map>
           </option>
           <option name="resolveToWorkspace" value="false" />
-          <option name="workingDirPath" value="$PROJECT_DIR$/../../git/tailoringexpert/plattform/tailoringexpert-data-jpa" />
+          <option name="workingDirPath" value="$PROJECT_DIR$/../../git/tailoringexpert/plattform/tailoringexpert-integrationtest" />
         </MavenRunnerParameters>
       </option>
     </MavenSettings>

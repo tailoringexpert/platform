@@ -272,4 +272,25 @@ class ScreeningSheetServiceImplTest {
         assertThat(actual).isInstanceOf(TailoringexpertException.class);
         verify(repositoryMock, times(0)).getParameter(anyCollection());
     }
+
+    @Test
+    void createScreeningSheet_ScreeninSheetParameterProjectWithoutLabel_TailoringexpertExceptionThrown() throws Exception{
+        // arrange
+        List<ScreeningSheetParameterField> screeningSheetParameters = List.of(
+            ScreeningSheetParameterField.builder()
+                .category("Project")
+                .name(ScreeningSheet.PROJECT)
+                .label(null)
+                .build()
+
+        );
+        given(screeningDataProviderMock.parse(any())).willReturn(Collections.emptyList());
+
+        // act
+        Throwable actual = catchThrowable(() -> service.createScreeningSheet(new byte[0]));
+
+        // assert
+        assertThat(actual).isInstanceOf(TailoringexpertException.class);
+        verify(repositoryMock, times(0)).getParameter(anyCollection());
+    }
 }

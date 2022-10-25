@@ -29,12 +29,16 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
+import org.springframework.test.annotation.Rollback;
+import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 @Configuration
 @Import({LiquibaseAutoConfiguration.class, DataSourceAutoConfiguration.class, HibernateJpaAutoConfiguration.class})
 @PropertySource("classpath:h2.properties")
 @EnableJpaRepositories("eu.tailoringexpert.repository")
 @EntityScan("eu.tailoringexpert.domain")
+@EnableTransactionManagement
+@Rollback
 public class DBConfiguration {
 
     static {
