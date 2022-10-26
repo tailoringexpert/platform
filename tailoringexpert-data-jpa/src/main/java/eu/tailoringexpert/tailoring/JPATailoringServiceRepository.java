@@ -313,6 +313,14 @@ public class JPATailoringServiceRepository implements TailoringServiceRepository
     }
 
     /**
+     * {@inheritDoc}
+     */
+    @Override
+    public boolean existsTailoring(String project, String name) {
+        return projectRepository.existsTailoring(project, name);
+    }
+
+    /**
      * Loads project with provided project identifoer.
      *
      * @param project identifier of project to load
