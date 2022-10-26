@@ -97,8 +97,7 @@ public abstract class TailoringServiceMapper {
             .filter(identifier -> {
                 int level = selectionVector.getLevel(identifier.getType());
                 // prüfen, ob abwendbarkeit ohne einschränkung
-                if ((isNull(identifier.getLimitations()) || identifier.getLimitations().isEmpty()) &&
-                    level >= identifier.getLevel()) {
+                if ( !identifier.hasLimitations()  &&   level >= identifier.getLevel()) {
                     return true;
                 }
 
