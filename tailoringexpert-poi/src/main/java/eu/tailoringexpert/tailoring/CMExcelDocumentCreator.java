@@ -209,11 +209,9 @@ public class CMExcelDocumentCreator implements DocumentCreator {
      */
     private void addChapter(Chapter<TailoringRequirement> chapter, int level, Sheet sheet) {
         addRow(sheet, level, chapter.getNumber(), chapter.getName());
-        if (nonNull(chapter.getChapters())) {
-            AtomicInteger nextLevel = new AtomicInteger(level + 1);
-            chapter.getChapters()
-                .forEach(subChapter -> addChapter(subChapter, nextLevel.get(), sheet));
-        }
+        AtomicInteger nextLevel = new AtomicInteger(level + 1);
+        chapter.getChapters()
+            .forEach(subChapter -> addChapter(subChapter, nextLevel.get(), sheet));
     }
 
     /**

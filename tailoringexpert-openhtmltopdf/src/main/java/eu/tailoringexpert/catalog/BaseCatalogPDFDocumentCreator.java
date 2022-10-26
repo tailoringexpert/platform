@@ -36,6 +36,7 @@ import lombok.extern.log4j.Log4j2;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
@@ -129,10 +130,8 @@ public class BaseCatalogPDFDocumentCreator implements DocumentCreator {
         chapter.getRequirements()
             .forEach(requirement -> addRequirement(requirement, rows));
         final AtomicInteger nextLevel = new AtomicInteger(level + 1);
-        if (nonNull(chapter.getChapters())) {
-            chapter.getChapters()
-                .forEach(subChapter -> addChapter(subChapter, nextLevel.get(), rows));
-        }
+        chapter.getChapters()
+            .forEach(subChapter -> addChapter(subChapter, nextLevel.get(), rows));
     }
 
     /**
@@ -162,12 +161,12 @@ public class BaseCatalogPDFDocumentCreator implements DocumentCreator {
     private List<String> buildLimitations(Identifier identifier) {
         List<String> result = new ArrayList<>();
         if (identifier.getLevel() > 0) {
-            if (isNull(identifier.getLimitations()) || identifier.getLimitations().isEmpty()) {
+            if (!identifier.hasLimitations()) {
                 result.add(identifier.getType() + identifier.getLevel());
             } else {
                 identifier.getLimitations()
                     .stream()
-                    .map(limitierung -> identifier.getType() + identifier.getLevel() + "(" + limitierung + ")")
+                    .map(limitation -> identifier.getType() + identifier.getLevel() + "(" + limitation + ")")
                     .forEachOrdered(result::add);
             }
         }

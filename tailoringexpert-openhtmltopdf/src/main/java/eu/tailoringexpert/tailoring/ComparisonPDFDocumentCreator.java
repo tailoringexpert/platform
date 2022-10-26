@@ -89,10 +89,8 @@ public class ComparisonPDFDocumentCreator implements DocumentCreator {
             .build());
         chapter.getRequirements()
             .forEach(requirement -> addRequirement(requirement, rows));
-        if (nonNull(chapter.getChapters())) {
-            chapter.getChapters()
-                .forEach(subChapter -> addChapter(subChapter, rows));
-        }
+        chapter.getChapters()
+            .forEach(subChapter -> addChapter(subChapter, rows));
     }
 
     /**

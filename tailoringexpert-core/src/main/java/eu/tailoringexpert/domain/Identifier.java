@@ -28,6 +28,7 @@ import lombok.NoArgsConstructor;
 
 import java.io.Serializable;
 import java.util.Collection;
+import java.util.Objects;
 
 @Data
 @Builder
@@ -50,4 +51,8 @@ public class Identifier implements Serializable {
      * List of strings identicating that a requirement shall be selected, e.g SAT.
      */
     private Collection<String> limitations;
+
+    public boolean hasLimitations() {
+        return Objects.nonNull(limitations) && !limitations.isEmpty();
+    }
 }

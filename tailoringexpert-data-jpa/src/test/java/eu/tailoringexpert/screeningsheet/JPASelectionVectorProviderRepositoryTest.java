@@ -19,13 +19,11 @@
  * <http://www.gnu.org/licenses/gpl-3.0.html>.
  * #L%
  */
-package eu.tailoringexpert.screeingsheet;
+package eu.tailoringexpert.screeningsheet;
 
 import eu.tailoringexpert.domain.SelectionVectorProfile;
 import eu.tailoringexpert.domain.SelectionVectorProfileEntity;
 import eu.tailoringexpert.repository.SelectionVectorProfileRepository;
-import eu.tailoringexpert.screeningsheet.JPASelectionVectorProviderRepositoryMapper;
-import eu.tailoringexpert.screeningsheet.JPASelectionVectorProviderRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 

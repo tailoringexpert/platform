@@ -19,7 +19,7 @@
  * <http://www.gnu.org/licenses/gpl-3.0.html>.
  * #L%
  */
-package eu.tailoringexpert.screeingsheet;
+package eu.tailoringexpert.screeningsheet;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonMappingException;
@@ -27,8 +27,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import eu.tailoringexpert.domain.DatenType;
 import eu.tailoringexpert.domain.Parameter;
 import eu.tailoringexpert.domain.ParameterEntity;
-import eu.tailoringexpert.screeningsheet.JPAScreeningSheetServiceRepositoryMapper;
-import eu.tailoringexpert.screeningsheet.JPAScreeningSheetServiceRepositoryMapperImpl;
 import lombok.extern.log4j.Log4j2;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

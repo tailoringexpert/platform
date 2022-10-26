@@ -67,6 +67,7 @@ import static java.util.Arrays.asList;
 import static java.util.Objects.nonNull;
 import static java.util.Optional.empty;
 import static java.util.Optional.of;
+import static java.util.Optional.ofNullable;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.catchThrowable;
 import static org.mockito.ArgumentCaptor.forClass;
@@ -812,7 +813,7 @@ class TailoringServiceImplTest {
     }
 
     @Test
-    void createTailoring_ValidData_TailoringCreated() throws IOException {
+    void createTailoring_ValidDataNoteNull_TailoringCreated() throws IOException {
         // arrange
         byte[] data;
         try (InputStream is = newInputStream(get("src/test/resources/screeningsheet.pdf"))) {
@@ -850,6 +851,59 @@ class TailoringServiceImplTest {
 
         // act
         Tailoring actual = service.createTailoring("master1", "1000", screeningSheet, anzuwendenderSelectionVector, null, catalog);
+
+        // assert
+        assertThat(actual.getName()).isEqualTo("master1");
+        assertThat(actual.getScreeningSheet()).isEqualTo(screeningSheet);
+        assertThat(actual.getSelectionVector()).isEqualTo(anzuwendenderSelectionVector);
+        assertThat(actual.getCatalog()).isNotNull();
+        assertThat(actual.getSignatures()).isEqualTo(defaultZeichnungen);
+        assertThat(actual.getState()).isEqualTo(ACTIVE);
+        assertThat(actual.getPhases()).containsOnly(E, F);
+
+        verify(mapperMock, times(1)).toTailoringCatalog(catalog, screeningSheet, anzuwendenderSelectionVector);
+        verify(repositoryMock, times(1)).getDefaultSignatures();
+    }
+
+    @Test
+    void createTailoring_ValidDataNoteNotNull_TailoringCreated() throws IOException {
+        // arrange
+        byte[] data;
+        try (InputStream is = newInputStream(get("src/test/resources/screeningsheet.pdf"))) {
+            assert nonNull(is);
+            data = is.readAllBytes();
+        }
+
+        ScreeningSheet screeningSheet = ScreeningSheet.builder()
+            .data(data)
+            .parameters(asList(ScreeningSheetParameter.builder().category(ScreeningSheetDataProviderSupplier.Phase.getName()).value(asList(E, F)).build()))
+            .selectionVector(SelectionVector.builder().build())
+            .build();
+
+        SelectionVector anzuwendenderSelectionVector = SelectionVector.builder().build();
+
+        Catalog<BaseRequirement> catalog = Catalog.<BaseRequirement>builder()
+            .toc(Chapter.<BaseRequirement>builder()
+                .chapters(asList(
+                    Chapter.<BaseRequirement>builder()
+                        .number("1")
+                        .chapters(asList(
+                            Chapter.<BaseRequirement>builder()
+                                .number("1.1")
+                                .build()
+                        ))
+                        .build()
+                ))
+                .build())
+            .build();
+
+        List<DocumentSignature> defaultZeichnungen = Collections.emptyList();
+        given(repositoryMock.getDefaultSignatures()).willReturn(defaultZeichnungen);
+
+        given(mapperMock.toTailoringCatalog(catalog, screeningSheet, anzuwendenderSelectionVector)).willReturn(Catalog.<TailoringRequirement>builder().build());
+
+        // act
+        Tailoring actual = service.createTailoring("master1", "1000", screeningSheet, anzuwendenderSelectionVector, "Hello", catalog);
 
         // assert
         assertThat(actual.getName()).isEqualTo("master1");
@@ -1248,6 +1302,37 @@ class TailoringServiceImplTest {
         assertThat(actual).isNotEmpty();
         assertThat(tailoring.getNotes()).hasSize(2);
         assertThat(tailoring.getNotes()).containsExactly(note1, noteCaptor.getValue());
+        verify(repositoryMock, times(1)).getTailoring("Dummy", "master");
+    }
+
+    @Test
+    void getNotes_TailoringExists_NotesReturned() {
+        // arrange
+        Note note1 = Note.builder().number(1).text("demo").build();
+        List<Note> notes = new ArrayList<>();
+        notes.add(note1);
+        Tailoring tailoring = Tailoring.builder().notes(notes).build();
+        given(repositoryMock.getTailoring("Dummy", "master")).willReturn(of(tailoring));
+
+        // act
+        Optional<Collection<Note>> actual = service.getNotes("Dummy", "master");
+
+        // assert
+        assertThat(actual).isNotEmpty();
+        assertThat(tailoring.getNotes()).hasSize(1);
+        verify(repositoryMock, times(1)).getTailoring("Dummy", "master");
+    }
+
+    @Test
+    void getNotes_TailoringNotExists_EmptyReturned() {
+        // arrange
+        given(repositoryMock.getTailoring("Dummy", "master")).willReturn(ofNullable(null));
+
+        // act
+        Optional<Collection<Note>> actual = service.getNotes("Dummy", "master");
+
+        // assert
+        assertThat(actual).isEmpty();
         verify(repositoryMock, times(1)).getTailoring("Dummy", "master");
     }
 

@@ -92,10 +92,8 @@ public class TailoringCatalogExcelDocumentCreator implements DocumentCreator {
             requirement -> addRow(sheet, "", requirement.getPosition(), requirement.getSelected().booleanValue() ? "JA" : "NEIN")
         );
 
-        if (nonNull(chapter.getChapters())) {
-            chapter.getChapters()
-                .forEach(subChapter -> addChapter(subChapter, sheet));
-        }
+        chapter.getChapters()
+            .forEach(subChapter -> addChapter(subChapter, sheet));
     }
 
     /**

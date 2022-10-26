@@ -127,10 +127,8 @@ public class TailoringCatalogPDFDocumentCreator implements DocumentCreator {
         chapter.getRequirements()
             .forEach(requirement -> addRequirement(requirement, rows, placeholders));
         final AtomicInteger nextLevel = new AtomicInteger(level + 1);
-        if (nonNull(chapter.getChapters())) {
-            chapter.getChapters()
-                .forEach(subChapter -> addChapter(subChapter, nextLevel.get(), rows, placeholders));
-        }
+        chapter.getChapters()
+            .forEach(subChapter -> addChapter(subChapter, nextLevel.get(), rows, placeholders));
     }
 
     /**
