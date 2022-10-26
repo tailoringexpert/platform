@@ -103,11 +103,9 @@ public class CMPDFDocumentCreator implements DocumentCreator {
             .number(templateEngine.toXHTML(chapter.getNumber(), emptyMap()))
             .name(templateEngine.toXHTML(chapter.getName(), placeholders))
             .build());
-        if (nonNull(chapter.getChapters())) {
-            AtomicInteger nextLevel = new AtomicInteger(level + 1);
-            chapter.getChapters()
-                .forEach(subChapter -> addChapter(subChapter, nextLevel.get(), rows, placeholders));
-        }
+        AtomicInteger nextLevel = new AtomicInteger(level + 1);
+        chapter.getChapters()
+            .forEach(subChapter -> addChapter(subChapter, nextLevel.get(), rows, placeholders));
     }
 
     /**
