@@ -22,6 +22,7 @@ package repository {
         findCatalogVersionBy() : Collection<KatalogVersion>
         setValidUntilForEmptyValidUntil(pointOfTime : ZonedDateTime) : int
         save( entity : S) : <S extends BaseCatalogEntity>
+        existsByVersion( version : String ) : boolean
     }
     JpaRepository <|-- BaseCatalogRepository
 

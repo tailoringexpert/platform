@@ -100,6 +100,14 @@ public class JPACatalogServiceRepository implements CatalogServiceRepository {
     }
 
     /**
+     * {@inheritDoc}
+     */
+    @Override
+    public boolean existsCatalog(String version) {
+        return baseCatalogRepository.existsByVersion(version);
+    }
+
+    /**
      * Select all DRDs referenced in requirements of chapter and all subchapters.
      *
      * @param chapter root chapter to start selecting

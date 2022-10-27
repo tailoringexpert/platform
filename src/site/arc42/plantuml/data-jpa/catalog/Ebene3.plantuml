@@ -11,6 +11,7 @@ package catalog {
     interface CatalogServiceRepository {
         createCatalog(catalog : Catalog<BaseRequirement>, validFrom : ZonedDateTime) : Optional<Catalog<BaseRequirement>>
         getCatalog(version : String) : Optional<Catalog<BaseRequirement>>
+        existsCatalog( version : String ) : boolean
     }
 
     abstract JPACatalogServiceRepositoryMapper {
