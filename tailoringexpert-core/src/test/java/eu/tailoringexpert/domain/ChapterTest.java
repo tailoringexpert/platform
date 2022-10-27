@@ -31,7 +31,7 @@ import static java.util.stream.Collectors.toList;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @Log4j2
-class AnforderungGruppeTest {
+class ChapterTest {
 
     @Test
     void alleAnforderungen_UnterkapitelTeilweiseMitAnforderungen_AlleAnforderungenInListe() {

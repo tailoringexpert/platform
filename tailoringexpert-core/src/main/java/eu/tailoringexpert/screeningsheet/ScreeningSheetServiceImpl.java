@@ -37,9 +37,11 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Objects;
 import java.util.Set;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 import static java.util.Comparator.comparing;
+import static java.util.function.Predicate.not;
 import static java.util.stream.Collectors.toCollection;
 import static java.util.stream.Collectors.toList;
 import static java.util.stream.Collectors.toUnmodifiableSet;
@@ -86,7 +88,8 @@ public class ScreeningSheetServiceImpl implements ScreeningSheetService {
             .filter(parameter -> ScreeningSheet.PROJECT.equalsIgnoreCase(parameter.getName()))
             .findFirst()
             .map(ScreeningSheetParameterField::getLabel)
-            .filter(label -> !label.isEmpty())
+            .filter(Objects::nonNull)
+            .filter(not(String::isEmpty))
             .orElseThrow(() -> new TailoringexpertException("Screeningsheet doesn't contain a project name!"));
 
         Collection<Parameter> parameters = getParameter(screeningSheetParameters);

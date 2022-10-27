@@ -24,6 +24,7 @@ package eu.tailoringexpert.tailoring;
 import eu.tailoringexpert.domain.Chapter;
 import eu.tailoringexpert.domain.DRD;
 import eu.tailoringexpert.domain.Phase;
+import eu.tailoringexpert.domain.Requirement;
 import eu.tailoringexpert.domain.TailoringRequirement;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
@@ -60,8 +61,8 @@ public class DRDProvider implements BiFunction<Chapter<TailoringRequirement>, Co
         chapter.allChapters()
             .forEach(subChapter -> subChapter.getRequirements()
                 .stream()
-                .filter(requirement -> nonNull(requirement.getSelected()) && requirement.getSelected().booleanValue()
-                    && nonNull(requirement.getDrds()) && !requirement.getDrds().isEmpty())
+                .filter(TailoringRequirement::getSelected)
+                .filter(TailoringRequirement::hasDRD)
                 .forEach(requirement -> requirement.getDrds()
                     .forEach(drd -> {
                         if (predicate.test(drd.getDeliveryDate(), phases)) {

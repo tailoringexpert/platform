@@ -56,6 +56,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -121,7 +122,6 @@ public class ProjectController {
             content = @Content(mediaType = "application/json+hal", schema = @Schema(implementation = Void.class)))
     })
     @PostMapping(value = PROJECT_NEW, produces = {"application/hal+json"})
-    @SneakyThrows
     public ResponseEntity<Void> postProject(
         @Parameter(description = "Base catalog for project creation") @PathVariable String version,
         @Parameter(description = "New project configuration data") @RequestBody ProjectCreationRequest request) {
@@ -224,10 +224,9 @@ public class ProjectController {
     })
     @PostMapping(value = PROJECT, produces = {"application/hal+json"})
     @ResponseBody
-    @SneakyThrows
     public ResponseEntity<EntityModel<ProjectResource>> copyProject(
         @Parameter(description = "Project identifier") @PathVariable String project,
-        @Parameter(description = "Raw data of screeningsheet") @RequestPart("datei") MultipartFile screeningSheet) {
+        @Parameter(description = "Raw data of screeningsheet") @RequestPart("datei") MultipartFile screeningSheet) throws IOException {
 
         return projectService.copyProject(project, screeningSheet.getBytes())
             .map(projektKopie -> ResponseEntity

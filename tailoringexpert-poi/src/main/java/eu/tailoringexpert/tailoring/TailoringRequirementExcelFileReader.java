@@ -49,39 +49,37 @@ public class TailoringRequirementExcelFileReader implements Function<byte[], Map
     public Map<String, Collection<ImportRequirement>> apply(byte[] data) {
         Map<String, Collection<ImportRequirement>> result = new HashMap<>();
 
-        try (ByteArrayInputStream is = new ByteArrayInputStream(data)) {
-            try (Workbook workbook = WorkbookFactory.create(is)) {
+        try (ByteArrayInputStream is = new ByteArrayInputStream(data);
+             Workbook workbook = WorkbookFactory.create(is)) {
+            Sheet sheet = workbook.getSheetAt(0);
 
-                Sheet sheet = workbook.getSheetAt(0);
+            if (sheet.getPhysicalNumberOfRows() == 0) {
+                return emptyMap();
+            }
 
-                if (sheet.getPhysicalNumberOfRows() == 0) {
-                    return emptyMap();
-                }
+            Iterator<Row> rowIterator = sheet.iterator();
+            // header überlesen
+            rowIterator.next();
 
-                Iterator<Row> rowIterator = sheet.iterator();
-                // header überlesen
-                rowIterator.next();
+            AtomicReference<String> chapter = new AtomicReference<>();
 
-                AtomicReference<String> chapter = new AtomicReference<>();
+            while (rowIterator.hasNext()) {
+                Row requirement = rowIterator.next();
+                String label = requirement.getCell(0, CREATE_NULL_AS_BLANK).getStringCellValue();
+                String position = requirement.getCell(1, CREATE_NULL_AS_BLANK).getStringCellValue();
+                String applicable = requirement.getCell(2, CREATE_NULL_AS_BLANK).getStringCellValue();
+                String text = requirement.getCell(3, CREATE_NULL_AS_BLANK).getStringCellValue();
 
-                while (rowIterator.hasNext()) {
-                    Row requirement = rowIterator.next();
-                    String label = requirement.getCell(0, CREATE_NULL_AS_BLANK).getStringCellValue();
-                    String position = requirement.getCell(1, CREATE_NULL_AS_BLANK).getStringCellValue();
-                    String applicable = requirement.getCell(2, CREATE_NULL_AS_BLANK).getStringCellValue();
-                    String text = requirement.getCell(3, CREATE_NULL_AS_BLANK).getStringCellValue();
-
-                    if (!label.isEmpty()) {
-                        chapter.set(position);
-                        result.put(chapter.get(), newArrayList());
-                    } else {
-                        result.get(chapter.get()).add(ImportRequirement.builder()
-                            .label(label)
-                            .position(position)
-                            .applicable(applicable)
-                            .text(text)
-                            .build());
-                    }
+                if (!label.isEmpty()) {
+                    chapter.set(position);
+                    result.put(chapter.get(), newArrayList());
+                } else {
+                    result.get(chapter.get()).add(ImportRequirement.builder()
+                        .label(label)
+                        .position(position)
+                        .applicable(applicable)
+                        .text(text)
+                        .build());
                 }
             }
             return result;

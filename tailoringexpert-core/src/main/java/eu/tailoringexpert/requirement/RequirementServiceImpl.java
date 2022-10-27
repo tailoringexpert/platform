@@ -32,6 +32,7 @@ import java.time.ZonedDateTime;
 import java.util.List;
 import java.util.Optional;
 import java.util.OptionalInt;
+import java.util.Scanner;
 
 import static java.lang.Boolean.TRUE;
 import static java.lang.Integer.parseInt;
@@ -158,7 +159,7 @@ public class RequirementServiceImpl implements RequirementService {
         requirements.stream().skip(requirementPosition.getAsInt() + 2l)
             .takeWhile(this::isCustomRequirement)
             .forEach(requirement -> {
-                int i = parseInt(requirement.getPosition().substring(position.length())) + 1;
+                int i = new Scanner(requirement.getPosition()).useDelimiter("\\D+").nextInt() + 1; //parseInt(requirement.getPosition().substring(position.length())) + 1;
                 if (isCustomRequirement(position)) {
                     requirement.setPosition(position.substring(0, position.length() - 1) + i);
                 } else {

@@ -34,6 +34,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.Scanner;
 
 import static java.lang.Boolean.FALSE;
 import static java.lang.Boolean.TRUE;
@@ -378,6 +379,52 @@ class RequirementServiceImplTest {
     }
 
     @Test
+    void createRequirement_RequirementAfterCustomRequirement_Requirement111b2Created() {
+        // arrange
+        List<TailoringRequirement> anforderungen = new ArrayList<>();
+        anforderungen.add(
+            TailoringRequirement.builder()
+                .position("a1")
+                .text("a1")
+                .selected(FALSE)
+                .build());
+        anforderungen.add(
+            TailoringRequirement.builder()
+                .position("a2")
+                .text("a2")
+                .selected(FALSE)
+                .build()
+        );
+
+        Chapter<TailoringRequirement> chapter1_1_1 = Chapter.<TailoringRequirement>builder()
+            .number("1.1.1")
+            .requirements(anforderungen)
+            .build();
+
+        given(repositoryMock.getChapter("SAMPLE", "master", "1.1.1"))
+            .willReturn(of(chapter1_1_1));
+        given(repositoryMock.updateChapter("SAMPLE", "master", chapter1_1_1))
+            .willAnswer(invocation -> of(invocation.getArgument(2)));
+
+        // act
+        Optional<TailoringRequirement> actual = service.createRequirement(
+            "SAMPLE",
+            "master",
+            "1.1.1",
+            "a1",
+            "Dies ist eine neue 2. neue Requirement"
+        );
+
+        // assert
+        assertThat(actual).isPresent();
+        assertThat(actual.get().getPosition()).isEqualTo("a2");
+        assertThat(anforderungen).hasSize(3);
+        assertThat(anforderungen.get(2).getPosition()).isEqualTo("a3");
+        assertThat(anforderungen.get(1).getText()).isEqualTo("Dies ist eine neue 2. neue Requirement");
+    }
+
+
+    @Test
     void createRequirement_ChapterNotExisting_RequirementNotCreated() {
         // arrange
         given(repositoryMock.getChapter("SAMPLE", "master", "1.1.1")).willReturn(empty());
@@ -624,5 +671,4 @@ class RequirementServiceImplTest {
         assertThat(actual.get().getText()).isEqualTo("Der Text vor der Änderung");
         assertThat(actual.get().getTextChanged()).isNull();
     }
-
 }
