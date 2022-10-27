@@ -34,7 +34,6 @@ import org.mapstruct.MappingTarget;
 
 import static eu.tailoringexpert.domain.DatenType.MATRIX;
 import static eu.tailoringexpert.domain.DatenType.SKALAR;
-import static eu.tailoringexpert.domain.DatenType.STRING;
 import static java.lang.Integer.valueOf;
 
 /**

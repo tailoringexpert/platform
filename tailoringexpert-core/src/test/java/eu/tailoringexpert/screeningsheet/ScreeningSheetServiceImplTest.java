@@ -276,14 +276,6 @@ class ScreeningSheetServiceImplTest {
     @Test
     void createScreeningSheet_ScreeninSheetParameterProjectWithoutLabel_TailoringexpertExceptionThrown() throws Exception{
         // arrange
-        List<ScreeningSheetParameterField> screeningSheetParameters = List.of(
-            ScreeningSheetParameterField.builder()
-                .category("Project")
-                .name(ScreeningSheet.PROJECT)
-                .label(null)
-                .build()
-
-        );
         given(screeningDataProviderMock.parse(any())).willReturn(Collections.emptyList());
 
         // act

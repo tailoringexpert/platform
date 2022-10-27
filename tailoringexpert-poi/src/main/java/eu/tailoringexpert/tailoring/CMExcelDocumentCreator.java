@@ -49,9 +49,9 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.BiFunction;
 import java.util.function.Function;
 
-import static eu.tailoringexpert.domain.File.*;
+import static eu.tailoringexpert.domain.File.FileBuilder;
+import static eu.tailoringexpert.domain.File.builder;
 import static java.nio.file.Files.newInputStream;
-import static java.util.Objects.nonNull;
 import static java.util.stream.Collectors.joining;
 import static java.util.stream.IntStream.range;
 import static org.apache.poi.ss.usermodel.FillPatternType.SOLID_FOREGROUND;

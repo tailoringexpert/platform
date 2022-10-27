@@ -124,4 +124,50 @@ class ProjectRepositoryTest {
             .isEqualTo(1);
         assertThat(repository.findByIdentifier("SAMPLE")).isNull();
     }
+
+    @Test
+    void existsTailoring_TailoringExists_TrueReturned() throws IOException {
+        // arrange
+        ProjectEntity project = ProjectEntity.builder()
+            .identifier("SAMPLE")
+            .tailorings(Arrays.asList(
+                TailoringEntity.builder()
+                    .name("master")
+                    .build(),
+                TailoringEntity.builder()
+                    .name("master1")
+                    .build()
+            ))
+            .build();
+        repository.save(project);
+
+        // act
+        boolean actual = repository.existsTailoring("SAMPLE", "master1");
+
+        // assert
+        assertThat(actual).isTrue();
+    }
+
+    @Test
+    void existsTailoring_TailoringNotExists_TrueReturned() throws IOException {
+        // arrange
+        ProjectEntity project = ProjectEntity.builder()
+            .identifier("SAMPLE")
+            .tailorings(Arrays.asList(
+                TailoringEntity.builder()
+                    .name("master")
+                    .build(),
+                TailoringEntity.builder()
+                    .name("master1")
+                    .build()
+            ))
+            .build();
+        repository.save(project);
+
+        // act
+        boolean actual = repository.existsTailoring("SAMPLE_1", "master1");
+
+        // assert
+        assertThat(actual).isFalse();
+    }
 }

@@ -40,7 +40,6 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 import static java.util.Comparator.comparing;
-import static java.util.Objects.nonNull;
 import static java.util.stream.Collectors.toCollection;
 import static java.util.stream.Collectors.toList;
 import static java.util.stream.Collectors.toUnmodifiableSet;

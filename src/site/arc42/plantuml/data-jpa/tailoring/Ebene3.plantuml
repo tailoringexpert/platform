@@ -26,8 +26,9 @@ package tailoring {
         getSelectionVectorProfile() : Collection<SelectionVectorProfile>
         getDefaultSignatures() : Collection<DocumentSignature>
         deleteTailoring(project : String, tailoring : String)
+        addNote(project : String, tailoring : String, note : Note) : Optional<Tailoring>
+        existsTailoring(project : String, tailoring : String) : boolean
     }
-
 
     abstract class JPATailoringServiceRepositoryMapper {
         {abstract} toDomain(entity : ProjektEntity) : Projekt

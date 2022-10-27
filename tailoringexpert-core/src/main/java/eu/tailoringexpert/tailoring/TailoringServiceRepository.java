@@ -178,6 +178,14 @@ public interface TailoringServiceRepository {
      */
     Optional<Tailoring> addNote(String project, String tailoring, Note note);
 
+    /**
+     * Checks if a tailoring belongs to a dedicated project.
+     *
+     * @param project identifier of project
+     * @param name    name of tailoring to check
+     * @return true if name of the tailoring is part of project tailorings
+     */
+    boolean existsTailoring(String project, String name);
 
 }
 

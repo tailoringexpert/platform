@@ -88,14 +88,11 @@ public class JPATailoringServiceRepository implements TailoringServiceRepository
      */
     @Override
     public Tailoring updateTailoring(String project, Tailoring tailoring) {
-        Optional<ProjectEntity> oProjekt = findProject(project);
-        if (oProjekt.isPresent()) {
-            Optional<TailoringEntity> toUpdate = oProjekt.get().getTailoring(tailoring.getName());
-            if (toUpdate.isPresent()) {
-                mapper.updateTailoring(tailoring, toUpdate.get());
-                projectRepository.flush();
-                return mapper.toDomain(toUpdate.get());
-            }
+        TailoringEntity toUpdate = projectRepository.findTailoring(project, tailoring.getName());
+        if (nonNull(toUpdate)) {
+            mapper.updateTailoring(tailoring, toUpdate);
+            projectRepository.flush();
+            return mapper.toDomain(toUpdate);
         }
         return tailoring;
     }
@@ -313,13 +310,11 @@ public class JPATailoringServiceRepository implements TailoringServiceRepository
     }
 
     /**
-     * Loads project with provided project identifoer.
-     *
-     * @param project identifier of project to load
-     * @return Loaded project
+     * {@inheritDoc}
      */
-    private Optional<ProjectEntity> findProject(String project) {
-        return ofNullable(projectRepository.findByIdentifier(project));
+    @Override
+    public boolean existsTailoring(String project, String name) {
+        return projectRepository.existsTailoring(project, name);
     }
 
     /**

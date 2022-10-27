@@ -38,7 +38,6 @@ import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import java.io.ByteArrayOutputStream;
 import java.util.Map;
 
-import static java.util.Objects.nonNull;
 import static java.util.stream.IntStream.range;
 
 /**
