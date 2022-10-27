@@ -22,7 +22,6 @@
 package eu.tailoringexpert.requirement;
 
 import eu.tailoringexpert.domain.Chapter;
-import eu.tailoringexpert.domain.ProjectEntity;
 import eu.tailoringexpert.domain.TailoringRequirementEntity;
 import eu.tailoringexpert.domain.TailoringEntity;
 import eu.tailoringexpert.domain.TailoringCatalogChapterEntity;
@@ -64,20 +63,8 @@ public class JPARequirementServiceRepository implements RequirementServiceReposi
         @NonNull String tailoring,
         @NonNull String chapter,
         @NonNull String position) {
-        ProjectEntity eProject = projectRepository.findByIdentifier(project);
-        if (isNull(eProject)) {
-            return empty();
-        }
 
-        Optional<TailoringEntity> oTailoring = eProject.getTailoring(tailoring);
-        if (oTailoring.isEmpty()) {
-            return empty();
-        }
-
-        Optional<TailoringCatalogChapterEntity> oChapter = oTailoring.get()
-            .getCatalog()
-            .getToc()
-            .getChapter(chapter);
+        Optional<TailoringCatalogChapterEntity> oChapter = findChapter(project, tailoring, chapter);
         if (oChapter.isEmpty()) {
             return empty();
         }
@@ -190,17 +177,12 @@ public class JPARequirementServiceRepository implements RequirementServiceReposi
         String tailoring,
         String chapter) {
 
-        ProjectEntity eProject = projectRepository.findByIdentifier(project);
-        if (isNull(eProject)) {
+        TailoringEntity eTailoring = projectRepository.findTailoring(project, tailoring);
+        if (isNull(eTailoring)) {
             return empty();
         }
 
-        Optional<TailoringEntity> oTailoring = eProject.getTailoring(tailoring);
-        if (oTailoring.isEmpty()) {
-            return empty();
-        }
-
-        return oTailoring.get()
+        return eTailoring
             .getCatalog()
             .getToc()
             .getChapter(chapter);

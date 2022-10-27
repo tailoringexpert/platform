@@ -109,23 +109,6 @@ class TailoringServiceImplTest {
     }
 
     @Test
-    void addFile_ProjectNoExits_FileNotAdded() throws IOException {
-        // arrange
-        byte[] data;
-        try (InputStream is = newInputStream(get("src/test/resources/screeningsheet.pdf"))) {
-            assert nonNull(is);
-            data = is.readAllBytes();
-        }
-        given(repositoryMock.getProject("DUMMY")).willReturn(empty());
-
-        // act
-        Optional<Tailoring> actual = service.addFile("DUMMY", "master", "dummy.pdf", data);
-
-        // assert
-        assertThat(actual).isEmpty();
-    }
-
-    @Test
     void addFile_TailoringNotExits_FileNotAdded() throws IOException {
         // arrange
         byte[] data;
@@ -133,12 +116,7 @@ class TailoringServiceImplTest {
             assert nonNull(is);
             data = is.readAllBytes();
         }
-
-        given(repositoryMock.getProject("DUMMY")).willReturn(of(
-            Project.builder()
-                .tailorings(Collections.emptyList())
-                .build())
-        );
+        given(repositoryMock.existsTailoring("DUMMY", "master")).willReturn(false);
 
         // act
         Optional<Tailoring> actual = service.addFile("DUMMY", "master", "dummy.pdf", data);
@@ -146,6 +124,7 @@ class TailoringServiceImplTest {
         // assert
         assertThat(actual).isEmpty();
         verify(repositoryMock, times(0)).updateFile(anyString(), anyString(), any());
+
     }
 
 
@@ -158,13 +137,7 @@ class TailoringServiceImplTest {
             data = is.readAllBytes();
         }
 
-        given(repositoryMock.getTailoring("SAMPLE", "master"))
-            .willAnswer(invocation -> of(
-                of(Tailoring.builder()
-                    .name("master")
-                    .build()
-                ))
-            );
+        given(repositoryMock.existsTailoring("SAMPLE", "master")).willReturn(true);
 
         given(repositoryMock.updateFile(eq("SAMPLE"), eq("master"), any()))
             .willAnswer(invocation -> of(Tailoring.builder()
@@ -182,26 +155,6 @@ class TailoringServiceImplTest {
         // assert
         assertThat(actual).isPresent();
         assertThat(actual.get().getFiles()).hasSize(1);
-    }
-
-    @Test
-    void addFile_TailoringNotExists_FileNotAdded() throws IOException {
-        // arrange
-        byte[] data;
-        try (InputStream is = newInputStream(get("src/test/resources/screeningsheet.pdf"))) {
-            assert nonNull(is);
-            data = is.readAllBytes();
-        }
-
-        given(repositoryMock.getTailoring("SAMPLE", "master"))
-            .willReturn(empty());
-
-        // act
-        Optional<Tailoring> actual = service.addFile("SAMPLE", "master", "dummy.pdf", data);
-
-        // assert
-        verify(repositoryMock, times(0)).updateFile(anyString(), anyString(), any());
-        assertThat(actual).isEmpty();
     }
 
     @Test
@@ -1184,26 +1137,26 @@ class TailoringServiceImplTest {
 
         // assert
         assertThat(actual).isEmpty();
-        verify(repositoryMock, times(1)).getTailoring(project, tailoring);
+        verify(repositoryMock, times(1)).existsTailoring(project, tailoring);
     }
 
     @Test
     void deleteTailoring_TailoringExists_TrueReturned() throws IOException {
         // arrange
         String project = "DUMMY";
-        String phase = "master";
+        String tailoring = "master";
 
-        given(repositoryMock.getTailoring(project, phase)).willReturn(of(Tailoring.builder().build()));
-        given(repositoryMock.deleteTailoring(project, phase)).willReturn(TRUE);
+        given(repositoryMock.existsTailoring(project, tailoring)).willReturn(true);
+        given(repositoryMock.deleteTailoring(project, tailoring)).willReturn(TRUE);
 
         // act
-        Optional<Boolean> actual = service.deleteTailoring(project, phase);
+        Optional<Boolean> actual = service.deleteTailoring(project, tailoring);
 
         // assert
         assertThat(actual).isNotEmpty();
         assertThat(actual.get()).isTrue();
-        verify(repositoryMock, times(1)).getTailoring(project, phase);
-        verify(repositoryMock, times(1)).deleteTailoring(project, phase);
+        verify(repositoryMock, times(1)).existsTailoring(project, tailoring);
+        verify(repositoryMock, times(1)).deleteTailoring(project, tailoring);
     }
 
 
