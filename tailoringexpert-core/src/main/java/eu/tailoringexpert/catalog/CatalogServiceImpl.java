@@ -54,9 +54,15 @@ public class CatalogServiceImpl implements CatalogService {
      */
     @Override
     public boolean doImport(@NonNull Catalog<BaseRequirement> catalog) {
-        final ZonedDateTime now = ZonedDateTime.now();
+        @SuppressWarnings("PMD.PrematureDeclaration") final ZonedDateTime now = ZonedDateTime.now();
+
+        if (repository.existsCatalog(catalog.getVersion())) {
+            log.info("Catalog version {} NOT imported because it already exists.", catalog.getVersion());
+            return false;
+        }
+
         Optional<Catalog<BaseRequirement>> result = repository.createCatalog(catalog, now);
-        log.info("Catalog version {} {} imported",catalog.getVersion(), result.isPresent() ? " sucessful" : " not");
+        log.info("Catalog version {} {} imported", catalog.getVersion(), result.isPresent() ? " sucessful" : " not");
         return result.isPresent();
     }
 

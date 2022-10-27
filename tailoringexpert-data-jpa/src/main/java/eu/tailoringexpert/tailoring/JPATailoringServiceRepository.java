@@ -27,7 +27,6 @@ import eu.tailoringexpert.domain.DocumentSignature;
 import eu.tailoringexpert.domain.DocumentSignatureEntity;
 import eu.tailoringexpert.domain.Note;
 import eu.tailoringexpert.domain.Project;
-import eu.tailoringexpert.domain.ProjectEntity;
 import eu.tailoringexpert.domain.ScreeningSheet;
 import eu.tailoringexpert.domain.SelectionVectorProfile;
 import eu.tailoringexpert.domain.Tailoring;

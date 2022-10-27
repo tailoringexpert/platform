@@ -81,4 +81,11 @@ public interface BaseCatalogRepository extends JpaRepository<BaseCatalogEntity, 
     @CacheEvict(value = {CACHE_BASECATALOGLIST, CACHE_BASECATALOG}, allEntries = true)
     <S extends BaseCatalogEntity> S save(S entity);
 
+    /**
+     * Checks if base catalog of requested version already exists.
+     *
+     * @param version version of base catalog to check existence of
+     * @return true, of base catalog exists
+     */
+    boolean existsByVersion(String version);
 }
