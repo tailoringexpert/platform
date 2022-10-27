@@ -163,5 +163,33 @@ class BaseCatalogRepositoryTest {
         // assert
         assertThat(actual).isEqualTo(1);
     }
+
+    @Test
+    void existsByVersion_CatalogNotExists_FalseReturned() {
+        // arrange
+        repository.save(BaseCatalogEntity.builder()
+            .version("8.2.1")
+            .build());
+
+        // act
+        boolean actual = repository.existsByVersion("9");
+
+        // assert
+        assertThat(actual).isFalse();
+    }
+
+    @Test
+    void existsByVersion_CatalogExists_TrueReturned() {
+        // arrange
+        repository.save(BaseCatalogEntity.builder()
+            .version("8.2.1")
+            .build());
+
+        // act
+        boolean actual = repository.existsByVersion("8.2.1");
+
+        // assert
+        assertThat(actual).isTrue();
+    }
 }
 
