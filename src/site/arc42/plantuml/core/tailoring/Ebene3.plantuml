@@ -71,6 +71,7 @@ package tailoring {
         getDefaultSignatures() : Collection<DocumentSignature>
         deleteTailoring(project : String, tailoring : String)
         addNote(project : String, tailoring : String, note : Note) : Optional<Tailoring>
+        existsTailoring(project : String, tailoring : String) : boolean
     }
 
     interface DocumentService {

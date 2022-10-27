@@ -57,6 +57,7 @@ import static java.util.Arrays.asList;
 import static java.util.List.copyOf;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
@@ -117,18 +118,7 @@ class JPATailoringServiceRepositoryTest {
     @Test
     void updateTailoring_TaioloringNotExists_TailoringNotUpdated() {
         // arrange
-        TailoringEntity tailoringToUpdate = TailoringEntity.builder()
-            .name("master1")
-            .build();
-        ProjectEntity project = ProjectEntity.builder()
-            .tailorings(asList(
-                TailoringEntity.builder()
-                    .name("master")
-                    .build(),
-                tailoringToUpdate
-            ))
-            .build();
-        given(projectRepositoryMock.findByIdentifier("SAMPLE")).willReturn(project);
+        given(projectRepositoryMock.findTailoring("SAMPLE", "master2")).willReturn(null);
 
         Tailoring tailoring = Tailoring.builder()
             .name("master2")
@@ -139,31 +129,23 @@ class JPATailoringServiceRepositoryTest {
 
         // assert
         assertThat(actual).isNotNull();
-        verify(mapperMock, times(0)).updateTailoring(tailoring, tailoringToUpdate);
+        verify(mapperMock, times(0)).updateTailoring(eq(tailoring), any());
     }
 
     @Test
     void updateTailoring_TailoringExists_TailoringUpdated() {
         // arrange
         TailoringEntity tailoringToUpdate = TailoringEntity.builder()
-            .name("master1")
+            .name("master")
             .build();
-        ProjectEntity project = ProjectEntity.builder()
-            .tailorings(asList(
-                TailoringEntity.builder()
-                    .name("master")
-                    .build(),
-                tailoringToUpdate
-            ))
-            .build();
-        given(projectRepositoryMock.findByIdentifier("SAMPLE")).willReturn(project);
+
+        given(projectRepositoryMock.findTailoring("SAMPLE", "master")).willReturn(tailoringToUpdate);
 
         Tailoring tailoring = Tailoring.builder()
-            .name("master1")
+            .name("master")
             .build();
 
-        given(mapperMock.toDomain(tailoringToUpdate))
-            .willReturn(tailoring);
+        given(mapperMock.toDomain(tailoringToUpdate)).willReturn(tailoring);
 
         // act
         Tailoring actual = repository.updateTailoring("SAMPLE", tailoring);
