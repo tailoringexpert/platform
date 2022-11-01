@@ -1230,6 +1230,21 @@ class TailoringServiceImplTest {
     }
 
     @Test
+    void addNote_RespositoryAddError_EmptyReturned() {
+        // arrange
+        given(repositoryMock.getTailoring(any(), any())).willReturn(of(Tailoring.builder().build()));
+        given(repositoryMock.addNote(any(), any(), any())).willReturn(empty());
+
+        // act
+        Optional<Note> actual = service.addNote("Dummy", "master", "This a demo note");
+
+        // assert
+        assertThat(actual).isEmpty();
+        verify(repositoryMock, times(1)).getTailoring("Dummy", "master");
+        verify(repositoryMock, times(1)).addNote(eq("Dummy"), eq("master"), any());
+    }
+
+    @Test
     void addNote_TailoringExists_NoteAdded() {
         // arrange
         Note note1 = Note.builder().number(1).text("demo").build();

@@ -111,7 +111,6 @@ public class JPAProjectServiceRepository implements ProjectServiceRepository {
         ProjectEntity eProject = projectRepository.findByIdentifier(project);
         TailoringEntity eTailoring = mapper.toEntity(tailoring);
 
-        eProject.setTailorings(isNull(eProject.getTailorings()) ? new ArrayList<>() : new ArrayList<>(eProject.getTailorings()));
         eProject.getTailorings().add(eTailoring);
 
         projectRepository.flush();
