@@ -102,13 +102,8 @@ public class DRDPDFDocumentCreator implements DocumentCreator {
             .map(drd -> DRDFragment.builder()
                 .name(drd.getTitle())
                 .number(drd.getNumber())
-                .fragment("/" + catalogVersion +
-                    "/drd/drd-" + (drd.getNumber().contains(".") && drd.getNumber().charAt(0) == '0' ?
-                    drd.getNumber().substring(1) :
-                    drd.getNumber())
-                )
-                .build()
-            )
+                .fragment("/" + catalogVersion + "/drd/drd-" + drd.getNumber())
+            .build())
             .forEachOrdered(rows::add);
     }
 }

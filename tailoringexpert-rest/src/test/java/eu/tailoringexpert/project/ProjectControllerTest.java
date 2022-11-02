@@ -54,6 +54,7 @@ import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 
+import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Paths;
@@ -73,10 +74,13 @@ import static java.util.Arrays.asList;
 import static java.util.Locale.GERMANY;
 import static java.util.Objects.nonNull;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.catchThrowable;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.springframework.hateoas.MediaTypes.HAL_JSON_VALUE;
@@ -232,6 +236,24 @@ class ProjectControllerTest {
     }
 
     @Test
+    void getProject_ProjectNotExist_StateNotFound() throws Exception {
+        // arrange
+
+        given(projectServiceRepositoryMock.getProjectInformation("SAMPLE")).willReturn(Optional.empty());
+
+        // act
+        ResultActions actual = mockMvc.perform(get("/project/{project}", "SAMPLE")
+            .accept(HAL_JSON_VALUE)
+        );
+
+        // assert
+        actual.andExpect(status().isNotFound());
+
+        verify(projectServiceRepositoryMock, times(1)).getProjectInformation("SAMPLE");
+        verify(mapperMock, times(0)).toResource(any(PathContextBuilder.class), any(ProjectInformation.class));
+    }
+
+    @Test
     void getScreeningSheet_ScreeningSheetExists_StateOK() throws Exception {
         // arrange
         ScreeningSheet screeningSheet = ScreeningSheet.builder().build();
@@ -255,7 +277,24 @@ class ProjectControllerTest {
     }
 
     @Test
-    void getScreeningSheetFile_FileExists_StateOKContentDispositionHeader() throws Exception {
+    void getScreeningSheet_ScreeningSheetNotExists_StateNotFound() throws Exception {
+        // arrange
+        given(projectServiceRepositoryMock.getScreeningSheet("SAMPLE")).willReturn(Optional.empty());
+
+        // act
+        ResultActions actual = mockMvc.perform(get("/project/{project}/screeningsheet", "SAMPLE")
+            .accept(HAL_JSON_VALUE)
+        );
+
+        // assert
+        actual.andExpect(status().isNotFound());
+
+        verify(projectServiceRepositoryMock, times(1)).getScreeningSheet("SAMPLE");
+        verify(mapperMock, times(0)).toResource(any(PathContextBuilder.class), any(ScreeningSheet.class));
+    }
+
+    @Test
+    void getScreeningSheetFile_ScreeningSheetFileExists_StateOKContentDispositionHeader() throws Exception {
         // arrange
         byte[] data;
         try (InputStream is = newInputStream(Paths.get("src/test/resources/screeningsheet_0d.pdf"))) {
@@ -278,6 +317,24 @@ class ProjectControllerTest {
         verify(projectServiceRepositoryMock, times(1)).getScreeningSheetFile("SAMPLE");
 
     }
+
+    @Test
+    void getScreeningSheetFile_ScreningsSheetFileNotExists_StateNotFound() throws Exception {
+        // arrange
+        given(projectServiceRepositoryMock.getScreeningSheetFile("SAMPLE")).willReturn(Optional.empty());
+
+        // act
+        ResultActions actual = mockMvc.perform(get("/project/{project}/screeningsheet/pdf", "SAMPLE")
+            .accept("application/pdf")
+        );
+
+        // assert
+        actual.andExpect(status().isNotFound());
+
+        verify(projectServiceRepositoryMock, times(1)).getScreeningSheetFile("SAMPLE");
+
+    }
+
 
     @Test
     void deleteProject_ProjectExists_StateNoContent() throws Exception {
@@ -371,6 +428,38 @@ class ProjectControllerTest {
         verify(projectServiceMock, times(1)).copyProject("SAMPLE", data);
         verify(mapperMock, times(1)).toResource(pathContextCaptor.capture(), eq(createdProject));
         assertThat(pathContextCaptor.getValue().build()).isEqualTo(pathContext.build());
+    }
+
+    @Test
+    void copyProject_ErrorReadingScreeningSheet_IOExceptionThrown() throws IOException {
+        // arrange
+        byte[] data;
+        try (InputStream is = newInputStream(Paths.get("src/test/resources/screeningsheet_0d.pdf"))) {
+            assert nonNull(is);
+            data = is.readAllBytes();
+        }
+
+        MockMultipartFile screeningSheet = new MockMultipartFile("datei", "screeningsheet_0d.pdf",
+            "text/plain", data);
+
+        MockMultipartFile spy = spy(screeningSheet);
+        given(spy.getBytes()).willThrow(IOException.class);
+
+        // act
+//        Throwable actual = null;
+//        try {
+        Throwable actual = catchThrowable(() -> mockMvc.perform(multipart("/project/{project}", "SAMPLE")
+                .file(spy)
+                .contentType(MULTIPART_FORM_DATA)
+                .accept("application/hal+json")
+            ));
+//        } catch (Exception e) {
+//        }
+
+        // assert
+        assertThat(actual).isNotNull();
+        verify(projectServiceMock, times(0)).copyProject(anyString(), any(byte[].class));
+        verify(mapperMock, times(0)).toResource(any(PathContextBuilder.class), any(Project.class));
     }
 
     @Test

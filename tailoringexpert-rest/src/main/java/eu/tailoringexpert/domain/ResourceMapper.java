@@ -228,7 +228,7 @@ public abstract class ResourceMapper {
     public List<ScreeningSheetParameterResource> toResource(@Context PathContextBuilder builder,
                                                             List<ScreeningSheetParameter> parameters) {
         if (isNull(parameters)) {
-            return null;
+            return List.of();
         }
 
         return parameters.stream()

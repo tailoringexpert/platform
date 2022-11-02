@@ -357,7 +357,7 @@ class ResourceMapperTest {
         assertThat(actual).isNotNull();
         assertThat(actual.getData()).isNull();
         assertThat(actual.getSelectionVector()).isNotNull();
-        assertThat(actual.getParameters()).isNull();
+        assertThat(actual.getParameters()).isEmpty();
 
         assertThat(actual.getLinks()).containsExactlyInAnyOrder(
             Link.of("http://localhost/project/SAMPLE/screeningsheet", "self"),

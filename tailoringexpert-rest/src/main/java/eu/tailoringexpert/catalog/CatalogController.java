@@ -65,6 +65,7 @@ import static org.springframework.http.HttpHeaders.ACCESS_CONTROL_EXPOSE_HEADERS
 import static org.springframework.http.HttpHeaders.CONTENT_DISPOSITION;
 import static org.springframework.http.HttpStatus.BAD_REQUEST;
 import static org.springframework.http.HttpStatus.CREATED;
+import static org.springframework.http.HttpStatus.PRECONDITION_FAILED;
 import static org.springframework.http.ResponseEntity.notFound;
 import static org.springframework.http.ResponseEntity.ok;
 
@@ -98,13 +99,13 @@ public class CatalogController {
         @ApiResponse(
             responseCode = "201", description = "Catalog imported"),
         @ApiResponse(
-            responseCode = "400", description = "Catalog not imported")
+            responseCode = "412", description = "Catalog not imported")
     })
     @PostMapping(value = BASECATALOG, produces = {"application/hal+json"})
     public ResponseEntity<Void> postBaseCatalog(
         @Parameter(description = "Base catalog to import") @RequestBody Catalog<BaseRequirement> catalog) {
         return ResponseEntity
-            .status(catalogService.doImport(catalog) ? CREATED : BAD_REQUEST)
+            .status(catalogService.doImport(catalog) ? CREATED : PRECONDITION_FAILED)
             .build();
     }
 

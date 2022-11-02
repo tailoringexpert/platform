@@ -336,10 +336,10 @@ public class TailoringServiceImpl implements TailoringService {
      */
     @Override
     public Optional<Note> addNote(String project, String tailoring, String note) {
+        log.traceEntry("STARTED | trying to add note to tailoring {}:{}", project, tailoring);
         Optional<Tailoring> oTailoring = repository.getTailoring(project, tailoring);
         if (oTailoring.isEmpty()) {
-            log.info("FINISHED | tailoring not existing. Not adding.");
-            return empty();
+            return log.traceExit("FINISHED | tailoring not existing. Not adding.", empty());
         }
 
         Collection<Note> notes = oTailoring.get().getNotes();
@@ -351,12 +351,10 @@ public class TailoringServiceImpl implements TailoringService {
 
         Optional<Tailoring> updatedTailoring = repository.addNote(project, tailoring, noteToAdd);
         if (updatedTailoring.isEmpty()) {
-            log.info("FINISHED | addNote tailoring {}.not added", noteToAdd);
+            return log.traceExit("FINISHED | addNote tailoring " + noteToAdd + " not added", empty());
         }
 
-        log.info("FINISHED | addNote tailoring {} added", noteToAdd);
-
-        return of(noteToAdd);
+        return log.traceExit("FINISHED | addNote " + noteToAdd, of(noteToAdd));
     }
 
     /**
@@ -364,6 +362,8 @@ public class TailoringServiceImpl implements TailoringService {
      */
     @Override
     public Optional<Note> getNote(String project, String tailoring, Integer note) {
+        log.traceEntry("STARTED | trying to delete tailoring {} of project {}", tailoring, project);
+
         Optional<Tailoring> oTailoring = repository.getTailoring(project, tailoring);
         if (oTailoring.isEmpty()) {
             log.info("FINISHED | tailoring not existing. Not adding.");
@@ -374,8 +374,7 @@ public class TailoringServiceImpl implements TailoringService {
             .filter(n -> note.equals(n.getNumber()))
             .findFirst();
 
-        log.info("FINISHED | getNote tailoring {}.", result.isPresent() ? result.get() : "does not exists");
-        return result;
+        return log.traceExit("FINISHED | getNote tailoring " + project + ":" + tailoring + ".", result);
     }
 
     /**
@@ -391,7 +390,7 @@ public class TailoringServiceImpl implements TailoringService {
 
         Optional<Collection<Note>> result = ofNullable(oTailoring.get().getNotes());
 
-        log.info("FINISHED | getNote tailoring {}.", result.isPresent() ? result.get() : "does not exists");
+        log.info("FINISHED | getNotes of {}:{}.", project, tailoring);
         return result;
     }
 
