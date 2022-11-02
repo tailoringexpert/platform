@@ -48,7 +48,7 @@ import static java.util.Map.entry;
 @Configuration
 @PropertySource({
     "classpath:application.properties",
-    "classpath:application-dev.properties"
+    "classpath:application-test.properties"
 })
 @EnableCaching
 @Import({

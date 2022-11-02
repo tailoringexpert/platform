@@ -99,7 +99,7 @@ class TailoringRequirementExcelFileReaderTest {
         }
 
         // assert
-        assertThat(actual).isNull();
+        assertThat(actual).isEmpty();
     }
 
 

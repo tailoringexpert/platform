@@ -28,6 +28,7 @@ import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.ss.usermodel.WorkbookFactory;
 
 import java.io.ByteArrayInputStream;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -36,7 +37,6 @@ import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Function;
 
 import static java.util.Collections.emptyMap;
-import static org.apache.commons.compress.utils.Lists.newArrayList;
 import static org.apache.poi.ss.usermodel.Row.MissingCellPolicy.CREATE_NULL_AS_BLANK;
 
 @Log4j2
@@ -70,9 +70,11 @@ public class TailoringRequirementExcelFileReader implements Function<byte[], Map
                 String applicable = requirement.getCell(2, CREATE_NULL_AS_BLANK).getStringCellValue();
                 String text = requirement.getCell(3, CREATE_NULL_AS_BLANK).getStringCellValue();
 
+
                 if (!label.isEmpty()) {
                     chapter.set(position);
-                    result.put(chapter.get(), newArrayList());
+                    @SuppressWarnings("PMD.AvoidInstantiatingObjectsInLoops") final Collection<ImportRequirement> chapterRequirements = new ArrayList<>();
+                    result.put(chapter.get(), chapterRequirements);
                 } else {
                     result.get(chapter.get()).add(ImportRequirement.builder()
                         .label(label)
@@ -86,6 +88,6 @@ public class TailoringRequirementExcelFileReader implements Function<byte[], Map
         } catch (Exception e) {
             log.catching(e);
         }
-        return null;
+        return emptyMap();
     }
 }

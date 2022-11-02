@@ -159,7 +159,7 @@ class CatalogControllerTest {
     }
 
     @Test
-    void postBaseCatalog_Error_StateBadRequest() throws Exception {
+    void postBaseCatalog_Error_StatePreconditionFailed() throws Exception {
         // arrange
         Catalog<BaseRequirement> catalog = Catalog.<BaseRequirement>builder().build();
         given(serviceMock.doImport(catalog)).willReturn(FALSE);
@@ -173,7 +173,7 @@ class CatalogControllerTest {
         );
 
         // assert
-        actual.andExpect(status().isBadRequest());
+        actual.andExpect(status().isPreconditionFailed());
         assertThatNoException();
     }
 

@@ -24,7 +24,6 @@ package eu.tailoringexpert.tailoring;
 import eu.tailoringexpert.domain.Chapter;
 import eu.tailoringexpert.domain.DRD;
 import eu.tailoringexpert.domain.Phase;
-import eu.tailoringexpert.domain.Requirement;
 import eu.tailoringexpert.domain.TailoringRequirement;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
@@ -38,7 +37,6 @@ import java.util.function.BiFunction;
 import java.util.function.BiPredicate;
 
 import static java.util.Objects.isNull;
-import static java.util.Objects.nonNull;
 
 /**
  * Function for determinating all relevant DRDs of a tailoring.<p>
