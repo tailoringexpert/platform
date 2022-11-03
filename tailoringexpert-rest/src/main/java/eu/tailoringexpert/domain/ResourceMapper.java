@@ -211,17 +211,19 @@ public abstract class ResourceMapper {
     @AfterMapping
     protected void addLinks(@Context PathContextBuilder pathContext, @MappingTarget ScreeningSheetResourceBuilder resource) {
         PathContext context = pathContext.build();
-        if (nonNull(context.getProject()) || nonNull(context.getTailoring())) {
-            String self = isNull(context.getTailoring()) ? PROJECT_SCREENINGSHEET : TAILORING_SCREENINGSHEET;
-            String datei = isNull(context.getTailoring()) ? PROJECT_SCREENINGSHEET_PDF : TAILORING_SCREENINGSHEET_PDF;
-
-            Map<String, String> parameter = context.parameter();
-            String baseUri = linkToCurrentMapping().toString();
-            resource.links(asList(
-                createLink(REL_SELF, baseUri, self, parameter),
-                createLink("datei", baseUri, datei, parameter))
-            );
+        if (isNull(context.getProject()) ) {
+            return;
         }
+
+        String self = isNull(context.getTailoring()) ? PROJECT_SCREENINGSHEET : TAILORING_SCREENINGSHEET;
+        String file = isNull(context.getTailoring()) ? PROJECT_SCREENINGSHEET_PDF : TAILORING_SCREENINGSHEET_PDF;
+
+        Map<String, String> parameter = context.parameter();
+        String baseUri = linkToCurrentMapping().toString();
+        resource.links(asList(
+            createLink(REL_SELF, baseUri, self, parameter),
+            createLink("datei", baseUri, file, parameter))
+        );
     }
 
     @SuppressWarnings({"java:S1172"})
