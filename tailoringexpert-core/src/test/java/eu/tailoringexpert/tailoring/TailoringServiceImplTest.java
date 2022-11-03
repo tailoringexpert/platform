@@ -57,6 +57,7 @@ import java.util.Optional;
 import java.util.function.Function;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
+import java.util.zip.ZipOutputStream;
 
 import static eu.tailoringexpert.domain.Phase.E;
 import static eu.tailoringexpert.domain.Phase.F;
@@ -79,6 +80,7 @@ import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.mockStatic;
 import static org.mockito.Mockito.spy;
@@ -992,7 +994,7 @@ class TailoringServiceImplTest {
 
 
     @Test
-    void updateSelectedRequirements_ProjectNull_NullPointerExceptionThrown() {
+    void updateImportedRequirements_ProjectNull_NullPointerExceptionThrown() {
         // arrange
         String project = null;
         String tailoring = "master";
@@ -1006,7 +1008,7 @@ class TailoringServiceImplTest {
     }
 
     @Test
-    void updateSelectedRequirements_TailoringNull_NullPointerExceptionThrown() throws IOException {
+    void updateImportedRequirements_TailoringNull_NullPointerExceptionThrown() throws IOException {
         // arrange
         String project = "DUMMY";
         String tailoring = null;
@@ -1020,7 +1022,7 @@ class TailoringServiceImplTest {
     }
 
     @Test
-    void updateSelectedRequirements_DataNull_NoFileReadVoidReturn() {
+    void updateImportedRequirements_DataNull_NoFileReadVoidReturn() {
         // arrange
         String project = "DUMMY";
         String tailoring = "master";
@@ -1033,7 +1035,20 @@ class TailoringServiceImplTest {
     }
 
     @Test
-    void updateSelectedRequirements_RequirementsInValidAndInvalidStates_InvalidStateNotUpdates() {
+    void updateImportedRequirements_DataEmpty_NoFileReadVoidReturn() {
+        // arrange
+        String project = "DUMMY";
+        String tailoring = "master";
+
+        // act
+        service.updateImportedRequirements(project, tailoring, new byte[0]);
+
+        // assert
+        verify(tailoringAnforderungFileReaderMock, times(0)).apply(any());
+    }
+
+    @Test
+    void updateImportedRequirements_RequirementsInValidAndInvalidStates_InvalidStateNotUpdates() {
         // arrange
         String project = "DUMMY";
         String tailoring = "master";
@@ -1056,7 +1071,7 @@ class TailoringServiceImplTest {
     }
 
     @Test
-    void updateSelectedRequirements_RequirementsAllValidStates_AllRequirementProcesed() {
+    void updateImportedRequirements_RequirementsAllValidStates_AllRequirementProcesed() {
         // arrange
         String project = "DUMMY";
         String tailoring = "master";
@@ -1080,7 +1095,7 @@ class TailoringServiceImplTest {
 
 
     @Test
-    void updateSelectedRequirements_RequirementsValidStateAndTextChanges_AllRequirementsProcesed() {
+    void updateImportedRequirements_RequirementsValidStateAndTextChanges_AllRequirementsProcesed() {
         // arrange
         String project = "DUMMY";
         String tailoring = "master";
@@ -1104,7 +1119,7 @@ class TailoringServiceImplTest {
     }
 
     @Test
-    void updateSelectedRequirements_RequirementsValidStateAndEmptyTextChanges_AllRequirementsWithoutTextProcessed() {
+    void updateImportedRequirements_RequirementsValidStateAndEmptyTextChanges_AllRequirementsWithoutTextProcessed() {
         // arrange
         String project = "DUMMY";
         String tailoring = "master";
@@ -1330,6 +1345,20 @@ class TailoringServiceImplTest {
         // assert
         assertThat(actual).isEmpty();
         verify(repositoryMock, times(1)).getTailoring("Dummy", "master");
+    }
+
+    @Test
+    void addToZip_ZipOutputStremException_ExceptionThrown() throws Exception {
+        // arrange
+        File file = File.builder().name("dummy.pdf").build();
+        ZipOutputStream zipMock = mock(ZipOutputStream.class);
+        doThrow(new IOException()).when(zipMock).putNextEntry(any());
+
+        // act
+        Throwable actual = catchThrowable(() -> service.addToZip(file, zipMock));
+
+        // assert
+        assertThat(actual).isInstanceOf(IOException.class);
     }
 
 }

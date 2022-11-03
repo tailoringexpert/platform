@@ -39,6 +39,7 @@ import java.time.format.DateTimeFormatter;
 import static eu.tailoringexpert.domain.Phase.A;
 import static eu.tailoringexpert.domain.Phase.C;
 import static eu.tailoringexpert.domain.TailoringState.ACTIVE;
+import static java.lang.Boolean.FALSE;
 import static java.lang.Boolean.TRUE;
 import static java.nio.file.Files.newInputStream;
 import static java.nio.file.Paths.get;
@@ -61,7 +62,7 @@ class ResourceMapperTest {
     }
 
     @Test
-    void toResoure_KatalogVersionNull_NullWirdZurueckGegeben() {
+    void toResoure_BaseCatalogVersionNull_NullReturnd() {
         // arrange
         PathContextBuilder pathContext = PathContext.builder();
 
@@ -75,7 +76,7 @@ class ResourceMapperTest {
     }
 
     @Test
-    void toResoure_KatalogVersion_DatenUndLinksOK() {
+    void toResoure_BaseCatalogVersion_DataAndLinksReturned() {
         // arrange
         PathContextBuilder pathContext = PathContext.builder();
 
@@ -116,26 +117,26 @@ class ResourceMapperTest {
     }
 
     @Test
-    void toResource_ProjektInformationNull_NullWirdZurueckGegeben() {
+    void toResource_ProjectInformationNull_NullReturned() {
         // arrange
         PathContextBuilder pathContext = PathContext.builder();
-        ProjectInformation projekt = null;
+        ProjectInformation projectInformation = null;
 
         // act
-        ProjectResource actual = mapper.toResource(pathContext, projekt);
+        ProjectResource actual = mapper.toResource(pathContext, projectInformation);
 
         // assert
         assertThat(actual).isNull();
     }
 
     @Test
-    void toResource_ProjektInformation_DatenUndLinksOk() {
+    void toResource_ProjectInformation_DataAndLinksReturned() {
         // arrange
         PathContextBuilder pathContext = PathContext.builder()
             .project("SAMPLE")
             .catalog("8.2.1");
 
-        ProjectInformation projekt = ProjectInformation.builder()
+        ProjectInformation projectInformation = ProjectInformation.builder()
             .identifier("SAMPLE")
             .tailorings(asList(
                 TailoringInformation.builder().name("master").build(),
@@ -144,11 +145,11 @@ class ResourceMapperTest {
             .build();
 
         // act
-        ProjectResource actual = mapper.toResource(pathContext, projekt);
+        ProjectResource actual = mapper.toResource(pathContext, projectInformation);
 
         // assert
         assertThat(actual).isNotNull();
-        assertThat(actual.getName()).isEqualTo(projekt.getIdentifier());
+        assertThat(actual.getName()).isEqualTo(projectInformation.getIdentifier());
         assertThat(actual.getTailorings()).hasSize(2);
         assertThat(actual.getTailorings()).extracting("name").containsExactlyInAnyOrder("master", "master1");
 
@@ -161,23 +162,23 @@ class ResourceMapperTest {
     }
 
     @Test
-    void toResource_ProjektInformationOhneProjektPhaseInformation_DatenMitNullPhasenUndLinksOk() {
+    void toResource_ProjectInformationNoTailoringInformation_DataWithNullTailoringsReturned() {
         // arrange
         PathContextBuilder pathContext = PathContext.builder()
             .project("SAMPLE")
             .catalog("8.2.1");
 
-        ProjectInformation projekt = ProjectInformation.builder()
+        ProjectInformation projectInformation = ProjectInformation.builder()
             .identifier("SAMPLE")
             .tailorings(null)
             .build();
 
         // act
-        ProjectResource actual = mapper.toResource(pathContext, projekt);
+        ProjectResource actual = mapper.toResource(pathContext, projectInformation);
 
         // assert
         assertThat(actual).isNotNull();
-        assertThat(actual.getName()).isEqualTo(projekt.getIdentifier());
+        assertThat(actual.getName()).isEqualTo(projectInformation.getIdentifier());
         assertThat(actual.getTailorings()).isNull();
 
         assertThat(actual.getLinks()).containsExactlyInAnyOrder(
@@ -189,7 +190,7 @@ class ResourceMapperTest {
     }
 
     @Test
-    void toResource_ProjectInformationCreationTimestampAvailable_DatenUndLinksOk() {
+    void toResource_ProjectInformationCreationTimestampAvailable_DataAndLinksReturned() {
         // arrange
         PathContextBuilder pathContext = PathContext.builder()
             .project("SAMPLE")
@@ -224,33 +225,33 @@ class ResourceMapperTest {
     }
 
     @Test
-    void toResource_ProjektPhaseInformationNull_NullWirdZurueckGegeben() {
+    void toResource_TailoriingInformationNull_NullReturned() {
         // arrange
         PathContextBuilder pathContext = PathContext.builder();
-        TailoringInformation projektPhase = null;
+        TailoringInformation tailoringInformation = null;
 
         // act
-        TailoringResource actual = mapper.toResource(pathContext, projektPhase);
+        TailoringResource actual = mapper.toResource(pathContext, tailoringInformation);
 
         // assert
         assertThat(actual).isNull();
     }
 
     @Test
-    void toResource_TailoringInformation_DatenUndLinksOk() {
+    void toResource_TailoringInformation_DataAndLinksReturnd() {
         // arrange
         PathContextBuilder pathContext = PathContext.builder()
             .project("SAMPLE")
             .tailoring("master");
 
-        TailoringInformation projektPhase = TailoringInformation.builder()
+        TailoringInformation tailoringInformation = TailoringInformation.builder()
             .name("master")
             .catalogVersion("8.2.1")
             .phases(asList(A, C))
             .build();
 
         // act
-        TailoringResource actual = mapper.toResource(pathContext, projektPhase);
+        TailoringResource actual = mapper.toResource(pathContext, tailoringInformation);
 
         // assert
         assertThat(actual).isNotNull();
@@ -290,9 +291,10 @@ class ResourceMapperTest {
     }
 
     @Test
-    void toResource_ProjektScreeningSheetNull_NullWirdZurueckGegeben() {
+    void toResource_ProjectScreeningSheetNull_NullReturned() {
         // arrange
-        PathContextBuilder pathContext = PathContext.builder();
+        PathContextBuilder pathContext = PathContext.builder()
+            .project("SAMPLE");
         ScreeningSheet screeningSheet = null;
 
         // act
@@ -303,7 +305,7 @@ class ResourceMapperTest {
     }
 
     @Test
-    void toResource_ProjektScreeningSheet_ProjektScreeningDatenUndLinksOk() {
+    void toResource_ProjectScreeningSheet_DataAndLinksReturned() {
         // arrange
         PathContextBuilder pathContext = PathContext.builder()
             .project("SAMPLE");
@@ -340,7 +342,7 @@ class ResourceMapperTest {
     }
 
     @Test
-    void toResource_ProjektScreeningSheetScreeningSheetParameterNull_ProjektScreeningParameterNullDatenUndLinksOk() {
+    void toResource_ProjectScreeningSheetScreeningSheetParameterNull_ProjectScreeningParameterNullAndLinksReturnd() {
         // arrange
         PathContextBuilder pathContext = PathContext.builder()
             .project("SAMPLE");
@@ -365,6 +367,45 @@ class ResourceMapperTest {
 
         );
     }
+
+    @Test
+    void toResource_ProjectAndTailoringScreeningSheet_DataAndTailoringLinksReturned() {
+        // arrange
+        PathContextBuilder pathContext = PathContext.builder()
+            .project("SAMPLE")
+            .tailoring("master");
+
+        ScreeningSheetParameter parameter = ScreeningSheetParameter.builder()
+            .category("Identifier")
+            .value("SAMPLE")
+            .build();
+
+        ScreeningSheet screeningSheet = ScreeningSheet.builder()
+            .selectionVector(SelectionVector.builder().build())
+            .parameters(asList(parameter))
+            .build();
+
+        // act
+        ScreeningSheetResource actual = mapper.toResource(pathContext, screeningSheet);
+
+        // assert
+        assertThat(actual).isNotNull();
+        assertThat(actual.getData()).isNull();
+        assertThat(actual.getSelectionVector()).isNotNull();
+        assertThat(actual.getParameters()).isNotNull();
+        assertThat(actual.getParameters()).hasSize(1);
+        assertThat(actual.getParameters()).containsOnly(ScreeningSheetParameterResource.builder()
+            .label(parameter.getCategory())
+            .value(parameter.getValue())
+            .build());
+
+        assertThat(actual.getLinks()).containsExactlyInAnyOrder(
+            Link.of("http://localhost/project/SAMPLE/tailoring/master/screeningsheet", "self"),
+            Link.of("http://localhost/project/SAMPLE/tailoring/master/screeningsheet/pdf", "datei")
+
+        );
+    }
+
 
     @Test
     void toResource_ProjektScreeningSheetPDFDatenVorhanden_ProjektScreeningDatenUndLinksOk() throws IOException {
@@ -448,7 +489,6 @@ class ResourceMapperTest {
 
         );
     }
-
 
     @Test
     void toResource_ProjektNull_NullWirdZurueckGegeben() {
@@ -559,7 +599,7 @@ class ResourceMapperTest {
     }
 
     @Test
-    void toResource_ProjektPhaseAnforderungNull_NullWirdZurueckGegeben() {
+    void toResource_TailoringRequirementNull_NullWirdZurueckGegeben() {
         // arrange
         PathContextBuilder pathContext = PathContext.builder();
         TailoringRequirement anforderung = null;
@@ -572,7 +612,7 @@ class ResourceMapperTest {
     }
 
     @Test
-    void toResource_TailoringRequirement_DatenUndLinksOk() {
+    void toResource_TailoringRequirementSelected_DatenUndLinksOk() {
         // arrange
         PathContextBuilder pathContext = PathContext.builder()
             .project("SAMPLE")
@@ -605,7 +645,40 @@ class ResourceMapperTest {
     }
 
     @Test
-    void toResource_DokumentZeichnungNull_NullWirdZurueckGegeben() {
+    void toResource_TailoringRequirementNoSelected_DatenUndLinksOk() {
+        // arrange
+        PathContextBuilder pathContext = PathContext.builder()
+            .project("SAMPLE")
+            .tailoring("master")
+            .chapter("1.4");
+
+        TailoringRequirement requirement = TailoringRequirement.builder()
+            .position("c")
+            .text("Dies ist eine Testanforderung")
+            .selected(FALSE)
+            .reference(Reference.builder().text("Eine Reference").build())
+            .build();
+
+        // act
+        TailoringRequirementResource actual = mapper.toResource(pathContext, requirement);
+
+        // assert
+        assertThat(actual).isNotNull();
+        assertThat(actual.getPosition()).isEqualTo(requirement.getPosition());
+        assertThat(actual.getText()).isEqualTo(requirement.getText());
+        assertThat(actual.getSelected()).isFalse();
+        assertThat(actual.getChanged()).isFalse();
+        assertThat(actual.getReference()).isEqualTo("Eine Reference");
+
+        assertThat(actual.getLinks()).containsExactlyInAnyOrder(
+            Link.of("http://localhost/project/SAMPLE/tailoring/master/catalog/1.4/c", "self"),
+            Link.of("http://localhost/project/SAMPLE/tailoring/master/catalog/1.4/c/selected/true", "selected"),
+            Link.of("http://localhost/project/SAMPLE/tailoring/master/catalog/1.4/c/text", "text")
+        );
+    }
+
+    @Test
+    void toResource_DocumentSignatureNull_NullReturned() {
         // arrange
         PathContextBuilder pathContext = PathContext.builder();
         DocumentSignature documentSignature = null;
@@ -618,7 +691,7 @@ class ResourceMapperTest {
     }
 
     @Test
-    void toResource_DocumentSignature_DatenUndLinksOk() {
+    void toResource_DocumentSignature_DataAndLinksReturned() {
         // arrange
         PathContextBuilder pathContext = PathContext.builder()
             .project("SAMPLE")
@@ -647,32 +720,32 @@ class ResourceMapperTest {
     }
 
     @Test
-    void toResource_AnforderungGruppeNull_NullWirdZurueckGegeben() {
+    void toResource_ChapterNull_NulReturned() {
         // arrange
         PathContextBuilder pathContext = PathContext.builder();
-        Chapter<TailoringRequirement> gruppe = null;
+        Chapter<TailoringRequirement> chapter = null;
 
         // act
-        TailoringCatalogChapterResource actual = mapper.toResource(pathContext, gruppe);
+        TailoringCatalogChapterResource actual = mapper.toResource(pathContext, chapter);
 
         // assert
         assertThat(actual).isNull();
     }
 
     @Test
-    void toResource_AnforderungGruppe_DatenUndLinksOK() {
+    void toResource_Chapter_DataAndLinksReturned() {
         // arrange
         PathContextBuilder pathContext = PathContext.builder()
             .project("SAMPLE")
             .tailoring("master")
             .chapter("1.1");
 
-        Chapter<TailoringRequirement> gruppe = Chapter.<TailoringRequirement>builder()
+        Chapter<TailoringRequirement> chapter = Chapter.<TailoringRequirement>builder()
             .number("1.1")
             .build();
 
         // act
-        TailoringCatalogChapterResource actual = mapper.toResource(pathContext, gruppe);
+        TailoringCatalogChapterResource actual = mapper.toResource(pathContext, chapter);
 
         // assert
         assertThat(actual).isNotNull();
@@ -685,7 +758,7 @@ class ResourceMapperTest {
     }
 
     @Test
-    void toResource_SelektionsVektorNull_NullWirdZurueckGegeben() {
+    void toResource_SelectionVectorNull_NullWirdZurueckGegeben() {
         // arrange
         PathContextBuilder pathContext = PathContext.builder();
         SelectionVector selectionVector = null;
@@ -775,6 +848,43 @@ class ResourceMapperTest {
         assertThat(actual.getLinks()).containsExactlyInAnyOrder(
             Link.of("http://localhost/project/SAMPLE/tailoring/master/selectionvector", "self")
         );
+    }
+
+    @Test
+    void toResource_EmptyPathConext_NoLinks() {
+        // arrange
+        PathContextBuilder pathContext = PathContext.builder();
+
+        SelectionVector selectionVector = SelectionVector.builder()
+            .level("G", 1)
+            .level("E", 2)
+            .level("M", 3)
+            .level("P", 4)
+            .level("A", 5)
+            .level("Q", 6)
+            .level("S", 7)
+            .level("W", 8)
+            .level("O", 9)
+            .level("R", 10)
+            .build();
+
+        // act
+        SelectionVectorResource actual = mapper.toResource(pathContext, selectionVector);
+
+        // assert
+        assertThat(actual).isNotNull();
+        assertThat(actual.getLevels()).containsEntry("G", 1);
+        assertThat(actual.getLevels()).containsEntry("E", 2);
+        assertThat(actual.getLevels()).containsEntry("M", 3);
+        assertThat(actual.getLevels()).containsEntry("P", 4);
+        assertThat(actual.getLevels()).containsEntry("A", 5);
+        assertThat(actual.getLevels()).containsEntry("Q", 6);
+        assertThat(actual.getLevels()).containsEntry("S", 7);
+        assertThat(actual.getLevels()).containsEntry("W", 8);
+        assertThat(actual.getLevels()).containsEntry("O", 9);
+        assertThat(actual.getLevels()).containsEntry("R", 10);
+
+        assertThat(actual.getLinks()).isEmpty();
     }
 
     @Test
