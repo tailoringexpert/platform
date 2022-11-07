@@ -113,7 +113,7 @@ public class TailoringServiceImpl implements TailoringService {
         // prüfe, ob phase(n) bereits vorhanden
         screeningSheet.getParameters()
             .stream()
-            .filter(parameter -> ScreeningSheet.PHASE.equalsIgnoreCase(parameter.getCategory()))
+            .filter(parameter -> ScreeningSheet.PARAMETER_PHASE.equalsIgnoreCase(parameter.getCategory()))
             .findFirst()
             .ifPresent(parameter -> result.phases((Collection<Phase>) parameter.getValue()));
 

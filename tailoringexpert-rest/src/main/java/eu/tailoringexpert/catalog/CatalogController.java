@@ -63,7 +63,6 @@ import static eu.tailoringexpert.domain.ResourceMapper.BASECATALOG_VERSION_PDF;
 import static java.util.stream.Collectors.toList;
 import static org.springframework.http.HttpHeaders.ACCESS_CONTROL_EXPOSE_HEADERS;
 import static org.springframework.http.HttpHeaders.CONTENT_DISPOSITION;
-import static org.springframework.http.HttpStatus.BAD_REQUEST;
 import static org.springframework.http.HttpStatus.CREATED;
 import static org.springframework.http.HttpStatus.PRECONDITION_FAILED;
 import static org.springframework.http.ResponseEntity.notFound;

@@ -196,7 +196,7 @@ class JPATailoringServiceRepositoryMapperTest {
         ScreeningSheetEntity entity = ScreeningSheetEntity.builder()
             .parameters(List.of(
                 ScreeningSheetParameterEntity.builder()
-                    .category(ScreeningSheet.PROJECT)
+                    .category(ScreeningSheet.PARAMETER_PROJECT)
                     .value("Sample")
                     .build()
             ))
@@ -256,7 +256,7 @@ class JPATailoringServiceRepositoryMapperTest {
         ScreeningSheetEntity entity = ScreeningSheetEntity.builder()
             .parameters(List.of(
                 ScreeningSheetParameterEntity.builder()
-                    .category(ScreeningSheet.PHASE)
+                    .category(ScreeningSheet.PARAMETER_PHASE)
                     .value(List.of("F", "ZERO"))
                     .build()
                 ))

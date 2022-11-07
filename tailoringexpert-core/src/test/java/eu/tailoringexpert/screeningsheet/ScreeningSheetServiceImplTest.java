@@ -174,7 +174,7 @@ class ScreeningSheetServiceImplTest {
             .willReturn(List.of(
                 ScreeningSheetParameterField.builder()
                     .category("Project")
-                    .name(ScreeningSheet.PROJECT)
+                    .name(ScreeningSheet.PARAMETER_PROJECT)
                     .label("Sample")
                     .build()
             ));
@@ -202,7 +202,7 @@ class ScreeningSheetServiceImplTest {
         List<ScreeningSheetParameterField> screeningSheetParameters = List.of(
             ScreeningSheetParameterField.builder()
                 .category("Project")
-                .name(ScreeningSheet.PROJECT)
+                .name(ScreeningSheet.PARAMETER_PROJECT)
                 .label("Sample")
                 .build(),
             ScreeningSheetParameterField.builder()
@@ -216,11 +216,11 @@ class ScreeningSheetServiceImplTest {
                 .label("DUMMY")
                 .build(),
             ScreeningSheetParameterField.builder()
-                .category(ScreeningSheet.PHASE)
+                .category(ScreeningSheet.PARAMETER_PHASE)
                 .name("A")
                 .build(),
             ScreeningSheetParameterField.builder()
-                .category(ScreeningSheet.PHASE)
+                .category(ScreeningSheet.PARAMETER_PHASE)
                 .name("ZERO")
                 .build()
         );
@@ -280,7 +280,7 @@ class ScreeningSheetServiceImplTest {
             List.of(
                 ScreeningSheetParameterField.builder()
                     .category("Project")
-                    .name(ScreeningSheet.PROJECT)
+                    .name(ScreeningSheet.PARAMETER_PROJECT)
                     .label(null)
                     .build()
             )
@@ -301,7 +301,7 @@ class ScreeningSheetServiceImplTest {
             List.of(
                 ScreeningSheetParameterField.builder()
                     .category("Project")
-                    .name(ScreeningSheet.PROJECT)
+                    .name(ScreeningSheet.PARAMETER_PROJECT)
                     .label("")
                     .build()
             )
