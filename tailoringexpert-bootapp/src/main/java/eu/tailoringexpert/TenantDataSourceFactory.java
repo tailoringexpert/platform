@@ -22,6 +22,7 @@
 package eu.tailoringexpert;
 
 import lombok.NoArgsConstructor;
+import lombok.SneakyThrows;
 import lombok.extern.log4j.Log4j2;
 import org.jasypt.encryption.StringEncryptor;
 import org.jasypt.properties.EncryptableProperties;
@@ -66,15 +67,11 @@ public class TenantDataSourceFactory {
             files.map(Path::toFile)
                 .filter(file -> "db.properties".equalsIgnoreCase(file.getName()))
                 .forEach(propertyFile -> {
-                    try {
-                        final Properties tenantProperties = loadProperties(propertyFile, encryptor);
-                        final String tenantId = tenantProperties.getProperty("name");
-                        final DataSource tenantDataSource = buildDataSource(tenantProperties);
-                        resolvedDataSources.put(tenantId, tenantDataSource);
-                        TenantContext.registerTenant(tenantId);
-                    } catch (final IOException e) {
-                        throw new RuntimeException("Could not initialize database", e);
-                    }
+                    final Properties tenantProperties = loadProperties(propertyFile, encryptor);
+                    final String tenantId = tenantProperties.getProperty("name");
+                    final DataSource tenantDataSource = buildDataSource(tenantProperties);
+                    resolvedDataSources.put(tenantId, tenantDataSource);
+                    TenantContext.registerTenant(tenantId);
 
                 });
         }
@@ -111,7 +108,8 @@ public class TenantDataSourceFactory {
      * @return properties with replaced placeholders
      * @throws IOException Fehler beim einlesen der File
      */
-    private static Properties loadProperties(final File file, final StringEncryptor encryptor) throws IOException {
+    @SneakyThrows
+    private static Properties loadProperties(final File file, final StringEncryptor encryptor) {
         final Properties properties = new Properties();
         try (InputStream fis = newInputStream(file.toPath())) {
             properties.load(fis);

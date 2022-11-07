@@ -1350,12 +1350,14 @@ class TailoringServiceImplTest {
     @Test
     void addToZip_ZipOutputStremException_ExceptionThrown() throws Exception {
         // arrange
-        File file = File.builder().name("dummy.pdf").build();
-        ZipOutputStream zipMock = mock(ZipOutputStream.class);
-        doThrow(new IOException()).when(zipMock).putNextEntry(any());
+        Throwable actual;
+        try (ZipOutputStream zipMock = mock(ZipOutputStream.class)) {
+            File file = File.builder().name("dummy.pdf").build();
+            doThrow(new IOException()).when(zipMock).putNextEntry(any());
 
-        // act
-        Throwable actual = catchThrowable(() -> service.addToZip(file, zipMock));
+            // act
+            actual = catchThrowable(() -> service.addToZip(file, zipMock));
+        }
 
         // assert
         assertThat(actual).isInstanceOf(IOException.class);

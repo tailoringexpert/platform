@@ -36,7 +36,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static eu.tailoringexpert.domain.ScreeningSheet.PHASE;
+import static eu.tailoringexpert.domain.ScreeningSheet.PARAMETER_PHASE;
 
 @Log4j2
 @Tenant("plattform")
@@ -54,16 +54,16 @@ public class PlattformScreeningSheetParameterProvider implements ScreeningSheetP
         List<PDField> textfelder = filterTextfelder(fields);
         Collection<ScreeningSheetParameterField> result = new ArrayList<>();
 
-        result.addAll(mapFields(textfelder, "Project", ScreeningSheet.PROJECT));
+        result.addAll(mapFields(textfelder, "Project", ScreeningSheet.PARAMETER_PROJECT));
 
         List<PDField> selectedParameters = filterCheckedCheckboxes(fields);
-        result.addAll(mapFields(selectedParameters, PHASE, "0"));
-        result.addAll(mapFields(selectedParameters, PHASE, "A"));
-        result.addAll(mapFields(selectedParameters, PHASE, "B"));
-        result.addAll(mapFields(selectedParameters, PHASE, "C"));
-        result.addAll(mapFields(selectedParameters, PHASE, "D"));
-        result.addAll(mapFields(selectedParameters, PHASE, "E"));
-        result.addAll(mapFields(selectedParameters, PHASE, "F"));
+        result.addAll(mapFields(selectedParameters, PARAMETER_PHASE, "0"));
+        result.addAll(mapFields(selectedParameters, PARAMETER_PHASE, "A"));
+        result.addAll(mapFields(selectedParameters, PARAMETER_PHASE, "B"));
+        result.addAll(mapFields(selectedParameters, PARAMETER_PHASE, "C"));
+        result.addAll(mapFields(selectedParameters, PARAMETER_PHASE, "D"));
+        result.addAll(mapFields(selectedParameters, PARAMETER_PHASE, "E"));
+        result.addAll(mapFields(selectedParameters, PARAMETER_PHASE, "F"));
 
         return result;
     }
