@@ -39,6 +39,7 @@ import eu.tailoringexpert.domain.SelectionVectorResource;
 import eu.tailoringexpert.domain.TailoringRequirementResource;
 import eu.tailoringexpert.domain.TailoringResource;
 import eu.tailoringexpert.domain.TailoringCatalogChapterResource;
+import eu.tailoringexpert.domain.TailoringState;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -52,6 +53,7 @@ import org.springframework.hateoas.CollectionModel;
 import org.springframework.hateoas.EntityModel;
 import org.springframework.hateoas.UriTemplate;
 import org.springframework.http.ContentDisposition;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -90,6 +92,7 @@ import static eu.tailoringexpert.domain.ResourceMapper.TAILORING_SCREENINGSHEET_
 import static eu.tailoringexpert.domain.ResourceMapper.TAILORING_SELECTIONVECTOR;
 import static eu.tailoringexpert.domain.ResourceMapper.TAILORING_SIGNATURE;
 import static eu.tailoringexpert.domain.ResourceMapper.TAILORING_SIGNATURE_FACULTY;
+import static eu.tailoringexpert.domain.ResourceMapper.TAILORING_STATE;
 import static java.util.stream.Collectors.toList;
 import static org.springframework.hateoas.EntityModel.of;
 import static org.springframework.hateoas.server.mvc.BasicLinkBuilder.linkToCurrentMapping;
@@ -584,7 +587,13 @@ public class TailoringController {
         @Parameter(description = "Project identifier") @PathVariable String project,
         @Parameter(description = "Tailoring name") @PathVariable String tailoring) {
         Optional<Boolean> deleted = tailoringService.deleteTailoring(project, tailoring);
-        return ResponseEntity.status(deleted.isPresent() ? OK : NOT_FOUND).build();
+
+        HttpStatus result = NOT_FOUND;
+        if (deleted.isPresent()) {
+            result = deleted.get().booleanValue() ? OK : PRECONDITION_FAILED;
+        }
+
+        return ResponseEntity.status(result).build();
     }
 
     @Operation(summary = "Load notes of a tailoring")
@@ -669,5 +678,29 @@ public class TailoringController {
                 pathContext.note(addedNote.get().getNumber().toString()).build().parameter())
             .toUri())
             .build();
+    }
+
+    @Operation(summary = "Set state of tailoring")
+    @ApiResponses(value = {
+        @ApiResponse(
+            responseCode = "201", description = "State changed",
+            content = @Content(mediaType = "application/json+hal", schema = @Schema(implementation = Void.class))),
+        @ApiResponse(
+            responseCode = "404", description = "Tailoring does not exist",
+            content = @Content)
+    })
+    @PutMapping(TAILORING_STATE)
+    public ResponseEntity<EntityModel<TailoringResource>> putState(
+        @Parameter(description = "Project identifier") @PathVariable String project,
+        @Parameter(description = "Tailoring name") @PathVariable String tailoring,
+        @Parameter(description = "State to set") @PathVariable TailoringState state) {
+        PathContextBuilder pathContext = PathContext.builder()
+            .project(project)
+            .tailoring(tailoring);
+
+        return tailoringService.updateState(project, tailoring, state)
+            .map(updatedTailoring -> ok()
+                .body(of(mapper.toResource(pathContext, updatedTailoring))))
+            .orElseThrow(() -> new ResourceException(PRECONDITION_FAILED, "State could not be updated"));
     }
 }

@@ -23,6 +23,7 @@ package eu.tailoringexpert.tailoring;
 
 import eu.tailoringexpert.domain.BaseRequirement;
 import eu.tailoringexpert.domain.Note;
+import eu.tailoringexpert.domain.TailoringState;
 import eu.tailoringexpert.requirement.RequirementService;
 import eu.tailoringexpert.domain.Catalog;
 import eu.tailoringexpert.domain.Chapter;
@@ -61,8 +62,9 @@ import java.util.zip.ZipOutputStream;
 
 import static eu.tailoringexpert.domain.Phase.E;
 import static eu.tailoringexpert.domain.Phase.F;
-import static eu.tailoringexpert.domain.TailoringState.ACTIVE;
+import static eu.tailoringexpert.domain.TailoringState.AGREED;
 
+import static eu.tailoringexpert.domain.TailoringState.CREATED;
 import static java.lang.Boolean.TRUE;
 import static java.nio.charset.StandardCharsets.UTF_8;
 import static java.nio.file.Files.newInputStream;
@@ -841,7 +843,7 @@ class TailoringServiceImplTest {
         assertThat(actual.getSelectionVector()).isEqualTo(anzuwendenderSelectionVector);
         assertThat(actual.getCatalog()).isNotNull();
         assertThat(actual.getSignatures()).isEqualTo(defaultZeichnungen);
-        assertThat(actual.getState()).isEqualTo(ACTIVE);
+        assertThat(actual.getState()).isEqualTo(CREATED);
         assertThat(actual.getPhases()).containsOnly(E, F);
 
         verify(mapperMock, times(1)).toTailoringCatalog(catalog, screeningSheet, anzuwendenderSelectionVector);
@@ -894,7 +896,7 @@ class TailoringServiceImplTest {
         assertThat(actual.getSelectionVector()).isEqualTo(anzuwendenderSelectionVector);
         assertThat(actual.getCatalog()).isNotNull();
         assertThat(actual.getSignatures()).isEqualTo(defaultZeichnungen);
-        assertThat(actual.getState()).isEqualTo(ACTIVE);
+        assertThat(actual.getState()).isEqualTo(CREATED);
         assertThat(actual.getPhases()).containsOnly(E, F);
 
         verify(mapperMock, times(1)).toTailoringCatalog(catalog, screeningSheet, anzuwendenderSelectionVector);
@@ -1180,16 +1182,19 @@ class TailoringServiceImplTest {
 
         // assert
         assertThat(actual).isEmpty();
-        verify(repositoryMock, times(1)).existsTailoring(project, tailoring);
+        verify(repositoryMock, times(1)).getTailoring(project, tailoring);
+        verify(repositoryMock, times(0)).deleteTailoring(project, tailoring);
+
     }
 
     @Test
-    void deleteTailoring_TailoringExists_TrueReturned() throws IOException {
+    void deleteTailoring_TailoringExistsStateCreated_TrueReturned() throws IOException {
         // arrange
         String project = "DUMMY";
         String tailoring = "master";
 
-        given(repositoryMock.existsTailoring(project, tailoring)).willReturn(true);
+        given(repositoryMock.getTailoring(project, tailoring))
+            .willReturn(of(Tailoring.builder().state(TailoringState.CREATED).build()));
         given(repositoryMock.deleteTailoring(project, tailoring)).willReturn(TRUE);
 
         // act
@@ -1198,8 +1203,28 @@ class TailoringServiceImplTest {
         // assert
         assertThat(actual).isNotEmpty();
         assertThat(actual.get()).isTrue();
-        verify(repositoryMock, times(1)).existsTailoring(project, tailoring);
+        verify(repositoryMock, times(1)).getTailoring(project, tailoring);
         verify(repositoryMock, times(1)).deleteTailoring(project, tailoring);
+    }
+
+    @Test
+    void deleteTailoring_TailoringExistsStateAgreed_FalseReturned() throws IOException {
+        // arrange
+        String project = "DUMMY";
+        String tailoring = "master";
+
+        given(repositoryMock.getTailoring(project, tailoring))
+            .willReturn(of(Tailoring.builder().state(AGREED).build()));
+        given(repositoryMock.deleteTailoring(project, tailoring)).willReturn(TRUE);
+
+        // act
+        Optional<Boolean> actual = service.deleteTailoring(project, tailoring);
+
+        // assert
+        assertThat(actual).isNotEmpty();
+        assertThat(actual.get()).isFalse();
+        verify(repositoryMock, times(1)).getTailoring(project, tailoring);
+        verify(repositoryMock, times(0)).deleteTailoring(project, tailoring);
     }
 
 
@@ -1363,4 +1388,78 @@ class TailoringServiceImplTest {
         assertThat(actual).isInstanceOf(IOException.class);
     }
 
+    @Test
+    void updateState_TailoringNotExists_EmptyReturned() {
+        // arrange
+        given(repositoryMock.getTailoring("SAMPLE", "master")).willReturn(empty());
+
+        // act
+        Optional<TailoringInformation> actual = service.updateState("SAMPLE", "master", AGREED);
+
+        // assert
+        assertThat(actual).isEmpty();
+
+        verify(repositoryMock, times(1)).getTailoring("SAMPLE", "master");
+        verify(repositoryMock, times(0)).setState(any(), any(), any());
+    }
+
+    @Test
+    void updateState_StateDowngrade_UnmodifiedTailoringReturned() {
+        // arrange
+        Tailoring tailoring = Tailoring.builder().state(TailoringState.RELEASED).build();
+        given(repositoryMock.getTailoring("SAMPLE", "master")).willReturn(of(tailoring));
+
+        TailoringInformation tailoringInformation = TailoringInformation.builder().build();
+        given(mapperMock.toTailoringInformation(tailoring)).willReturn(tailoringInformation);
+
+        // act
+        Optional<TailoringInformation> actual = service.updateState("SAMPLE", "master", AGREED);
+
+        // assert
+        assertThat(actual).isPresent();
+        assertThat(actual.get()).isEqualTo(tailoringInformation);
+
+        verify(repositoryMock, times(1)).getTailoring("SAMPLE", "master");
+        verify(repositoryMock, times(0)).setState(any(), any(), any());
+    }
+
+    @Test
+    void updateState_RespositorySetStateError_EmptyReturned() {
+        // arrange
+        given(repositoryMock.getTailoring("SAMPLE", "master")).willReturn(of(Tailoring.builder().state(CREATED).build()));
+        given(repositoryMock.setState("SAMPLE", "master", AGREED)).willReturn(empty());
+
+        // act
+        Optional<TailoringInformation> actual = service.updateState("SAMPLE", "master", AGREED);
+
+        // assert
+        assertThat(actual).isEmpty();
+
+        verify(repositoryMock, times(1)).getTailoring("SAMPLE", "master");
+        verify(repositoryMock, times(1)).setState(any(), any(), any());
+    }
+
+    @Test
+    void updateState_StateChanged_UpdatedTailoringReturned() {
+        // arrange
+        given(repositoryMock.getTailoring("SAMPLE", "master"))
+            .willReturn(of(Tailoring.builder().state(CREATED).build()));
+
+        Tailoring tailoring = Tailoring.builder().state(AGREED).build();
+        given(repositoryMock.setState("SAMPLE", "master", AGREED))
+            .willReturn(of(tailoring));
+
+        TailoringInformation tailoringInformation = TailoringInformation.builder().build();
+        given(mapperMock.toTailoringInformation(tailoring)).willReturn(tailoringInformation);
+
+        // act
+        Optional<TailoringInformation> actual = service.updateState("SAMPLE", "master", AGREED);
+
+        // assert
+        assertThat(actual).isPresent();
+        assertThat(actual.get()).isEqualTo(tailoringInformation);
+
+        verify(repositoryMock, times(1)).getTailoring("SAMPLE", "master");
+        verify(repositoryMock, times(1)).setState(any(), any(), any());
+    }
 }

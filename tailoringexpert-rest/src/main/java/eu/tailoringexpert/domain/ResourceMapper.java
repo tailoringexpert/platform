@@ -87,6 +87,7 @@ public abstract class ResourceMapper {
     public static final String TAILORING_ATTACHMENT = "project/{project}/tailoring/{tailoring}/attachment/{name}";
     public static final String TAILORING_NOTES = "project/{project}/tailoring/{tailoring}/note";
     public static final String TAILORING_NOTE = "project/{project}/tailoring/{tailoring}/note/{note}";
+    public static final String TAILORING_STATE = "project/{project}/tailoring/{tailoring}/state/{state}";
     public static final String BASECATALOG = "catalog";
     public static final String BASECATALOG_VERSION = "catalog/{version}";
     public static final String BASECATALOG_VERSION_PDF = "catalog/{version}/pdf";
@@ -115,6 +116,7 @@ public abstract class ResourceMapper {
     private static final String REL_IMPORT = "import";
     private static final String REL_ATTACHMENT = "attachment";
     private static final String REL_NOTE = "note";
+    private static final String REL_STATE = "state";
 
     // Katalogversion
     @BeforeMapping
@@ -177,6 +179,7 @@ public abstract class ResourceMapper {
     protected void updatePathContext(@Context PathContextBuilder pathContext, TailoringInformation domain) {
         pathContext.tailoring(nonNull(domain) ? domain.getName() : null);
         pathContext.catalog(nonNull(domain) ? domain.getCatalogVersion() : null);
+        pathContext.state(nonNull(domain) ? domain.getState().nextState().name() : null);
     }
 
     public abstract TailoringResource toResource(@Context PathContextBuilder pathContext, TailoringInformation domain);
@@ -200,7 +203,8 @@ public abstract class ResourceMapper {
                 createLink(REL_IMPORT, baseUri, TAILORING_REQUIREMENT_IMPORT, parameter),
                 createLink(REL_BASECATALOG_DOCUMENT, baseUri, BASECATALOG_VERSION_PDF, parameter),
                 createLink(REL_ATTACHMENT, baseUri, TAILORING_ATTACHMENTS, parameter),
-                createLink(REL_NOTE, baseUri, TAILORING_NOTES, parameter)
+                createLink(REL_NOTE, baseUri, TAILORING_NOTES, parameter),
+                createLink(REL_STATE, baseUri, TAILORING_STATE, parameter)
             )
         );
     }
@@ -211,7 +215,7 @@ public abstract class ResourceMapper {
     @AfterMapping
     protected void addLinks(@Context PathContextBuilder pathContext, @MappingTarget ScreeningSheetResourceBuilder resource) {
         PathContext context = pathContext.build();
-        if (isNull(context.getProject()) ) {
+        if (isNull(context.getProject())) {
             return;
         }
 

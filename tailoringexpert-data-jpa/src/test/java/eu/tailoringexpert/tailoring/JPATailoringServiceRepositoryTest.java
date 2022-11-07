@@ -37,6 +37,7 @@ import eu.tailoringexpert.domain.SelectionVectorProfile;
 import eu.tailoringexpert.domain.SelectionVectorProfileEntity;
 import eu.tailoringexpert.domain.Tailoring;
 import eu.tailoringexpert.domain.TailoringEntity;
+import eu.tailoringexpert.domain.TailoringState;
 import eu.tailoringexpert.repository.DokumentSigneeRepository;
 import eu.tailoringexpert.repository.ProjectRepository;
 import eu.tailoringexpert.repository.SelectionVectorProfileRepository;
@@ -697,4 +698,48 @@ class JPATailoringServiceRepositoryTest {
         assertThat(copyOf(tailoring.getNotes()).get(1).getText()).isEqualTo("Note 2");
     }
 
+    @Test
+    void setState_TailoringNotExists_EmptyReturned() {
+        // arrange
+        given(projectRepositoryMock.findTailoring("SAMPLE", "master"))
+            .willReturn(null);
+
+        // act
+        Optional<Tailoring> actual = repository.setState("SAMPLE", "master", TailoringState.CREATED);
+
+        // assert
+        assertThat(actual).isEmpty();
+    }
+
+    @Test
+    void setState_TailoringExists_UpdatedTailoringReturned() {
+        // arrange
+        TailoringEntity entity = TailoringEntity.builder().state(TailoringState.CREATED).build();
+        given(projectRepositoryMock.findTailoring("SAMPLE", "master"))
+            .willReturn(entity);
+
+        given(mapperMock.toDomain(entity)).willAnswer(invocation -> {
+            TailoringEntity te = invocation.getArgument(0);
+            return Tailoring.builder().state(te.getState()).build();
+        });
+
+        // act
+        Optional<Tailoring> actual = repository.setState("SAMPLE", "master", TailoringState.AGREED);
+
+        // assert
+        assertThat(actual).isPresent();
+        assertThat(actual.get().getState()).isEqualTo(TailoringState.AGREED);
+    }
+
+    @Test
+    void existsTailoring_RepositoryCalled_RepositoryResultReturned() {
+        // arrange
+        given(projectRepositoryMock.existsTailoring("SAMPLE", "master")).willReturn(true);
+
+        // act
+        boolean actual = repository.existsTailoring("SAMPLE", "master");
+
+        // assert
+        verify(projectRepositoryMock, times(1)).existsTailoring("SAMPLE", "master");
+    }
 }

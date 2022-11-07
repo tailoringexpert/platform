@@ -23,6 +23,7 @@ package eu.tailoringexpert.requirement;
 
 import eu.tailoringexpert.domain.Chapter;
 import eu.tailoringexpert.domain.TailoringRequirement;
+import eu.tailoringexpert.domain.TailoringState;
 
 import java.util.Optional;
 

@@ -26,6 +26,7 @@ import eu.tailoringexpert.domain.TailoringRequirementEntity;
 import eu.tailoringexpert.domain.TailoringEntity;
 import eu.tailoringexpert.domain.TailoringCatalogChapterEntity;
 import eu.tailoringexpert.domain.TailoringRequirement;
+import eu.tailoringexpert.domain.TailoringState;
 import eu.tailoringexpert.repository.ProjectRepository;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;

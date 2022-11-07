@@ -53,13 +53,16 @@ public class TailoringResource extends RepresentationModel<TailoringResource> {
      */
     private String catalogVersion;
 
+    private TailoringState state;
+
     @Builder
-    public TailoringResource(String name, Collection<Phase> phases, String catalogVersion, List<Link> links) {
+    public TailoringResource(String name, Collection<Phase> phases, String catalogVersion, TailoringState state, List<Link> links) {
         super();
 
         this.name = name;
         this.phases = phases;
         this.catalogVersion = catalogVersion;
+        this.state = state;
         if (nonNull(links)) {
             add(links);
         }

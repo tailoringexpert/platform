@@ -31,6 +31,7 @@ import eu.tailoringexpert.domain.ScreeningSheet;
 import eu.tailoringexpert.domain.SelectionVectorProfile;
 import eu.tailoringexpert.domain.Tailoring;
 import eu.tailoringexpert.domain.TailoringEntity;
+import eu.tailoringexpert.domain.TailoringState;
 import eu.tailoringexpert.repository.DokumentSigneeRepository;
 import eu.tailoringexpert.repository.ProjectRepository;
 import eu.tailoringexpert.repository.SelectionVectorProfileRepository;
@@ -40,6 +41,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Collection;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -314,6 +316,19 @@ public class JPATailoringServiceRepository implements TailoringServiceRepository
     @Override
     public boolean existsTailoring(String project, String name) {
         return projectRepository.existsTailoring(project, name);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public Optional<Tailoring> setState(String project, String tailoring, TailoringState state) {
+        Optional<TailoringEntity> oTailoring = findTailoring(project, tailoring);
+        if (oTailoring.isPresent()) {
+            oTailoring.get().setState(state);
+            return of(mapper.toDomain(oTailoring.get()));
+        }
+        return empty();
     }
 
     /**

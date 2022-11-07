@@ -46,4 +46,10 @@ public class TailoringInformation implements Serializable {
      * Used catalog version.
      */
     private String catalogVersion;
+
+    /**
+     * State of tailoring.
+     */
+    private TailoringState state;
+
 }

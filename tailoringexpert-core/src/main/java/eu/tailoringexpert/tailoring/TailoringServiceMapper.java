@@ -57,9 +57,7 @@ import static java.util.stream.Collectors.toUnmodifiableSet;
 @SuppressWarnings("java:S1610")
 public abstract class TailoringServiceMapper {
 
-    @BeanMapping(ignoreByDefault = true)
-    @Mapping(target = "name", source = "domain.name")
-    @Mapping(target = "phases", source = "domain.phases")
+    @Mapping(target = "catalogVersion", source = "domain.catalog.version")
     abstract TailoringInformation toTailoringInformation(Tailoring domain);
 
     abstract Catalog<TailoringRequirement> toTailoringCatalog(
