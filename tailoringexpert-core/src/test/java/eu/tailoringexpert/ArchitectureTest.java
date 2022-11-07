@@ -30,6 +30,8 @@ import com.tngtech.archunit.library.dependencies.SliceRule;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 
 
 import static com.tngtech.archunit.core.importer.ImportOption.Predefined.DO_NOT_INCLUDE_JARS;
@@ -102,14 +104,15 @@ class ArchitectureTest {
         assertThat(actual.hasViolation()).isFalse();
     }
 
-    @DisplayName("Keine Abhängigkeiten zu Spring")
-    @Test
-    void noSpringDependency() {
+    @DisplayName("No unwanted package dependencies")
+    @ParameterizedTest(name = "{index} is free of unwanted references to {0}")
+    @ValueSource(strings = {"org.springframework.", "io.swagger.", "com.fasterxml."})
+    void noDependencies(String pkg) {
         // arrange
         ArchRule rule = noClasses()
             .that().resideInAnyPackage(PACKAGEIDENTIFIERS)
-            .should().dependOnClassesThat().haveNameMatching("org.springframework.")
-            .because("core should be free from spring");
+            .should().dependOnClassesThat().haveNameMatching(pkg)
+            .because("core should be free from " + pkg);
 
         // act
         EvaluationResult actual = rule.evaluate(classes);
@@ -118,38 +121,7 @@ class ArchitectureTest {
         assertThat(actual.hasViolation()).isFalse();
     }
 
-    @DisplayName("Keine Abhängigkeiten zu Swagger")
-    @Test
-    void noSwaggerDependency() {
-        // arrange
-        ArchRule rule = noClasses()
-            .that().resideInAnyPackage(PACKAGEIDENTIFIERS)
-            .should().dependOnClassesThat().haveNameMatching("io.swagger.")
-            .because("core should be free from swagger");
 
-        // act
-        EvaluationResult actual = rule.evaluate(classes);
-
-        // assert
-        assertThat(actual.hasViolation()).isFalse();
-    }
-
-    @DisplayName("Keine Abhängigkeiten zu Jackson")
-    @Test
-    void noJacksonDependency() {
-        // arrange
-        ArchRule rule = noClasses()
-            .that().resideInAnyPackage(PACKAGEIDENTIFIERS)
-            .should().dependOnClassesThat().haveNameMatching("com.fasterxml.")
-            .because("core should be free from jackson");
-
-
-        // act
-        EvaluationResult actual = rule.evaluate(classes);
-
-        // assert
-        assertThat(actual.hasViolation()).isFalse();
-    }
 
     @DisplayName("Keine Verwendung von System.out und System.err")
     @Test

@@ -31,8 +31,8 @@ import org.mapstruct.Mapper;
  * @author Michael Bädorf
  */
 @Mapper(componentModel = "jsr330")
-public abstract class JPASelectionVectorProviderRepositoryMapper {
+public interface JPASelectionVectorProviderRepositoryMapper {
 
-    public abstract SelectionVectorProfile toDomain(SelectionVectorProfileEntity entity);
+    SelectionVectorProfile toDomain(SelectionVectorProfileEntity entity);
 
 }
