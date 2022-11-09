@@ -107,6 +107,9 @@ Enthaltene Bausteine::
 |_xref:_whitebox_tailoringexpert_tenantkatalog[catalog]_
 |_Proxies für die mandantenspzezifischen Gesamtkatalogerstellung_
 
+|_xref:_whitebox_tailoringexpert_tenantrequirment[requirement]_
+|_Proxies für die mandantenspzezifischen Predikate zu Ermittlung von der Möglichkeit, Anforderungen zu modifzieren oder zu löschen_
+
 |_xref:_whitebox_tailoringexpert_tenantrenderer[renderer]_
 |_Proxies für die mandantenspzezifischen Selektion von Renderern für die Ausgabedokumente_
 
@@ -502,6 +505,11 @@ plantuml::plantuml/tenant/catalog/Ebene3.plantuml[target="{plantumls-outdir}/05/
 ==== Whitebox _tailoringexpert-tenant:renderer_
 .tailoringexpert-tenant:renderer
 plantuml::plantuml/tenant/renderer/Ebene3.plantuml[target="{plantumls-outdir}/05/tenant/renderer", format=svg, alt=Whitebox tailoringexpert-tenant:renderer"]
+
+==== Whitebox _tailoringexpert-tenant:requirement_
+.tailoringexpert-tenant:requirement
+plantuml::plantuml/tenant/requirement/Ebene3.plantuml[target="{plantumls-outdir}/05/tenant/renderer", format=svg, alt=Whitebox tailoringexpert-tenant:requirement"]
+
 
 ==== Whitebox _tailoringexpert-tenant:screeningsheet_
 .tailoringexpert-tenant:screeningsheet

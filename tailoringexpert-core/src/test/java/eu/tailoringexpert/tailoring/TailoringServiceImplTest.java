@@ -90,12 +90,14 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
 @Log4j2
+@SuppressWarnings("PMD.CyclomaticComplexity")
 class TailoringServiceImplTest {
 
     private TailoringServiceImpl service;
 
     private TailoringServiceRepository repositoryMock;
     private TailoringServiceMapper mapperMock;
+    private TailoringDeletablePredicate tailoringDeletableMock;
     private DocumentService documentServiceMock;
     private RequirementService requirementServiceMock;
     private Function<byte[], Map<String, Collection<ImportRequirement>>> tailoringAnforderungFileReaderMock;
@@ -104,12 +106,14 @@ class TailoringServiceImplTest {
     void setup() {
         this.repositoryMock = mock(TailoringServiceRepository.class);
         this.mapperMock = mock(TailoringServiceMapper.class);
+        this.tailoringDeletableMock = mock(TailoringDeletablePredicate.class);
         this.documentServiceMock = mock(DocumentService.class);
         this.requirementServiceMock = mock(RequirementService.class);
         this.tailoringAnforderungFileReaderMock = mock(Function.class);
         this.service = new TailoringServiceImpl(
             repositoryMock,
             mapperMock,
+            tailoringDeletableMock,
             documentServiceMock,
             requirementServiceMock,
             tailoringAnforderungFileReaderMock
@@ -1188,14 +1192,17 @@ class TailoringServiceImplTest {
     }
 
     @Test
-    void deleteTailoring_TailoringExistsStateCreated_TrueReturned() throws IOException {
+    void deleteTailoring_TailoringExistsTailoringDeletable_TrueReturned() throws IOException {
         // arrange
         String project = "DUMMY";
         String tailoring = "master";
 
         given(repositoryMock.getTailoring(project, tailoring))
-            .willReturn(of(Tailoring.builder().state(TailoringState.CREATED).build()));
-        given(repositoryMock.deleteTailoring(project, tailoring)).willReturn(TRUE);
+            .willReturn(of(Tailoring.builder().build()));
+        given(tailoringDeletableMock.test(project, tailoring))
+            .willReturn(true);
+        given(repositoryMock.deleteTailoring(project, tailoring))
+            .willReturn(TRUE);
 
         // act
         Optional<Boolean> actual = service.deleteTailoring(project, tailoring);
@@ -1204,7 +1211,30 @@ class TailoringServiceImplTest {
         assertThat(actual).isNotEmpty();
         assertThat(actual.get()).isTrue();
         verify(repositoryMock, times(1)).getTailoring(project, tailoring);
+        verify(tailoringDeletableMock, times(1)).test(project, tailoring);
         verify(repositoryMock, times(1)).deleteTailoring(project, tailoring);
+    }
+
+    @Test
+    void deleteTailoring_TailoringExistsTailoringNotDeletable_FalseReturned() throws IOException {
+        // arrange
+        String project = "DUMMY";
+        String tailoring = "master";
+
+        given(repositoryMock.getTailoring(project, tailoring))
+            .willReturn(of(Tailoring.builder().build()));
+        given(tailoringDeletableMock.test(project, tailoring))
+            .willReturn(false);
+
+        // act
+        Optional<Boolean> actual = service.deleteTailoring(project, tailoring);
+
+        // assert
+        assertThat(actual).isNotEmpty();
+        assertThat(actual.get()).isFalse();
+        verify(repositoryMock, times(1)).getTailoring(project, tailoring);
+        verify(tailoringDeletableMock, times(1)).test(project, tailoring);
+        verify(repositoryMock, times(0)).deleteTailoring(any(), any());
     }
 
     @Test
@@ -1416,8 +1446,9 @@ class TailoringServiceImplTest {
         Optional<TailoringInformation> actual = service.updateState("SAMPLE", "master", AGREED);
 
         // assert
-        assertThat(actual).isPresent();
-        assertThat(actual.get()).isEqualTo(tailoringInformation);
+        assertThat(actual)
+            .isPresent()
+            .contains(tailoringInformation);
 
         verify(repositoryMock, times(1)).getTailoring("SAMPLE", "master");
         verify(repositoryMock, times(0)).setState(any(), any(), any());
@@ -1456,8 +1487,9 @@ class TailoringServiceImplTest {
         Optional<TailoringInformation> actual = service.updateState("SAMPLE", "master", AGREED);
 
         // assert
-        assertThat(actual).isPresent();
-        assertThat(actual.get()).isEqualTo(tailoringInformation);
+        assertThat(actual)
+            .isPresent()
+            .contains(tailoringInformation);
 
         verify(repositoryMock, times(1)).getTailoring("SAMPLE", "master");
         verify(repositoryMock, times(1)).setState(any(), any(), any());

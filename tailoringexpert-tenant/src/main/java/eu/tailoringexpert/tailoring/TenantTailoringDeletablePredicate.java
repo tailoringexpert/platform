@@ -19,7 +19,7 @@
  * <http://www.gnu.org/licenses/gpl-3.0.html>.
  * #L%
  */
-package eu.tailoringexpert.requirement;
+package eu.tailoringexpert.tailoring;
 
 import eu.tailoringexpert.TenantContext;
 import lombok.NonNull;
@@ -30,18 +30,18 @@ import java.util.Map;
 import static java.util.Objects.nonNull;
 
 /**
- * Proxy for providing tenant implementations of {@link RequirementModifiablePredicate}.
+ * Proxy for providing tenant implementations of {@link TailoringDeletablePredicate}.
  *
  * @author Michael Bädorf
  */
 @RequiredArgsConstructor
-public class TenantRequirementModifiablePredicate implements RequirementModifiablePredicate {
+public class TenantTailoringDeletablePredicate implements TailoringDeletablePredicate {
 
     @NonNull
-    private Map<String, RequirementModifiablePredicate> tenantPredicate;
+    private Map<String, TailoringDeletablePredicate> tenantPredicate;
 
     @NonNull
-    private RequirementModifiablePredicate defaultPredicate;
+    private TailoringDeletablePredicate defaultPredicate;
 
     /**
      * {@inheritDoc}
@@ -51,8 +51,8 @@ public class TenantRequirementModifiablePredicate implements RequirementModifiab
         return getTenantImplementation().test(project, tailoring);
     }
 
-    private RequirementModifiablePredicate getTenantImplementation() {
-        RequirementModifiablePredicate result = tenantPredicate.get(TenantContext.getCurrentTenant());
+    private TailoringDeletablePredicate getTenantImplementation() {
+        TailoringDeletablePredicate result = tenantPredicate.get(TenantContext.getCurrentTenant());
         return nonNull(result) ? result : defaultPredicate;
     }
 }

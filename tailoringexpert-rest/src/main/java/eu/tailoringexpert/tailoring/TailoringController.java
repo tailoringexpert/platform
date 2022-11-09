@@ -683,7 +683,7 @@ public class TailoringController {
     @Operation(summary = "Set state of tailoring")
     @ApiResponses(value = {
         @ApiResponse(
-            responseCode = "201", description = "State changed",
+            responseCode = "200", description = "State changed",
             content = @Content(mediaType = "application/json+hal", schema = @Schema(implementation = Void.class))),
         @ApiResponse(
             responseCode = "404", description = "Tailoring does not exist",
@@ -701,6 +701,6 @@ public class TailoringController {
         return tailoringService.updateState(project, tailoring, state)
             .map(updatedTailoring -> ok()
                 .body(of(mapper.toResource(pathContext, updatedTailoring))))
-            .orElseThrow(() -> new ResourceException(PRECONDITION_FAILED, "State could not be updated"));
+            .orElseGet(() -> notFound().build());
     }
 }

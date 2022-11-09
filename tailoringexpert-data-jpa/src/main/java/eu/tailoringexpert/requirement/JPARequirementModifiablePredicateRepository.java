@@ -29,7 +29,6 @@ import lombok.RequiredArgsConstructor;
 import javax.transaction.Transactional;
 import java.util.Optional;
 
-import static java.util.Comparator.comparing;
 import static java.util.Optional.ofNullable;
 
 /**

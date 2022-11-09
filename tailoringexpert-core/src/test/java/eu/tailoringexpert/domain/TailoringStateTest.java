@@ -8,12 +8,12 @@
  * it under the terms of the GNU General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/gpl-3.0.html>.
@@ -25,7 +25,7 @@ import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class TailoringStateTest {
+class TailoringStateTest {
 
     @Test
     void nextState_CREATED_AGREEDReturned() {
@@ -61,6 +61,42 @@ public class TailoringStateTest {
 
         // assert
         assertThat(actual).isEqualTo(TailoringState.RELEASED);
+    }
+
+    @Test
+    void isBefore_CREATEDComparedToCREATED_FalseReturned() {
+        // arrange
+        TailoringState state = TailoringState.CREATED;
+
+        // act
+        boolean actual = state.isBefore(TailoringState.CREATED);
+
+        // assert
+        assertThat(actual).isFalse();
+    }
+
+    @Test
+    void isBefore_CREATEDComparedToAGREED_TrueReturned() {
+        // arrange
+        TailoringState state = TailoringState.CREATED;
+
+        // act
+        boolean actual = state.isBefore(TailoringState.AGREED);
+
+        // assert
+        assertThat(actual).isTrue();
+    }
+
+    @Test
+    void isBefore_AGRREEDComparedToCREATED_FalseReturned() {
+        // arrange
+        TailoringState state = TailoringState.AGREED;
+
+        // act
+        boolean actual = state.isBefore(TailoringState.CREATED);
+
+        // assert
+        assertThat(actual).isFalse();
     }
 
 }

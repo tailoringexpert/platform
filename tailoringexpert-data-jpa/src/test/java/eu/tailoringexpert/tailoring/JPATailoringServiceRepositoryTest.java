@@ -161,11 +161,11 @@ class JPATailoringServiceRepositoryTest {
         // arrange
         TailoringEntity tailoringToUpdate = TailoringEntity.builder()
             .name("master")
-            .files(new HashSet<>())
+            .files(new HashSet<>(asList(FileEntity.builder().name("file1.pdf").build())))
             .build();
         given(projectRepositoryMock.findTailoring("SAMPLE", "master")).willReturn(tailoringToUpdate);
 
-        File file = File.builder().build();
+        File file = File.builder().name("file2.pdf").build();
         Tailoring tailoring = Tailoring.builder()
             .name("master")
             .files(asList(file))
@@ -177,7 +177,7 @@ class JPATailoringServiceRepositoryTest {
 
         // assert
         assertThat(actual).isPresent();
-        assertThat(tailoringToUpdate.getFiles()).isNotEmpty();
+        assertThat(tailoringToUpdate.getFiles()).hasSize(2);
     }
 
 
@@ -193,6 +193,30 @@ class JPATailoringServiceRepositoryTest {
 
         // assert
         assertThat(actual).isEmpty();
+    }
+
+    @Test
+    void updateFile_ExistingFile_FileUpdated() {
+        // arrange
+        TailoringEntity tailoringToUpdate = TailoringEntity.builder()
+            .name("master")
+            .files(new HashSet<>(asList(FileEntity.builder().name("dummy.pdf").build())))
+            .build();
+        given(projectRepositoryMock.findTailoring("SAMPLE", "master")).willReturn(tailoringToUpdate);
+
+        File file = File.builder().name("dummy.pdf").build();
+        Tailoring tailoring = Tailoring.builder()
+            .name("master")
+            .files(asList(file))
+            .build();
+        given(mapperMock.toDomain(tailoringToUpdate)).willReturn(tailoring);
+
+        // act
+        Optional<Tailoring> actual = repository.updateFile("SAMPLE", "master", file);
+
+        // assert
+        assertThat(actual).isPresent();
+        assertThat(tailoringToUpdate.getFiles()).hasSize(1);
     }
 
     @Test
@@ -647,7 +671,7 @@ class JPATailoringServiceRepositoryTest {
         // arrange
         given(projectRepositoryMock.findTailoring("SAMPLE", "master"))
             .willReturn(TailoringEntity.builder()
-                .files(new HashSet(List.of(FileEntity.builder().name("DoBeDeleted").build())))
+                .files(new HashSet<>(asList(FileEntity.builder().name("DoBeDeleted").build())))
                 .build());
 
         // act
@@ -737,7 +761,7 @@ class JPATailoringServiceRepositoryTest {
         given(projectRepositoryMock.existsTailoring("SAMPLE", "master")).willReturn(true);
 
         // act
-        boolean actual = repository.existsTailoring("SAMPLE", "master");
+        repository.existsTailoring("SAMPLE", "master");
 
         // assert
         verify(projectRepositoryMock, times(1)).existsTailoring("SAMPLE", "master");

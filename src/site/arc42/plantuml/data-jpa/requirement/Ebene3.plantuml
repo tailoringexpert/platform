@@ -24,15 +24,24 @@ package requirement {
         resolve(domain : Logo) : LogoEntity
         resolve(domain : DRD) : DRDEntity
     }
-    JPAAnforderungServiceRepositoryMapper --> "1" logoRepository : repository
-    DRDRepository --> "1" LogoRepository : drdRepository
+    JPARequirmentServiceRepositoryMapper --> "1" LogoRepository : repository
+    JPARequirmentServiceRepositoryMapper --> "1" DRDRepository : drdRepository
 
     class JPARequirementServiceRepository {
     }
 
     RequirementServiceRepository <|.. JPARequirementServiceRepository
-    JPARequirementServiceRepository --> "1" JPARequirementServiceRepositoryMapper : mapper
+    JPARequirementServiceRepository --> "1" JPARequirmentServiceRepositoryMapper : mapper
     JPARequirementServiceRepository --> "1" ProjectRepository : projectRepository
+
+    interface RequirementModifiablePredicateRepository {
+        getTailoringState(project : String, tailoring : String) : Optional<TailoringState>
+    }
+    class JPARequirementModifiablePredicateRepository {
+    }
+    RequirementModifiablePredicateRepository <|.. JPARequirementModifiablePredicateRepository
+
+
 }
 
 @enduml

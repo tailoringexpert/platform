@@ -32,7 +32,6 @@ import eu.tailoringexpert.domain.TailoringRequirement;
 import eu.tailoringexpert.domain.TailoringRequirement.TailoringRequirementBuilder;
 import eu.tailoringexpert.domain.TailoringInformation;
 import org.mapstruct.AfterMapping;
-import org.mapstruct.BeanMapping;
 import org.mapstruct.Context;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;

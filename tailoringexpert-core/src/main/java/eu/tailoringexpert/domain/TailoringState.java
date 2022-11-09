@@ -36,4 +36,8 @@ public enum TailoringState {
         return values()[nextIndex];
     }
 
+    public boolean isBefore(TailoringState other) {
+        return ordinal() < other.ordinal();
+    }
+
 }

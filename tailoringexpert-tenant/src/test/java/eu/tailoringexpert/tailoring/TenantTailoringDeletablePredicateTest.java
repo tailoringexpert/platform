@@ -19,7 +19,7 @@
  * <http://www.gnu.org/licenses/gpl-3.0.html>.
  * #L%
  */
-package eu.tailoringexpert.requirement;
+package eu.tailoringexpert.tailoring;
 
 import eu.tailoringexpert.TenantContext;
 import org.junit.jupiter.api.BeforeEach;
@@ -31,19 +31,19 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
-class TenantRequirementModifiablePredicateTest {
+class TenantTailoringDeletablePredicateTest {
 
-    RequirementModifiablePredicate defaultPredicate;
+    TailoringDeletablePredicate defaultPredicate;
 
-    RequirementModifiablePredicate tenantPredicate;
+    TailoringDeletablePredicate tenantPredicate;
 
-    TenantRequirementModifiablePredicate predicate;
+    TenantTailoringDeletablePredicate predicate;
 
     @BeforeEach
     void beforeEach() {
-        this.defaultPredicate = mock(RequirementModifiablePredicate.class);
-        this.tenantPredicate = mock(RequirementModifiablePredicate.class);
-        this.predicate = new TenantRequirementModifiablePredicate(
+        this.defaultPredicate = mock(TailoringDeletablePredicate.class);
+        this.tenantPredicate = mock(TailoringDeletablePredicate.class);
+        this.predicate = new TenantTailoringDeletablePredicate(
             Map.of("PLATTFORM", tenantPredicate),
             this.defaultPredicate
         );

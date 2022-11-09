@@ -19,12 +19,25 @@
  * <http://www.gnu.org/licenses/gpl-3.0.html>.
  * #L%
  */
-package eu.tailoringexpert.requirement;
+package eu.tailoringexpert.domain;
 
-import eu.tailoringexpert.TenantInterface;
+import org.junit.jupiter.api.Test;
 
-import java.util.function.BiPredicate;
+import static org.assertj.core.api.Assertions.assertThat;
 
-@TenantInterface
-public interface RequirementModifiablePredicate extends BiPredicate<String, String> {
+class DocumentSignatureStateTest {
+
+    @Test
+    void getDescription_DescriptionExists_DescriptionReturned() {
+        // arrange
+        DocumentSignatureState state = DocumentSignatureState.AGREED;
+
+        // act
+        String actual = state.getDescription();
+
+        // assert
+        assertThat(actual)
+            .isNotNull()
+            .isEqualTo("Agreed");
+    }
 }

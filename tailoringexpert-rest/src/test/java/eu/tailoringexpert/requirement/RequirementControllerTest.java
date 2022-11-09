@@ -153,7 +153,7 @@ class RequirementControllerTest {
         given(repositoryMock.getRequirement("SAMPLE", "master", "1.1", "a")).willReturn(Optional.empty());
 
         // act
-        ResultActions actual = mockMvc.perform(get("/project/{project}/tailoring/{tailoring}/katalog/{chapter}/{requirement}", "SAMPLE", "master", "1.1", "a")
+        ResultActions actual = mockMvc.perform(get("/project/{project}/tailoring/{tailoring}/catalog/{chapter}/{requirement}", "SAMPLE", "master", "1.1", "a")
             .accept(HAL_JSON_VALUE)
         );
 
@@ -365,7 +365,7 @@ class RequirementControllerTest {
         given(serviceMock.createRequirement("SAMPLE", "master", "1.1", "a1", "Dies ist eine neue Requirement")).willReturn(Optional.empty());
 
         // act
-        ResultActions actual = mockMvc.perform(post("/project/{project}/tailoring/{tailoring}/katalog/{kapitel}/{anforderung}", "SAMPLE", "master", "1.1", "a1")
+        ResultActions actual = mockMvc.perform(post("/project/{project}/tailoring/{tailoring}/catalog/{kapitel}/{anforderung}", "SAMPLE", "master", "1.1", "a1")
             .accept(HAL_JSON_VALUE)
             .content(objectMapper.writeValueAsString("Dies ist eine neue Requirement"))
             .contentType(MediaType.APPLICATION_JSON)

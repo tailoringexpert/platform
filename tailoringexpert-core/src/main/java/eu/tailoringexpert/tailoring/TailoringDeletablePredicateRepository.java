@@ -19,12 +19,25 @@
  * <http://www.gnu.org/licenses/gpl-3.0.html>.
  * #L%
  */
-package eu.tailoringexpert.requirement;
+package eu.tailoringexpert.tailoring;
 
-import eu.tailoringexpert.TenantInterface;
+import eu.tailoringexpert.domain.TailoringState;
 
-import java.util.function.BiPredicate;
+import java.util.Optional;
 
-@TenantInterface
-public interface RequirementModifiablePredicate extends BiPredicate<String, String> {
+/**
+ * Service for handling (peristent) data used by @see {@link TailoringDeletablePredicate}.
+ *
+ * @author Michael Bädorf
+ */
+public interface TailoringDeletablePredicateRepository {
+
+    /**
+     * Retrieves the state of requested tailoring.
+     *
+     * @param project   project identifier
+     * @param tailoring tailoring name
+     * @return state of tailoring if exists, otherwise empty
+     */
+    Optional<TailoringState> getTailoringState(String project, String tailoring);
 }

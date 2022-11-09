@@ -19,40 +19,32 @@
  * <http://www.gnu.org/licenses/gpl-3.0.html>.
  * #L%
  */
-package eu.tailoringexpert.requirement;
+package eu.tailoringexpert.tailoring;
 
-import eu.tailoringexpert.TenantContext;
+import eu.tailoringexpert.domain.TailoringState;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 
-import java.util.Map;
-
-import static java.util.Objects.nonNull;
+import java.util.Optional;
 
 /**
- * Proxy for providing tenant implementations of {@link RequirementModifiablePredicate}.
+ * Predicate to check if a tailoring can be deleted.<p>
+ * A tailoring can be deleted only in state {@code TailoringState.CREATED}.
  *
  * @author Michael Bädorf
  */
 @RequiredArgsConstructor
-public class TenantRequirementModifiablePredicate implements RequirementModifiablePredicate {
+public class DefaultTailoringDeletablePredicate implements TailoringDeletablePredicate {
 
     @NonNull
-    private Map<String, RequirementModifiablePredicate> tenantPredicate;
-
-    @NonNull
-    private RequirementModifiablePredicate defaultPredicate;
+    private TailoringDeletablePredicateRepository repository;
 
     /**
      * {@inheritDoc}
      */
     @Override
     public boolean test(String project, String tailoring) {
-        return getTenantImplementation().test(project, tailoring);
-    }
-
-    private RequirementModifiablePredicate getTenantImplementation() {
-        RequirementModifiablePredicate result = tenantPredicate.get(TenantContext.getCurrentTenant());
-        return nonNull(result) ? result : defaultPredicate;
+        Optional<TailoringState> state = repository.getTailoringState(project, tailoring);
+        return TailoringState.CREATED.compareTo(state.orElse(TailoringState.RELEASED)) == 0;
     }
 }

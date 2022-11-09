@@ -19,7 +19,7 @@
  * <http://www.gnu.org/licenses/gpl-3.0.html>.
  * #L%
  */
-package eu.tailoringexpert.requirement;
+package eu.tailoringexpert.tailoring;
 
 import eu.tailoringexpert.domain.TailoringState;
 import org.junit.jupiter.api.BeforeEach;
@@ -33,22 +33,22 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
-class DefaultRequirementModifiablePredicateTest {
+class DefaultTailoringDeletablePredicateTest {
 
-    RequirementModifiablePredicateRepository requirementModifiablePredicateRepository;
+    TailoringDeletablePredicateRepository repository;
 
-    DefaultRequirementModifiablePredicate predicate;
+    DefaultTailoringDeletablePredicate predicate;
 
     @BeforeEach
     void beforeEach() {
-        this.requirementModifiablePredicateRepository = mock(RequirementModifiablePredicateRepository.class);
-        this.predicate = new DefaultRequirementModifiablePredicate(this.requirementModifiablePredicateRepository);
+        this.repository = mock(TailoringDeletablePredicateRepository.class);
+        this.predicate = new DefaultTailoringDeletablePredicate(this.repository);
     }
 
     @Test
     void test_StateCreated_TrueReturned() {
         // arrange
-        given(requirementModifiablePredicateRepository.getTailoringState("SAMPLE", "master"))
+        given(repository.getTailoringState("SAMPLE", "master"))
             .willReturn(Optional.of(TailoringState.CREATED));
 
         // act
@@ -57,13 +57,13 @@ class DefaultRequirementModifiablePredicateTest {
 
         // assert
         assertThat(actual).isTrue();
-        verify(requirementModifiablePredicateRepository, times(1)).getTailoringState("SAMPLE", "master");
+        verify(repository, times(1)).getTailoringState("SAMPLE", "master");
     }
 
     @Test
     void test_StateAgreed_FalseReturned() {
         // arrange
-        given(requirementModifiablePredicateRepository.getTailoringState("SAMPLE", "master"))
+        given(repository.getTailoringState("SAMPLE", "master"))
             .willReturn(Optional.of(TailoringState.AGREED));
 
         // act
@@ -72,13 +72,13 @@ class DefaultRequirementModifiablePredicateTest {
 
         // assert
         assertThat(actual).isFalse();
-        verify(requirementModifiablePredicateRepository, times(1)).getTailoringState("SAMPLE", "master");
+        verify(repository, times(1)).getTailoringState("SAMPLE", "master");
     }
 
     @Test
     void test_StateReleased_FalseReturned() {
         // arrange
-        given(requirementModifiablePredicateRepository.getTailoringState("SAMPLE", "master"))
+        given(repository.getTailoringState("SAMPLE", "master"))
             .willReturn(Optional.of(TailoringState.RELEASED));
 
         // act
@@ -87,6 +87,6 @@ class DefaultRequirementModifiablePredicateTest {
 
         // assert
         assertThat(actual).isFalse();
-        verify(requirementModifiablePredicateRepository, times(1)).getTailoringState("SAMPLE", "master");
+        verify(repository, times(1)).getTailoringState("SAMPLE", "master");
     }
 }

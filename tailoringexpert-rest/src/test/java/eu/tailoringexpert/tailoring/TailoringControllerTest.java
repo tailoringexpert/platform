@@ -51,6 +51,7 @@ import eu.tailoringexpert.domain.TailoringRequirementResource;
 import eu.tailoringexpert.domain.TailoringInformation;
 import eu.tailoringexpert.domain.TailoringResource;
 import eu.tailoringexpert.domain.TailoringCatalogChapterResource;
+import eu.tailoringexpert.domain.TailoringState;
 import lombok.extern.log4j.Log4j2;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -256,7 +257,7 @@ class TailoringControllerTest {
     }
 
     @Test
-    void getScreeningSheet_TailoringExists_StateOk() throws Exception {
+    void getScreeningSheet_TailoringNotExists_StateNotFound() throws Exception {
         // arrange
         ScreeningSheet screeningSheet = ScreeningSheet.builder().build();
         given(serviceMock.getScreeningSheet("SAMPLE", "master"))
@@ -277,6 +278,21 @@ class TailoringControllerTest {
         verify(serviceMock, times(1)).getScreeningSheet("SAMPLE", "master");
         verify(mapperMock, times(1)).toResource(pathContextCaptor.capture(), eq(screeningSheet));
         assertThat(pathContextCaptor.getValue().build()).isEqualTo(PathContext.builder().project("SAMPLE").tailoring("master").build());
+    }
+
+    @Test
+    void getScreeningSheet_TailoringExists_StateOk() throws Exception {
+        // arrange
+        given(serviceMock.getScreeningSheet("SAMPLE", "master")).willReturn(empty());
+
+        // act
+        ResultActions actual = mockMvc.perform(get("/project/{project}/tailoring/{tailoring}/screeningsheet", "SAMPLE", "master")
+            .accept(HAL_JSON_VALUE)
+        );
+
+        // assert
+        actual.andExpect(status().isNotFound());
+        verify(serviceMock, times(1)).getScreeningSheet("SAMPLE", "master");
     }
 
     @Test
@@ -463,6 +479,23 @@ class TailoringControllerTest {
         verify(serviceMock, times(1)).addFile("SAMPLE", "master", "DUMMY_CM.pdf", data);
         verify(mapperMock, times(0)).toResource(any(), any(Tailoring.class));
 
+        assertThatNoException();
+    }
+
+    @Test
+    void getRequirementFile_TailoringNotExists_StateNotFound() throws Exception {
+        // arrange
+        given(serviceMock.createRequirementDocument("SAMPLE", "master")).willReturn(empty());
+
+
+        // act
+        ResultActions actual = mockMvc.perform(get("/project/{project}/tailoring/{tailoring}/document/catalog", "SAMPLE", "master")
+            .accept("application/pdf")
+        );
+
+        // assert
+        actual.andExpect(status().isNotFound());
+        verify(serviceMock, times(1)).createRequirementDocument("SAMPLE", "master");
         assertThatNoException();
     }
 
@@ -847,6 +880,20 @@ class TailoringControllerTest {
     }
 
     @Test
+    void deleteTailoring_ServiceError_StatePreconditionFailed() throws Exception {
+        // arrange
+        given(serviceMock.deleteTailoring("SAMPLE", "master")).willReturn(Optional.of(Boolean.FALSE));
+
+        // act
+        ResultActions actual = mockMvc.perform(delete("/project/{project}/tailoring/{tailoring}", "SAMPLE", "master"));
+
+        // assert
+        actual.andExpect(status().isPreconditionFailed());
+
+        verify(serviceMock, times(1)).deleteTailoring("SAMPLE", "master");
+    }
+
+    @Test
     void deleteTailoring_TailoringExists_StateOk() throws Exception {
         // arrange
         given(serviceMock.deleteTailoring("SAMPLE", "master")).willReturn(Optional.of(TRUE));
@@ -1079,5 +1126,38 @@ class TailoringControllerTest {
         // assert
         actual.andExpect(status().isCreated());
         verify(serviceMock, times(1)).addNote("SAMPLE", "master", "Hello");
+    }
+
+    @Test
+    void putState_TailoringNotExists_StateNotFound() throws Exception {
+        // arrange
+        given(serviceMock.updateState("SAMPLE", "master", TailoringState.AGREED)).willReturn(empty());
+
+        // act
+        ResultActions actual = mockMvc.perform(put("/project/{project}/tailoring/{tailoring}/state/{state}", "SAMPLE", "master", TailoringState.AGREED));
+
+        // assert
+        actual.andExpect(status().isNotFound());
+        assertThatNoException();
+    }
+
+    @Test
+    void putState_TailoringExists_StateCreated() throws Exception {
+        // arrange
+        TailoringInformation tailoringInformation = TailoringInformation.builder().build();
+        given(serviceMock.updateState("SAMPLE", "master", TailoringState.AGREED))
+            .willReturn(Optional.of(tailoringInformation));
+
+        ArgumentCaptor<PathContextBuilder> pathContextCaptor = forClass(PathContextBuilder.class);
+        given(mapperMock.toResource(pathContextCaptor.capture(), eq(tailoringInformation)))
+            .willReturn(TailoringResource.builder().build());
+
+
+        // act
+        ResultActions actual = mockMvc.perform(put("/project/{project}/tailoring/{tailoring}/state/{state}", "SAMPLE", "master", TailoringState.AGREED));
+
+        // assert
+        actual.andExpect(status().isOk());
+        verify(serviceMock, times(1)).updateState("SAMPLE", "master", TailoringState.AGREED);
     }
 }

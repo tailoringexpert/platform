@@ -275,6 +275,19 @@ class CatalogControllerTest {
     }
 
     @Test
+    void getBaseCatalogPring_BaseCatalogNotExists_StateNotFound() throws Exception {
+        // arrange
+        given(serviceMock.createCatalog("8.2.1")).willReturn(empty());
+
+        // act
+        ResultActions actual = mockMvc.perform(get("/catalog/8.2.1/pdf"));
+
+        // assert
+        actual.andExpect(status().isNotFound());
+        assertThatNoException();
+    }
+
+    @Test
     void getBaseCatalogPrint_BaseCatalogExists_StateOK() throws Exception {
         // arrange
         byte[] data;

@@ -19,7 +19,7 @@
  * <http://www.gnu.org/licenses/gpl-3.0.html>.
  * #L%
  */
-package eu.tailoringexpert.requirement;
+package eu.tailoringexpert.tailoring;
 
 import eu.tailoringexpert.domain.TailoringState;
 import eu.tailoringexpert.repository.ProjectRepository;
@@ -32,16 +32,16 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.mock;
 
-class JPARequirementModifiablePredicateRepositoryTest {
+class JPATailoringDeletablePredicateRepositoryTest {
 
     private ProjectRepository projectRepositoryMock;
 
-    private JPARequirementModifiablePredicateRepository repository;
+    private JPATailoringDeletablePredicateRepository repository;
 
     @BeforeEach
     void beforeEach() {
         this.projectRepositoryMock = mock(ProjectRepository.class);
-        this.repository = new JPARequirementModifiablePredicateRepository(
+        this.repository = new JPATailoringDeletablePredicateRepository(
             projectRepositoryMock
         );
     }

@@ -24,7 +24,6 @@ package eu.tailoringexpert.requirement;
 import eu.tailoringexpert.domain.Chapter;
 import eu.tailoringexpert.domain.Reference;
 import eu.tailoringexpert.domain.TailoringRequirement;
-import eu.tailoringexpert.domain.TailoringState;
 import lombok.extern.log4j.Log4j2;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -81,7 +80,7 @@ class RequirementServiceImplTest {
     @Test
     void handleSelected_NonModifiableTailoring_EmptyReturned() {
         // arrange
-        given(predicateMock.apply("SAMPLE", "master")).willReturn(FALSE);
+        given(predicateMock.test("SAMPLE", "master")).willReturn(false);
 
         // act
         Optional<TailoringRequirement> actual = service.handleSelected("SAMPLE", "master", "1.1", "a", TRUE);
@@ -89,7 +88,7 @@ class RequirementServiceImplTest {
         // assert
         assertThat(actual).isEmpty();
 
-        verify(predicateMock, times(1)).apply("SAMPLE", "master");
+        verify(predicateMock, times(1)).test("SAMPLE", "master");
         verify(repositoryMock, times(0)).getRequirement(any(), any(), any(), any());
         verify(repositoryMock, times(0)).updateRequirement(any(), any(), any(), any());
     }
@@ -98,7 +97,7 @@ class RequirementServiceImplTest {
     @Test
     void handleSelected_RequirementNotSelectedBefore_StateSelected() {
         // arrange
-        given(predicateMock.apply("SAMPLE", "master")).willReturn(TRUE);
+        given(predicateMock.test("SAMPLE", "master")).willReturn(true);
         given(repositoryMock.getRequirement("SAMPLE", "master", "1.1", "a")).willReturn(of(
                 TailoringRequirement.builder()
                     .selected(FALSE)
@@ -113,7 +112,7 @@ class RequirementServiceImplTest {
         Optional<TailoringRequirement> actual = service.handleSelected("SAMPLE", "master", "1.1", "a", TRUE);
 
         // assert
-        verify(predicateMock, times(1)).apply("SAMPLE", "master");
+        verify(predicateMock, times(1)).test("SAMPLE", "master");
         verify(repositoryMock, times(1))
             .updateRequirement(eq("SAMPLE"), eq("master"), eq("1.1"), any(TailoringRequirement.class));
         assertThat(actual).isPresent();
@@ -125,7 +124,7 @@ class RequirementServiceImplTest {
     @Test
     void handleSelected_RequirementNotExist_EmptyReturned() {
         // arrange
-        given(predicateMock.apply("SAMPLE", "master")).willReturn(TRUE);
+        given(predicateMock.test("SAMPLE", "master")).willReturn(true);
         given(repositoryMock.getRequirement("SAMPLE", "master", "1.1", "a")).willReturn(empty());
 
         // act
@@ -134,14 +133,14 @@ class RequirementServiceImplTest {
         // assert
         assertThat(actual).isEmpty();
 
-        verify(predicateMock, times(1)).apply("SAMPLE", "master");
+        verify(predicateMock, times(1)).test("SAMPLE", "master");
         verify(repositoryMock, times(0)).updateRequirement(any(), any(), any(), any());
     }
 
     @Test
     void handleSelected_RequirementSelectedChangeToNotSelected_RequirementReturned() {
         // arrange
-        given(predicateMock.apply("SAMPLE", "master")).willReturn(TRUE);
+        given(predicateMock.test("SAMPLE", "master")).willReturn(true);
         given(repositoryMock.getRequirement("SAMPLE", "master", "1.1", "a")).willReturn(of(
                 TailoringRequirement.builder()
                     .selected(FALSE)
@@ -160,7 +159,7 @@ class RequirementServiceImplTest {
         assertThat(actual.get().getSelectionChanged()).isNull();
         assertThat(actual).isPresent();
 
-        verify(predicateMock, times(1)).apply("SAMPLE", "master");
+        verify(predicateMock, times(1)).test("SAMPLE", "master");
         verify(repositoryMock, times(1))
             .updateRequirement(eq("SAMPLE"), eq("master"), eq("1.1"), any(TailoringRequirement.class));
     }
@@ -168,7 +167,7 @@ class RequirementServiceImplTest {
     @Test
     void handleSelected_NoSelectedChange_RequirementReturned() {
         // arrange
-        given(predicateMock.apply("SAMPLE", "master")).willReturn(TRUE);
+        given(predicateMock.test("SAMPLE", "master")).willReturn(true);
         given(repositoryMock.getRequirement("SAMPLE", "master", "1.1", "a")).willReturn(of(
                 TailoringRequirement.builder()
                     .selected(FALSE)
@@ -181,7 +180,7 @@ class RequirementServiceImplTest {
         Optional<TailoringRequirement> actual = service.handleSelected("SAMPLE", "master", "1.1", "a", FALSE);
 
         // assert
-        verify(predicateMock, times(1)).apply("SAMPLE", "master");
+        verify(predicateMock, times(1)).test("SAMPLE", "master");
         assertThat(actual).isPresent();
         assertThat(actual.get().getSelected()).isFalse();
         assertThat(actual.get().getSelectionChanged()).isNotNull();
@@ -191,7 +190,7 @@ class RequirementServiceImplTest {
     @Test
     void handleSelected_NonModifiableTailoringChapter_EmptyReturned() {
         // arrange
-        given(predicateMock.apply("SAMPLE", "master")).willReturn(FALSE);
+        given(predicateMock.test("SAMPLE", "master")).willReturn(false);
         given(repositoryMock.getChapter("SAMPLE", "master", "1")).willReturn(empty());
 
         // act
@@ -200,7 +199,7 @@ class RequirementServiceImplTest {
         // assert
         assertThat(actual).isEmpty();
 
-        verify(predicateMock, times(1)).apply("SAMPLE", "master");
+        verify(predicateMock, times(1)).test("SAMPLE", "master");
         verify(repositoryMock, times(0)).updateSelected(any(), any(), any());
     }
 
@@ -208,7 +207,7 @@ class RequirementServiceImplTest {
     @Test
     void handleSelected_ChapterNotExisting_EmptyReturned() {
         // arrange
-        given(predicateMock.apply("SAMPLE", "master")).willReturn(TRUE);
+        given(predicateMock.test("SAMPLE", "master")).willReturn(true);
         given(repositoryMock.getChapter("SAMPLE", "master", "1")).willReturn(empty());
 
         // act
@@ -217,14 +216,14 @@ class RequirementServiceImplTest {
         // assert
         assertThat(actual).isEmpty();
 
-        verify(predicateMock, times(1)).apply("SAMPLE", "master");
+        verify(predicateMock, times(1)).test("SAMPLE", "master");
         verify(repositoryMock, times(0)).updateSelected(anyString(), anyString(), any(Chapter.class));
     }
 
     @Test
     void handleSelected_RequirementsMixedSelectedState_ChangedStateInRequirements() {
         // arrange
-        given(predicateMock.apply("SAMPLE", "master")).willReturn(TRUE);
+        given(predicateMock.test("SAMPLE", "master")).willReturn(true);
         given(repositoryMock.getChapter("SAMPLE", "master", "1")).willReturn(of(
                 Chapter.<TailoringRequirement>builder()
                     .number("1")
@@ -275,13 +274,13 @@ class RequirementServiceImplTest {
             .filteredOn(Objects::nonNull)
             .hasSize(2);
 
-        verify(predicateMock, times(1)).apply("SAMPLE", "master");
+        verify(predicateMock, times(1)).test("SAMPLE", "master");
     }
 
     @Test
     void createRequirement_NonModifiableTailoring_EmptyReturned() {
         // arrange
-        given(predicateMock.apply("SAMPLE", "master")).willReturn(FALSE);
+        given(predicateMock.test("SAMPLE", "master")).willReturn(false);
 
         // act
         Optional<TailoringRequirement> actual = service.createRequirement(
@@ -295,7 +294,7 @@ class RequirementServiceImplTest {
         // assert
         assertThat(actual).isEmpty();
 
-        verify(predicateMock, times(1)).apply("SAMPLE", "master");
+        verify(predicateMock, times(1)).test("SAMPLE", "master");
         verify(repositoryMock, times(0)).getChapter(any(), any(), any());
         verify(repositoryMock, times(0)).updateChapter(any(), any(), any());
     }
@@ -325,7 +324,7 @@ class RequirementServiceImplTest {
             .requirements(anforderungen)
             .build();
 
-        given(predicateMock.apply("SAMPLE", "master")).willReturn(TRUE);
+        given(predicateMock.test("SAMPLE", "master")).willReturn(true);
         given(repositoryMock.getChapter("SAMPLE", "master", "1.1.1"))
             .willReturn(of(chapter1_1_1));
         given(repositoryMock.updateChapter("SAMPLE", "master", chapter1_1_1))
@@ -346,7 +345,7 @@ class RequirementServiceImplTest {
         assertThat(anforderungen).hasSize(4);
         assertThat(anforderungen.get(2).getPosition()).isEqualTo("b1");
 
-        verify(predicateMock, times(1)).apply("SAMPLE", "master");
+        verify(predicateMock, times(1)).test("SAMPLE", "master");
     }
 
 
@@ -380,7 +379,7 @@ class RequirementServiceImplTest {
             .requirements(requirements)
             .build();
 
-        given(predicateMock.apply("SAMPLE", "master")).willReturn(TRUE);
+        given(predicateMock.test("SAMPLE", "master")).willReturn(true);
         given(repositoryMock.getChapter("SAMPLE", "master", "1.1.1"))
             .willReturn(of(chapter1_1_1));
         given(repositoryMock.updateChapter("SAMPLE", "master", chapter1_1_1))
@@ -401,7 +400,7 @@ class RequirementServiceImplTest {
         assertThat(requirements).hasSize(5);
         assertThat(requirements.get(3).getPosition()).isEqualTo("b2");
 
-        verify(predicateMock, times(1)).apply("SAMPLE", "master");
+        verify(predicateMock, times(1)).test("SAMPLE", "master");
     }
 
     @Test
@@ -434,7 +433,7 @@ class RequirementServiceImplTest {
             .requirements(requirements)
             .build();
 
-        given(predicateMock.apply("SAMPLE", "master")).willReturn(TRUE);
+        given(predicateMock.test("SAMPLE", "master")).willReturn(true);
         given(repositoryMock.getChapter("SAMPLE", "master", "1.1.1"))
             .willReturn(of(chapter1_1_1));
         given(repositoryMock.updateChapter("SAMPLE", "master", chapter1_1_1))
@@ -457,7 +456,7 @@ class RequirementServiceImplTest {
         assertThat(requirements.get(3).getPosition()).isEqualTo("b2");
         assertThat(requirements.get(3).getText()).isEqualTo("Dies ist eine neue 2. neue Requirement");
 
-        verify(predicateMock, times(1)).apply("SAMPLE", "master");
+        verify(predicateMock, times(1)).test("SAMPLE", "master");
     }
 
     @Test
@@ -483,7 +482,7 @@ class RequirementServiceImplTest {
             .requirements(requirements)
             .build();
 
-        given(predicateMock.apply("SAMPLE", "master")).willReturn(TRUE);
+        given(predicateMock.test("SAMPLE", "master")).willReturn(true);
         given(repositoryMock.getChapter("SAMPLE", "master", "1.1.1"))
             .willReturn(of(chapter1_1_1));
         given(repositoryMock.updateChapter("SAMPLE", "master", chapter1_1_1))
@@ -505,13 +504,13 @@ class RequirementServiceImplTest {
         assertThat(requirements.get(2).getPosition()).isEqualTo("a3");
         assertThat(requirements.get(1).getText()).isEqualTo("Dies ist eine neue 2. neue Requirement");
 
-        verify(predicateMock, times(1)).apply("SAMPLE", "master");
+        verify(predicateMock, times(1)).test("SAMPLE", "master");
     }
 
     @Test
     void createRequirement_ChapterNotExisting_RequirementNotCreated() {
         // arrange
-        given(predicateMock.apply("SAMPLE", "master")).willReturn(TRUE);
+        given(predicateMock.test("SAMPLE", "master")).willReturn(true);
         given(repositoryMock.getChapter("SAMPLE", "master", "1.1.1")).willReturn(empty());
 
         // act
@@ -526,7 +525,7 @@ class RequirementServiceImplTest {
         // assert
         assertThat(actual).isEmpty();
 
-        verify(predicateMock, times(1)).apply("SAMPLE", "master");
+        verify(predicateMock, times(1)).test("SAMPLE", "master");
         verify(repositoryMock, times(0)).updateChapter(any(), any(), any());
     }
 
@@ -538,7 +537,7 @@ class RequirementServiceImplTest {
             .requirements(Collections.emptyList())
             .build();
         given(repositoryMock.getChapter("SAMPLE", "master", "1.1.1")).willReturn(of(chapter));
-        given(predicateMock.apply("SAMPLE", "master")).willReturn(TRUE);
+        given(predicateMock.test("SAMPLE", "master")).willReturn(true);
 
         // act
         Optional<TailoringRequirement> actual = service.createRequirement(
@@ -552,7 +551,7 @@ class RequirementServiceImplTest {
         // assert
         assertThat(actual).isEmpty();
 
-        verify(predicateMock, times(1)).apply("SAMPLE", "master");
+        verify(predicateMock, times(1)).test("SAMPLE", "master");
         verify(repositoryMock, times(0)).updateChapter(anyString(), anyString(), any());
     }
 
@@ -586,7 +585,7 @@ class RequirementServiceImplTest {
             .requirements(requirements)
             .build();
 
-        given(predicateMock.apply("SAMPLE", "master")).willReturn(TRUE);
+        given(predicateMock.test("SAMPLE", "master")).willReturn(true);
         given(repositoryMock.getChapter("SAMPLE", "master", "1.1.1"))
             .willReturn(of(chapter1_1_1));
         given(repositoryMock.updateChapter("SAMPLE", "master", chapter1_1_1))
@@ -607,7 +606,7 @@ class RequirementServiceImplTest {
         assertThat(requirements).hasSize(5);
         assertThat(requirements.get(3).getPosition()).isEqualTo("b2");
 
-        verify(predicateMock, times(1)).apply("SAMPLE", "master");
+        verify(predicateMock, times(1)).test("SAMPLE", "master");
     }
 
     @Test
@@ -635,7 +634,7 @@ class RequirementServiceImplTest {
             .requirements(requirements)
             .build();
 
-        given(predicateMock.apply("SAMPLE", "master")).willReturn(TRUE);
+        given(predicateMock.test("SAMPLE", "master")).willReturn(true);
         given(repositoryMock.getChapter("SAMPLE", "master", "1.1.1"))
             .willReturn(of(chapter1_1_1));
         given(repositoryMock.updateChapter("SAMPLE", "master", chapter1_1_1))
@@ -653,13 +652,13 @@ class RequirementServiceImplTest {
         // assert
         assertThat(actual).isEmpty();
 
-        verify(predicateMock, times(1)).apply("SAMPLE", "master");
+        verify(predicateMock, times(1)).test("SAMPLE", "master");
     }
 
     @Test
     void handleText_NonModifiableTailoring_EmptyReturned() {
         // arrange
-        given(predicateMock.apply("SAMPLE", "master")).willReturn(FALSE);
+        given(predicateMock.test("SAMPLE", "master")).willReturn(false);
 
         // act
         Optional<TailoringRequirement> actual = service.handleText(
@@ -673,7 +672,7 @@ class RequirementServiceImplTest {
         // assert
         assertThat(actual).isEmpty();
 
-        verify(predicateMock, times(1)).apply("SAMPLE", "master");
+        verify(predicateMock, times(1)).test("SAMPLE", "master");
         verify(repositoryMock, times(0)).getRequirement(any(), any(), any(), any());
         verify(repositoryMock, times(0)).updateRequirement(any(), any(), any(), any());
     }
@@ -682,7 +681,7 @@ class RequirementServiceImplTest {
     @Test
     void handleText_RequirementNotExists_EmptyReturned() {
         // arrange
-        given(predicateMock.apply("SAMPLE", "master")).willReturn(TRUE);
+        given(predicateMock.test("SAMPLE", "master")).willReturn(true);
         given(repositoryMock.getRequirement("SAMPLE", "master", "1.1", "a")).willReturn(empty());
 
         // act
@@ -697,7 +696,7 @@ class RequirementServiceImplTest {
         // assert
         assertThat(actual).isEmpty();
 
-        verify(predicateMock, times(1)).apply("SAMPLE", "master");
+        verify(predicateMock, times(1)).test("SAMPLE", "master");
         verify(repositoryMock, times(0))
             .updateRequirement(anyString(), anyString(), anyString(), any(TailoringRequirement.class));
     }
@@ -705,7 +704,7 @@ class RequirementServiceImplTest {
     @Test
     void handleText_NeuerTextKeineReferenz_RequirmentReturend() {
         // arrange
-        given(predicateMock.apply("SAMPLE", "master")).willReturn(TRUE);
+        given(predicateMock.test("SAMPLE", "master")).willReturn(true);
         given(repositoryMock.getRequirement("SAMPLE", "master", "1.1", "a")).willReturn(of(
                 TailoringRequirement.builder()
                     .text("Der Text vor der Änderung")
@@ -730,7 +729,7 @@ class RequirementServiceImplTest {
         assertThat(actual.get().getText()).isEqualTo("Dies iet ein geändeter Text");
         assertThat(actual.get().getTextChanged()).isNotNull();
 
-        verify(predicateMock, times(1)).apply("SAMPLE", "master");
+        verify(predicateMock, times(1)).test("SAMPLE", "master");
         verify(repositoryMock, times(1))
             .updateRequirement(eq("SAMPLE"), eq("master"), eq("1.1"), any(TailoringRequirement.class));
     }
@@ -738,7 +737,7 @@ class RequirementServiceImplTest {
     @Test
     void handleText_CreatedNeuerTextReferenz_AnforderungTextAktualisiertReferenzMod() {
         // arrange
-        given(predicateMock.apply("SAMPLE", "master")).willReturn(TRUE);
+        given(predicateMock.test("SAMPLE", "master")).willReturn(true);
         given(repositoryMock.getRequirement("SAMPLE", "master", "1.1", "a")).willReturn(of(
                 TailoringRequirement.builder()
                     .text("Der Text vor der Änderung")
@@ -765,7 +764,7 @@ class RequirementServiceImplTest {
         assertThat(actual.get().getTextChanged()).isNotNull();
         assertThat(actual.get().getReference().getChanged()).isTrue();
 
-        verify(predicateMock, times(1)).apply("SAMPLE", "master");
+        verify(predicateMock, times(1)).test("SAMPLE", "master");
         verify(repositoryMock, times(1))
             .updateRequirement(eq("SAMPLE"), eq("master"), eq("1.1"), any(TailoringRequirement.class));
     }
@@ -773,7 +772,7 @@ class RequirementServiceImplTest {
     @Test
     void handleText_NoTextChange_AnforderungNichtAktualisiert() {
         // arrange
-        given(predicateMock.apply("SAMPLE", "master")).willReturn(TRUE);
+        given(predicateMock.test("SAMPLE", "master")).willReturn(true);
         given(repositoryMock.getRequirement("SAMPLE", "master", "1.1", "a")).willReturn(of(
                 TailoringRequirement.builder()
                     .text("Der Text vor der Änderung")
@@ -798,7 +797,7 @@ class RequirementServiceImplTest {
         assertThat(actual.get().getText()).isEqualTo("Der Text vor der Änderung");
         assertThat(actual.get().getTextChanged()).isNull();
 
-        verify(predicateMock, times(1)).apply("SAMPLE", "master");
+        verify(predicateMock, times(1)).test("SAMPLE", "master");
         verify(repositoryMock, times(0))
             .updateRequirement(eq("SAMPLE"), eq("master"), eq("1.1"), any(TailoringRequirement.class));
     }

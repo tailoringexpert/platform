@@ -19,40 +19,36 @@
  * <http://www.gnu.org/licenses/gpl-3.0.html>.
  * #L%
  */
-package eu.tailoringexpert.requirement;
+package eu.tailoringexpert.tailoring;
 
-import eu.tailoringexpert.TenantContext;
+import eu.tailoringexpert.domain.TailoringState;
+import eu.tailoringexpert.repository.ProjectRepository;
+import eu.tailoringexpert.requirement.RequirementServiceRepository;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 
-import java.util.Map;
+import javax.transaction.Transactional;
+import java.util.Optional;
 
-import static java.util.Objects.nonNull;
+import static java.util.Optional.ofNullable;
 
 /**
- * Proxy for providing tenant implementations of {@link RequirementModifiablePredicate}.
+ * Implementation of {@link RequirementServiceRepository}.
  *
  * @author Michael Bädorf
  */
 @RequiredArgsConstructor
-public class TenantRequirementModifiablePredicate implements RequirementModifiablePredicate {
+@Transactional
+public class JPATailoringDeletablePredicateRepository implements TailoringDeletablePredicateRepository {
 
     @NonNull
-    private Map<String, RequirementModifiablePredicate> tenantPredicate;
-
-    @NonNull
-    private RequirementModifiablePredicate defaultPredicate;
+    private ProjectRepository projectRepository;
 
     /**
      * {@inheritDoc}
      */
     @Override
-    public boolean test(String project, String tailoring) {
-        return getTenantImplementation().test(project, tailoring);
-    }
-
-    private RequirementModifiablePredicate getTenantImplementation() {
-        RequirementModifiablePredicate result = tenantPredicate.get(TenantContext.getCurrentTenant());
-        return nonNull(result) ? result : defaultPredicate;
+    public Optional<TailoringState> getTailoringState(String project, String tailoring) {
+        return ofNullable(projectRepository.findTailoringState(project, tailoring));
     }
 }

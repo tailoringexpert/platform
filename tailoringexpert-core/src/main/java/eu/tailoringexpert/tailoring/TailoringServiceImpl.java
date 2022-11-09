@@ -76,6 +76,8 @@ public class TailoringServiceImpl implements TailoringService {
     private TailoringServiceMapper mapper;
 
     @NonNull
+    private TailoringDeletablePredicate deletablePredicate;
+    @NonNull
     private DocumentService documentService;
 
     @NonNull
@@ -327,7 +329,7 @@ public class TailoringServiceImpl implements TailoringService {
             return empty();
         }
 
-        if (TailoringState.CREATED.compareTo(toDelete.get().getState()) < 0) {
+        if (!deletablePredicate.test(project, tailoring)) {
             return log.traceExit(
                 "FINISHED | not deleted tailoring because of state " + toDelete.get().getState(),
                 of(Boolean.FALSE)
@@ -397,7 +399,7 @@ public class TailoringServiceImpl implements TailoringService {
             return empty();
         }
         // no "downgrade": e.g. RELEASED -> AGREED
-        if (state.compareTo(oTailoring.get().getState()) < 1) {
+        if (state.isBefore(oTailoring.get().getState())) {
             return log.traceExit(
                 "FINISHED | tailoring downgrade of states not supported",
                 of(mapper.toTailoringInformation(oTailoring.get()))
