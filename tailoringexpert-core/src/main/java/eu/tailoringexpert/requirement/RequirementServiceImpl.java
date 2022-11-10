@@ -53,12 +53,23 @@ public class RequirementServiceImpl implements RequirementService {
     @NonNull
     private RequirementServiceRepository repository;
 
+    @NonNull
+    private RequirementModifiablePredicate modifiablePredicate;
+
     /**
      * {@inheritDoc}
      */
     @Override
     public Optional<TailoringRequirement> handleSelected(String project, String tailoring, String chapter, String position, Boolean selected) {
         log.info("STARTED  | trying to set selection state of requirements of {}:{}:{}.{} to {}", project, tailoring, chapter, position, selected);
+
+        if (!modifiablePredicate.test(project, tailoring)) {
+            return log.traceExit(
+                "FINISHED | not updated requirement because of invalid/non given tailoring state",
+                empty()
+            );
+        }
+
         Optional<TailoringRequirement> tailoringRequirement = repository.getRequirement(project, tailoring, chapter, position);
         if (tailoringRequirement.isPresent()) {
             log.info(tailoringRequirement.get().getSelected() + ": neu {}", selected);
@@ -81,6 +92,14 @@ public class RequirementServiceImpl implements RequirementService {
     @Override
     public Optional<Chapter<TailoringRequirement>> handleSelected(String project, String tailoring, String chapter, Boolean selected) {
         log.info("STARTED  | trying to set selection state of requirements of {}:{}:{} to {}", project, tailoring, chapter, selected);
+
+        if (!modifiablePredicate.test(project, tailoring)) {
+            return log.traceExit(
+                "FINISHED | not updated requirement because of invalid/non given tailoring state",
+                empty()
+            );
+        }
+
         final ZonedDateTime now = ZonedDateTime.now();
         Optional<Chapter<TailoringRequirement>> tailoringChapter = repository.getChapter(project, tailoring, chapter);
         if (tailoringChapter.isPresent()) {
@@ -103,6 +122,14 @@ public class RequirementServiceImpl implements RequirementService {
     @Override
     public Optional<TailoringRequirement> handleText(String project, String tailoring, String chapter, String position, String text) {
         log.info("STARTED  | trying to set text of requirements of {}:{}:{}.{} to {}", project, tailoring, chapter, position, text);
+
+        if (!modifiablePredicate.test(project, tailoring)) {
+            return log.traceExit(
+                "FINISHED | not updated requirement because of invalid/non given tailoring state",
+                empty()
+            );
+        }
+
         Optional<TailoringRequirement> requirement = repository.getRequirement(project, tailoring, chapter, position);
 
         if (requirement.isEmpty()) {
@@ -131,6 +158,14 @@ public class RequirementServiceImpl implements RequirementService {
                                                             String chapter, String position,
                                                             String text) {
         log.info("STARTED  | trying to create requirement of {}:{}:{} after {} with text {}", project, tailoring, chapter, position, text);
+
+        if (!modifiablePredicate.test(project, tailoring)) {
+            return log.traceExit(
+                "FINISHED | not updated requirement because of invalid/non given tailoring state",
+                empty()
+            );
+        }
+
         Optional<Chapter<TailoringRequirement>> oChapter = repository.getChapter(project, tailoring, chapter);
         if (oChapter.isEmpty()) {
             return empty();

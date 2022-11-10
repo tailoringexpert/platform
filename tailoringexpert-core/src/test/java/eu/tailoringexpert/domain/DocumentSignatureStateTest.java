@@ -21,23 +21,23 @@
  */
 package eu.tailoringexpert.domain;
 
-public enum TailoringState {
-    CREATED,
-    AGREED,
-    RELEASED;
+import org.junit.jupiter.api.Test;
 
-    public TailoringState nextState() {
-        int nextIndex = ordinal() + 1;
+import static org.assertj.core.api.Assertions.assertThat;
 
-        if (values().length == nextIndex) {
-            nextIndex = values().length - 1;
-        }
+class DocumentSignatureStateTest {
 
-        return values()[nextIndex];
+    @Test
+    void getDescription_DescriptionExists_DescriptionReturned() {
+        // arrange
+        DocumentSignatureState state = DocumentSignatureState.AGREED;
+
+        // act
+        String actual = state.getDescription();
+
+        // assert
+        assertThat(actual)
+            .isNotNull()
+            .isEqualTo("Agreed");
     }
-
-    public boolean isBefore(TailoringState other) {
-        return ordinal() < other.ordinal();
-    }
-
 }

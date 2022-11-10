@@ -19,25 +19,25 @@
  * <http://www.gnu.org/licenses/gpl-3.0.html>.
  * #L%
  */
-package eu.tailoringexpert.domain;
+package eu.tailoringexpert.tailoring;
 
-public enum TailoringState {
-    CREATED,
-    AGREED,
-    RELEASED;
+import eu.tailoringexpert.domain.TailoringState;
 
-    public TailoringState nextState() {
-        int nextIndex = ordinal() + 1;
+import java.util.Optional;
 
-        if (values().length == nextIndex) {
-            nextIndex = values().length - 1;
-        }
+/**
+ * Service for handling (peristent) data used by @see {@link TailoringDeletablePredicate}.
+ *
+ * @author Michael Bädorf
+ */
+public interface TailoringDeletablePredicateRepository {
 
-        return values()[nextIndex];
-    }
-
-    public boolean isBefore(TailoringState other) {
-        return ordinal() < other.ordinal();
-    }
-
+    /**
+     * Retrieves the state of requested tailoring.
+     *
+     * @param project   project identifier
+     * @param tailoring tailoring name
+     * @return state of tailoring if exists, otherwise empty
+     */
+    Optional<TailoringState> getTailoringState(String project, String tailoring);
 }

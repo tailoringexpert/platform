@@ -19,25 +19,12 @@
  * <http://www.gnu.org/licenses/gpl-3.0.html>.
  * #L%
  */
-package eu.tailoringexpert.domain;
+package eu.tailoringexpert.requirement;
 
-public enum TailoringState {
-    CREATED,
-    AGREED,
-    RELEASED;
+import eu.tailoringexpert.TenantInterface;
 
-    public TailoringState nextState() {
-        int nextIndex = ordinal() + 1;
+import java.util.function.BiPredicate;
 
-        if (values().length == nextIndex) {
-            nextIndex = values().length - 1;
-        }
-
-        return values()[nextIndex];
-    }
-
-    public boolean isBefore(TailoringState other) {
-        return ordinal() < other.ordinal();
-    }
-
+@TenantInterface
+public interface RequirementModifiablePredicate extends BiPredicate<String, String> {
 }
