@@ -38,7 +38,7 @@ import java.time.format.DateTimeFormatter;
 
 import static eu.tailoringexpert.domain.Phase.A;
 import static eu.tailoringexpert.domain.Phase.C;
-import static eu.tailoringexpert.domain.TailoringState.ACTIVE;
+import static eu.tailoringexpert.domain.TailoringState.AGREED;
 import static java.lang.Boolean.FALSE;
 import static java.lang.Boolean.TRUE;
 import static java.nio.file.Files.newInputStream;
@@ -139,8 +139,8 @@ class ResourceMapperTest {
         ProjectInformation projectInformation = ProjectInformation.builder()
             .identifier("SAMPLE")
             .tailorings(asList(
-                TailoringInformation.builder().name("master").build(),
-                TailoringInformation.builder().name("master1").build()
+                TailoringInformation.builder().name("master").state(AGREED).build(),
+                TailoringInformation.builder().name("master1").state(AGREED).build()
             ))
             .build();
 
@@ -201,8 +201,8 @@ class ResourceMapperTest {
             .identifier("SAMPLE")
             .creationTimestamp(now)
             .tailorings(asList(
-                TailoringInformation.builder().name("master").build(),
-                TailoringInformation.builder().name("master1").build()
+                TailoringInformation.builder().name("master").state(AGREED).build(),
+                TailoringInformation.builder().name("master1").state(AGREED).build()
             ))
             .build();
 
@@ -248,6 +248,7 @@ class ResourceMapperTest {
             .name("master")
             .catalogVersion("8.2.1")
             .phases(asList(A, C))
+            .state(TailoringState.CREATED)
             .build();
 
         // act
@@ -271,7 +272,8 @@ class ResourceMapperTest {
             Link.of("http://localhost/project/SAMPLE/tailoring/master/requirement/import", "import"),
             Link.of("http://localhost/catalog/8.2.1/pdf", "basecatalog"),
             Link.of("http://localhost/project/SAMPLE/tailoring/master/attachment", "attachment"),
-            Link.of("http://localhost/project/SAMPLE/tailoring/master/note", "note")
+            Link.of("http://localhost/project/SAMPLE/tailoring/master/note", "note"),
+            Link.of("http://localhost/project/SAMPLE/tailoring/master/state/AGREED", "state")
         );
     }
 
@@ -563,7 +565,7 @@ class ResourceMapperTest {
 
         Tailoring tailoring = Tailoring.builder()
             .name("master")
-            .state(ACTIVE)
+            .state(AGREED)
             .phases(asList(A, C))
             .catalog(Catalog.<TailoringRequirement>builder()
                 .version("8.2.1")
@@ -594,7 +596,8 @@ class ResourceMapperTest {
             Link.of("http://localhost/project/SAMPLE/tailoring/master/compare", "compare"),
             Link.of("http://localhost/project/SAMPLE/tailoring/master/requirement/import", "import"),
             Link.of("http://localhost/catalog/8.2.1/pdf", "basecatalog"),
-            Link.of("http://localhost/project/SAMPLE/tailoring/master/note", "note")
+            Link.of("http://localhost/project/SAMPLE/tailoring/master/note", "note"),
+            Link.of("http://localhost/project/SAMPLE/tailoring/master/state/{state}", "state")
         );
     }
 

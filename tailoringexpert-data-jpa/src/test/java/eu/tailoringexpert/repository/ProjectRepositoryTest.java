@@ -23,6 +23,7 @@ package eu.tailoringexpert.repository;
 
 import eu.tailoringexpert.domain.ProjectEntity;
 import eu.tailoringexpert.domain.TailoringEntity;
+import eu.tailoringexpert.domain.TailoringState;
 import lombok.extern.log4j.Log4j2;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -169,5 +170,55 @@ class ProjectRepositoryTest {
 
         // assert
         assertThat(actual).isFalse();
+    }
+
+    @Test
+    void findTailoringState_TailoringExists_StateReturned() throws IOException {
+        // arrange
+        ProjectEntity project = ProjectEntity.builder()
+            .identifier("SAMPLE")
+            .tailorings(Arrays.asList(
+                TailoringEntity.builder()
+                    .name("master")
+                    .state(TailoringState.CREATED)
+                    .build(),
+                TailoringEntity.builder()
+                    .name("master1")
+                    .state(TailoringState.AGREED)
+                    .build()
+            ))
+            .build();
+        repository.save(project);
+
+        // act
+        TailoringState actual = repository.findTailoringState("SAMPLE", "master1");
+
+        // assert
+        assertThat(actual).isEqualTo(TailoringState.AGREED);
+    }
+
+    @Test
+    void findTailoringState_TailoringNotExists_TrueReturned() throws IOException {
+        // arrange
+        ProjectEntity project = ProjectEntity.builder()
+            .identifier("SAMPLE")
+            .tailorings(Arrays.asList(
+                TailoringEntity.builder()
+                    .name("master")
+                    .state(TailoringState.CREATED)
+                    .build(),
+                TailoringEntity.builder()
+                    .name("master1")
+                    .state(TailoringState.AGREED)
+                    .build()
+            ))
+            .build();
+        repository.save(project);
+
+        // act
+        TailoringState actual = repository.findTailoringState("SAMPLE_1", "master1");
+
+        // assert
+        assertThat(actual).isNull();
     }
 }

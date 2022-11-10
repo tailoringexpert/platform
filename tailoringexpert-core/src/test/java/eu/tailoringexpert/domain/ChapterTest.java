@@ -34,9 +34,9 @@ import static org.assertj.core.api.Assertions.assertThat;
 class ChapterTest {
 
     @Test
-    void alleAnforderungen_UnterkapitelTeilweiseMitAnforderungen_AlleAnforderungenInListe() {
+    void allRequirements_SubchaptersPartiallyWithRequirements_AllRequirementsInListReturned() {
         // arrange
-        Chapter<TailoringRequirement> gruppe = Chapter.<TailoringRequirement>builder()
+        Chapter<TailoringRequirement> chapter = Chapter.<TailoringRequirement>builder()
             .number("1")
             .requirements(asList(
                 TailoringRequirement.builder()
@@ -69,16 +69,16 @@ class ChapterTest {
             .build();
 
         // act
-        List<TailoringRequirement> actual = gruppe.allRequirements().collect(toList());
+        List<TailoringRequirement> actual = chapter.allRequirements().collect(toList());
 
         // assert
         assertThat(actual).hasSize(4);
     }
 
     @Test
-    void getGruppe_Kapitel1_1_2Vorhanden_KapitelWirdGefunden() {
+    void getChapter_Chapter1_1_2Exists_ChapterReturned() {
         // arrange
-        Chapter<TailoringRequirement> gruppe = Chapter.<TailoringRequirement>builder()
+        Chapter<TailoringRequirement> chapter = Chapter.<TailoringRequirement>builder()
             .number("1")
             .requirements(asList(
                 TailoringRequirement.builder()
@@ -117,7 +117,7 @@ class ChapterTest {
             .build();
 
         // act
-        Chapter<TailoringRequirement> actual = gruppe.getChapter("1.1.2");
+        Chapter<TailoringRequirement> actual = chapter.getChapter("1.1.2");
 
         // assert
         assertThat(actual).isNotNull();

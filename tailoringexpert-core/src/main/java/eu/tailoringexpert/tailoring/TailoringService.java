@@ -32,6 +32,7 @@ import eu.tailoringexpert.domain.SelectionVector;
 import eu.tailoringexpert.domain.Tailoring;
 import eu.tailoringexpert.domain.TailoringRequirement;
 import eu.tailoringexpert.domain.TailoringInformation;
+import eu.tailoringexpert.domain.TailoringState;
 
 import java.util.Collection;
 import java.util.List;
@@ -219,5 +220,15 @@ public interface TailoringService {
      * @return if note exists the requested note otherwise empty
      */
     Optional<Note> getNote(String project, String tailoring, Integer note);
+
+    /**
+     * Change state of tailoring.
+     *
+     * @param project   project identidier
+     * @param tailoring current name of tailoring
+     * @param state     new state of tailoring
+     * @return in case of successful change new tailoring, otherwise empty
+     */
+    Optional<TailoringInformation> updateState(String project, String tailoring, TailoringState state);
 
 }

@@ -23,6 +23,7 @@ package eu.tailoringexpert.repository;
 
 import eu.tailoringexpert.domain.ProjectEntity;
 import eu.tailoringexpert.domain.TailoringEntity;
+import eu.tailoringexpert.domain.TailoringState;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -68,4 +69,14 @@ public interface ProjectRepository extends JpaRepository<ProjectEntity, Long> {
      */
     @Query("select case when count(t)> 0 then true else false end from #{#entityName} p inner join p.tailorings t where p.identifier=:project and t.name=:name")
     boolean existsTailoring(@Param("project") String project, @Param("name") String name);
+
+    /**
+     * Loads state of requested tailoring
+     *
+     * @param project poject identifier
+     * @param name    name to tailoring to load
+     * @return loadad state
+     */
+    @Query("Select t.state from #{#entityName} p inner join p.tailorings t where p.identifier=:project and t.name=:name")
+    TailoringState findTailoringState(@Param("project") String project, @Param("name") String name);
 }

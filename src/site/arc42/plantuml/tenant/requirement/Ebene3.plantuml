@@ -1,0 +1,26 @@
+@startuml Ebene3.png
+hide empty members
+
+package requirement {
+
+    interface "BiPredicate<T, U>" as BiPredicate {
+         test(t: T, u : U) : boolean
+    }
+
+    interface "RequirementModifiablePredicate<String, String>"  as RequirementModifiablePredicate{
+    }
+    BiPredicate <|-- RequirementModifiablePredicate
+
+    class DefaultRequirementModifiablePredicate {
+    }
+    RequirementModifiablePredicate <|.. DefaultRequirementModifiablePredicate
+
+
+    class TenantRequirementModifiablePredicate {
+        tenantPredicate : Map<String, RequirementModifiablePredicate>
+    }
+    RequirementModifiablePredicate <|.. TenantRequirementModifiablePredicate
+    TenantRequirementModifiablePredicate --> "1" DefaultRequirementModifiablePredicate : defaultPredicate
+
+}
+@enduml

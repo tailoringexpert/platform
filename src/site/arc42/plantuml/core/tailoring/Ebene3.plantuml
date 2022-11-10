@@ -28,6 +28,22 @@ package tailoring {
         createDocument(docId : String, tailoring : Tailoring, placeholders : Map<String, String>) : File
     }
 
+    interface TailoringDeletablePredicateRepository {
+        getTailoringState(project : String, tailoring : String) : Optional<TailoringState>
+    }
+
+    interface "BiPredicate<T, U>" as BiPredicate {
+         test(t: T, u : U) : boolean
+    }
+    interface "TailoringDeletablePredicate<String, String>"  as TailoringDeletablePredicate{
+    }
+    BiPredicate <|-- TailoringDeletablePredicate
+    class DefaultTailoringDeletablePredicate {
+    }
+    TailoringDeletablePredicate <|.. DefaultTailoringDeletablePredicate
+    DefaultTailoringDeletablePredicate --> "1" TailoringDeletablePredicateRepository : repository
+
+
     interface TailoringService {
         createTailoring(name : String, identifier : String, screeningSheetData : byte[], applicableSelectionVectore : SelectionVector, catalog : Catalog<BaseRequirement>) : Tailoring
         addFile(project : String, tailoring : String, name : String, data : byte[]) Optional<Tailoring>

@@ -32,7 +32,6 @@ import eu.tailoringexpert.domain.TailoringRequirement;
 import eu.tailoringexpert.domain.TailoringRequirement.TailoringRequirementBuilder;
 import eu.tailoringexpert.domain.TailoringInformation;
 import org.mapstruct.AfterMapping;
-import org.mapstruct.BeanMapping;
 import org.mapstruct.Context;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
@@ -57,9 +56,7 @@ import static java.util.stream.Collectors.toUnmodifiableSet;
 @SuppressWarnings("java:S1610")
 public abstract class TailoringServiceMapper {
 
-    @BeanMapping(ignoreByDefault = true)
-    @Mapping(target = "name", source = "domain.name")
-    @Mapping(target = "phases", source = "domain.phases")
+    @Mapping(target = "catalogVersion", source = "domain.catalog.version")
     abstract TailoringInformation toTailoringInformation(Tailoring domain);
 
     abstract Catalog<TailoringRequirement> toTailoringCatalog(

@@ -35,7 +35,6 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
-import lombok.SneakyThrows;
 import org.springframework.hateoas.EntityModel;
 import org.springframework.hateoas.UriTemplate;
 import org.springframework.http.ResponseEntity;
@@ -195,7 +194,6 @@ public class RequirementController {
             content = @Content)
     })
     @PostMapping(value = TAILORINGREQUIRMENT, produces = {"application/hal+json"})
-    @SneakyThrows
     public ResponseEntity<EntityModel<TailoringRequirementResource>> postRequirement(
         @Parameter(description = "Project identifier") @PathVariable String project,
         @Parameter(description = "Tailoring name") @PathVariable String tailoring,
