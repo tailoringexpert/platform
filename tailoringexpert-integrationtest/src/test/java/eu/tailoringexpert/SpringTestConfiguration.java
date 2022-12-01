@@ -41,9 +41,6 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.io.File;
-import java.util.Map;
-
-import static java.util.Map.entry;
 
 @Configuration
 @PropertySource({
@@ -66,16 +63,6 @@ public class SpringTestConfiguration {
     }
 
     @Bean
-    @Primary
-    Map<String, String> plattform() {
-        Dotenv env = Dotenv.configure().ignoreIfMissing().load();
-        return Map.ofEntries(
-            entry("template", new File(env.get("TEMPLATE_HOME", "src/test/resources/templates/")).toPath().toAbsolutePath().toString() + "/"),
-            entry("drd", new File(env.get("ASSET_HOME", "src/test/resources/assets/")).toURI().toString())
-        );
-    }
-
-    @Bean
     ProjectCreator projectCreator(@NonNull ProjectService projectService,
                                   @NonNull ScreeningSheetService screeningSheetService) {
         return new ProjectCreator(projectService, screeningSheetService);
@@ -89,9 +76,16 @@ public class SpringTestConfiguration {
     }
 
     @Bean
-    String tenantConfigDir(@NonNull @Value("${tenantConfigDir}") String tenantConfigDir) {
+    String dbconfigRoot() {
         Dotenv env = Dotenv.configure().ignoreIfMissing().load();
-        return new File(env.get("TENANT_CONFIG_DIR_TEST", "src/test/resources/tenants/")).toPath().toAbsolutePath().toString();
+        return new File(env.get("DBCONFIG_ROOT_TEST", "src/test/resources/tenants/")).toPath().toAbsolutePath().toString();
+    }
+
+    @Bean
+    @Primary
+    String plattformTemplateRoot() {
+        Dotenv env = Dotenv.configure().ignoreIfMissing().load();
+        return new File(env.get("TEMPLATE_ROOT", "src/test/resources/tenants/")).toPath().toAbsolutePath().toString();
     }
 
 }
