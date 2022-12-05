@@ -166,8 +166,8 @@ public class TailoringConfiguration {
     }
 
     @Bean
-    String tenantConfigDir(@Value("${tenantConfigDir}") String tenantConfigDir) {
-        return tenantConfigDir;
+    String dbconfigRoot(@Value("${dbconfigRoot}") String dbconfigRoot) {
+        return dbconfigRoot;
     }
 
     @Bean

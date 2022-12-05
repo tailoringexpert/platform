@@ -54,16 +54,16 @@ public class TenantDataSourceFactory {
      * Erzeugt die Datasources der Teants.
      *
      * @param defaultDataSource
-     * @param tenantConfigDir
+     * @param dbconfigRoot
      * @return
      * @throws IOException
      */
-    public static DataSource dataSource(final DataSource defaultDataSource, final String tenantConfigDir, StringEncryptor encryptor)
+    public static DataSource dataSource(final DataSource defaultDataSource, final String dbconfigRoot, StringEncryptor encryptor)
         throws IOException {
-        log.info("Suche Tenant DB-Konfigurationen in " + Paths.get(tenantConfigDir).toFile());
+        log.info("Suche Tenant DB-Konfigurationen in " + Paths.get(dbconfigRoot).toFile());
 
         final Map<Object, Object> resolvedDataSources = new HashMap<>();
-        try (Stream<Path> files = Files.walk(Paths.get(tenantConfigDir))) {
+        try (Stream<Path> files = Files.walk(Paths.get(dbconfigRoot))) {
             files.map(Path::toFile)
                 .filter(file -> "db.properties".equalsIgnoreCase(file.getName()))
                 .forEach(propertyFile -> {
@@ -74,6 +74,9 @@ public class TenantDataSourceFactory {
                     TenantContext.registerTenant(tenantId);
 
                 });
+        }
+        if ( resolvedDataSources.isEmpty() ) {
+            log.error("No tenant datasources are available!!!");
         }
         // Create the final multi-tenant source.
         // It needs a default database to connect to.

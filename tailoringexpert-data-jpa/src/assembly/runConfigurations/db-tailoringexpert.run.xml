@@ -37,7 +37,7 @@
           <option name="pomFileName" />
           <option name="profilesMap">
             <map>
-              <entry key="tailoringexpert.local" value="true" />
+              <entry key="tailoringexpert.dev" value="true" />
             </map>
           </option>
           <option name="resolveToWorkspace" value="false" />

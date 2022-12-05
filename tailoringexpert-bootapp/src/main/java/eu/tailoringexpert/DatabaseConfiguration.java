@@ -45,19 +45,18 @@ import java.io.IOException;
 public class DatabaseConfiguration {
 
     @Bean
-    String tenantConfigDir(@NonNull @Value("${tenantConfigDir}") String tenantConfigDir) {
-        return tenantConfigDir;
+    String dbconfigRoot(@NonNull @Value("${dbconfigRoot}") String dbconfigRoot) {
+        return dbconfigRoot;
     }
-
 
 
     @Bean
     @Primary
     DataSource tenantDataSource(
         final @NonNull @Qualifier("defaultDataSource") DataSource defaultDataSource,
-        final @NonNull @Qualifier("tenantConfigDir") String tenantConfigDir,
+        final @NonNull @Qualifier("dbconfigRoot") String dbconfigRoot,
         final @NonNull @Qualifier("encryptorBean") StringEncryptor encryptor) throws IOException {
-        return TenantDataSourceFactory.dataSource(defaultDataSource, tenantConfigDir, encryptor);
+        return TenantDataSourceFactory.dataSource(defaultDataSource, dbconfigRoot, encryptor);
     }
 
     @Bean(name = {"dataSource", "defaultDataSource"})
