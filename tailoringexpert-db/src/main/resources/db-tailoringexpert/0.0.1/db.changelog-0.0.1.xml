@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+         http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
+
+	<include file="db-tailoringexpert/0.0.1/sequence.xml"/>
+
+	<include file="db-tailoringexpert/0.0.1/logo.xml"/>
+	<include file="db-tailoringexpert/0.0.1/drd.xml"/>
+	<include file="db-tailoringexpert/0.0.1/parameter.xml"/>
+	<include file="db-tailoringexpert/0.0.1/screeningsheetparameter.xml"/>
+	<include file="db-tailoringexpert/0.0.1/selectionvectorprofile.xml"/>
+	<include file="db-tailoringexpert/0.0.1/selectionvectorprofileparameter.xml"/>
+	<include file="db-tailoringexpert/0.0.1/documentsignee.xml"/>
+	<include file="db-tailoringexpert/0.0.1/screeningsheet.xml"/>
+	<include file="db-tailoringexpert/0.0.1/project.xml"/>
+	<include file="db-tailoringexpert/0.0.1/tailoringcatalogchapter.xml"/>
+	<include file="db-tailoringexpert/0.0.1/tailoringrequirement.xml"/>
+	<include file="db-tailoringexpert/0.0.1/tailoringrequirement_drd.xml"/>
+	<include file="db-tailoringexpert/0.0.1/tailoringcatalog.xml"/>
+	<include file="db-tailoringexpert/0.0.1/selectionvector.xml"/>
+	<include file="db-tailoringexpert/0.0.1/selectionvectorparameter.xml"/>
+	<include file="db-tailoringexpert/0.0.1/tailoring.xml"/>
+	<include file="db-tailoringexpert/0.0.1/tailoring_phase.xml"/>
+	<include file="db-tailoringexpert/0.0.1/file.xml"/>
+	<include file="db-tailoringexpert/0.0.1/documentsignature.xml"/>
+	<include file="db-tailoringexpert/0.0.1/note.xml"/>
+	<include file="db-tailoringexpert/0.0.1/basecatalogchapter.xml"/>
+	<include file="db-tailoringexpert/0.0.1/baserequirement.xml"/>
+	<include file="db-tailoringexpert/0.0.1/identifier.xml"/>
+	<include file="db-tailoringexpert/0.0.1/identifier_limitation.xml"/>
+	<include file="db-tailoringexpert/0.0.1/basecatalog.xml"/>
+	<include file="db-tailoringexpert/0.0.1/baserequirement_drd.xml"/>
+	<include file="db-tailoringexpert/0.0.1/baserequirement_phase.xml"/>
+
+	<changeSet id="Release 0.0.1" author="tailoringexpert">
+		<tagDatabase tag="0.0.1" />
+	</changeSet>
+
+</databaseChangeLog>
