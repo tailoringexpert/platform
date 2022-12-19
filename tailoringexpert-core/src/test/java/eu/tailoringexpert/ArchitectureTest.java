@@ -40,8 +40,8 @@ import static com.tngtech.archunit.lang.syntax.ArchRuleDefinition.classes;
 import static com.tngtech.archunit.lang.syntax.ArchRuleDefinition.noClasses;
 import static com.tngtech.archunit.library.GeneralCodingRules.ACCESS_STANDARD_STREAMS;
 import static com.tngtech.archunit.library.dependencies.SlicesRuleDefinition.slices;
-import static com.tngtech.archunit.library.plantuml.PlantUmlArchCondition.Configurations.consideringOnlyDependenciesInDiagram;
-import static com.tngtech.archunit.library.plantuml.PlantUmlArchCondition.adhereToPlantUmlDiagram;
+import static com.tngtech.archunit.library.plantuml.rules.PlantUmlArchCondition.Configuration.consideringOnlyDependenciesInDiagram;
+import static com.tngtech.archunit.library.plantuml.rules.PlantUmlArchCondition.adhereToPlantUmlDiagram;
 import static org.assertj.core.api.Assertions.assertThat;
 
 class ArchitectureTest {
@@ -53,9 +53,9 @@ class ArchitectureTest {
     @BeforeAll
     static void setup() {
         classes = new ClassFileImporter()
-            .withImportOption(DO_NOT_INCLUDE_JARS)
             .withImportOption(DO_NOT_INCLUDE_TESTS)
-            .importClasspath();
+            .withImportOption(DO_NOT_INCLUDE_JARS)
+            .importPaths("target");
     }
 
     @DisplayName("Keine Deprecated Verwendung")
@@ -120,7 +120,6 @@ class ArchitectureTest {
         // assert
         assertThat(actual.hasViolation()).isFalse();
     }
-
 
 
     @DisplayName("Keine Verwendung von System.out und System.err")
