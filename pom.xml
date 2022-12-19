@@ -48,6 +48,7 @@
         <module>tailoringexpert-core</module>
         <module>tailoringexpert-tenant</module>
         <module>tailoringexpert-data-jpa</module>
+        <module>tailoringexpert-db</module>
         <module>tailoringexpert-rest</module>
         <module>tailoringexpert-openhtmltopdf</module>
         <module>tailoringexpert-poi</module>
@@ -104,6 +105,11 @@
             <dependency>
                 <groupId>eu.tailoringexpert</groupId>
                 <artifactId>tailoringexpert-data-jpa</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>eu.tailoringexpert</groupId>
+                <artifactId>tailoringexpert-db</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
