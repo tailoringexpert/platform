@@ -53,13 +53,10 @@ import org.springframework.cache.CacheManager;
 import org.springframework.cache.concurrent.ConcurrentMapCacheManager;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Profile;
 import org.thymeleaf.spring5.SpringTemplateEngine;
 import org.thymeleaf.templateresolver.FileTemplateResolver;
-import org.thymeleaf.templateresolver.UrlTemplateResolver;
 
 import java.io.File;
-import java.net.URL;
 import java.nio.file.Paths;
 import java.util.Collection;
 import java.util.Map;
@@ -73,8 +70,6 @@ import static org.thymeleaf.templatemode.TemplateMode.HTML;
 @Log4j2
 @Configuration
 public class PlattformConfiguration {
-
-    private static final String TEMPLATE = "template";
 
     @Bean
     CacheManager plattformCacheManager() {
@@ -127,7 +122,6 @@ public class PlattformConfiguration {
         return new @Tenant("plattform") ThymeleafTemplateEngine(springTemplateEngine) {
         };
     }
-
 
 
     @Bean
