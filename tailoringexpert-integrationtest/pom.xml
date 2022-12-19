@@ -46,6 +46,11 @@
         </dependency>
 
         <dependency>
+            <groupId>eu.tailoringexpert</groupId>
+            <artifactId>tailoringexpert-db</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-test</artifactId>
             <scope>test</scope>
