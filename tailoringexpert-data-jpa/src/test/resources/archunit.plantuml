@@ -1,19 +1,31 @@
 @startuml
 
 [Domain] <<..domain..>>
-[Anforderung] <<..anforderung..>>
+[Catalog] <<..catalog..>>
+[Requirement] <<..requirement..>>
 [ScreeningSheet] <<..screeningsheet..>>
 [Tailoring] <<..tailoring..>>
-[Projekt] <<..projekt..>>
+[Project] <<..project..>>
+[Repository] <<..repository..>>
 
-[Domain] <-- [Anforderung]
+[Domain] <-- [Catalog]
+[Domain] <-- [Requirement]
 [Domain] <-- [ScreeningSheet]
 [Domain] <-- [Tailoring]
-[Domain] <-- [Projekt]
+[Domain] <-- [Project]
+[Domain] <-- [Repository]
+
+[Repository] <-- [Catalog]
+[Repository] <-- [Project]
+[Repository] <-- [Requirement]
+[Repository] <-- [ScreeningSheet]
+[Repository] <-- [Tailoring]
 
 [ScreeningSheet] <-- [Tailoring]
-[ScreeningSheet] <-- [Projekt]
+[ScreeningSheet] <-- [Project]
 
-[Tailoring] <-- [Projekt]
+[Requirement] <-- [Tailoring]
+
+[Tailoring] <-- [Project]
 
 @enduml

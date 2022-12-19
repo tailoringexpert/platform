@@ -25,8 +25,10 @@ import lombok.extern.log4j.Log4j2;
 import org.jasypt.encryption.pbe.StandardPBEStringEncryptor;
 import org.junit.jupiter.api.Test;
 
+import static org.assertj.core.api.Assertions.assertThatNoException;
+
 @Log4j2
-public class JasyptTest {
+class JasyptTest {
 
     @Test
     void doit() {
@@ -39,5 +41,6 @@ public class JasyptTest {
 
         // assert
         log.debug(actual);
+        assertThatNoException();
     }
 }

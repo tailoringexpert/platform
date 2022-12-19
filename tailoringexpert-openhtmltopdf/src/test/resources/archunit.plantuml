@@ -2,12 +2,13 @@
 
 [Domain] <<..domain..>>
 [Renderer] <<..renderer..>>
+[Catalog] <<..catalog..>>
 
 [Tailoring] <<..tailoring..>>
 [Domain] <-- [Tailoring]
+[Domain] <-- [Renderer]
 [Renderer] <-- [Tailoring]
 
-[Catalog] <<..catalog..>>
 [Domain] <-- [Catalog]
 [Renderer] <-- [Catalog]
 
