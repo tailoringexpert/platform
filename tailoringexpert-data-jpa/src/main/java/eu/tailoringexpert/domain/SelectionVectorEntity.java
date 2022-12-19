@@ -50,6 +50,9 @@ import static javax.persistence.GenerationType.TABLE;
 public class SelectionVectorEntity implements Serializable {
     private static final long serialVersionUID = 3707196505262153813L;
 
+    /**
+     * Technical ID.
+     */
     @Id
     @TableGenerator(name = "SEQ_SELECTIONVECTOR", table = "SEQUENCE", pkColumnName = "SEQ_NAME",
         valueColumnName = "SEQ_COUNT", pkColumnValue = "SEQ_SELECTIONVECTOR", initialValue = 1)
@@ -57,6 +60,9 @@ public class SelectionVectorEntity implements Serializable {
     @Column(name = "SELECTIONVECTOR_ID")
     private Long id;
 
+    /**
+     * Mapping between defined categories and levels.
+     */
     @ElementCollection
     @MapKeyColumn(name = "TYPE")
     @Column(name = "LEVEL")

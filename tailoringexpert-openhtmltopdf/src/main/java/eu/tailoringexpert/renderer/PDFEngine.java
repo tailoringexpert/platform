@@ -57,14 +57,14 @@ public class PDFEngine {
     private String baseUri;
 
     /**
-     * Erzeugt ein PDF aus dem übergebenen HTML String.
+     * Creates PDF using provided HTML String.
      *
-     * @param docId      Name der zu erstellenden PDF File
-     * @param html       HTML für die Erzeugung der PDF File
-     * @param pfadSuffix Pfad zum Verzeichnis unterhalb der definierten <strong>baseUri</strong>. Wird für die relative Referenzierung von Bildern benötigt.
+     * @param docId      docid to use in PDF file
+     * @param html       HTML to use as input
+     * @param pathSuffix Path relarive to defined <strong>baseUri</strong>. Will be used for relative addressing of images
      * @return Die erzeugte "PA" File
      */
-    public File process(@NonNull String docId, @NonNull String html, @NonNull String pfadSuffix) {
+    public File process(@NonNull String docId, @NonNull String html, @NonNull String pathSuffix) {
         try (PDDocument document = new PDDocument(setupTempFileOnly())) {
             ByteArrayOutputStream os = new ByteArrayOutputStream();
             PdfRendererBuilder builder = new PdfRendererBuilder();
@@ -72,7 +72,7 @@ public class PDFEngine {
             addColorProfile(builder);
 
             builder
-                .withHtmlContent(html, new java.io.File(format("%s/%s/", baseUri, pfadSuffix)).toURI().toString())
+                .withHtmlContent(html, new java.io.File(format("%s/%s/", baseUri, pathSuffix)).toURI().toString())
                 .withProducer(creator)
                 .usePDDocument(document)
                 .toStream(os)
@@ -89,10 +89,10 @@ public class PDFEngine {
     }
 
     /**
-     * Fügt das Farbprofil dem Builder hinzu.
+     * Add colorprofile to builder.
      *
-     * @param builder Builder, zu dem das Farbprofil hinzugefügt werden sollen
-     * @return Der übergabene Builder
+     * @param builder builder to add profile to
+     * @return provided builder
      */
     @SneakyThrows
     private PdfRendererBuilder addColorProfile(PdfRendererBuilder builder) {

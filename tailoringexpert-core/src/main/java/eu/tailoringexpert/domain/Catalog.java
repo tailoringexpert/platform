@@ -37,15 +37,33 @@ import java.util.stream.Stream;
 public class Catalog<T extends Requirement> implements Serializable {
     private static final long serialVersionUID = 2102054700551193540L;
 
+    /**
+     * Version of the catalog.
+     */
     private String version;
+
+    /**
+     * Table of contents of catalog.
+     */
     private Chapter<T> toc;
 
+    /**
+     * All chapters including subchapters of catalog.
+     *
+     * @return Stream of complete/all chapters of catalog.
+     */
     public Stream<Chapter<T>> allChapters() {
         return toc.getChapters()
             .stream()
             .flatMap(Chapter::allChapters);
     }
 
+    /**
+     * Get a chapter identified by chapter number of the catalog.
+     *
+     * @param number number of chapter to get
+     * @return Chapter if exists otherwise empty
+     */
     public Optional<Chapter<T>> getChapter(String number) {
         return allChapters()
             .filter(chapter -> number.equals(chapter.getNumber()))

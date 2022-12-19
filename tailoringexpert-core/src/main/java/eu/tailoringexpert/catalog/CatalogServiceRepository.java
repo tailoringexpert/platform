@@ -51,4 +51,12 @@ public interface CatalogServiceRepository {
      * @return loaded base catalog
      */
     Optional<Catalog<BaseRequirement>> getCatalog(String version);
+
+    /**
+     * Checks if base catalog of requested version already exists.
+     *
+     * @param version version of base catalog to check existence of
+     * @return true, of base catalog exists
+     */
+    boolean existsCatalog(String version);
 }

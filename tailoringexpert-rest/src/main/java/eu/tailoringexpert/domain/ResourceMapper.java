@@ -87,10 +87,11 @@ public abstract class ResourceMapper {
     public static final String TAILORING_ATTACHMENT = "project/{project}/tailoring/{tailoring}/attachment/{name}";
     public static final String TAILORING_NOTES = "project/{project}/tailoring/{tailoring}/note";
     public static final String TAILORING_NOTE = "project/{project}/tailoring/{tailoring}/note/{note}";
+    public static final String TAILORING_STATE = "project/{project}/tailoring/{tailoring}/state/{state}";
     public static final String BASECATALOG = "catalog";
     public static final String BASECATALOG_VERSION = "catalog/{version}";
-    public static final String BASECATALOG_VERION_PDF = "catalog/{version}/pdf";
-    public static final String BASECATALOG_VERION_JSON = "catalog/{version}/json";
+    public static final String BASECATALOG_VERSION_PDF = "catalog/{version}/pdf";
+    public static final String BASECATALOG_VERSION_JSON = "catalog/{version}/json";
 
     public static final String SCREENINGSHEET = "screeningsheet";
     public static final String SELECTIONVECTOR_PROFILE = "selectionvector";
@@ -115,6 +116,7 @@ public abstract class ResourceMapper {
     private static final String REL_IMPORT = "import";
     private static final String REL_ATTACHMENT = "attachment";
     private static final String REL_NOTE = "note";
+    private static final String REL_STATE = "state";
 
     // Katalogversion
     @BeforeMapping
@@ -133,8 +135,8 @@ public abstract class ResourceMapper {
         resource.links(asList(
             linkToCurrentMapping().slash(resolveParameter(PROJECT_NEW, context.parameter())).withRel(PROJECTS),
             createLink(REL_SELF, baseUri, BASECATALOG_VERSION, parameter),
-            createLink(REL_PDF, baseUri, BASECATALOG_VERION_PDF, parameter),
-            createLink(REL_JSON, baseUri, BASECATALOG_VERION_JSON, parameter)
+            createLink(REL_PDF, baseUri, BASECATALOG_VERSION_PDF, parameter),
+            createLink(REL_JSON, baseUri, BASECATALOG_VERSION_JSON, parameter)
         ));
     }
 
@@ -177,6 +179,7 @@ public abstract class ResourceMapper {
     protected void updatePathContext(@Context PathContextBuilder pathContext, TailoringInformation domain) {
         pathContext.tailoring(nonNull(domain) ? domain.getName() : null);
         pathContext.catalog(nonNull(domain) ? domain.getCatalogVersion() : null);
+        pathContext.state(nonNull(domain) ? domain.getState().nextState().name() : null);
     }
 
     public abstract TailoringResource toResource(@Context PathContextBuilder pathContext, TailoringInformation domain);
@@ -198,9 +201,10 @@ public abstract class ResourceMapper {
                 createLink(REL_KATALOG, baseUri, TAILORING_CATALOG, parameter),
                 createLink(REL_NAME, baseUri, TAILORING_NAME, parameter),
                 createLink(REL_IMPORT, baseUri, TAILORING_REQUIREMENT_IMPORT, parameter),
-                createLink(REL_BASECATALOG_DOCUMENT, baseUri, BASECATALOG_VERION_PDF, parameter),
+                createLink(REL_BASECATALOG_DOCUMENT, baseUri, BASECATALOG_VERSION_PDF, parameter),
                 createLink(REL_ATTACHMENT, baseUri, TAILORING_ATTACHMENTS, parameter),
-                createLink(REL_NOTE, baseUri, TAILORING_NOTES, parameter)
+                createLink(REL_NOTE, baseUri, TAILORING_NOTES, parameter),
+                createLink(REL_STATE, baseUri, TAILORING_STATE, parameter)
             )
         );
     }
@@ -211,24 +215,26 @@ public abstract class ResourceMapper {
     @AfterMapping
     protected void addLinks(@Context PathContextBuilder pathContext, @MappingTarget ScreeningSheetResourceBuilder resource) {
         PathContext context = pathContext.build();
-        if (nonNull(context.getProject()) || nonNull(context.getTailoring())) {
-            String self = isNull(context.getTailoring()) ? PROJECT_SCREENINGSHEET : TAILORING_SCREENINGSHEET;
-            String datei = isNull(context.getTailoring()) ? PROJECT_SCREENINGSHEET_PDF : TAILORING_SCREENINGSHEET_PDF;
-
-            Map<String, String> parameter = context.parameter();
-            String baseUri = linkToCurrentMapping().toString();
-            resource.links(asList(
-                createLink(REL_SELF, baseUri, self, parameter),
-                createLink("datei", baseUri, datei, parameter))
-            );
+        if (isNull(context.getProject())) {
+            return;
         }
+
+        String self = isNull(context.getTailoring()) ? PROJECT_SCREENINGSHEET : TAILORING_SCREENINGSHEET;
+        String file = isNull(context.getTailoring()) ? PROJECT_SCREENINGSHEET_PDF : TAILORING_SCREENINGSHEET_PDF;
+
+        Map<String, String> parameter = context.parameter();
+        String baseUri = linkToCurrentMapping().toString();
+        resource.links(asList(
+            createLink(REL_SELF, baseUri, self, parameter),
+            createLink("datei", baseUri, file, parameter))
+        );
     }
 
     @SuppressWarnings({"java:S1172"})
     public List<ScreeningSheetParameterResource> toResource(@Context PathContextBuilder builder,
                                                             List<ScreeningSheetParameter> parameters) {
         if (isNull(parameters)) {
-            return null;
+            return List.of();
         }
 
         return parameters.stream()

@@ -35,9 +35,9 @@ import static org.assertj.core.api.Assertions.assertThatNoException;
 @ContextConfiguration(classes = App.class)
 @TestPropertySource(locations = {
     "classpath:application.properties",
-    "classpath:application-dev.properties"
+    "classpath:application-test.properties"
 })
-@ActiveProfiles("dev")
+@ActiveProfiles("test")
 @Log4j2
 class AppTest {
     @Test

@@ -121,5 +121,74 @@ table.center-bold th {
     text-align: center;
 }
 
-
 table.ncr {}
+
+table.custom {
+    border-collapse: collapse;
+	border-width: 1px;
+	border-spacing: 0px;
+	border-color: #C0C0C0;
+}
+
+tr.left > td:first-child {
+  border-left:solid;
+}
+
+tr.right > td:last-child{
+  border-right:solid;
+}
+
+tr.all td {
+ border:solid;
+}
+
+tr.top td {
+ border-top:solid;
+}
+
+tr.bottom td {
+ border-bottom:solid;
+}
+
+
+div.h1 {
+    display: block;
+    font-size: 1.17em;
+    margin-top: 1em;
+    margin-bottom: 1em;
+    margin-left: 0;
+    margin-right: 0;
+    font-weight: bold;
+}
+
+div.h2 {
+    display: block;
+    font-size: 1.17em;
+    margin-top: 1em;
+    margin-bottom: 1em;
+    margin-left: 0;
+    margin-right: 0;
+    font-weight: bold;
+}
+
+.note:before {
+    /*text-decoration: underline;*/
+    font-weight: bold;
+    white-space: pre;
+    content: 'NOTE:\A';
+}
+
+.note[data-number]:before {
+    /* text-decoration: underline;*/
+    font-weight: bold;
+    white-space: pre;
+    content: 'NOTE ' attr(data-number) ':\A';
+}
+
+.note[data-number][data-title]:before {
+    /* text-decoration: underline;*/
+    font-weight: bold;
+    white-space: pre;
+    content: 'NOTE ' attr(data-number) ': ' attr(data-title) '\A';
+}
+

@@ -54,7 +54,6 @@ import static eu.tailoringexpert.domain.Phase.ZERO;
 import static java.lang.String.format;
 import static java.util.Collections.emptyMap;
 import static java.util.List.of;
-import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
 import static java.util.stream.Collectors.toCollection;
 
@@ -113,21 +112,32 @@ public class BaseCatalogPDFDocumentCreator implements DocumentCreator {
     }
 
 
+    /**
+     * Add chapter and all requirement to rows object.
+     * All subchapter will be evaluated as well.
+     *
+     * @param chapter chapter evaluate
+     * @param level   chapter level
+     * @param rows    collection to add elements to
+     */
     void addChapter(Chapter<BaseRequirement> chapter, int level, Collection<BaseCatalogElement> rows) {
         rows.add(BaseCatalogElement.builder()
             .text(templateEngine.toXHTML(chapter.getNumber() + " " + chapter.getName(), emptyMap()))
             .chapter(chapter.getNumber())
             .build());
         chapter.getRequirements()
-            .forEach(requirement -> addRequirement(requirement, rows, chapter.getNumber()));
+            .forEach(requirement -> addRequirement(requirement, rows));
         final AtomicInteger nextLevel = new AtomicInteger(level + 1);
-        if (nonNull(chapter.getChapters())) {
-            chapter.getChapters()
-                .forEach(subChapter -> addChapter(subChapter, nextLevel.get(), rows));
-        }
-
+        chapter.getChapters()
+            .forEach(subChapter -> addChapter(subChapter, nextLevel.get(), rows));
     }
 
+    /**
+     * Builds text of refernce origin.
+     *
+     * @param requirement requirment to create refernence of
+     * @return created reference text
+     */
     private String buildReferenceText(BaseRequirement requirement) {
         StringBuilder referenceText = new StringBuilder();
         if (nonNull(requirement.getReference())) {
@@ -140,22 +150,34 @@ public class BaseCatalogPDFDocumentCreator implements DocumentCreator {
         return referenceText.toString();
     }
 
+    /**
+     * Builds List of limitations.
+     *
+     * @param identifier identifier to create limitation strings of
+     * @return list of extracted limitations
+     */
     private List<String> buildLimitations(Identifier identifier) {
         List<String> result = new ArrayList<>();
         if (identifier.getLevel() > 0) {
-            if (isNull(identifier.getLimitations()) || identifier.getLimitations().isEmpty()) {
+            if (!identifier.hasLimitations()) {
                 result.add(identifier.getType() + identifier.getLevel());
             } else {
                 identifier.getLimitations()
                     .stream()
-                    .map(limitierung -> identifier.getType() + identifier.getLevel() + "(" + limitierung + ")")
+                    .map(limitation -> identifier.getType() + identifier.getLevel() + "(" + limitation + ")")
                     .forEachOrdered(result::add);
             }
         }
         return result;
     }
 
-    void addRequirement(BaseRequirement requirement, Collection<BaseCatalogElement> rows, String chapter) {
+    /**
+     * Add a evaluated requirene to rows collection.
+     *
+     * @param requirement requirement to build row object of
+     * @param rows        collection to add to
+     */
+    void addRequirement(BaseRequirement requirement, Collection<BaseCatalogElement> rows) {
         String referenzText = buildReferenceText(requirement);
 
         List<String> identifiers = new ArrayList<>();
@@ -174,7 +196,6 @@ public class BaseCatalogPDFDocumentCreator implements DocumentCreator {
                 .collect(toCollection(() -> phases));
         }
 
-        log.trace(chapter + "." + requirement.getPosition() + ": " + identifiers + ", " + phases);
         rows.add(BaseCatalogElement.builder()
             .phases(phases)
             .identifiers(identifiers)
@@ -184,6 +205,4 @@ public class BaseCatalogPDFDocumentCreator implements DocumentCreator {
             .chapter(null)
             .build());
     }
-
-
 }

@@ -37,6 +37,7 @@ import eu.tailoringexpert.domain.SelectionVectorProfile;
 import eu.tailoringexpert.domain.SelectionVectorProfileEntity;
 import eu.tailoringexpert.domain.Tailoring;
 import eu.tailoringexpert.domain.TailoringEntity;
+import eu.tailoringexpert.domain.TailoringState;
 import eu.tailoringexpert.repository.DokumentSigneeRepository;
 import eu.tailoringexpert.repository.ProjectRepository;
 import eu.tailoringexpert.repository.SelectionVectorProfileRepository;
@@ -57,6 +58,7 @@ import static java.util.Arrays.asList;
 import static java.util.List.copyOf;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
@@ -117,18 +119,7 @@ class JPATailoringServiceRepositoryTest {
     @Test
     void updateTailoring_TaioloringNotExists_TailoringNotUpdated() {
         // arrange
-        TailoringEntity tailoringToUpdate = TailoringEntity.builder()
-            .name("master1")
-            .build();
-        ProjectEntity project = ProjectEntity.builder()
-            .tailorings(asList(
-                TailoringEntity.builder()
-                    .name("master")
-                    .build(),
-                tailoringToUpdate
-            ))
-            .build();
-        given(projectRepositoryMock.findByIdentifier("SAMPLE")).willReturn(project);
+        given(projectRepositoryMock.findTailoring("SAMPLE", "master2")).willReturn(null);
 
         Tailoring tailoring = Tailoring.builder()
             .name("master2")
@@ -139,31 +130,23 @@ class JPATailoringServiceRepositoryTest {
 
         // assert
         assertThat(actual).isNotNull();
-        verify(mapperMock, times(0)).updateTailoring(tailoring, tailoringToUpdate);
+        verify(mapperMock, times(0)).updateTailoring(eq(tailoring), any());
     }
 
     @Test
     void updateTailoring_TailoringExists_TailoringUpdated() {
         // arrange
         TailoringEntity tailoringToUpdate = TailoringEntity.builder()
-            .name("master1")
+            .name("master")
             .build();
-        ProjectEntity project = ProjectEntity.builder()
-            .tailorings(asList(
-                TailoringEntity.builder()
-                    .name("master")
-                    .build(),
-                tailoringToUpdate
-            ))
-            .build();
-        given(projectRepositoryMock.findByIdentifier("SAMPLE")).willReturn(project);
+
+        given(projectRepositoryMock.findTailoring("SAMPLE", "master")).willReturn(tailoringToUpdate);
 
         Tailoring tailoring = Tailoring.builder()
-            .name("master1")
+            .name("master")
             .build();
 
-        given(mapperMock.toDomain(tailoringToUpdate))
-            .willReturn(tailoring);
+        given(mapperMock.toDomain(tailoringToUpdate)).willReturn(tailoring);
 
         // act
         Tailoring actual = repository.updateTailoring("SAMPLE", tailoring);
@@ -178,11 +161,11 @@ class JPATailoringServiceRepositoryTest {
         // arrange
         TailoringEntity tailoringToUpdate = TailoringEntity.builder()
             .name("master")
-            .files(new HashSet<>())
+            .files(new HashSet<>(asList(FileEntity.builder().name("file1.pdf").build())))
             .build();
         given(projectRepositoryMock.findTailoring("SAMPLE", "master")).willReturn(tailoringToUpdate);
 
-        File file = File.builder().build();
+        File file = File.builder().name("file2.pdf").build();
         Tailoring tailoring = Tailoring.builder()
             .name("master")
             .files(asList(file))
@@ -194,7 +177,7 @@ class JPATailoringServiceRepositoryTest {
 
         // assert
         assertThat(actual).isPresent();
-        assertThat(tailoringToUpdate.getFiles()).isNotEmpty();
+        assertThat(tailoringToUpdate.getFiles()).hasSize(2);
     }
 
 
@@ -210,6 +193,30 @@ class JPATailoringServiceRepositoryTest {
 
         // assert
         assertThat(actual).isEmpty();
+    }
+
+    @Test
+    void updateFile_ExistingFile_FileUpdated() {
+        // arrange
+        TailoringEntity tailoringToUpdate = TailoringEntity.builder()
+            .name("master")
+            .files(new HashSet<>(asList(FileEntity.builder().name("dummy.pdf").build())))
+            .build();
+        given(projectRepositoryMock.findTailoring("SAMPLE", "master")).willReturn(tailoringToUpdate);
+
+        File file = File.builder().name("dummy.pdf").build();
+        Tailoring tailoring = Tailoring.builder()
+            .name("master")
+            .files(asList(file))
+            .build();
+        given(mapperMock.toDomain(tailoringToUpdate)).willReturn(tailoring);
+
+        // act
+        Optional<Tailoring> actual = repository.updateFile("SAMPLE", "master", file);
+
+        // assert
+        assertThat(actual).isPresent();
+        assertThat(tailoringToUpdate.getFiles()).hasSize(1);
     }
 
     @Test
@@ -664,7 +671,7 @@ class JPATailoringServiceRepositoryTest {
         // arrange
         given(projectRepositoryMock.findTailoring("SAMPLE", "master"))
             .willReturn(TailoringEntity.builder()
-                .files(new HashSet(List.of(FileEntity.builder().name("DoBeDeleted").build())))
+                .files(new HashSet<>(asList(FileEntity.builder().name("DoBeDeleted").build())))
                 .build());
 
         // act
@@ -715,4 +722,48 @@ class JPATailoringServiceRepositoryTest {
         assertThat(copyOf(tailoring.getNotes()).get(1).getText()).isEqualTo("Note 2");
     }
 
+    @Test
+    void setState_TailoringNotExists_EmptyReturned() {
+        // arrange
+        given(projectRepositoryMock.findTailoring("SAMPLE", "master"))
+            .willReturn(null);
+
+        // act
+        Optional<Tailoring> actual = repository.setState("SAMPLE", "master", TailoringState.CREATED);
+
+        // assert
+        assertThat(actual).isEmpty();
+    }
+
+    @Test
+    void setState_TailoringExists_UpdatedTailoringReturned() {
+        // arrange
+        TailoringEntity entity = TailoringEntity.builder().state(TailoringState.CREATED).build();
+        given(projectRepositoryMock.findTailoring("SAMPLE", "master"))
+            .willReturn(entity);
+
+        given(mapperMock.toDomain(entity)).willAnswer(invocation -> {
+            TailoringEntity te = invocation.getArgument(0);
+            return Tailoring.builder().state(te.getState()).build();
+        });
+
+        // act
+        Optional<Tailoring> actual = repository.setState("SAMPLE", "master", TailoringState.AGREED);
+
+        // assert
+        assertThat(actual).isPresent();
+        assertThat(actual.get().getState()).isEqualTo(TailoringState.AGREED);
+    }
+
+    @Test
+    void existsTailoring_RepositoryCalled_RepositoryResultReturned() {
+        // arrange
+        given(projectRepositoryMock.existsTailoring("SAMPLE", "master")).willReturn(true);
+
+        // act
+        repository.existsTailoring("SAMPLE", "master");
+
+        // assert
+        verify(projectRepositoryMock, times(1)).existsTailoring("SAMPLE", "master");
+    }
 }

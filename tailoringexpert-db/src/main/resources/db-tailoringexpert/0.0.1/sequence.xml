@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                   http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
+
+    <changeSet id="1" author="tailoringexpert">
+        <createTable tableName="SEQUENCE">
+            <column name="SEQ_NAME" type="VARCHAR(50)">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="SEQ_COUNT" type="BIGINT"/>
+        </createTable>
+
+        <insert tableName="SEQUENCE">
+            <column name="SEQ_NAME" value="SEQ_PARAMETER"/>
+            <column name="SEQ_COUNT" valueNumeric="1"/>
+        </insert>
+        <insert tableName="SEQUENCE">
+            <column name="SEQ_NAME" value="SEQ_TAILORINGREQUIREMENT"/>
+            <column name="SEQ_COUNT" valueNumeric="1"/>
+        </insert>
+        <insert tableName="SEQUENCE">
+            <column name="SEQ_NAME" value="SEQ_TAILORINGCATALOGCHAPTER"/>
+            <column name="SEQ_COUNT" valueNumeric="1"/>
+        </insert>
+        <insert tableName="SEQUENCE">
+            <column name="SEQ_NAME" value="SEQ_BASECATALOGCHAPTER"/>
+            <column name="SEQ_COUNT" valueNumeric="1"/>
+        </insert>
+        <insert tableName="SEQUENCE">
+            <column name="SEQ_NAME" value="SEQ_BASECATALOG"/>
+            <column name="SEQ_COUNT" valueNumeric="1"/>
+        </insert>
+        <insert tableName="SEQUENCE">
+            <column name="SEQ_NAME" value="SEQ_BASEREQUIREMENT"/>
+            <column name="SEQ_COUNT" valueNumeric="1"/>
+        </insert>
+        <insert tableName="SEQUENCE">
+            <column name="SEQ_NAME" value="SEQ_IDENTIFIER"/>
+            <column name="SEQ_COUNT" valueNumeric="1"/>
+        </insert>
+        <insert tableName="SEQUENCE">
+            <column name="SEQ_NAME" value="SEQ_DRD"/>
+            <column name="SEQ_COUNT" valueNumeric="1"/>
+        </insert>
+
+        <insert tableName="SEQUENCE">
+            <column name="SEQ_NAME" value="SEQ_SCREENINGSHEET"/>
+            <column name="SEQ_COUNT" valueNumeric="1"/>
+        </insert>
+        <insert tableName="SEQUENCE">
+            <column name="SEQ_NAME" value="SEQ_SCREENINGSHEETPARAMETER"/>
+            <column name="SEQ_COUNT" valueNumeric="1"/>
+        </insert>
+
+        <insert tableName="SEQUENCE">
+            <column name="SEQ_NAME" value="SEQ_SELECTIONVECTOR"/>
+            <column name="SEQ_COUNT" valueNumeric="1"/>
+        </insert>
+        <insert tableName="SEQUENCE">
+            <column name="SEQ_NAME" value="SEQ_TAILORING"/>
+            <column name="SEQ_COUNT" valueNumeric="1"/>
+        </insert>
+        <insert tableName="SEQUENCE">
+            <column name="SEQ_NAME" value="SEQ_TAILORINGCATALOG"/>
+            <column name="SEQ_COUNT" valueNumeric="1"/>
+        </insert>
+        <insert tableName="SEQUENCE">
+            <column name="SEQ_NAME" value="SEQ_PROJECT"/>
+            <column name="SEQ_COUNT" valueNumeric="1"/>
+        </insert>
+        <insert tableName="SEQUENCE">
+            <column name="SEQ_NAME" value="SEQ_LOGO"/>
+            <column name="SEQ_COUNT" valueNumeric="1"/>
+        </insert>
+        <insert tableName="SEQUENCE">
+            <column name="SEQ_NAME" value="SEQ_DOCUMENT"/>
+            <column name="SEQ_COUNT" valueNumeric="1"/>
+        </insert>
+        <insert tableName="SEQUENCE">
+            <column name="SEQ_NAME" value="SEQ_PROJECTPHASEDOCUMENT"/>
+            <column name="SEQ_COUNT" valueNumeric="1"/>
+        </insert>
+        <insert tableName="SEQUENCE">
+            <column name="SEQ_NAME" value="SEQ_SELECTIONVECTORPROFILE"/>
+            <column name="SEQ_COUNT" valueNumeric="1"/>
+        </insert>
+        <insert tableName="SEQUENCE">
+            <column name="SEQ_NAME" value="SEQ_DOCUMENTSIGNEE"/>
+            <column name="SEQ_COUNT" valueNumeric="1"/>
+        </insert>
+        <insert tableName="SEQUENCE">
+            <column name="SEQ_NAME" value="SEQ_NOTE"/>
+            <column name="SEQ_COUNT" valueNumeric="1"/>
+        </insert>
+    </changeSet>
+</databaseChangeLog>

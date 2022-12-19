@@ -53,6 +53,9 @@ import static javax.persistence.GenerationType.TABLE;
 public class TailoringRequirementEntity implements Serializable {
     private static final long serialVersionUID = 586167029258031537L;
 
+    /**
+     * Technical ID.
+     */
     @Id
     @TableGenerator(name = "SEQ_TAILORINGREQUIREMENT", table = "SEQUENCE", pkColumnName = "SEQ_NAME",
         valueColumnName = "SEQ_COUNT", pkColumnValue = "SEQ_TAILORINGREQUIREMENT", initialValue = 1)
@@ -60,17 +63,29 @@ public class TailoringRequirementEntity implements Serializable {
     @Column(name = "REQUIREMENT_ID")
     private Long id;
 
+    /**
+     * Text of the requirement.
+     */
     @Column(name = "TEXT")
     private String text;
 
+    /**
+     * Requirement origin.
+     */
     @Embedded
     @AssociationOverride(name = "logo",
         joinColumns = @JoinColumn(name = "REFERENCELOGO_ID"))
     private ReferenceEntity reference;
 
+    /**
+     * Position (in chpater) of requirement.
+     */
     @Column(name = "POSITION")
     private String position;
 
+    /**
+     * List of DRDs requirement shall be part of.
+     */
     @OneToMany(fetch = LAZY)
     @JoinTable(
         name = "TAILORINGREQUIREMENT_DRD",
@@ -79,12 +94,21 @@ public class TailoringRequirementEntity implements Serializable {
     )
     private Set<DRDEntity> drds;
 
+    /**
+     * State if requirement is selected.
+     */
     @Column(name = "SELECTED")
     private Boolean selected;
 
+    /**
+     * Time when selection state was changed.
+     */
     @Column(name = "SELECTIONCHANGED")
     private ZonedDateTime selectionChanged;
 
+    /**
+     * Time when requirement text was changed.
+     */
     @Column(name = "TEXTCHANGED")
     private ZonedDateTime textChanged;
 }

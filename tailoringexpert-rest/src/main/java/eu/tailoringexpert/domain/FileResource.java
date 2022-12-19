@@ -38,8 +38,19 @@ import static java.util.Objects.nonNull;
 @Relation(itemRelation = "file", collectionRelation = "files")
 public class FileResource extends RepresentationModel<FileResource> {
 
+    /**
+     * Name of the file
+     */
     private String name;
+
+    /**
+     * Filesuffix after last ".".
+     */
     private String type;
+
+    /**
+     * Checksum/Hash of the file.
+     */
     private String hash;
 
     @Builder

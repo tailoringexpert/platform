@@ -32,9 +32,15 @@ import java.util.Collection;
 public class BaseRequirement extends Requirement implements Serializable {
     private static final long serialVersionUID = 1520118462633417279L;
 
+    /**
+     * Identifiers this requirement shall be selected automatically.
+     */
     @Singular("identifier")
     private Collection<Identifier> identifiers;
 
+    /**
+     * Phases the requirement belongs to.
+     */
     @Singular("phase")
     private Collection<Phase> phases;
 

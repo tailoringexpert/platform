@@ -115,7 +115,7 @@ class BaseCatalogPDFDocumentCreatorTest {
     }
 
     @Test
-    void createDocument() throws Exception {
+    void createDocument_AllDataAvailable_FileReturned() throws Exception {
         // arrange
         Catalog<BaseRequirement> catalog;
         try (InputStream is = this.getClass().getResourceAsStream("/basecatalog.json")) {
@@ -151,6 +151,26 @@ class BaseCatalogPDFDocumentCreatorTest {
         // assert
         assertThat(actual).isNotNull();
         fileSaver.accept("basecatalog.pdf", actual.getData());
+    }
+
+    @Test
+    void createDocument_CatalogNoToc_NullReturned() throws Exception {
+        // arrange
+        Catalog<BaseRequirement> catalog = Catalog.<BaseRequirement>builder().build();
+
+        LocalDateTime now = LocalDateTime.now();
+        Map<String, String> platzhalter = new HashMap<>();
+        platzhalter.put("PROJEKT", "SAMPLE");
+        platzhalter.put("DATUM", now.format(DateTimeFormatter.ofPattern("dd.MM.YYYY")));
+        platzhalter.put("DOKUMENT", "DUMMY-XY-Z-1940/DV7");
+        platzhalter.put("${DRD_DOCID}", "DUMMY_DOC");
+
+
+        // act
+        File actual = creator.createDocument("4711", catalog, platzhalter);
+
+        // assert
+        assertThat(actual).isNull();
     }
 
     @Test

@@ -1,0 +1,73 @@
+=== [short title of solved problem and solution]
+
+Status:: accepted
+Entscheider::
+* Michael Bädorf
+Datum::
+ 28.10.2022
+
+Technische Story:: n/a
+
+==== Kontext und Problemstellung
+
+Zu einem Tailoring sollen Dateien gespeichert werden, z.B. unterschriebene
+Dokumentdateien.
+
+==== Entscheidungstreiber
+
+* Zugriffsrechte
+* "sichere" Ablagestruktur
+* Integrität
+
+==== Betrachtete Lösungsmöglichkeiten
+
+* Dateisystem
+* Datenbank
+
+==== Entscheidung
+
+Gewählte Alternative::
+Datenbank,
+* ein
+weil [justification. e.g., only option, which meets k.o. criterion decision driver | which resolves force force | … | comes out best (see below)].
+
+===== Positive Auswirkungen
+
+* [e.g., improvement of quality attribute satisfaction, follow-up decisions required, …]
+
+===== Negative Auswirkungen
+
+* [e.g., compromising quality attribute, follow-up decisions required, …]
+
+==== Vergleich der Alternativen
+
+===== Dateisystem
+
+====== Postiv
+
+* Auch ohne Verbindung zur Plattform ist ein Download von Dateien
+möglich
+* Backup über Standard Dateisystembackups möglich
+
+====== Negativ
+
+* Die Anwednung würde eine verschieben über das Dateisystem nicht mitkriegen
+und der Link zur Datei würde ins Leere führen
+* Checksumme/Hash für Integrittätssicherungen müssen manuell erstellt und
+mit der Datei verknüpft werden
+*
+
+===== Datenbank
+
+====== Postiv
+
+* Änderungen werden "nur" über die Plattform durchgeführt
+
+
+====== Negativ
+
+* Die Dateianzahl und Größ kann die Auswahl des zu verwendenden Datenbanksystems
+aufgrund der Datenbankgröße beinflussen.
+
+
+==== Links

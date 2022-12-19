@@ -57,6 +57,9 @@ import static javax.persistence.GenerationType.TABLE;
 public class TailoringCatalogChapterEntity implements Serializable {
     private static final long serialVersionUID = -2953875408100894292L;
 
+    /**
+     * Technical ID.
+     */
     @Id
     @TableGenerator(name = "SEQ_TAILORINGCATALOGCHAPTER", table = "SEQUENCE", pkColumnName = "SEQ_NAME",
         valueColumnName = "SEQ_COUNT", pkColumnValue = "SEQ_TAILORINGCATALOGCHAPTER", initialValue = 1)
@@ -64,35 +67,60 @@ public class TailoringCatalogChapterEntity implements Serializable {
     @Column(name = "CHAPTER_ID")
     private Long id;
 
+    /**
+     * Name of chapter.
+     */
     @Column(name = "NAME")
     private String name;
 
+    /**
+     * Position in chapter list.
+     */
     @Column(name = "POSITION")
     private int position;
 
+    /**
+     * (Full) Number of chapter.
+     */
     @Column(name = "NUMBER")
     private String number;
 
+    /**
+     * List of subchapters.
+     */
     @OneToMany(cascade = ALL, fetch = LAZY)
     @JoinColumn(name = "PARENTCHAPTER_ID", referencedColumnName = "CHAPTER_ID")
     @OrderColumn(name = "CHAPTER_ORDER")
     private List<TailoringCatalogChapterEntity> chapters;
 
+    /**
+     * Requirements defined in chapter.
+     */
     @OneToMany(cascade = ALL, orphanRemoval = true, fetch = LAZY)
     @JoinColumn(name = "CHAPTER_ID", referencedColumnName = "CHAPTER_ID", nullable = false)
     @OrderColumn(name = "REQUIREMENT_ORDER")
     private List<TailoringRequirementEntity> requirements = new ArrayList<>();
 
+    /**
+     * Get a chapter identified by chapter number.
+     *
+     * @param number number of chapter to get
+     * @return Chapter if exists
+     */
     public Optional<TailoringCatalogChapterEntity> getChapter(String number) {
         return allChapters()
             .filter(chapter -> number.equals(chapter.getNumber()))
             .findFirst();
     }
 
+    /**
+     * All chapters including subchapters.
+     *
+     * @return Stream of complete/all chapters of catalog.
+     */
     public Stream<TailoringCatalogChapterEntity> allChapters() {
         return Stream.concat(
             Stream.of(this),
             nonNull(chapters) ? chapters.stream().flatMap(TailoringCatalogChapterEntity::allChapters) : Stream.empty());
-
     }
 }

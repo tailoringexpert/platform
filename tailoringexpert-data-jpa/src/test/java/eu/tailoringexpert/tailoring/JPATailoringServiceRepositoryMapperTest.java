@@ -142,7 +142,7 @@ class JPATailoringServiceRepositoryMapperTest {
                     .build())
                 .build())
             .screeningSheet(ScreeningSheet.builder().build())
-            .state(TailoringState.ACTIVE)
+            .state(TailoringState.AGREED)
             .name("master")
             .selectionVector(SelectionVector.builder()
                 .build())
@@ -156,7 +156,7 @@ class JPATailoringServiceRepositoryMapperTest {
         //assert
         assertThat(entity.getName()).isNull();
         assertThat(entity.getSelectionVector()).isNotNull();
-        assertThat(entity.getState()).isEqualTo(TailoringState.ACTIVE);
+        assertThat(entity.getState()).isEqualTo(TailoringState.AGREED);
         assertThat(entity.getCatalog().getVersion()).isEqualTo(domain.getCatalog().getVersion());
     }
 
@@ -196,7 +196,7 @@ class JPATailoringServiceRepositoryMapperTest {
         ScreeningSheetEntity entity = ScreeningSheetEntity.builder()
             .parameters(List.of(
                 ScreeningSheetParameterEntity.builder()
-                    .category(ScreeningSheet.PROJECT)
+                    .category(ScreeningSheet.PARAMETER_PROJECT)
                     .value("Sample")
                     .build()
             ))
@@ -256,7 +256,7 @@ class JPATailoringServiceRepositoryMapperTest {
         ScreeningSheetEntity entity = ScreeningSheetEntity.builder()
             .parameters(List.of(
                 ScreeningSheetParameterEntity.builder()
-                    .category(ScreeningSheet.PHASE)
+                    .category(ScreeningSheet.PARAMETER_PHASE)
                     .value(List.of("F", "ZERO"))
                     .build()
                 ))

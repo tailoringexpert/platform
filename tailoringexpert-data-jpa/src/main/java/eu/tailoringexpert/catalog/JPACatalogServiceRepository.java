@@ -99,8 +99,22 @@ public class JPACatalogServiceRepository implements CatalogServiceRepository {
         return ofNullable(mapper.getCatalog(entity));
     }
 
-    private Collection<DRD> apply(Chapter<BaseRequirement> gruppe) {
-        return gruppe.allRequirements()
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public boolean existsCatalog(String version) {
+        return baseCatalogRepository.existsByVersion(version);
+    }
+
+    /**
+     * Select all DRDs referenced in requirements of chapter and all subchapters.
+     *
+     * @param chapter root chapter to start selecting
+     * @return Collection of referenced DRDs
+     */
+    private Collection<DRD> apply(Chapter<BaseRequirement> chapter) {
+        return chapter.allRequirements()
             .map(BaseRequirement::getDrds)
             .filter(Objects::nonNull)
             .flatMap(Collection::stream)

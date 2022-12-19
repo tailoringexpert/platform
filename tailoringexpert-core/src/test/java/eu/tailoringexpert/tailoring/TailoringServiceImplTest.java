@@ -23,6 +23,7 @@ package eu.tailoringexpert.tailoring;
 
 import eu.tailoringexpert.domain.BaseRequirement;
 import eu.tailoringexpert.domain.Note;
+import eu.tailoringexpert.domain.TailoringState;
 import eu.tailoringexpert.requirement.RequirementService;
 import eu.tailoringexpert.domain.Catalog;
 import eu.tailoringexpert.domain.Chapter;
@@ -40,10 +41,13 @@ import lombok.extern.log4j.Log4j2;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
+import org.mockito.MockedStatic;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.util.AbstractMap;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -54,11 +58,13 @@ import java.util.Optional;
 import java.util.function.Function;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
+import java.util.zip.ZipOutputStream;
 
 import static eu.tailoringexpert.domain.Phase.E;
 import static eu.tailoringexpert.domain.Phase.F;
-import static eu.tailoringexpert.domain.TailoringState.ACTIVE;
+import static eu.tailoringexpert.domain.TailoringState.AGREED;
 
+import static eu.tailoringexpert.domain.TailoringState.CREATED;
 import static java.lang.Boolean.TRUE;
 import static java.nio.charset.StandardCharsets.UTF_8;
 import static java.nio.file.Files.newInputStream;
@@ -67,6 +73,7 @@ import static java.util.Arrays.asList;
 import static java.util.Objects.nonNull;
 import static java.util.Optional.empty;
 import static java.util.Optional.of;
+import static java.util.Optional.ofNullable;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.catchThrowable;
 import static org.mockito.ArgumentCaptor.forClass;
@@ -75,18 +82,22 @@ import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.mockStatic;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
 @Log4j2
+@SuppressWarnings("PMD.CyclomaticComplexity")
 class TailoringServiceImplTest {
 
     private TailoringServiceImpl service;
 
     private TailoringServiceRepository repositoryMock;
     private TailoringServiceMapper mapperMock;
+    private TailoringDeletablePredicate tailoringDeletableMock;
     private DocumentService documentServiceMock;
     private RequirementService requirementServiceMock;
     private Function<byte[], Map<String, Collection<ImportRequirement>>> tailoringAnforderungFileReaderMock;
@@ -95,33 +106,18 @@ class TailoringServiceImplTest {
     void setup() {
         this.repositoryMock = mock(TailoringServiceRepository.class);
         this.mapperMock = mock(TailoringServiceMapper.class);
+        this.tailoringDeletableMock = mock(TailoringDeletablePredicate.class);
         this.documentServiceMock = mock(DocumentService.class);
         this.requirementServiceMock = mock(RequirementService.class);
         this.tailoringAnforderungFileReaderMock = mock(Function.class);
         this.service = new TailoringServiceImpl(
             repositoryMock,
             mapperMock,
+            tailoringDeletableMock,
             documentServiceMock,
             requirementServiceMock,
             tailoringAnforderungFileReaderMock
         );
-    }
-
-    @Test
-    void addFile_ProjectNoExits_FileNotAdded() throws IOException {
-        // arrange
-        byte[] data;
-        try (InputStream is = newInputStream(get("src/test/resources/screeningsheet.pdf"))) {
-            assert nonNull(is);
-            data = is.readAllBytes();
-        }
-        given(repositoryMock.getProject("DUMMY")).willReturn(empty());
-
-        // act
-        Optional<Tailoring> actual = service.addFile("DUMMY", "master", "dummy.pdf", data);
-
-        // assert
-        assertThat(actual).isEmpty();
     }
 
     @Test
@@ -132,12 +128,7 @@ class TailoringServiceImplTest {
             assert nonNull(is);
             data = is.readAllBytes();
         }
-
-        given(repositoryMock.getProject("DUMMY")).willReturn(of(
-            Project.builder()
-                .tailorings(Collections.emptyList())
-                .build())
-        );
+        given(repositoryMock.existsTailoring("DUMMY", "master")).willReturn(false);
 
         // act
         Optional<Tailoring> actual = service.addFile("DUMMY", "master", "dummy.pdf", data);
@@ -145,6 +136,31 @@ class TailoringServiceImplTest {
         // assert
         assertThat(actual).isEmpty();
         verify(repositoryMock, times(0)).updateFile(anyString(), anyString(), any());
+
+    }
+
+    @Test
+    void addFile_TailoringExitsMessageDigestException_ExceptionThrown() throws IOException {
+        // arrange
+        byte[] data;
+        try (InputStream is = newInputStream(get("src/test/resources/screeningsheet.pdf"))) {
+            assert nonNull(is);
+            data = is.readAllBytes();
+        }
+        given(repositoryMock.existsTailoring("DUMMY", "master")).willReturn(true);
+
+        // act
+        Throwable actual;
+        try (MockedStatic<MessageDigest> md = mockStatic(MessageDigest.class)) {
+            md.when(() -> MessageDigest.getInstance(anyString())).thenThrow(new NoSuchAlgorithmException());
+            actual = catchThrowable(() -> service.addFile("DUMMY", "master", "dummy.pdf", data));
+        }
+
+
+        // assert
+        assertThat(actual).isInstanceOf(NoSuchAlgorithmException.class);
+        verify(repositoryMock, times(0)).updateFile(anyString(), anyString(), any());
+
     }
 
 
@@ -157,13 +173,7 @@ class TailoringServiceImplTest {
             data = is.readAllBytes();
         }
 
-        given(repositoryMock.getTailoring("SAMPLE", "master"))
-            .willAnswer(invocation -> of(
-                of(Tailoring.builder()
-                    .name("master")
-                    .build()
-                ))
-            );
+        given(repositoryMock.existsTailoring("SAMPLE", "master")).willReturn(true);
 
         given(repositoryMock.updateFile(eq("SAMPLE"), eq("master"), any()))
             .willAnswer(invocation -> of(Tailoring.builder()
@@ -181,26 +191,6 @@ class TailoringServiceImplTest {
         // assert
         assertThat(actual).isPresent();
         assertThat(actual.get().getFiles()).hasSize(1);
-    }
-
-    @Test
-    void addFile_TailoringNotExists_FileNotAdded() throws IOException {
-        // arrange
-        byte[] data;
-        try (InputStream is = newInputStream(get("src/test/resources/screeningsheet.pdf"))) {
-            assert nonNull(is);
-            data = is.readAllBytes();
-        }
-
-        given(repositoryMock.getTailoring("SAMPLE", "master"))
-            .willReturn(empty());
-
-        // act
-        Optional<Tailoring> actual = service.addFile("SAMPLE", "master", "dummy.pdf", data);
-
-        // assert
-        verify(repositoryMock, times(0)).updateFile(anyString(), anyString(), any());
-        assertThat(actual).isEmpty();
     }
 
     @Test
@@ -812,7 +802,7 @@ class TailoringServiceImplTest {
     }
 
     @Test
-    void createTailoring_ValidData_TailoringCreated() throws IOException {
+    void createTailoring_ValidDataNoteNull_TailoringCreated() throws IOException {
         // arrange
         byte[] data;
         try (InputStream is = newInputStream(get("src/test/resources/screeningsheet.pdf"))) {
@@ -857,7 +847,60 @@ class TailoringServiceImplTest {
         assertThat(actual.getSelectionVector()).isEqualTo(anzuwendenderSelectionVector);
         assertThat(actual.getCatalog()).isNotNull();
         assertThat(actual.getSignatures()).isEqualTo(defaultZeichnungen);
-        assertThat(actual.getState()).isEqualTo(ACTIVE);
+        assertThat(actual.getState()).isEqualTo(CREATED);
+        assertThat(actual.getPhases()).containsOnly(E, F);
+
+        verify(mapperMock, times(1)).toTailoringCatalog(catalog, screeningSheet, anzuwendenderSelectionVector);
+        verify(repositoryMock, times(1)).getDefaultSignatures();
+    }
+
+    @Test
+    void createTailoring_ValidDataNoteNotNull_TailoringCreated() throws IOException {
+        // arrange
+        byte[] data;
+        try (InputStream is = newInputStream(get("src/test/resources/screeningsheet.pdf"))) {
+            assert nonNull(is);
+            data = is.readAllBytes();
+        }
+
+        ScreeningSheet screeningSheet = ScreeningSheet.builder()
+            .data(data)
+            .parameters(asList(ScreeningSheetParameter.builder().category(ScreeningSheetDataProviderSupplier.Phase.getName()).value(asList(E, F)).build()))
+            .selectionVector(SelectionVector.builder().build())
+            .build();
+
+        SelectionVector anzuwendenderSelectionVector = SelectionVector.builder().build();
+
+        Catalog<BaseRequirement> catalog = Catalog.<BaseRequirement>builder()
+            .toc(Chapter.<BaseRequirement>builder()
+                .chapters(asList(
+                    Chapter.<BaseRequirement>builder()
+                        .number("1")
+                        .chapters(asList(
+                            Chapter.<BaseRequirement>builder()
+                                .number("1.1")
+                                .build()
+                        ))
+                        .build()
+                ))
+                .build())
+            .build();
+
+        List<DocumentSignature> defaultZeichnungen = Collections.emptyList();
+        given(repositoryMock.getDefaultSignatures()).willReturn(defaultZeichnungen);
+
+        given(mapperMock.toTailoringCatalog(catalog, screeningSheet, anzuwendenderSelectionVector)).willReturn(Catalog.<TailoringRequirement>builder().build());
+
+        // act
+        Tailoring actual = service.createTailoring("master1", "1000", screeningSheet, anzuwendenderSelectionVector, "Hello", catalog);
+
+        // assert
+        assertThat(actual.getName()).isEqualTo("master1");
+        assertThat(actual.getScreeningSheet()).isEqualTo(screeningSheet);
+        assertThat(actual.getSelectionVector()).isEqualTo(anzuwendenderSelectionVector);
+        assertThat(actual.getCatalog()).isNotNull();
+        assertThat(actual.getSignatures()).isEqualTo(defaultZeichnungen);
+        assertThat(actual.getState()).isEqualTo(CREATED);
         assertThat(actual.getPhases()).containsOnly(E, F);
 
         verify(mapperMock, times(1)).toTailoringCatalog(catalog, screeningSheet, anzuwendenderSelectionVector);
@@ -957,7 +1000,7 @@ class TailoringServiceImplTest {
 
 
     @Test
-    void updateSelectedRequirements_ProjectNull_NullPointerExceptionThrown() {
+    void updateImportedRequirements_ProjectNull_NullPointerExceptionThrown() {
         // arrange
         String project = null;
         String tailoring = "master";
@@ -971,7 +1014,7 @@ class TailoringServiceImplTest {
     }
 
     @Test
-    void updateSelectedRequirements_TailoringNull_NullPointerExceptionThrown() throws IOException {
+    void updateImportedRequirements_TailoringNull_NullPointerExceptionThrown() throws IOException {
         // arrange
         String project = "DUMMY";
         String tailoring = null;
@@ -985,7 +1028,7 @@ class TailoringServiceImplTest {
     }
 
     @Test
-    void updateSelectedRequirements_DataNull_NoFileReadVoidReturn() {
+    void updateImportedRequirements_DataNull_NoFileReadVoidReturn() {
         // arrange
         String project = "DUMMY";
         String tailoring = "master";
@@ -998,7 +1041,20 @@ class TailoringServiceImplTest {
     }
 
     @Test
-    void updateSelectedRequirements_RequirementsInValidAndInvalidStates_InvalidStateNotUpdates() {
+    void updateImportedRequirements_DataEmpty_NoFileReadVoidReturn() {
+        // arrange
+        String project = "DUMMY";
+        String tailoring = "master";
+
+        // act
+        service.updateImportedRequirements(project, tailoring, new byte[0]);
+
+        // assert
+        verify(tailoringAnforderungFileReaderMock, times(0)).apply(any());
+    }
+
+    @Test
+    void updateImportedRequirements_RequirementsInValidAndInvalidStates_InvalidStateNotUpdates() {
         // arrange
         String project = "DUMMY";
         String tailoring = "master";
@@ -1021,7 +1077,7 @@ class TailoringServiceImplTest {
     }
 
     @Test
-    void updateSelectedRequirements_RequirementsAllValidStates_AllRequirementProcesed() {
+    void updateImportedRequirements_RequirementsAllValidStates_AllRequirementProcesed() {
         // arrange
         String project = "DUMMY";
         String tailoring = "master";
@@ -1045,7 +1101,7 @@ class TailoringServiceImplTest {
 
 
     @Test
-    void updateSelectedRequirements_RequirementsValidStateAndTextChanges_AllRequirementsProcesed() {
+    void updateImportedRequirements_RequirementsValidStateAndTextChanges_AllRequirementsProcesed() {
         // arrange
         String project = "DUMMY";
         String tailoring = "master";
@@ -1069,7 +1125,7 @@ class TailoringServiceImplTest {
     }
 
     @Test
-    void updateSelectedRequirements_RequirementsValidStateAndEmptyTextChanges_AllRequirementsWithoutTextProcessed() {
+    void updateImportedRequirements_RequirementsValidStateAndEmptyTextChanges_AllRequirementsWithoutTextProcessed() {
         // arrange
         String project = "DUMMY";
         String tailoring = "master";
@@ -1131,25 +1187,74 @@ class TailoringServiceImplTest {
         // assert
         assertThat(actual).isEmpty();
         verify(repositoryMock, times(1)).getTailoring(project, tailoring);
+        verify(repositoryMock, times(0)).deleteTailoring(project, tailoring);
+
     }
 
     @Test
-    void deleteTailoring_TailoringExists_TrueReturned() throws IOException {
+    void deleteTailoring_TailoringExistsTailoringDeletable_TrueReturned() throws IOException {
         // arrange
         String project = "DUMMY";
-        String phase = "master";
+        String tailoring = "master";
 
-        given(repositoryMock.getTailoring(project, phase)).willReturn(of(Tailoring.builder().build()));
-        given(repositoryMock.deleteTailoring(project, phase)).willReturn(TRUE);
+        given(repositoryMock.getTailoring(project, tailoring))
+            .willReturn(of(Tailoring.builder().build()));
+        given(tailoringDeletableMock.test(project, tailoring))
+            .willReturn(true);
+        given(repositoryMock.deleteTailoring(project, tailoring))
+            .willReturn(TRUE);
 
         // act
-        Optional<Boolean> actual = service.deleteTailoring(project, phase);
+        Optional<Boolean> actual = service.deleteTailoring(project, tailoring);
 
         // assert
         assertThat(actual).isNotEmpty();
         assertThat(actual.get()).isTrue();
-        verify(repositoryMock, times(1)).getTailoring(project, phase);
-        verify(repositoryMock, times(1)).deleteTailoring(project, phase);
+        verify(repositoryMock, times(1)).getTailoring(project, tailoring);
+        verify(tailoringDeletableMock, times(1)).test(project, tailoring);
+        verify(repositoryMock, times(1)).deleteTailoring(project, tailoring);
+    }
+
+    @Test
+    void deleteTailoring_TailoringExistsTailoringNotDeletable_FalseReturned() throws IOException {
+        // arrange
+        String project = "DUMMY";
+        String tailoring = "master";
+
+        given(repositoryMock.getTailoring(project, tailoring))
+            .willReturn(of(Tailoring.builder().build()));
+        given(tailoringDeletableMock.test(project, tailoring))
+            .willReturn(false);
+
+        // act
+        Optional<Boolean> actual = service.deleteTailoring(project, tailoring);
+
+        // assert
+        assertThat(actual).isNotEmpty();
+        assertThat(actual.get()).isFalse();
+        verify(repositoryMock, times(1)).getTailoring(project, tailoring);
+        verify(tailoringDeletableMock, times(1)).test(project, tailoring);
+        verify(repositoryMock, times(0)).deleteTailoring(any(), any());
+    }
+
+    @Test
+    void deleteTailoring_TailoringExistsStateAgreed_FalseReturned() throws IOException {
+        // arrange
+        String project = "DUMMY";
+        String tailoring = "master";
+
+        given(repositoryMock.getTailoring(project, tailoring))
+            .willReturn(of(Tailoring.builder().state(AGREED).build()));
+        given(repositoryMock.deleteTailoring(project, tailoring)).willReturn(TRUE);
+
+        // act
+        Optional<Boolean> actual = service.deleteTailoring(project, tailoring);
+
+        // assert
+        assertThat(actual).isNotEmpty();
+        assertThat(actual.get()).isFalse();
+        verify(repositoryMock, times(1)).getTailoring(project, tailoring);
+        verify(repositoryMock, times(0)).deleteTailoring(project, tailoring);
     }
 
 
@@ -1223,6 +1328,21 @@ class TailoringServiceImplTest {
     }
 
     @Test
+    void addNote_RespositoryAddError_EmptyReturned() {
+        // arrange
+        given(repositoryMock.getTailoring(any(), any())).willReturn(of(Tailoring.builder().build()));
+        given(repositoryMock.addNote(any(), any(), any())).willReturn(empty());
+
+        // act
+        Optional<Note> actual = service.addNote("Dummy", "master", "This a demo note");
+
+        // assert
+        assertThat(actual).isEmpty();
+        verify(repositoryMock, times(1)).getTailoring("Dummy", "master");
+        verify(repositoryMock, times(1)).addNote(eq("Dummy"), eq("master"), any());
+    }
+
+    @Test
     void addNote_TailoringExists_NoteAdded() {
         // arrange
         Note note1 = Note.builder().number(1).text("demo").build();
@@ -1251,4 +1371,127 @@ class TailoringServiceImplTest {
         verify(repositoryMock, times(1)).getTailoring("Dummy", "master");
     }
 
+    @Test
+    void getNotes_TailoringExists_NotesReturned() {
+        // arrange
+        Note note1 = Note.builder().number(1).text("demo").build();
+        List<Note> notes = new ArrayList<>();
+        notes.add(note1);
+        Tailoring tailoring = Tailoring.builder().notes(notes).build();
+        given(repositoryMock.getTailoring("Dummy", "master")).willReturn(of(tailoring));
+
+        // act
+        Optional<Collection<Note>> actual = service.getNotes("Dummy", "master");
+
+        // assert
+        assertThat(actual).isNotEmpty();
+        assertThat(tailoring.getNotes()).hasSize(1);
+        verify(repositoryMock, times(1)).getTailoring("Dummy", "master");
+    }
+
+    @Test
+    void getNotes_TailoringNotExists_EmptyReturned() {
+        // arrange
+        given(repositoryMock.getTailoring("Dummy", "master")).willReturn(ofNullable(null));
+
+        // act
+        Optional<Collection<Note>> actual = service.getNotes("Dummy", "master");
+
+        // assert
+        assertThat(actual).isEmpty();
+        verify(repositoryMock, times(1)).getTailoring("Dummy", "master");
+    }
+
+    @Test
+    void addToZip_ZipOutputStremException_ExceptionThrown() throws Exception {
+        // arrange
+        Throwable actual;
+        try (ZipOutputStream zipMock = mock(ZipOutputStream.class)) {
+            File file = File.builder().name("dummy.pdf").build();
+            doThrow(new IOException()).when(zipMock).putNextEntry(any());
+
+            // act
+            actual = catchThrowable(() -> service.addToZip(file, zipMock));
+        }
+
+        // assert
+        assertThat(actual).isInstanceOf(IOException.class);
+    }
+
+    @Test
+    void updateState_TailoringNotExists_EmptyReturned() {
+        // arrange
+        given(repositoryMock.getTailoring("SAMPLE", "master")).willReturn(empty());
+
+        // act
+        Optional<TailoringInformation> actual = service.updateState("SAMPLE", "master", AGREED);
+
+        // assert
+        assertThat(actual).isEmpty();
+
+        verify(repositoryMock, times(1)).getTailoring("SAMPLE", "master");
+        verify(repositoryMock, times(0)).setState(any(), any(), any());
+    }
+
+    @Test
+    void updateState_StateDowngrade_UnmodifiedTailoringReturned() {
+        // arrange
+        Tailoring tailoring = Tailoring.builder().state(TailoringState.RELEASED).build();
+        given(repositoryMock.getTailoring("SAMPLE", "master")).willReturn(of(tailoring));
+
+        TailoringInformation tailoringInformation = TailoringInformation.builder().build();
+        given(mapperMock.toTailoringInformation(tailoring)).willReturn(tailoringInformation);
+
+        // act
+        Optional<TailoringInformation> actual = service.updateState("SAMPLE", "master", AGREED);
+
+        // assert
+        assertThat(actual)
+            .isPresent()
+            .contains(tailoringInformation);
+
+        verify(repositoryMock, times(1)).getTailoring("SAMPLE", "master");
+        verify(repositoryMock, times(0)).setState(any(), any(), any());
+    }
+
+    @Test
+    void updateState_RespositorySetStateError_EmptyReturned() {
+        // arrange
+        given(repositoryMock.getTailoring("SAMPLE", "master")).willReturn(of(Tailoring.builder().state(CREATED).build()));
+        given(repositoryMock.setState("SAMPLE", "master", AGREED)).willReturn(empty());
+
+        // act
+        Optional<TailoringInformation> actual = service.updateState("SAMPLE", "master", AGREED);
+
+        // assert
+        assertThat(actual).isEmpty();
+
+        verify(repositoryMock, times(1)).getTailoring("SAMPLE", "master");
+        verify(repositoryMock, times(1)).setState(any(), any(), any());
+    }
+
+    @Test
+    void updateState_StateChanged_UpdatedTailoringReturned() {
+        // arrange
+        given(repositoryMock.getTailoring("SAMPLE", "master"))
+            .willReturn(of(Tailoring.builder().state(CREATED).build()));
+
+        Tailoring tailoring = Tailoring.builder().state(AGREED).build();
+        given(repositoryMock.setState("SAMPLE", "master", AGREED))
+            .willReturn(of(tailoring));
+
+        TailoringInformation tailoringInformation = TailoringInformation.builder().build();
+        given(mapperMock.toTailoringInformation(tailoring)).willReturn(tailoringInformation);
+
+        // act
+        Optional<TailoringInformation> actual = service.updateState("SAMPLE", "master", AGREED);
+
+        // assert
+        assertThat(actual)
+            .isPresent()
+            .contains(tailoringInformation);
+
+        verify(repositoryMock, times(1)).getTailoring("SAMPLE", "master");
+        verify(repositoryMock, times(1)).setState(any(), any(), any());
+    }
 }

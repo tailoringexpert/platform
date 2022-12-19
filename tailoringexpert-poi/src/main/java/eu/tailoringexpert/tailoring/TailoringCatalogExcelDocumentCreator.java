@@ -38,7 +38,6 @@ import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import java.io.ByteArrayOutputStream;
 import java.util.Map;
 
-import static java.util.Objects.nonNull;
 import static java.util.stream.IntStream.range;
 
 /**
@@ -63,7 +62,6 @@ public class TailoringCatalogExcelDocumentCreator implements DocumentCreator {
             range(0, sheet.getRow(0).getPhysicalNumberOfCells())
                 .forEach(sheet::autoSizeColumn);
 
-
             byte[] content;
             try (ByteArrayOutputStream os = new ByteArrayOutputStream()) {
                 wb.write(os);
@@ -78,21 +76,31 @@ public class TailoringCatalogExcelDocumentCreator implements DocumentCreator {
             log.catching(e);
         }
         return null;
-
     }
 
+    /**
+     * Add chapter to sheet object.
+     * All subchapter will be evaluated as well.
+     *
+     * @param chapter chapter evaluate
+     * @param sheet   sheet to add elements to
+     */
     private void addChapter(Chapter<TailoringRequirement> chapter, Sheet sheet) {
         addRow(sheet, chapter.getName(), chapter.getNumber(), "");
         chapter.getRequirements().forEach(
             requirement -> addRow(sheet, "", requirement.getPosition(), requirement.getSelected().booleanValue() ? "JA" : "NEIN")
         );
 
-        if (nonNull(chapter.getChapters())) {
-            chapter.getChapters()
-                .forEach(subChapter -> addChapter(subChapter, sheet));
-        }
+        chapter.getChapters()
+            .forEach(subChapter -> addChapter(subChapter, sheet));
     }
 
+    /**
+     * Create sheet in workbook.
+     *
+     * @param wb workbook to add worksheet
+     * @return created worksheet
+     */
     private Sheet createSheet(Workbook wb, Tailoring tailoring) {
         Sheet result = wb.createSheet(tailoring.getName() + "-" + tailoring.getCatalog().getVersion());
 
@@ -109,10 +117,17 @@ public class TailoringCatalogExcelDocumentCreator implements DocumentCreator {
         row.getCell(2).setCellStyle(headerCellStyle);
         result.setAutoFilter(new CellRangeAddress(0, 0, 0, 2));
 
-
         return result;
     }
 
+    /**
+     * Add a row to provided sheet with provided parameters.
+     *
+     * @param sheet      sheet to add row to
+     * @param label      value of cell 0
+     * @param position   value of cell 1
+     * @param applicable value of cell 2
+     */
     private void addRow(Sheet sheet, String label, String position, String applicable) {
         Row row = sheet.createRow((short) sheet.getLastRowNum() + 1);
         row.createCell(0).setCellValue(label);

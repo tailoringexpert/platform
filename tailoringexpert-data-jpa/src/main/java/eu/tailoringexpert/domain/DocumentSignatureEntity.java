@@ -42,19 +42,34 @@ import static javax.persistence.EnumType.STRING;
 public class DocumentSignatureEntity implements Serializable {
     private static final long serialVersionUID = 6380646019782563133L;
 
+    /**
+     * Name of the faculty.
+     */
     @Column(name = "FACULTY")
     private String faculty;
 
+    /**
+     * Name of the signee.
+     */
     @Column(name = "SIGNEE")
     private String signee;
 
+    /**
+     * State of signature.
+     */
     @Column(name = "STATE")
     @Enumerated(STRING)
     private DocumentSignatureState state;
 
+    /**
+     * State if signature shall be used/applicable.
+     */
     @Column(name = "APPLICABLE")
     private Boolean applicable;
 
+    /**
+     * Position in signature list.
+     */
     @Column(name = "POSITION")
     private int position;
 }

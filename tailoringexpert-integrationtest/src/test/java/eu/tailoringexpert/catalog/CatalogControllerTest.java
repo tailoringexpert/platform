@@ -8,12 +8,12 @@
  * it under the terms of the GNU General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/gpl-3.0.html>.
@@ -23,7 +23,6 @@ package eu.tailoringexpert.catalog;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import eu.tailoringexpert.LiquibaseRunner;
 import eu.tailoringexpert.SpringTestConfiguration;
 import eu.tailoringexpert.TenantContext;
 import eu.tailoringexpert.domain.BaseCatalogVersionResource;
@@ -39,7 +38,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.junit.jupiter.SpringJUnitConfig;
-import org.springframework.transaction.annotation.EnableTransactionManagement;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
@@ -52,14 +50,12 @@ import static java.util.Objects.nonNull;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.http.HttpStatus.CREATED;
 import static org.springframework.http.HttpStatus.OK;
+import static org.springframework.test.annotation.DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD;
 
 @Log4j2
 @SpringJUnitConfig(classes = {SpringTestConfiguration.class})
-@EnableTransactionManagement
+@DirtiesContext(classMode = AFTER_EACH_TEST_METHOD)
 class CatalogControllerTest {
-
-    @Autowired
-    LiquibaseRunner liquibase;
 
     @Autowired
     private ObjectMapper objectMapper;
@@ -72,9 +68,6 @@ class CatalogControllerTest {
         log.debug("setup started");
 
         TenantContext.setCurrentTenant("plattform");
-        liquibase.dropAll();
-        liquibase.runChangelog("db-tailoringexpert-plattform-install.xml", "db-tailoringexpert-plattform-update.xml");
-
         RequestContextHolder.setRequestAttributes(
             new ServletRequestAttributes(new MockHttpServletRequest())
         );
@@ -83,7 +76,6 @@ class CatalogControllerTest {
     }
 
     @Test
-    @DirtiesContext
     void importCatalog_NewVersion_CatalogImported() throws IOException {
         // arrange
         Catalog<BaseRequirement> catalog;
@@ -95,7 +87,7 @@ class CatalogControllerTest {
         }
 
         // act
-        ResponseEntity actual = controller.postCatalog(catalog);
+        ResponseEntity actual = controller.postBaseCatalog(catalog);
 
         // assert
         assertThat(actual).isNotNull();
@@ -104,7 +96,6 @@ class CatalogControllerTest {
 
 
     @Test
-    @DirtiesContext
     void getCatalogs_CatalogsExists_CatalogListReturned() throws IOException {
         // arrange
         Catalog<BaseRequirement> catalog;
@@ -114,10 +105,10 @@ class CatalogControllerTest {
             catalog = objectMapper.readValue(is, new TypeReference<Catalog<BaseRequirement>>() {
             });
         }
-        controller.postCatalog(catalog);
+        controller.postBaseCatalog(catalog);
 
         // act
-        ResponseEntity<CollectionModel<EntityModel<BaseCatalogVersionResource>>> actual = controller.getCatalogs();
+        ResponseEntity<CollectionModel<EntityModel<BaseCatalogVersionResource>>> actual = controller.getBaseCatalogs();
 
         // assert
         assertThat(actual).isNotNull();

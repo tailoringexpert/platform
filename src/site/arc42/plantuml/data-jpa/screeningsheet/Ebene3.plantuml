@@ -3,6 +3,7 @@ hide empty members
 
 package repository {
     interface ParameterRepository
+    interface SelectionVectorProfileRepository
 }
 
 package screeningsheet {
@@ -12,7 +13,6 @@ package screeningsheet {
 
     abstract class JPAScreeningSheetServiceRepositoryMapper {
         {abstract} toDomain(entity : ParameterEntity) : Parameter
-        {abstract} toDomain(entity : ParameterEntity, domain : ParameterBuilder) : void
         toDomain(entity : ParameterEntity, domain : ParameterBuilder) : void
     }
 
@@ -21,6 +21,21 @@ package screeningsheet {
     ScreeningSheetServiceRepository <|.. JPAScreeningSheetServiceRepository
     JPAScreeningSheetServiceRepository --> "1" JPAScreeningSheetServiceRepositoryMapper : mapper
     JPAScreeningSheetServiceRepository --> "1" ParameterRepository : parameterRepository
+
+    interface SelectionVectorProviderRepository {
+        getSelectionVectorProfile(internalKey : String) : Optional<SelectionVectorProfile>
+    }
+
+    abstract class JPASelectionVectorProviderRepositoryMapper {
+        {abstract} toDomain(SelectionVectorProfileEntity entity) : SelectionVectorProfile
+    }
+
+    class JPASelectionVectorProviderRepository {
+    }
+    SelectionVectorProviderRepository <|.. JPASelectionVectorProviderRepository
+    JPASelectionVectorProviderRepository --> "1" JPASelectionVectorProviderRepositoryMapper : mapper
+    JPASelectionVectorProviderRepository --> "1" SelectionVectorProfileRepository : selectionVectorProfileRepository
+
 
 }
 @enduml

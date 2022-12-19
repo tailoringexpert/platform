@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
+
+    <changeSet id="1" author="tailoringexpert">
+        <createTable tableName="BASEREQUIREMENT_PHASE">
+            <column name="REQUIREMENT_ID" type="BIGINT">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="PHASE" type="VARCHAR(4)">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="2" author="tailoringexpert">
+        <addForeignKeyConstraint constraintName="FK_BASEREQUIREMENT_PHASE"
+                                 baseTableName="BASEREQUIREMENT_PHASE" baseColumnNames="REQUIREMENT_ID"
+                                 referencedTableName="BASEREQUIREMENT"
+                                 referencedColumnNames="REQUIREMENT_ID"/>
+    </changeSet>
+
+</databaseChangeLog>

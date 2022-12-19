@@ -37,7 +37,6 @@ import java.util.function.BiFunction;
 import java.util.function.BiPredicate;
 
 import static java.util.Objects.isNull;
-import static java.util.Objects.nonNull;
 
 /**
  * Function for determinating all relevant DRDs of a tailoring.<p>
@@ -60,8 +59,8 @@ public class DRDProvider implements BiFunction<Chapter<TailoringRequirement>, Co
         chapter.allChapters()
             .forEach(subChapter -> subChapter.getRequirements()
                 .stream()
-                .filter(requirement -> nonNull(requirement.getSelected()) && requirement.getSelected().booleanValue()
-                    && nonNull(requirement.getDrds()) && !requirement.getDrds().isEmpty())
+                .filter(TailoringRequirement::getSelected)
+                .filter(TailoringRequirement::hasDRD)
                 .forEach(requirement -> requirement.getDrds()
                     .forEach(drd -> {
                         if (predicate.test(drd.getDeliveryDate(), phases)) {

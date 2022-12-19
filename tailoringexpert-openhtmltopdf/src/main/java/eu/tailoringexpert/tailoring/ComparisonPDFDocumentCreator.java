@@ -75,6 +75,13 @@ public class ComparisonPDFDocumentCreator implements DocumentCreator {
         return pdfEngine.process(docId, html, tailoring.getCatalog().getVersion());
     }
 
+    /**
+     * Add chapter rows object.
+     * All subchapter and requirements will be evaluated as well.
+     *
+     * @param chapter chapter evaluate
+     * @param rows    collection to add elements to
+     */
     void addChapter(Chapter<TailoringRequirement> chapter, Collection<ComparisionElement> rows) {
         rows.add(ComparisionElement.builder()
             .section(templateEngine.toXHTML(chapter.getNumber(), emptyMap()))
@@ -82,12 +89,16 @@ public class ComparisonPDFDocumentCreator implements DocumentCreator {
             .build());
         chapter.getRequirements()
             .forEach(requirement -> addRequirement(requirement, rows));
-        if (nonNull(chapter.getChapters())) {
-            chapter.getChapters()
-                .forEach(subChapter -> addChapter(subChapter, rows));
-        }
+        chapter.getChapters()
+            .forEach(subChapter -> addChapter(subChapter, rows));
     }
 
+    /**
+     * Add a evaluated requirement to rows collection.
+     *
+     * @param requirement requirement to build row object of
+     * @param rows        collection to add to
+     */
     void addRequirement(TailoringRequirement requirement, Collection<ComparisionElement> rows) {
         rows.add(ComparisionElement.builder()
             .section(templateEngine.toXHTML(requirement.getPosition(), emptyMap()))

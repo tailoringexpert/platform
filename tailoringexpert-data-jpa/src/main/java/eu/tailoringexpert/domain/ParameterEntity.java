@@ -8,12 +8,12 @@
  * it under the terms of the GNU General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/gpl-3.0.html>.
@@ -47,6 +47,9 @@ import static javax.persistence.GenerationType.TABLE;
 public class ParameterEntity implements Serializable {
     private static final long serialVersionUID = -4411021507367220328L;
 
+    /**
+     * Technical ID.
+     */
     @Id
     @TableGenerator(name = "SEQ_PARAMETER", table = "SEQUENCE", pkColumnName = "SEQ_NAME",
         valueColumnName = "SEQ_COUNT", pkColumnValue = "SEQ_PARAMETER", initialValue = 1)
@@ -54,22 +57,40 @@ public class ParameterEntity implements Serializable {
     @Column(name = "PARAMETER_ID")
     private Long id;
 
+    /**
+     * Category/group parameter belongs to.
+     */
     @Column(name = "CATEGORY")
     private String category;
 
+    /**
+     * Label to show for parameter.
+     */
     @Column(name = "LABEL")
     private String label;
 
+    /**
+     * (Technical)Name of the parameter.
+     */
     @Column(name = "NAME")
     private String name;
 
+    /**
+     * Type of the value.
+     */
     @Column(name = "PARAMETERTYPE")
     @Enumerated(STRING)
     private DatenType parameterType;
 
+    /**
+     * Value of the parameter.
+     */
     @Column(name = "PARAMETERVALUE")
     private String value;
 
+    /**
+     * Ordering position.
+     */
     @Column(name = "POSITION")
     private int position;
 }

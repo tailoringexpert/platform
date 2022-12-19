@@ -34,9 +34,29 @@ import java.util.Collection;
 @Value
 @Builder
 public class DRDElement {
-    private String title;
-    private String deliveryDate;
-    private Collection<String> requirements;
+
+    /**
+     * Number of the DRD.
+     */
     private String number;
+
+    /**
+     * Title of the DRD.
+     */
+    private String title;
+
+    /**
+     * Definition when to deliver the document.
+     */
+    private String deliveryDate;
+
+    /**
+     * What to do.
+     */
     private String action;
+
+    /**
+     * Requirements the DRD in referenced in.
+     */
+    private Collection<String> requirements;
 }

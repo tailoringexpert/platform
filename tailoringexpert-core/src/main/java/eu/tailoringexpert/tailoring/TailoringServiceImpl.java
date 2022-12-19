@@ -76,6 +76,8 @@ public class TailoringServiceImpl implements TailoringService {
     private TailoringServiceMapper mapper;
 
     @NonNull
+    private TailoringDeletablePredicate deletablePredicate;
+    @NonNull
     private DocumentService documentService;
 
     @NonNull
@@ -108,12 +110,12 @@ public class TailoringServiceImpl implements TailoringService {
             .selectionVector(applicableSelectionVector)
             .catalog(tailoringCatalog)
             .signatures(repository.getDefaultSignatures())
-            .state(TailoringState.ACTIVE);
+            .state(TailoringState.CREATED);
 
         // prüfe, ob phase(n) bereits vorhanden
         screeningSheet.getParameters()
             .stream()
-            .filter(parameter -> ScreeningSheet.PHASE.equalsIgnoreCase(parameter.getCategory()))
+            .filter(parameter -> ScreeningSheet.PARAMETER_PHASE.equalsIgnoreCase(parameter.getCategory()))
             .findFirst()
             .ifPresent(parameter -> result.phases((Collection<Phase>) parameter.getValue()));
 
@@ -132,11 +134,9 @@ public class TailoringServiceImpl implements TailoringService {
     @Override
     @SneakyThrows
     public Optional<Tailoring> addFile(String project, String tailoring, String filename, byte[] data) {
-        Optional<Tailoring> oTailoring = repository.getTailoring(project, tailoring);
-        if (oTailoring.isEmpty()) {
+        if (!repository.existsTailoring(project, tailoring)) {
             return empty();
         }
-
 
         BigInteger hash = new BigInteger(1, MessageDigest.getInstance("MD5").digest(data));
         File file = File.builder()
@@ -322,16 +322,22 @@ public class TailoringServiceImpl implements TailoringService {
      */
     @Override
     public Optional<Boolean> deleteTailoring(@NonNull String project, @NonNull String tailoring) {
-        log.info("STARTED | trying to delete tailoring {} of project {}", tailoring, project);
-        Optional<Tailoring> oTailoring = repository.getTailoring(project, tailoring);
-        if (oTailoring.isEmpty()) {
+        log.traceEntry("STARTED | trying to delete {}:{}", project, tailoring);
+        Optional<Tailoring> toDelete = repository.getTailoring(project, tailoring);
+        if (toDelete.isEmpty()) {
             log.info("FINISHED | tailoring not existing. No deletion.");
             return empty();
         }
 
-        Optional<Boolean> result = of(repository.deleteTailoring(project, tailoring));
-        log.info("FINISHED | deleting tailoring {}.", result.get());
-        return result;
+        if (!deletablePredicate.test(project, tailoring)) {
+            return log.traceExit(
+                "FINISHED | not deleted tailoring because of state " + toDelete.get().getState(),
+                of(Boolean.FALSE)
+            );
+        }
+
+        boolean result = repository.deleteTailoring(project, tailoring);
+        return log.traceExit("FINISHED | deleting tailoring " + result, of(result));
     }
 
     /**
@@ -339,10 +345,10 @@ public class TailoringServiceImpl implements TailoringService {
      */
     @Override
     public Optional<Note> addNote(String project, String tailoring, String note) {
+        log.traceEntry("STARTED | trying to add note to tailoring {}:{}", project, tailoring);
         Optional<Tailoring> oTailoring = repository.getTailoring(project, tailoring);
         if (oTailoring.isEmpty()) {
-            log.info("FINISHED | tailoring not existing. Not adding.");
-            return empty();
+            return log.traceExit("FINISHED | tailoring not existing. Not adding.", empty());
         }
 
         Collection<Note> notes = oTailoring.get().getNotes();
@@ -354,12 +360,10 @@ public class TailoringServiceImpl implements TailoringService {
 
         Optional<Tailoring> updatedTailoring = repository.addNote(project, tailoring, noteToAdd);
         if (updatedTailoring.isEmpty()) {
-            log.info("FINISHED | addNote tailoring {}.not added", noteToAdd);
+            return log.traceExit("FINISHED | addNote tailoring " + noteToAdd + " not added", empty());
         }
 
-        log.info("FINISHED | addNote tailoring {} added", noteToAdd);
-
-        return of(noteToAdd);
+        return log.traceExit("FINISHED | addNote " + noteToAdd, of(noteToAdd));
     }
 
     /**
@@ -367,6 +371,8 @@ public class TailoringServiceImpl implements TailoringService {
      */
     @Override
     public Optional<Note> getNote(String project, String tailoring, Integer note) {
+        log.traceEntry("STARTED | trying to delete tailoring {} of project {}", tailoring, project);
+
         Optional<Tailoring> oTailoring = repository.getTailoring(project, tailoring);
         if (oTailoring.isEmpty()) {
             log.info("FINISHED | tailoring not existing. Not adding.");
@@ -377,8 +383,41 @@ public class TailoringServiceImpl implements TailoringService {
             .filter(n -> note.equals(n.getNumber()))
             .findFirst();
 
-        log.info("FINISHED | getNote tailoring {}.", result.isPresent() ? result.get() : "does not exists");
-        return result;
+        return log.traceExit("FINISHED | getNote tailoring " + project + ":" + tailoring + ".", result);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public Optional<TailoringInformation> updateState(String project, String tailoring, TailoringState state) {
+        log.traceEntry("STARTED | trying to set state {} of {}:{}", state.name(), project, tailoring);
+
+        Optional<Tailoring> oTailoring = repository.getTailoring(project, tailoring);
+        if (oTailoring.isEmpty()) {
+            log.info("FINISHED | tailoring not existing. Not adding.");
+            return empty();
+        }
+        // no "downgrade": e.g. RELEASED -> AGREED
+        if (state.isBefore(oTailoring.get().getState())) {
+            return log.traceExit(
+                "FINISHED | tailoring downgrade of states not supported",
+                of(mapper.toTailoringInformation(oTailoring.get()))
+            );
+        }
+
+        Optional<Tailoring> updatedTailoring = repository.setState(project, tailoring, state);
+        if (updatedTailoring.isEmpty()) {
+            return log.traceExit(
+                "FINISHED | failed setting state " + state.name() + " of " + project + ":" + tailoring,
+                empty()
+            );
+        }
+
+        return log.traceExit(
+            "FINISHED | setting state " + state.name() + " of " + project + ":" + tailoring,
+            of(mapper.toTailoringInformation(updatedTailoring.get()))
+        );
     }
 
     /**
@@ -394,7 +433,7 @@ public class TailoringServiceImpl implements TailoringService {
 
         Optional<Collection<Note>> result = ofNullable(oTailoring.get().getNotes());
 
-        log.info("FINISHED | getNote tailoring {}.", result.isPresent() ? result.get() : "does not exists");
+        log.info("FINISHED | getNotes of {}:{}.", project, tailoring);
         return result;
     }
 

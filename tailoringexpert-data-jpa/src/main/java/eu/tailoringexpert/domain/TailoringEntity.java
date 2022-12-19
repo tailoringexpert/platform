@@ -60,6 +60,9 @@ import static javax.persistence.GenerationType.TABLE;
 public class TailoringEntity implements Serializable {
     private static final long serialVersionUID = -2503249103618921192L;
 
+    /**
+     * Technical ID.
+     */
     @Id
     @TableGenerator(name = "SEQ_TAILORING", table = "SEQUENCE", pkColumnName = "SEQ_NAME",
         valueColumnName = "SEQ_COUNT", pkColumnValue = "SEQ_TAILORING", initialValue = 1)
@@ -67,20 +70,35 @@ public class TailoringEntity implements Serializable {
     @Column(name = "TAILORING_ID")
     private Long id;
 
+    /**
+     * Identifier used as doc id.
+     */
     @Column(name = "IDENTIFER")
     private String identifier;
 
+    /**
+     * Name of the tailoring.
+     */
     @Column(name = "NAME")
     private String name;
 
+    /**
+     * Applied selectionvector.
+     */
     @OneToOne(cascade = ALL)
     @JoinColumn(name = "SELECTIONVECTOR_ID")
     private SelectionVectorEntity selectionVector;
 
+    /**
+     * Input screeningsheet.
+     */
     @OneToOne(cascade = ALL)
     @JoinColumn(name = "SCREENINGSHEET_ID")
     private ScreeningSheetEntity screeningSheet;
 
+    /**
+     * Phases of tailoring.
+     */
     @Singular("phase")
     @ElementCollection
     @CollectionTable(
@@ -92,14 +110,23 @@ public class TailoringEntity implements Serializable {
     @OrderColumn(name = "PHASE_ORDER")
     private List<Phase> phases;
 
+    /**
+     * Complete catalog of requirements with applicated state.
+     */
     @OneToOne(cascade = ALL, fetch = LAZY)
     @JoinColumn(name = "TAILORINGCATALOG_ID")
     private TailoringCatalogEntity catalog;
 
+    /**
+     * State of tailoring.
+     */
     @Enumerated(STRING)
     @Column(name = "STATE")
     private TailoringState state;
 
+    /**
+     * Signatures to be used for document generation.
+     */
     @ElementCollection
     @CollectionTable(
         name = "DOCUMENTSIGNATURE",
@@ -107,14 +134,23 @@ public class TailoringEntity implements Serializable {
     )
     private Collection<DocumentSignatureEntity> signatures;
 
+    /**
+     * Attached files to tailoring.
+     */
     @OneToMany(cascade = ALL, orphanRemoval = true, fetch = LAZY)
     @JoinColumn(name = "TAILORING_ID", referencedColumnName = "TAILORING_ID", nullable = false)
     private Set<FileEntity> files;
 
+    /**
+     * Notes of tailoring.
+     */
     @OneToMany(cascade = ALL, orphanRemoval = true, fetch = LAZY)
     @JoinColumn(name = "TAILORING_ID", referencedColumnName = "TAILORING_ID", nullable = false)
     private Collection<NoteEntity> notes;
 
+    /**
+     * Creation timestamp of tailoring.
+     */
     @Column(name = "CREATIONTIMESTAMP")
     private ZonedDateTime creationTimestamp;
 }

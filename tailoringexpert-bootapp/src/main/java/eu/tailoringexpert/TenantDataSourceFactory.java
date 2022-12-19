@@ -22,7 +22,10 @@
 package eu.tailoringexpert;
 
 import lombok.NoArgsConstructor;
+import lombok.SneakyThrows;
 import lombok.extern.log4j.Log4j2;
+import org.jasypt.encryption.StringEncryptor;
+import org.jasypt.properties.EncryptableProperties;
 import org.springframework.jdbc.datasource.DriverManagerDataSource;
 
 import javax.sql.DataSource;
@@ -51,30 +54,29 @@ public class TenantDataSourceFactory {
      * Erzeugt die Datasources der Teants.
      *
      * @param defaultDataSource
-     * @param tenantConfigDir
+     * @param dbconfigRoot
      * @return
      * @throws IOException
      */
-    public static DataSource dataSource(final DataSource defaultDataSource, final String tenantConfigDir)
+    public static DataSource dataSource(final DataSource defaultDataSource, final String dbconfigRoot, StringEncryptor encryptor)
         throws IOException {
-        log.info("Suche Tenant DB-Konfigurationen in " + Paths.get(tenantConfigDir).toFile());
+        log.info("Suche Tenant DB-Konfigurationen in " + Paths.get(dbconfigRoot).toFile());
 
         final Map<Object, Object> resolvedDataSources = new HashMap<>();
-        try (Stream<Path> files = Files.walk(Paths.get(tenantConfigDir))) {
+        try (Stream<Path> files = Files.walk(Paths.get(dbconfigRoot))) {
             files.map(Path::toFile)
                 .filter(file -> "db.properties".equalsIgnoreCase(file.getName()))
                 .forEach(propertyFile -> {
-                    try {
-                        final Properties tenantProperties = loadProperties(propertyFile);
-                        final String tenantId = tenantProperties.getProperty("name");
-                        final DataSource tenantDataSource = buildDataSource(tenantProperties);
-                        resolvedDataSources.put(tenantId, tenantDataSource);
-                        TenantContext.registerTenant(tenantId);
-                    } catch (final IOException e) {
-                        throw new RuntimeException("Could not initialize database", e);
-                    }
+                    final Properties tenantProperties = loadProperties(propertyFile, encryptor);
+                    final String tenantId = tenantProperties.getProperty("name");
+                    final DataSource tenantDataSource = buildDataSource(tenantProperties);
+                    resolvedDataSources.put(tenantId, tenantDataSource);
+                    TenantContext.registerTenant(tenantId);
 
                 });
+        }
+        if ( resolvedDataSources.isEmpty() ) {
+            log.error("No tenant datasources are available!!!");
         }
         // Create the final multi-tenant source.
         // It needs a default database to connect to.
@@ -103,20 +105,21 @@ public class TenantDataSourceFactory {
     }
 
     /**
-     * Lädt ein Propertyfile und führt eine Platzhalterersetzung durch.
+     * Load propertyfile and replaces placeholder.
      *
-     * @param file Die zu ladenende Propertydatei
-     * @return Properties mit ersetzten Platzhaltern
+     * @param file property file to load
+     * @return properties with replaced placeholders
      * @throws IOException Fehler beim einlesen der File
      */
-    private static Properties loadProperties(final File file) throws IOException {
-        final Properties result = new Properties();
+    @SneakyThrows
+    private static Properties loadProperties(final File file, final StringEncryptor encryptor) {
+        final Properties properties = new Properties();
         try (InputStream fis = newInputStream(file.toPath())) {
-            result.load(fis);
+            properties.load(fis);
         }
 
-        result.entrySet().forEach(entry -> entry.setValue(resolvePlaceholder(entry.getValue().toString())));
-        return result;
+        properties.entrySet().forEach(entry -> entry.setValue(resolvePlaceholder(entry.getValue().toString())));
+        return new EncryptableProperties(properties, encryptor);
     }
 
     /**

@@ -8,12 +8,12 @@
  * it under the terms of the GNU General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/gpl-3.0.html>.
@@ -22,6 +22,7 @@
 package eu.tailoringexpert;
 
 import lombok.NonNull;
+import org.jasypt.encryption.StringEncryptor;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -44,34 +45,35 @@ import java.io.IOException;
 public class DatabaseConfiguration {
 
     @Bean
-    String tenantConfigDir(@NonNull @Value("${tenantConfigDir}") String tenantConfigDir) {
-        return tenantConfigDir;
+    String dbconfigRoot(@NonNull @Value("${dbconfigRoot}") String dbconfigRoot) {
+        return dbconfigRoot;
     }
+
 
     @Bean
     @Primary
     DataSource tenantDataSource(
-            final @NonNull @Qualifier("defaultDataSource") DataSource defaultDataSource,
-            final @NonNull @Qualifier("tenantConfigDir") String tenantConfigDir) throws IOException {
-        return TenantDataSourceFactory.dataSource(defaultDataSource, tenantConfigDir);
+        final @NonNull @Qualifier("defaultDataSource") DataSource defaultDataSource,
+        final @NonNull @Qualifier("dbconfigRoot") String dbconfigRoot,
+        final @NonNull @Qualifier("encryptorBean") StringEncryptor encryptor) throws IOException {
+        return TenantDataSourceFactory.dataSource(defaultDataSource, dbconfigRoot, encryptor);
     }
 
     @Bean(name = {"dataSource", "defaultDataSource"})
     DataSource dataSource(
-            @NonNull @Value("${spring.datasource.driver-class-name}") String driverClassName,
-            @NonNull @Value("${spring.datasource.url}") String url,
-            @NonNull @Value("${spring.datasource.username}") String username,
-            @NonNull @Value("${spring.datasource.password}") String password) {
+        @NonNull @Value("${spring.datasource.driver-class-name}") String driverClassName,
+        @NonNull @Value("${spring.datasource.url}") String url,
+        @NonNull @Value("${spring.datasource.username}") String username,
+        @NonNull @Value("${spring.datasource.password}") String password) {
         final DriverManagerDataSource result = new DriverManagerDataSource(url, username, password);
         result.setDriverClassName(driverClassName);
         return result;
     }
 
-
     @Bean
     LocalContainerEntityManagerFactoryBean entityManagerFactory(
-            @NonNull DataSource dataSource,
-            @NonNull JpaVendorAdapter jpaVendorAdapter) {
+        @NonNull DataSource dataSource,
+        @NonNull JpaVendorAdapter jpaVendorAdapter) {
         final LocalContainerEntityManagerFactoryBean result = new LocalContainerEntityManagerFactoryBean();
         result.setJpaVendorAdapter(jpaVendorAdapter);
         result.setPackagesToScan("eu.tailoringexpert");
@@ -94,7 +96,7 @@ public class DatabaseConfiguration {
 
     @Bean
     PlatformTransactionManager transactionManager(
-            @NonNull EntityManagerFactory entityManagerFactory) {
+        @NonNull EntityManagerFactory entityManagerFactory) {
         return new JpaTransactionManager(entityManagerFactory);
     }
 }

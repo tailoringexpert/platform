@@ -34,9 +34,29 @@ import java.time.ZonedDateTime;
 @Value
 @Builder
 public class ComparisionElement {
+
+    /**
+     * Chapter number.
+     */
     private String section;
+
+    /**
+     * Chpater name.
+     */
     private String title;
+
+    /**
+     * State if requirement is currently selected.
+     */
     private boolean selected;
+
+    /**
+     * State if requirement is changed.
+     */
     private boolean changed;
+
+    /**
+     * Change timestamp.
+     */
     private ZonedDateTime changeDate;
 }

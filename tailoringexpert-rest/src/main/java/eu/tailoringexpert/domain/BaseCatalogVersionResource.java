@@ -41,9 +41,24 @@ import static java.util.Objects.nonNull;
 @Relation(itemRelation = "baseCatalogVersion", collectionRelation = "baseCatalogVersions")
 public class BaseCatalogVersionResource extends RepresentationModel<BaseCatalogVersionResource> {
 
+    /**
+     * Version of the catalog.
+     */
     String version;
+
+    /**
+     * Date catalog validity starts.
+     */
     LocalDate validFrom;
+
+    /**
+     * Date catalog validity ends.
+     */
     LocalDate validUntil;
+
+    /**
+     * Flag indicating this version shall be preselected.
+     */
     Boolean standard;
 
     @Builder

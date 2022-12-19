@@ -88,13 +88,13 @@ public abstract class JPATailoringServiceRepositoryMapper {
     void toScreeningSheetParameters(ScreeningSheetEntity entity, @MappingTarget ScreeningSheetBuilder resource) {
         entity.getParameters()
             .stream()
-            .filter(parameter -> ScreeningSheet.PROJECT.equalsIgnoreCase(parameter.getCategory()))
+            .filter(parameter -> ScreeningSheet.PARAMETER_PROJECT.equalsIgnoreCase(parameter.getCategory()))
             .findFirst()
             .ifPresent(parameter -> resource.project(parameter.getValue().toString()));
 
         resource.phases((Collection<Phase>) entity.getParameters()
             .stream()
-            .filter(parameter -> ScreeningSheet.PHASE.equalsIgnoreCase(parameter.getCategory()))
+            .filter(parameter -> ScreeningSheet.PARAMETER_PHASE.equalsIgnoreCase(parameter.getCategory()))
             .map(ScreeningSheetParameterEntity::getValue)
             .map(Collection.class::cast)
             .flatMap(Collection::stream)

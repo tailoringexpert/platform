@@ -27,11 +27,11 @@ import eu.tailoringexpert.domain.DocumentSignature;
 import eu.tailoringexpert.domain.DocumentSignatureEntity;
 import eu.tailoringexpert.domain.Note;
 import eu.tailoringexpert.domain.Project;
-import eu.tailoringexpert.domain.ProjectEntity;
 import eu.tailoringexpert.domain.ScreeningSheet;
 import eu.tailoringexpert.domain.SelectionVectorProfile;
 import eu.tailoringexpert.domain.Tailoring;
 import eu.tailoringexpert.domain.TailoringEntity;
+import eu.tailoringexpert.domain.TailoringState;
 import eu.tailoringexpert.repository.DokumentSigneeRepository;
 import eu.tailoringexpert.repository.ProjectRepository;
 import eu.tailoringexpert.repository.SelectionVectorProfileRepository;
@@ -88,14 +88,11 @@ public class JPATailoringServiceRepository implements TailoringServiceRepository
      */
     @Override
     public Tailoring updateTailoring(String project, Tailoring tailoring) {
-        Optional<ProjectEntity> oProjekt = findProject(project);
-        if (oProjekt.isPresent()) {
-            Optional<TailoringEntity> toUpdate = oProjekt.get().getTailoring(tailoring.getName());
-            if (toUpdate.isPresent()) {
-                mapper.updateTailoring(tailoring, toUpdate.get());
-                projectRepository.flush();
-                return mapper.toDomain(toUpdate.get());
-            }
+        TailoringEntity toUpdate = projectRepository.findTailoring(project, tailoring.getName());
+        if (nonNull(toUpdate)) {
+            mapper.updateTailoring(tailoring, toUpdate);
+            projectRepository.flush();
+            return mapper.toDomain(toUpdate);
         }
         return tailoring;
     }
@@ -284,7 +281,6 @@ public class JPATailoringServiceRepository implements TailoringServiceRepository
             .stream()
             .map(mapper::getDefaultSignatures)
             .collect(Collectors.toList());
-
     }
 
     /**
@@ -313,10 +309,34 @@ public class JPATailoringServiceRepository implements TailoringServiceRepository
         return empty();
     }
 
-    private Optional<ProjectEntity> findProject(String project) {
-        return ofNullable(projectRepository.findByIdentifier(project));
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public boolean existsTailoring(String project, String name) {
+        return projectRepository.existsTailoring(project, name);
     }
 
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public Optional<Tailoring> setState(String project, String tailoring, TailoringState state) {
+        Optional<TailoringEntity> oTailoring = findTailoring(project, tailoring);
+        if (oTailoring.isPresent()) {
+            oTailoring.get().setState(state);
+            return of(mapper.toDomain(oTailoring.get()));
+        }
+        return empty();
+    }
+
+    /**
+     * Loads tailoring of a project.
+     *
+     * @param project   identifier of project tailoring belongs to
+     * @param tailoring name of tailoring to load
+     * @return Loaded tailoring
+     */
     private Optional<TailoringEntity> findTailoring(String project, String tailoring) {
         if (isNull(project) || isNull(tailoring)) {
             return empty();

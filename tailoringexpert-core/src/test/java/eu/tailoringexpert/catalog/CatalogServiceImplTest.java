@@ -59,10 +59,35 @@ class CatalogServiceImplTest {
     }
 
     @Test
-    void doImport_CatalogProvided_ImportSuccessful() {
+    void doImport_CatalogAlreadyExists_FalseReturned() {
         // arrange
-        Catalog<BaseRequirement> catalog = Catalog.<BaseRequirement>builder().build();
+        Catalog<BaseRequirement> catalog = Catalog.<BaseRequirement>builder().version("8.2.1").build();
+        given(repositoryMock.existsCatalog("8.2.1")).willReturn(true);
+
+        ZonedDateTime now = ZonedDateTime.of(
+            LocalDateTime.of(2020, 12, 1, 8, 0, 0),
+            ZoneId.systemDefault()
+        );
+
+        // act
+        Boolean actual;
+        try (MockedStatic<ZonedDateTime> dateTimeMock = mockStatic(ZonedDateTime.class)) {
+            dateTimeMock.when(ZonedDateTime::now).thenReturn(now);
+            actual = service.doImport(catalog);
+        }
+
+        // assert
+        assertThat(actual).isFalse();
+        verify(repositoryMock, times(0)).createCatalog(catalog, now);
+    }
+
+    @Test
+    void doImport_CatalogNotExists_TrueReturned() {
+        // arrange
+        Catalog<BaseRequirement> catalog = Catalog.<BaseRequirement>builder().version("8.2.1").build();
         given(repositoryMock.createCatalog(eq(catalog), any())).willReturn(of(catalog));
+
+        given(repositoryMock.existsCatalog("8.2.1")).willReturn(false);
 
         ZonedDateTime now = ZonedDateTime.of(
             LocalDateTime.of(2020, 12, 1, 8, 0, 0),
@@ -78,6 +103,31 @@ class CatalogServiceImplTest {
 
         // assert
         assertThat(actual).isTrue();
+        verify(repositoryMock, times(1)).createCatalog(catalog, now);
+    }
+
+    @Test
+    void doImport_CatalogNotButNotImported_FalseReturned() {
+        // arrange
+        Catalog<BaseRequirement> catalog = Catalog.<BaseRequirement>builder().version("8.2.1").build();
+        given(repositoryMock.createCatalog(eq(catalog), any())).willReturn(empty());
+
+        given(repositoryMock.existsCatalog("8.2.1")).willReturn(false);
+
+        ZonedDateTime now = ZonedDateTime.of(
+            LocalDateTime.of(2020, 12, 1, 8, 0, 0),
+            ZoneId.systemDefault()
+        );
+
+        // act
+        Boolean actual;
+        try (MockedStatic<ZonedDateTime> dateTimeMock = mockStatic(ZonedDateTime.class)) {
+            dateTimeMock.when(ZonedDateTime::now).thenReturn(now);
+            actual = service.doImport(catalog);
+        }
+
+        // assert
+        assertThat(actual).isFalse();
         verify(repositoryMock, times(1)).createCatalog(catalog, now);
     }
 

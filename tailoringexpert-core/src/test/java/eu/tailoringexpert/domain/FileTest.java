@@ -90,4 +90,32 @@ class FileTest {
         // assert
         assertThat(actual).isEqualTo("hallodu");
     }
+
+    @Test
+    void getType_DocIdAndTypeExist_TypeReturned() throws IOException {
+        // arrange
+        File file = File.builder()
+            .name("hallodu.pdf")
+            .build();
+
+        // act
+        String actual = file.getType();
+
+        // assert
+        assertThat(actual).isEqualTo("pdf");
+    }
+
+    @Test
+    void getType_TypeNotExist_NullReturned() throws IOException {
+        // arrange
+        File file = File.builder()
+            .name("hallodu")
+            .build();
+
+        // act
+        String actual = file.getType();
+
+        // assert
+        assertThat(actual).isNull();
+    }
 }

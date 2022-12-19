@@ -48,6 +48,9 @@ import static javax.persistence.GenerationType.TABLE;
 public class DocumentSigneeEntity implements Serializable {
     private static final long serialVersionUID = 2199876579780053096L;
 
+    /**
+     * Technical ID.
+     */
     @Id
     @TableGenerator(name = "SEQ_DOCUMENTSIGNEE", table = "SEQUENCE", pkColumnName = "SEQ_NAME",
         valueColumnName = "SEQ_COUNT", pkColumnValue = "SEQ_DOCUMENTSIGNEE", initialValue = 1)
@@ -55,16 +58,28 @@ public class DocumentSigneeEntity implements Serializable {
     @Column(name = "DOCUMENTSIGNEE_ID")
     private Long id;
 
+    /**
+     * Name of the faculty.
+     */
     @Column(name = "FACULTY")
     private String faculty;
 
+    /**
+     * Name of the signee.
+     */
     @Column(name = "SIGNEE")
     private String signee;
 
+    /**
+     * State of signature.
+     */
     @Column(name = "STATE")
     @Enumerated(STRING)
     private DocumentSignatureState state;
 
+    /**
+     * Position in signature list.
+     */
     @Column(name = "POSITION")
     private int position;
 

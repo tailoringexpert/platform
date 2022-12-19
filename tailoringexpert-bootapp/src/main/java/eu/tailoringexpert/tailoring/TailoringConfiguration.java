@@ -8,12 +8,12 @@
  * it under the terms of the GNU General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/gpl-3.0.html>.
@@ -22,6 +22,7 @@
 package eu.tailoringexpert.tailoring;
 
 
+import eu.tailoringexpert.Tenant;
 import eu.tailoringexpert.Tenants;
 import eu.tailoringexpert.domain.MediaTypeProvider;
 import eu.tailoringexpert.domain.ResourceMapper;
@@ -46,10 +47,12 @@ import org.springframework.http.MediaType;
 import java.util.AbstractMap.SimpleEntry;
 import java.util.Collection;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 import java.util.function.BiFunction;
 import java.util.function.BiPredicate;
 import java.util.function.Function;
+import java.util.stream.Collectors;
 
 import static eu.tailoringexpert.domain.Phase.A;
 import static eu.tailoringexpert.domain.Phase.B;
@@ -94,18 +97,37 @@ public class TailoringConfiguration {
     }
 
     @Bean
+    TailoringDeletablePredicateRepository tailoringDeletablePredicateRepository(
+        @NonNull ProjectRepository projectRepository) {
+        return new JPATailoringDeletablePredicateRepository(projectRepository);
+    }
+
+    @Bean
     TailoringServiceMapper tailoringServiceMapper() {
         return new TailoringServiceMapperImpl();
+    }
+
+    @Bean
+    DefaultTailoringDeletablePredicate defaultTailoringDeletablePredicate(
+        @NonNull TailoringDeletablePredicateRepository repository) {
+        return new DefaultTailoringDeletablePredicate(repository);
     }
 
     @Bean
     TailoringService tailoringService(
         @NonNull TailoringServiceRepository repository,
         @NonNull TailoringServiceMapper mapper,
+        @NonNull TailoringDeletablePredicate tailoringDeletablePredicate,
         @NonNull DocumentService documentService,
         @NonNull RequirementService requirementService,
         @NonNull Function<byte[], Map<String, Collection<ImportRequirement>>> tailoringAnforderungFileReader) {
-        return new TailoringServiceImpl(repository, mapper, documentService, requirementService, tailoringAnforderungFileReader);
+        return new TailoringServiceImpl(
+            repository,
+            mapper,
+            tailoringDeletablePredicate,
+            documentService,
+            requirementService,
+            tailoringAnforderungFileReader);
     }
 
     @Bean
@@ -144,13 +166,32 @@ public class TailoringConfiguration {
     }
 
     @Bean
-    String tenantConfigDir(@Value("${tenantConfigDir}") String tenantConfigDir) {
-        return tenantConfigDir;
+    String dbconfigRoot(@Value("${dbconfigRoot}") String dbconfigRoot) {
+        return dbconfigRoot;
     }
 
     @Bean
     Function<byte[], Map<String, Collection<ImportRequirement>>> tailoringAnforderungExcelFileReader() {
         return new TailoringRequirementExcelFileReader();
     }
+
+    @Bean
+    @Primary
+    TailoringDeletablePredicate tailoringDeletablePredicate(
+        @NonNull DefaultTailoringDeletablePredicate defaultTailoringDeletablePredicate,
+        @NonNull ListableBeanFactory beanFactory) {
+        Map<String, TailoringDeletablePredicate> predicates = getTenantImplementierungen(beanFactory, TailoringDeletablePredicate.class);
+        return new TenantTailoringDeletablePredicate(predicates, defaultTailoringDeletablePredicate);
+    }
+
+    private <T> Map<String, T> getTenantImplementierungen(ListableBeanFactory beanFactory, Class<T> clz) {
+        return beanFactory.getBeansOfType(clz)
+            .values()
+            .stream()
+            // Defaultimplementation has no tenant annotation!
+            .filter(bean -> Objects.nonNull(bean.getClass().getAnnotation(Tenant.class)))
+            .collect(Collectors.toMap(bean -> bean.getClass().getAnnotation(Tenant.class).value(), Function.identity()));
+    }
+
 
 }

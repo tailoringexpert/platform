@@ -8,12 +8,12 @@
  * it under the terms of the GNU General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/gpl-3.0.html>.
@@ -40,14 +40,32 @@ import java.util.Collection;
 public class Project implements Serializable {
     private static final long serialVersionUID = 3370202290719541977L;
 
+    /**
+     * Unique identifier of project.
+     */
     private String identifier;
-    private ScreeningSheet screeningSheet;
-    private String catalogVersion;
-    private ZonedDateTime creationTimestamp;
 
+    /**
+     * Screeningsheet used to create project.
+     */
+    private ScreeningSheet screeningSheet;
+
+    /**
+     * Tailorings of the project.
+     */
     @Singular(value = "tailoring", ignoreNullCollections = true)
     private Collection<Tailoring> tailorings = new ArrayList<>();
 
+    /**
+     * Creation timestamp of project.
+     */
+    private ZonedDateTime creationTimestamp;
+
+    /**
+     * Sets the screeningsheet used to create the project.
+     *
+     * @param screeningSheet Screeningsheet to set
+     */
     public void setScreeningSheet(ScreeningSheet screeningSheet) {
         this.screeningSheet = screeningSheet;
         this.identifier = this.screeningSheet.getProject();
