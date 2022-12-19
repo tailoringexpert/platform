@@ -13,5 +13,12 @@ package tailoring {
         tenantService : Map<String, DocumentService>
     }
     DocumentService <|.. TenantDocumentService
+
+    class TenantTailoringDeletablePredicate {
+        tenantPredicate : Map<String, TenantTailoringDeletablePredicate>
+    }
+    TailoringDeletablePredicate <|.. TenantTailoringDeletablePredicate
+    TenantTailoringDeletablePredicate --> "1" DefaultTailoringDeletablePredicate : defaultPredicate
+
 }
 @enduml

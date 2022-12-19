@@ -138,7 +138,7 @@ class CatalogControllerTest {
     }
 
     @Test
-    void postCatalog_NoError_StateNoContent() throws Exception {
+    void postBaseCatalog_NoError_StateNoContent() throws Exception {
         // arrange
         Catalog<BaseRequirement> catalog = Catalog.<BaseRequirement>builder().build();
         given(serviceMock.doImport(catalog)).willReturn(TRUE);
@@ -159,7 +159,7 @@ class CatalogControllerTest {
     }
 
     @Test
-    void postCatalog_Error_StateBadRequest() throws Exception {
+    void postBaseCatalog_Error_StatePreconditionFailed() throws Exception {
         // arrange
         Catalog<BaseRequirement> catalog = Catalog.<BaseRequirement>builder().build();
         given(serviceMock.doImport(catalog)).willReturn(FALSE);
@@ -173,12 +173,12 @@ class CatalogControllerTest {
         );
 
         // assert
-        actual.andExpect(status().isBadRequest());
+        actual.andExpect(status().isPreconditionFailed());
         assertThatNoException();
     }
 
     @Test
-    void getCatalog_NoError_StateOK() throws Exception {
+    void getBaseCatalogs_NoError_StateOK() throws Exception {
         // arrange
         PathContextBuilder pathContext = PathContext.builder();
 
@@ -237,7 +237,7 @@ class CatalogControllerTest {
     }
 
     @Test
-    void getCatalog_BaseCatalogExists_StateOk() throws Exception {
+    void getBaseCatalog_BaseCatalogExists_StateOk() throws Exception {
         // arrange
         Catalog<BaseRequirement> catalog = Catalog.<BaseRequirement>builder().build();
         given(serviceMock.getCatalog("42")).willReturn(of(catalog));
@@ -256,7 +256,7 @@ class CatalogControllerTest {
     }
 
     @Test
-    void getCatalog_BaseCatalogNotExists_StateNotFound() throws Exception {
+    void getBaseCatalog_BaseCatalogNotExists_StateNotFound() throws Exception {
         // arrange
         Catalog<BaseRequirement> catalog = Catalog.<BaseRequirement>builder().build();
         given(serviceMock.getCatalog("42")).willReturn(empty());
@@ -275,7 +275,20 @@ class CatalogControllerTest {
     }
 
     @Test
-    void createCatalog_BaseCatalogExists_StateOK() throws Exception {
+    void getBaseCatalogPring_BaseCatalogNotExists_StateNotFound() throws Exception {
+        // arrange
+        given(serviceMock.createCatalog("8.2.1")).willReturn(empty());
+
+        // act
+        ResultActions actual = mockMvc.perform(get("/catalog/8.2.1/pdf"));
+
+        // assert
+        actual.andExpect(status().isNotFound());
+        assertThatNoException();
+    }
+
+    @Test
+    void getBaseCatalogPrint_BaseCatalogExists_StateOK() throws Exception {
         // arrange
         byte[] data;
         // file content not important. only size of byte[]
@@ -306,7 +319,7 @@ class CatalogControllerTest {
     }
 
     @Test
-    void getJsonKatalog_BaseCatalogNotExists_StateNotFound() throws Exception {
+    void getBaseCatalogJson_BaseCatalogNotExists_StateNotFound() throws Exception {
         // arrange
         given(serviceMock.getCatalog("8.2.1"))
             .willReturn(empty());
@@ -320,7 +333,7 @@ class CatalogControllerTest {
     }
 
     @Test
-    void getJsonCatalog_BaseCatalogExists_StateOk() throws Exception {
+    void getBaseCatalogJson_BaseCatalogExists_StateOk() throws Exception {
         // arrange
         Catalog<BaseRequirement> catalog;
         try (InputStream is = newInputStream(Paths.get("src/test/resources/basecatalog.json"))) {
@@ -340,7 +353,7 @@ class CatalogControllerTest {
 
         // assert
         actual.andExpect(status().isOk())
-            .andExpect(header().string(CONTENT_DISPOSITION, ContentDisposition.builder(FORM_DATA).name(ATTACHMENT).filename("katalog_v8.2.1.json").build().toString()))
+            .andExpect(header().string(CONTENT_DISPOSITION, ContentDisposition.builder(FORM_DATA).name(ATTACHMENT).filename("catalog_v8.2.1.json").build().toString()))
             .andExpect(header().string(ACCESS_CONTROL_EXPOSE_HEADERS, CONTENT_DISPOSITION))
             .andExpect(content().contentType(APPLICATION_JSON));
 

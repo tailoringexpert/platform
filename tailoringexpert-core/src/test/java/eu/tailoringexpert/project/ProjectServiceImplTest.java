@@ -376,7 +376,7 @@ class ProjectServiceImplTest {
     }
 
     @Test
-    void addTailoring_WrongProject_TailoringNotAdded() throws IOException {
+    void addTailoring_ProjectNotExist_TailoringNotAdded() throws IOException {
         // arrange
         byte[] data;
         try (InputStream is = newInputStream(get("src/test/resources/screeningsheet2.pdf"))) {
@@ -392,6 +392,29 @@ class ProjectServiceImplTest {
         // assert
         assertThat(actual).isEmpty();
         verify(repositoryMock, times(0)).getProject("8.2.1");
+        verify(repositoryMock, times(0)).addTailoring(anyString(), any());
+    }
+
+    @Test
+    void addTailoring_WrongScreeningsheezProject_TailoringNotAdded() throws IOException {
+        // arrange
+        byte[] data;
+        try (InputStream is = newInputStream(get("src/test/resources/screeningsheet2.pdf"))) {
+            assert nonNull(is);
+            data = is.readAllBytes();
+        }
+
+        given(repositoryMock.getProject("DUMMY")).willReturn(of(Project.builder().build()));
+        given(repositoryMock.getBaseCatalog("8.2.1")).willReturn(Catalog.<BaseRequirement>builder().build());
+        given(screeningSheetServiceMock.createScreeningSheet(data)).willReturn(ScreeningSheet.builder().project("DUMMY2").build());
+
+        // act
+        Optional<Tailoring> actual = service.addTailoring("DUMMY", "8.2.1", data, SelectionVector.builder().build(), null);
+
+        // assert
+        assertThat(actual).isEmpty();
+        verify(repositoryMock, times(1)).getProject("DUMMY");
+        verify(repositoryMock, times(1)).getBaseCatalog("8.2.1");
         verify(repositoryMock, times(0)).addTailoring(anyString(), any());
     }
 

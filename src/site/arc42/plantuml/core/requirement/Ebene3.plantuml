@@ -18,10 +18,27 @@ package requirement {
         updateChapter(project : String, tailoring : String, chapter : Chapter<TailoringRequirement>) : Optional<Chapter<TailoringRequirement>>
     }
 
+    interface RequirementModifiablePredicateRepository {
+        getTailoringState(project : String, tailoring : String) : Optional<TailoringState>
+    }
+
+    interface "BiPredicate<T, U>" as BiPredicate {
+         test(t: T, u : U) : boolean
+    }
+    interface "RequirementModifiablePredicate<String, String>"  as RequirementModifiablePredicate{
+    }
+    BiPredicate <|-- RequirementModifiablePredicate
+    class DefaultRequirementModifiablePredicate {
+    }
+    RequirementModifiablePredicate <|.. DefaultRequirementModifiablePredicate
+    DefaultRequirementModifiablePredicate --> "1" RequirementModifiablePredicateRepository : repository
+
+
     class RequirementServiceImpl {
     }
     RequirementService <|-- RequirementServiceImpl
     RequirementServiceImpl --> "1" RequirementServiceRepository : repository
+    RequirementServiceImpl --> "1" RequirementModifiablePredicate : predicate
 
 }
 @enduml

@@ -37,6 +37,7 @@ import eu.tailoringexpert.repository.ProjectRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Optional;
@@ -169,7 +170,7 @@ class JPAProjectServiceRepositoryTest {
     @Test
     void addTailoring_ProjectExists_TailoringAdded() {
         // arrange
-        ProjectEntity projectEntity = ProjectEntity.builder().build();
+        ProjectEntity projectEntity = ProjectEntity.builder().tailorings(new ArrayList<>()).build();
         given(projectRepositoryMock.findByIdentifier("SAMPLE")).willReturn(projectEntity);
 
         Tailoring tailoring = Tailoring.builder()

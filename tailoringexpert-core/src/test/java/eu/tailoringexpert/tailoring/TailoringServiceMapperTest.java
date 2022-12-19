@@ -1186,7 +1186,7 @@ class TailoringServiceMapperTest {
     }
 
     @Test
-    void toTailoringCatalog_NoRequirementsInChapter_TailoringCatalogTocWithNullChapterReturned() {
+    void toTailoringCatalog_NoRequirementsInChapter_TailoringCatalogTocWithEmptyChaptersReturned() {
         // arrange
         Catalog<BaseRequirement> catalog = Catalog.<BaseRequirement>builder()
             .toc(Chapter.<BaseRequirement>builder().build())
@@ -1201,11 +1201,11 @@ class TailoringServiceMapperTest {
 
         // assert
         assertThat(actual).isNotNull();
-        assertThat(actual.getToc().getChapters()).isNull();
+        assertThat(actual.getToc().getChapters()).isEmpty();
     }
 
     @Test
-    void toTailoringCatalog_NoRequirementsAvailable_TailoringCatalogWithNullRequirementsReturned() {
+    void toTailoringCatalog_NoRequirementsAvailable_TailoringCatalogWithEmptyRequirementListReturned() {
         // arrange
         Catalog<BaseRequirement> catalog = Catalog.<BaseRequirement>builder()
             .toc(Chapter.<BaseRequirement>builder().build())
@@ -1220,6 +1220,6 @@ class TailoringServiceMapperTest {
 
         // assert
         assertThat(actual).isNotNull();
-        assertThat(actual.getToc().getRequirements()).isNull();
+        assertThat(actual.getToc().getRequirements()).isEmpty();
     }
 }

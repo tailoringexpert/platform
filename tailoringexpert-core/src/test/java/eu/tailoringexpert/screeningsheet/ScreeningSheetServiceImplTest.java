@@ -174,7 +174,7 @@ class ScreeningSheetServiceImplTest {
             .willReturn(List.of(
                 ScreeningSheetParameterField.builder()
                     .category("Project")
-                    .name(ScreeningSheet.PROJECT)
+                    .name(ScreeningSheet.PARAMETER_PROJECT)
                     .label("Sample")
                     .build()
             ));
@@ -202,7 +202,7 @@ class ScreeningSheetServiceImplTest {
         List<ScreeningSheetParameterField> screeningSheetParameters = List.of(
             ScreeningSheetParameterField.builder()
                 .category("Project")
-                .name(ScreeningSheet.PROJECT)
+                .name(ScreeningSheet.PARAMETER_PROJECT)
                 .label("Sample")
                 .build(),
             ScreeningSheetParameterField.builder()
@@ -216,11 +216,11 @@ class ScreeningSheetServiceImplTest {
                 .label("DUMMY")
                 .build(),
             ScreeningSheetParameterField.builder()
-                .category(ScreeningSheet.PHASE)
+                .category(ScreeningSheet.PARAMETER_PHASE)
                 .name("A")
                 .build(),
             ScreeningSheetParameterField.builder()
-                .category(ScreeningSheet.PHASE)
+                .category(ScreeningSheet.PARAMETER_PHASE)
                 .name("ZERO")
                 .build()
         );
@@ -264,6 +264,48 @@ class ScreeningSheetServiceImplTest {
         // arrange
 
         given(screeningDataProviderMock.parse(any())).willReturn(Collections.emptyList());
+
+        // act
+        Throwable actual = catchThrowable(() -> service.createScreeningSheet(new byte[0]));
+
+        // assert
+        assertThat(actual).isInstanceOf(TailoringexpertException.class);
+        verify(repositoryMock, times(0)).getParameter(anyCollection());
+    }
+
+    @Test
+    void createScreeningSheet_ScreeningSheetParameterProjectNullLabel_TailoringexpertExceptionThrown() throws Exception {
+        // arrange
+        given(screeningDataProviderMock.parse(any())).willReturn(
+            List.of(
+                ScreeningSheetParameterField.builder()
+                    .category("Project")
+                    .name(ScreeningSheet.PARAMETER_PROJECT)
+                    .label(null)
+                    .build()
+            )
+        );
+
+        // act
+        Throwable actual = catchThrowable(() -> service.createScreeningSheet(new byte[0]));
+
+        // assert
+        assertThat(actual).isInstanceOf(TailoringexpertException.class);
+        verify(repositoryMock, times(0)).getParameter(anyCollection());
+    }
+
+    @Test
+    void createScreeningSheet_ScreeningSheetParameterProjectEmptyLabel_TailoringexpertExceptionThrown() throws Exception {
+        // arrange
+        given(screeningDataProviderMock.parse(any())).willReturn(
+            List.of(
+                ScreeningSheetParameterField.builder()
+                    .category("Project")
+                    .name(ScreeningSheet.PARAMETER_PROJECT)
+                    .label("")
+                    .build()
+            )
+        );
 
         // act
         Throwable actual = catchThrowable(() -> service.createScreeningSheet(new byte[0]));

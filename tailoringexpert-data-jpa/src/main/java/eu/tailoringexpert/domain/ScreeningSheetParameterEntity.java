@@ -46,6 +46,9 @@ import static javax.persistence.GenerationType.TABLE;
 public class ScreeningSheetParameterEntity implements Serializable {
     private static final long serialVersionUID = 626569218667788612L;
 
+    /**
+     * Technical ID.
+     */
     @Id
     @TableGenerator(name = "SEQ_SCREENINGSHEETPARAMETER", table = "SEQUENCE", pkColumnName = "SEQ_NAME",
         valueColumnName = "SEQ_COUNT", pkColumnValue = "SEQ_SCREENINGSHEETPARAMETER", initialValue = 1)
@@ -53,9 +56,15 @@ public class ScreeningSheetParameterEntity implements Serializable {
     @Column(name = "SCREENINGSHEETPARAMETER_ID")
     private Long id;
 
+    /**
+     * Category/group parameter belongs to.
+     */
     @Column(name = "CATEGORY")
     private String category;
 
+    /**
+     * Value of the parameter.
+     */
     @SuppressWarnings({"java:S1948"})
     @Column(name = "PARAMETERVALUE")
     @Convert(converter = ScreeningSheetParameterValueAttributeConverter.class)

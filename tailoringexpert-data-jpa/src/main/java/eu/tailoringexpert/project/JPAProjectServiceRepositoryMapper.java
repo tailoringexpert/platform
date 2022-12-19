@@ -92,6 +92,7 @@ public abstract class JPAProjectServiceRepositoryMapper {
     @Mapping(target = "name", source = "entity.name")
     @Mapping(target = "phases", source = "entity.phases")
     @Mapping(target = "catalogVersion", source = "entity.catalog.version")
+    @Mapping(target = "state", source = "entity.state")
     abstract TailoringInformation getProjectInformationen(TailoringEntity entity);
 
     @Mapping(target = "data", ignore = true)

@@ -113,6 +113,7 @@ class CMPDFDocumentCreatorTest {
         this.objectMapper.registerModules(new ParameterNamesModule(), new JavaTimeModule(), new Jdk8Module());
         this.objectMapper.disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES);
 
+
         this.webServerPortConsumer = new KatalogWebServerPortConsumer(mockServerPort);
 
         this.fileSaver = new FileSaver("target");

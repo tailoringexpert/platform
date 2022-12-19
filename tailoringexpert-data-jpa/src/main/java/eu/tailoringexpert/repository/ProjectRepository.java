@@ -23,6 +23,7 @@ package eu.tailoringexpert.repository;
 
 import eu.tailoringexpert.domain.ProjectEntity;
 import eu.tailoringexpert.domain.TailoringEntity;
+import eu.tailoringexpert.domain.TailoringState;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -56,7 +57,26 @@ public interface ProjectRepository extends JpaRepository<ProjectEntity, Long> {
      * @param name    name to tailoring to load
      * @return loadad tailoring
      */
-    @Query("Select pp from #{#entityName} p inner join p.tailorings pp where p.identifier=:project and pp.name=:name")
+    @Query("Select t from #{#entityName} p inner join p.tailorings t where p.identifier=:project and t.name=:name")
     TailoringEntity findTailoring(@Param("project") String project, @Param("name") String name);
 
+    /**
+     * Checks if a tailoring belongs to a dedicated project.
+     *
+     * @param project identifier of project
+     * @param name    name of tailoring to check
+     * @return true if name of the tailoring is part of project tailorings
+     */
+    @Query("select case when count(t)> 0 then true else false end from #{#entityName} p inner join p.tailorings t where p.identifier=:project and t.name=:name")
+    boolean existsTailoring(@Param("project") String project, @Param("name") String name);
+
+    /**
+     * Loads state of requested tailoring
+     *
+     * @param project poject identifier
+     * @param name    name to tailoring to load
+     * @return loadad state
+     */
+    @Query("Select t.state from #{#entityName} p inner join p.tailorings t where p.identifier=:project and t.name=:name")
+    TailoringState findTailoringState(@Param("project") String project, @Param("name") String name);
 }

@@ -38,9 +38,24 @@ import static java.util.Objects.nonNull;
 @Relation(itemRelation = "signature", collectionRelation = "signatures")
 public class DocumentSignatureResource extends RepresentationModel<DocumentSignatureResource> {
 
+    /**
+     * Name of the faculty.
+     */
     private String faculty;
+
+    /**
+     * Name of the signee.
+     */
     private String signee;
+
+    /**
+     * State of signature.
+     */
     private DocumentSignatureState state;
+
+    /**
+     * State if signature shall be used/applicable.
+     */
     private Boolean applicable;
 
     @Builder

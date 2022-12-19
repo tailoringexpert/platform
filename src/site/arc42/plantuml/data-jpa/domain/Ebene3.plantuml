@@ -101,6 +101,7 @@ package domain {
     class SelectionVectorProfileEntity {
         id : Long <<PK>>
         name : String
+        internalKey : String <<unique>>
         levels : Map<String, Integer>
     }
 

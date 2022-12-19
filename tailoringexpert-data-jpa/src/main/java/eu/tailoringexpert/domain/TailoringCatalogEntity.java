@@ -57,6 +57,9 @@ import static javax.persistence.GenerationType.TABLE;
 public class TailoringCatalogEntity implements Serializable {
     private static final long serialVersionUID = 3354894662905267412L;
 
+    /**
+     * Technical ID.
+     */
     @Id
     @TableGenerator(name = "SEQ_TAILORINGCATALOG", table = "SEQUENCE", pkColumnName = "SEQ_NAME",
         valueColumnName = "SEQ_COUNT", pkColumnValue = "SEQ_TAILORINGCATALOG", initialValue = 1)
@@ -64,9 +67,15 @@ public class TailoringCatalogEntity implements Serializable {
     @Column(name = "CATALOG_ID")
     private Long id;
 
+    /**
+     * Version of the catalog.
+     */
     @Column(name = "VERSION")
     private String version;
 
+    /**
+     * Table of contents of catalog.
+     */
     @OneToOne(cascade = CascadeType.ALL, fetch = LAZY)
     @JoinColumn(name = "CHAPTER_ID")
     private TailoringCatalogChapterEntity toc;

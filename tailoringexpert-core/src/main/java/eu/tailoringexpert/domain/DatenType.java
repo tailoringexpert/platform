@@ -23,5 +23,6 @@ package eu.tailoringexpert.domain;
 
 public enum DatenType {
     SKALAR,
-    MATRIX
+    MATRIX,
+    STRING
 }

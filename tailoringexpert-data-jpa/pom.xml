@@ -51,6 +51,12 @@
 
         <!-- test -->
         <dependency>
+            <groupId>eu.tailoringexpert</groupId>
+            <artifactId>tailoringexpert-db</artifactId>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
             <groupId>org.apache.logging.log4j</groupId>
             <artifactId>log4j-api</artifactId>
         </dependency>
@@ -93,20 +99,7 @@
                         <configuration>
                             <arguments>
                                 <argument>liquibase:dropAll</argument>
-                                <argument>-Dliquibase.changeLogFile=db-tailoringexpert-install.xml</argument>
-                                <argument>-P ${db}</argument>
-                            </arguments>
-                        </configuration>
-                    </execution>
-                    <execution>
-                        <id>install</id>
-                        <goals>
-                            <goal>exec</goal>
-                        </goals>
-                        <configuration>
-                            <arguments>
-                                <argument>liquibase:update</argument>
-                                <argument>-Dliquibase.changeLogFile=db-tailoringexpert-install.xml</argument>
+                                <argument>-Dliquibase.changeLogFile=db-tailoringexpert/db.changelog-root.xml</argument>
                                 <argument>-P ${db}</argument>
                             </arguments>
                         </configuration>
@@ -119,7 +112,7 @@
                         <configuration>
                             <arguments>
                                 <argument>liquibase:update</argument>
-                                <argument>-Dliquibase.changeLogFile=db-tailoringexpert-update.xml</argument>
+                                <argument>-Dliquibase.changeLogFile=db-tailoringexpert/db.changelog-root.xml</argument>
                                 <argument>-P ${db}</argument>
                             </arguments>
                         </configuration>

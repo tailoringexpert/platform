@@ -43,7 +43,6 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.BiFunction;
 
 import static java.util.Collections.emptyMap;
-import static java.util.Objects.nonNull;
 
 /**
  * Create PDF Compliance Matrix.
@@ -89,19 +88,32 @@ public class CMPDFDocumentCreator implements DocumentCreator {
         return pdfEngine.process(docId, html, tailoring.getCatalog().getVersion());
     }
 
+    /**
+     * Add chapter to rows object.
+     * All subchapter will be evaluated as well.
+     *
+     * @param chapter chapter evaluate
+     * @param level   chapter level
+     * @param rows    collection to add elements to
+     */
     void addChapter(Chapter<TailoringRequirement> chapter, int level, Collection<CMElement> rows, Map<String, String> placeholders) {
         rows.add(CMElement.builder()
             .level(level)
             .number(templateEngine.toXHTML(chapter.getNumber(), emptyMap()))
             .name(templateEngine.toXHTML(chapter.getName(), placeholders))
             .build());
-        if (nonNull(chapter.getChapters())) {
-            AtomicInteger nextLevel = new AtomicInteger(level + 1);
-            chapter.getChapters()
-                .forEach(subChapter -> addChapter(subChapter, nextLevel.get(), rows, placeholders));
-        }
+        AtomicInteger nextLevel = new AtomicInteger(level + 1);
+        chapter.getChapters()
+            .forEach(subChapter -> addChapter(subChapter, nextLevel.get(), rows, placeholders));
     }
 
+    /**
+     * Evaluate all applicable DRD in chapter for given phases and add them to row object.
+     *
+     * @param chapter chapter to retrieve requirements DRDs of
+     * @param rows    object to add DRDs to
+     * @param phases  phase of tailoring to use of applicabilty check
+     */
     void addDRD(Chapter<TailoringRequirement> chapter, Collection<DRDElement> rows, Collection<Phase> phases) {
         drdProvider.apply(chapter, phases)
             .entrySet()

@@ -63,6 +63,8 @@ public abstract class JPAScreeningSheetServiceRepositoryMapper {
             domain.value(valueOf(entity.getValue()));
         } else if (MATRIX == entity.getParameterType()) {
             domain.value(mapper.readValue(entity.getValue(), double[][].class));
+        } else {
+            domain.value(entity.getValue());
         }
     }
 }

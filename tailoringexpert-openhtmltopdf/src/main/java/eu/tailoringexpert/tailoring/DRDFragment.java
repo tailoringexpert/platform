@@ -32,7 +32,19 @@ import lombok.Value;
 @Value
 @Builder
 public class DRDFragment {
-    private String name;
+
+    /**
+     * Number of the DRD.
+     */
     private String number;
+
+    /**
+     * Title of the DRD.
+     */
+    private String name;
+
+    /**
+     * HTML template path to include in template.
+     */
     private String fragment;
 }

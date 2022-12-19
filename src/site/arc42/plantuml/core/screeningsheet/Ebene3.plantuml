@@ -25,6 +25,10 @@ package screeningsheet {
         getParameter(names : Collection<String>) : Collection<Parameter>
     }
 
+    interface SelectionVectorProviderRepository {
+        getSelectionVectorProfile(internalKey : String) : Optional<SelectionVectorProfile>
+    }
+
     interface "Function<T, R>" as Function{
         apply(t : T) : R
     }

@@ -26,8 +26,9 @@ package tailoring {
         getSelectionVectorProfile() : Collection<SelectionVectorProfile>
         getDefaultSignatures() : Collection<DocumentSignature>
         deleteTailoring(project : String, tailoring : String)
+        addNote(project : String, tailoring : String, note : Note) : Optional<Tailoring>
+        existsTailoring(project : String, tailoring : String) : boolean
     }
-
 
     abstract class JPATailoringServiceRepositoryMapper {
         {abstract} toDomain(entity : ProjektEntity) : Projekt
@@ -54,6 +55,13 @@ package tailoring {
     JPATailoringServiceRepository --> "1" TailoringRepository : tailoringRepository
     JPATailoringServiceRepository --> "1" SelektionVectorProfileRepository : selectionVectorProfileRepository
     JPATailoringServiceRepository --> "1" DocumentSigneeRepository : documentSigneeRepository
+
+    interface TailoringDeletablePredicateRepository {
+        getTailoringState(project : String, tailoring : String) : Optional<TailoringState>
+    }
+    class JPATailoringDeletablePredicateRepository {
+    }
+    TailoringDeletablePredicateRepository <|.. JPATailoringDeletablePredicateRepository
 
 }
 @enduml

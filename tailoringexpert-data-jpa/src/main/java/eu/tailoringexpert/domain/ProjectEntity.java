@@ -56,35 +56,53 @@ import static javax.persistence.GenerationType.TABLE;
 public class ProjectEntity implements Serializable {
     private static final long serialVersionUID = -7657514213994672871L;
 
+    /**
+     * Technical ID.
+     */
     @Id
-    @TableGenerator(name = "SEQ_PROJECT", table = "SEQUENCE", pkColumnName = "SEQ_NAME",
-        valueColumnName = "SEQ_COUNT", pkColumnValue = "SEQ_PROJECT", initialValue = 1)
+    @TableGenerator(name = "SEQ_PROJECT", table = "SEQUENCE", pkColumnName = "SEQ_NAME", valueColumnName = "SEQ_COUNT", pkColumnValue = "SEQ_PROJECT", initialValue = 1)
     @GeneratedValue(strategy = TABLE, generator = "SEQ_PROJECT")
     @Column(name = "PROJECT_ID")
     private Long id;
 
+    /**
+     * Unique identifier of project.
+     */
     @Column(name = "IDENTIFIER")
     private String identifier;
 
+    /**
+     * Screeningsheet used to create project.
+     */
     @OneToOne(cascade = ALL, fetch = LAZY)
     @JoinColumn(name = "SCREENINGSHEET_ID")
     private ScreeningSheetEntity screeningSheet;
 
+    /**
+     * Tailorings of the project.
+     */
     @OneToMany(cascade = ALL, fetch = LAZY)
     @JoinColumn(name = "PROJECT_ID", referencedColumnName = "PROJECT_ID", nullable = false)
     @OrderColumn(name = "TAILORING_ORDER")
     private List<TailoringEntity> tailorings = new ArrayList<>();
 
+    /**
+     * Creation timestamp of project.
+     */
     @Column(name = "CREATIONTIMESTAMP")
     private ZonedDateTime creationTimestamp;
 
+    /**
+     * Find a tailoring by given name.
+     *
+     * @param name Name of the tailoring to get
+     * @return requested tailoring if exsists, otherwise empty
+     */
     public Optional<TailoringEntity> getTailoring(String name) {
         if (isNull(name)) {
             return Optional.empty();
         }
 
-        return getTailorings().stream()
-            .filter(phase -> phase.getName().equals(name))
-            .findFirst();
+        return getTailorings().stream().filter(phase -> phase.getName().equals(name)).findFirst();
     }
 }

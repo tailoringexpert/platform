@@ -36,6 +36,10 @@ import static java.util.Objects.nonNull;
 @EqualsAndHashCode(callSuper = false)
 @Relation(itemRelation = "tailoringCatalog", collectionRelation = "tailoringCatalogs")
 public class TailoringCatalogResource extends RepresentationModel<TailoringCatalogResource> {
+
+    /**
+     * Table of contents of catalog.
+     */
     private TailoringCatalogChapterResource toc;
 
     @Builder

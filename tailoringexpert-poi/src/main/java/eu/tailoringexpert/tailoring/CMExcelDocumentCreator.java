@@ -49,9 +49,9 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.BiFunction;
 import java.util.function.Function;
 
-import static eu.tailoringexpert.domain.File.*;
+import static eu.tailoringexpert.domain.File.FileBuilder;
+import static eu.tailoringexpert.domain.File.builder;
 import static java.nio.file.Files.newInputStream;
-import static java.util.Objects.nonNull;
 import static java.util.stream.Collectors.joining;
 import static java.util.stream.IntStream.range;
 import static org.apache.poi.ss.usermodel.FillPatternType.SOLID_FOREGROUND;
@@ -82,7 +82,6 @@ public class CMExcelDocumentCreator implements DocumentCreator {
     public File createDocument(String docId,
                                Tailoring tailoring,
                                Map<String, String> placeholders) {
-
         try {
             FileBuilder result = builder().name(docId + ".xlsx");
 
@@ -114,9 +113,15 @@ public class CMExcelDocumentCreator implements DocumentCreator {
             log.throwing(e);
         }
         return null;
-
     }
 
+    /**
+     * Evaluate all applicable DRD in chapter for given phases and add them to row object.
+     *
+     * @param chapter chapter to retrieve requirements DRDs of
+     * @param rows    object to add DRDs to
+     * @param phases  phase of tailoring to use of applicabilty check
+     */
     void addDRD(Chapter<TailoringRequirement> chapter, Collection<DRDElement> rows, Collection<Phase> phases) {
         drdProvider.apply(chapter, phases)
             .entrySet()
@@ -129,6 +134,13 @@ public class CMExcelDocumentCreator implements DocumentCreator {
                 .build()));
     }
 
+    /**
+     * Create sheet DRD in workbook containing all referenced DRDs.
+     *
+     * @param wb   workbook to add worksheet "DRD"
+     * @param drds DRD to add to worksheet
+     * @return created worksheet
+     */
     private Sheet createDRDSheet(Workbook wb, Collection<DRDElement> drds) {
         Sheet result = wb.createSheet("DRD");
 
@@ -158,6 +170,12 @@ public class CMExcelDocumentCreator implements DocumentCreator {
         return result;
     }
 
+    /**
+     * Add row to worksheet.
+     *
+     * @param sheet sheet to add to
+     * @param drd   drd to add to sheet
+     */
     private void addRow(Sheet sheet, DRDElement drd) {
         Row row = sheet.createRow((short) sheet.getLastRowNum() + 1);
 
@@ -181,15 +199,27 @@ public class CMExcelDocumentCreator implements DocumentCreator {
         row.getCell(4).setCellStyle(cellStyle);
     }
 
+    /**
+     * Add chapter to sheet object.
+     * All subchapter will be evaluated as well.
+     *
+     * @param chapter chapter evaluate
+     * @param level   chapter level
+     * @param sheet   sheet to add elements to
+     */
     private void addChapter(Chapter<TailoringRequirement> chapter, int level, Sheet sheet) {
         addRow(sheet, level, chapter.getNumber(), chapter.getName());
-        if (nonNull(chapter.getChapters())) {
-            AtomicInteger nextLevel = new AtomicInteger(level + 1);
-            chapter.getChapters()
-                .forEach(subChapter -> addChapter(subChapter, nextLevel.get(), sheet));
-        }
+        AtomicInteger nextLevel = new AtomicInteger(level + 1);
+        chapter.getChapters()
+            .forEach(subChapter -> addChapter(subChapter, nextLevel.get(), sheet));
     }
 
+    /**
+     * Create sheet CM in workbook.
+     *
+     * @param wb workbook to add worksheet "CM"
+     * @return created worksheet
+     */
     private Sheet createCMSheet(Workbook wb) {
         Sheet result = wb.createSheet("CM");
 
@@ -214,6 +244,14 @@ public class CMExcelDocumentCreator implements DocumentCreator {
         return result;
     }
 
+    /**
+     * Add chapter row to provided sheet.
+     *
+     * @param sheet   sheet to add row to
+     * @param level   chapter hierarchy
+     * @param chapter number of chapter
+     * @param title   title of chapter
+     */
     private void addRow(Sheet sheet, int level, String chapter, String title) {
         Row row = sheet.createRow((short) sheet.getLastRowNum() + 1);
 
@@ -238,9 +276,16 @@ public class CMExcelDocumentCreator implements DocumentCreator {
 
     }
 
-    private CellStyle createCellStyle(Sheet sheet, IndexedColors farbe) {
+    /**
+     * Create cell in sheet with given color as fill foreground.
+     *
+     * @param sheet sheet to create cell in
+     * @param color color to use as fill foreground color
+     * @return created cell
+     */
+    private CellStyle createCellStyle(Sheet sheet, IndexedColors color) {
         CellStyle result = sheet.getWorkbook().createCellStyle();
-        result.setFillForegroundColor(farbe.index);
+        result.setFillForegroundColor(color.index);
         result.setFillPattern(SOLID_FOREGROUND);
         return result;
     }

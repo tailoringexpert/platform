@@ -40,6 +40,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 import static java.util.Comparator.comparing;
+import static java.util.function.Predicate.not;
 import static java.util.stream.Collectors.toCollection;
 import static java.util.stream.Collectors.toList;
 import static java.util.stream.Collectors.toUnmodifiableSet;
@@ -83,10 +84,11 @@ public class ScreeningSheetServiceImpl implements ScreeningSheetService {
         Collection<ScreeningSheetParameterField> screeningSheetParameters = screeningSheetParameterProvider.parse(new ByteArrayInputStream(rawData));
 
         String project = screeningSheetParameters.stream()
-            .filter(parameter -> ScreeningSheet.PROJECT.equalsIgnoreCase(parameter.getName()))
+            .filter(parameter -> ScreeningSheet.PARAMETER_PROJECT.equalsIgnoreCase(parameter.getName()))
             .findFirst()
             .map(ScreeningSheetParameterField::getLabel)
-            .filter(label -> !label.isEmpty())
+            .filter(Objects::nonNull)
+            .filter(not(String::isEmpty))
             .orElseThrow(() -> new TailoringexpertException("Screeningsheet doesn't contain a project name!"));
 
         Collection<Parameter> parameters = getParameter(screeningSheetParameters);
@@ -99,14 +101,14 @@ public class ScreeningSheetServiceImpl implements ScreeningSheetService {
         // phasen konvertieren und an liste hinzufügen
         List<Phase> phases = screeningSheetParameters
             .stream()
-            .filter(entry -> ScreeningSheet.PHASE.equalsIgnoreCase(entry.getCategory()))
+            .filter(entry -> ScreeningSheet.PARAMETER_PHASE.equalsIgnoreCase(entry.getCategory()))
             .map(entry -> Phase.fromString(entry.getName()))
             .filter(Objects::nonNull)
             .sorted(comparing(Phase::ordinal))
             .collect(toCollection(LinkedList::new));
         if (!phases.isEmpty()) {
             screeningSheetParameter.add(ScreeningSheetParameter.builder()
-                .category(ScreeningSheet.PHASE.substring(0, 1).toUpperCase(Locale.ROOT) + ScreeningSheet.PHASE.substring(1))
+                .category(ScreeningSheet.PARAMETER_PHASE.substring(0, 1).toUpperCase(Locale.ROOT) + ScreeningSheet.PARAMETER_PHASE.substring(1))
                 .value(phases)
                 .build());
         }
@@ -120,7 +122,7 @@ public class ScreeningSheetServiceImpl implements ScreeningSheetService {
         // all parameter not defined in db, which have no effect on calculating a selectionvector
         screeningSheetParameter.addAll(screeningSheetParameters
             .stream()
-            .filter(entry -> !ScreeningSheet.PHASE.equalsIgnoreCase(entry.getCategory()) && !parameterConfigurationWithoutValues.contains(entry.getName()))
+            .filter(entry -> !ScreeningSheet.PARAMETER_PHASE.equalsIgnoreCase(entry.getCategory()) && !parameterConfigurationWithoutValues.contains(entry.getName()))
             .map(entry -> ScreeningSheetParameter.builder()
                 .category(entry.getName().substring(0, 1).toUpperCase(Locale.GERMANY) + entry.getName().substring(1))
                 .value(entry.getLabel())

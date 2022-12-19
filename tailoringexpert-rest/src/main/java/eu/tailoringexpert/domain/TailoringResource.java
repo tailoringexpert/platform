@@ -38,17 +38,31 @@ import static java.util.Objects.nonNull;
 @Relation(itemRelation = "tailoring", collectionRelation = "tailorings")
 public class TailoringResource extends RepresentationModel<TailoringResource> {
 
+    /**
+     * Name of the tailoring.
+     */
     private String name;
+
+    /**
+     * Phases of tailoring.
+     */
     private Collection<Phase> phases;
+
+    /**
+     * Version of used base catalog.
+     */
     private String catalogVersion;
 
+    private TailoringState state;
+
     @Builder
-    public TailoringResource(String name, Collection<Phase> phases, String catalogVersion, List<Link> links) {
+    public TailoringResource(String name, Collection<Phase> phases, String catalogVersion, TailoringState state, List<Link> links) {
         super();
 
         this.name = name;
         this.phases = phases;
         this.catalogVersion = catalogVersion;
+        this.state = state;
         if (nonNull(links)) {
             add(links);
         }

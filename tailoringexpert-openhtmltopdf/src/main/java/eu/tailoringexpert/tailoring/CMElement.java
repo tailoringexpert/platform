@@ -32,7 +32,19 @@ import lombok.Value;
 @Value
 @Builder
 public class CMElement {
+
+    /**
+     * Level in chapter.
+     */
     private int level;
+
+    /**
+     * Number of chapter.
+     */
     private String number;
+
+    /**
+     * Name of chapter.
+     */
     private String name;
 }

@@ -244,4 +244,28 @@ class JPACatalogServiceRepositoryTest {
         assertThat(actual).isPresent();
         verify(mapperMock, times(1)).getCatalog(baseCatalogEntity);
     }
+
+    @Test
+    void existsCatalog_CatalogNotExists_FalseReturned() {
+        // arrange
+        given(baseCatalogRepositoryMock.existsByVersion("8.2.1")).willReturn(false);
+
+        // act
+        boolean actual = repository.existsCatalog("8.2.1");
+
+        // assert
+        assertThat(actual).isFalse();
+    }
+
+    @Test
+    void existsCatalog_CatalogExists_TrueReturned() {
+        // arrange
+        given(baseCatalogRepositoryMock.existsByVersion("8.2.1")).willReturn(true);
+
+        // act
+        boolean actual = repository.existsCatalog("8.2.1");
+
+        // assert
+        assertThat(actual).isTrue();
+    }
 }

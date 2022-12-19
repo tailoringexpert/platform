@@ -1,5 +1,5 @@
 <component name="ProjectRunConfigurationManager">
-  <configuration default="false" name="db -tailoringexpert-plattform" type="MavenRunConfiguration" factoryName="Maven">
+  <configuration default="false" name="db -tailoringexpert-plattform (install)" type="MavenRunConfiguration" factoryName="Maven">
     <MavenSettings>
       <option name="myGeneralSettings">
         <MavenGeneralSettings>
@@ -30,8 +30,6 @@
             <list>
               <option value="-Ddependency-check-maven.phase=deploy" />
               <option value="-DskipTests" />
-              <option value="exec:exec@dropAll" />
-              <option value="exec:exec@install" />
               <option value="exec:exec@update" />
               <option value="exec:exec@devupdate" />
               <option value="-DskipTests" />
@@ -55,7 +53,7 @@
       <option name="IS_IGNORE_MISSING_FILES" value="false" />
       <option name="IS_ENABLE_EXPERIMENTAL_INTEGRATIONS" value="false" />
       <ENTRIES>
-        <ENTRY IS_ENABLED="true" PARSER="runconfig" />
+        <ENTRY IS_ENABLED="true" PARSER="runconfig" IS_EXECUTABLE="false" />
       </ENTRIES>
     </extension>
     <method v="2" />

@@ -55,10 +55,8 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.thymeleaf.spring5.SpringTemplateEngine;
 import org.thymeleaf.templateresolver.FileTemplateResolver;
-import org.thymeleaf.templateresolver.UrlTemplateResolver;
 
 import java.io.File;
-import java.net.URL;
 import java.nio.file.Paths;
 import java.util.Collection;
 import java.util.Map;
@@ -72,8 +70,6 @@ import static org.thymeleaf.templatemode.TemplateMode.HTML;
 @Log4j2
 @Configuration
 public class PlattformConfiguration {
-
-    private static final String TEMPLATE = "template";
 
     @Bean
     CacheManager plattformCacheManager() {
@@ -98,23 +94,23 @@ public class PlattformConfiguration {
         return new PlattformScreeningSheetParameterProvider();
     }
 
-    @Bean
-    Map<String, String> plattform(@Value("#{${tenant.plattform}}") Map<String, String> plattform) {
-        return plattform;
+    @Bean("plattformTemplateRoot")
+    String plattformTemplateRoot(@NonNull @Value("${templateRoot}") String templateRoot) {
+        return templateRoot + "/plattform/";
     }
 
     @Bean
-    PDFEngine plattformPdfEngine(@Qualifier("plattform") Map<String, String> plattform) {
-        return new PDFEngine("TailoringExpert", plattform.get(TEMPLATE));
+    PDFEngine plattformPdfEngine(@NonNull @Qualifier("plattformTemplateRoot") String templateRoot) {
+        return new PDFEngine("TailoringExpert", templateRoot);
     }
 
     @SneakyThrows
     @Bean
-    ThymeleafTemplateEngine plattformTemplateEngine(@NonNull @Qualifier("plattform") Map<String, String> plattform) {
+    ThymeleafTemplateEngine plattformTemplateEngine(@NonNull @Qualifier("plattformTemplateRoot") String templateRoot) {
         SpringTemplateEngine springTemplateEngine = new @Tenant("plattform") SpringTemplateEngine() {
         };
         FileTemplateResolver fileTemplateResolver = new FileTemplateResolver();
-        fileTemplateResolver.setPrefix(plattform.get(TEMPLATE));
+        fileTemplateResolver.setPrefix(templateRoot);
         fileTemplateResolver.setCacheable(false);
         fileTemplateResolver.setSuffix(".html");
         fileTemplateResolver.setTemplateMode(HTML);
@@ -123,27 +119,18 @@ public class PlattformConfiguration {
         fileTemplateResolver.setCheckExistence(true);
         springTemplateEngine.addTemplateResolver(fileTemplateResolver);
 
-        UrlTemplateResolver drdResolver = new UrlTemplateResolver();
-        drdResolver.setPrefix(new URL(plattform.get("drd")).toString());
-        drdResolver.setCacheable(false);
-        drdResolver.setSuffix(".html");
-        drdResolver.setTemplateMode(HTML);
-        drdResolver.setCharacterEncoding(UTF_8.toString());
-        drdResolver.setOrder(2);
-        drdResolver.setCheckExistence(true);
-        springTemplateEngine.addTemplateResolver(drdResolver);
-
         return new @Tenant("plattform") ThymeleafTemplateEngine(springTemplateEngine) {
         };
     }
 
+
     @Bean
-    Function<String, File> plattformExcelSupplier(@NonNull @Qualifier("plattform") Map<String, String> plattform) {
+    Function<String, File> plattformExcelSupplier(@NonNull @Qualifier("plattformTemplateRoot") String templateRoot) {
         return new Function<String, File>() {
             @SneakyThrows
             @Override
             public File apply(String s) {
-                return Paths.get(plattform.get(TEMPLATE) + s).toFile();
+                return Paths.get(templateRoot + s).toFile();
             }
         };
     }

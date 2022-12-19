@@ -28,6 +28,7 @@ import eu.tailoringexpert.domain.Project;
 import eu.tailoringexpert.domain.ScreeningSheet;
 import eu.tailoringexpert.domain.SelectionVectorProfile;
 import eu.tailoringexpert.domain.Tailoring;
+import eu.tailoringexpert.domain.TailoringState;
 
 import java.util.Collection;
 import java.util.List;
@@ -177,6 +178,25 @@ public interface TailoringServiceRepository {
      * @return In case successful adding tailoring, otherwise empty
      */
     Optional<Tailoring> addNote(String project, String tailoring, Note note);
+
+    /**
+     * Checks if a tailoring belongs to a dedicated project.
+     *
+     * @param project identifier of project
+     * @param name    name of tailoring to check
+     * @return true if name of the tailoring is part of project tailorings
+     */
+    boolean existsTailoring(String project, String name);
+
+    /**
+     * Set state of tailoring.
+     *
+     * @param project   project identifier
+     * @param tailoring tailoring to add note to
+     * @param state     state to set
+     * @return In case successful setting state tailoring, otherwise empty
+     */
+    Optional<Tailoring> setState(String project, String tailoring, TailoringState state);
 
 
 }
