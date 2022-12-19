@@ -1,8 +1,8 @@
 # Changelog
 
-## [vv0.0.2](https://github.com/tailoringexpert/plattform/tree/vv0.0.2) (12.19.2022)
+## [v0.0.2](https://github.com/tailoringexpert/plattform/tree/v0.0.2) (12.19.2022)
 
-[Full Changelog](https://github.com/tailoringexpert/plattform/compare/v0.0.1...vv0.0.2)
+[Full Changelog](https://github.com/tailoringexpert/plattform/compare/v0.0.1...v0.0.2)
 
 **Implemented enhancements:**
 
@@ -31,13 +31,6 @@
 **Closed issues:**
 
 - Refactoring database to english [\#7](https://github.com/tailoringexpert/plattform/issues/7)
-=======
-## [v0.0.1](https://github.com/tailoringexpert/plattform/tree/v0.0.1) (10.02.2022)
-
-[Full Changelog](https://github.com/tailoringexpert/plattform/compare/ef72a8e508e9e6d79bd268aba4ef257b48bb1a9d...v0.0.1)
-
-**Closed issues:**
-
 - Check link creation in rest module [\#34](https://github.com/tailoringexpert/plattform/issues/34)
 - Add notes to tailoring [\#31](https://github.com/tailoringexpert/plattform/issues/31)
 - Add a generic TailoringexpertException [\#28](https://github.com/tailoringexpert/plattform/issues/28)
