@@ -28,6 +28,7 @@ import eu.tailoringexpert.domain.Phase;
 import eu.tailoringexpert.domain.TailoringRequirement;
 import eu.tailoringexpert.project.JPAProjectServiceRepository;
 import eu.tailoringexpert.renderer.PDFEngine;
+import eu.tailoringexpert.renderer.PlattformThymeleafTemplateEngine;
 import eu.tailoringexpert.renderer.ThymeleafTemplateEngine;
 import eu.tailoringexpert.repository.BaseCatalogRepository;
 import eu.tailoringexpert.repository.DokumentSigneeRepository;
@@ -50,7 +51,6 @@ import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cache.CacheManager;
-import org.springframework.cache.concurrent.ConcurrentMapCacheManager;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.thymeleaf.spring5.SpringTemplateEngine;
@@ -74,14 +74,13 @@ public class PlattformConfiguration {
     @Bean
     CacheManager plattformCacheManager() {
         log.info("Creating cache manager plattform");
-        return new @Tenant("plattform") ConcurrentMapCacheManager(
+        return new PlattformCacheManager(
             BaseCatalogRepository.CACHE_BASECATALOG,
             BaseCatalogRepository.CACHE_BASECATALOGLIST,
             JPAProjectServiceRepository.CACHE_BASECATALOG,
             LogoRepository.CACHE_LOGO,
             DokumentSigneeRepository.CACHE_DOCUMENTSIGNEE
-        ) {
-        };
+        );
     }
 
     @Bean
@@ -107,8 +106,7 @@ public class PlattformConfiguration {
     @SneakyThrows
     @Bean
     ThymeleafTemplateEngine plattformTemplateEngine(@NonNull @Qualifier("plattformTemplateRoot") String templateRoot) {
-        SpringTemplateEngine springTemplateEngine = new @Tenant("plattform") SpringTemplateEngine() {
-        };
+        SpringTemplateEngine springTemplateEngine = new SpringTemplateEngine();
         FileTemplateResolver fileTemplateResolver = new FileTemplateResolver();
         fileTemplateResolver.setPrefix(templateRoot);
         fileTemplateResolver.setCacheable(false);
@@ -119,8 +117,7 @@ public class PlattformConfiguration {
         fileTemplateResolver.setCheckExistence(true);
         springTemplateEngine.addTemplateResolver(fileTemplateResolver);
 
-        return new @Tenant("plattform") ThymeleafTemplateEngine(springTemplateEngine) {
-        };
+        return new PlattformThymeleafTemplateEngine(springTemplateEngine);
     }
 
 
