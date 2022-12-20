@@ -92,6 +92,7 @@
                     <descriptors>
                         <descriptor>src/assembly/assets.xml</descriptor>
                         <descriptor>src/assembly/liquibase.xml</descriptor>
+                        <descriptor>src/assembly/templates.xml</descriptor>
                     </descriptors>
                 </configuration>
                 <executions>

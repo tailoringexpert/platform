@@ -1,0 +1,231 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<head>
+    <link rel="stylesheet" href="tailoring.css"/>
+    <link rel="stylesheet" href="drd.css"/>
+</head>
+<body>
+<div th:fragment="content" id="drd-08.04">
+    <table class="titel">
+        <tbody>
+        <tr>
+            <td><h2>DRD-8.04 - Software Reuse File</h2></td>
+        </tr>
+        </tbody>
+    </table>
+
+    <p></p>
+
+    <table class="reference">
+        <tbody>
+        <tr>
+            <td rowspan="2">Reference:</td>
+            <td>ECSS-E-ST-40C</td>
+            <td>Space engineering - Software</td>
+        </tr>
+        <tr>
+            <td>ECSS-Q-ST-80C</td>
+            <td>Space product assurance - Software product assurance</td>
+        </tr>
+        </tbody>
+    </table>
+
+    <p></p>
+
+    <table class="purpose">
+        <tbody>
+        <tr>
+            <td>Purpose:</td>
+            <td>To document the results of analysis to be performed on existing SW intended to be reused.</td>
+        </tr>
+        </tbody>
+    </table>
+
+    <p></p>
+
+    <table class="content">
+        <tbody>
+        <tr>
+            <td>Content:</td>
+            <td>
+                <h4>Title</h4>
+                The document to be created based on this DRD shall be titled "[project] Software Reuse File".
+
+                <h4>Title page</h4>
+                The title page shall identify the project document identification number, title of the document, date of
+                release and release authority.
+
+                <h4>Contents list</h4>
+                The content list shall identify the title and location of every clause and major subclause, figure,
+                table and annex contained in the SW Reuse File.
+
+                <h4>Foreword</h4>
+                A foreword shall be included in the document which describes as many of the following items as are:
+                <ul type="disc">
+                    <li>identification of which organizational entity prepared the SW Reuse File,</li>
+                    <li>information regarding the approval of the SW Reuse File,</li>
+                    <li>identification of other organizations that contributed to the preparation of the SW Reuse
+                        File,
+                    </li>
+                    <li>a statement of applicability identifying which other documents are cancelled and replaced in
+                        whole or in part,
+                    </li>
+                    <li>a statement of significant technical differences between this SW Reuse File and any previous
+                        one,
+                    </li>
+                    <li>the relationship of the SW Reuse File to other standards or documents.</li>
+                </ul>
+
+                <h4>Introduction</h4>
+                An introduction may be included to provide specific information or commentary about the technical
+                contents.
+
+                <h4>1 Scope and applicability</h4>
+                This clause shall describe the scope, applicability and purpose of the SW Reuse File.
+
+                <h4>1.1 Scope</h4>
+                This subclause shall contain a statement to define the goal of the SW Reuse File.
+
+                <h4>1.2 Applicability</h4>
+                This subclause shall contain a statement to define the use of the SW Reuse File.
+
+                <h4>2 References</h4>
+                This clause shall contain the following statements:
+
+                <h4>2.1 Normative references</h4>
+                This subclause shall contain the following statements:<br/>
+                "This document incorporates, by dated or undated reference, provisions from other publications. These
+                normative references are cited at appropriate places in the text and publications are listed hereafter.
+                For dated references, subsequent amendments to, or revisions of, any of these apply to this document
+                only when incorporated in it by amendment or revision. For undated references, the latest edition of the
+                publication referred applies.<br/>
+                [insert document identifier] [insert document title]."
+
+                <h4>2.2 Informative references</h4>
+                This subclause shall contain the following statement:<br/>
+                "The following documents, although not a part of this SW Reuse File, clarify its contents:<br/>
+                [insert document identifier] [insert document title]."
+
+                <h4>3 Terms, definitions and abbreviated terms</h4>
+                This clause shall contain the following subclauses:
+
+                <h4>3.1 Terms and definitions</h4>
+                <ol style="list-style-type:lower-alpha">
+                    <li>This subclause shall list any applicable project dictionary or glossary, and all unusual terms
+                        or terms with a meaning specific to this Software Reuse File, with the definition for each term.
+                    </li>
+                    <li>If a project dictionary or glossary is applicable the following sentence shall be inserted:<br/>
+                        "The definitions of [insert title and identifier of applicable dictionaries or glossaries] apply
+                        to this document.
+                    </li>
+                    <li>If a list of definitions is required the following sentence shall be inserted:<br/>
+                        "The following terms and definitions are specific to this document:<br/>
+                        [insert term] [insert definition].
+                    </li>
+                </ol>
+
+                <h4>3.2 Abbreviated terms</h4>
+                This subclause shall list all abbreviations used in the SW Reuse File with the full meaning or phrase
+                for each abbreviation.
+
+                <h4>4 Presentation of the software intended to be reused</h4>
+                <ol style="list-style-type:lower-alpha">
+                    <li>This clause shall describe the technical and management information available on the SW intended
+                        for reuse.
+                    </li>
+                    <li>This subclause shall be structured in separate subclauses, one per identified reused SW item.
+                    </li>
+                </ol>
+
+                <h4>4.x SW item XY</h4>
+                The following information shall be provided for each SW item:
+                <ul type="disc">
+                    <li>SW item name and main features;</li>
+                    <li>developer name;</li>
+                    <li>industrial property and exportability constraints if any;</li>
+                    <li>applicable disposition for warranty, maintenance, installation and training;</li>
+                    <li>commercial SW necessary for software execution if any;</li>
+                    <li>development and execution environment (computer, operating system, ...);</li>
+                    <li>considered version and list of components;</li>
+                    <li>implementation language;</li>
+                    <li>size of the SW (e.g. number of source code lines , size of the executable code);</li>
+                    <li>Licensing conditions</li>
+                </ul>
+
+                <h4>5 Compatibility of existing SW item with project requirements</h4>
+                The SRF shall describe which part of the project requirements (RB) are intended to be implemented
+                through software reuse. For each of the SW items identified in the previous subclause, a subsubclause
+                denoted as 5.x shall be identified with the following content:
+
+                <h4>5.x SW item</h4>
+                It shall provide the availability and quality status (completeness, correctness, etc.) of the following
+                information:
+                <ol>
+                    <li>software requirements documentation;</li>
+                    <li>software architectural and detailed design documentation;</li>
+                    <li>forward and backward traceability between system requirements;</li>
+                    <li>software requirements, design and code;</li>
+                    <li>unit tests documentation and coverage;</li>
+                    <li>integration tests documentation and coverage;</li>
+                    <li>validation documentation and coverage;</li>
+                    <li>verification reports;</li>
+                    <li>performance (e.g. memory occupation, CPU load);</li>
+                    <li>operational performances;</li>
+                    <li>residual non conformance and waivers;</li>
+                    <li>user operational documentation (e.g. user manual);</li>
+                    <li>code quality (adherence to coding standards, metrics).</li>
+                </ol>
+                For each of the points, the SRF shall document the quality level of the existing software with respect
+                to the applicable project requirements, according to the criticality of the system function implemented.
+
+                <h4>6 Software reuse analysis conclusions</h4>
+                <ol style="list-style-type:lower-alpha">
+                    <li>The SRF shall document the results of the software reuse analysis,</li>
+                    <li>For each software item, the SRF shall provide the following information:</li>
+                </ol>
+                <blockquote>
+                    <div>
+                        <ul type="disc">
+                            <li>decision to reuse or not reuse, based on the information provided in previous chapters;
+                            </li>
+                            <li>estimated level of reuse;</li>
+                            <li>assumptions and methods applied when estimating the level of reuse.</li>
+                        </ul>
+                    </div>
+                </blockquote>
+
+                <h4>7 Detailed results of evaluation</h4>
+                The SRF shall include the detailed results of the evaluation.
+                <p class="note">
+                    The detailed results of the evaluation can be presented in an appendix.
+                </p>
+
+                <h4>8 Corrective actions</h4>
+                <ol style="list-style-type:lower-alpha">
+                    <li>The SRF shall document any corrective actions identified to ensure that the software intended
+                        for reuse meets the applicable project requirements.
+                    </li>
+                    <li>The SRF shall document the detailed results of the implementation of the identified corrective
+                        actions.
+                    </li>
+                </ol>
+
+                <h4>9 Configuration status</h4>
+                The SRF shall include the detailed configuration status of the reused software baseline.
+            </td>
+        </tr>
+        </tbody>
+    </table>
+
+
+    <table class="format">
+        <tbody>
+        <tr>
+            <td><b><span>Format:</span></b></td>
+            <td>In-house</td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+</body>
+</html>
