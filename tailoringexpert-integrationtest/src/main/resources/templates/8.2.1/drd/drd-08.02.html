@@ -1,0 +1,419 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<head>
+    <link rel="stylesheet" href="tailoring.css"/>
+    <link rel="stylesheet" href="drd.css"/>
+</head>
+<body>
+<div th:fragment="content" id="drd-08.02">
+    <table width="100%" class="titel">
+        <tbody>
+        <tr>
+            <td><h2>DRD-08.02 - Software Development Plan</h2></td>
+        </tr>
+        </tbody>
+    </table>
+
+
+    <table class="reference">
+        <tbody>
+        <tr>
+            <td rowspan="2"><b>Reference:</b></td>
+            <td>ECSS-E-ST-40C</td>
+            <td>Space engineering - Software</td>
+        </tr>
+        <tr>
+            <td>ECSS-Q-ST-80C</td>
+            <td>Space product assurance - Software product assurance</td>
+        </tr>
+        </tbody>
+    </table>
+
+
+    <table class="purpose">
+        <tbody>
+        <tr>
+            <td><b>Purpose:</b></td>
+            <td>The Software Development Plan describes the established management and development approach for the
+                software items that a software supplier has to define to set up a software project in accordance with
+                the customer requirements.
+            </td>
+        </tr>
+        </tbody>
+    </table>
+
+
+    <table class="content">
+        <tbody>
+        <tr>
+            <td><b>Content:</b></td>
+            <td><b>Title</b>
+                <ol style="list-style-type:lower-alpha">
+                    <li>The Software Development Plan to be created on this DRD shall be titled "[Insert a descriptive
+                        modifier] Software Development Plan".
+                    </li>
+                    <li>The descriptive modifier shall be selected to clearly identify the applicable product and level
+                        specification.
+                    </li>
+                </ol>
+                <b>Title page<br/> </b>The title page shall identify the project software test plan identification
+                number, title of the test plan, date of release and release authority.<br/> <br/> <b>Contents list<br/>
+                </b>The content list shall identify the title and location of every clause and major subclause, figure,
+                table and annex contained in the software test plan.<br/> <br/> <b>Foreword<br/> </b>A foreword shall be
+                included which describes as many of the following items as appropriate:
+
+                <ul type="disc">
+                    <li>
+                        identification of which organizational entities prepared the Software Development Plan;
+                    </li>
+                    <li>information regarding the approval of the Software Development Plan;</li>
+                    <li>identification of other organizations that contributed to the preparation of the Software
+                        Development Plan;
+                    </li>
+                    <li>a statement of effectivity identifying which other documents are cancelled and replaced in whole
+                        or in part;
+                    </li>
+                    <li>a statement of significant technical differences between this document and any previous
+                        document;
+                    </li>
+                    <li>the relationship of the Software Development Plan to other standards or documents.
+                    </li>
+                </ul>
+
+                <h4>Introduction</h4>
+                An introduction may be included to provide specific information or commentary about the technical
+                contents of the Software Development Plan.
+                <h4>1 Scope and applicability</h4>
+                This clause shall describe the scope, applicability and purpose of the Software Development Plan.
+
+                <h4>1.1 Scope</h4>
+                This subclause shall contain a statement to define the goal of the Software Development Plan
+
+                <h4>1.2 Applicability</h4>
+                This subclause shall contain a statement to define the use of the Software Development Plan
+
+                <h4>2 References</h4>
+                This clause shall contain the following subclauses:
+
+                <h4>2.1 Normative references</h4>
+                This subclause shall contain the following statements:<br/>
+                "This document incorporates, by dated or undated reference, provisions from other publications. These
+                normative references are cited at appropriate places in the text and publications are listed hereafter.
+                For dated references, subsequent amendments to, or revisions of, any of these apply to this document
+                only when incorporated in it by amendment or revision. For undated references, the latest edition of the
+                publication referred applies.<br/>
+                [insert document identifier] [insert document title]."
+
+                <h4>2.2 Informative references</h4>
+                This subclause shall contain the following statement:<br/>
+                "The following documents, although not a part of this Software Development Plan, clarify its
+                contents:<br/>
+                [insert document identifier] [insert document title]."
+
+                <h4>3 Terms, definitions and abbreviated terms</h4>
+                This clause shall contain the following subclauses.
+
+                <h4>3.1 Terms and definitions</h4>
+                <ol style="list-style-type:lower-alpha">
+                    <li>This subclause shall list any applicable project dictionary or glossary, and all usual terms or
+                        terms with a meaning specific to this Software Development Plan, with the definition for each
+                        term.
+                    </li>
+                    <li> If a project dictionary or glossary is applicable, the following sentence shall be
+                        inserted:<br/>
+                        "The definitions of [insert title and identifier of applicable dictionaries or glossaries] apply
+                        to this document."
+                    </li>
+                    <li>In case of terms and definitions specific to the Software Development Plan, the following
+                        sentence shall be inserted:<br/>
+                        "The following terms and definitions are specific to this document:<br/> [insert term] [insert
+                        definition]."
+                    </li>
+                </ol>
+
+                <h4>3.2 Abbreviated terms</h4>
+                This subclause shall list all abbreviations used in the Software Development Plan, with the full meaning
+                or phrase for each abbreviation.<br/>
+                [insert abbreviation] [insert definition].
+
+                <h4>4 Project organization</h4>
+                This clause shall be organized in subclauses addressing the software process model, the organizational
+                structure, the organizational boundaries and interfaces and the project responsibilities.
+
+                <h4>4.1 Software process model</h4>
+                <ol style="list-style-type:lower-alpha">
+                    <li>This subclause shall define the activities to be performed in the project and their inputs and
+                        outputs.
+                    </li>
+                    <li>The definition shall include the major project functions (i.e. activities that span the entire
+                        duration of the project, such as project management, configuration management, verification and
+                        validation, and quality assurance) and the major production activities needed to achieve the
+                        project objectives.
+                    </li>
+                    <li>
+                        The process model shall be based on the ECSS software standards<br/>
+                        <p class="note">
+                            The definition of the process model may be textual or graphic
+                        </p>
+                    </li>
+                    <li>any related tailoring shall be justified and documented.</li>
+                </ol>
+
+                <h4>4.2 Organizational structure</h4>
+                <ol style="list-style-type:lower-alpha">
+                    <li>This subclause shall describe the organizational structure to be used in the project.
+                        <p class="note">
+                            Lines of reporting, control and communication can be described using organigrams.
+                        </p>
+                    </li>
+                    <li>The roles identified in the organizational structure shall also be identified, describing the
+                        purpose of the role and listing the associated responsibilities. As an example, roles that often
+                        appear in the software project organizational structure are:
+                    </li>
+                </ol>
+                <blockquote>
+                    <ul type="disc">
+                        <li>software manager;</li>
+                        <li>software engineers;</li>
+                        <li>software configuration manager;</li>
+                        <li>software product assurance engineer.</li>
+                    </ul>
+                </blockquote>
+                <ol start="3" style="list-style-type:lower-alpha">
+                    <li>This subclause shall also provide references to the plans relevant to the project support
+                        functions: the software configuration management plan, the software verification plan, the
+                        software validation plan and the software product assurance plan.
+                    </li>
+                </ol>
+
+                <h4>4.3 Organizational boundaries and interfaces</h4>
+                This subclause shall describe the relationship between all the involved parties and the responsibility
+                of each organization/team according to the established customer/supplier relationship.
+                <p class="note">
+                    For example, the relationship and reporting lines between customer/supplier/maintainer can be
+                    addressed.
+                </p>
+
+                <h4>5 Software project management approach</h4>
+                This clause shall be organized in subclauses addressing the management objectives, assumptions,
+                dependencies and constraints, risk management, monitoring and controlling mechanisms, staffing plan,
+                supplier management and software acquisition process.
+
+                <h4>5.1 Management objectives and priorities</h4>
+                <ol style="list-style-type:lower-alpha">
+                    <li>This subclause shall define the management objectives of the software project and associated
+                        priorities.
+                    </li>
+                    <li>Objectives shall be discussed and trade-offs documented for their prioritization.
+                    </li>
+                </ol>
+
+                <h4>5.2 Assumptions, dependencies and constraints</h4>
+                This subclause shall state:
+                <ul type="disc">
+                    <li>the assumptions on which the plan is based;</li>
+                    <li>the external events the project is dependent upon;</li>
+                    <li>constraints on the project;</li>
+                    <li>technical issues.
+                        <p class="note">Technical issues can only be mentioned if they have an effect on the plan.
+                            Assumptions, dependencies and constraints are often difficult to distinguish. The best
+                            approach is not to categorize them but to list them.
+                        </p>
+                    </li>
+                </ul>
+                For example:
+                <ul type="disc">
+                    <li>limitations on the budget;</li>
+                    <li>schedule constraints (e.g. launch dates, delivery dates);</li>
+                    <li>constraints on the location of staff (e.g. they must work at developer's premises);
+                    </li>
+                    <li>commercial hardware or software that will be used by the system;</li>
+                    <li>availability of simulators and others test devices;</li>
+                    <li>availability of external systems with which the system interfaces.</li>
+                </ul>
+
+                <h4>5.3 Risk management</h4>
+                This subclause shall describe the contribution of the software engineering function to the project risk
+                management approach.
+
+                <h4>5.4 Monitoring mechanisms</h4>
+                <ol style="list-style-type:lower-alpha">
+                    <li>This subclause shall define the monitoring mechanisms for managing the work (e.g. progress
+                        report, progress meeting, action item lists).
+                    </li>
+                    <li>
+                        This shall apply to both the customer relationships and the contractor's relationships.
+                    </li>
+                </ol>
+
+                <h4>5.5 Staffing plan</h4>
+                This subclause shall specify the roles and skills of staff that will be involved in the project.
+
+                <h4>5.6 Software procurement process</h4>
+                The SDP shall describe the software procurement process implementation, and include here or in annex the
+                procured software component list.
+
+                <h4>6 Software development approach</h4>
+                This clause shall be organized in subclauses addressing the overall strategy to the software
+                development, the software development life cycle, the software engineering standards and techniques, the
+                software development and testing environment, the software documentation plan, the project support
+                functions.
+
+                <h4>6.1 Strategy to the software development</h4>
+                This subclause shall address the overall strategy to the software development.<br/>
+                <p class="note">
+                    An activity diagram can be included.
+                </p>
+
+                <h4>6.2 Software project development life cycle</h4>
+                This subclause shall be organized in subclause addressing the identification of the software development
+                life cycle, the definition of milestones and associated documentation to be produced.
+
+                <h4>6.2.1 Software development life cycleidentification</h4>
+                <ol style="list-style-type:lower-alpha">
+                    <li>This subclause shall define the software development life cycle.</li>
+                    <li>Definition of the selected life cycle paradigm (e.g. waterfall, incremental, evolutionary) as
+                        well as the adopted software versioning approach shall be identified.
+                    </li>
+                    <li>This subclause shall cover the implementation of all the activities/tasks relevant to the
+                        involved software processes:
+                    </li>
+                </ol>
+                <blockquote>
+                    <ul type="disc">
+                        <li>system engineering processes related to software;</li>
+                        <li>software requirement engineering process;</li>
+                        <li>software design engineering process;</li>
+                        <li>software validation with respect to the requirements baseline (RB);</li>
+                        <li>software verification and validation processes;</li>
+                        <li>software operation process;</li>
+                        <li>software maintenance process;</li>
+                        <li>software management process;</li>
+                        <li>software problem/change management process.</li>
+                    </ul>
+                </blockquote>
+
+                <h4>6.2.2 Relationship with the system development life cycle</h4>
+                This subclause shall describe the phasing of the software life cycle to the system development life
+                cycle.
+                <p class="note">
+                    A process model representation can be used.
+                </p>
+
+                <h4>6.2.3 Reviews identification and associated documentation</h4>
+                This subclause shall describe scope and purpose of each identified review, relevant deliverables and
+                expected outputs.
+
+                <h4>6.3 Software engineering standards and techniques</h4>
+                <ol style="list-style-type:lower-alpha">
+                    <li>This subclause shall describe (or provide references to their description of) the applied
+                        methodologies and define the standards for each software process and relevant activity.
+                    </li>
+                    <li>
+                        The requirements analysis method used shall be identified and referenced.
+                        <p class="note">
+                            Reference to applied literature or other standards can be described here
+                        </p>
+                    </li>
+                    <li>Any adaptation of the requirements analysis method shall be defined or referenced
+                    </li>
+                    <li>The selected design (architectural design and detailed design) methods shall be identified and
+                        referenced.
+                        <p class="note">
+                            Reference to applied literature or other standards can be described here.
+                        </p>
+                    </li>
+                    <li>The specificity of automatic code generation tool chains shall be considered, in particular for
+                        maintenance.
+                    </li>
+                    <li>Any adaptation of the design method (e.g. deviations, extensions, and avoidance of utilization
+                        of some methodology features...) shall be defined or referenced.
+                    </li>
+                    <li>Any required verification/validation method to conduct verification and validation testing
+                        activities shall be identified. For example, the definition of any test procedure language for
+                        software validation has to be specified here.
+                    </li>
+                    <li>Any MMI standard to be applied to the software development, if code generators are utilized
+                        (e.g. constraints to be imposed to use of generators in terms of allowed specific features)
+                        shall be documented.
+                    </li>
+                    <li>The selected software delivery format shall be defined.</li>
+                </ol>
+
+                <h4>6.4 Software development and software testing environment</h4>
+                <ol style="list-style-type:lower-alpha">
+                    <li>This subclause shall describe the software development environment and testing environment,
+                        including the evidence of its suitability and the programming language selection suitability.
+                    </li>
+                    <li>Hardware platforms and selected software tools to be utilized for the software development and
+                        testing shall be defined and described with justification of their selection with respect to the
+                        relevant software methodology and standards.
+                        <p class="note">
+                            This covers, in particular, the tools used to configure the software for a particular
+                            mission with the parameters of the mission database.
+                        </p>
+                    </li>
+                    <li>This subclause shall, then, identify, for example:</li>
+                </ol>
+                <blockquote>
+                    <ul type="disc">
+                        <li>the compiler and cross compiler system;</li>
+                        <li>the requirements analysis tool;</li>
+                        <li>the tools utilized in the software image generation;</li>
+                        <li>the configuration management tools;</li>
+                        <li>the software design tools;</li>
+                        <li>the software static analysis tools</li>
+                        <li>the software test scripts language tools;</li>
+                        <li>the software testing tools (debuggers, in circuit emulator, bus analyzer).</li>
+                    </ul>
+                </blockquote>
+
+                <h4>6.5 Software documentation plan</h4>
+                This subclause shall define or refer to all documentation relevant to the project and the documentation
+                standards applied to the software project. The subclause should be then structured as follows:
+
+                <h4>6.5.1 Software documentation identification</h4>
+                This subclause shall, for each document to be produced (both internal documents and deliverables),
+                include the documentation plan specifying:
+                <ul type="disc">
+                    <li>the documentation file;</li>
+                    <li>the document name;</li>
+                    <li>the delivery requirements;</li>
+                    <li>the review requirements;</li>
+                    <li>the approval requirements.</li>
+                </ul>
+
+                <h4>6.5.2 Software documentation standards</h4>
+                <ol style="list-style-type:lower-alpha">
+                    <li>
+                        This subclause shall describe the documentation standards applicable to the project.
+                    </li>
+                    <li>
+                        Any tailoring to applicable documentation standards shall be specified in this subclause.
+                        <p class="note">
+                            Depending on the specific project documentation requirements, this subclause can either
+                            refer to applicable documentation standards for format and layout (for example to the DRD
+                            contained in the ECSS-E-40) or specify the proposed documentation templates.
+                        </p>
+                    </li>
+                </ol>
+
+                <h4>6.6 ECSS standard tailoring traceability</h4>
+                This subclause shall include the coverage matrix of the applicable tailoring of ECSS-E-ST-40, or provide
+                a reference to it.
+            </td>
+        </tr>
+        </tbody>
+    </table>
+
+    <table class="format">
+        <tbody>
+        <tr>
+            <td><b>Format:</b></td>
+            <td>In-house</td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+</body>
+</html>

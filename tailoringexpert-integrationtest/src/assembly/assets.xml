@@ -13,11 +13,6 @@
         <fileSet>
             <outputDirectory>/</outputDirectory>
             <directory>${basedir}/src/main/resources/assets</directory>
-            <excludes>
-                <exclude>*.*</exclude>
-                <exclude>db-tailoringexpert-plattform/**</exclude>
-                <exclude>tenants/**</exclude>
-            </excludes>
         </fileSet>
     </fileSets>
 
