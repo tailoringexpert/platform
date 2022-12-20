@@ -90,6 +90,7 @@
                 <artifactId>maven-assembly-plugin</artifactId>
                 <configuration>
                     <descriptors>
+                        <descriptor>src/assembly/assets.xml</descriptor>
                         <descriptor>src/assembly/liquibase.xml</descriptor>
                     </descriptors>
                 </configuration>
