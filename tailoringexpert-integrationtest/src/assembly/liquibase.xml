@@ -16,6 +16,7 @@
             <excludes>
                 <exclude>*.*</exclude>
                 <exclude>assets/**</exclude>
+                <exclude>templates/**</exclude>
                 <exclude>tenants/**</exclude>
             </excludes>
         </fileSet>

@@ -1,0 +1,396 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<head>
+    <link rel="stylesheet" href="../css/page.css"/>
+    <link rel="stylesheet" href="../css/drd.css"/>
+</head>
+
+<body>
+<div th:fragment="content" id="drd-03.01">
+    <table class="titel">
+        <tbody>
+        <tr>
+            <td><h2>DRD-03.01 - Non-Conformance Report (NCR)</h2></td>
+        </tr>
+        </tbody>
+    </table>
+
+    <table class="reference">
+        <tbody>
+        <tr>
+            <td rowspan="3">Reference:</td>
+            <td>ECSS-Q-ST-20C</td>
+            <td>Space product assurance - Quality assurance</td>
+        </tr>
+        <tr>
+            <td>ECSS-Q-ST-10-09C</td>
+            <td>Space Product Assurance - Nonconformance control system</td>
+        </tr>
+        <tr>
+            <td>ECSS-M-ST-40C</td>
+            <td>Space project management - Configuration and information management</td>
+        </tr>
+        </tbody>
+    </table>
+
+    <table class="purpose">
+        <tbody>
+        <tr>
+            <td>Purpose:</td>
+            <td>After verifying that a non-conformance (NC) exists, it shall be reported on a Non-Conformance Report
+                (NCR) and submitted to the internal Non-Conformance Review Board (NRB). <br/>
+                When NRB disposition result in "use as-is" or "repair" by specific procedures, any difference between
+                requirements and the actual status of the item shall be subjected to a Request for Waiver (RFW). <br/>
+                A NCR shall be closed-out only after all related actions have been performed and their results
+                successfully verified and the related RFW is approved.
+                <blockquote class="note">
+                    Also the NCTS may be used to process NCRs. In this case the NCTS process description shall be
+                    applicable.
+                </blockquote>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+
+    <table class="content">
+        <tbody>
+        <tr>
+            <td>Content:</td>
+            <td>The description of the NC shall be clear, unambiguous and sufficiently detailed that it can be
+                understood by personnel not involved in its detection.<br/>
+                All the information defined as mandatory in the generic NCR Form below shall be provided, including a
+                proposed disposition.
+                <blockquote class="note">
+                    For the preparation of RFW see DRD-3.04.
+                </blockquote>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+
+    <table class="format">
+        <tbody>
+        <tr>
+            <td>Format:</td>
+            <td>Generic NCR Form<br/>
+                (Description and instructions for completing the form see below)
+            </td>
+        </tr>
+        </tbody>
+    </table>
+
+
+    <table>
+        <tbody>
+        <tr>
+            <td><img class="center" src="drd-03.01_1.gif" width="650" height="718"/></td>
+        </tr>
+        <tr>
+            <td><img class="center" src="drd-03.01_2.gif" width="650" height="672"/></td>
+        </tr>
+        </tbody>
+    </table>
+
+
+    <b>Description of NCR data requirements <br/></b>
+    <table class="word-wrap center-bold bordered" style="table-layout: auto">
+        <thead>
+        <tr>
+            <th>Box</th>
+            <th>Feld</th>
+            <th>Description</th>
+            <th>Mandatory entry</th>
+        </tr>
+        </thead>
+        <colgroup>
+            <col style="width: 5%;"/>
+            <col style="width: 10%;"/>
+            <col style="width: 75%;"/>
+            <col style="width: 10%;"/>
+        </colgroup>
+        <tbody>
+        <tr>
+            <td>1</td>
+            <td>Company</td>
+            <td>Identification of the supplier of the nonconforming item</td>
+            <td>Yes</td>
+        </tr>
+        <tr>
+            <td>2</td>
+            <td>Project name</td>
+            <td>Project under which the item is procured</td>
+            <td>Yes</td>
+        </tr>
+        <tr>
+            <td>3</td>
+            <td>NCR-no.</td>
+            <td>Unique identification and registration number</td>
+            <td>Yes</td>
+        </tr>
+        <tr>
+            <td>4</td>
+            <td>Revision</td>
+            <td>Alpha or numerical identification of updated issues</td>
+            <td>Yes</td>
+        </tr>
+        <tr>
+            <td>5</td>
+            <td>Related internal NCR</td>
+            <td>Reference to internal report which might have been issued previously</td>
+            <td>No</td>
+        </tr>
+        <tr>
+            <td>6</td>
+            <td>Critical item</td>
+            <td>"Yes" or "No" as identified in the project CIL</td>
+            <td>Yes</td>
+        </tr>
+        <tr>
+            <td>7</td>
+            <td>Page<br/> Attachments</td>
+            <td>Individual page number and total number of pages of the report<br/> Attached pages (only
+                first page of each item)
+            </td>
+            <td>Yes</td>
+        </tr>
+        <tr>
+            <td>8</td>
+            <td>NCR title</td>
+            <td>Short description (it should be the same as used in the nonconformance status list)</td>
+            <td>Yes</td>
+        </tr>
+        <tr>
+            <td>9</td>
+            <td>NC item</td>
+            <td>Identification of the nonconforming item by name and number according to the CIDL and
+                its serial number (if any)
+            </td>
+            <td>Yes</td>
+        </tr>
+        <tr>
+            <td>10</td>
+            <td>Next higher assembly</td>
+            <td>Identification of the assembly group of which the nonconforming product forms part</td>
+            <td>No</td>
+        </tr>
+        <tr>
+            <td>11</td>
+            <td>Subsystem<br/> Model</td>
+            <td>as per 10<br/> as per 10</td>
+            <td>No<br/> No</td>
+        </tr>
+        <tr>
+            <td>12</td>
+            <td>Drawing no./Part no.</td>
+            <td>Document that defines the affected product</td>
+            <td>Yes, if applicable</td>
+        </tr>
+        <tr>
+            <td>13</td>
+            <td>Procedure no.</td>
+            <td>Procedure in execution when the nonconformance occurs</td>
+            <td>Yes, if applicable</td>
+        </tr>
+        <tr>
+            <td>14</td>
+            <td>supplier<br/> Purchase order</td>
+            <td>Name of the supplier of the nonconforming item<br/> Number of purchase order if the
+                nonconformance is observed on a supplied product
+            </td>
+            <td>Yes, if applicable</td>
+        </tr>
+        <tr>
+            <td>15</td>
+            <td>NC observation</td>
+            <td>Date and location of the nonconformance observation</td>
+            <td>Yes</td>
+        </tr>
+        <tr>
+            <td>16</td>
+            <td>NC detected during ...</td>
+            <td>Activity being performed when the nonconformance was detected<br/> Name and organization
+                group of the NC observer
+            </td>
+            <td>Yes,<br/> where relevant</td>
+        </tr>
+        <tr>
+            <td>17</td>
+            <td>Description</td>
+            <td>Description of the nonconformance, location on the product, means of detection,
+                condition for observation, to be supported by sketches and attachments as appropriate,
+                environmental conditions pertaining to the product at that time
+            </td>
+            <td>Yes</td>
+        </tr>
+        <tr>
+            <td>18</td>
+            <td>Requirements violated</td>
+            <td>Identification of the detailed requirement to which the product does not conform</td>
+            <td>No</td>
+        </tr>
+        <tr>
+            <td>19</td>
+            <td>Initiator</td>
+            <td>Name, date and signature of the person raising the nonconformance</td>
+            <td>Yes</td>
+        </tr>
+        <tr>
+            <td>20</td>
+            <td>Internal NRB</td>
+            <td>Dispositions as per clause 5.2.2.4 of ECSS-Q-ST-10-09 and actions agreed by the NRB</td>
+            <td>Yes</td>
+        </tr>
+        <tr>
+            <td>21</td>
+            <td>Ref.to MoMos</td>
+            <td>Identification of minutes of meeting drafted during the NRB meeting</td>
+            <td>Yes, if any</td>
+        </tr>
+        <tr>
+            <td>22</td>
+            <td>Classification</td>
+            <td>"Minor" or "Major" as per internal NRB decision</td>
+            <td>Yes</td>
+        </tr>
+        <tr>
+            <td>23</td>
+            <td>Customer notification</td>
+            <td>Date and reference to written notification</td>
+            <td>No</td>
+        </tr>
+        <tr>
+            <td>24</td>
+            <td>Verification</td>
+            <td>Individual close-out statement by PA personnel for all actions determined by the NRB
+            </td>
+            <td>Yes</td>
+        </tr>
+        <tr>
+            <td>25</td>
+            <td>Cause of NC</td>
+            <td>Basic fact or circumstance which causes the nonconformance</td>
+            <td><br/>Yes</td>
+        </tr>
+        <tr>
+            <td>26</td>
+            <td>Ref. to failure report</td>
+            <td>Document identification number of the failure analysis report</td>
+            <td>Yes, if existing</td>
+        </tr>
+        <tr>
+            <td>27</td>
+            <td>Corrective or preventive actions</td>
+            <td>Corrective or preventive actions agreed by internal NRB for minor NCRs</td>
+            <td>Yes</td>
+        </tr>
+        <tr>
+            <td>28</td>
+            <td>PA</td>
+            <td>Date, name and signature of PA representative in the internal NRB</td>
+            <td>Yes</td>
+        </tr>
+        <tr>
+            <td>29</td>
+            <td>Engineering</td>
+            <td>Date, name and signature of the engineering representative in the internal NRB</td>
+            <td>Yes</td>
+        </tr>
+        <tr>
+            <td>30<br/> 31</td>
+            <td>blank</td>
+            <td>Date, names and signatures of additional NRB members of the internal NRB</td>
+            <td>No</td>
+        </tr>
+        <tr>
+            <td>32</td>
+            <td>Customer NRB dispositions</td>
+            <td>Dispositions as per clause 5.2.3.4 of ECSS-Q-ST-10-09 and actions agreed by the customer
+                NRB
+            </td>
+            <td>Yes, if class major</td>
+        </tr>
+        <tr>
+            <td>33</td>
+            <td>Finally determined cause of NC</td>
+            <td>Basic fact or circumstances which causes the nonconformance as confirmed by customer
+                NRB
+            </td>
+            <td>Yes, if class major</td>
+        </tr>
+        <tr>
+            <td>34</td>
+            <td>Ref to Failure Report</td>
+            <td>Document identification number of the failure analysis report on customer NRB level</td>
+            <td>Yes, if existing</td>
+        </tr>
+        <tr>
+            <td>35</td>
+            <td>Corrective or preventive actions</td>
+            <td>Corrective actions agreed by customer NRB for major NCRs</td>
+            <td>Yes</td>
+        </tr>
+        <tr>
+            <td>36</td>
+            <td>Request for waiver</td>
+            <td>"Yes" or "No" based on customer NRB disposition and the identification number of the RFW
+                in case of "Yes"
+            </td>
+            <td>Yes, if applicable</td>
+        </tr>
+        <tr>
+            <td>37</td>
+            <td>Alert</td>
+            <td>"Yes" or "No" as per customer NRB decision and the identification number of the Alert in
+                case of"Yes"
+            </td>
+            <td>No</td>
+        </tr>
+        <tr>
+            <td>38</td>
+            <td>Other documents</td>
+            <td><p>
+                <span>Identification of other related documents according to NRB decision</span>
+            </p>
+            </td>
+            <td>Yes, if applicable</td>
+        </tr>
+        <tr>
+            <td>39</td>
+            <td>Chairman</td>
+            <td>Name of company and person chairing the customer NRB</td>
+            <td>Yes</td>
+        </tr>
+        <tr>
+            <td>40<br/> to<br/> 43</td>
+            <td>blank</td>
+            <td>Names of the members of the customer NRB and respective companies</td>
+            <td>Yes</td>
+        </tr>
+        <tr>
+            <td>44</td>
+            <td>blank</td>
+            <td>Date and signature of the customer NRB chairman</td>
+            <td>Yes</td>
+        </tr>
+        <tr>
+            <td>45<br/> to<br/> 48</td>
+            <td>blank</td>
+            <td>Date and signatures of the customer NRB members</td>
+            <td>Yes</td>
+        </tr>
+        <tr>
+            <td>50</td>
+            <td>Additional info. /continuation sheet</td>
+            <td>Any additional information and actions with clear link to the NCR</td>
+            <td>Yes, if needed</td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</body>
+</html>
