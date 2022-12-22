@@ -50,7 +50,7 @@
                 <artifactId>maven-assembly-plugin</artifactId>
                 <configuration>
                     <descriptors>
-                        <descriptor>src/assembly/distribution.xml</descriptor>
+                        <descriptor>src/assembly/liquibase.xml</descriptor>
                     </descriptors>
                 </configuration>
                 <executions>
