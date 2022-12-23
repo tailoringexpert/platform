@@ -1,5 +1,15 @@
 # Changelog
 
+## [v0.0.3](https://github.com/tailoringexpert/plattform/tree/v0.0.3) (12.23.2022)
+
+[Full Changelog](https://github.com/tailoringexpert/plattform/compare/v0.0.2...v0.0.3)
+
+**Closed issues:**
+
+- Distribute plattform assets as assembly [\#93](https://github.com/tailoringexpert/plattform/issues/93)
+- Distribute plattform templates as assembly [\#92](https://github.com/tailoringexpert/plattform/issues/92)
+- Distribute plattform liquibase as assembly [\#91](https://github.com/tailoringexpert/plattform/issues/91)
+
 ## [v0.0.2](https://github.com/tailoringexpert/plattform/tree/v0.0.2) (12.19.2022)
 
 [Full Changelog](https://github.com/tailoringexpert/plattform/compare/v0.0.1...v0.0.2)
