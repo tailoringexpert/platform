@@ -1,0 +1,88 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<head>
+    <link rel="stylesheet" href="../css/page.css"/>
+    <link rel="stylesheet" href="../css/drd.css"/>
+</head>
+<body>
+<div th:fragment="content" id="drd-4.04">
+    <table class="titel">
+        <tbody>
+        <tr>
+            <td><h2>DRD-04.04 - Reliability Block Diagram</h2></td>
+        </tr>
+        </tbody>
+    </table>
+
+    <table class="reference">
+        <tbody>
+        <tr>
+            <td rowspan="2">Reference:</td>
+            <td>MIL-HDBK-338</td>
+            <td>Electronic Reliability Design Handbook</td>
+        </tr>
+        <tr>
+            <td>ECSS-Q-ST-30-02C</td>
+            <td>Space product assurance - Failure Modes, effects (and criticality) analysis (FMEA/FMECA)</td>
+        </tr>
+        </tbody>
+    </table>
+
+    <table class="purpose">
+        <tbody>
+        <tr>
+            <td>Purpose:</td>
+            <td>To show, by means of a logic diagram, the effects of failure of individual elements on the item
+                mission success.
+            </td>
+        </tr>
+        </tbody>
+    </table>
+
+    <table class="content">
+        <tbody>
+        <tr>
+            <td>Content:</td>
+            <td>Each reliability block diagram shall have a title, including the identification of the analysed item
+                and of the required item mission. All mission phases and modes considered shall be indicated. Each block
+                in the diagram shall bear the identification (e.g. connector). A numerical reference for all blocks
+                shall be provided by using a uniform numbering system in order to provide traceability through all
+                assembly levels. It shall be possible to identify each element or function employed in the analysed
+                item. The redundancy type shall be clearly indicated. <br/>
+                If the reliability block diagram is used in support of the reliability prediction the following
+                information shall be given additionally for each block: mission time, duty cycle, active and passive
+                failure rate for each mission phase.<br/>
+                For a complex system it is often convenient to prepare several block diagrams. If it is not possible
+                to convey all of the pertinent information by the arrangement of blocks, then appropriate notation
+                must be provided on the diagram or in the accompanying descriptions. Types of redundancy shall be
+                described if not obvious from the diagram. Where failure of a redundant element degrades performance
+                or places additional stresses on the items in alternate paths, it should be so noted. In addition,
+                items that may be repaired or replaced during a mission should be identified and monitoring
+                intervals for those items should be stated.
+            </td>
+        </tr>
+        </tbody>
+    </table>
+
+    <table class="format">
+        <tbody>
+        <tr>
+            <td>Format:</td>
+            <td>In-house format may be used if it contains the information included in this DRD.</td>
+        </tr>
+        </tbody>
+    </table>
+
+    <page-before align="center">
+        <b>Progressive Expansion of Reliability Block Diagram as Design Becomes Known</b>
+        <img src="drd-04.04_1.gif" class="center" width="620" height="662"/>
+    </page-before>
+
+    <page-before align="center">
+        <b>Typical Reliability Block Diagram of Hot Gas System</b>
+        <img src="drd-04.04_2.gif" class="center" width="620" height="403"/>
+    </page-before>
+
+</div>
+</body>
+</html>
