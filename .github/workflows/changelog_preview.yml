@@ -1,0 +1,78 @@
+# This is a basic workflow that is manually triggered
+
+name: changelog preview
+
+# Controls when the action will run. Workflow runs when manually triggered using the UI
+# or API.
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'Version number'     
+        required: true
+
+jobs:
+  evaluate-release-manager:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Evaluate release manager
+        id: check_release_manager
+        run: echo ::set-output name=status::${{contains(secrets.RELEASE_MANAGER, github.actor)}}       
+      - name: Show evaluation result
+        run: echo "User ${{github.actor}} is release manager ${{steps.check_release_manager.outputs.status}}"
+      
+    outputs:
+      status: ${{steps.check_release_manager.outputs.status }}        
+
+  create-changelog:
+    runs-on: ubuntu-latest
+    needs: evaluate-release-manager
+    
+    if: ${{needs.evaluate-release-manager.outputs.status == 'true'}}
+    steps:  
+      - name: Show user inputs
+        run: |
+          echo "Version: ${{ github.event.inputs.version }}" 
+        
+      - name: Create tag
+        uses: actions/github-script@v6
+        with:
+          script: |
+            github.rest.git.createRef({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              ref: 'refs/tags/v${{ github.event.inputs.version }}',
+              sha: context.sha
+            })
+
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Generate changelog
+        id: generate_changelog
+        uses: heinrichreimer/github-changelog-generator-action@v2.3
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          filterByMilestone: true
+          pullRequests: false
+          prWoLabels: false
+          unreleased: false
+          dateFormat: "%m.%d.%Y"
+          excludeLabels: "duplicate,question,invalid,wontfix,weekly-digest,dependencies"
+          output: "CHANGELOG.md"
+
+      - name: Upload changelog
+        uses: actions/upload-artifact@v3
+        with:
+          path: CHANGELOG.md
+
+      - name: Delete tag
+        uses: actions/github-script@v6
+        with:
+          script: |
+            github.rest.git.deleteRef({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              ref: 'tags/v${{ github.event.inputs.version }}',
+              sha: context.sha
+            })      
