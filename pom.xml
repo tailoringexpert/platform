@@ -6,7 +6,7 @@
     <artifactId>tailoringexpert-plattform</artifactId>
     <packaging>pom</packaging>
     <name>${project.groupId}:${project.artifactId}</name>
-    <version>0.0.3</version>
+    <version>0.0.4-SNAPSHOT</version>
 
     <inceptionYear>2022</inceptionYear>
 
@@ -33,7 +33,7 @@
         <connection>scm:git:https://github.com/tailoringexpert/plattform.git</connection>
         <developerConnection>scm:git:https://github.com/tailoringexpert/plattform.git</developerConnection>
         <url>https://github.com/tailoringexpert/plattform.git</url>
-      <tag>v0.0.3</tag>
+      <tag>HEAD</tag>
   </scm>
 
     <repositories>
