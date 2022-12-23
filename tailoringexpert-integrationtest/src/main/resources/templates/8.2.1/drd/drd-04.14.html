@@ -1,0 +1,117 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<head>
+    <link rel="stylesheet" href="../css/page.css"/>
+    <link rel="stylesheet" href="../css/drd.css"/>
+</head>
+<body>
+<div th:fragment="content" id="drd-04.14">
+    <table class="titel">
+        <tbody>
+        <tr>
+            <td><h2>DRD-04.14 - Zonal analysis (ZA)</h2></td>
+        </tr>
+        </tbody>
+    </table>
+
+    <table class="reference">
+        <tbody>
+        <tr>
+            <td rowspan="4">Reference:</td>
+            <td>ECSS-Q-ST-30C</td>
+            <td>Space Product Assurance - Dependability</td>
+        </tr>
+        <tr>
+            <td>ECSS-Q-ST-40C</td>
+            <td>Space Product Assurance - Safety</td>
+        </tr>
+        <tr>
+            <td>SAE ARP 4754</td>
+            <td>Certification Considerations for Highly-Integrated or Complex Aircraft Systems</td>
+        </tr>
+        <tr>
+            <td>SAE ARP 4761</td>
+            <td>Guidelines and Methods for Conducting the Safety Assessment Process an Civil Airborne Systems and
+                Equipment is a Standard from SAE
+            </td>
+        </tr>
+        </tbody>
+    </table>
+
+    <table class="purpose">
+        <tbody>
+        <tr>
+            <td>Purpose:</td>
+            <td>Safety critical systems are designed and analysed carefully in order to verify not only that they
+                operate as they were intended, but also to prevent them from operating in any way that is not desired
+                (e.g. unanticipated component and subsystem interactions). <br/>
+                Zonal (Safety) Analysis is the:
+                <ul type="disc">
+                    <li>systematic inspection of the geographical locations of the components and interconnections of a
+                        system,
+                    </li>
+                    <li>evaluation of potential system-to-system interactions with and without failures, and</li>
+                    <li>assessment of the severity of potential hazards inherent in the system installation.
+                    </li>
+                </ul>
+                Zonal Analysis should be performed where redundancy is used to reduce the probability of losing a
+                critical function, because the consequence of a single undesirable event (e.g. inadvertently actuating a
+                safety critical function) eliminating all of a system's redundancy is sometimes quite severe.<br/>
+                A Zonal Analysis should examine each physical zone of the spacecraft to ensure that equipment
+                installation and potential physical interference with adjacent systems do not violate the independence
+                requirements of the systems.
+            </td>
+        </tr>
+        </tbody>
+    </table>
+
+    <table class="content">
+        <tbody>
+        <tr>
+            <td>Content:</td>
+            <td>The Zonal Analysis may be performed at any stage of the design process. The analysis has potential
+                influence on system architecture. Note that not all hazards are the result of faults. Hazards can also
+                be caused by unanticipated sequences of interactions between components or subsystems. <br/> <br/>
+                The objective of the Zonal Analysis shall ensure that equipment installation meets the adequate safety
+                requirements regarding:
+                <ol>
+                    <li>basic installation rules and space practices;</li>
+                    <li>interaction between subsystems;</li>
+                    <li>implication of human errors;</li>
+                    <li>effects of external events.</li>
+                </ol>
+                Zonal Analysis is a technique used in hazard identification to identify the interactions between
+                components or subsystems, and the undesired consequences of those interactions (flow/interactions
+                between parts of a system).<br/> <br/>
+                Conventional Zonal Analysis splits the system up into various physical zones and considers how the
+                behavior in one zone (both under normal operation and under failure) may affect the integrity and
+                behavior in other zones. Other forms of analysis may be applied to the individual components; Zonal
+                Analysis considers their interactions.<br/> <br/>
+                Zonal Analysis is usually performed with physical or digital mock-up support and prototypes. It can also
+                be carried out by means of an audit of the design and a checklist appropriate to the domain. Zonal
+                Analysis takes various forms and seems poorly documented in comparison with other techniques.<br/> <br/>
+                The value of performing a comprehensive Zonal Analysis is often not immediately obvious.<br/>
+                <p class="note">
+                    Cable Harness Assembly, Shielding, Isolation, Routing; Failure Containment.
+                </p>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+
+    <table class="format">
+        <tbody>
+        <tr>
+            <td>Format:</td>
+            <td>In-house.</td>
+        </tr>
+        </tbody>
+    </table>
+
+    <page-before align="center">
+        <img src="drd-04.14.gif" class="center" width="550" height="796"/>
+    </page-before>
+
+</div>
+</body>
+</html>
