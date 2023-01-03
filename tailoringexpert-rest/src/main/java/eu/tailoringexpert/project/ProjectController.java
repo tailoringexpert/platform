@@ -68,7 +68,6 @@ import static eu.tailoringexpert.domain.ResourceMapper.PROJECT_SCREENINGSHEET_PD
 import static eu.tailoringexpert.domain.ResourceMapper.PROJECT_SELECTIONVECTOR;
 import static eu.tailoringexpert.domain.ResourceMapper.TAILORING;
 import static eu.tailoringexpert.domain.ResourceMapper.TAILORINGS;
-import static java.util.stream.Collectors.toList;
 import static org.springframework.hateoas.server.mvc.BasicLinkBuilder.linkToCurrentMapping;
 import static org.springframework.http.HttpHeaders.ACCESS_CONTROL_EXPOSE_HEADERS;
 import static org.springframework.http.HttpHeaders.CONTENT_DISPOSITION;
@@ -107,7 +106,7 @@ public class ProjectController {
         List<EntityModel<ProjectResource>> projekte = projectServiceRepository.getProjectInformations()
             .stream()
             .map(domain -> EntityModel.of(mapper.toResource(PathContext.builder(), domain)))
-            .collect(toList());
+            .toList();
         return ResponseEntity
             .ok()
             .body(CollectionModel.of(projekte));

@@ -28,8 +28,6 @@ import lombok.RequiredArgsConstructor;
 
 import java.util.Collection;
 
-import static java.util.stream.Collectors.toList;
-
 /**
  * Implementation of {@link ScreeningSheetServiceRepository}.
  *
@@ -51,6 +49,6 @@ public class JPAScreeningSheetServiceRepository implements ScreeningSheetService
         return parameterRepository.findByNameIn(names)
             .stream()
             .map(mapper::toDomain)
-            .collect(toList());
+            .toList();
     }
 }

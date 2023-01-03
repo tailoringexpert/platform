@@ -65,7 +65,7 @@ public class SecurityConfiguration {
     @SuppressWarnings("PMD.SignatureDeclareThrowsException")
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http.csrf().disable();
-        http.authorizeRequests().anyRequest().permitAll();
+        http.authorizeHttpRequests().anyRequest().permitAll();
         http.cors();
         return http.build();
     }

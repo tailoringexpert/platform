@@ -60,7 +60,6 @@ import static eu.tailoringexpert.domain.ResourceMapper.BASECATALOG;
 import static eu.tailoringexpert.domain.ResourceMapper.BASECATALOG_VERSION_JSON;
 import static eu.tailoringexpert.domain.ResourceMapper.BASECATALOG_VERSION;
 import static eu.tailoringexpert.domain.ResourceMapper.BASECATALOG_VERSION_PDF;
-import static java.util.stream.Collectors.toList;
 import static org.springframework.http.HttpHeaders.ACCESS_CONTROL_EXPOSE_HEADERS;
 import static org.springframework.http.HttpHeaders.CONTENT_DISPOSITION;
 import static org.springframework.http.HttpStatus.CREATED;
@@ -120,7 +119,7 @@ public class CatalogController {
         List<EntityModel<BaseCatalogVersionResource>> catalogs = baseCatalogRepository.findCatalogVersionBy()
             .stream()
             .map(catalog -> EntityModel.of(mapper.toResource(pathContext, catalog)))
-            .collect(toList());
+            .toList();
 
         return ok().body(CollectionModel.of(catalogs));
     }

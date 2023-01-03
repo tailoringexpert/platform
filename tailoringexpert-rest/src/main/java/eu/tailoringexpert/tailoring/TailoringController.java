@@ -93,7 +93,6 @@ import static eu.tailoringexpert.domain.ResourceMapper.TAILORING_SELECTIONVECTOR
 import static eu.tailoringexpert.domain.ResourceMapper.TAILORING_SIGNATURE;
 import static eu.tailoringexpert.domain.ResourceMapper.TAILORING_SIGNATURE_FACULTY;
 import static eu.tailoringexpert.domain.ResourceMapper.TAILORING_STATE;
-import static java.util.stream.Collectors.toList;
 import static org.springframework.hateoas.EntityModel.of;
 import static org.springframework.hateoas.server.mvc.BasicLinkBuilder.linkToCurrentMapping;
 import static org.springframework.http.HttpHeaders.ACCESS_CONTROL_EXPOSE_HEADERS;
@@ -373,7 +372,7 @@ public class TailoringController {
                     .stream()
                     .flatMap(Collection::stream)
                     .map(domain -> of(mapper.toResource(pathContext, domain)))
-                    .collect(toList())));
+                    .toList()));
     }
 
     @Operation(summary = "Ermittlung aller für eine Projektphase definierten Zeichnungen für Anforderungsdokumente")
@@ -399,7 +398,7 @@ public class TailoringController {
                     .stream()
                     .flatMap(Collection::stream)
                     .map(domain -> mapper.toResource(pathContext, domain))
-                    .collect(toList())));
+                    .toList()));
     }
 
     @Operation(summary = "Update signature of tailoring")
@@ -475,7 +474,7 @@ public class TailoringController {
                 .body(CollectionModel.of(
                     data.stream()
                         .map(domain -> mapper.toResource(pathContext, domain))
-                        .collect(toList())
+                        .toList()
                 ))
             )
             .orElseGet(() -> notFound().build());
@@ -556,7 +555,7 @@ public class TailoringController {
         List<EntityModel<SelectionVectorProfileResource>> profile = tailoringServiceRepository.getSelectionVectorProfile()
             .stream()
             .map(profil -> of(mapper.toResource(pathContext, profil)))
-            .collect(toList());
+            .toList();
 
         return ok()
             .body(CollectionModel.of(profile));
@@ -618,7 +617,7 @@ public class TailoringController {
                 .body(CollectionModel.of(
                     data.stream()
                         .map(domain -> mapper.toResource(pathContext, domain))
-                        .collect(toList())
+                        .toList()
                 ))
             )
             .orElseGet(() -> notFound().build());
