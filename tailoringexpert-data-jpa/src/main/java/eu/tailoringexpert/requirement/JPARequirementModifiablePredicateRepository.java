@@ -26,7 +26,7 @@ import eu.tailoringexpert.repository.ProjectRepository;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 
-import javax.transaction.Transactional;
+import jakarta.transaction.Transactional;
 import java.util.Optional;
 
 import static java.util.Optional.ofNullable;

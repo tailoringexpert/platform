@@ -34,7 +34,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.cache.annotation.CacheEvict;
 
-import javax.transaction.Transactional;
+import jakarta.transaction.Transactional;
 import java.time.ZonedDateTime;
 import java.util.Collection;
 import java.util.Objects;

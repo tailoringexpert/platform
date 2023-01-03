@@ -21,9 +21,9 @@
  */
 package eu.tailoringexpert.project;
 
+import eu.tailoringexpert.App;
 import eu.tailoringexpert.BaseCatalogImport;
 import eu.tailoringexpert.ProjectCreator;
-import eu.tailoringexpert.SpringTestConfiguration;
 import eu.tailoringexpert.TenantContext;
 import eu.tailoringexpert.domain.ProjectResource;
 import eu.tailoringexpert.domain.ScreeningSheet;
@@ -66,7 +66,7 @@ import static org.springframework.http.HttpStatus.OK;
 import static org.springframework.test.annotation.DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD;
 
 @Log4j2
-@SpringJUnitConfig(classes = {SpringTestConfiguration.class})
+@SpringJUnitConfig(classes = {App.class})
 @DirtiesContext(classMode = AFTER_EACH_TEST_METHOD)
 class ProjectControllerTest {
 

@@ -41,7 +41,7 @@ import static java.lang.Integer.valueOf;
  *
  * @author Michael Bädorf
  */
-@Mapper(componentModel = "jsr330")
+@Mapper
 public abstract class JPAScreeningSheetServiceRepositoryMapper {
 
     @Setter

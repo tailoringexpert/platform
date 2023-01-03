@@ -64,7 +64,7 @@
         <maven.compiler.target>${java.version}</maven.compiler.target>
         <maven.javadoc.skip>true</maven.javadoc.skip>
         <license.licenseName>gpl_v3</license.licenseName>
-        <plattform.version>0.0.3</plattform.version>
+        <plattform.version>0.0.4-SNAPSHOT</plattform.version>
 
         <jacoco.version>0.8.7</jacoco.version>
         <junit-jupiter.version>5.9.1</junit-jupiter.version>
@@ -76,7 +76,7 @@
         <!-- plugins -->
         <jacoco-maven-plugin.version>0.8.8</jacoco-maven-plugin.version>
         <liquibase-maven-plugin.version>4.18.0</liquibase-maven-plugin.version>
-        <spring-boot-maven-plugin.version>2.7.5</spring-boot-maven-plugin.version>
+        <spring-boot-maven-plugin.version>3.0.1</spring-boot-maven-plugin.version>
         <springdoc-openapi-maven-plugin.version>1.4</springdoc-openapi-maven-plugin.version>
 
         <lombok-maven-plugin.version>1.18.20.0</lombok-maven-plugin.version>
@@ -159,11 +159,6 @@
     </dependencyManagement>
 
     <dependencies>
-        <dependency>
-            <groupId>javax.inject</groupId>
-            <artifactId>javax.inject</artifactId>
-        </dependency>
-
         <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>

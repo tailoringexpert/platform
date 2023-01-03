@@ -40,7 +40,7 @@ import java.util.Collections;
 import java.util.Map;
 
 import static eu.tailoringexpert.domain.ResourceMapper.BASECATALOG;
-import static eu.tailoringexpert.domain.ResourceMapper.PROJECT;
+import static eu.tailoringexpert.domain.ResourceMapper.PROJECTS;
 import static eu.tailoringexpert.domain.ResourceMapper.SCREENINGSHEET;
 import static eu.tailoringexpert.domain.ResourceMapper.SELECTIONVECTOR_PROFILE;
 import static org.springframework.hateoas.CollectionModel.empty;
@@ -71,7 +71,7 @@ public class AppController {
             .ok()
             .body(empty(
                     mapper.createLink("catalog", linkToCurrentMapping().toString(), BASECATALOG, parameter),
-                    mapper.createLink("project", linkToCurrentMapping().toString(), PROJECT, parameter),
+                    mapper.createLink("project", linkToCurrentMapping().toString(), PROJECTS, parameter),
                     mapper.createLink("screeningsheet", linkToCurrentMapping().toString(), SCREENINGSHEET, parameter),
                     mapper.createLink("selectionvector", linkToCurrentMapping().toString(), SELECTIONVECTOR_PROFILE, parameter)
                 )

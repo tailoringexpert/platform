@@ -116,7 +116,7 @@ class AppControllerTest {
 
         // verify
         verify(mapperMock, times(1)).createLink("catalog", linkToCurrentMapping().toString(), ResourceMapper.BASECATALOG, parameter);
-        verify(mapperMock, times(1)).createLink("project", linkToCurrentMapping().toString(), ResourceMapper.PROJECT, parameter);
+        verify(mapperMock, times(1)).createLink("project", linkToCurrentMapping().toString(), ResourceMapper.PROJECTS, parameter);
         verify(mapperMock, times(1)).createLink("screeningsheet", linkToCurrentMapping().toString(), ResourceMapper.SCREENINGSHEET, parameter);
         verify(mapperMock, times(1)).createLink("selectionvector", linkToCurrentMapping().toString(), ResourceMapper.SELECTIONVECTOR_PROFILE, parameter);
     }
