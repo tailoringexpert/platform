@@ -23,7 +23,7 @@ package eu.tailoringexpert.catalog;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import eu.tailoringexpert.SpringTestConfiguration;
+import eu.tailoringexpert.App;
 import eu.tailoringexpert.TenantContext;
 import eu.tailoringexpert.domain.BaseCatalogVersionResource;
 import eu.tailoringexpert.domain.BaseRequirement;
@@ -53,7 +53,7 @@ import static org.springframework.http.HttpStatus.OK;
 import static org.springframework.test.annotation.DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD;
 
 @Log4j2
-@SpringJUnitConfig(classes = {SpringTestConfiguration.class})
+@SpringJUnitConfig(classes = {App.class})
 @DirtiesContext(classMode = AFTER_EACH_TEST_METHOD)
 class CatalogControllerTest {
 

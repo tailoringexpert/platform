@@ -29,15 +29,12 @@ import io.github.cdimascio.dotenv.Dotenv;
 import lombok.NonNull;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.boot.autoconfigure.liquibase.LiquibaseAutoConfiguration;
-import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 import org.springframework.context.annotation.Primary;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.test.annotation.Rollback;
-import org.springframework.transaction.annotation.EnableTransactionManagement;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.io.File;
 
@@ -46,13 +43,9 @@ import java.io.File;
     "classpath:application.properties",
     "classpath:application-test.properties"
 })
-@EnableCaching
 @Import({
-    App.class,
     LiquibaseAutoConfiguration.class
 })
-@EnableTransactionManagement
-@Transactional
 @Rollback
 @Log4j2
 public class SpringTestConfiguration {
@@ -75,6 +68,7 @@ public class SpringTestConfiguration {
     }
 
     @Bean
+    @Primary
     String dbconfigRoot() {
         Dotenv env = Dotenv.configure().ignoreIfMissing().load();
         return new File(env.get("DBCONFIG_ROOT_TEST", "src/test/resources/tenants/")).toPath().toAbsolutePath().toString();
@@ -86,5 +80,4 @@ public class SpringTestConfiguration {
         Dotenv env = Dotenv.configure().ignoreIfMissing().load();
         return new File(env.get("TEMPLATE_ROOT", "src/test/resources/tenants/")).toPath().toAbsolutePath().toString();
     }
-
 }
