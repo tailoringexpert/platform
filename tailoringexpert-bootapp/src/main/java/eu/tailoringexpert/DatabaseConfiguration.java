@@ -27,7 +27,6 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Primary;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.jdbc.datasource.DriverManagerDataSource;
 import org.springframework.orm.jpa.JpaTransactionManager;
@@ -36,7 +35,8 @@ import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
 import org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter;
 import org.springframework.transaction.PlatformTransactionManager;
 
-import javax.persistence.EntityManagerFactory;
+import jakarta.persistence.EntityManagerFactory;
+
 import javax.sql.DataSource;
 import java.io.IOException;
 
@@ -49,22 +49,19 @@ public class DatabaseConfiguration {
         return dbconfigRoot;
     }
 
-
     @Bean
-    @Primary
     DataSource tenantDataSource(
-        final @NonNull @Qualifier("defaultDataSource") DataSource defaultDataSource,
-        final @NonNull @Qualifier("dbconfigRoot") String dbconfigRoot,
-        final @NonNull @Qualifier("encryptorBean") StringEncryptor encryptor) throws IOException {
-        return TenantDataSourceFactory.dataSource(defaultDataSource, dbconfigRoot, encryptor);
-    }
-
-    @Bean(name = {"dataSource", "defaultDataSource"})
-    DataSource dataSource(
         @NonNull @Value("${spring.datasource.driver-class-name}") String driverClassName,
         @NonNull @Value("${spring.datasource.url}") String url,
         @NonNull @Value("${spring.datasource.username}") String username,
-        @NonNull @Value("${spring.datasource.password}") String password) {
+        @NonNull @Value("${spring.datasource.password}") String password,
+        @NonNull @Qualifier("dbconfigRoot") String dbconfigRoot,
+        @NonNull @Qualifier("encryptorBean") StringEncryptor encryptor) throws IOException {
+        DataSource defaultDataSource = dataSource(driverClassName, url, username, password);
+        return TenantDataSourceFactory.dataSource(defaultDataSource, dbconfigRoot, encryptor);
+    }
+
+    private DataSource dataSource(String driverClassName, String url, String username, String password) {
         final DriverManagerDataSource result = new DriverManagerDataSource(url, username, password);
         result.setDriverClassName(driverClassName);
         return result;

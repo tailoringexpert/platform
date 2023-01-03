@@ -21,9 +21,9 @@
  */
 package eu.tailoringexpert.requirement;
 
+import eu.tailoringexpert.App;
 import eu.tailoringexpert.BaseCatalogImport;
 import eu.tailoringexpert.ProjectCreator;
-import eu.tailoringexpert.SpringTestConfiguration;
 import eu.tailoringexpert.TenantContext;
 import eu.tailoringexpert.domain.TailoringCatalogChapterResource;
 import eu.tailoringexpert.domain.TailoringRequirementResource;
@@ -52,7 +52,7 @@ import static org.springframework.http.HttpStatus.OK;
 import static org.springframework.test.annotation.DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD;
 
 @Log4j2
-@SpringJUnitConfig(classes = {SpringTestConfiguration.class})
+@SpringJUnitConfig(classes = {App.class})
 @DirtiesContext(classMode = AFTER_EACH_TEST_METHOD)
 class RequirementControllerTest {
 
@@ -93,7 +93,7 @@ class RequirementControllerTest {
         );
 
         // assert
-        assertThat(actual.getStatusCode()).isEqualByComparingTo(OK);
+        assertThat(actual.getStatusCode()).isEqualTo(OK);
 
         TailoringCatalogChapterResource resource = actual.getBody().getContent();
         assertThat(allRequirements(resource)).isNotEmpty()
@@ -115,7 +115,7 @@ class RequirementControllerTest {
         );
 
         // assert
-        assertThat(actual.getStatusCode()).isEqualByComparingTo(OK);
+        assertThat(actual.getStatusCode()).isEqualTo(OK);
 
         TailoringRequirementResource resource = actual.getBody().getContent();
         assertThat(resource.getSelected()).isFalse();
@@ -137,7 +137,7 @@ class RequirementControllerTest {
         );
 
         // assert
-        assertThat(actual.getStatusCode()).isEqualByComparingTo(OK);
+        assertThat(actual.getStatusCode()).isEqualTo(OK);
         TailoringRequirementResource resource = actual.getBody().getContent();
         assertThat(resource.getText()).isEqualTo("Dies ist ein neuer Text");
     }
@@ -157,7 +157,7 @@ class RequirementControllerTest {
         );
 
         // assert
-        assertThat(actual.getStatusCode()).isEqualByComparingTo(CREATED);
+        assertThat(actual.getStatusCode()).isEqualTo(CREATED);
 
         TailoringRequirementResource resource = actual.getBody().getContent();
         assertThat(resource.getPosition()).isEqualTo("a1");

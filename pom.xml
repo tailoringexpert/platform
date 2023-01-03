@@ -64,7 +64,7 @@
         <maven.compiler.target>${java.version}</maven.compiler.target>
         <maven.javadoc.skip>true</maven.javadoc.skip>
         <license.licenseName>gpl_v3</license.licenseName>
-        <plattform.version>0.0.3</plattform.version>
+        <plattform.version>0.0.4-SNAPSHOT</plattform.version>
 
         <jacoco.version>0.8.7</jacoco.version>
         <junit-jupiter.version>5.9.1</junit-jupiter.version>
@@ -159,11 +159,6 @@
     </dependencyManagement>
 
     <dependencies>
-        <dependency>
-            <groupId>javax.inject</groupId>
-            <artifactId>javax.inject</artifactId>
-        </dependency>
-
         <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>

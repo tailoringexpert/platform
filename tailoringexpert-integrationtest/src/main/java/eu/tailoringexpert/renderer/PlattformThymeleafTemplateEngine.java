@@ -22,7 +22,7 @@
 package eu.tailoringexpert.renderer;
 
 import eu.tailoringexpert.Tenant;
-import org.thymeleaf.spring5.SpringTemplateEngine;
+import org.thymeleaf.spring6.SpringTemplateEngine;
 
 @Tenant("plattform")
 public class PlattformThymeleafTemplateEngine extends ThymeleafTemplateEngine {
