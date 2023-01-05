@@ -359,3 +359,7 @@ img.center {
   margin-left: auto;
   margin-right: auto;
 }
+
+ul.circle {
+    list-style-type: circle;
+}

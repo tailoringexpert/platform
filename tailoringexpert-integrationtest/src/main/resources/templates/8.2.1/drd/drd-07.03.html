@@ -1,12 +1,14 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
 <head>
+    <title>DRD-07.03 - Identification and Usage List (MIUL)</title>
+
     <link rel="stylesheet" href="../css/page.css"/>
     <link rel="stylesheet" href="../css/drd.css"/>
 </head>
 <body>
 <div th:fragment="content" id="drd-07.03">
-    <table class="titel">
+    <table class="titel" aria-label="title">
         <tbody>
         <tr>
             <td><h2>DRD-07.03 - Identification and Usage List (MIUL)</h2></td>
@@ -14,7 +16,7 @@
         </tbody>
     </table>
 
-    <table class="reference">
+    <table class="reference" aria-label="reference">
         <tbody>
         <tr>
             <td rowspan="7">Reference:</td>
@@ -54,7 +56,7 @@
         </tbody>
     </table>
 
-    <table class="purpose">
+    <table class="purpose" aria-label="purpose">
         <tbody>
         <tr>
             <td>Purpose:</td>
@@ -72,12 +74,12 @@
         </tbody>
     </table>
 
-    <table class="content">
+    <table class="content" aria-label="content">
         <tbody>
         <tr>
             <td>Content:</td>
             <td>The MIUL shall include the following:
-                <ul type="disc">
+                <ul>
                     <li>detail drawing number, title (nomenclature), and dash number,</li>
                     <li>next assembly number, title (nomenclature), and dash number,</li>
                     <li>change letter designation,</li>
@@ -110,7 +112,7 @@
         </tbody>
     </table>
 
-    <table class="format">
+    <table class="format" aria-label="format">
         <tbody>
         <tr>
             <td>Format:</td>
@@ -120,14 +122,14 @@
     </table>
 
     <page-before align="center">
-        <img src="drd-07.03.gif" class="center" width="527" height="926"/>
+        <img src="drd-07.03.gif" class="center" width="527" height="926" alt="drd-07.03.gif"/>
     </page-before>
 
     <page-before/>
 
     <h3>Instructions for Completing a Material Identification and Usage List (MIUL)</h3>
     The MIUL is structured in:
-    <table>
+    <table aria-label="MIUL">
         <colgroup>
             <col style="width: 25%;"/>
             <col style="width: 25%;"/>
@@ -149,7 +151,7 @@
     </table>
 
     <h4>Format description:</h4>
-    <table class="bordered show-empty word-wrap center-bold" style="table-layout: auto">
+    <table class="bordered show-empty word-wrap center-bold" style="table-layout: auto" aria-label="format description">
         <colgroup>
             <col style="width: 30%;"/>
             <col style="width: 30%;"/>
@@ -157,23 +159,23 @@
         </colgroup>
         <tbody>
         <tr>
-            <td><b>Head Line</b></td>
+            <td><strong>Head Line</strong></td>
             <td colspan="2">Project name and environment (temperature, pressure, media)</td>
         </tr>
         <tr>
-            <td><b>Part/Draw. No.</b></td>
+            <td><strong>Part/Draw. No.</strong></td>
             <td colspan="2">part contained in drawing/parts list under number ......</td>
         </tr>
         <tr>
-            <td><b>REV/LTR</b></td>
+            <td><strong>REV/LTR</strong></td>
             <td colspan="2">Revision of drawing / referred letter</td>
         </tr>
         <tr>
-            <td><b>Nomenclature</b></td>
+            <td><strong>Nomenclature</strong></td>
             <td colspan="2">name of part or drawing</td>
         </tr>
         <tr>
-            <td rowspan="5"><b>Material Identification</b></td>
+            <td rowspan="5"><strong>Material Identification</strong></td>
             <td>MAT'L Code</td>
             <td>material code acc. to MSFC-HDBK-527F /</td>
         </tr>
@@ -195,7 +197,7 @@
         </tr>
 
         <tr>
-            <td><b>Non-Metallic Materials</b></td>
+            <td><strong>Non-Metallic Materials</strong></td>
             <td>Size</td>
             <td>one of the infos below is sufficient and will be written into the list when data are available
             </td>
@@ -204,7 +206,7 @@
     </table>
 
     <h4>Size:</h4>
-    <table class="bordered show-empty word-wrap center-bold" style="table-layout: auto">
+    <table class="bordered show-empty word-wrap center-bold" style="table-layout: auto" aria-label="size">
         <colgroup>
             <col style="width: 30%;"/>
             <col style="width: 30%;"/>
@@ -243,7 +245,7 @@
 
     <br/>
 
-    <table class="bordered show-empty word-wrap center-bold" style="table-layout: auto">
+    <table class="bordered show-empty word-wrap center-bold" style="table-layout: auto" aria-label="size continued">
         <colgroup>
             <col style="width: 25%;"/>
             <col style="width: 15%;"/>
@@ -313,7 +315,7 @@
     <br/>
 
     <h4>Instructions for Completing a Material Identification and Usage List (con't)</h4>
-    <table class="bordered show-empty word-wrap center-bold" style="table-layout: auto">
+    <table class="bordered show-empty word-wrap center-bold" style="table-layout: auto" aria-label="usage list">
         <colgroup>
             <col style="width: 25%;"/>
             <col style="width: 15%;"/>
@@ -321,7 +323,7 @@
         </colgroup>
         <tbody>
         <tr>
-            <td rowspan="26"><b>Usage Evaluation (con't)</b></td>
+            <td rowspan="26"><strong>Usage Evaluation (con't)</strong></td>
             <td>SCC</td>
             <td>Stress corrosion cracking, acc. to Maptis/ MSFC-HDBK-527.</td>
         </tr>
@@ -429,14 +431,14 @@
             <td>MAC Values greater than that specified in NASA-STD-6001. MUA required.</td>
         </tr>
         <tr>
-            <td><b>MUA Status</b></td>
+            <td><strong>MUA Status</strong></td>
             <td></td>
             <td>If a material requires a MUA as result of column 10-15, Column 16 shall be marked with 'X', after
                 approval by NASA the MUA status shall be marked with 'P' (passed).
             </td>
         </tr>
         <tr>
-            <td><b>Remarks</b></td>
+            <td><strong>Remarks</strong></td>
             <td></td>
             <td>Special notes and dates for e.g. special cure, test results, add. evaluations.
             </td>

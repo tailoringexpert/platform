@@ -1,12 +1,14 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
 <head>
+    <title>DRD-04.08 - Failure Mode, Effect &amp; Criticality Analysis (FMECA)</title>
+
     <link rel="stylesheet" href="../css/page.css"/>
     <link rel="stylesheet" href="../css/drd.css"/>
 </head>
 <body>
 <div th:fragment="content" id="drd-04.08">
-    <table class="titel">
+    <table class="titel" aria-label="title">
         <tbody>
         <tr>
             <td><h2>DRD-04.08 - Failure Mode, Effect &amp; Criticality Analysis (FMECA)</h2>
@@ -15,7 +17,7 @@
         </tbody>
     </table>
 
-    <table class="reference">
+    <table class="reference" aria-label="reference">
         <tbody>
         <tr>
             <td rowspan="2">Reference:</td>
@@ -29,12 +31,12 @@
         </tbody>
     </table>
 
-    <table class="purpose">
+    <table class="purpose" aria-label="purpose">
         <tbody>
         <tr>
             <td>Purpose:</td>
             <td>The analysis shall be used to:
-                <ul type="disc">
+                <ul>
                     <li>identify single point failures,</li>
                     <li>identify critical items,</li>
                     <li>ensure that adequate telemetry and command capabilities are available to detect and control
@@ -55,7 +57,7 @@
         </tbody>
     </table>
 
-    <table class="content">
+    <table class="content" aria-label="content">
         <tbody>
         <tr>
             <td>Content:</td>
@@ -67,7 +69,7 @@
                 numerical reference for all items in the Functional Block Diagram or Functional Tree must be
                 provided by using a standard coding system.<br/>
                 The FMECA Report shall include all information necessary for understanding and reviewing the analysis:
-                <ul type="disc">
+                <ul>
                     <li>identification of configuration being analysed,</li>
                     <li>identification of applicable functional and design description,</li>
                     <li>identification of equipment, subsystem, system mission phase and operational phase under
@@ -99,7 +101,7 @@
         </tbody>
     </table>
 
-    <table class="format">
+    <table class="format" aria-label="format">
         <tbody>
         <tr>
             <td>Format:</td>
@@ -116,25 +118,25 @@
 
 
     <page-before>
-        <b>FMECA Worksheet</b>
-        <img src="drd-04.08_1.gif" class="center" width="430" height="740"/>
+        <strong>FMECA Worksheet</strong>
+        <img src="drd-04.08_1.gif" class="center" width="430" height="740" alt="drd-04.08_1.gif"/>
     </page-before>
 
     <page-before>
         <ol style="list-style-type:lower-alpha">
-            <li><b>The documentation of the FMEA/FMECA shall be accomplished by completing the columns of the customer
-                approved worksheet.</b><br/>
+            <li><strong>The documentation of the FMEA/FMECA shall be accomplished by completing the columns of the customer
+                approved worksheet.</strong><br/>
                 An example of FMEA/FMECA worksheet is shown in the figure. The use of this worksheet is not
                 mandatory but recommended.
             </li>
-            <li><b>Each FMEA/FMECA worksheet shall include in the header basic information including</b>
-                <ul type="disc">
+            <li><strong>Each FMEA/FMECA worksheet shall include in the header basic information including</strong>
+                <ul>
                     <li>Identity of the product (hardware or function)</li>
                     <li>Identity of corresponding equipment, subsystem and system (as applicable).</li>
                 </ul>
             </li>
 
-            <li><b>The FMEA/FMECA worksheet shall provide the following data elements:</b>
+            <li><strong>The FMEA/FMECA worksheet shall provide the following data elements:</strong>
                 <ol>
                     <li>Identification number (for traceability purposes)</li>
                     <li>Item/block<br/>
@@ -213,7 +215,7 @@
                             nullifies the effects of a malfunction or failure, control, or deactivate product items to
                             halt generation or propagation of failure effects, or activate backup or standby items.
                             Design compensating provisions include:
-                        <ul type="circle">
+                        <ul class="circle">
                             <li>redundant items or alternative modes of operation that allow continued and safe
                                 operation, and
                             </li>
@@ -249,7 +251,7 @@
 
     <page-before>
         <h3>Cause and effects of failure modes at different level FMECAs</h3>
-        <img src="drd-04.08_2.gif" class="center" width="547" height="810"/>
+        <img src="drd-04.08_2.gif" class="center" width="547" height="810" alt="drd-04.08.2.gif"/>
     </page-before>
 </div>
 </body>

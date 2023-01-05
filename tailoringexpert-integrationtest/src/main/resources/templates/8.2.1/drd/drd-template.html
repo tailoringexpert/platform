@@ -1,13 +1,15 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
 <head>
+    <title>DRD-XX.YY - Title</title>
+
     <link rel="stylesheet" href="../css/page.css"/>
     <link rel="stylesheet" href="../css/drd.css"/>
 </head>
 
 <body>
 <div th:fragment="content" id="drd-XX.YY">
-    <table class="titel">
+    <table class="titel" aria-label="title">
         <tbody>
         <tr>
             <td><h2>DRD-XX.YY - Title</h2></td>
@@ -15,7 +17,7 @@
         </tbody>
     </table>
 
-    <table class="reference">
+    <table class="reference" aria-label="reference">
         <tbody>
         <tr>
             <!-- rowspan bitte auf Anzahl Referenzen erhöhen -->
@@ -26,7 +28,7 @@
         </tbody>
     </table>
 
-    <table class="purpose">
+    <table class="purpose" aria-label="purpose">
         <tbody>
         <tr>
             <td>Purpose:</td>
@@ -36,7 +38,7 @@
         </tbody>
     </table>
 
-    <table class="content">
+    <table class="content" aria-label="content">
         <tbody>
         <tr>
             <td>Content:</td>
@@ -46,7 +48,7 @@
         </tbody>
     </table>
 
-    <table class="format">
+    <table class="format" aria-label="format">
         <tbody>
         <tr>
             <td>Format:</td>
@@ -57,7 +59,7 @@
 
     <!-- Bespiel für Bild nach Seitenumbruch -->
     <page-before align="center">
-        <img src="drd-xx.yy.gif" class="center" width="620" height="584"/>
+        <img src="drd-xx.yy.gif" class="center" width="620" height="584" alt="drd-xx.yy.gif"/>
     </page-before>
 </div>
 </body>

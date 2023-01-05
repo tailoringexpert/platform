@@ -1,13 +1,15 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
 <head>
+    <title>DRD-02.04 - Critical Items List (CIL)</title>
+
     <link rel="stylesheet" href="../page.css"/>
     <link rel="stylesheet" href="../drd.css"/>
 </head>
 
 <body>
 <div th:fragment="content" id="drd-02.04">
-    <table class="titel">
+    <table class="titel" aria-label="title">
         <tbody>
         <tr>
             <td><h2>DRD-02.04 - Critical Items List (CIL)</h2></td>
@@ -15,7 +17,7 @@
         </tbody>
     </table>
 
-    <table class="reference">
+    <table class="reference" aria-label="reference">
         <tbody>
         <tr>
             <td rowspan="7">Reference:</td>
@@ -49,7 +51,7 @@
         </tbody>
     </table>
 
-    <table class="purpose">
+    <table class="purpose" aria-label="purpose">
         <tbody>
         <tr>
             <td>Purpose:</td>
@@ -58,13 +60,13 @@
         </tbody>
     </table>
 
-    <table class="content">
+    <table class="content" aria-label="content">
         <tbody>
         <tr>
             <td>Content:</td>
             <td>This list shall include the following items used in flight equipmentt(according to ECSS-Q-ST-10-04C,
                 Annex C):
-                <ul type="disc">
+                <ul>
                     <li>safety critical items,</li>
                     <li>dependability critical items</li>
                     <li>single point failure items,</li>
@@ -86,12 +88,12 @@
         </tbody>
     </table>
 
-    <table class="format">
+    <table class="format" aria-label="format">
         <tbody>
         <tr>
             <td>Format</td>
             <td>In-house form (example is provided according to ECSS-Q-10-04C, Annex A):
-                <ul type="disc">
+                <ul>
                     <li>Number: unique item identifier.</li>
                     <li>Critical item,</li>
                     <li>Risks associated,</li>
@@ -108,9 +110,9 @@
         </tbody>
     </table>
 
-    <p><b>Example of Critical Item List:<br/></b></p>
+    <p><strong>Example of Critical Item List:<br/></strong></p>
     <div>
-        <table class="word-wrap center-bold bordered show-empty">
+        <table class="word-wrap center-bold bordered show-empty" aria-label="critical item list">
             <thead>
             <tr>
                 <th>No.</th>
@@ -164,7 +166,7 @@
 
     <br/><br/>
 
-    <table class="format bordered">
+    <table class="format bordered" aria-label="format">
         <tbody>
         <tr>
             <td>No.</td>

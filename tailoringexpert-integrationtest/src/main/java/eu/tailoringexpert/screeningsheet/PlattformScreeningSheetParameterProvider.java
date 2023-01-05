@@ -34,7 +34,6 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import static eu.tailoringexpert.domain.ScreeningSheet.PARAMETER_PHASE;
 
@@ -56,7 +55,7 @@ public class PlattformScreeningSheetParameterProvider implements ScreeningSheetP
 
         result.addAll(mapFields(textfelder, "Project", ScreeningSheet.PARAMETER_PROJECT));
 
-        List<PDField> selectedParameters = filterCheckedCheckboxes(fields);
+        List<PDCheckBox> selectedParameters = filterCheckedCheckboxes(fields);
         result.addAll(mapFields(selectedParameters, PARAMETER_PHASE, "0"));
         result.addAll(mapFields(selectedParameters, PARAMETER_PHASE, "A"));
         result.addAll(mapFields(selectedParameters, PARAMETER_PHASE, "B"));
@@ -71,20 +70,19 @@ public class PlattformScreeningSheetParameterProvider implements ScreeningSheetP
     private static List<PDField> filterTextfelder(List<PDField> fields) {
         return fields.stream()
             .filter(PDTextField.class::isInstance)
-            .collect(Collectors.toList());
+            .toList();
     }
 
-    private List<PDField> filterCheckedCheckboxes(List<PDField> fields) {
+    private List<PDCheckBox> filterCheckedCheckboxes(List<PDField> fields) {
         return fields.stream()
             .filter(PDCheckBox.class::isInstance)
             .map(PDCheckBox.class::cast)
             .filter(PDCheckBox::isChecked)
-            .collect(Collectors.toList());
+            .toList();
     }
 
-
-    private Collection<ScreeningSheetParameterField> mapFields(
-        List<PDField> fields,
+    private <T extends PDField> Collection<ScreeningSheetParameterField> mapFields(
+        List<T> fields,
         String category,
         String name) {
         return fields.stream()
@@ -94,7 +92,7 @@ public class PlattformScreeningSheetParameterProvider implements ScreeningSheetP
                 .name(field.getPartialName())
                 .label(field.getValueAsString())
                 .build())
-            .collect(Collectors.toList());
+            .toList();
     }
 
 }

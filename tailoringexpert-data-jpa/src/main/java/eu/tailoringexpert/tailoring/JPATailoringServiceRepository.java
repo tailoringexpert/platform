@@ -43,7 +43,6 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
@@ -210,7 +209,7 @@ public class JPATailoringServiceRepository implements TailoringServiceRepository
             .stream()
             .flatMap(Collection::stream)
             .map(mapper::toDomain)
-            .collect(Collectors.toList()));
+            .toList());
     }
 
     /**
@@ -269,7 +268,7 @@ public class JPATailoringServiceRepository implements TailoringServiceRepository
         return selectionVectorProfileRepository.findAll()
             .stream()
             .map(mapper::toDomain)
-            .collect(Collectors.toList());
+            .toList();
     }
 
     /**
@@ -280,7 +279,7 @@ public class JPATailoringServiceRepository implements TailoringServiceRepository
         return dokumentSigneeRepository.findAll()
             .stream()
             .map(mapper::getDefaultSignatures)
-            .collect(Collectors.toList());
+            .toList();
     }
 
     /**

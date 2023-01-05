@@ -37,13 +37,13 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.cache.annotation.Cacheable;
 
 import jakarta.transaction.Transactional;
+
 import java.util.Collection;
 import java.util.Optional;
 
 import static java.util.Objects.isNull;
 import static java.util.Optional.empty;
 import static java.util.Optional.ofNullable;
-import static java.util.stream.Collectors.toList;
 
 /**
  * Implementation of {@link ProjectServiceRepository}.
@@ -124,7 +124,7 @@ public class JPAProjectServiceRepository implements ProjectServiceRepository {
         return projectRepository.findAll()
             .stream()
             .map(mapper::getProjectInformationen)
-            .collect(toList());
+            .toList();
     }
 
     /**

@@ -1,12 +1,14 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
 <head>
+    <title>DRD-07.02- Declared Materials List (DML)</title>
+
     <link rel="stylesheet" href="../css/page.css"/>
     <link rel="stylesheet" href="../css/drd.css"/>
 </head>
 <body>
 <div th:fragment="content" id="drd-07.02">
-    <table class="titel">
+    <table class="titel" aria-label="title">
         <tbody>
         <tr>
             <td><h2>DRD-07.02- Declared Materials List (DML)</h2></td>
@@ -14,7 +16,7 @@
         </tbody>
     </table>
 
-    <table class="reference">
+    <table class="reference" aria-label="reference">
         <tbody>
         <tr>
             <td rowspan="9">Reference:</td>
@@ -60,7 +62,7 @@
         </tbody>
     </table>
 
-    <table class="purpose">
+    <table class="purpose" aria-label="purpose">
         <tbody>
         <tr>
             <td>Purpose:</td>
@@ -74,13 +76,13 @@
         </tbody>
     </table>
 
-    <table class="content">
+    <table class="content" aria-label="content">
         <tbody>
         <tr>
             <td>Content:</td>
             <td>DML shall be broken down into clear categories to facilitate locating each item in the documentation.
                 The DML shall include the following:
-                <ul type="disc">
+                <ul>
                     <li>item number (as the reference of the material in the DML),</li>
                     <li>material designation (commercial identification),</li>
                     <li>material keys, (e.g. copper, aluminium,)</li>
@@ -104,7 +106,7 @@
         </tbody>
     </table>
 
-    <table class="format">
+    <table class="format" aria-label="format">
         <tbody>
         <tr>
             <td>Format:</td>
@@ -119,7 +121,7 @@
     </table>
 
     <page-before align="center">
-        <img src="drd-07.02.gif" class="center" width="484" height="933"/>
+        <img src="drd-07.02.gif" class="center" width="484" height="933" alt="drd-07.02.gif"/>
     </page-before>
 
     <page-before/>
@@ -161,7 +163,7 @@
 
     <h4>COLUMN 2: Commercial identification or standardized designation</h4>
     Trade name and number e.g. "ARALDITE AV 100". Correct and standard designation. DLR has chosen:
-    <ul type="disc">
+    <ul>
         <li>Trade name + number. For example, "ARALDITE AY 105"</li>
         <li>If no trade name exists, then the manufacturer's name plus number shall be entered; e.g. "SCHOTT
             K7"
@@ -190,7 +192,7 @@
 
     <h4>COLUMN 6: Use and location</h4>
     The codes entered shall define the location of the material with respect to the:
-    <ul type="disc">
+    <ul>
         <li>subsystems,</li>
         <li>particular piece of equipment (box or item),</li>
         <li>use of the equipment, e.g. structural element, thermal control, electrical insulation.</li>
@@ -198,7 +200,7 @@
 
     <h4>COLUMN 7: Environmental code</h4>
     The environmental code is defined using the table.
-    <table class="bordered show-empty word-wrap center-bold" style="table-layout: auto">
+    <table class="bordered show-empty word-wrap center-bold" style="table-layout: auto" aria-label="environment code table">
         <colgroup>
             <col style="width: 25%;"/>
             <col style="width: 25%;"/>
@@ -266,7 +268,7 @@
     </table>
 
     <h4>COLUMN 8: Size code</h4>
-    <table class="bordered show-empty word-wrap center-bold" style="table-layout: auto">
+    <table class="bordered show-empty word-wrap center-bold" style="table-layout: auto" aria-label="size code table">
         <colgroup>
             <col style="width: 40%;"/>
             <col style="width: 60%;"/>
@@ -304,7 +306,7 @@
         </tr>
         <tr>
             <td colspan="2">where
-                <ul type="disc">
+                <ul>
                     <li>A is the area, in cm<sup>2</sup></li>
                     <li>V is the volume, in cm<sup>3</sup></li>
                     <li>M is the mass, in g</li>
@@ -327,7 +329,7 @@
     These are defined for the project.<br/>
     The supplier approval status code shall be selected from the Table.
 
-    <table class="bordered show-empty word-wrap center-bold" style="table-layout: auto">
+    <table class="bordered show-empty word-wrap center-bold" style="table-layout: auto" aria-label="approval status">
         <colgroup>
             <col style="width: 20%;"/>
             <col style="width: 80%;"/>

@@ -1,12 +1,14 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
 <head>
+    <title>DRD-06.02 - Declared Component List (DCL)</title>
+
     <link rel="stylesheet" href="../css/page.css"/>
     <link rel="stylesheet" href="../css/drd.css"/>
 </head>
 <body>
 <div th:fragment="content" id="drd-06.02">
-    <table class="titel">
+    <table class="titel" aria-label="title">
         <tbody>
         <tr>
             <td><h2>DRD-06.02 - Declared Component List (DCL)</h2></td>
@@ -14,7 +16,7 @@
         </tbody>
     </table>
 
-    <table class="reference">
+    <table class="reference" aria-label="reference">
         <tbody>
         <tr>
             <td rowspan="10">Reference:</td>
@@ -62,7 +64,7 @@
         </tbody>
     </table>
 
-    <table class="purpose">
+    <table class="purpose" aria-label="purpose">
         <tbody>
         <tr>
             <td>Purpose:</td>
@@ -76,12 +78,12 @@
         </tbody>
     </table>
 
-    <table class="content">
+    <table class="content" aria-label="content">
         <tbody>
         <tr>
             <td>Content:</td>
             <td> The DCL shall include or refer to the following information:
-                <ul type="disc">
+                <ul>
                     <li>Component number (commercial equivalent designation),</li>
                     <li>Family (ESCC group code),</li>
                     <li>Package,</li>
@@ -105,7 +107,7 @@
         </tbody>
     </table>
 
-    <table class="format">
+    <table class="format" aria-label="format">
         <tbody>
         <tr>
             <td>Format:</td>
@@ -118,19 +120,19 @@
 
     <page-before>
         <h4>Declared Component List</h4>
-        <table class="word-wrap center-bold bordered" style="table-layout: auto">
+        <table class="word-wrap center-bold bordered" style="table-layout: auto" aria-label="declared component list">
             <colgroup>
-                <col width="9%"/>
-                <col width="9%"/>
-                <col width="9%"/>
-                <col width="9%"/>
-                <col width="9%"/>
-                <col width="9%"/>
-                <col width="9%"/>
-                <col width="9%"/>
-                <col width="9%"/>
-                <col width="9%"/>
-                <col width="9%"/>
+                <col style="width: 9%"/>
+                <col style="width: 9%"/>
+                <col style="width: 9%"/>
+                <col style="width: 9%"/>
+                <col style="width: 9%"/>
+                <col style="width: 9%"/>
+                <col style="width: 9%"/>
+                <col style="width: 9%"/>
+                <col style="width: 9%"/>
+                <col style="width: 9%"/>
+                <col style="width: 9%"/>
             </colgroup>
             <thead>
             <tr>
@@ -176,84 +178,84 @@
 
         <br/><br/>
 
-        <table class="word-wrap" style="table-layout: auto">
+        <table class="word-wrap" style="table-layout: auto" aria-label="dcl">
             <colgroup>
-                <col width="35"/>
-                <col width="65%"/>
+                <col style="width: 35%"/>
+                <col style="width: 65%"/>
             </colgroup>
             <tbody>
             <tr>
-                <td><b>Project:</b></td>
+                <td><strong>Project:</strong></td>
                 <td>Name of project using the component</td>
             </tr>
             <tr>
-                <td><b>Family:</b></td>
+                <td><strong>Family:</strong></td>
                 <td>Capacitor, resistor, etc.(refer ECSS Family Code)</td>
             </tr>
             <tr>
-                <td><b>Group:</b></td>
+                <td><strong>Group:</strong></td>
                 <td>Ceramic, tantalum, etc. (refer ECSS Group Code)</td>
             </tr>
             <tr>
-                <td><b>Component number:</b></td>
+                <td><strong>Component number:</strong></td>
                 <td>In accordance with procurement specification</td>
             </tr>
             <tr>
-                <td><b>Package</b></td>
+                <td><strong>Package</strong></td>
                 <td></td>
             </tr>
             <tr>
-                <td><b>Similar to style:</b></td>
+                <td><strong>Similar to style:</strong></td>
                 <td>Commercial or military equivalent</td>
             </tr>
             <tr>
-                <td><b>Space qualified status:</b></td>
+                <td><strong>Space qualified status:</strong></td>
                 <td>yes or no</td>
             </tr>
             <tr>
-                <td><b>Detail specification:</b></td>
+                <td><strong>Detail specification:</strong></td>
                 <td>Relevant specifications with issue and revisions</td>
             </tr>
             <tr>
-                <td><b>Issue:</b></td>
+                <td><strong>Issue:</strong></td>
                 <td>Identify issue of document</td>
             </tr>
             <tr>
-                <td><b>Rev:</b></td>
+                <td><strong>Rev:</strong></td>
                 <td>Identify revision of document</td>
             </tr>
             <tr>
-                <td><b>Generic specification:</b></td>
+                <td><strong>Generic specification:</strong></td>
                 <td>Relevant specifications with issue and revisions</td>
             </tr>
             <tr>
-                <td><b>Manufacturer/country:</b></td>
+                <td><strong>Manufacturer/country:</strong></td>
                 <td>Manufacturer code (see ESA database)</td>
             </tr>
             <tr>
-                <td><b>RVT:</b></td>
+                <td><strong>RVT:</strong></td>
                 <td>Radiation verification testing (yes or no)</td>
             </tr>
             <tr>
-                <td><b>Approval status</b></td>
+                <td><strong>Approval status</strong></td>
                 <td>Information about known approvals (EPPL, ESCC, ESCC/QML, MIL, MIL/QML or other approvals/former
                     usage)
                 </td>
             </tr>
             <tr>
-                <td><b>PAD No</b></td>
+                <td><strong>PAD No</strong></td>
                 <td>Part Approval Document number</td>
             </tr>
             <tr>
-                <td><b>DCL number:</b></td>
+                <td><strong>DCL number:</strong></td>
                 <td>Document registration number</td>
             </tr>
             <tr>
-                <td><b>Date:</b></td>
+                <td><strong>Date:</strong></td>
                 <td>Date of issue</td>
             </tr>
             <tr>
-                <td><b>Date:</b></td>
+                <td><strong>Date:</strong></td>
                 <td>Date of revision</td>
             </tr>
             </tbody>
