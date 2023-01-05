@@ -47,7 +47,6 @@ import static java.lang.String.format;
 import static java.util.Collections.emptyMap;
 import static java.util.Comparator.comparingInt;
 import static java.util.Objects.nonNull;
-import static java.util.stream.Collectors.toList;
 
 /**
  * Create PDF requirement catalog file.
@@ -100,7 +99,7 @@ public class TailoringCatalogPDFDocumentCreator implements DocumentCreator {
 
         parameter.put("signatures", tailoring.getSignatures().stream()
             .sorted(comparingInt(DocumentSignature::getPosition))
-            .collect(toList()));
+            .toList());
 
         String html = templateEngine.process(tailoring.getCatalog().getVersion() + "/tailoringcatalog", parameter);
         File result = pdfEngine.process(docId, html, tailoring.getCatalog().getVersion() + "/tailoringcatalog");

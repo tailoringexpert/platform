@@ -250,7 +250,7 @@ public abstract class ResourceMapper {
                     .collect(joining("; ")))
                 .build()
             )
-            .collect(Collectors.toList());
+            .toList();
     }
 
     // Tailoring

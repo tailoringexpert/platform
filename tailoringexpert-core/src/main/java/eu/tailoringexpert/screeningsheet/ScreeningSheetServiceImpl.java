@@ -37,7 +37,6 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Objects;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 import static java.util.Comparator.comparing;
 import static java.util.function.Predicate.not;
@@ -116,7 +115,7 @@ public class ScreeningSheetServiceImpl implements ScreeningSheetService {
         List<String> parameterConfigurationWithoutValues = parameters
             .stream()
             .map(Parameter::getName)
-            .collect(Collectors.toUnmodifiableList());
+            .toList();
 
 
         // all parameter not defined in db, which have no effect on calculating a selectionvector
@@ -127,7 +126,7 @@ public class ScreeningSheetServiceImpl implements ScreeningSheetService {
                 .category(entry.getName().substring(0, 1).toUpperCase(Locale.GERMANY) + entry.getName().substring(1))
                 .value(entry.getLabel())
                 .build())
-            .collect(toList()));
+            .toList());
 
         SelectionVector selectionVector = selectionVectorProvider.apply(parameters);
 

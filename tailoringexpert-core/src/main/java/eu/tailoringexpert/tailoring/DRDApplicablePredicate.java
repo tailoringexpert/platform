@@ -30,7 +30,6 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.StringTokenizer;
 import java.util.function.BiPredicate;
-import java.util.stream.Collectors;
 
 import static java.util.stream.Collectors.toUnmodifiableSet;
 
@@ -59,7 +58,7 @@ public class DRDApplicablePredicate implements BiPredicate<String, Collection<Ph
         // alle meilensteine phasensteine der phase ermitteln
         List<String> dueDates = Collections.list(new StringTokenizer(deliveryDate, ";")).stream()
             .map(token -> token.toString().trim())
-            .collect(Collectors.toList());
+            .toList();
 
         // für jede phase prüfen
         Optional<Phase> result = phases.stream()
