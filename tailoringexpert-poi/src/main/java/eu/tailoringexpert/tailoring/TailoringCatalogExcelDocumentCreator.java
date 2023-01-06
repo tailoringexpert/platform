@@ -52,7 +52,7 @@ public class TailoringCatalogExcelDocumentCreator implements DocumentCreator {
      * {@inheritDoc}
      */
     @Override
-    public File createDocument(String docId, Tailoring tailoring, Map<String, String> placeholders) {
+    public File createDocument(String docId, Tailoring tailoring, Map<String, Object> placeholders) {
         try (Workbook wb = new XSSFWorkbook()) {
             Sheet sheet = createSheet(wb, tailoring);
 

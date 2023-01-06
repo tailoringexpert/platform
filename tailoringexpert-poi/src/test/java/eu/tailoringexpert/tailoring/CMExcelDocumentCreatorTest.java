@@ -134,7 +134,7 @@ class CMExcelDocumentCreatorTest {
             .phases(of(ZERO, A, B, C, D, E, F))
             .build();
 
-        Map<String, String> parameter = ofEntries(
+        Map<String, Object> parameter = ofEntries(
             Map.entry("titel", "DRD Catalog"),
             Map.entry("beschreibung", "BESCHREIBUNG"),
             Map.entry("PROJEKT", "HRWS"),
@@ -175,7 +175,7 @@ class CMExcelDocumentCreatorTest {
             .phases(of(ZERO, A, B, C, D, E, F))
             .build();
 
-        Map<String, String> parameter = ofEntries(
+        Map<String, Object> parameter = ofEntries(
             Map.entry("titel", "DRD Catalog"),
             Map.entry("beschreibung", "BESCHREIBUNG"),
             Map.entry("PROJEKT", "HRWS"),

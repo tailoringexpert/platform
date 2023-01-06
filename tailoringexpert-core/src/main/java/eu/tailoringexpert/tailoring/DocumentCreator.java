@@ -41,5 +41,5 @@ public interface DocumentCreator {
      * @param placeholders Placeholders to use in document generation
      * @return printable document of provided tailoring document data
      */
-    File createDocument(String docId, Tailoring tailoring, Map<String, String> placeholders);
+    File createDocument(String docId, Tailoring tailoring, Map<String, Object> placeholders);
 }

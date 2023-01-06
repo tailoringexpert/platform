@@ -8,12 +8,12 @@
  * it under the terms of the GNU General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/gpl-3.0.html>.
@@ -32,9 +32,12 @@ import java.time.format.DateTimeFormatter;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
+import static java.util.Map.entry;
 import static java.util.Optional.ofNullable;
 
 @Tenant("plattform")
@@ -66,9 +69,10 @@ public class PlattformDocumentService implements DocumentService {
 
     private static final String PARAMETER_SHOWALL = "SHOW_ALL";
 
+    private static final String PARAMETER_SELECTIONVECTOR = "SELECTIONVECTOR";
     private static final String PARAMETER_DRD_DOCID = "${DRD_DOCID}";
 
-    private static final String PARAMETER_KATALOG_DOCID = "${KATALOG_DOCID}";
+    private static final String PARAMETER_KATALOG_DOCID = "KATALOG_DOCID";
 
     private static final String PATTERN_DATUM = "dd.MM.yyyy";
 
@@ -87,16 +91,16 @@ public class PlattformDocumentService implements DocumentService {
      */
     @Override
     public Optional<File> createComparisonDocument(Tailoring tailoring, LocalDateTime creationTimestamp) {
-        Map<String, String> platzhalter = new HashMap<>();
+        Map<String, Object> platzhalter = new HashMap<>();
         platzhalter.put(PARAMETER_PROJEKT, tailoring.getScreeningSheet().getProject());
         platzhalter.put(PARAMETER_DATUM, creationTimestamp.format(DateTimeFormatter.ofPattern(PATTERN_DATUM)));
 
         String docId = String.format("%s-AR-ZS-DLR-%s-DV-Tailoring-Diffs",
             tailoring.getScreeningSheet().getProject(),
             tailoring.getIdentifier());
-        File dokument = comparisionDocumentCreator.createDocument(docId, tailoring, platzhalter);
+        File result = comparisionDocumentCreator.createDocument(docId, tailoring, platzhalter);
 
-        return ofNullable(dokument);
+        return ofNullable(result);
 
     }
 
@@ -115,7 +119,7 @@ public class PlattformDocumentService implements DocumentService {
     }
 
     Optional<File> createDRDDokument(Tailoring tailoring, LocalDateTime currentTime) {
-        Map<String, String> platzhalter = new HashMap<>();
+        Map<String, Object> platzhalter = new HashMap<>();
         platzhalter.put(PARAMETER_PROJEKT, tailoring.getScreeningSheet().getProject());
         platzhalter.put(PARAMETER_DATUM, currentTime.format(DateTimeFormatter.ofPattern(PATTERN_DATUM)));
         platzhalter.put(PARAMETER_DOKUMENT, String.format("%s-AR-ZS-DLR-%s-DV",
@@ -126,9 +130,9 @@ public class PlattformDocumentService implements DocumentService {
             tailoring.getScreeningSheet().getProject(),
             tailoring.getIdentifier(),
             "DRD");
-        File dokument = drdDocumentCreator.createDocument(docId, tailoring, platzhalter);
+        File result = drdDocumentCreator.createDocument(docId, tailoring, platzhalter);
 
-        return ofNullable(dokument);
+        return ofNullable(result);
     }
 
     Optional<File> createCMDokument(Tailoring tailoring, LocalDateTime currentTime) {
@@ -147,21 +151,20 @@ public class PlattformDocumentService implements DocumentService {
             tailoring.getIdentifier(),
             "DRD");
 
-        Map<String, String> platzhalter = new HashMap<>();
+        Map<String, Object> platzhalter = new HashMap<>();
         platzhalter.put(PARAMETER_PROJEKT, tailoring.getScreeningSheet().getProject());
         platzhalter.put(PARAMETER_DATUM, currentTime.format(DateTimeFormatter.ofPattern(PATTERN_DATUM)));
         platzhalter.put(PARAMETER_DOKUMENT, docId);
-        platzhalter.put("KATALOG_DOCID", katalogDocId);
+        platzhalter.put(PARAMETER_KATALOG_DOCID, katalogDocId);
         platzhalter.put("DRD_DOCID", drdDocId);
 
-        File dokument = cmDocumentCreator.createDocument(docId, tailoring, platzhalter);
+        File result = cmDocumentCreator.createDocument(docId, tailoring, platzhalter);
 
-        return ofNullable(dokument);
-
+        return ofNullable(result);
     }
 
     Optional<File> createCMSpreadsheetDokument(Tailoring tailoring, LocalDateTime currentTime) {
-        Map<String, String> platzhalter = new HashMap<>();
+        Map<String, Object> platzhalter = new HashMap<>();
         platzhalter.put(PARAMETER_PROJEKT, tailoring.getScreeningSheet().getProject());
         platzhalter.put(PARAMETER_DATUM, currentTime.format(DateTimeFormatter.ofPattern(PATTERN_DATUM)));
 
@@ -170,14 +173,14 @@ public class PlattformDocumentService implements DocumentService {
             tailoring.getIdentifier(),
             "CM");
 
-        File dokument = cmSpreadsheetCreator.createDocument(docId, tailoring, platzhalter);
+        File result = cmSpreadsheetCreator.createDocument(docId, tailoring, platzhalter);
 
-        return ofNullable(dokument);
+        return ofNullable(result);
 
     }
 
     Optional<File> createTailoringRequirementDokument(Tailoring tailoring, LocalDateTime currentTime) {
-        Map<String, String> platzhalter = new HashMap<>();
+        Map<String, Object> platzhalter = new HashMap<>();
         platzhalter.put(PARAMETER_PROJEKT, tailoring.getScreeningSheet().getProject());
         platzhalter.put(PARAMETER_DATUM, currentTime.format(DateTimeFormatter.ofPattern(PATTERN_DATUM)));
 
@@ -186,9 +189,9 @@ public class PlattformDocumentService implements DocumentService {
             tailoring.getIdentifier(),
             "CONFIG");
 
-        File dokument = catalogSpreadsheetCreator.createDocument(docId, tailoring, platzhalter);
+        File result = catalogSpreadsheetCreator.createDocument(docId, tailoring, platzhalter);
 
-        return ofNullable(dokument);
+        return ofNullable(result);
 
     }
 
@@ -203,7 +206,7 @@ public class PlattformDocumentService implements DocumentService {
             tailoring.getIdentifier(),
             "DRD");
 
-        Map<String, String> platzhalter = new HashMap<>();
+        Map<String, Object> platzhalter = new HashMap<>();
         platzhalter.put(PARAMETER_PROJEKT, tailoring.getScreeningSheet().getProject());
         platzhalter.put(PARAMETER_DATUM, currentTime.format(DateTimeFormatter.ofPattern(PATTERN_DATUM)));
         platzhalter.put(PARAMETER_DRD_DOCID, drdDocId);
@@ -214,8 +217,14 @@ public class PlattformDocumentService implements DocumentService {
             tailoring.getIdentifier())
         );
 
-        File katalog = requirementDocumentCreator.createDocument(docId, tailoring, platzhalter);
+        List<DocumentSelectionVector> selectionVector = tailoring.getSelectionVector().getLevels()
+            .entrySet()
+            .stream().map(entry -> DocumentSelectionVector.builder().type(entry.getKey()).level(entry.getValue()).build())
+            .toList();
+        platzhalter.put(PARAMETER_SELECTIONVECTOR, selectionVector);
 
-        return ofNullable(katalog);
+        File result = requirementDocumentCreator.createDocument(docId, tailoring, platzhalter);
+
+        return ofNullable(result);
     }
 }

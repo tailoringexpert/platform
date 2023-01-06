@@ -60,7 +60,7 @@ public class ComparisonPDFDocumentCreator implements DocumentCreator {
     @Override
     public File createDocument(@NonNull String docId,
                                @NonNull Tailoring tailoring,
-                               @NonNull Map<String, String> placeholders) {
+                               @NonNull Map<String, Object> placeholders) {
         Map<String, Object> parameter = new HashMap<>(placeholders);
 
         Collection<ComparisionElement> requirements = new LinkedList<>();

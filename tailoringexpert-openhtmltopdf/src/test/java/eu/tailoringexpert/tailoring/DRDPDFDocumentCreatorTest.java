@@ -147,7 +147,7 @@ class DRDPDFDocumentCreatorTest {
             .build();
 
         LocalDateTime now = LocalDateTime.now();
-        Map<String, String> platzhalter = new HashMap<>();
+        Map<String, Object> platzhalter = new HashMap<>();
         platzhalter.put("PROJEKT", "SAMPLE");
         platzhalter.put("DATUM", now.format(DateTimeFormatter.ofPattern("dd.MM.YYYY")));
         platzhalter.put("DOKUMENT", "SAMPLE-XY-Z-1940/DV7");

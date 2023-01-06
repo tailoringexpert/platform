@@ -33,6 +33,8 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicReference;
 
+import static java.util.Objects.nonNull;
+
 /**
  * Implemenation of @see {@link HTMLTemplateEngine} using Thymeleaf and Jsoup.
  *
@@ -56,10 +58,13 @@ public class ThymeleafTemplateEngine implements HTMLTemplateEngine {
      * {@inheritDoc}
      */
     @Override
-    public String toXHTML(String text, Map<String, String> placeholders) {
+    public String toXHTML(String text, Map<String, Object> placeholders) {
         AtomicReference<String> updatedText = new AtomicReference<>(text);
         placeholders.entrySet()
-            .forEach(entry -> updatedText.set(updatedText.get().replace(entry.getKey(), entry.getValue())));
+            .forEach(entry -> updatedText.set(updatedText.get().replace(
+                entry.getKey(),
+                nonNull(entry.getValue()) ? entry.getValue().toString() : null)
+            ));
         Document document = Jsoup.parseBodyFragment(updatedText.get());
         document.outputSettings().escapeMode(Entities.EscapeMode.xhtml);
         document.outputSettings().syntax(Document.OutputSettings.Syntax.xml);
