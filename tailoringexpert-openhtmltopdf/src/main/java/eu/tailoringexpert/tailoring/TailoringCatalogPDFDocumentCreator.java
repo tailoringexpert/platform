@@ -74,7 +74,7 @@ public class TailoringCatalogPDFDocumentCreator implements DocumentCreator {
     @Override
     public File createDocument(String docId,
                                Tailoring tailoring,
-                               Map<String, String> placeholders) {
+                               Map<String, Object> placeholders) {
         log.traceEntry("Start creating requirements document {}", docId);
 
         Map<String, Object> parameter = new HashMap<>(placeholders);
@@ -117,7 +117,7 @@ public class TailoringCatalogPDFDocumentCreator implements DocumentCreator {
      * @param level   chapter level
      * @param rows    collection to add elements to
      */
-    void addChapter(Chapter<TailoringRequirement> chapter, int level, Collection<CatalogElement> rows, Map<String, String> placeholders) {
+    void addChapter(Chapter<TailoringRequirement> chapter, int level, Collection<CatalogElement> rows, Map<String, Object> placeholders) {
         rows.add(CatalogElement.builder()
             .text(templateEngine.toXHTML(chapter.getNumber() + " " + chapter.getName(), emptyMap()))
             .chapter(chapter.getNumber())
@@ -137,7 +137,7 @@ public class TailoringCatalogPDFDocumentCreator implements DocumentCreator {
      * @param rows         collection to add to
      * @param placeholders placeholders to use for evaluation in requirement text
      */
-    void addRequirement(TailoringRequirement requirement, Collection<CatalogElement> rows, Map<String, String> placeholders) {
+    void addRequirement(TailoringRequirement requirement, Collection<CatalogElement> rows, Map<String, Object> placeholders) {
         StringBuilder referenzText = new StringBuilder();
         if (nonNull(requirement.getReference())) {
             if (nonNull(requirement.getReference().getLogo())) {
