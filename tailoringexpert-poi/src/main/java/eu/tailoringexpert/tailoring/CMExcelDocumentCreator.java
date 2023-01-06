@@ -81,7 +81,7 @@ public class CMExcelDocumentCreator implements DocumentCreator {
     @Override
     public File createDocument(String docId,
                                Tailoring tailoring,
-                               Map<String, String> placeholders) {
+                               Map<String, Object> placeholders) {
         try {
             FileBuilder result = builder().name(docId + ".xlsx");
 

@@ -53,7 +53,7 @@ public class TenantTemplateEngine implements HTMLTemplateEngine {
 
     @Override
     @SneakyThrows
-    public String toXHTML(String text, Map<String, String> placeholders) {
+    public String toXHTML(String text, Map<String, Object> placeholders) {
         HTMLTemplateEngine engine = getTenantImplementation();
         return engine.toXHTML(text, placeholders);
     }

@@ -67,7 +67,7 @@ public class DRDPDFDocumentCreator implements DocumentCreator {
     @Override
     public File createDocument(String docId,
                                Tailoring tailoring,
-                               Map<String, String> placeholders) {
+                               Map<String, Object> placeholders) {
         log.traceEntry("Start creating DRD document {}", docId);
 
         Map<String, Object> parameter = new HashMap<>(placeholders);
