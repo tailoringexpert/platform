@@ -28,6 +28,8 @@ import eu.tailoringexpert.domain.Catalog;
 import eu.tailoringexpert.domain.Phase;
 import eu.tailoringexpert.domain.Tailoring;
 import eu.tailoringexpert.domain.TailoringRequirement;
+import eu.tailoringexpert.renderer.RendererRequestConfiguration;
+import eu.tailoringexpert.renderer.RendererRequestConfigurationSupplier;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
@@ -41,13 +43,13 @@ import org.apache.poi.ss.util.CellRangeAddress;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
 import java.io.ByteArrayOutputStream;
+import java.nio.file.Paths;
 import java.util.Collection;
 import java.util.LinkedList;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.BiFunction;
-import java.util.function.Function;
 
 import static eu.tailoringexpert.domain.File.FileBuilder;
 import static eu.tailoringexpert.domain.File.builder;
@@ -65,9 +67,8 @@ import static org.apache.poi.ss.usermodel.IndexedColors.GREY_25_PERCENT;
 @Log4j2
 @RequiredArgsConstructor
 public class CMExcelDocumentCreator implements DocumentCreator {
-
     @NonNull
-    private Function<String, java.io.File> templateSupplier;
+    private RendererRequestConfigurationSupplier requestConfigurationSupplier;
 
     @NonNull
     private BiFunction<Chapter<TailoringRequirement>, Collection<Phase>, Map<DRD, Set<String>>> drdProvider;
@@ -84,8 +85,8 @@ public class CMExcelDocumentCreator implements DocumentCreator {
                                Map<String, Object> placeholders) {
         try {
             FileBuilder result = builder().name(docId + ".xlsx");
-
-            java.io.File template = templateSupplier.apply(tailoring.getCatalog().getVersion() + "/cm.xlsx");
+            RendererRequestConfiguration configuration = requestConfigurationSupplier.get();
+            java.io.File template = Paths.get(configuration.getTemplateRoot() + "/" + tailoring.getCatalog().getVersion() + "/cm.xlsx").toFile();
             try (Workbook wb = new XSSFWorkbook(newInputStream(template.toPath()))) {
                 Sheet cmSheet = createCMSheet(wb);
 

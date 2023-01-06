@@ -48,40 +48,52 @@ import static lombok.AccessLevel.PRIVATE;
 
 @Log4j2
 @NoArgsConstructor(access = PRIVATE)
-public class TenantDataSourceFactory {
+public class TenantFactory {
+
+    @SneakyThrows
+    public static Map<String, String> tenants(final String tenantConfigRoot, final StringEncryptor encryptor) {
+        log.info("Search tenant configuration in " + Paths.get(tenantConfigRoot).toFile());
+
+        try (Stream<Path> files = findByFileExtension(Paths.get(tenantConfigRoot), ".properties")) {
+            files.map(Path::toFile)
+                .forEach(propertyFile -> {
+                    final Properties tenantProperties = loadProperties(propertyFile, encryptor);
+                    final String tenantId = tenantProperties.getProperty("id");
+                    final String tenantName = tenantProperties.getProperty("name");
+                    TenantContext.registerTenant(tenantId, tenantName);
+                });
+        }
+        return TenantContext.getRegisteredTenants();
+    }
 
     /**
-     * Erzeugt die Datasources der Teants.
+     * Creates and register tenants and corresponding datasources.
      *
-     * @param defaultDataSource
-     * @param dbconfigRoot
+     * @param defaultDataSource System default datasource
+     * @param tenantConfigRoot  root dir below tenant configuration will be loaded
      * @return
      * @throws IOException
      */
-    public static DataSource dataSource(final DataSource defaultDataSource, final String dbconfigRoot, StringEncryptor encryptor)
+    public static DataSource dataSource(final DataSource defaultDataSource, final String tenantConfigRoot, StringEncryptor encryptor)
         throws IOException {
-        log.info("Suche Tenant DB-Konfigurationen in " + Paths.get(dbconfigRoot).toFile());
+        log.info("Search tenant db configuration in " + Paths.get(tenantConfigRoot).toFile());
 
         final Map<Object, Object> resolvedDataSources = new HashMap<>();
-        try (Stream<Path> files = Files.walk(Paths.get(dbconfigRoot))) {
+        try (Stream<Path> files = findByFileExtension(Paths.get(tenantConfigRoot), ".properties")) {
             files.map(Path::toFile)
-                .filter(file -> "db.properties".equalsIgnoreCase(file.getName()))
                 .forEach(propertyFile -> {
                     final Properties tenantProperties = loadProperties(propertyFile, encryptor);
-                    final String tenantId = tenantProperties.getProperty("name");
+                    final String tenantId = tenantProperties.getProperty("id");
                     final DataSource tenantDataSource = buildDataSource(tenantProperties);
                     resolvedDataSources.put(tenantId, tenantDataSource);
-                    TenantContext.registerTenant(tenantId);
-
                 });
         }
-        if ( resolvedDataSources.isEmpty() ) {
+        if (resolvedDataSources.isEmpty()) {
             log.error("No tenant datasources are available!!!");
         }
         // Create the final multi-tenant source.
         // It needs a default database to connect to.
-        // Make sure that the default database is actually an empty tenant
-        // database.
+        // Make sure that the default database is actually an empty tenant database.
         // Don't use that for a regular tenant if you want things to be safe!
         final TenantDataSource result = new TenantDataSource();
         result.setDefaultTargetDataSource(defaultDataSource);
@@ -109,7 +121,6 @@ public class TenantDataSourceFactory {
      *
      * @param file property file to load
      * @return properties with replaced placeholders
-     * @throws IOException Fehler beim einlesen der File
      */
     @SneakyThrows
     private static Properties loadProperties(final File file, final StringEncryptor encryptor) {
@@ -149,5 +160,16 @@ public class TenantDataSourceFactory {
         m.appendTail(sb);
 
         return sb.toString().trim();
+    }
+
+    private static Stream<Path> findByFileExtension(Path path, String fileExtension)
+        throws IOException {
+        if (!Files.isDirectory(path)) {
+            throw new IllegalArgumentException("Path must be a directory!");
+        }
+
+        return Files.walk(path)
+            .filter(Files::isRegularFile)
+            .filter(p -> p.getFileName().toString().endsWith(fileExtension));
     }
 }

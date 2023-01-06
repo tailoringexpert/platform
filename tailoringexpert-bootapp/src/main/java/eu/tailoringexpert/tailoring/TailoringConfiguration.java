@@ -30,6 +30,9 @@ import eu.tailoringexpert.domain.DRD;
 import eu.tailoringexpert.domain.Chapter;
 import eu.tailoringexpert.domain.Phase;
 import eu.tailoringexpert.domain.TailoringRequirement;
+import eu.tailoringexpert.renderer.HTMLTemplateEngine;
+import eu.tailoringexpert.renderer.PDFEngine;
+import eu.tailoringexpert.renderer.RendererRequestConfigurationSupplier;
 import eu.tailoringexpert.requirement.RequirementService;
 import eu.tailoringexpert.repository.DokumentSigneeRepository;
 import eu.tailoringexpert.repository.LogoRepository;
@@ -182,6 +185,48 @@ public class TailoringConfiguration {
         @NonNull ListableBeanFactory beanFactory) {
         Map<String, TailoringDeletablePredicate> predicates = getTenantImplementierungen(beanFactory, TailoringDeletablePredicate.class);
         return new TenantTailoringDeletablePredicate(predicates, defaultTailoringDeletablePredicate);
+    }
+
+    @Bean
+    DocumentCreator tailoringCatalogDocumentCreator(
+        @NonNull HTMLTemplateEngine templateEngine,
+        @NonNull PDFEngine pdfEngine,
+        @NonNull BiFunction<Chapter<TailoringRequirement>, Collection<Phase>, Map<DRD, Set<String>>> drdProvider) {
+        return new TailoringCatalogPDFDocumentCreator(templateEngine, pdfEngine, drdProvider);
+    }
+    @Bean
+    DocumentCreator comparisionDocumentCreator(
+        @NonNull HTMLTemplateEngine templateEngine,
+        @NonNull PDFEngine pdfEngine,
+        @NonNull BiFunction<Chapter<TailoringRequirement>, Collection<Phase>, Map<DRD, Set<String>>> drdProvider) {
+        return new ComparisonPDFDocumentCreator(templateEngine, pdfEngine);
+    }
+
+    @Bean
+    DocumentCreator drdDocumentCreator(
+        @NonNull HTMLTemplateEngine templateEngine,
+        @NonNull PDFEngine pdfEngine,
+        @NonNull BiFunction<Chapter<TailoringRequirement>, Collection<Phase>, Map<DRD, Set<String>>> drdProvider) {
+        return new DRDPDFDocumentCreator(templateEngine, pdfEngine, drdProvider);
+    }
+
+    @Bean
+    DocumentCreator tailoringCatalogSpreadsheetCreator() {
+        return new TailoringCatalogExcelDocumentCreator();
+    }
+
+    @Bean
+    DocumentCreator cmSpreadsheetCreator(
+        @NonNull RendererRequestConfigurationSupplier requestConfigurationSupplier,
+        @NonNull BiFunction<Chapter<TailoringRequirement>, Collection<Phase>, Map<DRD, Set<String>>> drdProvider) {
+        return new CMExcelDocumentCreator(requestConfigurationSupplier, drdProvider);
+    }
+    @Bean
+    DocumentCreator cmDocumentCreator(
+        @NonNull HTMLTemplateEngine templateEngine,
+        @NonNull PDFEngine pdfEngine,
+        @NonNull BiFunction<Chapter<TailoringRequirement>, Collection<Phase>, Map<DRD, Set<String>>> drdProvider) {
+        return new CMPDFDocumentCreator(templateEngine, pdfEngine, drdProvider);
     }
 
     private <T> Map<String, T> getTenantImplementierungen(ListableBeanFactory beanFactory, Class<T> clz) {

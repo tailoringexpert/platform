@@ -58,7 +58,7 @@ public class DatabaseConfiguration {
         @NonNull @Qualifier("dbconfigRoot") String dbconfigRoot,
         @NonNull @Qualifier("encryptorBean") StringEncryptor encryptor) throws IOException {
         DataSource defaultDataSource = dataSource(driverClassName, url, username, password);
-        return TenantDataSourceFactory.dataSource(defaultDataSource, dbconfigRoot, encryptor);
+        return TenantFactory.dataSource(defaultDataSource, dbconfigRoot, encryptor);
     }
 
     private DataSource dataSource(String driverClassName, String url, String username, String password) {
