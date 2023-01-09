@@ -93,9 +93,9 @@ public class App {
 
     @Bean
     Map<String, String> registerTenants(
-        @Value("${dbconfigRoot}") String tenantConfigRoot,
+        @Value("${tenantConfigDir}") String tenantConfigDir,
         @NonNull @Qualifier("encryptorBean") StringEncryptor encryptor) {
-        return TenantFactory.tenants(tenantConfigRoot, encryptor);
+        return TenantFactory.tenants(tenantConfigDir, encryptor);
     }
 
     @EventListener

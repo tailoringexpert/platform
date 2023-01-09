@@ -37,10 +37,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Objects;
 import java.util.Properties;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 import java.util.stream.Stream;
 
 import static java.nio.file.Files.newInputStream;
@@ -52,7 +49,7 @@ public class TenantFactory {
 
     @SneakyThrows
     public static Map<String, String> tenants(final String tenantConfigRoot, final StringEncryptor encryptor) {
-        log.info("Search tenant configuration in " + Paths.get(tenantConfigRoot).toFile());
+        log.debug("Search tenant configuration in " + Paths.get(tenantConfigRoot).toFile());
 
         try (Stream<Path> files = findByFileExtension(Paths.get(tenantConfigRoot), ".properties")) {
             files.map(Path::toFile)
@@ -76,12 +73,13 @@ public class TenantFactory {
      */
     public static DataSource dataSource(final DataSource defaultDataSource, final String tenantConfigRoot, StringEncryptor encryptor)
         throws IOException {
-        log.info("Search tenant db configuration in " + Paths.get(tenantConfigRoot).toFile());
+        log.debug("Search tenant db configuration in " + Paths.get(tenantConfigRoot).toAbsolutePath());
 
         final Map<Object, Object> resolvedDataSources = new HashMap<>();
         try (Stream<Path> files = findByFileExtension(Paths.get(tenantConfigRoot), ".properties")) {
             files.map(Path::toFile)
                 .forEach(propertyFile -> {
+                    log.debug(propertyFile.getAbsolutePath());
                     final Properties tenantProperties = loadProperties(propertyFile, encryptor);
                     final String tenantId = tenantProperties.getProperty("id");
                     final DataSource tenantDataSource = buildDataSource(tenantProperties);
@@ -112,7 +110,6 @@ public class TenantFactory {
         result.setUrl(properties.getProperty("spring.datasource.url"));
         result.setUsername(properties.getProperty("spring.datasource.username"));
         result.setPassword(properties.getProperty("spring.datasource.password"));
-
         return result;
     }
 
@@ -124,52 +121,20 @@ public class TenantFactory {
      */
     @SneakyThrows
     private static Properties loadProperties(final File file, final StringEncryptor encryptor) {
+        log.debug(file.getAbsolutePath());
         final Properties properties = new Properties();
         try (InputStream fis = newInputStream(file.toPath())) {
             properties.load(fis);
         }
 
-        properties.entrySet().forEach(entry -> entry.setValue(resolvePlaceholder(entry.getValue().toString())));
         return new EncryptableProperties(properties, encryptor);
     }
 
-    /**
-     * Ersetzt den Wert von System- und Umgebungsvariablen.
-     *
-     * @param input Der zu analysierende String
-     * @return Neuer geparster String aus dem Eingabewert
-     */
-    private static String resolvePlaceholder(final String input) {
-        if (input == null) {
-            return null;
-        }
+    @SneakyThrows
+    private static Stream<Path> findByFileExtension(Path path, String fileExtension) {
+        log.debug(path);
 
-        final Pattern p = Pattern.compile("\\$\\{([^}]*)\\}");
-        final Matcher m = p.matcher(input); // get a matcher object
-        final StringBuffer sb = new StringBuffer();
-        while (m.find()) {
-            final String name = null == m.group(1) ? m.group(2) : m.group(1);
-            String value = System.getProperty(name);
-            if (value == null) {
-                value = System.getenv(name);
-            }
-
-            value = value.replace("\\", "\\\\");
-            m.appendReplacement(sb, Objects.nonNull(value) ? value : "");
-        }
-        m.appendTail(sb);
-
-        return sb.toString().trim();
-    }
-
-    private static Stream<Path> findByFileExtension(Path path, String fileExtension)
-        throws IOException {
-        if (!Files.isDirectory(path)) {
-            throw new IllegalArgumentException("Path must be a directory!");
-        }
-
-        return Files.walk(path)
-            .filter(Files::isRegularFile)
+        return Files.walk(path, 1)
             .filter(p -> p.getFileName().toString().endsWith(fileExtension));
     }
 }
