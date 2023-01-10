@@ -45,8 +45,8 @@ import java.io.IOException;
 public class DatabaseConfiguration {
 
     @Bean
-    String dbconfigRoot(@NonNull @Value("${dbconfigRoot}") String dbconfigRoot) {
-        return dbconfigRoot;
+    String tenantConfigDir(@NonNull @Value("${tenantConfigDir}") String tenantConfigDir) {
+        return tenantConfigDir;
     }
 
     @Bean
@@ -55,10 +55,10 @@ public class DatabaseConfiguration {
         @NonNull @Value("${spring.datasource.url}") String url,
         @NonNull @Value("${spring.datasource.username}") String username,
         @NonNull @Value("${spring.datasource.password}") String password,
-        @NonNull @Qualifier("dbconfigRoot") String dbconfigRoot,
+        @NonNull @Qualifier("tenantConfigDir") String tenantConfigDir,
         @NonNull @Qualifier("encryptorBean") StringEncryptor encryptor) throws IOException {
         DataSource defaultDataSource = dataSource(driverClassName, url, username, password);
-        return TenantDataSourceFactory.dataSource(defaultDataSource, dbconfigRoot, encryptor);
+        return TenantFactory.dataSource(defaultDataSource, tenantConfigDir, encryptor);
     }
 
     private DataSource dataSource(String driverClassName, String url, String username, String password) {

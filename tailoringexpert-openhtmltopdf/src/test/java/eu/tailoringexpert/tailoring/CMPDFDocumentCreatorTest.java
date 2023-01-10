@@ -35,6 +35,8 @@ import eu.tailoringexpert.domain.File;
 import eu.tailoringexpert.domain.TailoringRequirement;
 import eu.tailoringexpert.renderer.HTMLTemplateEngine;
 import eu.tailoringexpert.renderer.PDFEngine;
+import eu.tailoringexpert.renderer.RendererRequestConfiguration;
+import eu.tailoringexpert.renderer.RendererRequestConfigurationSupplier;
 import eu.tailoringexpert.renderer.ThymeleafTemplateEngine;
 import eu.tailoringexpert.domain.DRD;
 import eu.tailoringexpert.domain.DocumentSignatureState;
@@ -70,7 +72,6 @@ import static eu.tailoringexpert.domain.Phase.E;
 import static eu.tailoringexpert.domain.Phase.F;
 import static eu.tailoringexpert.domain.Phase.ZERO;
 import static java.nio.file.Files.readAllBytes;
-import static java.nio.file.Paths.get;
 import static java.util.Arrays.asList;
 import static java.util.Collections.unmodifiableCollection;
 import static java.util.List.of;
@@ -128,7 +129,12 @@ class CMPDFDocumentCreatorTest {
         SpringTemplateEngine springTemplateEngine = new SpringTemplateEngine();
         springTemplateEngine.addTemplateResolver(fileTemplateResolver);
 
-        HTMLTemplateEngine templateEngine = new ThymeleafTemplateEngine(springTemplateEngine);
+        RendererRequestConfigurationSupplier supplier = () -> RendererRequestConfiguration.builder()
+            .id("unittest")
+            .name("TailoringExpert")
+            .templateRoot(this.templateHome)
+            .build();
+        HTMLTemplateEngine templateEngine = new ThymeleafTemplateEngine(springTemplateEngine, supplier);
 
         this.drdProviderMock = new DRDProvider(new DRDApplicablePredicate(Map.ofEntries(
             new AbstractMap.SimpleEntry<>(ZERO, unmodifiableCollection(asList("MDR"))),
@@ -141,7 +147,7 @@ class CMPDFDocumentCreatorTest {
         )));
         this.creator = new CMPDFDocumentCreator(
             templateEngine,
-            new PDFEngine("TailoringExpert", get(this.templateHome).toAbsolutePath().toString()),
+            new PDFEngine(supplier),
             drdProviderMock
         );
     }

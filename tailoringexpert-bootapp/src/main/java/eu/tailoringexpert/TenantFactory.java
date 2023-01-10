@@ -37,10 +37,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Objects;
 import java.util.Properties;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 import java.util.stream.Stream;
 
 import static java.nio.file.Files.newInputStream;
@@ -48,40 +45,53 @@ import static lombok.AccessLevel.PRIVATE;
 
 @Log4j2
 @NoArgsConstructor(access = PRIVATE)
-public class TenantDataSourceFactory {
+public class TenantFactory {
+
+    @SneakyThrows
+    public static Map<String, String> tenants(final String tenantConfigRoot, final StringEncryptor encryptor) {
+        log.debug("Search tenant configuration in " + Paths.get(tenantConfigRoot).toFile());
+
+        try (Stream<Path> files = findByFileExtension(Paths.get(tenantConfigRoot), ".properties")) {
+            files.map(Path::toFile)
+                .forEach(propertyFile -> {
+                    final Properties tenantProperties = loadProperties(propertyFile, encryptor);
+                    final String tenantId = tenantProperties.getProperty("id");
+                    final String tenantName = tenantProperties.getProperty("name");
+                    TenantContext.registerTenant(tenantId, tenantName);
+                });
+        }
+        return TenantContext.getRegisteredTenants();
+    }
 
     /**
-     * Erzeugt die Datasources der Teants.
+     * Creates and register tenants and corresponding datasources.
      *
-     * @param defaultDataSource
-     * @param dbconfigRoot
+     * @param defaultDataSource System default datasource
+     * @param tenantConfigRoot  root dir below tenant configuration will be loaded
      * @return
      * @throws IOException
      */
-    public static DataSource dataSource(final DataSource defaultDataSource, final String dbconfigRoot, StringEncryptor encryptor)
+    public static DataSource dataSource(final DataSource defaultDataSource, final String tenantConfigRoot, StringEncryptor encryptor)
         throws IOException {
-        log.info("Suche Tenant DB-Konfigurationen in " + Paths.get(dbconfigRoot).toFile());
+        log.debug("Search tenant db configuration in " + Paths.get(tenantConfigRoot).toAbsolutePath());
 
         final Map<Object, Object> resolvedDataSources = new HashMap<>();
-        try (Stream<Path> files = Files.walk(Paths.get(dbconfigRoot))) {
+        try (Stream<Path> files = findByFileExtension(Paths.get(tenantConfigRoot), ".properties")) {
             files.map(Path::toFile)
-                .filter(file -> "db.properties".equalsIgnoreCase(file.getName()))
                 .forEach(propertyFile -> {
+                    log.debug(propertyFile.getAbsolutePath());
                     final Properties tenantProperties = loadProperties(propertyFile, encryptor);
-                    final String tenantId = tenantProperties.getProperty("name");
+                    final String tenantId = tenantProperties.getProperty("id");
                     final DataSource tenantDataSource = buildDataSource(tenantProperties);
                     resolvedDataSources.put(tenantId, tenantDataSource);
-                    TenantContext.registerTenant(tenantId);
-
                 });
         }
-        if ( resolvedDataSources.isEmpty() ) {
+        if (resolvedDataSources.isEmpty()) {
             log.error("No tenant datasources are available!!!");
         }
         // Create the final multi-tenant source.
         // It needs a default database to connect to.
-        // Make sure that the default database is actually an empty tenant
-        // database.
+        // Make sure that the default database is actually an empty tenant database.
         // Don't use that for a regular tenant if you want things to be safe!
         final TenantDataSource result = new TenantDataSource();
         result.setDefaultTargetDataSource(defaultDataSource);
@@ -100,7 +110,6 @@ public class TenantDataSourceFactory {
         result.setUrl(properties.getProperty("spring.datasource.url"));
         result.setUsername(properties.getProperty("spring.datasource.username"));
         result.setPassword(properties.getProperty("spring.datasource.password"));
-
         return result;
     }
 
@@ -109,45 +118,23 @@ public class TenantDataSourceFactory {
      *
      * @param file property file to load
      * @return properties with replaced placeholders
-     * @throws IOException Fehler beim einlesen der File
      */
     @SneakyThrows
     private static Properties loadProperties(final File file, final StringEncryptor encryptor) {
+        log.debug(file.getAbsolutePath());
         final Properties properties = new Properties();
         try (InputStream fis = newInputStream(file.toPath())) {
             properties.load(fis);
         }
 
-        properties.entrySet().forEach(entry -> entry.setValue(resolvePlaceholder(entry.getValue().toString())));
         return new EncryptableProperties(properties, encryptor);
     }
 
-    /**
-     * Ersetzt den Wert von System- und Umgebungsvariablen.
-     *
-     * @param input Der zu analysierende String
-     * @return Neuer geparster String aus dem Eingabewert
-     */
-    private static String resolvePlaceholder(final String input) {
-        if (input == null) {
-            return null;
-        }
+    @SneakyThrows
+    private static Stream<Path> findByFileExtension(Path path, String fileExtension) {
+        log.debug(path);
 
-        final Pattern p = Pattern.compile("\\$\\{([^}]*)\\}");
-        final Matcher m = p.matcher(input); // get a matcher object
-        final StringBuffer sb = new StringBuffer();
-        while (m.find()) {
-            final String name = null == m.group(1) ? m.group(2) : m.group(1);
-            String value = System.getProperty(name);
-            if (value == null) {
-                value = System.getenv(name);
-            }
-
-            value = value.replace("\\", "\\\\");
-            m.appendReplacement(sb, Objects.nonNull(value) ? value : "");
-        }
-        m.appendTail(sb);
-
-        return sb.toString().trim();
+        return Files.walk(path, 1)
+            .filter(p -> p.getFileName().toString().endsWith(fileExtension));
     }
 }

@@ -34,6 +34,7 @@ import eu.tailoringexpert.domain.Catalog;
 import eu.tailoringexpert.domain.File;
 import eu.tailoringexpert.renderer.HTMLTemplateEngine;
 import eu.tailoringexpert.renderer.PDFEngine;
+import eu.tailoringexpert.renderer.RendererRequestConfiguration;
 import eu.tailoringexpert.renderer.ThymeleafTemplateEngine;
 import io.github.cdimascio.dotenv.Dotenv;
 import lombok.extern.log4j.Log4j2;
@@ -106,11 +107,24 @@ class BaseCatalogPDFDocumentCreatorTest {
         SpringTemplateEngine springTemplateEngine = new SpringTemplateEngine();
         springTemplateEngine.addTemplateResolver(fileTemplateResolver);
 
-        HTMLTemplateEngine templateEngine = new ThymeleafTemplateEngine(springTemplateEngine);
+        HTMLTemplateEngine templateEngine = new ThymeleafTemplateEngine(
+            springTemplateEngine,
+            () -> RendererRequestConfiguration.builder()
+                .id("plattform")
+                .name("plattform")
+                .templateRoot(this.templateHome)
+                .build()
+        );
 
         this.creator = new BaseCatalogPDFDocumentCreator(
             templateEngine,
-            new PDFEngine("TailoringExpert", get(this.templateHome).toAbsolutePath().toString())
+            new PDFEngine(
+                () -> RendererRequestConfiguration.builder()
+                    .id("plattform")
+                    .name("TailoringExpert")
+                    .templateRoot(get(this.templateHome).toAbsolutePath().toString())
+                    .build()
+            )
         );
     }
 

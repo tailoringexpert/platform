@@ -22,17 +22,15 @@
 package eu.tailoringexpert.tailoring;
 
 import eu.tailoringexpert.TenantContext;
+import eu.tailoringexpert.renderer.RendererRequestConfiguration;
+import eu.tailoringexpert.renderer.RendererRequestConfigurationSupplier;
 import eu.tailoringexpert.renderer.TenantTemplateEngine;
 import eu.tailoringexpert.renderer.HTMLTemplateEngine;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import java.util.AbstractMap;
-import java.util.Map;
-
 import static java.util.Collections.emptyMap;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.catchException;
 import static org.mockito.ArgumentMatchers.anyMap;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.eq;
@@ -44,70 +42,45 @@ import static org.mockito.Mockito.verify;
 class TenantTemplateEngineTest {
 
     TenantTemplateEngine engine;
-    HTMLTemplateEngine tenantTemplateEngineMock;
+    HTMLTemplateEngine templateEngineMock;
+    RendererRequestConfigurationSupplier supplierMock;
 
     @BeforeEach
     void beforeEach() {
-        this.tenantTemplateEngineMock = mock(HTMLTemplateEngine.class);
-        this.engine = new TenantTemplateEngine(Map.ofEntries(
-            new AbstractMap.SimpleEntry("TENANT", tenantTemplateEngineMock)
-        ));
-    }
-
-    @Test
-    void process_TenantNotExists_NoSuchMethodExceptionThrown() {
-        // arrange
-        TenantContext.setCurrentTenant("INVALD");
-
-        // act
-        Exception actual = catchException(() -> engine.process("template", emptyMap()));
-
-        // assert
-        assertThat(actual).isInstanceOf(NoSuchMethodException.class);
-        verify(tenantTemplateEngineMock, times(0)).process("template", emptyMap());
-
+        this.templateEngineMock = mock(HTMLTemplateEngine.class);
+        this.supplierMock = mock(RendererRequestConfigurationSupplier.class);
+        this.engine = new TenantTemplateEngine(templateEngineMock, supplierMock);
     }
 
     @Test
     void process_TenantVorhanden_StringWirdZurueckGegeben() {
         // arrange
         TenantContext.setCurrentTenant("TENANT");
-        given(tenantTemplateEngineMock.process(anyString(), anyMap())).willReturn("HTML");
+        given(templateEngineMock.process(anyString(), anyMap())).willReturn("HTML");
+        given(supplierMock.get()).willReturn(RendererRequestConfiguration.builder().id("TENANT").build());
 
         //act
         String actual = engine.process("template", emptyMap());
 
         // assert
         assertThat(actual).isEqualTo("HTML");
-        verify(tenantTemplateEngineMock, times(1)).process("template", emptyMap());
-    }
-
-    @Test
-    void toXHTML_TenantNichtVorhanden_NoSuchMethodExceptionThrown() {
-        // arrange
-        TenantContext.setCurrentTenant("INVALD");
-
-        // act
-        Exception actual = catchException(() -> engine.toXHTML("HTML", emptyMap()));
-
-        // assert
-        assertThat(actual).isInstanceOf(NoSuchMethodException.class);
-        verify(tenantTemplateEngineMock, times(0)).toXHTML("HTML", emptyMap());
-
+        verify(templateEngineMock, times(1)).process("/TENANT/template", emptyMap());
+        verify(supplierMock, times(1)).get();
     }
 
     @Test
     void toXHTML_TenantVorhanden_StringWirdZurueckGegeben() {
         // arrange
         TenantContext.setCurrentTenant("TENANT");
-        given(tenantTemplateEngineMock.toXHTML(anyString(), anyMap())).willReturn("HTML");
+        given(templateEngineMock.toXHTML(anyString(), anyMap())).willReturn("HTML");
 
         //act
         String actual = engine.toXHTML("HTML", emptyMap());
 
         // assert
         assertThat(actual).isEqualTo("HTML");
-        verify(tenantTemplateEngineMock, times(1)).toXHTML(eq("HTML"), anyMap());
+        verify(templateEngineMock, times(1)).toXHTML(eq("HTML"), anyMap());
+        verify(supplierMock, times(0)).get();
     }
 
 }

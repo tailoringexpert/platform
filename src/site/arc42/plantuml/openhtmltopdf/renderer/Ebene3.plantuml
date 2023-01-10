@@ -2,14 +2,22 @@
 hide empty members
 
 package renderer {
+
+    interface RendererRequestConfigurationSupplier<RendererRequestConfiguration> {
+    }
+
     class ThymeleafTemplateEngine {
         templateEngine : ITemplateEngine
-        toXHTML(text : String, platzhalter :  Map<String, String>) : String
+        toXHTML(text : String, platzhalter :  Map<String, Object>) : String
     }
+    ThymeleafTemplateEngine --> "1" RendererRequestConfigurationSupplier : supplier
     HTMLTemplateEngine <|.. ThymeleafTemplateEngine
+
     class PDFEngine {
         baseUri : String
         process(docId : String, html : String, pfadSuffix : String) :  File
     }
+    PDFEngine --> "1" RendererRequestConfigurationSupplier : supplier
+
 }
 @enduml

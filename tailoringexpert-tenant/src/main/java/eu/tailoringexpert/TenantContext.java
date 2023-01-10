@@ -23,9 +23,10 @@ package eu.tailoringexpert;
 
 import lombok.NoArgsConstructor;
 
-import java.util.HashSet;
-import java.util.Set;
+import java.util.HashMap;
+import java.util.Map;
 
+import static java.util.Objects.*;
 import static java.util.Objects.nonNull;
 import static lombok.AccessLevel.PRIVATE;
 
@@ -40,9 +41,9 @@ import static lombok.AccessLevel.PRIVATE;
 public class TenantContext {
 
     /**
-     * Die im System registrierten Tenantschlüssel.
+     * Registered tenants of plattform instance.
      */
-    private static Set<String> registeredTenants = new HashSet<>();
+    private static Map<String, String> registeredTenants = new HashMap<>();
 
     /**
      * Thread Local des zu verwendenden Tenants.
@@ -50,22 +51,25 @@ public class TenantContext {
     private static final ThreadLocal<String> tenantThreadLocal = new ThreadLocal<>();
 
     /**
-     * Registriert einen Tenant(schlüssel).
+     * Register a new tenant.
      *
-     * @param tenant Der zu registrierende Tenant
+     * @param tenant id of tenant to register
+     * @param name   name of tenant
      */
-    public static void registerTenant(final String tenant) {
+    public static void registerTenant(final String tenant, final String name) {
         if (nonNull(tenant) && !tenant.trim().isBlank()) {
-            registeredTenants.add(tenant);
+            String tenantName = isNull(name) || name.isBlank() ? tenant : name;
+            registeredTenants.put(tenant, tenantName);
         }
     }
+
 
     /**
      * Gibt die Liste aller registerierten Tenant(schlüssel) zurück.
      *
      * @return Alle registrierten Tenants
      */
-    public static Set<String> getRegisteredTenants() {
+    public static Map<String, String> getRegisteredTenants() {
         return registeredTenants;
     }
 

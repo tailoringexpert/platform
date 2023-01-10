@@ -24,6 +24,8 @@ package eu.tailoringexpert.catalog;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import eu.tailoringexpert.Tenants;
 import eu.tailoringexpert.domain.ResourceMapper;
+import eu.tailoringexpert.renderer.HTMLTemplateEngine;
+import eu.tailoringexpert.renderer.PDFEngine;
 import eu.tailoringexpert.repository.BaseCatalogRepository;
 import eu.tailoringexpert.repository.DRDRepository;
 import eu.tailoringexpert.repository.LogoRepository;
@@ -83,5 +85,14 @@ public class CatalogConfiguration {
         Map<String, DocumentService> services = Tenants.get(beanFactory, DocumentService.class);
         return new TenantDocumentService(services);
     }
+
+    @Bean
+    BaseCatalogPDFDocumentCreator baseCatalogPDFDocumentCreator(
+        @NonNull HTMLTemplateEngine templateEngine,
+        @NonNull PDFEngine pdfEngine) {
+        return new BaseCatalogPDFDocumentCreator(templateEngine, pdfEngine);
+    }
+
+
 
 }

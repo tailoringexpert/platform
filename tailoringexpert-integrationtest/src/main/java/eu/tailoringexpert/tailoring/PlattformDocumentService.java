@@ -35,9 +35,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
-import static java.util.Map.entry;
 import static java.util.Optional.ofNullable;
 
 @Tenant("plattform")
@@ -111,7 +109,9 @@ public class PlattformDocumentService implements DocumentService {
         createTailoringRequirementDocument(tailoring, creationTimestamp, false).ifPresent(result::add);
         createComparisonDocument(tailoring, creationTimestamp).ifPresent(result::add);
         createDRDDokument(tailoring, creationTimestamp).ifPresent(result::add);
+
         createCMDokument(tailoring, creationTimestamp).ifPresent(result::add);
+
         createCMSpreadsheetDokument(tailoring, creationTimestamp).ifPresent(result::add);
         createTailoringRequirementDokument(tailoring, creationTimestamp).ifPresent(result::add);
 

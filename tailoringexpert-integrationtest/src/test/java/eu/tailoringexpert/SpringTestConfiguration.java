@@ -69,9 +69,9 @@ public class SpringTestConfiguration {
 
     @Bean
     @Primary
-    String dbconfigRoot() {
+    String tenantConfigDir() {
         Dotenv env = Dotenv.configure().ignoreIfMissing().load();
-        return new File(env.get("DBCONFIG_ROOT_TEST", "src/test/resources/tenants/")).toPath().toAbsolutePath().toString();
+        return new File(env.get("TENANT_CONFIG_DIR_TEST", "src/test/resources/tenants/")).toPath().toAbsolutePath().toString();
     }
 
     @Bean

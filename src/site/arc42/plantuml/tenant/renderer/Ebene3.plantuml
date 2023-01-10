@@ -5,12 +5,21 @@ package renderer {
 
     interface HTMLTemplateEngine {
         process(template : String, Map<String, Object> variables) : String
-        toXHTML(text :String, placeholders : Map<String, String>) : String
+        toXHTML(text :String, placeholders : Map<String, Object>) : String
     }
 
     class TenantTemplateEngine {
         tenantEngine :  Map<String, HTMLTemplateEngine>
     }
     HTMLTemplateEngine <|.. TenantTemplateEngine
+
+    interface RendererRequestConfigurationSupplier<RendererRequestConfiguration> {
+    }
+
+    class TenantRendererConfigurationSupplier {
+        templateRoot : String
+    }
+    RendererRequestConfigurationSupplier <|.. TenantRendererConfigurationSupplier
+
 }
 @enduml

@@ -2,7 +2,7 @@
  * #%L
  * TailoringExpert
  * %%
- * Copyright (C) 2022 Michael Bädorf and others
+ * Copyright (C) 2022 - 2023 Michael Bädorf and others
  * %%
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as
@@ -21,14 +21,7 @@
  */
 package eu.tailoringexpert.renderer;
 
-import eu.tailoringexpert.Tenant;
-import org.thymeleaf.spring6.SpringTemplateEngine;
+import java.util.function.Supplier;
 
-@Tenant("plattform")
-public class PlattformThymeleafTemplateEngine extends ThymeleafTemplateEngine {
-
-    public PlattformThymeleafTemplateEngine(SpringTemplateEngine templateEngine) {
-        super(templateEngine);
-    }
-
+public interface RendererRequestConfigurationSupplier extends Supplier<RendererRequestConfiguration> {
 }

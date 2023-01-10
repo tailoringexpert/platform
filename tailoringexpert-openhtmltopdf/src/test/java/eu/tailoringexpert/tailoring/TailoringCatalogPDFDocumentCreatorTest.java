@@ -37,6 +37,8 @@ import eu.tailoringexpert.domain.Tailoring;
 import eu.tailoringexpert.domain.TailoringRequirement;
 import eu.tailoringexpert.renderer.HTMLTemplateEngine;
 import eu.tailoringexpert.renderer.PDFEngine;
+import eu.tailoringexpert.renderer.RendererRequestConfiguration;
+import eu.tailoringexpert.renderer.RendererRequestConfigurationSupplier;
 import eu.tailoringexpert.renderer.ThymeleafTemplateEngine;
 import io.github.cdimascio.dotenv.Dotenv;
 import lombok.extern.log4j.Log4j2;
@@ -64,7 +66,6 @@ import static eu.tailoringexpert.domain.Phase.E;
 import static eu.tailoringexpert.domain.Phase.F;
 import static eu.tailoringexpert.domain.Phase.ZERO;
 import static java.nio.file.Files.readAllBytes;
-import static java.nio.file.Paths.get;
 import static java.util.Arrays.asList;
 import static java.util.Collections.unmodifiableCollection;
 import static java.util.List.of;
@@ -119,10 +120,16 @@ class TailoringCatalogPDFDocumentCreatorTest {
         fileTemplateResolver.setCharacterEncoding("UTF-8");
         fileTemplateResolver.setOrder(1);
 
+        RendererRequestConfigurationSupplier supplier = () -> RendererRequestConfiguration.builder()
+            .id("unittest")
+            .name("TailoringExpert")
+            .templateRoot(this.templateHome)
+            .build();
+
         SpringTemplateEngine springTemplateEngine = new SpringTemplateEngine();
         springTemplateEngine.addTemplateResolver(fileTemplateResolver);
 
-        HTMLTemplateEngine templateEngine = new ThymeleafTemplateEngine(springTemplateEngine);
+        HTMLTemplateEngine templateEngine = new ThymeleafTemplateEngine(springTemplateEngine, supplier);
 
         this.drdProviderMock = new DRDProvider(new DRDApplicablePredicate(Map.ofEntries(
             new SimpleEntry<>(ZERO, unmodifiableCollection(asList("MDR"))),
@@ -136,7 +143,7 @@ class TailoringCatalogPDFDocumentCreatorTest {
 
         this.creator = new TailoringCatalogPDFDocumentCreator(
             templateEngine,
-            new PDFEngine("TailoringExpert", get(this.templateHome).toAbsolutePath().toString()),
+            new PDFEngine(supplier),
             drdProviderMock
         );
     }

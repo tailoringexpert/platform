@@ -46,11 +46,16 @@ public class ThymeleafTemplateEngine implements HTMLTemplateEngine {
     @NonNull
     private ITemplateEngine templateEngine;
 
+
+    @NonNull
+    private RendererRequestConfigurationSupplier requestConfigurationSupplier;
+
     /**
      * {@inheritDoc}
      */
     @Override
     public String process(String template, Map<String, Object> parameter) {
+        parameter.put("FRAGMENT_PREFIX", requestConfigurationSupplier.get().getFragmentPrefix());
         return templateEngine.process(template, new Context(Locale.GERMAN, parameter));
     }
 
@@ -63,11 +68,12 @@ public class ThymeleafTemplateEngine implements HTMLTemplateEngine {
         placeholders.entrySet()
             .forEach(entry -> updatedText.set(updatedText.get().replace(
                 entry.getKey(),
-                nonNull(entry.getValue()) ? entry.getValue().toString() : null)
+                nonNull(entry.getValue()) ? entry.getValue().toString() : entry.getKey())
             ));
         Document document = Jsoup.parseBodyFragment(updatedText.get());
         document.outputSettings().escapeMode(Entities.EscapeMode.xhtml);
         document.outputSettings().syntax(Document.OutputSettings.Syntax.xml);
         return document.body().html();
     }
+
 }
