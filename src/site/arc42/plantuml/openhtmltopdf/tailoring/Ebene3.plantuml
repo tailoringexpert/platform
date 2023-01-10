@@ -9,7 +9,7 @@ package renderer {
 package tailoring {
 
     interface DocumentCreator {
-        createDocument(docId : String, tailoring : Tailoring, placeholders : Map<String, String>) : File
+        createDocument(docId : String, tailoring : Tailoring, placeholders : Map<String, Object>) : File
     }
 
     class TailoringCatalogPDFDocumentCreator {

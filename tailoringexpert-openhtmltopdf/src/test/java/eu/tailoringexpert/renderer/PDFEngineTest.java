@@ -40,7 +40,14 @@ class PDFEngineTest {
 
     @BeforeEach
     void beforeEach() {
-        this.engine = new PDFEngine("JUnit", "baseuri");
+        this.engine =
+            new PDFEngine(
+                () -> RendererRequestConfiguration.builder()
+                    .id("plattform")
+                    .name("TailoringExpert")
+                    .templateRoot("baseuri")
+                    .build()
+            );
     }
 
     @Test

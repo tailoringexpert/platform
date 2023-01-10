@@ -3,9 +3,24 @@ hide empty members
 
 package renderer {
 
+    interface "Supplier<T>" as Supplier {
+        get() : T
+    }
+
     interface HTMLTemplateEngine {
         process(template : String, Map<String, Object> variables) : String
         toXHTML(text :String, placeholders : Map<String, String>) : String
     }
+
+    class RendererRequestConfiguration {
+        id : String
+        name : String
+        templateRoot : String
+        fragmentPrefix : String = ""
+    }
+
+    interface RendererRequestConfigurationSupplier<RendererRequestConfiguration> {
+    }
+    Supplier <|-- RendererRequestConfigurationSupplier
 }
 @enduml

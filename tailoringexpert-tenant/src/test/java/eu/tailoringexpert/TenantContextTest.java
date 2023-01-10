@@ -23,9 +23,13 @@ package eu.tailoringexpert;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 
 import java.lang.reflect.Field;
-import java.util.HashSet;
+import java.util.HashMap;
+import java.util.stream.Stream;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -36,18 +40,18 @@ class TenantContextTest {
     void beforeEach() throws Exception {
         Field field = TenantContext.class.getDeclaredField("registeredTenants");
         field.setAccessible(true);
-        field.set(null, new HashSet<String>());
+        field.set(null, new HashMap<String, String>());
         field.setAccessible(false);
 
         TenantContext.setCurrentTenant(null);
     }
 
     @Test
-    void registerTenant_TenantNull_TenantNotAdded() {
+    void registerTenant_TenantIdNull_TenantNotAdded() {
         // arrange
 
         // act
-        TenantContext.registerTenant(null);
+        TenantContext.registerTenant(null, null);
 
         // assert
         assertThat(TenantContext.getRegisteredTenants()).isEmpty();
@@ -59,25 +63,35 @@ class TenantContextTest {
         // arrange
 
         // act
-        TenantContext.registerTenant(" ");
+        TenantContext.registerTenant(" ", null);
 
         // assert
         assertThat(TenantContext.getRegisteredTenants()).isEmpty();
     }
 
-    @Test
-    void registerTenant_TenantValid_TenantAdded() {
+    @ParameterizedTest
+    @MethodSource
+    void registerTenant(String id, String name, String expected) {
         // arrange
 
         // act
-        TenantContext.registerTenant("TENANT");
+        TenantContext.registerTenant(id, name);
 
         // assert
         assertThat(TenantContext.getRegisteredTenants()).hasSize(1);
+        assertThat(TenantContext.getRegisteredTenants()).containsEntry(id, expected);
+    }
+
+    private static Stream<Arguments> registerTenant() { // NOPMD - suppressed UnusedPrivateMethod - Used by parameterized test registerTenant
+        return Stream.of(
+            Arguments.of("TENANT", null, "TENANT"),
+            Arguments.of("TENANT", " ", "TENANT"),
+            Arguments.of("TENANT ", "Plattform", "Plattform")
+        );
     }
 
     @Test
-    void getRegisteredTenants_NoTentanRegistered_EmptySet() {
+    void getRegisteredTenants_NoTenantRegistered_EmptySet() {
         // arrange
 
         // act
@@ -91,12 +105,12 @@ class TenantContextTest {
         // arrange
 
         // act
-        TenantContext.registerTenant("TENANT1");
-        TenantContext.registerTenant("TENANT2");
+        TenantContext.registerTenant("TENANT1", "Tenant 1");
+        TenantContext.registerTenant("TENANT2", "Tenant 2");
 
         // assert
         assertThat(TenantContext.getRegisteredTenants()).hasSize(2);
-        assertThat(TenantContext.getRegisteredTenants()).containsOnlyOnce("TENANT1", "TENANT2");
+        assertThat(TenantContext.getRegisteredTenants()).containsOnlyKeys("TENANT1", "TENANT2");
     }
 
     @Test
@@ -104,12 +118,12 @@ class TenantContextTest {
         // arrange
 
         // act
-        TenantContext.registerTenant("TENANT1");
-        TenantContext.registerTenant("TENANT1");
+        TenantContext.registerTenant("TENANT1", "Tenant 1");
+        TenantContext.registerTenant("TENANT1", "Tenant 2");
 
         // assert
         assertThat(TenantContext.getRegisteredTenants()).hasSize(1);
-        assertThat(TenantContext.getRegisteredTenants()).containsOnlyOnce("TENANT1");
+        assertThat(TenantContext.getRegisteredTenants()).containsKeys("TENANT1");
     }
 
     @Test

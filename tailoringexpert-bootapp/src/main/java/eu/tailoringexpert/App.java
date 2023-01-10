@@ -26,6 +26,7 @@ import lombok.NonNull;
 import lombok.extern.log4j.Log4j2;
 import org.jasypt.encryption.StringEncryptor;
 import org.jasypt.encryption.pbe.StandardPBEStringEncryptor;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -45,6 +46,7 @@ import org.springframework.core.env.MutablePropertySources;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.Arrays;
+import java.util.Map;
 import java.util.stream.StreamSupport;
 
 import static org.springframework.context.annotation.FilterType.REGEX;
@@ -89,6 +91,12 @@ public class App {
         return result;
     }
 
+    @Bean
+    Map<String, String> registerTenants(
+        @Value("${tenantConfigDir}") String tenantConfigDir,
+        @NonNull @Qualifier("encryptorBean") StringEncryptor encryptor) {
+        return TenantFactory.tenants(tenantConfigDir, encryptor);
+    }
 
     @EventListener
     public static void handleContextRefresh(ContextRefreshedEvent event) {

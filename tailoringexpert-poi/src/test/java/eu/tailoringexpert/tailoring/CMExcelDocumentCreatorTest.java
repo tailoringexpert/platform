@@ -36,7 +36,7 @@ import eu.tailoringexpert.domain.Chapter;
 import eu.tailoringexpert.domain.Phase;
 import eu.tailoringexpert.domain.Tailoring;
 import eu.tailoringexpert.domain.TailoringRequirement;
-import lombok.SneakyThrows;
+import eu.tailoringexpert.renderer.RendererRequestConfiguration;
 import lombok.extern.log4j.Log4j2;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -56,7 +56,6 @@ import java.util.Collection;
 import java.util.Map;
 import java.util.Set;
 import java.util.function.BiFunction;
-import java.util.function.Function;
 
 import static eu.tailoringexpert.domain.Phase.A;
 import static eu.tailoringexpert.domain.Phase.B;
@@ -100,13 +99,12 @@ class CMExcelDocumentCreatorTest {
                 new SimpleEntry<>(E, unmodifiableCollection(asList("ORR"))),
                 new SimpleEntry<>(F, unmodifiableCollection(asList("EOM")))
             )));
-        this.creator = new CMExcelDocumentCreator(new Function<String, java.io.File>() {
-            @SneakyThrows
-            @Override
-            public java.io.File apply(String s) {
-                return new java.io.File("src/test/resources/" + s);
-            }
-        }, this.drdProviderMock);
+        this.creator = new CMExcelDocumentCreator(
+            () -> RendererRequestConfiguration.builder()
+                .id("unittest")
+                .name("unittest")
+                .templateRoot("src/test/resources/")
+                .build(), this.drdProviderMock);
     }
 
     @Test
