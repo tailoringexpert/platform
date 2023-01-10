@@ -7,5 +7,6 @@
     <include file="db-tailoringexpert/0.0.1/db.changelog-0.0.1.xml"/>
     <include file="db-tailoringexpert/0.0.2/db.changelog-0.0.2.xml"/>
     <include file="db-tailoringexpert/0.0.3/db.changelog-0.0.3.xml"/>
+    <include file="db-tailoringexpert/0.0.4/db.changelog-0.0.4.xml"/>
 
 </databaseChangeLog>

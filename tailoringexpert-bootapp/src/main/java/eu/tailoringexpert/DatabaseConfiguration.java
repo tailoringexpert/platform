@@ -56,7 +56,7 @@ public class DatabaseConfiguration {
         @NonNull @Value("${spring.datasource.username}") String username,
         @NonNull @Value("${spring.datasource.password}") String password,
         @NonNull @Qualifier("tenantConfigDir") String tenantConfigDir,
-        @NonNull @Qualifier("encryptorBean") StringEncryptor encryptor) throws IOException {
+        @NonNull @Qualifier("encryptorBean") StringEncryptor encryptor) {
         DataSource defaultDataSource = dataSource(driverClassName, url, username, password);
         return TenantFactory.dataSource(defaultDataSource, tenantConfigDir, encryptor);
     }
