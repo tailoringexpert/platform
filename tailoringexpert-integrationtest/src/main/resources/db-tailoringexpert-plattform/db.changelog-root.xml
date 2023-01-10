@@ -7,6 +7,7 @@
     <include file="db-tailoringexpert-plattform/0.0.1/db.changelog-0.0.1.xml" relativeToChangelogFile="false"/>
     <include file="db-tailoringexpert-plattform/0.0.2/db.changelog-0.0.2.xml" relativeToChangelogFile="false"/>
     <include file="db-tailoringexpert-plattform/0.0.3/db.changelog-0.0.3.xml" relativeToChangelogFile="false"/>
+    <include file="db-tailoringexpert-plattform/0.0.4/db.changelog-0.0.4.xml" relativeToChangelogFile="false"/>
 
 
 </databaseChangeLog>

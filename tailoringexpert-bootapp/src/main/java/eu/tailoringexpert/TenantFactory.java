@@ -48,7 +48,9 @@ import static lombok.AccessLevel.PRIVATE;
 public class TenantFactory {
 
     @SneakyThrows
-    public static Map<String, String> tenants(final String tenantConfigRoot, final StringEncryptor encryptor) {
+    public static Map<String, String> tenants(
+        final String tenantConfigRoot,
+        final StringEncryptor encryptor) {
         log.debug("Search tenant configuration in " + Paths.get(tenantConfigRoot).toFile());
 
         try (Stream<Path> files = findByFileExtension(Paths.get(tenantConfigRoot), ".properties")) {
@@ -71,9 +73,11 @@ public class TenantFactory {
      * @return
      * @throws IOException
      */
-    public static DataSource dataSource(final DataSource defaultDataSource, final String tenantConfigRoot, StringEncryptor encryptor)
-        throws IOException {
-        log.debug("Search tenant db configuration in " + Paths.get(tenantConfigRoot).toAbsolutePath());
+    public static DataSource dataSource(
+        final DataSource defaultDataSource,
+        final String tenantConfigRoot,
+        final StringEncryptor encryptor) {
+        log.debug("Search tenant db configuration in " + Paths.get(tenantConfigRoot).toFile());
 
         final Map<Object, Object> resolvedDataSources = new HashMap<>();
         try (Stream<Path> files = findByFileExtension(Paths.get(tenantConfigRoot), ".properties")) {
@@ -117,23 +121,19 @@ public class TenantFactory {
      * Load propertyfile and replaces placeholder.
      *
      * @param file property file to load
-     * @return properties with replaced placeholders
+     * @return loaded encrypted properties
      */
     @SneakyThrows
     private static Properties loadProperties(final File file, final StringEncryptor encryptor) {
-        log.debug(file.getAbsolutePath());
         final Properties properties = new Properties();
         try (InputStream fis = newInputStream(file.toPath())) {
             properties.load(fis);
         }
-
         return new EncryptableProperties(properties, encryptor);
     }
 
     @SneakyThrows
     private static Stream<Path> findByFileExtension(Path path, String fileExtension) {
-        log.debug(path);
-
         return Files.walk(path, 1)
             .filter(p -> p.getFileName().toString().endsWith(fileExtension));
     }
