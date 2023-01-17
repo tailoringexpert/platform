@@ -47,7 +47,7 @@ public class RendererRequestConfiguration {
     /**
      * System-wide template root directory.
      */
-    private String templateRoot;
+    private String templateHome;
 
     /**
      * Prefix for resolving external parts to include in HTML.

@@ -103,7 +103,7 @@ class TailoringCatalogPDFDocumentCreatorTest {
     void setup() {
         Dotenv env = Dotenv.configure().ignoreIfMissing().load();
         this.templateHome = env.get("TEMPLATE_HOME", "src/test/resources/templates/");
-        this.assetHome = env.get("ASSET_HOME", "src/test/resources/templates/");
+        this.assetHome = env.get("ASSET_HOME1", "src/test/resources/templates/");
 
         this.objectMapper = new ObjectMapper();
         this.objectMapper.registerModules(new ParameterNamesModule(), new JavaTimeModule(), new Jdk8Module());
@@ -123,7 +123,7 @@ class TailoringCatalogPDFDocumentCreatorTest {
         RendererRequestConfigurationSupplier supplier = () -> RendererRequestConfiguration.builder()
             .id("unittest")
             .name("TailoringExpert")
-            .templateRoot(this.templateHome)
+            .templateHome(this.templateHome)
             .build();
 
         SpringTemplateEngine springTemplateEngine = new SpringTemplateEngine();
@@ -180,6 +180,7 @@ class TailoringCatalogPDFDocumentCreatorTest {
         platzhalter.put("DATUM", now.format(DateTimeFormatter.ofPattern("dd.MM.YYYY")));
         platzhalter.put("DOKUMENT", "SAMPLE-XY-Z-1940/DV7");
         platzhalter.put("${DRD_DOCID}", "SAMPLE_DOC");
+        platzhalter.put("SHOW_ALL", Boolean.FALSE);
 
         mockServer
             .when(request()

@@ -112,7 +112,7 @@ class BaseCatalogPDFDocumentCreatorTest {
             () -> RendererRequestConfiguration.builder()
                 .id("plattform")
                 .name("plattform")
-                .templateRoot(this.templateHome)
+                .templateHome(this.templateHome)
                 .build()
         );
 
@@ -122,7 +122,7 @@ class BaseCatalogPDFDocumentCreatorTest {
                 () -> RendererRequestConfiguration.builder()
                     .id("plattform")
                     .name("TailoringExpert")
-                    .templateRoot(get(this.templateHome).toAbsolutePath().toString())
+                    .templateHome(get(this.templateHome).toAbsolutePath().toString())
                     .build()
             )
         );

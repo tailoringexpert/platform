@@ -93,7 +93,7 @@ class ComparisonPDFDocumentCreatorTest {
         RendererRequestConfigurationSupplier supplier = () -> RendererRequestConfiguration.builder()
             .id("unitest")
             .name("TailoringExpert")
-            .templateRoot(this.templateHome)
+            .templateHome(this.templateHome)
             .build();
         HTMLTemplateEngine templateEngine = new ThymeleafTemplateEngine(springTemplateEngine, supplier);
 

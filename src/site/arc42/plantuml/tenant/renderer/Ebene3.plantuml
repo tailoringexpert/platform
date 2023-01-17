@@ -17,7 +17,7 @@ package renderer {
     }
 
     class TenantRendererConfigurationSupplier {
-        templateRoot : String
+        templateHome : String
     }
     RendererRequestConfigurationSupplier <|.. TenantRendererConfigurationSupplier
 

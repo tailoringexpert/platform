@@ -35,10 +35,10 @@ import static org.thymeleaf.templatemode.TemplateMode.HTML;
 public class RendererConfiguration {
 
     @Bean
-    SpringTemplateEngine springTemplateEngine(@NonNull @Value("${templateRoot}") final String templateRoot) {
+    SpringTemplateEngine springTemplateEngine(@NonNull @Value("${templateHome}") final String templateHome) {
         SpringTemplateEngine result = new SpringTemplateEngine();
         FileTemplateResolver fileTemplateResolver = new FileTemplateResolver();
-        fileTemplateResolver.setPrefix(templateRoot);
+        fileTemplateResolver.setPrefix(templateHome);
         fileTemplateResolver.setCacheable(false);
         fileTemplateResolver.setSuffix(".html");
         fileTemplateResolver.setTemplateMode(HTML);
@@ -53,8 +53,8 @@ public class RendererConfiguration {
 
     @Bean
     RendererRequestConfigurationSupplier rendererRequestConfigurationSupplier(
-        @NonNull @Value("${templateRoot}") final String templateRoot) {
-        return new TenantRendererConfigurationSupplier(templateRoot);
+        @NonNull @Value("${templateHome}") final String templateHome) {
+        return new TenantRendererConfigurationSupplier(templateHome);
     }
 
     @Bean
