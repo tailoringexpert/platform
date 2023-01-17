@@ -65,7 +65,7 @@ public class PDFEngine {
 
             RendererRequestConfiguration configuration = requestConfigurationSupplier.get();
             builder
-                .withHtmlContent(html, new java.io.File(format("%s/%s/", configuration.getTemplateRoot(), pathSuffix)).toURI().toString())
+                .withHtmlContent(html, new java.io.File(format("%s/%s/", configuration.getTemplateHome(), pathSuffix)).toURI().toString())
                 .withProducer(configuration.getName())
                 .usePDDocument(document)
                 .toStream(os)

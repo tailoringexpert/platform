@@ -103,7 +103,7 @@ class CMExcelDocumentCreatorTest {
             () -> RendererRequestConfiguration.builder()
                 .id("unittest")
                 .name("unittest")
-                .templateRoot("src/test/resources/")
+                .templateHome("src/test/resources/")
                 .build(), this.drdProviderMock);
     }
 

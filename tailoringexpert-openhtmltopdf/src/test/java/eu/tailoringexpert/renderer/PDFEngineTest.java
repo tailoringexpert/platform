@@ -45,7 +45,7 @@ class PDFEngineTest {
                 () -> RendererRequestConfiguration.builder()
                     .id("plattform")
                     .name("TailoringExpert")
-                    .templateRoot("baseuri")
+                    .templateHome("baseuri")
                     .build()
             );
     }

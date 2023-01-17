@@ -132,7 +132,7 @@ class CMPDFDocumentCreatorTest {
         RendererRequestConfigurationSupplier supplier = () -> RendererRequestConfiguration.builder()
             .id("unittest")
             .name("TailoringExpert")
-            .templateRoot(this.templateHome)
+            .templateHome(this.templateHome)
             .build();
         HTMLTemplateEngine templateEngine = new ThymeleafTemplateEngine(springTemplateEngine, supplier);
 

@@ -57,7 +57,7 @@ class TenantRendererConfigurationSupplierTest {
         assertThat(actual).isNotNull();
         assertThat(actual.getId()).isNull();
         assertThat(actual.getName()).isNull();
-        assertThat(actual.getTemplateRoot()).isEqualTo("src/test/resources");
+        assertThat(actual.getTemplateHome()).isEqualTo("src/test/resources");
         assertThat(actual.getFragmentPrefix()).isEmpty();
     }
 
@@ -74,7 +74,7 @@ class TenantRendererConfigurationSupplierTest {
         assertThat(actual.getId()).isNotNull();
         assertThat(actual.getId()).isEqualTo("ut");
         assertThat(actual.getName()).isNull();
-        assertThat(actual.getTemplateRoot()).isEqualTo("src/test/resources/ut/");
+        assertThat(actual.getTemplateHome()).isEqualTo("src/test/resources/ut/");
         assertThat(actual.getFragmentPrefix()).isEqualTo("/ut/");
     }
 
@@ -93,7 +93,7 @@ class TenantRendererConfigurationSupplierTest {
         assertThat(actual.getId()).isEqualTo("ut");
         assertThat(actual.getName()).isNotNull();
         assertThat(actual.getName()).isEqualTo("unittest");
-        assertThat(actual.getTemplateRoot()).isEqualTo("src/test/resources/ut/");
+        assertThat(actual.getTemplateHome()).isEqualTo("src/test/resources/ut/");
         assertThat(actual.getFragmentPrefix()).isEqualTo("/ut/");
     }
 

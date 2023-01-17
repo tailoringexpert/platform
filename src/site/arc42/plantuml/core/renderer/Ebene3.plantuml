@@ -15,7 +15,7 @@ package renderer {
     class RendererRequestConfiguration {
         id : String
         name : String
-        templateRoot : String
+        templateHome : String
         fragmentPrefix : String = ""
     }
 
