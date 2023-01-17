@@ -180,6 +180,7 @@ class TailoringCatalogPDFDocumentCreatorTest {
         platzhalter.put("DATUM", now.format(DateTimeFormatter.ofPattern("dd.MM.YYYY")));
         platzhalter.put("DOKUMENT", "SAMPLE-XY-Z-1940/DV7");
         platzhalter.put("${DRD_DOCID}", "SAMPLE_DOC");
+        platzhalter.put("SHOW_ALL", Boolean.FALSE);
 
         mockServer
             .when(request()
