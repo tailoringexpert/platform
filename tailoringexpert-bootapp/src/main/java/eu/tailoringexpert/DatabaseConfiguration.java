@@ -38,15 +38,14 @@ import org.springframework.transaction.PlatformTransactionManager;
 import jakarta.persistence.EntityManagerFactory;
 
 import javax.sql.DataSource;
-import java.io.IOException;
 
 @Configuration
 @EnableJpaRepositories
 public class DatabaseConfiguration {
 
     @Bean
-    String tenantConfigDir(@NonNull @Value("${tenantConfigDir}") String tenantConfigDir) {
-        return tenantConfigDir;
+    String tenantConfigHome(@NonNull @Value("${tenantConfigHome}") String tenantConfigHome) {
+        return tenantConfigHome;
     }
 
     @Bean
@@ -55,10 +54,10 @@ public class DatabaseConfiguration {
         @NonNull @Value("${spring.datasource.url}") String url,
         @NonNull @Value("${spring.datasource.username}") String username,
         @NonNull @Value("${spring.datasource.password}") String password,
-        @NonNull @Qualifier("tenantConfigDir") String tenantConfigDir,
+        @NonNull @Qualifier("tenantConfigHome") String tenantConfigHome,
         @NonNull @Qualifier("encryptorBean") StringEncryptor encryptor) {
         DataSource defaultDataSource = dataSource(driverClassName, url, username, password);
-        return TenantFactory.dataSource(defaultDataSource, tenantConfigDir, encryptor);
+        return TenantFactory.dataSource(defaultDataSource, tenantConfigHome, encryptor);
     }
 
     private DataSource dataSource(String driverClassName, String url, String username, String password) {

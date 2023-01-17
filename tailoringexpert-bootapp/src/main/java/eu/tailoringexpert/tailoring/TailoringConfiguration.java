@@ -169,8 +169,8 @@ public class TailoringConfiguration {
     }
 
     @Bean
-    String tenantConfigDir(@Value("${tenantConfigDir}") String tenantConfigDir) {
-        return tenantConfigDir;
+    String tenantConfigHome(@Value("${tenantConfigHome}") String tenantConfigHome) {
+        return tenantConfigHome;
     }
 
     @Bean

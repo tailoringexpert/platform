@@ -86,7 +86,7 @@ public class CMExcelDocumentCreator implements DocumentCreator {
         try {
             FileBuilder result = builder().name(docId + ".xlsx");
             RendererRequestConfiguration configuration = requestConfigurationSupplier.get();
-            java.io.File template = Paths.get(configuration.getTemplateRoot() + "/" + tailoring.getCatalog().getVersion() + "/cm.xlsx").toFile();
+            java.io.File template = Paths.get(configuration.getTemplateHome() + "/" + tailoring.getCatalog().getVersion() + "/cm.xlsx").toFile();
             try (Workbook wb = new XSSFWorkbook(newInputStream(template.toPath()))) {
                 Sheet cmSheet = createCMSheet(wb);
 

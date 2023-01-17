@@ -29,14 +29,14 @@ import static java.util.Objects.nonNull;
 @AllArgsConstructor
 public class TenantRendererConfigurationSupplier implements RendererRequestConfigurationSupplier {
 
-    private String templateRoot;
+    private String templateHome;
 
     @Override
     public RendererRequestConfiguration get() {
         return RendererRequestConfiguration.builder()
             .id(TenantContext.getCurrentTenant())
             .name(TenantContext.getRegisteredTenants().get(TenantContext.getCurrentTenant()))
-            .templateRoot(templateRoot + (nonNull(TenantContext.getCurrentTenant()) ? "/" + TenantContext.getCurrentTenant() + "/" : ""))
+            .templateHome(templateHome + (nonNull(TenantContext.getCurrentTenant()) ? "/" + TenantContext.getCurrentTenant() + "/" : ""))
             .fragmentPrefix(nonNull(TenantContext.getCurrentTenant()) ? "/" + TenantContext.getCurrentTenant() + "/" : "")
             .build();
     }
