@@ -25,7 +25,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import eu.tailoringexpert.catalog.CatalogService;
 import eu.tailoringexpert.project.ProjectService;
 import eu.tailoringexpert.screeningsheet.ScreeningSheetService;
-import io.github.cdimascio.dotenv.Dotenv;
 import lombok.NonNull;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.boot.autoconfigure.liquibase.LiquibaseAutoConfiguration;
@@ -65,19 +64,5 @@ public class SpringTestConfiguration {
         @NonNull ObjectMapper objectMapper,
         @NonNull CatalogService catalogService) {
         return new BaseCatalogImport(objectMapper, catalogService);
-    }
-
-    @Bean
-    @Primary
-    String tenantConfigHome() {
-        Dotenv env = Dotenv.configure().ignoreIfMissing().load();
-        return new File(env.get("TENANT_CONFIG_DIR_TEST", "src/test/resources/tenants/")).toPath().toAbsolutePath().toString();
-    }
-
-    @Bean
-    @Primary
-    String plattformTemplateHome() {
-        Dotenv env = Dotenv.configure().ignoreIfMissing().load();
-        return new File(env.get("TEMPLATE_HOME", "src/test/resources/tenants/")).toPath().toAbsolutePath().toString();
     }
 }
