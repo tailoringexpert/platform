@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
+
+    <changeSet id="1" author="tailoringexpert">
+        <comment>columns for github issue #49</comment>
+        <addColumn tableName="PROJECT">
+            <column name="STATE" type="VARCHAR(16)"/>
+        </addColumn>
+        <rollback>
+            <dropColumn tableName="PROJECT" columnName="STATE"/>
+        </rollback>
+    </changeSet>
+
+    <changeSet id="2" author="tailoringexpert">
+        <comment>data for github issue #49</comment>
+        <update tableName="PROJECT">
+            <column name="STATE" value="ONGOING"/>
+            <where>STATE IS NULL</where>
+        </update>
+    </changeSet>
+
+    <changeSet id="3" author="tailoringexpert">
+        <comment>contraint for github issue #49</comment>
+        <sql>alter table PROJECT modify column STATE varchar(16) not null</sql>
+        <rollback>
+            <dropNotNullConstraint tableName="PROJECT" columnName="STATE"/>
+        </rollback>
+    </changeSet>
+
+</databaseChangeLog>

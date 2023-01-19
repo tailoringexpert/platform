@@ -47,6 +47,7 @@ import java.util.Optional;
 
 import static eu.tailoringexpert.domain.Phase.E;
 import static eu.tailoringexpert.domain.Phase.F;
+import static eu.tailoringexpert.domain.ProjectState.ONGOING;
 import static java.nio.file.Files.newInputStream;
 import static java.nio.file.Paths.get;
 import static java.util.Arrays.asList;
@@ -232,6 +233,7 @@ class ProjectServiceImplTest {
 
         // assert
         assertThat(actual.getProject()).isNotBlank();
+        assertThat(projectCaptor.getValue().getState()).isEqualTo(ONGOING);
         assertThat(projectCaptor.getValue().getTailorings().iterator().next().getNotes()).isNull();
     }
 

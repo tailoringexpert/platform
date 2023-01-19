@@ -35,6 +35,7 @@ import lombok.extern.log4j.Log4j2;
 
 import java.util.Optional;
 
+import static eu.tailoringexpert.domain.ProjectState.ONGOING;
 import static java.lang.Integer.parseInt;
 import static java.util.Comparator.comparingInt;
 import static java.util.Objects.isNull;
@@ -73,6 +74,7 @@ public class ProjectServiceImpl implements ProjectService {
             .screeningSheet(screeningSheet)
             .identifier(screeningSheet.getProject())
             .tailoring(tailoring)
+            .state(ONGOING)
             .build()
         );
 
