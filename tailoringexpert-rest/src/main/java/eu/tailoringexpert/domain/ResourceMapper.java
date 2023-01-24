@@ -93,6 +93,8 @@ public abstract class ResourceMapper {
     public static final String BASECATALOG_VERSION_PDF = "catalog/{version}/pdf";
     public static final String BASECATALOG_VERSION_JSON = "catalog/{version}/json";
 
+    public static final String BASECATALOG_VERSION_DOCUMENT = "catalog/{version}/document";
+
     public static final String SCREENINGSHEET = "screeningsheet";
     public static final String SELECTIONVECTOR_PROFILE = "selectionvector";
 
@@ -136,7 +138,8 @@ public abstract class ResourceMapper {
             linkToCurrentMapping().slash(resolveParameter(PROJECT_NEW, context.parameter())).withRel(PROJECTS),
             createLink(REL_SELF, baseUri, BASECATALOG_VERSION, parameter),
             createLink(REL_PDF, baseUri, BASECATALOG_VERSION_PDF, parameter),
-            createLink(REL_JSON, baseUri, BASECATALOG_VERSION_JSON, parameter)
+            createLink(REL_JSON, baseUri, BASECATALOG_VERSION_JSON, parameter),
+            createLink(REL_DOCUMENT, baseUri, BASECATALOG_VERSION_DOCUMENT, parameter)
         ));
     }
 

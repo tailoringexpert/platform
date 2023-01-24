@@ -6,26 +6,12 @@
     <changeSet id="1" author="tailoringexpert">
         <comment>columns for github issue #49</comment>
         <addColumn tableName="PROJECT">
-            <column name="STATE" type="VARCHAR(16)"/>
+            <column name="STATE" type="VARCHAR(16)">
+                <constraints nullable="false"/>
+            </column>
         </addColumn>
         <rollback>
             <dropColumn tableName="PROJECT" columnName="STATE"/>
-        </rollback>
-    </changeSet>
-
-    <changeSet id="2" author="tailoringexpert">
-        <comment>data for github issue #49</comment>
-        <update tableName="PROJECT">
-            <column name="STATE" value="ONGOING"/>
-            <where>STATE IS NULL</where>
-        </update>
-    </changeSet>
-
-    <changeSet id="3" author="tailoringexpert">
-        <comment>contraint for github issue #49</comment>
-        <sql>alter table PROJECT modify column STATE varchar(16) not null</sql>
-        <rollback>
-            <dropNotNullConstraint tableName="PROJECT" columnName="STATE"/>
         </rollback>
     </changeSet>
 

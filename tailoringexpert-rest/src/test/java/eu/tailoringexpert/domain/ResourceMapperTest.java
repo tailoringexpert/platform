@@ -111,7 +111,8 @@ class ResourceMapperTest {
             Link.of("http://localhost/catalog/8.2.1", "self"),
             Link.of("http://localhost/catalog/8.2.1/project", "project"),
             Link.of("http://localhost/catalog/8.2.1/pdf", "pdf"),
-            Link.of("http://localhost/catalog/8.2.1/json", "json")
+            Link.of("http://localhost/catalog/8.2.1/json", "json"),
+            Link.of("http://localhost/catalog/8.2.1/document", "document")
         );
 
     }
