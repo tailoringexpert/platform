@@ -166,7 +166,13 @@ public class JPAProjectServiceRepository implements ProjectServiceRepository {
      * {@inheritDoc}
      */
     @Override
-    public boolean updateProjectState(String project, ProjectState state) {
-        return projectRepository.updateState(project, state) == 1;
+    public Optional<ProjectInformation> updateState(String project, ProjectState state) {
+        ProjectEntity entity = projectRepository.findByIdentifier(project);
+        if (isNull(entity)) {
+            return empty();
+        }
+
+        entity.setState(state);
+        return ofNullable(mapper.getProjectInformationen(entity));
     }
 }

@@ -24,4 +24,14 @@ package eu.tailoringexpert.domain;
 public enum ProjectState {
     ONGOING,
     COMPLETED;
+
+    public ProjectState nextState() {
+        int nextIndex = ordinal() + 1;
+
+        if (values().length == nextIndex) {
+            nextIndex = values().length - 1;
+        }
+
+        return values()[nextIndex];
+    }
 }

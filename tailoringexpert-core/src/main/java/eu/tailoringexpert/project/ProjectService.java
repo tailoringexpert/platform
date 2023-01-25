@@ -22,6 +22,7 @@
 package eu.tailoringexpert.project;
 
 import eu.tailoringexpert.domain.Project;
+import eu.tailoringexpert.domain.ProjectInformation;
 import eu.tailoringexpert.domain.ProjectState;
 import eu.tailoringexpert.domain.SelectionVector;
 import eu.tailoringexpert.domain.Tailoring;
@@ -83,5 +84,5 @@ public interface ProjectService {
      * @param state   state to set
      * @return true if state was set
      */
-    boolean updateProjectState(String project, ProjectState state);
+    Optional<ProjectInformation> updateState(String project, ProjectState state);
 }

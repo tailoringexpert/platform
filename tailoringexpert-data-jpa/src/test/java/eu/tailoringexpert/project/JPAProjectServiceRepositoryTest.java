@@ -330,29 +330,31 @@ class JPAProjectServiceRepositoryTest {
     }
 
     @Test
-    void updateProjectState_ProjectNotExists_FalseReturned() {
+    void updateState_ProjectNotExists_EmptyReturned() {
         // arrange
-        given(projectRepositoryMock.updateState("SAMPLE", COMPLETED)).willReturn(0);
+        given(projectRepositoryMock.findByIdentifier("SAMPLE")).willReturn(null);
 
         // act
-        boolean actual = repository.updateProjectState("SAMPLE", COMPLETED);
+        Optional<ProjectInformation> actual = repository.updateState("SAMPLE", COMPLETED);
 
         // assert
-        assertThat(actual).isFalse();
-        verify(projectRepositoryMock, times(1)).updateState("SAMPLE", COMPLETED);
+        assertThat(actual).isEmpty();
+        verify(mapperMock, times(0)).getProjectInformationen(any(ProjectEntity.class));
     }
 
     @Test
-    void updateProjectState_ProjectExists_TrueReturned() {
+    void updateState_ProjectExists_UpdatedInformationReturned() {
         // arrange
-        given(projectRepositoryMock.updateState("SAMPLE", COMPLETED)).willReturn(1);
+        ProjectEntity project = ProjectEntity.builder().build();
+        given(projectRepositoryMock.findByIdentifier("SAMPLE")).willReturn(project);
+        given(mapperMock.getProjectInformationen(project)).willReturn(ProjectInformation.builder().build());
 
         // act
-        boolean actual = repository.updateProjectState("SAMPLE", COMPLETED);
+        Optional<ProjectInformation> actual = repository.updateState("SAMPLE", COMPLETED);
 
         // assert
-        assertThat(actual).isTrue();
-        verify(projectRepositoryMock, times(1)).updateState("SAMPLE", COMPLETED);
+        assertThat(actual).isPresent();
+        verify(mapperMock, times(1)).getProjectInformationen(project);
     }
 
 }

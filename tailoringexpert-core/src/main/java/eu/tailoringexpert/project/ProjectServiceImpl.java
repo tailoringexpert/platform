@@ -24,6 +24,7 @@ package eu.tailoringexpert.project;
 import eu.tailoringexpert.domain.BaseRequirement;
 import eu.tailoringexpert.domain.Catalog;
 import eu.tailoringexpert.domain.Project;
+import eu.tailoringexpert.domain.ProjectInformation;
 import eu.tailoringexpert.domain.ProjectState;
 import eu.tailoringexpert.domain.ScreeningSheet;
 import eu.tailoringexpert.domain.SelectionVector;
@@ -101,16 +102,16 @@ public class ProjectServiceImpl implements ProjectService {
     }
 
     @Override
-    public boolean updateProjectState(String project, ProjectState state) {
+    public  Optional<ProjectInformation>  updateState(String project, ProjectState state) {
         log.info("STARTED | updating state of {} to {}", project, state);
 
         Optional<Project> oProject = repository.getProject(project);
         if ( oProject.isEmpty()) {
             log.info("FINISHED | updating state of {} skipped because it does not exists", project);
-            return false;
+            return empty();
         }
 
-        boolean result = repository.updateProjectState(project, state);
+        Optional<ProjectInformation> result = repository.updateState(project, state);
 
         log.info("FINISHED | updating state of {} to {}", project, state);
 

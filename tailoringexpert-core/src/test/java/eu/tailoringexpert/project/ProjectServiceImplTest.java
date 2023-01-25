@@ -27,6 +27,7 @@ import eu.tailoringexpert.domain.Identifier;
 import eu.tailoringexpert.domain.Chapter;
 import eu.tailoringexpert.domain.Phase;
 import eu.tailoringexpert.domain.Project;
+import eu.tailoringexpert.domain.ProjectInformation;
 import eu.tailoringexpert.domain.ScreeningSheet;
 import eu.tailoringexpert.domain.ScreeningSheetParameter;
 import eu.tailoringexpert.domain.SelectionVector;
@@ -672,30 +673,30 @@ class ProjectServiceImplTest {
     }
 
     @Test
-    void updateProjectState_ProjectNotExisting_FalseReturned() throws IOException {
+    void updateProjectState_ProjectNotExisting_EmptyReturned() throws IOException {
         // arrange
 
         given(repositoryMock.getProject("SAMPLE")).willReturn(empty());
 
         // act
-        boolean actual = service.updateProjectState("SAMPLE", COMPLETED);
+        Optional<ProjectInformation> actual = service.updateState("SAMPLE", COMPLETED);
 
         // assert
-        assertThat(actual).isFalse();
-        verify(repositoryMock, times(0)).updateProjectState(any(), any());
+        assertThat(actual).isEmpty();
+        verify(repositoryMock, times(0)).updateState(any(), any());
     }
 
     @Test
     void updateProjectState_ProjectExisting_ServiceRepositoryCalled()  {
         // arrange
         given(repositoryMock.getProject("SAMPLE")).willReturn(of(Project.builder().build()));
-        given(repositoryMock.updateProjectState("SAMPLE", COMPLETED)).willReturn(true);
+        given(repositoryMock.updateState("SAMPLE", COMPLETED)).willReturn(of(ProjectInformation.builder().build()));
 
         // act
-        boolean actual = service.updateProjectState("SAMPLE", COMPLETED);
+        Optional<ProjectInformation> actual = service.updateState("SAMPLE", COMPLETED);
 
         // assert
-        assertThat(actual).isTrue();
-        verify(repositoryMock, times(1)).updateProjectState("SAMPLE",  COMPLETED);
+        assertThat(actual).isPresent();
+        verify(repositoryMock, times(1)).updateState("SAMPLE",  COMPLETED);
     }
 }

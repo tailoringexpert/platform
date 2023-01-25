@@ -118,5 +118,5 @@ public interface ProjectServiceRepository {
      * @param project project to update state of
      * @param state   state to set
      */
-    boolean updateProjectState(String project, ProjectState state);
+    Optional<ProjectInformation> updateState(String project, ProjectState state);
 }

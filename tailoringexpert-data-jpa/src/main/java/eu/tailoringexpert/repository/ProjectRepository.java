@@ -22,11 +22,9 @@
 package eu.tailoringexpert.repository;
 
 import eu.tailoringexpert.domain.ProjectEntity;
-import eu.tailoringexpert.domain.ProjectState;
 import eu.tailoringexpert.domain.TailoringEntity;
 import eu.tailoringexpert.domain.TailoringState;
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
@@ -82,13 +80,4 @@ public interface ProjectRepository extends JpaRepository<ProjectEntity, Long> {
     @Query("Select t.state from #{#entityName} p inner join p.tailorings t where p.identifier=:project and t.name=:name")
     TailoringState findTailoringState(@Param("project") String project, @Param("name") String name);
 
-    /**
-     * Updates state of project.
-     *
-     * @param project project to update state of
-     * @param state   state to set
-     */
-    @Modifying
-    @Query("Update #{#entityName} p set p.state=:state where p.identifier=:project")
-    int updateState(@Param("project") String project, @Param("state") ProjectState state);
 }
