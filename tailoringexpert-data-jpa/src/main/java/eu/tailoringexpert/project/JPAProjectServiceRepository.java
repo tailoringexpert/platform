@@ -27,6 +27,7 @@ import eu.tailoringexpert.domain.BaseCatalogEntity;
 import eu.tailoringexpert.domain.Project;
 import eu.tailoringexpert.domain.ProjectEntity;
 import eu.tailoringexpert.domain.ProjectInformation;
+import eu.tailoringexpert.domain.ProjectState;
 import eu.tailoringexpert.domain.ScreeningSheet;
 import eu.tailoringexpert.domain.Tailoring;
 import eu.tailoringexpert.domain.TailoringEntity;
@@ -159,5 +160,13 @@ public class JPAProjectServiceRepository implements ProjectServiceRepository {
         }
 
         return ofNullable(mapper.getScreeningSheet(entity.getScreeningSheet()));
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public boolean updateProjectState(String project, ProjectState state) {
+        return projectRepository.updateState(project, state) == 1;
     }
 }

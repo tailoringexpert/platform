@@ -47,6 +47,7 @@ import java.util.Optional;
 
 import static eu.tailoringexpert.domain.Phase.E;
 import static eu.tailoringexpert.domain.Phase.F;
+import static eu.tailoringexpert.domain.ProjectState.COMPLETED;
 import static eu.tailoringexpert.domain.ProjectState.ONGOING;
 import static java.nio.file.Files.newInputStream;
 import static java.nio.file.Paths.get;
@@ -668,5 +669,33 @@ class ProjectServiceImplTest {
         // assert
         assertThat(actual).isPresent();
         assertThat(projectCopyCaptor.getValue().getTailorings()).hasSize(2);
+    }
+
+    @Test
+    void updateProjectState_ProjectNotExisting_FalseReturned() throws IOException {
+        // arrange
+
+        given(repositoryMock.getProject("SAMPLE")).willReturn(empty());
+
+        // act
+        boolean actual = service.updateProjectState("SAMPLE", COMPLETED);
+
+        // assert
+        assertThat(actual).isFalse();
+        verify(repositoryMock, times(0)).updateProjectState(any(), any());
+    }
+
+    @Test
+    void updateProjectState_ProjectExisting_ServiceRepositoryCalled()  {
+        // arrange
+        given(repositoryMock.getProject("SAMPLE")).willReturn(of(Project.builder().build()));
+        given(repositoryMock.updateProjectState("SAMPLE", COMPLETED)).willReturn(true);
+
+        // act
+        boolean actual = service.updateProjectState("SAMPLE", COMPLETED);
+
+        // assert
+        assertThat(actual).isTrue();
+        verify(repositoryMock, times(1)).updateProjectState("SAMPLE",  COMPLETED);
     }
 }

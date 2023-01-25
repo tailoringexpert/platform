@@ -42,6 +42,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Optional;
 
+import static eu.tailoringexpert.domain.ProjectState.COMPLETED;
 import static java.nio.charset.StandardCharsets.UTF_8;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
@@ -326,6 +327,32 @@ class JPAProjectServiceRepositoryTest {
         assertThat(actual).isNotEmpty();
         verify(projectRepositoryMock, times(1)).findByIdentifier(project);
 
+    }
+
+    @Test
+    void updateProjectState_ProjectNotExists_FalseReturned() {
+        // arrange
+        given(projectRepositoryMock.updateState("SAMPLE", COMPLETED)).willReturn(0);
+
+        // act
+        boolean actual = repository.updateProjectState("SAMPLE", COMPLETED);
+
+        // assert
+        assertThat(actual).isFalse();
+        verify(projectRepositoryMock, times(1)).updateState("SAMPLE", COMPLETED);
+    }
+
+    @Test
+    void updateProjectState_ProjectExists_TrueReturned() {
+        // arrange
+        given(projectRepositoryMock.updateState("SAMPLE", COMPLETED)).willReturn(1);
+
+        // act
+        boolean actual = repository.updateProjectState("SAMPLE", COMPLETED);
+
+        // assert
+        assertThat(actual).isTrue();
+        verify(projectRepositoryMock, times(1)).updateState("SAMPLE", COMPLETED);
     }
 
 }

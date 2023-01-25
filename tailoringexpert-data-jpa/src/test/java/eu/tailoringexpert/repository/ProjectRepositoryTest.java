@@ -36,6 +36,8 @@ import java.util.Arrays;
 import static eu.tailoringexpert.domain.Phase.E;
 import static eu.tailoringexpert.domain.Phase.F;
 import static eu.tailoringexpert.domain.Phase.ZERO;
+import static eu.tailoringexpert.domain.ProjectState.COMPLETED;
+import static eu.tailoringexpert.domain.ProjectState.ONGOING;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @Log4j2
@@ -56,6 +58,7 @@ class ProjectRepositoryTest {
         // act
         ProjectEntity actual = repository.save(ProjectEntity.builder()
             .identifier("SAMPLE")
+            .state(ONGOING)
             .tailorings(Arrays.asList(
                 TailoringEntity.builder()
                     .phase(ZERO)
@@ -76,8 +79,8 @@ class ProjectRepositoryTest {
     @Test
     void findByIdentifier_ProjectExists_ProjectReturned() throws IOException {
         // arrange
-        repository.save(ProjectEntity.builder().identifier("SAMPLE").build());
-        repository.save(ProjectEntity.builder().identifier("SAMPLE2").build());
+        repository.save(ProjectEntity.builder().identifier("SAMPLE").state(ONGOING).build());
+        repository.save(ProjectEntity.builder().identifier("SAMPLE2").state(ONGOING).build());
 
         // act
         ProjectEntity actual = repository.findByIdentifier("SAMPLE2");
@@ -92,6 +95,7 @@ class ProjectRepositoryTest {
         // arrange
         ProjectEntity project = ProjectEntity.builder()
             .identifier("SAMPLE")
+            .state(ONGOING)
             .tailorings(Arrays.asList(
                 TailoringEntity.builder()
                     .name("master")
@@ -113,8 +117,8 @@ class ProjectRepositoryTest {
     @Test
     void deleteByIdentifier_ProjectExists_ProjectDeleted() throws IOException {
         // arrange
-        repository.save(ProjectEntity.builder().identifier("SAMPLE").build());
-        repository.save(ProjectEntity.builder().identifier("SAMPLE2").build());
+        repository.save(ProjectEntity.builder().identifier("SAMPLE").state(ONGOING).build());
+        repository.save(ProjectEntity.builder().identifier("SAMPLE2").state(ONGOING).build());
 
         // act
         Long actual = repository.deleteByIdentifier("SAMPLE");
@@ -131,6 +135,7 @@ class ProjectRepositoryTest {
         // arrange
         ProjectEntity project = ProjectEntity.builder()
             .identifier("SAMPLE")
+            .state(ONGOING)
             .tailorings(Arrays.asList(
                 TailoringEntity.builder()
                     .name("master")
@@ -154,6 +159,7 @@ class ProjectRepositoryTest {
         // arrange
         ProjectEntity project = ProjectEntity.builder()
             .identifier("SAMPLE")
+            .state(ONGOING)
             .tailorings(Arrays.asList(
                 TailoringEntity.builder()
                     .name("master")
@@ -177,6 +183,7 @@ class ProjectRepositoryTest {
         // arrange
         ProjectEntity project = ProjectEntity.builder()
             .identifier("SAMPLE")
+            .state(ONGOING)
             .tailorings(Arrays.asList(
                 TailoringEntity.builder()
                     .name("master")
@@ -202,6 +209,7 @@ class ProjectRepositoryTest {
         // arrange
         ProjectEntity project = ProjectEntity.builder()
             .identifier("SAMPLE")
+            .state(ONGOING)
             .tailorings(Arrays.asList(
                 TailoringEntity.builder()
                     .name("master")
@@ -220,5 +228,42 @@ class ProjectRepositoryTest {
 
         // assert
         assertThat(actual).isNull();
+    }
+
+    @Test
+    void updateState_ProjectNotExists_0Returned() {
+        // arrange
+
+        // act
+        int actual = repository.updateState("SAMPLE", COMPLETED);
+
+        // assert
+        assertThat(actual).isZero();
+    }
+
+    @Test
+    void updateState_ProjectExists_1Returned() {
+        // arrange
+        ProjectEntity project = ProjectEntity.builder()
+            .identifier("SAMPLE")
+            .state(ONGOING)
+            .tailorings(Arrays.asList(
+                TailoringEntity.builder()
+                    .name("master")
+                    .state(TailoringState.CREATED)
+                    .build(),
+                TailoringEntity.builder()
+                    .name("master1")
+                    .state(TailoringState.AGREED)
+                    .build()
+            ))
+            .build();
+        repository.save(project);
+
+        // act
+        int actual = repository.updateState("SAMPLE", COMPLETED);
+
+        // assert
+        assertThat(actual).isEqualTo(1);
     }
 }
