@@ -4,6 +4,7 @@ hide empty members
 package renderer {
     interface HTMLTemplateEngine
     class PDFEngine
+    class DRDFragment
 }
 
 package tailoring {
@@ -49,11 +50,6 @@ package tailoring {
         -action : String
     }
 
-    class DRDFragment {
-        -name : String
-        -number : String
-        -fragment : String
-    }
 
     class CatalogElement {
         -reference : String

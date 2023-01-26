@@ -26,6 +26,8 @@ import lombok.Data;
 import java.io.Serializable;
 import java.util.Collection;
 
+import static java.util.Objects.nonNull;
+
 @Data
 public abstract class Requirement implements Serializable {
     private static final long serialVersionUID = 7854311335886291270L;
@@ -55,5 +57,14 @@ public abstract class Requirement implements Serializable {
         this.position = position;
         this.reference = reference;
         this.drds = drds;
+    }
+
+    /**
+     * Checks if requirement has references to any DRD.
+     *
+     * @return true if requirement has references to DRDs otherwise false
+     */
+    public boolean hasDRD() {
+        return nonNull(getDrds()) && !getDrds().isEmpty();
     }
 }

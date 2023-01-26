@@ -3,6 +3,12 @@ hide empty members
 
 package renderer {
 
+    class DRDFragment {
+        -name : String
+        -number : String
+        -fragment : String
+    }
+
     interface RendererRequestConfigurationSupplier<RendererRequestConfiguration> {
     }
 

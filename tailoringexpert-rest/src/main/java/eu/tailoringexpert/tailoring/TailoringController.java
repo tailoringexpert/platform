@@ -649,7 +649,7 @@ public class TailoringController {
 
     }
 
-    @Operation(summary = "Add a new note totailoring")
+    @Operation(summary = "Add a new note to tailoring")
     @ApiResponses(value = {
         @ApiResponse(
             responseCode = "201", description = "Note added",
@@ -683,7 +683,7 @@ public class TailoringController {
     @ApiResponses(value = {
         @ApiResponse(
             responseCode = "200", description = "State changed",
-            content = @Content(mediaType = "application/json+hal", schema = @Schema(implementation = Void.class))),
+            content = @Content(mediaType = "application/json+hal", schema = @Schema(implementation = TailoringResource.class))),
         @ApiResponse(
             responseCode = "404", description = "Tailoring does not exist",
             content = @Content)

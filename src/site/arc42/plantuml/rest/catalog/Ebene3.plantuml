@@ -22,6 +22,7 @@ package catalog {
         +getBaseCatalog(version : String) : ResponseEntity<Catalog<BaseRequirement>>
         +getBaseCatalogPrint(version : String) : ResponseEntity<byte[]>
         +getBaseCatalogJson(version : String) : ResponseEntity<byte[]>
+        +getDocuments(version : String) : ResponseEntity<byte[]>
     }
 
 

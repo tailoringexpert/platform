@@ -17,6 +17,7 @@ package domain {
     abstract class Requirement{
       text: String
       position : String
+      hasDRD() : boolean
     }
     Requirement --> "0..1" Reference : reference
     Requirement --> "0..*" DRD : drds

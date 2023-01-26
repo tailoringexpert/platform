@@ -110,7 +110,7 @@ class BaseCatalogPDFDocumentCreatorTest {
         HTMLTemplateEngine templateEngine = new ThymeleafTemplateEngine(
             springTemplateEngine,
             () -> RendererRequestConfiguration.builder()
-                .id("plattform")
+                .id("unittest")
                 .name("plattform")
                 .templateHome(this.templateHome)
                 .build()
