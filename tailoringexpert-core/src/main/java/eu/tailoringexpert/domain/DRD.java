@@ -34,7 +34,7 @@ import java.io.Serializable;
 @NoArgsConstructor
 @AllArgsConstructor
 @EqualsAndHashCode(of = "number")
-public class DRD implements Serializable {
+public class DRD implements Serializable{
     private static final long serialVersionUID = 259056135676816215L;
 
     /**

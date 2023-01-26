@@ -86,8 +86,8 @@ class BaseCatalogPDFDocumentCreatorTest {
     @BeforeEach
     void setup() {
         Dotenv env = Dotenv.configure().ignoreIfMissing().load();
-        this.templateHome = env.get("TEMPLATE_HOME", "src/test/resources/templates/");
-        this.assetHome = env.get("ASSET_HOME", "src/test/resources/templates/");
+        this.templateHome = env.get("TEMPLATE_HOME", "src/test/resources/templates/plattform/");
+        this.assetHome = env.get("ASSET_HOME", "src/test/resources/templates/plattform/");
 
         this.objectMapper = new ObjectMapper();
         this.objectMapper.registerModules(new ParameterNamesModule(), new JavaTimeModule(), new Jdk8Module());

@@ -28,8 +28,6 @@ import java.io.Serializable;
 import java.time.ZonedDateTime;
 import java.util.Collection;
 
-import static java.util.Objects.nonNull;
-
 @Data
 public class TailoringRequirement extends Requirement implements Serializable {
     private static final long serialVersionUID = 3399819648313645377L;
@@ -62,15 +60,5 @@ public class TailoringRequirement extends Requirement implements Serializable {
         this.selected = selected;
         this.selectionChanged = selectionChanged;
         this.textChanged = textChanged;
-    }
-
-
-    /**
-     * Checks if requirement has references to any DRD.
-     *
-     * @return true if requirement has references to DRDs otherwise false
-     */
-    public boolean hasDRD() {
-        return nonNull(getDrds()) && !getDrds().isEmpty();
     }
 }
