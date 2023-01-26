@@ -25,6 +25,7 @@ import eu.tailoringexpert.domain.BaseRequirement;
 import eu.tailoringexpert.domain.Catalog;
 import eu.tailoringexpert.domain.Project;
 import eu.tailoringexpert.domain.ProjectInformation;
+import eu.tailoringexpert.domain.ProjectState;
 import eu.tailoringexpert.domain.ScreeningSheet;
 import eu.tailoringexpert.domain.Tailoring;
 
@@ -110,4 +111,12 @@ public interface ProjectServiceRepository {
      * @return ScreeningSheet data without file raw data
      */
     Optional<ScreeningSheet> getScreeningSheet(String project);
+
+    /**
+     * Updates state of project.
+     *
+     * @param project project to update state of
+     * @param state   state to set
+     */
+    Optional<ProjectInformation> updateState(String project, ProjectState state);
 }

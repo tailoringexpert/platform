@@ -8,12 +8,12 @@
  * it under the terms of the GNU General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/gpl-3.0.html>.
@@ -21,36 +21,38 @@
  */
 package eu.tailoringexpert.domain;
 
-import lombok.Builder;
-import lombok.Value;
+import org.junit.jupiter.api.Test;
 
-import java.io.Serializable;
-import java.time.ZonedDateTime;
-import java.util.Collection;
+import static eu.tailoringexpert.domain.ProjectState.COMPLETED;
+import static eu.tailoringexpert.domain.ProjectState.ONGOING;
+import static org.assertj.core.api.Assertions.assertThat;
 
-@Value
-@Builder
-public class ProjectInformation implements Serializable {
-    private static final long serialVersionUID = 5425428859919793419L;
+class ProjectStateTest {
 
-    /**
-     * Unique identifier of project.
-     */
-    private String identifier;
+    @Test
+    void nextState_ONGOING_COMPLETEDReturned() {
+        // arrange
+        ProjectState state = ONGOING;
 
-    /**
-     * Creation timestamp of project.
-     */
-    private ZonedDateTime creationTimestamp;
+        // act
+        ProjectState actual = state.nextState();
 
-    /**
-     * Tailorings of the project.
-     */
-    private Collection<TailoringInformation> tailorings;
+        // assert
+        assertThat(actual).isEqualTo(COMPLETED);
+    }
 
-    /**
-     * State of the project.
-     */
-    private ProjectState state;
+    @Test
+    void nextState_COMPLETED_COMPLETEDReturned() {
+        // arrange
+        ProjectState state = COMPLETED;
+
+        // act
+        ProjectState actual = state.nextState();
+
+        // assert
+        assertThat(actual).isEqualTo(COMPLETED);
+    }
+
+
 
 }

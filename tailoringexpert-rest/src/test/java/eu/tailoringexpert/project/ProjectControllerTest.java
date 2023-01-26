@@ -67,14 +67,18 @@ import static com.fasterxml.jackson.annotation.JsonAutoDetect.Visibility.ANY;
 import static com.fasterxml.jackson.annotation.PropertyAccessor.FIELD;
 import static com.fasterxml.jackson.databind.DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES;
 import static com.fasterxml.jackson.databind.SerializationFeature.FAIL_ON_EMPTY_BEANS;
+import static eu.tailoringexpert.domain.ProjectState.COMPLETED;
 import static eu.tailoringexpert.domain.ResourceMapper.PROJECT;
 import static eu.tailoringexpert.domain.ResourceMapper.REL_SELF;
 import static java.nio.file.Files.newInputStream;
 import static java.util.Arrays.asList;
 import static java.util.Locale.GERMANY;
 import static java.util.Objects.nonNull;
+import static java.util.Optional.empty;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatNoException;
 import static org.assertj.core.api.Assertions.catchThrowable;
+import static org.mockito.ArgumentCaptor.forClass;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.eq;
@@ -89,6 +93,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.multipart;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.header;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.springframework.test.web.servlet.setup.MockMvcBuilders.standaloneSetup;
@@ -193,7 +198,7 @@ class ProjectControllerTest {
         given(projectServiceRepositoryMock.getProjectInformations()).willReturn(asList(projekt));
 
         PathContextBuilder pathContext = PathContext.builder();
-        ArgumentCaptor<PathContextBuilder> pathContextCaptor = ArgumentCaptor.forClass(PathContextBuilder.class);
+        ArgumentCaptor<PathContextBuilder> pathContextCaptor = forClass(PathContextBuilder.class);
         given(mapperMock.toResource(pathContextCaptor.capture(), eq(projekt))).willReturn(ProjectResource.builder().build());
 
         // act
@@ -219,7 +224,7 @@ class ProjectControllerTest {
         given(projectServiceRepositoryMock.getProjectInformation("SAMPLE")).willReturn(Optional.of(projekt));
 
         PathContextBuilder pathContext = PathContext.builder();
-        ArgumentCaptor<PathContextBuilder> pathContextCaptor = ArgumentCaptor.forClass(PathContextBuilder.class);
+        ArgumentCaptor<PathContextBuilder> pathContextCaptor = forClass(PathContextBuilder.class);
         given(mapperMock.toResource(pathContextCaptor.capture(), eq(projekt))).willReturn(ProjectResource.builder().build());
 
         // act
@@ -239,7 +244,7 @@ class ProjectControllerTest {
     void getProject_ProjectNotExist_StateNotFound() throws Exception {
         // arrange
 
-        given(projectServiceRepositoryMock.getProjectInformation("SAMPLE")).willReturn(Optional.empty());
+        given(projectServiceRepositoryMock.getProjectInformation("SAMPLE")).willReturn(empty());
 
         // act
         ResultActions actual = mockMvc.perform(get("/project/{project}", "SAMPLE")
@@ -260,7 +265,7 @@ class ProjectControllerTest {
         given(projectServiceRepositoryMock.getScreeningSheet("SAMPLE")).willReturn(Optional.of(screeningSheet));
 
         PathContextBuilder pathContext = PathContext.builder().project("SAMPLE");
-        ArgumentCaptor<PathContextBuilder> pathContextCaptor = ArgumentCaptor.forClass(PathContextBuilder.class);
+        ArgumentCaptor<PathContextBuilder> pathContextCaptor = forClass(PathContextBuilder.class);
         given(mapperMock.toResource(pathContextCaptor.capture(), eq(screeningSheet))).willReturn(ScreeningSheetResource.builder().build());
 
         // act
@@ -279,7 +284,7 @@ class ProjectControllerTest {
     @Test
     void getScreeningSheet_ScreeningSheetNotExists_StateNotFound() throws Exception {
         // arrange
-        given(projectServiceRepositoryMock.getScreeningSheet("SAMPLE")).willReturn(Optional.empty());
+        given(projectServiceRepositoryMock.getScreeningSheet("SAMPLE")).willReturn(empty());
 
         // act
         ResultActions actual = mockMvc.perform(get("/project/{project}/screeningsheet", "SAMPLE")
@@ -321,7 +326,7 @@ class ProjectControllerTest {
     @Test
     void getScreeningSheetFile_ScreningsSheetFileNotExists_StateNotFound() throws Exception {
         // arrange
-        given(projectServiceRepositoryMock.getScreeningSheetFile("SAMPLE")).willReturn(Optional.empty());
+        given(projectServiceRepositoryMock.getScreeningSheetFile("SAMPLE")).willReturn(empty());
 
         // act
         ResultActions actual = mockMvc.perform(get("/project/{project}/screeningsheet/pdf", "SAMPLE")
@@ -376,7 +381,7 @@ class ProjectControllerTest {
         MockMultipartFile screeningSheet = new MockMultipartFile("datei", "screeningsheet_0d.pdf",
             "text/plain", data);
 
-        given(projectServiceMock.copyProject("SAMPLE", data)).willReturn(Optional.empty());
+        given(projectServiceMock.copyProject("SAMPLE", data)).willReturn(empty());
 
         // act
         ResultActions actual = mockMvc.perform(multipart("/project/{project}", "SAMPLE")
@@ -411,7 +416,7 @@ class ProjectControllerTest {
             .willReturn(Link.of("http://localhost/project/SAMPLE2", "self"));
 
         PathContextBuilder pathContext = PathContext.builder();
-        ArgumentCaptor<PathContextBuilder> pathContextCaptor = ArgumentCaptor.forClass(PathContextBuilder.class);
+        ArgumentCaptor<PathContextBuilder> pathContextCaptor = forClass(PathContextBuilder.class);
         given(mapperMock.toResource(pathContextCaptor.capture(), eq(createdProject))).willReturn(ProjectResource.builder().build());
 
         // act
@@ -449,10 +454,10 @@ class ProjectControllerTest {
 //        Throwable actual = null;
 //        try {
         Throwable actual = catchThrowable(() -> mockMvc.perform(multipart("/project/{project}", "SAMPLE")
-                .file(spy)
-                .contentType(MULTIPART_FORM_DATA)
-                .accept("application/hal+json")
-            ));
+            .file(spy)
+            .contentType(MULTIPART_FORM_DATA)
+            .accept("application/hal+json")
+        ));
 //        } catch (Exception e) {
 //        }
 
@@ -516,7 +521,7 @@ class ProjectControllerTest {
         }
 
         SelectionVector selectionVector = SelectionVector.builder().build();
-        given(projectServiceMock.addTailoring("SAMPLE", "8.2.1", data, selectionVector, "Test")).willReturn(Optional.empty());
+        given(projectServiceMock.addTailoring("SAMPLE", "8.2.1", data, selectionVector, "Test")).willReturn(empty());
 
         ProjectCreationRequest creationRequest = ProjectCreationRequest.builder()
             .catalog("8.2.1")
@@ -557,7 +562,7 @@ class ProjectControllerTest {
         given(projectServiceRepositoryMock.getProject("SAMPLE")).willReturn(Optional.of(project));
 
         PathContextBuilder pathContext = PathContext.builder().project("SAMPLE");
-        ArgumentCaptor<PathContextBuilder> pathContextCaptor = ArgumentCaptor.forClass(PathContextBuilder.class);
+        ArgumentCaptor<PathContextBuilder> pathContextCaptor = forClass(PathContextBuilder.class);
         given(mapperMock.toResource(pathContextCaptor.capture(), eq(project.getScreeningSheet().getSelectionVector())))
             .willReturn(SelectionVectorResource.builder().build());
 
@@ -577,7 +582,7 @@ class ProjectControllerTest {
     @Test
     void getSelectionVector_SelectionVectorNotExists_StateNotFound() throws Exception {
         // arrange
-        given(projectServiceRepositoryMock.getProject("SAMPLE")).willReturn(Optional.empty());
+        given(projectServiceRepositoryMock.getProject("SAMPLE")).willReturn(empty());
 
         // act
         ResultActions actual = mockMvc.perform(get("/project/{project}/selectionvector", "SAMPLE")
@@ -589,6 +594,40 @@ class ProjectControllerTest {
 
         verify(projectServiceRepositoryMock, times(1)).getProject("SAMPLE");
         verify(mapperMock, times(0)).toResource(any(), any(SelectionVector.class));
+    }
+
+
+    @Test
+    void putState_ProjectNotExists_StateNotFound() throws Exception {
+        // arrange
+        given(projectServiceMock.updateState("SAMPLE", COMPLETED)).willReturn(empty());
+
+        // act
+        ResultActions actual = mockMvc.perform(put("/project/{project}/state/{state}", "SAMPLE", COMPLETED));
+
+        // assert
+        actual.andExpect(status().isNotFound());
+        assertThatNoException();
+    }
+
+    @Test
+    void putState_TailoringExists_StateCreated() throws Exception {
+        // arrange
+        ProjectInformation projectInformation = ProjectInformation.builder().build();
+        given(projectServiceMock.updateState("SAMPLE", COMPLETED))
+            .willReturn(Optional.of(projectInformation));
+
+        ArgumentCaptor<PathContextBuilder> pathContextCaptor = forClass(PathContextBuilder.class);
+        given(mapperMock.toResource(pathContextCaptor.capture(), eq(projectInformation)))
+            .willReturn(ProjectResource.builder().build());
+
+
+        // act
+        ResultActions actual = mockMvc.perform(put("/project/{project}/state/{state}", "SAMPLE", COMPLETED));
+
+        // assert
+        actual.andExpect(status().isOk());
+        verify(projectServiceMock, times(1)).updateState("SAMPLE", COMPLETED);
     }
 }
 

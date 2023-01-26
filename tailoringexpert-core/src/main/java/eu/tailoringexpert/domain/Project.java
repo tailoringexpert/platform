@@ -62,6 +62,11 @@ public class Project implements Serializable {
     private ZonedDateTime creationTimestamp;
 
     /**
+     * State of Project.
+     */
+    private ProjectState state;
+
+    /**
      * Sets the screeningsheet used to create the project.
      *
      * @param screeningSheet Screeningsheet to set

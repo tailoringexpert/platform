@@ -22,6 +22,8 @@
 package eu.tailoringexpert.project;
 
 import eu.tailoringexpert.domain.Project;
+import eu.tailoringexpert.domain.ProjectInformation;
+import eu.tailoringexpert.domain.ProjectState;
 import eu.tailoringexpert.domain.SelectionVector;
 import eu.tailoringexpert.domain.Tailoring;
 
@@ -74,4 +76,13 @@ public interface ProjectService {
      * @return true, if project is deleted, false in all other cases
      */
     boolean deleteProject(String project);
+
+    /**
+     * Updates state of project.
+     *
+     * @param project project to update state of
+     * @param state   state to set
+     * @return true if state was set
+     */
+    Optional<ProjectInformation> updateState(String project, ProjectState state);
 }

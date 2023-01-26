@@ -63,6 +63,7 @@ public abstract class ResourceMapper {
     public static final String PROJECT_SELECTIONVECTOR = "project/{project}/selectionvector";
     public static final String PROJECT_SCREENINGSHEET = "project/{project}/screeningsheet";
     public static final String PROJECT_SCREENINGSHEET_PDF = "project/{project}/screeningsheet/pdf";
+    public static final String PROJECT_STATE = "project/{project}/state/{state}";
     public static final String TAILORINGREQUIRMENT = "project/{project}/tailoring/{tailoring}/catalog/{chapter}/{requirement}";
     public static final String TAILORINGREQUIRMENT_SELECTED = "project/{project}/tailoring/{tailoring}/catalog/{chapter}/{requirement}/selected/{selected}";
     public static final String TAILORINGREQUIRMENT_TEXT = "project/{project}/tailoring/{tailoring}/catalog/{chapter}/{requirement}/text";
@@ -92,6 +93,8 @@ public abstract class ResourceMapper {
     public static final String BASECATALOG_VERSION = "catalog/{version}";
     public static final String BASECATALOG_VERSION_PDF = "catalog/{version}/pdf";
     public static final String BASECATALOG_VERSION_JSON = "catalog/{version}/json";
+
+    public static final String BASECATALOG_VERSION_DOCUMENT = "catalog/{version}/document";
 
     public static final String SCREENINGSHEET = "screeningsheet";
     public static final String SELECTIONVECTOR_PROFILE = "selectionvector";
@@ -136,7 +139,8 @@ public abstract class ResourceMapper {
             linkToCurrentMapping().slash(resolveParameter(PROJECT_NEW, context.parameter())).withRel(PROJECTS),
             createLink(REL_SELF, baseUri, BASECATALOG_VERSION, parameter),
             createLink(REL_PDF, baseUri, BASECATALOG_VERSION_PDF, parameter),
-            createLink(REL_JSON, baseUri, BASECATALOG_VERSION_JSON, parameter)
+            createLink(REL_JSON, baseUri, BASECATALOG_VERSION_JSON, parameter),
+            createLink(REL_DOCUMENT, baseUri, BASECATALOG_VERSION_DOCUMENT, parameter)
         ));
     }
 
@@ -144,6 +148,7 @@ public abstract class ResourceMapper {
     @BeforeMapping
     protected void updatePathContext(@Context PathContextBuilder pathContext, ProjectInformation domain) {
         pathContext.project(nonNull(domain) ? domain.getIdentifier() : null);
+        pathContext.projectState(nonNull(domain) ? domain.getState().nextState().name() : null);
     }
 
     @Mapping(target = "name", source = "identifier")
@@ -154,13 +159,15 @@ public abstract class ResourceMapper {
     protected void addLinks(@Context PathContextBuilder pathContext, @MappingTarget ProjectResourceBuilder resource) {
         PathContext context = pathContext.build();
         Map<String, String> parameter = context.parameter();
+        parameter.put(REL_STATE, parameter.get("projectstate"));
 
         String baseUri = linkToCurrentMapping().toString();
         resource.links(asList(
             createLink(REL_SELF, baseUri, PROJECT, parameter),
             createLink(REL_SELECTIONVECTOR, baseUri, PROJECT_SELECTIONVECTOR, parameter),
             createLink(REL_SCREENINGSHEET, baseUri, PROJECT_SCREENINGSHEET, parameter),
-            createLink(REL_TAILORING, baseUri, TAILORINGS, parameter)
+            createLink(REL_TAILORING, baseUri, TAILORINGS, parameter),
+            createLink(REL_STATE, baseUri, PROJECT_STATE, parameter)
         ));
     }
 
@@ -179,7 +186,7 @@ public abstract class ResourceMapper {
     protected void updatePathContext(@Context PathContextBuilder pathContext, TailoringInformation domain) {
         pathContext.tailoring(nonNull(domain) ? domain.getName() : null);
         pathContext.catalog(nonNull(domain) ? domain.getCatalogVersion() : null);
-        pathContext.state(nonNull(domain) ? domain.getState().nextState().name() : null);
+        pathContext.tailoringState(nonNull(domain) ? domain.getState().nextState().name() : null);
     }
 
     public abstract TailoringResource toResource(@Context PathContextBuilder pathContext, TailoringInformation domain);
@@ -188,6 +195,7 @@ public abstract class ResourceMapper {
     public void addLinks(@Context PathContextBuilder pathContext, @MappingTarget TailoringResourceBuilder resource) {
         PathContext context = pathContext.build();
         Map<String, String> parameter = context.parameter();
+        parameter.put(REL_STATE, parameter.get("tailoringstate"));
 
         String baseUri = linkToCurrentMapping().toString();
         resource.links(asList(

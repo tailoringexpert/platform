@@ -2,7 +2,7 @@
  * #%L
  * TailoringExpert
  * %%
- * Copyright (C) 2022 Michael Bädorf and others
+ * Copyright (C) 2022 - 2023 Michael Bädorf and others
  * %%
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as
@@ -21,36 +21,17 @@
  */
 package eu.tailoringexpert.domain;
 
-import lombok.Builder;
-import lombok.Value;
+public enum ProjectState {
+    ONGOING,
+    COMPLETED;
 
-import java.io.Serializable;
-import java.time.ZonedDateTime;
-import java.util.Collection;
+    public ProjectState nextState() {
+        int nextIndex = ordinal() + 1;
 
-@Value
-@Builder
-public class ProjectInformation implements Serializable {
-    private static final long serialVersionUID = 5425428859919793419L;
+        if (values().length == nextIndex) {
+            nextIndex = values().length - 1;
+        }
 
-    /**
-     * Unique identifier of project.
-     */
-    private String identifier;
-
-    /**
-     * Creation timestamp of project.
-     */
-    private ZonedDateTime creationTimestamp;
-
-    /**
-     * Tailorings of the project.
-     */
-    private Collection<TailoringInformation> tailorings;
-
-    /**
-     * State of the project.
-     */
-    private ProjectState state;
-
+        return values()[nextIndex];
+    }
 }
