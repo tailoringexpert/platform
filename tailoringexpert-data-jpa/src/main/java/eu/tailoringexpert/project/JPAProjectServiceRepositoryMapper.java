@@ -80,6 +80,7 @@ public abstract class JPAProjectServiceRepositoryMapper {
     @Mapping(target = "identifier", source = "entity.identifier")
     @Mapping(target = "creationTimestamp", source = "entity.creationTimestamp")
     @Mapping(target = "tailorings", source = "entity.tailorings")
+    @Mapping(target = "state", source = "entity.state")
     abstract ProjectInformation getProjectInformationen(ProjectEntity entity);
 
     /**

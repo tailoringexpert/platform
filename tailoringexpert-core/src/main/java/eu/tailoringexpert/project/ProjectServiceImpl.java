@@ -24,6 +24,8 @@ package eu.tailoringexpert.project;
 import eu.tailoringexpert.domain.BaseRequirement;
 import eu.tailoringexpert.domain.Catalog;
 import eu.tailoringexpert.domain.Project;
+import eu.tailoringexpert.domain.ProjectInformation;
+import eu.tailoringexpert.domain.ProjectState;
 import eu.tailoringexpert.domain.ScreeningSheet;
 import eu.tailoringexpert.domain.SelectionVector;
 import eu.tailoringexpert.domain.Tailoring;
@@ -35,6 +37,7 @@ import lombok.extern.log4j.Log4j2;
 
 import java.util.Optional;
 
+import static eu.tailoringexpert.domain.ProjectState.ONGOING;
 import static java.lang.Integer.parseInt;
 import static java.util.Comparator.comparingInt;
 import static java.util.Objects.isNull;
@@ -73,6 +76,7 @@ public class ProjectServiceImpl implements ProjectService {
             .screeningSheet(screeningSheet)
             .identifier(screeningSheet.getProject())
             .tailoring(tailoring)
+            .state(ONGOING)
             .build()
         );
 
@@ -95,6 +99,23 @@ public class ProjectServiceImpl implements ProjectService {
             return repository.deleteProject(project);
         }
         return false;
+    }
+
+    @Override
+    public  Optional<ProjectInformation>  updateState(String project, ProjectState state) {
+        log.info("STARTED | updating state of {} to {}", project, state);
+
+        Optional<Project> oProject = repository.getProject(project);
+        if ( oProject.isEmpty()) {
+            log.info("FINISHED | updating state of {} skipped because it does not exists", project);
+            return empty();
+        }
+
+        Optional<ProjectInformation> result = repository.updateState(project, state);
+
+        log.info("FINISHED | updating state of {} to {}", project, state);
+
+        return result;
     }
 
     /**

@@ -48,4 +48,9 @@ public class ProjectInformation implements Serializable {
      */
     private Collection<TailoringInformation> tailorings;
 
+    /**
+     * State of the project.
+     */
+    private ProjectState state;
+
 }

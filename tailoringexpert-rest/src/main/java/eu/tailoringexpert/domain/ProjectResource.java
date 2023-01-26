@@ -56,13 +56,16 @@ public class ProjectResource extends RepresentationModel<ProjectResource> {
      */
     String creationTimestamp;
 
+    String state;
+
     @Builder
-    public ProjectResource(String name, String projectManager, String creationTimestamp, Collection<TailoringResource> tailorings, List<Link> links) {
+    public ProjectResource(String name, String projectManager, String creationTimestamp, Collection<TailoringResource> tailorings, String state, List<Link> links) {
         super();
         this.name = name;
         this.projectManager = projectManager;
         this.creationTimestamp = creationTimestamp;
         this.tailorings = tailorings;
+        this.state = state;
         if (nonNull(links)) {
             add(links);
         }

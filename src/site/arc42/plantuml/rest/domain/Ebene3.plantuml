@@ -152,8 +152,10 @@ package domain {
         tailoring : String
         chapter : String
         requirement : String
-        note : String
         selected : Boolean
+        note : String
+        tailoringState : String
+        projectState : String
     }
 
     class SelectionVector {
@@ -164,6 +166,7 @@ package domain {
         projectManager : String
         creationTimestamp : String
         catalogVersion : String
+        state : String
     }
     RepresentationModel <|-- ProjectResource
     ProjectResource --> "1..*" TailoringResource : tailorings

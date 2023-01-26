@@ -21,6 +21,7 @@
  */
 package eu.tailoringexpert.domain;
 
+import jakarta.persistence.Enumerated;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -36,12 +37,14 @@ import jakarta.persistence.OneToOne;
 import jakarta.persistence.OrderColumn;
 import jakarta.persistence.Table;
 import jakarta.persistence.TableGenerator;
+
 import java.io.Serializable;
 import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import static jakarta.persistence.EnumType.STRING;
 import static java.util.Objects.isNull;
 import static jakarta.persistence.CascadeType.ALL;
 import static jakarta.persistence.FetchType.LAZY;
@@ -91,6 +94,13 @@ public class ProjectEntity implements Serializable {
      */
     @Column(name = "CREATIONTIMESTAMP")
     private ZonedDateTime creationTimestamp;
+
+    /**
+     * State of tailoring.
+     */
+    @Enumerated(STRING)
+    @Column(name = "STATE")
+    private ProjectState state;
 
     /**
      * Find a tailoring by given name.

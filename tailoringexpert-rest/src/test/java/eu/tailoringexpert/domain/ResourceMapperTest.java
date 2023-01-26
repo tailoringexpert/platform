@@ -38,6 +38,7 @@ import java.time.format.DateTimeFormatter;
 
 import static eu.tailoringexpert.domain.Phase.A;
 import static eu.tailoringexpert.domain.Phase.C;
+import static eu.tailoringexpert.domain.ProjectState.ONGOING;
 import static eu.tailoringexpert.domain.TailoringState.AGREED;
 import static java.lang.Boolean.FALSE;
 import static java.lang.Boolean.TRUE;
@@ -111,7 +112,8 @@ class ResourceMapperTest {
             Link.of("http://localhost/catalog/8.2.1", "self"),
             Link.of("http://localhost/catalog/8.2.1/project", "project"),
             Link.of("http://localhost/catalog/8.2.1/pdf", "pdf"),
-            Link.of("http://localhost/catalog/8.2.1/json", "json")
+            Link.of("http://localhost/catalog/8.2.1/json", "json"),
+            Link.of("http://localhost/catalog/8.2.1/document", "document")
         );
 
     }
@@ -138,6 +140,7 @@ class ResourceMapperTest {
 
         ProjectInformation projectInformation = ProjectInformation.builder()
             .identifier("SAMPLE")
+            .state(ONGOING)
             .tailorings(asList(
                 TailoringInformation.builder().name("master").state(AGREED).build(),
                 TailoringInformation.builder().name("master1").state(AGREED).build()
@@ -157,7 +160,8 @@ class ResourceMapperTest {
             Link.of("http://localhost/project/SAMPLE", "self"),
             Link.of("http://localhost/project/SAMPLE/selectionvector", "selectionvector"),
             Link.of("http://localhost/project/SAMPLE/screeningsheet", "screeningsheet"),
-            Link.of("http://localhost/project/SAMPLE/tailoring", "tailoring")
+            Link.of("http://localhost/project/SAMPLE/tailoring", "tailoring"),
+            Link.of("http://localhost/project/SAMPLE/state/COMPLETED", "state")
         );
     }
 
@@ -170,6 +174,7 @@ class ResourceMapperTest {
 
         ProjectInformation projectInformation = ProjectInformation.builder()
             .identifier("SAMPLE")
+            .state(ONGOING)
             .tailorings(null)
             .build();
 
@@ -185,7 +190,8 @@ class ResourceMapperTest {
             Link.of("http://localhost/project/SAMPLE", "self"),
             Link.of("http://localhost/project/SAMPLE/selectionvector", "selectionvector"),
             Link.of("http://localhost/project/SAMPLE/screeningsheet", "screeningsheet"),
-            Link.of("http://localhost/project/SAMPLE/tailoring", "tailoring")
+            Link.of("http://localhost/project/SAMPLE/tailoring", "tailoring"),
+            Link.of("http://localhost/project/SAMPLE/state/COMPLETED", "state")
         );
     }
 
@@ -199,6 +205,7 @@ class ResourceMapperTest {
         ZonedDateTime now = ZonedDateTime.now();
         ProjectInformation projekt = ProjectInformation.builder()
             .identifier("SAMPLE")
+            .state(ONGOING)
             .creationTimestamp(now)
             .tailorings(asList(
                 TailoringInformation.builder().name("master").state(AGREED).build(),
@@ -220,7 +227,8 @@ class ResourceMapperTest {
             Link.of("http://localhost/project/SAMPLE", "self"),
             Link.of("http://localhost/project/SAMPLE/selectionvector", "selectionvector"),
             Link.of("http://localhost/project/SAMPLE/screeningsheet", "screeningsheet"),
-            Link.of("http://localhost/project/SAMPLE/tailoring", "tailoring")
+            Link.of("http://localhost/project/SAMPLE/tailoring", "tailoring"),
+            Link.of("http://localhost/project/SAMPLE/state/COMPLETED", "state")
         );
     }
 
@@ -514,6 +522,7 @@ class ResourceMapperTest {
 
         Project project = Project.builder()
             .identifier("SAMPLE")
+            .state(ONGOING)
             .tailorings(asList(
                 Tailoring.builder()
                     .name("master")
@@ -539,7 +548,8 @@ class ResourceMapperTest {
             Link.of("http://localhost/project/SAMPLE", "self"),
             Link.of("http://localhost/project/SAMPLE/selectionvector", "selectionvector"),
             Link.of("http://localhost/project/SAMPLE/screeningsheet", "screeningsheet"),
-            Link.of("http://localhost/project/SAMPLE/tailoring", "tailoring")
+            Link.of("http://localhost/project/SAMPLE/tailoring", "tailoring"),
+            Link.of("http://localhost/project/SAMPLE/state/{state}", "state")
         );
     }
 

@@ -15,6 +15,7 @@ package catalog {
         doImport(katalog : Catalog<BaseCatalogRequirement>) : boolean
         getCatalog(version : String) : Optional<Catalog<BaseRequirement>>
         createCatalog(version : String) : Optional<File>
+        createDocuments(version : String) : Optional<File>
     }
 
     interface CatalogServiceRepository {
@@ -27,6 +28,7 @@ package catalog {
     }
     CatalogService <|-- CatalogServiceImpl
     CatalogServiceImpl --> "1" CatalogServiceRepository : repository
+    CatalogServiceImpl --> "1" DocumentService : documentService
 
 }
 @enduml

@@ -123,10 +123,16 @@ package domain {
     Tailoring --> "1..*" DocumentSignature : signatures
     Tailoring --> "0..*" Note : notes
 
+    enum ProjectState {
+        ONGOING
+        COMPLETED
+    }
+
     class Project {
         identifier : String
         creationTimestamp : ZonedDateTime
     }
+    Project --> "1" ProjectState : state
     Project --> "1..*" Tailoring : tailorings
     Project --> "1" ScreeningSheet : screeningSheet
     Project --> "1" "Catalog<BaseRequirement>" : catalog
@@ -169,7 +175,8 @@ package domain {
         identifier : String
         catalogVersion : Sting
         creationTimestamp : ZonedDateTime
-    }
+
+    ProjectInformation --> "1" ProjectState : state
     ProjectInformation --> "1..*" TailoringInformation : tailorings
 
     class ScreeningSheetParameter {
