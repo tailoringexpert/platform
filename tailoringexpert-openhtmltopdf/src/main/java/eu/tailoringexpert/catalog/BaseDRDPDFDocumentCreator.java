@@ -76,7 +76,7 @@ public class BaseDRDPDFDocumentCreator implements DocumentCreator {
         addDRD(catalog.getToc(), catalog.getVersion(), drds);
 
         String html = templateEngine.process(catalog.getVersion() + "/basedrd", parameter);
-        File result = pdfEngine.process(docId, html, catalog.getVersion() + "/basedrd");
+        File result = pdfEngine.process(docId, html, catalog.getVersion() + "/drd");
 
         log.traceExit("Finished creating DRD document {}", docId);
 
