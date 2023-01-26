@@ -72,7 +72,7 @@ class ComparisonPDFDocumentCreatorTest {
     @BeforeEach
     void setup() {
         Dotenv env = Dotenv.configure().ignoreIfMissing().load();
-        this.templateHome = env.get("TEMPLATE_HOME", "src/test/resources/templates/plattform/");
+        this.templateHome = env.get("TEMPLATE_HOME", "src/test/resources/templates/");
 
         this.objectMapper = new ObjectMapper();
         this.objectMapper.registerModules(new ParameterNamesModule(), new JavaTimeModule(), new Jdk8Module());
@@ -91,7 +91,7 @@ class ComparisonPDFDocumentCreatorTest {
         springTemplateEngine.addTemplateResolver(fileTemplateResolver);
 
         RendererRequestConfigurationSupplier supplier = () -> RendererRequestConfiguration.builder()
-            .id("unitest")
+            .id("unittest")
             .name("TailoringExpert")
             .templateHome(this.templateHome)
             .build();
