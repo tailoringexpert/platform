@@ -29,6 +29,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 
 import java.time.LocalDateTime;
+import java.util.Collection;
 import java.util.Map;
 import java.util.Optional;
 
@@ -52,6 +53,16 @@ public class TenantDocumentService implements DocumentService {
     public Optional<File> createCatalog(Catalog<BaseRequirement> catalog, LocalDateTime creationTimestamp) {
         DocumentService service = getTenantImplementation();
         return service.createCatalog(catalog, creationTimestamp);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    @SneakyThrows
+    public Collection<File> createAll(Catalog<BaseRequirement> catalog, LocalDateTime creationTimestamp) {
+        DocumentService service = getTenantImplementation();
+        return service.createAll(catalog, creationTimestamp);
     }
 
     private DocumentService getTenantImplementation() throws NoSuchMethodException {

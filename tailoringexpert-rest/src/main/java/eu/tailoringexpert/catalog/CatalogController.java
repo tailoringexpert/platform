@@ -57,6 +57,7 @@ import java.util.Optional;
 import java.util.function.Function;
 
 import static eu.tailoringexpert.domain.ResourceMapper.BASECATALOG;
+import static eu.tailoringexpert.domain.ResourceMapper.BASECATALOG_VERSION_DOCUMENT;
 import static eu.tailoringexpert.domain.ResourceMapper.BASECATALOG_VERSION_JSON;
 import static eu.tailoringexpert.domain.ResourceMapper.BASECATALOG_VERSION;
 import static eu.tailoringexpert.domain.ResourceMapper.BASECATALOG_VERSION_PDF;
@@ -150,7 +151,7 @@ public class CatalogController {
         @ApiResponse(
             responseCode = "404", description = "Base catalog does not exist")
     })
-    @GetMapping(value= BASECATALOG_VERSION_PDF, produces = "application/octet-stream")
+    @GetMapping(value = BASECATALOG_VERSION_PDF, produces = "application/octet-stream")
     @ResponseBody
     public ResponseEntity<byte[]> getBaseCatalogPrint(
         @Parameter(description = "Requested base catalog version") @PathVariable String version) {
@@ -171,7 +172,7 @@ public class CatalogController {
         @ApiResponse(
             responseCode = "404", description = "Base catalog does not exist")
     })
-    @GetMapping(value= BASECATALOG_VERSION_JSON, produces = "application/json")
+    @GetMapping(value = BASECATALOG_VERSION_JSON, produces = "application/json")
     @ResponseBody
     public ResponseEntity<byte[]> getBaseCatalogJson(
         @Parameter(description = "Requested base catalog version") @PathVariable String version) throws JsonProcessingException {
@@ -188,5 +189,27 @@ public class CatalogController {
             .contentLength(data.length)
             .body(data);
 
+    }
+
+    @Operation(summary = "Create a printable base catalog")
+    @ApiResponses(value = {
+        @ApiResponse(
+            responseCode = "200", description = "Output document created",
+            content = @Content(mediaType = "application/octet-stream", schema = @Schema(implementation = byte[].class))),
+        @ApiResponse(
+            responseCode = "404", description = "Base catalog does not exist")
+    })
+    @GetMapping(value = BASECATALOG_VERSION_DOCUMENT, produces = "application/octet-stream")
+    @ResponseBody
+    public ResponseEntity<byte[]> getDocuments(
+        @Parameter(description = "Requested all base catalog related documents") @PathVariable String version) {
+        return catalogService.createDocuments(version)
+            .map(dokument -> ok()
+                .header(CONTENT_DISPOSITION, ContentDisposition.builder(MediaTypeProvider.FORM_DATA).name(MediaTypeProvider.ATTACHMENT).filename(dokument.getName()).build().toString())
+                .header(ACCESS_CONTROL_EXPOSE_HEADERS, CONTENT_DISPOSITION)
+                .contentType(mediaTypeProvider.apply(dokument.getType()))
+                .contentLength(dokument.getLength())
+                .body(dokument.getData()))
+            .orElseGet(() -> notFound().build());
     }
 }

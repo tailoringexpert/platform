@@ -31,10 +31,13 @@ import eu.tailoringexpert.FileSaver;
 import eu.tailoringexpert.KatalogWebServerPortConsumer;
 import eu.tailoringexpert.domain.BaseRequirement;
 import eu.tailoringexpert.domain.Catalog;
+import eu.tailoringexpert.domain.Chapter;
+import eu.tailoringexpert.domain.DRD;
 import eu.tailoringexpert.domain.File;
 import eu.tailoringexpert.renderer.HTMLTemplateEngine;
 import eu.tailoringexpert.renderer.PDFEngine;
 import eu.tailoringexpert.renderer.RendererRequestConfiguration;
+import eu.tailoringexpert.renderer.RendererRequestConfigurationSupplier;
 import eu.tailoringexpert.renderer.ThymeleafTemplateEngine;
 import io.github.cdimascio.dotenv.Dotenv;
 import lombok.extern.log4j.Log4j2;
@@ -46,23 +49,27 @@ import org.mockserver.client.MockServerClient;
 import org.thymeleaf.spring6.SpringTemplateEngine;
 import org.thymeleaf.templateresolver.FileTemplateResolver;
 
+import java.io.IOException;
 import java.io.InputStream;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
+import java.util.function.Function;
 
 import static java.nio.file.Files.readAllBytes;
-import static java.nio.file.Paths.get;
 import static java.util.Objects.nonNull;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.catchThrowable;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.mock;
 import static org.mockserver.integration.ClientAndServer.startClientAndServer;
 import static org.mockserver.model.HttpRequest.request;
 import static org.mockserver.model.HttpResponse.response;
 
 @Log4j2
-class BaseCatalogPDFDocumentCreatorTest {
+class BaseDRDPDFDocumentCreatorTest {
 
     static int mockServerPort = 1080;
     static MockServerClient mockServer;
@@ -71,7 +78,8 @@ class BaseCatalogPDFDocumentCreatorTest {
     String assetHome;
     ObjectMapper objectMapper;
     FileSaver fileSaver;
-    BaseCatalogPDFDocumentCreator creator;
+    Function<Chapter<BaseRequirement>, Set<DRD>> drdProviderMock;
+    BaseDRDPDFDocumentCreator creator;
 
     @BeforeAll
     static void beforeAll() {
@@ -93,7 +101,7 @@ class BaseCatalogPDFDocumentCreatorTest {
         this.objectMapper.registerModules(new ParameterNamesModule(), new JavaTimeModule(), new Jdk8Module());
         this.objectMapper.disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES);
 
-        this.webServerPortConsumer = new KatalogWebServerPortConsumer(1080);
+        this.webServerPortConsumer = new KatalogWebServerPortConsumer(mockServerPort);
 
         this.fileSaver = new FileSaver("target");
 
@@ -104,32 +112,27 @@ class BaseCatalogPDFDocumentCreatorTest {
         fileTemplateResolver.setCharacterEncoding("UTF-8");
         fileTemplateResolver.setOrder(1);
 
+        RendererRequestConfigurationSupplier supplier = () -> RendererRequestConfiguration.builder()
+            .id("unittest")
+            .name("TailoringExpert")
+            .templateHome(this.templateHome)
+            .build();
+
         SpringTemplateEngine springTemplateEngine = new SpringTemplateEngine();
         springTemplateEngine.addTemplateResolver(fileTemplateResolver);
 
-        HTMLTemplateEngine templateEngine = new ThymeleafTemplateEngine(
-            springTemplateEngine,
-            () -> RendererRequestConfiguration.builder()
-                .id("unittest")
-                .name("plattform")
-                .templateHome(this.templateHome)
-                .build()
-        );
+        HTMLTemplateEngine templateEngine = new ThymeleafTemplateEngine(springTemplateEngine, supplier);
 
-        this.creator = new BaseCatalogPDFDocumentCreator(
+        this.drdProviderMock = mock(Function.class);
+        this.creator = new BaseDRDPDFDocumentCreator(
             templateEngine,
-            new PDFEngine(
-                () -> RendererRequestConfiguration.builder()
-                    .id("plattform")
-                    .name("TailoringExpert")
-                    .templateHome(get(this.templateHome).toAbsolutePath().toString())
-                    .build()
-            )
+            new PDFEngine(supplier),
+            drdProviderMock
         );
     }
 
     @Test
-    void createDocument_AllDataAvailable_FileReturned() throws Exception {
+    void createDocument() throws IOException {
         // arrange
         Catalog<BaseRequirement> catalog;
         try (InputStream is = this.getClass().getResourceAsStream("/basecatalog.json")) {
@@ -139,12 +142,21 @@ class BaseCatalogPDFDocumentCreatorTest {
         }
         webServerPortConsumer.accept(catalog);
 
+
         LocalDateTime now = LocalDateTime.now();
         Map<String, String> platzhalter = new HashMap<>();
         platzhalter.put("PROJEKT", "SAMPLE");
         platzhalter.put("DATUM", now.format(DateTimeFormatter.ofPattern("dd.MM.YYYY")));
-        platzhalter.put("DOKUMENT", "DUMMY-XY-Z-1940/DV7");
-        platzhalter.put("${DRD_DOCID}", "DUMMY_DOC");
+        platzhalter.put("DOKUMENT", "SAMPLE-XY-Z-1940/DV7");
+        platzhalter.put("${DRD_DOCID}", "SAMPLE_DOC");
+
+        given(drdProviderMock.apply(any()))
+            .willReturn(Set.of(
+                DRD.builder()
+                    .title("Non-Conformance Report (NCR)")
+                    .number("03.01")
+                    .build())
+            );
 
         mockServer
             .when(request()
@@ -164,74 +176,7 @@ class BaseCatalogPDFDocumentCreatorTest {
 
         // assert
         assertThat(actual).isNotNull();
-        fileSaver.accept("basecatalog.pdf", actual.getData());
+        fileSaver.accept("basedrds.pdf", actual.getData());
     }
 
-    @Test
-    void createDocument_CatalogNoToc_NullReturned() throws Exception {
-        // arrange
-        Catalog<BaseRequirement> catalog = Catalog.<BaseRequirement>builder().build();
-
-        LocalDateTime now = LocalDateTime.now();
-        Map<String, String> platzhalter = new HashMap<>();
-        platzhalter.put("PROJEKT", "SAMPLE");
-        platzhalter.put("DATUM", now.format(DateTimeFormatter.ofPattern("dd.MM.YYYY")));
-        platzhalter.put("DOKUMENT", "DUMMY-XY-Z-1940/DV7");
-        platzhalter.put("${DRD_DOCID}", "DUMMY_DOC");
-
-
-        // act
-        File actual = creator.createDocument("4711", catalog, platzhalter);
-
-        // assert
-        assertThat(actual).isNull();
-    }
-
-    @Test
-    void createDokument_DocIdNull_NullPointerExceptionThrown() throws Exception {
-        // arrange
-        Catalog<BaseRequirement> catalog;
-        try (InputStream is = this.getClass().getResourceAsStream("/basecatalog.json")) {
-            assert nonNull(is);
-            catalog = objectMapper.readValue(is, new TypeReference<Catalog<BaseRequirement>>() {
-            });
-        }
-
-        Map<String, String> platzhalter = new HashMap<>();
-
-        // act
-        Throwable actual = catchThrowable(() -> creator.createDocument(null, catalog, platzhalter));
-
-        // assert
-        assertThat(actual).isInstanceOf(NullPointerException.class);
-    }
-
-    @Test
-    void createDocument_BaseCatalogNull_NullPointerExceptionThrown() throws Exception {
-        // arrange
-        Map<String, String> platzhalter = new HashMap<>();
-
-        // act
-        Throwable actual = catchThrowable(() -> creator.createDocument("4711", null, platzhalter));
-
-        // assert
-        assertThat(actual).isInstanceOf(NullPointerException.class);
-    }
-
-    @Test
-    void createDocument_PlaceholdersNull_NullPointerExceptionThrown() throws Exception {
-        // arrange
-        Catalog<BaseRequirement> catalog;
-        try (InputStream is = this.getClass().getResourceAsStream("/basecatalog.json")) {
-            assert nonNull(is);
-            catalog = objectMapper.readValue(is, new TypeReference<Catalog<BaseRequirement>>() {
-            });
-        }
-
-        // act
-        Throwable actual = catchThrowable(() -> creator.createDocument("4711", catalog, null));
-
-        // assert
-        assertThat(actual).isInstanceOf(NullPointerException.class);
-    }
 }

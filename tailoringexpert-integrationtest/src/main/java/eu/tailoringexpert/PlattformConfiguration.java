@@ -22,6 +22,7 @@
 package eu.tailoringexpert;
 
 import eu.tailoringexpert.catalog.BaseCatalogPDFDocumentCreator;
+import eu.tailoringexpert.catalog.BaseDRDPDFDocumentCreator;
 import eu.tailoringexpert.project.JPAProjectServiceRepository;
 import eu.tailoringexpert.repository.BaseCatalogRepository;
 import eu.tailoringexpert.repository.DokumentSigneeRepository;
@@ -84,8 +85,9 @@ public class PlattformConfiguration {
 
     @Bean
     eu.tailoringexpert.catalog.PlattformDocumentService plattformCatalogDocumentService(
-        @NonNull BaseCatalogPDFDocumentCreator baseCatalogPDFDocumentCreator) {
-        return new eu.tailoringexpert.catalog.PlattformDocumentService(baseCatalogPDFDocumentCreator);
+        @NonNull BaseCatalogPDFDocumentCreator baseCatalogPDFDocumentCreator,
+        @NonNull BaseDRDPDFDocumentCreator baseDRDPDFDocumentCreator) {
+        return new eu.tailoringexpert.catalog.PlattformDocumentService(baseCatalogPDFDocumentCreator, baseDRDPDFDocumentCreator);
     }
 
 

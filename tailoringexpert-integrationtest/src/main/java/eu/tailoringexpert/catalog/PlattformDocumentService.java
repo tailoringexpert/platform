@@ -8,12 +8,12 @@
  * it under the terms of the GNU General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/gpl-3.0.html>.
@@ -30,7 +30,9 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 
 import java.time.LocalDateTime;
+import java.util.Collection;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.Map;
 import java.util.Optional;
 
@@ -49,6 +51,23 @@ public class PlattformDocumentService implements DocumentService {
     @NonNull
     private DocumentCreator catalogCreator;
 
+    @NonNull
+    private DocumentCreator drdCreator;
+
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public Collection<File> createAll(Catalog<BaseRequirement> catalog, LocalDateTime creationTimestamp) {
+        Collection<File> result = new LinkedList<>();
+
+        createCatalog(catalog, creationTimestamp).ifPresent(result::add);
+        createDRDDocument(catalog, creationTimestamp).ifPresent(result::add);
+
+        return result;
+    }
+
     /**
      * {@inheritDoc}
      */
@@ -65,6 +84,21 @@ public class PlattformDocumentService implements DocumentService {
         log.info("FINISHED | created catalog document  {}", docId);
         return ofNullable(dokument);
 
+    }
+
+    /**
+     * Create DRD document containing only templates referenced by selected requirements.
+     *
+     * @param catalog     base catalog to get defined DRDs of
+     * @param currentTime creation timestamp to use
+     * @return created PDF File
+     */
+    Optional<File> createDRDDocument(Catalog<BaseRequirement> catalog, LocalDateTime currentTime) {
+        Map<String, String> placeholders = new HashMap<>();
+        String docId = String.format("PA,Safety & Sustainability-Katalog_%s_%s", catalog.getVersion(), "DRD");
+
+        File document = drdCreator.createDocument(docId, catalog, placeholders);
+        return ofNullable(document);
     }
 }
 

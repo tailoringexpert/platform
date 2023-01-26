@@ -60,4 +60,13 @@ public interface CatalogService {
      */
     Optional<File> createCatalog(String version);
 
+    /**
+     * Create all documents of basecatalog.<p>
+     * Documents will be provided in {@code Zip-File}.
+     *
+     * @param version version to load
+     * @return Created zip-file containing all created documents
+     */
+    Optional<File> createDocuments(String version);
+
 }

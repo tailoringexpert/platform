@@ -91,7 +91,7 @@ class ComparisonPDFDocumentCreatorTest {
         springTemplateEngine.addTemplateResolver(fileTemplateResolver);
 
         RendererRequestConfigurationSupplier supplier = () -> RendererRequestConfiguration.builder()
-            .id("unitest")
+            .id("unittest")
             .name("TailoringExpert")
             .templateHome(this.templateHome)
             .build();

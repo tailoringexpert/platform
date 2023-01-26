@@ -93,6 +93,17 @@ public class CatalogConfiguration {
         return new BaseCatalogPDFDocumentCreator(templateEngine, pdfEngine);
     }
 
+    @Bean
+    DRDProvider baseDRDdProvider() {
+        return new DRDProvider();
+    }
+
+    @Bean
+    BaseDRDPDFDocumentCreator baseDRDPDFDocumentCreator(@NonNull HTMLTemplateEngine templateEngine,
+                                                        @NonNull PDFEngine pdfEngine,
+                                                        @NonNull DRDProvider drdProvider) {
+        return new BaseDRDPDFDocumentCreator(templateEngine, pdfEngine, drdProvider);
+    }
 
 
 }

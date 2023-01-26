@@ -12,7 +12,7 @@
     <fileSets>
         <fileSet>
             <outputDirectory>/</outputDirectory>
-            <directory>${basedir}/src/main/resources/templates</directory>
+            <directory>${basedir}/src/main/resources/templates/plattform</directory>
         </fileSet>
     </fileSets>
 </assembly>

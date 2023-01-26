@@ -96,14 +96,14 @@
         </table>
     </div>
 
-    <div th:insert="__${catalogVersion}__/drd/abbreviations :: content"></div>
+    <div th:insert="__${FRAGMENT_PREFIX}__/__${catalogVersion}__/drd/abbreviations :: content"></div>
 
 </page-after>
 
 
 <th:block th:each="drd : ${drds}">
     <page-after th:id="${drd.number}" th:if="${drd.number.matches('\d{1,2}\.\d{1,2}')}">
-        <div th:insert="~{__${drd.fragment}__ :: content}?:_"></div>
+        <div th:insert="~{__${FRAGMENT_PREFIX}__/__${drd.fragment}__ :: content}?:_"></div>
     </page-after>
 </th:block>
 
