@@ -225,7 +225,7 @@ class CatalogControllerTest {
 
         ArgumentCaptor<PathContextBuilder> pathContextCaptor = ArgumentCaptor.forClass(PathContextBuilder.class);
         given(mapperMock.toResource(pathContextCaptor.capture(), katalogCaptor.capture()))
-            .willReturn(BaseCatalogVersionResource.builder().validFrom(ZonedDateTime.now()).build());
+            .willReturn(BaseCatalogVersionResource.builder().validFrom("01.01.2022").build());
 
 
         // act

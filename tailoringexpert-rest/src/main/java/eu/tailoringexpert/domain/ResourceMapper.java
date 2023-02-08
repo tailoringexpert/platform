@@ -128,6 +128,7 @@ public abstract class ResourceMapper {
     }
 
     @Mapping(target = "standard", expression = "java( domain.getValidUntil() == null)")
+    @Mapping(target = "validFrom", source = "validFrom", dateFormat = "dd.MM.yyyy")
     public abstract BaseCatalogVersionResource toResource(@Context PathContextBuilder pathContext, BaseCatalogVersion domain);
 
     @AfterMapping
