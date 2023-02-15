@@ -79,4 +79,12 @@ public interface ProjectRepository extends JpaRepository<ProjectEntity, Long> {
      */
     @Query("Select t.state from #{#entityName} p inner join p.tailorings t where p.identifier=:project and t.name=:name")
     TailoringState findTailoringState(@Param("project") String project, @Param("name") String name);
+
+    /**
+     * Checks if a project exists.
+     *
+     * @param project identifier of project to check
+     * @return true if identifier of the project is already used
+     */
+    boolean existsProjectByIdentifier(String project);
 }

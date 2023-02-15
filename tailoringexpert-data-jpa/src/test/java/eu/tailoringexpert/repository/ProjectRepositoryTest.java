@@ -229,4 +229,27 @@ class ProjectRepositoryTest {
         assertThat(actual).isNull();
     }
 
+    @Test
+    void existsProjectByIdentifier_ProjectNotExists_FalseReturned() {
+        // arrange
+
+        // act
+        boolean actual = repository.existsProjectByIdentifier("SAMPLE");
+
+        // assert
+        assertThat(actual).isFalse();
+    }
+
+    @Test
+    void existsProjectByIdentifier_ProjectExists_TrueReturned() {
+        // arrange
+        repository.save(ProjectEntity.builder().identifier("SAMPLE").state(ONGOING).build());
+
+        // act
+        boolean actual = repository.existsProjectByIdentifier("SAMPLE");
+
+        // assert
+        assertThat(actual).isTrue();
+    }
+
 }

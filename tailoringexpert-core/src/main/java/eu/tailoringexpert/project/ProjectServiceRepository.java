@@ -107,7 +107,7 @@ public interface ProjectServiceRepository {
      * Load all extracted data of screeningsheet.<p>
      * <strong>Raw data (file) not part of result!</strong>
      *
-     * @param project dentifier of project to get screeningsheet of
+     * @param project identifier of project to get screeningsheet of
      * @return ScreeningSheet data without file raw data
      */
     Optional<ScreeningSheet> getScreeningSheet(String project);
@@ -119,4 +119,11 @@ public interface ProjectServiceRepository {
      * @param state   state to set
      */
     Optional<ProjectInformation> updateState(String project, ProjectState state);
+
+    /**
+     * Checks, if project already exists
+     * @param project identifier to project to check
+     * @return true if identifier is used by an existing project
+     */
+    boolean isExistingProject(String project);
 }

@@ -175,4 +175,12 @@ public class JPAProjectServiceRepository implements ProjectServiceRepository {
         entity.setState(state);
         return ofNullable(mapper.getProjectInformationen(entity));
     }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public boolean isExistingProject(String project) {
+        return projectRepository.existsProjectByIdentifier(project);
+    }
 }

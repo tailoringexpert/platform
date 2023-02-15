@@ -21,6 +21,7 @@
  */
 package eu.tailoringexpert.project;
 
+import eu.tailoringexpert.TailoringexpertException;
 import eu.tailoringexpert.domain.BaseRequirement;
 import eu.tailoringexpert.domain.Catalog;
 import eu.tailoringexpert.domain.Project;
@@ -67,20 +68,24 @@ public class ProjectServiceImpl implements ProjectService {
      */
     @Override
     public CreateProjectTO createProject(String catalogVersion, byte[] screeningSheetData, SelectionVector applicableSelectionVector, String note) {
-        Catalog<BaseRequirement> catalog = repository.getBaseCatalog(catalogVersion);
         ScreeningSheet screeningSheet = screeningSheetService.createScreeningSheet(screeningSheetData);
+        String identifier = screeningSheet.getProject();
+        if (repository.isExistingProject(identifier)) {
+            throw new TailoringexpertException("A project with name " + identifier + " already exists!\nEither change project identifier or add new tailoring to exitsing project " + identifier);
+        }
 
+        Catalog<BaseRequirement> catalog = repository.getBaseCatalog(catalogVersion);
         Tailoring tailoring = tailoringService.createTailoring("master", "1000", screeningSheet, applicableSelectionVector, note, catalog);
 
         Project project = repository.createProject(Project.builder()
             .screeningSheet(screeningSheet)
-            .identifier(screeningSheet.getProject())
+            .identifier(identifier)
             .tailoring(tailoring)
             .state(ONGOING)
             .build()
         );
 
-        log.info("Project {} with phases {} created with catalog {}", screeningSheet.getProject(), tailoring.getPhases(), catalogVersion);
+        log.info("Project {} with phases {} created with catalog {}", identifier, tailoring.getPhases(), catalogVersion);
         return CreateProjectTO.builder()
             .project(project.getIdentifier())
             .tailoring(tailoring.getName())
@@ -102,11 +107,11 @@ public class ProjectServiceImpl implements ProjectService {
     }
 
     @Override
-    public  Optional<ProjectInformation>  updateState(String project, ProjectState state) {
+    public Optional<ProjectInformation> updateState(String project, ProjectState state) {
         log.info("STARTED | updating state of {} to {}", project, state);
 
         Optional<Project> oProject = repository.getProject(project);
-        if ( oProject.isEmpty()) {
+        if (oProject.isEmpty()) {
             log.info("FINISHED | updating state of {} skipped because it does not exists", project);
             return empty();
         }
