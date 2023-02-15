@@ -357,4 +357,29 @@ class JPAProjectServiceRepositoryTest {
         verify(mapperMock, times(1)).getProjectInformationen(project);
     }
 
+    @Test
+    void isExistingProject_ProjectNotExists_FalseReturned() {
+        // arrange
+        given(projectRepositoryMock.existsProjectByIdentifier("SAMPLE")).willReturn(false);
+
+        // act
+        boolean actual = repository.isExistingProject("SAMPLE");
+
+        // assert
+        assertThat(actual).isFalse();
+        verify(projectRepositoryMock, times(1)).existsProjectByIdentifier("SAMPLE");
+    }
+
+    @Test
+    void isExistingProject_ProjectExists_TrueReturned() {
+        // arrange
+        given(projectRepositoryMock.existsProjectByIdentifier("SAMPLE")).willReturn(true);
+
+        // act
+        boolean actual = repository.isExistingProject("SAMPLE");
+
+        // assert
+        assertThat(actual).isTrue();
+        verify(projectRepositoryMock, times(1)).existsProjectByIdentifier("SAMPLE");
+    }
 }

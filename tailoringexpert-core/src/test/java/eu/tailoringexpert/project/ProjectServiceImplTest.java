@@ -21,6 +21,7 @@
  */
 package eu.tailoringexpert.project;
 
+import eu.tailoringexpert.TailoringexpertException;
 import eu.tailoringexpert.domain.BaseRequirement;
 import eu.tailoringexpert.domain.Catalog;
 import eu.tailoringexpert.domain.Identifier;
@@ -130,6 +131,29 @@ class ProjectServiceImplTest {
     }
 
     @Test
+    void createProject_ProjectAlreadyExists_TailoringexpertExceptionThrown() throws IOException {
+        // arrange
+        byte[] data;
+        try (InputStream is = newInputStream(get("src/test/resources/screeningsheet.pdf"))) {
+            assert nonNull(is);
+            data = is.readAllBytes();
+        }
+
+        ScreeningSheet screeningSheet = ScreeningSheet.builder()
+            .project("SAMPLE")
+            .build();
+        given(screeningSheetServiceMock.createScreeningSheet(any())).willReturn(screeningSheet);
+        given(repositoryMock.isExistingProject("SAMPLE")).willReturn(true);
+
+        // act
+        Throwable actual = catchThrowable(() -> service.createProject("SAMPLE", data, SelectionVector.builder().build(), null));
+
+        // assert
+        assertThat(actual).isInstanceOf(TailoringexpertException.class);
+        verify(repositoryMock, times(1)).isExistingProject("SAMPLE");
+    }
+
+    @Test
     void createProject_AllParameterValidProvidedNoNote_ProjectIsCreated() throws IOException {
         // arrange
         byte[] data;
@@ -216,6 +240,7 @@ class ProjectServiceImplTest {
             .build();
         given(screeningSheetServiceMock.createScreeningSheet(any())).willReturn(screeningSheet);
 
+        given(repositoryMock.isExistingProject(any())).willReturn(false);
         given(tailoringServiceMock.createTailoring(any(), any(), eq(screeningSheet), any(), any(), eq(catalog))).willReturn(Tailoring.builder()
             .screeningSheet(screeningSheet)
             .phases(asList())
@@ -326,6 +351,7 @@ class ProjectServiceImplTest {
             .build();
         given(screeningSheetServiceMock.createScreeningSheet(any())).willReturn(screeningSheet);
 
+        given(repositoryMock.isExistingProject(any())).willReturn(false);
         given(tailoringServiceMock.createTailoring(any(), any(), eq(screeningSheet), any(), any(), eq(catalog))).willReturn(Tailoring.builder()
             .screeningSheet(screeningSheet)
             .phases(asList())
@@ -687,7 +713,7 @@ class ProjectServiceImplTest {
     }
 
     @Test
-    void updateProjectState_ProjectExisting_ServiceRepositoryCalled()  {
+    void updateProjectState_ProjectExisting_ServiceRepositoryCalled() {
         // arrange
         given(repositoryMock.getProject("SAMPLE")).willReturn(of(Project.builder().build()));
         given(repositoryMock.updateState("SAMPLE", COMPLETED)).willReturn(of(ProjectInformation.builder().build()));
@@ -697,6 +723,6 @@ class ProjectServiceImplTest {
 
         // assert
         assertThat(actual).isPresent();
-        verify(repositoryMock, times(1)).updateState("SAMPLE",  COMPLETED);
+        verify(repositoryMock, times(1)).updateState("SAMPLE", COMPLETED);
     }
 }
