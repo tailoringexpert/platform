@@ -135,7 +135,7 @@ public class CatalogServiceImpl implements CatalogService {
     ByteArrayOutputStream createZip(Collection<File> documents) {
         try (ByteArrayOutputStream result = new ByteArrayOutputStream();
              ZipOutputStream zip = new ZipOutputStream(result)) {
-            documents.forEach(dokument -> addToZip(dokument, zip));
+            documents.forEach(file -> addToZip(file, zip));
             return result;
         }
     }
@@ -153,5 +153,4 @@ public class CatalogServiceImpl implements CatalogService {
         zip.write(file.getData(), 0, file.getData().length);
         zip.closeEntry();
     }
-
 }
