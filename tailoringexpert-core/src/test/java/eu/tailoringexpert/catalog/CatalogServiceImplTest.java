@@ -302,6 +302,26 @@ class CatalogServiceImplTest {
     }
 
     @Test
+    void createZip_addToZipSimulatedException_ExceptionThrown() {
+        // arrange
+        List<File> files = List.of(
+            File.builder()
+                .name("DUMMY-KATALOG.pdf")
+                .data("Testdokument".getBytes(UTF_8))
+                .build()
+        );
+
+        CatalogServiceImpl serviceSpy = Mockito.spy(service);
+        doThrow(new RuntimeException()).when(serviceSpy).addToZip(any(File.class), any(ZipOutputStream.class));
+
+        // act
+        Throwable actual = catchThrowable(() -> serviceSpy.createZip(files));
+
+        // assert
+        assertThat(actual).isInstanceOf(RuntimeException.class);
+    }
+
+    @Test
     void addToZip_ZipOutputStremException_ExceptionThrown() throws Exception {
         // arrange
         Throwable actual;
