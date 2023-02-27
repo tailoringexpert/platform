@@ -29,6 +29,7 @@ import eu.tailoringexpert.renderer.PDFEngine;
 import eu.tailoringexpert.repository.BaseCatalogRepository;
 import eu.tailoringexpert.repository.DRDRepository;
 import eu.tailoringexpert.repository.LogoRepository;
+import eu.tailoringexpert.repository.SelectionVectorProfileRepository;
 import lombok.NonNull;
 import org.springframework.beans.factory.ListableBeanFactory;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -77,6 +78,18 @@ public class CatalogConfiguration {
         @NonNull Function<String, MediaType> mediaTypeProvider,
         @NonNull ObjectMapper objectMapper) {
         return new CatalogController(mapper, catalogService, baseCatalogRepository, mediaTypeProvider, objectMapper);
+    }
+
+    @Bean
+    JPADocumentServiceRepositoryMapper documentServiceRepositoryMapper() {
+        return new JPADocumentServiceRepositoryMapperImpl();
+    }
+
+    @Bean
+    DocumentServiceRepository documentServiceRepository(
+        @NonNull JPADocumentServiceRepositoryMapper mapper,
+        @NonNull SelectionVectorProfileRepository selectionVectorProfileRepository) {
+        return new JPADocumentServiceRepository(mapper, selectionVectorProfileRepository);
     }
 
     @Bean
