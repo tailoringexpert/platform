@@ -80,11 +80,11 @@ public class BaseCatalogPDFDocumentCreator implements DocumentCreator {
     @Override
     public File createDocument(@NonNull String docId,
                                @NonNull Catalog<BaseRequirement> catalog,
-                               @NonNull Map<String, String> placeholders) {
+                               @NonNull Map<String, Object> placeholders) {
         log.traceEntry(() -> docId, catalog::getVersion, () -> placeholders);
 
         try {
-            Map<String, Object> parameter = new HashMap<>();
+            Map<String, Object> parameter = new HashMap<>(placeholders);
             parameter.put("catalogVersion", catalog.getVersion());
 
             Collection<BaseCatalogElement> requirements = new LinkedList<>();
