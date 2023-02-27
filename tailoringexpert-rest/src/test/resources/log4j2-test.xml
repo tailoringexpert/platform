@@ -27,7 +27,7 @@
         </Console>
 
         <Console name="STDOUT" target="SYSTEM_OUT">
-            <PatternLayout pattern="%m%n"/>
+            <PatternLayout pattern="[%c] %M | %m%n"/>
         </Console>
     </Appenders>
 

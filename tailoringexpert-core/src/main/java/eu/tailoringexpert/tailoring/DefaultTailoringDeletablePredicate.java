@@ -24,6 +24,7 @@ package eu.tailoringexpert.tailoring;
 import eu.tailoringexpert.domain.TailoringState;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.log4j.Log4j2;
 
 import java.util.Optional;
 
@@ -33,6 +34,7 @@ import java.util.Optional;
  *
  * @author Michael Bädorf
  */
+@Log4j2
 @RequiredArgsConstructor
 public class DefaultTailoringDeletablePredicate implements TailoringDeletablePredicate {
 
@@ -44,7 +46,8 @@ public class DefaultTailoringDeletablePredicate implements TailoringDeletablePre
      */
     @Override
     public boolean test(String project, String tailoring) {
+        log.traceEntry(() -> project, () -> tailoring);
         Optional<TailoringState> state = repository.getTailoringState(project, tailoring);
-        return TailoringState.CREATED.compareTo(state.orElse(TailoringState.RELEASED)) == 0;
+        return log.traceExit(TailoringState.CREATED.compareTo(state.orElse(TailoringState.RELEASED)) == 0);
     }
 }

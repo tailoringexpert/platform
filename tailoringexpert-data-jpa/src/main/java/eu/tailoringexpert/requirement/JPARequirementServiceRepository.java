@@ -31,6 +31,8 @@ import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 
 import jakarta.transaction.Transactional;
+import lombok.extern.log4j.Log4j2;
+
 import java.util.Optional;
 
 import static java.util.Comparator.comparing;
@@ -44,6 +46,7 @@ import static java.util.Optional.ofNullable;
  *
  * @author Michael Bädorf
  */
+@Log4j2
 @RequiredArgsConstructor
 @Transactional
 public class JPARequirementServiceRepository implements RequirementServiceRepository {
@@ -63,18 +66,23 @@ public class JPARequirementServiceRepository implements RequirementServiceReposi
         @NonNull String tailoring,
         @NonNull String chapter,
         @NonNull String position) {
+        log.traceEntry(() -> project, () -> tailoring, () -> chapter, () -> position);
 
         Optional<TailoringCatalogChapterEntity> oChapter = findChapter(project, tailoring, chapter);
         if (oChapter.isEmpty()) {
+            log.traceExit();
             return empty();
         }
 
-        return ofNullable(mapper.toDomain(oChapter.get()
+        Optional<TailoringRequirement> result = ofNullable(mapper.toDomain(oChapter.get()
             .getRequirements()
             .stream()
             .filter(requirement -> position.equals(requirement.getPosition()))
             .findFirst()
             .orElse(null)));
+
+        log.traceExit();
+        return result;
     }
 
     /**
@@ -86,9 +94,11 @@ public class JPARequirementServiceRepository implements RequirementServiceReposi
         @NonNull String tailoring,
         @NonNull String chapter,
         @NonNull TailoringRequirement requirement) {
+        log.traceEntry(() -> project, () -> tailoring, () -> chapter, requirement::getPosition);
 
         Optional<TailoringCatalogChapterEntity> oChapter = findChapter(project, tailoring, chapter);
         if (oChapter.isEmpty()) {
+            log.traceExit();
             return empty();
         }
 
@@ -99,11 +109,15 @@ public class JPARequirementServiceRepository implements RequirementServiceReposi
             .findFirst();
 
         if (oRequirement.isEmpty()) {
+            log.traceExit();
             return empty();
         }
 
         mapper.updateRequirement(requirement, oRequirement.get());
-        return of(mapper.toDomain(oRequirement.get()));
+        Optional<TailoringRequirement> result = of(mapper.toDomain(oRequirement.get()));
+
+        log.traceExit();
+        return result;
     }
 
     /**
@@ -114,9 +128,13 @@ public class JPARequirementServiceRepository implements RequirementServiceReposi
         @NonNull String project,
         @NonNull String tailoring,
         @NonNull String chapter) {
+        log.traceEntry(() -> project, () -> tailoring, () -> chapter);
 
         Optional<TailoringCatalogChapterEntity> oChapter = findChapter(project, tailoring, chapter);
-        return ofNullable(mapper.toDomain(oChapter.orElse(null)));
+        Optional<Chapter<TailoringRequirement>> result = ofNullable(mapper.toDomain(oChapter.orElse(null)));
+
+        log.traceExit();
+        return result;
     }
 
     /**
@@ -127,9 +145,11 @@ public class JPARequirementServiceRepository implements RequirementServiceReposi
         @NonNull String project,
         @NonNull String tailoring,
         @NonNull Chapter<TailoringRequirement> chapter) {
+        log.traceEntry(() -> project, () -> tailoring, () -> chapter);
 
         Optional<TailoringCatalogChapterEntity> oChapter = findChapter(project, tailoring, chapter.getNumber());
         if (oChapter.isEmpty()) {
+            log.traceExit();
             return empty();
         }
 
@@ -144,7 +164,10 @@ public class JPARequirementServiceRepository implements RequirementServiceReposi
                         requirement)
                     );
             });
-        return of(mapper.toDomain(oChapter.get()));
+        Optional<Chapter<TailoringRequirement>> result = of(mapper.toDomain(oChapter.get()));
+
+        log.traceExit();
+        return result;
     }
 
     /**
@@ -155,13 +178,18 @@ public class JPARequirementServiceRepository implements RequirementServiceReposi
         @NonNull String project,
         @NonNull String tailoring,
         @NonNull Chapter<TailoringRequirement> chapter) {
+        log.traceEntry(() -> project, () -> tailoring, () -> chapter);
 
         Optional<TailoringCatalogChapterEntity> oChapter = findChapter(project, tailoring, chapter.getNumber());
         if (oChapter.isEmpty()) {
+            log.traceExit();
             return empty();
         }
         mapper.updateChapter(chapter, oChapter.get());
-        return of(mapper.toDomain(oChapter.get()));
+        Optional<Chapter<TailoringRequirement>> result = of(mapper.toDomain(oChapter.get()));
+
+        log.traceExit();
+        return result;
     }
 
     /**
@@ -176,15 +204,20 @@ public class JPARequirementServiceRepository implements RequirementServiceReposi
         String project,
         String tailoring,
         String chapter) {
+        log.traceEntry(() -> project, () -> tailoring, () -> chapter);
 
         TailoringEntity eTailoring = projectRepository.findTailoring(project, tailoring);
         if (isNull(eTailoring)) {
+            log.traceExit();
             return empty();
         }
 
-        return eTailoring
+        Optional<TailoringCatalogChapterEntity> result = eTailoring
             .getCatalog()
             .getToc()
             .getChapter(chapter);
+
+        log.traceExit();
+        return result;
     }
 }

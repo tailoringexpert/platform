@@ -60,16 +60,16 @@ public class CatalogServiceImpl implements CatalogService {
      */
     @Override
     public boolean doImport(@NonNull Catalog<BaseRequirement> catalog) {
+        log.traceEntry(catalog::getVersion);
         @SuppressWarnings("PMD.PrematureDeclaration") final ZonedDateTime now = ZonedDateTime.now();
 
         if (repository.existsCatalog(catalog.getVersion())) {
-            log.info("Catalog version {} NOT imported because it already exists.", catalog.getVersion());
-            return false;
+            log.error("Catalog version {} NOT imported because it already exists.", catalog.getVersion());
+            return log.traceExit(false);
         }
 
         Optional<Catalog<BaseRequirement>> result = repository.createCatalog(catalog, now);
-        log.info("Catalog version {} {} imported", catalog.getVersion(), result.isPresent() ? " sucessful" : " not");
-        return result.isPresent();
+        return log.traceExit(result.isPresent());
     }
 
     /**
@@ -77,6 +77,8 @@ public class CatalogServiceImpl implements CatalogService {
      */
     @Override
     public Optional<Catalog<BaseRequirement>> getCatalog(@NonNull String version) {
+        log.traceEntry(() -> version);
+        log.traceExit();
         return repository.getCatalog(version);
     }
 
@@ -85,19 +87,18 @@ public class CatalogServiceImpl implements CatalogService {
      */
     @Override
     public Optional<File> createCatalog(String version) {
+        log.traceEntry(() -> version);
         @SuppressWarnings("PMD.PrematureDeclaration") final LocalDateTime creationTimestamp = LocalDateTime.now();
-        log.info("STARTED | trying to create output document of catalogue version {}", version);
 
         Optional<Catalog<BaseRequirement>> catalog = repository.getCatalog(version);
         if (catalog.isEmpty()) {
-            log.info("FINISHED | output document NOT created due to non existing catalogue version");
+            log.error("catalog document NOT created due to non existing catalog version");
+            log.traceExit();
             return empty();
         }
 
         Optional<File> result = documentService.createCatalog(catalog.get(), creationTimestamp);
-        result.ifPresentOrElse(datei -> log.info("FINISHED | created output document {} of catalog version ", version),
-            () -> log.info("FINISHED | output document NOT created"));
-
+        log.traceExit();
         return result;
     }
 
@@ -106,22 +107,25 @@ public class CatalogServiceImpl implements CatalogService {
      */
     @Override
     public Optional<File> createDocuments(String version) {
+        log.traceEntry(() -> version);
         @SuppressWarnings("PMD.PrematureDeclaration") final LocalDateTime creationTimestamp = LocalDateTime.now();
-        log.info("STARTED | trying to create output documents of catalogue version {}", version);
 
         Optional<Catalog<BaseRequirement>> catalog = repository.getCatalog(version);
         if (catalog.isEmpty()) {
-            log.info("FINISHED | output documents NOT created due to non existing catalogue version");
+            log.error("output documents NOT created due to non existing catalogue version");
+            log.traceExit();
             return empty();
         }
 
         Collection<File> documents = documentService.createAll(catalog.get(), creationTimestamp);
         ByteArrayOutputStream os = createZip(documents);
 
-        return of(File.builder()
+        File result = File.builder()
             .name("catalog_" + version + ".zip")
             .data(os.toByteArray())
-            .build());
+            .build();
+        log.traceExit(result.getName());
+        return of(result);
     }
 
 

@@ -83,8 +83,10 @@ public class CMExcelDocumentCreator implements DocumentCreator {
     public File createDocument(String docId,
                                Tailoring tailoring,
                                Map<String, Object> placeholders) {
+        log.traceEntry(() -> docId, () -> tailoring.getCatalog().getVersion(), () -> placeholders);
+
         try {
-            FileBuilder result = builder().name(docId + ".xlsx");
+            FileBuilder builder = builder().name(docId + ".xlsx");
             RendererRequestConfiguration configuration = requestConfigurationSupplier.get();
             java.io.File template = Paths.get(configuration.getTemplateHome() + "/" + tailoring.getCatalog().getVersion() + "/cm.xlsx").toFile();
             try (Workbook wb = new XSSFWorkbook(newInputStream(template.toPath()))) {
@@ -106,13 +108,17 @@ public class CMExcelDocumentCreator implements DocumentCreator {
 
                 try (ByteArrayOutputStream os = new ByteArrayOutputStream()) {
                     wb.write(os);
-                    result.data(os.toByteArray());
+                    builder.data(os.toByteArray());
                 }
             }
-            return result.build();
+
+            File result = builder.build();
+            log.traceExit();
+            return result;
         } catch (Exception e) {
             log.throwing(e);
         }
+        log.traceExit();
         return null;
     }
 

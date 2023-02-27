@@ -108,12 +108,17 @@ public class ProjectController {
     })
     @GetMapping(value = PROJECTS, produces = {"application/hal+json"})
     public ResponseEntity<CollectionModel<EntityModel<ProjectResource>>> getProjects() {
+        log.traceEntry();
+
         List<EntityModel<ProjectResource>> projekte = projectServiceRepository.getProjectInformations()
             .stream()
             .map(domain -> of(mapper.toResource(PathContext.builder(), domain)))
             .toList();
-        return ok()
+        ResponseEntity<CollectionModel<EntityModel<ProjectResource>>> result = ok()
             .body(CollectionModel.of(projekte));
+
+        log.traceExit();
+        return result;
 
     }
 
@@ -127,11 +132,16 @@ public class ProjectController {
     public ResponseEntity<Void> postProject(
         @Parameter(description = "Base catalog for project creation") @PathVariable String version,
         @Parameter(description = "New project configuration data") @RequestBody ProjectCreationRequest request) {
-        CreateProjectTO project = projectService.createProject(version, request.getScreeningSheet().getData(), request.getSelectionVector(), request.getNote());
+        log.traceEntry();
 
-        return ResponseEntity
+        CreateProjectTO project = projectService.createProject(version, request.getScreeningSheet().getData(), request.getSelectionVector(), request.getNote());
+        ResponseEntity<Void> result = ResponseEntity
             .created(mapper.createLink(ResourceMapper.REL_SELF, linkToCurrentMapping().toString(), PROJECT, Map.of("project", project.getProject())).toUri())
             .build();
+
+        log.traceExit();
+        return result;
+
     }
 
     @Operation(summary = "Load requested project")
@@ -145,13 +155,17 @@ public class ProjectController {
     @GetMapping(value = PROJECT, produces = {"application/hal+json"})
     public ResponseEntity<EntityModel<ProjectResource>> getProject(
         @Parameter(description = "Project identifier") @PathVariable String project) {
+        log.traceEntry();
 
         PathContextBuilder pathContextBuilder = PathContext.builder();
-        Optional<ProjectInformation> result = projectServiceRepository.getProjectInformation(project);
+        Optional<ProjectInformation> projectInformation = projectServiceRepository.getProjectInformation(project);
 
-        return result.map(pi -> ok()
+        ResponseEntity<EntityModel<ProjectResource>> result = projectInformation.map(pi -> ok()
                 .body(of(mapper.toResource(pathContextBuilder, pi))))
             .orElseGet(() -> notFound().build());
+
+        log.traceExit();
+        return result;
     }
 
     @Operation(summary = "Load screeningsheet values of requested project")
@@ -165,13 +179,17 @@ public class ProjectController {
     @GetMapping(value = PROJECT_SCREENINGSHEET, produces = {"application/hal+json"})
     public ResponseEntity<EntityModel<ScreeningSheetResource>> getScreeningSheet(
         @Parameter(description = "Project identifier") @PathVariable String project) {
+        log.traceEntry();
 
         PathContextBuilder pathContext = PathContext.builder()
             .project(project);
-        return projectServiceRepository.getScreeningSheet(project)
+        ResponseEntity<EntityModel<ScreeningSheetResource>> result = projectServiceRepository.getScreeningSheet(project)
             .map(screeningSheet -> ok()
                 .body(of(mapper.toResource(pathContext, screeningSheet))))
             .orElseGet(() -> notFound().build());
+
+        log.traceExit();
+        return result;
     }
 
     @Operation(summary = "Load screeningsheet file of requested project")
@@ -184,8 +202,9 @@ public class ProjectController {
     @ResponseBody
     public ResponseEntity<byte[]> getScreeningSheetFile(
         @Parameter(description = "Project identifier") @PathVariable String project) {
+        log.traceEntry();
 
-        return projectServiceRepository.getScreeningSheetFile(project)
+        ResponseEntity<byte[]> result = projectServiceRepository.getScreeningSheetFile(project)
             .map(daten -> ok()
                 .header(CONTENT_DISPOSITION, ContentDisposition.builder("form-data").name("attachment").filename("screeningsheet.pdf").build().toString())
                 .header(ACCESS_CONTROL_EXPOSE_HEADERS, CONTENT_DISPOSITION)
@@ -193,6 +212,9 @@ public class ProjectController {
                 .contentLength(daten.length)
                 .body(daten))
             .orElseGet(() -> notFound().build());
+
+        log.traceExit();
+        return result;
     }
 
     @Operation(summary = "Delete project")
@@ -207,9 +229,13 @@ public class ProjectController {
     @DeleteMapping(value = PROJECT, produces = {"application/hal+json"})
     public ResponseEntity<EntityModel<Void>> deleteProject(
         @Parameter(description = "Project identifier") @PathVariable String project) {
+        log.traceEntry();
 
         boolean deleted = projectService.deleteProject(project);
-        return ResponseEntity.status(deleted ? NO_CONTENT : BAD_REQUEST).build();
+        ResponseEntity<EntityModel<Void>> result = ResponseEntity.status(deleted ? NO_CONTENT : BAD_REQUEST).build();
+
+        log.traceExit();
+        return result;
     }
 
     @Operation(summary = "Create project copy")
@@ -226,12 +252,16 @@ public class ProjectController {
     public ResponseEntity<EntityModel<ProjectResource>> copyProject(
         @Parameter(description = "Project identifier") @PathVariable String project,
         @Parameter(description = "Raw data of screeningsheet") @RequestPart("datei") MultipartFile screeningSheet) throws IOException {
+        log.traceEntry();
 
-        return projectService.copyProject(project, screeningSheet.getBytes())
+        ResponseEntity<EntityModel<ProjectResource>> result = projectService.copyProject(project, screeningSheet.getBytes())
             .map(projektKopie -> ResponseEntity
                 .created(mapper.createLink(ResourceMapper.REL_SELF, linkToCurrentMapping().toString(), PROJECT, Map.of("project", projektKopie.getIdentifier())).toUri())
                 .body(of(mapper.toResource(PathContext.builder(), projektKopie))))
             .orElseGet(() -> notFound().build());
+
+        log.traceExit();
+        return result;
     }
 
 
@@ -245,23 +275,27 @@ public class ProjectController {
     public ResponseEntity<EntityModel<Void>> postTailoring(
         @Parameter(description = "Project identifier") @PathVariable String project,
         @RequestBody ProjectCreationRequest request) {
+        log.traceEntry();
 
-        Optional<Tailoring> result = projectService.addTailoring(project, request.getCatalog(), request.getScreeningSheet().getData(), request.getSelectionVector(), request.getNote());
-        if (result.isEmpty()) {
-            return notFound()
-                .build();
+        Optional<Tailoring> tailoring = projectService.addTailoring(project, request.getCatalog(), request.getScreeningSheet().getData(), request.getSelectionVector(), request.getNote());
+        if (tailoring.isEmpty()) {
+            log.traceExit();
+            return notFound().build();
         }
 
         PathContextBuilder pathContext = PathContext.builder()
             .project(project)
-            .tailoring(result.get().getName());
+            .tailoring(tailoring.get().getName());
 
-        return ResponseEntity
+        ResponseEntity<EntityModel<Void>> result = ResponseEntity
             .created(mapper.createLink(ResourceMapper.REL_SELF, linkToCurrentMapping().toString(),
                     TAILORING,
                     pathContext.build().parameter())
                 .toUri())
             .build();
+
+        log.traceExit();
+        return result;
     }
 
     @Operation(summary = "Load selection vector of project")
@@ -277,12 +311,17 @@ public class ProjectController {
     public ResponseEntity<EntityModel<SelectionVectorResource>> getSelectionVector(
         @Parameter(description = "fachlicher Projektschlüssel")
         @PathVariable("project") String project) {
+        log.traceEntry();
+
         PathContextBuilder pathContext = PathContext.builder()
             .project(project);
-        return projectServiceRepository.getProject(project)
+        ResponseEntity<EntityModel<SelectionVectorResource>> result = projectServiceRepository.getProject(project)
             .map(p -> ok()
                 .body(of(mapper.toResource(pathContext, p.getScreeningSheet().getSelectionVector()))))
             .orElseGet(() -> notFound().build());
+
+        log.traceExit();
+        return result;
     }
 
     @Operation(summary = "Set state of project")
@@ -298,12 +337,16 @@ public class ProjectController {
     public ResponseEntity<EntityModel<ProjectResource>> putState(
         @Parameter(description = "Project identifier") @PathVariable String project,
         @Parameter(description = "State to set") @PathVariable ProjectState state) {
+        log.traceEntry();
+
         PathContextBuilder pathContext = PathContext.builder()
             .project(project);
-
-        return projectService.updateState(project, state)
+        ResponseEntity<EntityModel<ProjectResource>> result = projectService.updateState(project, state)
             .map(updatedProject -> ok()
                 .body(of(mapper.toResource(pathContext, updatedProject))))
             .orElseGet(() -> notFound().build());
+
+        log.traceExit();
+        return result;
     }
 }

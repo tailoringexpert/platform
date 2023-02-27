@@ -31,6 +31,7 @@ import eu.tailoringexpert.domain.Tailoring;
 import eu.tailoringexpert.domain.TailoringRequirement;
 import eu.tailoringexpert.domain.TailoringRequirement.TailoringRequirementBuilder;
 import eu.tailoringexpert.domain.TailoringInformation;
+import lombok.extern.log4j.Log4j2;
 import org.mapstruct.AfterMapping;
 import org.mapstruct.Context;
 import org.mapstruct.Mapper;
@@ -41,8 +42,6 @@ import org.mapstruct.NullValueMappingStrategy;
 import java.util.Collection;
 import java.util.Set;
 
-import static java.lang.Boolean.FALSE;
-import static java.lang.Boolean.TRUE;
 import static java.util.Collections.disjoint;
 import static java.util.Objects.isNull;
 import static java.util.stream.Collectors.toUnmodifiableSet;
@@ -52,6 +51,7 @@ import static java.util.stream.Collectors.toUnmodifiableSet;
  *
  * @author Michael Bädorf
  */
+@Log4j2
 @Mapper(nullValueIterableMappingStrategy = NullValueMappingStrategy.RETURN_DEFAULT)
 @SuppressWarnings("java:S1610")
 public abstract class TailoringServiceMapper {
@@ -79,6 +79,8 @@ public abstract class TailoringServiceMapper {
         @Context ScreeningSheet screeningSheet,
         @Context SelectionVector selectionVector,
         @MappingTarget TailoringRequirementBuilder builder) {
+        log.traceEntry(baseRequirement::getPosition);
+
         Set<String> parameterValues = screeningSheet.getParameters()
             .stream()
             .map(ScreeningSheetParameter::getValue)
@@ -88,21 +90,24 @@ public abstract class TailoringServiceMapper {
 
         Collection<Phase> phases = screeningSheet.getPhases();
         boolean isRelevantPhase = containsPhases(phases, baseRequirement.getPhases());
-        baseRequirement.getIdentifiers()
+        boolean applicable = baseRequirement.getIdentifiers()
             .stream()
             .filter(identifier -> isRelevantPhase)
-            .filter(identifier -> {
+            .anyMatch(identifier -> {
                 int level = selectionVector.getLevel(identifier.getType());
                 // prüfen, ob abwendbarkeit ohne einschränkung
-                if ( !identifier.hasLimitations()  &&   level >= identifier.getLevel()) {
+                if (!identifier.hasLimitations() && level >= identifier.getLevel()) {
                     return true;
                 }
 
                 // sind alle limitierungen enthalten und ist der level gleich
                 return containsAllLimitations(parameterValues, identifier.getLimitations()) && level == identifier.getLevel();
-            })
-            .findFirst()
-            .ifPresentOrElse(applicability -> builder.selected(TRUE), () -> builder.selected(FALSE));
+            });
+
+        log.info(applicable);
+        builder.selected(Boolean.valueOf(applicable));
+
+        log.traceExit();
     }
 
     /**

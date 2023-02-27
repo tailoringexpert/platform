@@ -68,6 +68,8 @@ public class ProjectServiceImpl implements ProjectService {
      */
     @Override
     public CreateProjectTO createProject(String catalogVersion, byte[] screeningSheetData, SelectionVector applicableSelectionVector, String note) {
+        log.traceEntry(() -> catalogVersion);
+
         ScreeningSheet screeningSheet = screeningSheetService.createScreeningSheet(screeningSheetData);
         String identifier = screeningSheet.getProject();
         if (repository.isExistingProject(identifier)) {
@@ -85,13 +87,11 @@ public class ProjectServiceImpl implements ProjectService {
             .build()
         );
 
-        log.info("Project {} with phases {} created with catalog {}", identifier, tailoring.getPhases(), catalogVersion);
-        return CreateProjectTO.builder()
+        return log.traceExit(CreateProjectTO.builder()
             .project(project.getIdentifier())
             .tailoring(tailoring.getName())
             .selectionVector(applicableSelectionVector)
-            .build();
-
+            .build());
     }
 
     /**
@@ -99,28 +99,28 @@ public class ProjectServiceImpl implements ProjectService {
      */
     @Override
     public boolean deleteProject(String project) {
+        log.traceEntry(() -> project);
+
         Optional<Project> toDelete = repository.getProject(project);
         if (toDelete.isPresent()) {
-            return repository.deleteProject(project);
+            return log.traceExit(repository.deleteProject(project));
         }
-        return false;
+
+        return log.traceExit(false);
     }
 
     @Override
     public Optional<ProjectInformation> updateState(String project, ProjectState state) {
-        log.info("STARTED | updating state of {} to {}", project, state);
+        log.traceEntry(() -> project, () -> state);
 
         Optional<Project> oProject = repository.getProject(project);
         if (oProject.isEmpty()) {
-            log.info("FINISHED | updating state of {} skipped because it does not exists", project);
-            return empty();
+            log.error("updating state of {} skipped because it does not exists", project);
+            return log.traceExit(empty());
         }
 
         Optional<ProjectInformation> result = repository.updateState(project, state);
-
-        log.info("FINISHED | updating state of {} to {}", project, state);
-
-        return result;
+        return log.traceExit(result);
     }
 
     /**
@@ -128,22 +128,26 @@ public class ProjectServiceImpl implements ProjectService {
      */
     @Override
     public Optional<Tailoring> addTailoring(String project, String catalog, byte[] screeningSheetData, SelectionVector applicableSelectionVector, String note) {
-        log.info("STARTED  | adding tailoring to project {}", project);
+        log.traceEntry(() -> project, () -> catalog);
+
         Optional<Project> oProject = repository.getProject(project);
         if (oProject.isEmpty()) {
+            log.traceExit(false);
             return empty();
         }
 
         Catalog<BaseRequirement> baseCatalog = repository.getBaseCatalog(catalog);
         if (isNull(baseCatalog)) {
-            log.error("ABORTED  | catalog {} does not exist", catalog);
+            log.error("catalog {} does not exist", catalog);
+            log.traceExit();
             return empty();
         }
 
         ScreeningSheet screeningSheet = screeningSheetService.createScreeningSheet(screeningSheetData);
         // nur hinzufüegen, wenn "richtiges" Project
         if (!project.equals(screeningSheet.getProject())) {
-            log.error("ABORTED  | screeningsheet defines phase of project {} instead of {}", screeningSheet.getProject(), project);
+            log.error("screeningsheet defines phase of project {} instead of {}", screeningSheet.getProject(), project);
+            log.traceExit();
             return empty();
         }
 
@@ -170,7 +174,7 @@ public class ProjectServiceImpl implements ProjectService {
         );
 
         Optional<Tailoring> result = repository.addTailoring(project, tailoring);
-        log.info("FINISHED | adding phase {} to project {}", tailoringName, project);
+        log.traceExit(result.isPresent());
         return result;
     }
 
@@ -179,10 +183,12 @@ public class ProjectServiceImpl implements ProjectService {
      */
     @Override
     public Optional<Project> copyProject(String project, byte[] screeningSheetData) {
-        log.info("STARTED  | copyig project {}", project);
+        log.traceEntry(() -> project);
+
         Optional<Project> projectToCopy = repository.getProject(project);
         if (projectToCopy.isEmpty()) {
-            log.info("Project does not exist. Aborting");
+            log.error("Project does not exist. Aborting");
+            log.traceExit();
             return empty();
         }
 
@@ -205,7 +211,7 @@ public class ProjectServiceImpl implements ProjectService {
             });
 
         Optional<Project> result = of(repository.createProject(projectCopy));
-        log.info("FINISHED | project {} copied to {}", project, screeningSheet.getProject());
+        log.traceExit(result.isPresent());
         return result;
     }
 }

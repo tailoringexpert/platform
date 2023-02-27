@@ -29,6 +29,7 @@ import eu.tailoringexpert.domain.ScreeningSheetParameter;
 import eu.tailoringexpert.domain.SelectionVector;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.log4j.Log4j2;
 
 import java.io.ByteArrayInputStream;
 import java.util.Collection;
@@ -49,6 +50,7 @@ import static java.util.stream.Collectors.toUnmodifiableSet;
  *
  * @author Michael Bädorf
  */
+@Log4j2
 @RequiredArgsConstructor
 public class ScreeningSheetServiceImpl implements ScreeningSheetService {
 
@@ -69,10 +71,12 @@ public class ScreeningSheetServiceImpl implements ScreeningSheetService {
      */
     @Override
     public SelectionVector calculateSelectionVector(@NonNull byte[] rawData) {
+        log.traceEntry();
+
         Collection<ScreeningSheetParameterField> screeningSheetParameters = screeningSheetParameterProvider.parse(new ByteArrayInputStream(rawData));
         Collection<Parameter> parameters = getParameter(screeningSheetParameters);
 
-        return selectionVectorProvider.apply(parameters);
+        return log.traceExit(selectionVectorProvider.apply(parameters));
     }
 
     /**
@@ -80,6 +84,8 @@ public class ScreeningSheetServiceImpl implements ScreeningSheetService {
      */
     @Override
     public ScreeningSheet createScreeningSheet(@NonNull byte[] rawData) {
+        log.traceEntry();
+
         Collection<ScreeningSheetParameterField> screeningSheetParameters = screeningSheetParameterProvider.parse(new ByteArrayInputStream(rawData));
 
         String project = screeningSheetParameters.stream()
@@ -129,6 +135,13 @@ public class ScreeningSheetServiceImpl implements ScreeningSheetService {
             .toList());
 
         SelectionVector selectionVector = selectionVectorProvider.apply(parameters);
+
+        log.traceExit(ScreeningSheet.builder()
+            .project(project)
+            .phases(phases)
+            .parameters(screeningSheetParameter)
+            .selectionVector(selectionVector)
+            .build());
 
         return ScreeningSheet.builder()
             .project(project)
