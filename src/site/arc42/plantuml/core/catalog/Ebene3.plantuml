@@ -12,6 +12,10 @@ package catalog {
         createAll(catalog : Catalog<BaseRequirement>,  creationTimestamp : LocalDateTime) : Collection<File>
     }
 
+    interface DocumentServiceRepository {
+        getSelectionVectorProfiles() : Collection<SelectionVectorProfile>
+    }
+
     interface CatalogService {
         doImport(katalog : Catalog<BaseCatalogRequirement>) : boolean
         getCatalog(version : String) : Optional<Catalog<BaseRequirement>>
