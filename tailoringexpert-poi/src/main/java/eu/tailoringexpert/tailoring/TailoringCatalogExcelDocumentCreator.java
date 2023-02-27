@@ -53,6 +53,8 @@ public class TailoringCatalogExcelDocumentCreator implements DocumentCreator {
      */
     @Override
     public File createDocument(String docId, Tailoring tailoring, Map<String, Object> placeholders) {
+        log.traceEntry(() -> docId);
+
         try (Workbook wb = new XSSFWorkbook()) {
             Sheet sheet = createSheet(wb, tailoring);
 
@@ -68,13 +70,16 @@ public class TailoringCatalogExcelDocumentCreator implements DocumentCreator {
                 content = os.toByteArray();
             }
 
-            return File.builder()
+            File result = File.builder()
                 .name(docId + ".xlsx")
                 .data(content)
                 .build();
+            log.traceExit();
+            return result;
         } catch (Exception e) {
             log.catching(e);
         }
+        log.traceExit();
         return null;
     }
 

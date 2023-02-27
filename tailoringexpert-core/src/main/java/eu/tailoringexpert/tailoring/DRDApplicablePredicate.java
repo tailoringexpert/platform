@@ -22,6 +22,7 @@
 package eu.tailoringexpert.tailoring;
 
 import eu.tailoringexpert.domain.Phase;
+import lombok.extern.log4j.Log4j2;
 
 import java.util.Collection;
 import java.util.Collections;
@@ -38,6 +39,7 @@ import static java.util.stream.Collectors.toUnmodifiableSet;
  *
  * @author Michael Bädorf
  */
+@Log4j2
 public class DRDApplicablePredicate implements BiPredicate<String, Collection<Phase>> {
 
     private Map<Phase, Collection<String>> phase2Milestones;
@@ -55,6 +57,8 @@ public class DRDApplicablePredicate implements BiPredicate<String, Collection<Ph
      */
     @Override
     public boolean test(String deliveryDate, Collection<Phase> phases) {
+        log.traceEntry(() -> deliveryDate, () -> phases);
+
         // alle meilensteine phasensteine der phase ermitteln
         List<String> dueDates = Collections.list(new StringTokenizer(deliveryDate, ";")).stream()
             .map(token -> token.toString().trim())
@@ -69,7 +73,7 @@ public class DRDApplicablePredicate implements BiPredicate<String, Collection<Ph
             })
             .findFirst();
 
-        return result.isPresent();
+        return log.traceExit(result.isPresent());
     }
 
 }

@@ -31,6 +31,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.log4j.Log4j2;
 import org.springframework.hateoas.CollectionModel;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -52,6 +53,7 @@ import static org.springframework.hateoas.server.mvc.BasicLinkBuilder.linkToCurr
  * @author Michael Bädorf
  */
 @Tag(name = "App Controller", description = "Main controller to retrieve top level resource urls")
+@Log4j2
 @RestController
 @RequiredArgsConstructor
 public class AppController {
@@ -66,8 +68,9 @@ public class AppController {
     })
     @GetMapping(value = "/", produces = {"application/hal+json"})
     public <T> ResponseEntity<CollectionModel<T>> getLinks() {
+        log.traceEntry();
         Map<String, String> parameter = Collections.emptyMap();
-        return ResponseEntity
+        ResponseEntity<CollectionModel<T>> result = ResponseEntity
             .ok()
             .body(empty(
                     mapper.createLink("catalog", linkToCurrentMapping().toString(), BASECATALOG, parameter),
@@ -76,5 +79,8 @@ public class AppController {
                     mapper.createLink("selectionvector", linkToCurrentMapping().toString(), SELECTIONVECTOR_PROFILE, parameter)
                 )
             );
+
+        log.traceExit();
+        return result;
     }
 }

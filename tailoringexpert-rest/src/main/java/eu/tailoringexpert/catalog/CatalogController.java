@@ -40,6 +40,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.log4j.Log4j2;
 import org.springframework.hateoas.CollectionModel;
 import org.springframework.hateoas.EntityModel;
 import org.springframework.http.ContentDisposition;
@@ -74,6 +75,7 @@ import static org.springframework.http.ResponseEntity.ok;
  * @author Michael Bädorf
  */
 @Tag(name = "Catalog Controller", description = "Management of base catalogs")
+@Log4j2
 @RequiredArgsConstructor
 @RestController
 public class CatalogController {
@@ -103,9 +105,13 @@ public class CatalogController {
     @PostMapping(value = BASECATALOG, produces = {"application/hal+json"})
     public ResponseEntity<Void> postBaseCatalog(
         @Parameter(description = "Base catalog to import") @RequestBody Catalog<BaseRequirement> catalog) {
-        return ResponseEntity
+        log.traceEntry();
+
+        ResponseEntity<Void> result = ResponseEntity
             .status(catalogService.doImport(catalog) ? CREATED : PRECONDITION_FAILED)
             .build();
+        log.traceExit();
+        return result;
     }
 
     @Operation(summary = "Retrieve all base catalog versions")
@@ -116,13 +122,17 @@ public class CatalogController {
     })
     @GetMapping(value = BASECATALOG, produces = {"application/hal+json"})
     public ResponseEntity<CollectionModel<EntityModel<BaseCatalogVersionResource>>> getBaseCatalogs() {
+        log.traceEntry();
+
         PathContextBuilder pathContext = PathContext.builder();
         List<EntityModel<BaseCatalogVersionResource>> catalogs = baseCatalogRepository.findCatalogVersionBy()
             .stream()
             .map(catalog -> EntityModel.of(mapper.toResource(pathContext, catalog)))
             .toList();
 
-        return ok().body(CollectionModel.of(catalogs));
+        ResponseEntity<CollectionModel<EntityModel<BaseCatalogVersionResource>>> result = ok().body(CollectionModel.of(catalogs));
+        log.traceExit();
+        return result;
     }
 
     @Operation(summary = "Load base catalog of requested version")
@@ -137,10 +147,13 @@ public class CatalogController {
     @GetMapping(value = BASECATALOG_VERSION, produces = {"application/json"})
     public ResponseEntity<Catalog<BaseRequirement>> getBaseCatalog(
         @Parameter(description = "Requested base catalog version") @PathVariable String version) {
-        return catalogService.getCatalog(version)
+        log.traceEntry();
+
+        ResponseEntity<Catalog<BaseRequirement>> result = catalogService.getCatalog(version)
             .map(catalog -> ok().body(catalog))
             .orElseGet(() -> notFound().build());
-
+        log.traceExit();
+        return result;
     }
 
     @Operation(summary = "Create a printable base catalog")
@@ -155,7 +168,9 @@ public class CatalogController {
     @ResponseBody
     public ResponseEntity<byte[]> getBaseCatalogPrint(
         @Parameter(description = "Requested base catalog version") @PathVariable String version) {
-        return catalogService.createCatalog(version)
+        log.traceEntry();
+
+        ResponseEntity<byte[]> result = catalogService.createCatalog(version)
             .map(dokument -> ok()
                 .header(CONTENT_DISPOSITION, ContentDisposition.builder(MediaTypeProvider.FORM_DATA).name(MediaTypeProvider.ATTACHMENT).filename(dokument.getName()).build().toString())
                 .header(ACCESS_CONTROL_EXPOSE_HEADERS, CONTENT_DISPOSITION)
@@ -163,6 +178,8 @@ public class CatalogController {
                 .contentLength(dokument.getLength())
                 .body(dokument.getData()))
             .orElseGet(() -> notFound().build());
+        log.traceExit();
+        return result;
     }
 
     @Operation(summary = "Load base catalog as JSON output")
@@ -176,18 +193,23 @@ public class CatalogController {
     @ResponseBody
     public ResponseEntity<byte[]> getBaseCatalogJson(
         @Parameter(description = "Requested base catalog version") @PathVariable String version) throws JsonProcessingException {
-        Optional<Catalog<BaseRequirement>> result = catalogService.getCatalog(version);
-        if (result.isEmpty()) {
+        log.traceEntry();
+
+        Optional<Catalog<BaseRequirement>> catalog = catalogService.getCatalog(version);
+        if (catalog.isEmpty()) {
+            log.traceExit();
             return notFound().build();
         }
 
-        byte[] data = objectMapper.writeValueAsBytes(result.get());
-        return ok()
+        byte[] data = objectMapper.writeValueAsBytes(catalog.get());
+        ResponseEntity<byte[]> result = ok()
             .header(CONTENT_DISPOSITION, ContentDisposition.builder(MediaTypeProvider.FORM_DATA).name(MediaTypeProvider.ATTACHMENT).filename("catalog_v" + version + ".json").build().toString())
             .header(ACCESS_CONTROL_EXPOSE_HEADERS, CONTENT_DISPOSITION)
             .contentType(mediaTypeProvider.apply("json"))
             .contentLength(data.length)
             .body(data);
+        log.traceExit();
+        return result;
 
     }
 
@@ -203,7 +225,9 @@ public class CatalogController {
     @ResponseBody
     public ResponseEntity<byte[]> getDocuments(
         @Parameter(description = "Requested all base catalog related documents") @PathVariable String version) {
-        return catalogService.createDocuments(version)
+        log.traceEntry();
+
+        ResponseEntity<byte[]> result = catalogService.createDocuments(version)
             .map(dokument -> ok()
                 .header(CONTENT_DISPOSITION, ContentDisposition.builder(MediaTypeProvider.FORM_DATA).name(MediaTypeProvider.ATTACHMENT).filename(dokument.getName()).build().toString())
                 .header(ACCESS_CONTROL_EXPOSE_HEADERS, CONTENT_DISPOSITION)
@@ -211,5 +235,7 @@ public class CatalogController {
                 .contentLength(dokument.getLength())
                 .body(dokument.getData()))
             .orElseGet(() -> notFound().build());
+        log.traceExit();
+        return result;
     }
 }

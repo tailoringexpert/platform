@@ -28,6 +28,8 @@ import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 
 import jakarta.transaction.Transactional;
+import lombok.extern.log4j.Log4j2;
+
 import java.util.Optional;
 
 import static java.util.Optional.ofNullable;
@@ -37,6 +39,7 @@ import static java.util.Optional.ofNullable;
  *
  * @author Michael Bädorf
  */
+@Log4j2
 @RequiredArgsConstructor
 @Transactional
 public class JPATailoringDeletablePredicateRepository implements TailoringDeletablePredicateRepository {
@@ -49,6 +52,7 @@ public class JPATailoringDeletablePredicateRepository implements TailoringDeleta
      */
     @Override
     public Optional<TailoringState> getTailoringState(String project, String tailoring) {
-        return ofNullable(projectRepository.findTailoringState(project, tailoring));
+        log.traceEntry(() -> project, () -> tailoring);
+        return log.traceExit(ofNullable(projectRepository.findTailoringState(project, tailoring)));
     }
 }

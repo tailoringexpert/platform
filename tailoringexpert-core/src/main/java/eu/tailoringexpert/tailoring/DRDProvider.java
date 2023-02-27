@@ -27,6 +27,7 @@ import eu.tailoringexpert.domain.Phase;
 import eu.tailoringexpert.domain.TailoringRequirement;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.log4j.Log4j2;
 
 import java.util.Collection;
 import java.util.LinkedHashSet;
@@ -44,6 +45,7 @@ import static java.util.Objects.isNull;
  *
  * @author Michael Bädorf
  */
+@Log4j2
 @RequiredArgsConstructor
 public class DRDProvider implements BiFunction<Chapter<TailoringRequirement>, Collection<Phase>, Map<DRD, Set<String>>> {
 
@@ -55,6 +57,8 @@ public class DRDProvider implements BiFunction<Chapter<TailoringRequirement>, Co
      */
     @Override
     public Map<DRD, Set<String>> apply(Chapter<TailoringRequirement> chapter, Collection<Phase> phases) {
+        log.traceEntry(chapter::getNumber, () -> phases);
+
         Map<DRD, Set<String>> result = new ConcurrentHashMap<>();
         chapter.allChapters()
             .forEach(subChapter -> subChapter.getRequirements()
@@ -76,7 +80,8 @@ public class DRDProvider implements BiFunction<Chapter<TailoringRequirement>, Co
         result.values()
             .stream()
             .forEach(a -> a.stream().sorted());
-        return result;
+
+        return log.traceExit(result);
     }
 
 }
