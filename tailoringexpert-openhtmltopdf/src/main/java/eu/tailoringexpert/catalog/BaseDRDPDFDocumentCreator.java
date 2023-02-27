@@ -64,7 +64,7 @@ public class BaseDRDPDFDocumentCreator implements DocumentCreator {
      * {@inheritDoc}
      */
     @Override
-    public File createDocument(String docId, Catalog<BaseRequirement> catalog, Map<String, String> placeholders) {
+    public File createDocument(String docId, Catalog<BaseRequirement> catalog, Map<String, Object> placeholders) {
         log.traceEntry(() -> docId, catalog::getVersion, () -> placeholders);
 
         Map<String, Object> parameter = new HashMap<>(placeholders);

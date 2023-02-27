@@ -140,7 +140,7 @@ class BaseCatalogPDFDocumentCreatorTest {
         webServerPortConsumer.accept(catalog);
 
         LocalDateTime now = LocalDateTime.now();
-        Map<String, String> platzhalter = new HashMap<>();
+        Map<String, Object> platzhalter = new HashMap<>();
         platzhalter.put("PROJEKT", "SAMPLE");
         platzhalter.put("DATUM", now.format(DateTimeFormatter.ofPattern("dd.MM.YYYY")));
         platzhalter.put("DOKUMENT", "DUMMY-XY-Z-1940/DV7");
@@ -173,7 +173,7 @@ class BaseCatalogPDFDocumentCreatorTest {
         Catalog<BaseRequirement> catalog = Catalog.<BaseRequirement>builder().build();
 
         LocalDateTime now = LocalDateTime.now();
-        Map<String, String> platzhalter = new HashMap<>();
+        Map<String, Object> platzhalter = new HashMap<>();
         platzhalter.put("PROJEKT", "SAMPLE");
         platzhalter.put("DATUM", now.format(DateTimeFormatter.ofPattern("dd.MM.YYYY")));
         platzhalter.put("DOKUMENT", "DUMMY-XY-Z-1940/DV7");
@@ -197,7 +197,7 @@ class BaseCatalogPDFDocumentCreatorTest {
             });
         }
 
-        Map<String, String> platzhalter = new HashMap<>();
+        Map<String, Object> platzhalter = new HashMap<>();
 
         // act
         Throwable actual = catchThrowable(() -> creator.createDocument(null, catalog, platzhalter));
@@ -209,7 +209,7 @@ class BaseCatalogPDFDocumentCreatorTest {
     @Test
     void createDocument_BaseCatalogNull_NullPointerExceptionThrown() throws Exception {
         // arrange
-        Map<String, String> platzhalter = new HashMap<>();
+        Map<String, Object> platzhalter = new HashMap<>();
 
         // act
         Throwable actual = catchThrowable(() -> creator.createDocument("4711", null, platzhalter));

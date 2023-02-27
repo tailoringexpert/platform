@@ -75,7 +75,7 @@ public class PlattformDocumentService implements DocumentService {
     public Optional<File> createCatalog(Catalog<BaseRequirement> catalog, LocalDateTime creationTimestamp) {
         log.info("STARTED | trying to create pdf of catalog version {}", catalog.getVersion());
 
-        Map<String, String> placeholders = new HashMap<>();
+        Map<String, Object> placeholders = new HashMap<>();
         placeholders.put("DRD_DOCID", "RD-PS-01");
 
         String docId = String.format("PA,Safety & Sustainability-Katalog_%s", catalog.getVersion());
@@ -94,7 +94,7 @@ public class PlattformDocumentService implements DocumentService {
      * @return created PDF File
      */
     Optional<File> createDRDDocument(Catalog<BaseRequirement> catalog, LocalDateTime currentTime) {
-        Map<String, String> placeholders = new HashMap<>();
+        Map<String, Object> placeholders = new HashMap<>();
         String docId = String.format("PA,Safety & Sustainability-Katalog_%s_%s", catalog.getVersion(), "DRD");
 
         File document = drdCreator.createDocument(docId, catalog, placeholders);
