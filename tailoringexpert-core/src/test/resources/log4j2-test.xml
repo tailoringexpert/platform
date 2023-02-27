@@ -23,11 +23,11 @@
 <Configuration status="ERROR" verbose="true" monitorInterval="60">
     <Appenders>
         <Console name="Console" target="SYSTEM_OUT">
-            <PatternLayout pattern="%d{HH:mm:ss.SSS} %-5p [%c] %m%n"/>
+            <PatternLayout pattern="%d{HH:mm:ss.SSS} %-5p [%c] %M | %m%n "/>
         </Console>
 
         <Console name="STDOUT" target="SYSTEM_OUT">
-            <PatternLayout pattern="%m%n"/>
+            <PatternLayout pattern="[%c] %M | %m%n"/>
         </Console>
     </Appenders>
 

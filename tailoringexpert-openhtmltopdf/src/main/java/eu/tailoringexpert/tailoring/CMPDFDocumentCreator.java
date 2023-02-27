@@ -69,6 +69,8 @@ public class CMPDFDocumentCreator implements DocumentCreator {
     public File createDocument(String docId,
                                Tailoring tailoring,
                                Map<String, Object> placeholders) {
+        log.traceEntry(() -> docId, () -> tailoring.getCatalog().getVersion(), () -> placeholders);
+
         Map<String, Object> parameter = new HashMap<>(placeholders);
         parameter.put("signatures", tailoring.getSignatures());
 
@@ -84,8 +86,10 @@ public class CMPDFDocumentCreator implements DocumentCreator {
         addDRD(catalog.getToc(), drds, tailoring.getPhases());
 
         String html = templateEngine.process(catalog.getVersion() + "/cm", parameter);
+        File result = pdfEngine.process(docId, html, tailoring.getCatalog().getVersion());
 
-        return pdfEngine.process(docId, html, tailoring.getCatalog().getVersion());
+        log.traceExit();
+        return result;
     }
 
     /**

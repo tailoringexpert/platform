@@ -57,6 +57,8 @@ public class PDFEngine {
      * @return Die erzeugte "PA" File
      */
     public File process(@NonNull String docId, @NonNull String html, @NonNull String pathSuffix) {
+        log.traceEntry(() -> docId);
+
         try (PDDocument document = new PDDocument(setupTempFileOnly())) {
             ByteArrayOutputStream os = new ByteArrayOutputStream();
             PdfRendererBuilder builder = new PdfRendererBuilder();
@@ -71,13 +73,18 @@ public class PDFEngine {
                 .toStream(os)
                 .run();
 
-            return File.builder()
+            File result = File.builder()
                 .name(docId + ".pdf")
                 .data(os.toByteArray())
                 .build();
+
+            log.traceExit();
+            return result;
         } catch (Exception e) {
             log.catching(e);
         }
+
+        log.traceExit();
         return null;
     }
 

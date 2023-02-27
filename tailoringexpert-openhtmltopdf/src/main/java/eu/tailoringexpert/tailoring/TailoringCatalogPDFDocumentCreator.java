@@ -75,7 +75,7 @@ public class TailoringCatalogPDFDocumentCreator implements DocumentCreator {
     public File createDocument(String docId,
                                Tailoring tailoring,
                                Map<String, Object> placeholders) {
-        log.traceEntry("Start creating requirements document {}", docId);
+        log.traceEntry(() -> docId, () -> tailoring.getCatalog().getVersion(), () -> placeholders);
 
         Map<String, Object> parameter = new HashMap<>(placeholders);
         parameter.put("catalogVersion", tailoring.getCatalog().getVersion());
@@ -104,8 +104,7 @@ public class TailoringCatalogPDFDocumentCreator implements DocumentCreator {
         String html = templateEngine.process(tailoring.getCatalog().getVersion() + "/tailoringcatalog", parameter);
         File result = pdfEngine.process(docId, html, tailoring.getCatalog().getVersion() + "/tailoringcatalog");
 
-        log.traceExit("Finished creating requirements document {}", docId);
-
+        log.traceExit();
         return result;
     }
 

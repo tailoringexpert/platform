@@ -96,9 +96,9 @@
             </tr>
             </thead>
             <tbody>
-            <tr th:each=" zeichnung : ${zeichnungen}" th:if="${zeichnung.anwendbar}">
-                <td style="width:20%;text-align: center;" th:utext="${#strings.concat(zeichnung.status, '<br/>', zeichnung.bereich)}">Status</td>
-                <td style="width:40%;text-align: center;" th:utext="${zeichnung.unterzeichner}">Name</td>
+            <tr th:each=" signature : ${signatures}" th:if="${signature.applicable}">
+                <td style="width:20%;text-align: center;" th:utext="${#strings.concat(signature.state, '<br/>', signature.faculty)}">Status</td>
+                <td style="width:40%;text-align: center;" th:utext="${signature.signee}">Name</td>
                 <td style="width:25%"></td>
                 <td style="width:15%"></td>
             </tr>

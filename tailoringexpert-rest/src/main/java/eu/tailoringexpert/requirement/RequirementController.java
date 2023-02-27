@@ -35,6 +35,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.log4j.Log4j2;
 import org.springframework.hateoas.EntityModel;
 import org.springframework.hateoas.UriTemplate;
 import org.springframework.http.ResponseEntity;
@@ -57,6 +58,7 @@ import static org.springframework.http.ResponseEntity.notFound;
  * @author Michael Bädorf
  */
 @Tag(name = "Requirement Controller", description = "Management of requirements")
+@Log4j2
 @RequiredArgsConstructor
 @RestController
 public class RequirementController {
@@ -86,16 +88,20 @@ public class RequirementController {
         @Parameter(description = "Tailoring name") @PathVariable String tailoring,
         @Parameter(description = "Chapter number") @PathVariable String chapter,
         @Parameter(description = "Requirement position in chapter") @PathVariable String requirement) {
+        log.traceEntry();
 
         PathContextBuilder pathContext = PathContext.builder()
             .project(project)
             .tailoring(tailoring)
             .chapter(chapter);
-        return requirementServiceRepository.getRequirement(project, tailoring, chapter, requirement)
+        ResponseEntity<EntityModel<TailoringRequirementResource>> result = requirementServiceRepository.getRequirement(project, tailoring, chapter, requirement)
             .map(projektPhaseAnforderung -> ResponseEntity
                 .ok()
                 .body(EntityModel.of(mapper.toResource(pathContext, projektPhaseAnforderung))))
             .orElseGet(() -> notFound().build());
+
+        log.traceExit();
+        return result;
     }
 
     @Operation(summary = "Change selection state of all requirements in chapter and all subchapters")
@@ -113,6 +119,7 @@ public class RequirementController {
         @Parameter(description = "Chapter number") @PathVariable String chapter,
         @Parameter(description = "Requirement position in chapter") @PathVariable String requirement,
         @Parameter(description = "New selected state of requirement") @PathVariable Boolean selected) {
+        log.traceEntry();
 
         PathContextBuilder pathContext = PathContext.builder()
             .project(project)
@@ -120,11 +127,14 @@ public class RequirementController {
             .chapter(chapter)
             .requirment(requirement);
 
-        return requirementService.handleSelected(project, tailoring, chapter, requirement, selected)
+        ResponseEntity<EntityModel<TailoringRequirementResource>> result = requirementService.handleSelected(project, tailoring, chapter, requirement, selected)
             .map(projektPhaseAnforderung -> ResponseEntity
                 .ok()
                 .body(EntityModel.of(mapper.toResource(pathContext, projektPhaseAnforderung))))
             .orElseGet(() -> notFound().build());
+
+        log.traceExit();
+        return result;
     }
 
     @Operation(summary = "Change text of requirement")
@@ -142,6 +152,7 @@ public class RequirementController {
         @Parameter(description = "Chapter number") @PathVariable String chapter,
         @Parameter(description = "Requirement position in chapter") @PathVariable String requirement,
         @Parameter(description = "New requirement text") @RequestBody String text) {
+        log.traceEntry();
 
         PathContextBuilder pathContext = PathContext.builder()
             .project(project)
@@ -149,11 +160,14 @@ public class RequirementController {
             .chapter(chapter)
             .requirment(requirement);
 
-        return requirementService.handleText(project, tailoring, chapter, requirement, text)
+        ResponseEntity<EntityModel<TailoringRequirementResource>> result = requirementService.handleText(project, tailoring, chapter, requirement, text)
             .map(projektPhaseAnforderung -> ResponseEntity
                 .ok()
                 .body(EntityModel.of(mapper.toResource(pathContext, projektPhaseAnforderung))))
             .orElseGet(() -> notFound().build());
+
+        log.traceExit();
+        return result;
     }
 
     @Operation(summary = "Change selection state of all requirements of chapter and all subchapters")
@@ -170,18 +184,21 @@ public class RequirementController {
         @Parameter(description = "Tailoring name") @PathVariable String tailoring,
         @Parameter(description = "Chapter number") @PathVariable String chapter,
         @Parameter(description = "New requirement selected state") @PathVariable Boolean selected) {
+        log.traceEntry();
 
         PathContextBuilder pathContext = PathContext.builder()
             .project(project)
             .tailoring(tailoring)
             .chapter(chapter);
 
-        return requirementService.handleSelected(project, tailoring, chapter, selected)
+        ResponseEntity<EntityModel<TailoringCatalogChapterResource>> result = requirementService.handleSelected(project, tailoring, chapter, selected)
             .map(gruppe -> ResponseEntity
                 .ok()
                 .body(EntityModel.of(mapper.toResource(pathContext, gruppe))))
             .orElseGet(() -> notFound().build());
 
+        log.traceExit();
+        return result;
     }
 
     @Operation(summary = "Add new requirement to tailoring")
@@ -200,15 +217,19 @@ public class RequirementController {
         @Parameter(description = "Chapter number") @PathVariable String chapter,
         @Parameter(description = "Position of requirements after that the new requirement shall be inserted") @PathVariable String requirement,
         @Parameter(description = "Text of new requirement") @RequestBody String text) {
+        log.traceEntry();
 
         PathContextBuilder pathContext = PathContext.builder()
             .project(project)
             .tailoring(tailoring)
             .chapter(chapter);
-        return requirementService.createRequirement(project, tailoring, chapter, requirement, text)
+        ResponseEntity<EntityModel<TailoringRequirementResource>> result = requirementService.createRequirement(project, tailoring, chapter, requirement, text)
             .map(erstellteAnforderung -> ResponseEntity
                 .created(UriTemplate.of(TAILORINGREQUIRMENT).expand(pathContext.build().parameter()))
                 .body(EntityModel.of(mapper.toResource(pathContext, erstellteAnforderung))))
             .orElseGet(() -> notFound().build());
+
+        log.traceExit();
+        return result;
     }
 }
