@@ -17,12 +17,12 @@ jobs:
     steps:
       - name: Evaluate release manager
         id: check_release_manager
-        run: echo ::set-output name=status::${{contains(secrets.RELEASE_MANAGER, github.actor)}}       
+        run: echo "status=${{contains(secrets.RELEASE_MANAGER, github.actor)}}" >> $GITHUB_OUTPUT
       - name: Show evaluation result
-        run: echo "User ${{github.actor}} is release manager ${{steps.check_release_manager.outputs.status}}"
-      
+        run: echo "User ${{github.actor}} is release manager ${{steps.check_release_manager.output.status}}"
+
     outputs:
-      status: ${{steps.check_release_manager.outputs.status }}        
+      status: ${{steps.check_release_manager.outputs.status }}
 
   create-changelog:
     runs-on: ubuntu-latest
