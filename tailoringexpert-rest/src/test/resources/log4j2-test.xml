@@ -33,7 +33,7 @@
 
     <Loggers>
         <!-- Loggers -->
-        <Logger name="eu.tailoringexpert" level="info" additivity="false">
+        <Logger name="eu.tailoringexpert" level="INFO" additivity="false">
             <AppenderRef ref="STDOUT"/>
         </Logger>
 
