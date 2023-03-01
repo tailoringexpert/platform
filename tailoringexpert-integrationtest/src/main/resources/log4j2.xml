@@ -7,13 +7,13 @@
     </Console>
 
     <Console name="STDOUT" target="SYSTEM_OUT">
-          <PatternLayout pattern="%m%n"/>
+          <PatternLayout pattern="[%c] %M | %m%n"/>
       </Console>
   </Appenders>
 
   <Loggers>
     <!-- Loggers -->
-    <Logger name="eu.tailoringexpert" level="debug" additivity="false">
+    <Logger name="eu.tailoringexpert" level="DEBUG" additivity="false">
       <AppenderRef ref="Console" />
     </Logger>
 

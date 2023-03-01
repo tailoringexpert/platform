@@ -83,7 +83,7 @@ public abstract class TailoringServiceMapper {
 
         Set<String> parameterValues = screeningSheet.getParameters()
             .stream()
-            .map(ScreeningSheetParameter::getValue)
+            .map(ScreeningSheetParameter::getName)
             .filter(String.class::isInstance)
             .map(String.class::cast)
             .collect(toUnmodifiableSet());
