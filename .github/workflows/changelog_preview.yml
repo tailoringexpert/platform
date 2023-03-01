@@ -17,23 +17,23 @@ jobs:
     steps:
       - name: Evaluate release manager
         id: check_release_manager
-        run: echo ::set-output name=status::${{contains(secrets.RELEASE_MANAGER, github.actor)}}       
+        run: echo "status=${{contains(secrets.RELEASE_MANAGER, github.actor)}}" >> $GITHUB_OUTPUT
       - name: Show evaluation result
-        run: echo "User ${{github.actor}} is release manager ${{steps.check_release_manager.outputs.status}}"
-      
+        run: echo "User ${{github.actor}} is release manager ${{steps.check_release_manager.output.status}}"
+
     outputs:
-      status: ${{steps.check_release_manager.outputs.status }}        
+      status: ${{steps.check_release_manager.outputs.status }}
 
   create-changelog:
     runs-on: ubuntu-latest
     needs: evaluate-release-manager
-    
+
     if: ${{needs.evaluate-release-manager.outputs.status == 'true'}}
-    steps:  
+    steps:
       - name: Show user inputs
         run: |
-          echo "Version: ${{ github.event.inputs.version }}" 
-        
+          echo "Version: ${{ github.event.inputs.version }}"
+
       - name: Create tag
         uses: actions/github-script@v6
         with:
@@ -75,4 +75,4 @@ jobs:
               repo: context.repo.repo,
               ref: 'tags/v${{ github.event.inputs.version }}',
               sha: context.sha
-            })      
+            })
