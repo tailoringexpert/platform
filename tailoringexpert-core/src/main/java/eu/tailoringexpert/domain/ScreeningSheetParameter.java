@@ -37,6 +37,11 @@ public class ScreeningSheetParameter implements Serializable {
     private String category;
 
     /**
+     * Field name on screeningsheet.
+     */
+    private String name;
+
+    /**
      * Value of the parameter.
      */
     private transient Object value;
