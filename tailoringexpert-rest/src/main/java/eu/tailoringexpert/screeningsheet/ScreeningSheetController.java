@@ -32,6 +32,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.log4j.Log4j2;
 import org.springframework.hateoas.EntityModel;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -50,6 +51,7 @@ import static java.util.Optional.ofNullable;
  * @author Michael Bädorf
  */
 @Tag(name = "ScreeningSheet Controller", description = "Handling screeningsheets")
+@Log4j2
 @RequiredArgsConstructor
 @RestController
 public class ScreeningSheetController {
@@ -72,10 +74,15 @@ public class ScreeningSheetController {
     @PostMapping(value = SCREENINGSHEET, produces = {"application/hal+json"})
     public ResponseEntity<EntityModel<ScreeningSheetResource>> postScreeningSheet(
         @RequestPart("datei") MultipartFile file) throws IOException {
-        return ofNullable(screeningSheetService.createScreeningSheet(file.getBytes()))
+        log.traceEntry();
+
+        ResponseEntity<EntityModel<ScreeningSheetResource>> result = ofNullable(screeningSheetService.createScreeningSheet(file.getBytes()))
             .map(screeningSheet -> ResponseEntity
                 .ok()
                 .body(EntityModel.of(mapper.toResource(PathContext.builder(), screeningSheet))))
             .orElseGet(() -> ResponseEntity.notFound().build());
+
+        log.traceExit();
+        return result;
     }
 }

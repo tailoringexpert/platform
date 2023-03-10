@@ -26,13 +26,19 @@ import eu.tailoringexpert.domain.Catalog;
 import eu.tailoringexpert.domain.File;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
+import lombok.SneakyThrows;
 import lombok.extern.log4j.Log4j2;
 
+import java.io.ByteArrayOutputStream;
 import java.time.LocalDateTime;
 import java.time.ZonedDateTime;
+import java.util.Collection;
 import java.util.Optional;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipOutputStream;
 
 import static java.util.Optional.empty;
+import static java.util.Optional.of;
 
 /**
  * Implementation of {@link CatalogService}.
@@ -54,16 +60,16 @@ public class CatalogServiceImpl implements CatalogService {
      */
     @Override
     public boolean doImport(@NonNull Catalog<BaseRequirement> catalog) {
+        log.traceEntry(catalog::getVersion);
         @SuppressWarnings("PMD.PrematureDeclaration") final ZonedDateTime now = ZonedDateTime.now();
 
         if (repository.existsCatalog(catalog.getVersion())) {
-            log.info("Catalog version {} NOT imported because it already exists.", catalog.getVersion());
-            return false;
+            log.error("Catalog version {} NOT imported because it already exists.", catalog.getVersion());
+            return log.traceExit(false);
         }
 
         Optional<Catalog<BaseRequirement>> result = repository.createCatalog(catalog, now);
-        log.info("Catalog version {} {} imported", catalog.getVersion(), result.isPresent() ? " sucessful" : " not");
-        return result.isPresent();
+        return log.traceExit(result.isPresent());
     }
 
     /**
@@ -71,6 +77,8 @@ public class CatalogServiceImpl implements CatalogService {
      */
     @Override
     public Optional<Catalog<BaseRequirement>> getCatalog(@NonNull String version) {
+        log.traceEntry(() -> version);
+        log.traceExit();
         return repository.getCatalog(version);
     }
 
@@ -79,20 +87,74 @@ public class CatalogServiceImpl implements CatalogService {
      */
     @Override
     public Optional<File> createCatalog(String version) {
+        log.traceEntry(() -> version);
         @SuppressWarnings("PMD.PrematureDeclaration") final LocalDateTime creationTimestamp = LocalDateTime.now();
-        log.info("STARTED | trying to create output document of catalogue version {}", version);
 
         Optional<Catalog<BaseRequirement>> catalog = repository.getCatalog(version);
         if (catalog.isEmpty()) {
-            log.info("FINISHED | output document NOT created due to non existing catalogue version");
+            log.error("catalog document NOT created due to non existing catalog version");
+            log.traceExit();
             return empty();
         }
 
         Optional<File> result = documentService.createCatalog(catalog.get(), creationTimestamp);
-        result.ifPresentOrElse(datei -> log.info("FINISHED | created output document {} of catalog version ", version),
-            () -> log.info("FINISHED | output document NOT created"));
-
+        log.traceExit();
         return result;
     }
 
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public Optional<File> createDocuments(String version) {
+        log.traceEntry(() -> version);
+        @SuppressWarnings("PMD.PrematureDeclaration") final LocalDateTime creationTimestamp = LocalDateTime.now();
+
+        Optional<Catalog<BaseRequirement>> catalog = repository.getCatalog(version);
+        if (catalog.isEmpty()) {
+            log.error("output documents NOT created due to non existing catalogue version");
+            log.traceExit();
+            return empty();
+        }
+
+        Collection<File> documents = documentService.createAll(catalog.get(), creationTimestamp);
+        ByteArrayOutputStream os = createZip(documents);
+
+        File result = File.builder()
+            .name("catalog_" + version + ".zip")
+            .data(os.toByteArray())
+            .build();
+        log.traceExit(result.getName());
+        return of(result);
+    }
+
+
+    /**
+     * Create zip containing provided files.
+     *
+     * @param documents documents files to add to zip
+     * @return created zip
+     */
+    @SneakyThrows
+    ByteArrayOutputStream createZip(Collection<File> documents) {
+        try (ByteArrayOutputStream result = new ByteArrayOutputStream();
+             ZipOutputStream zip = new ZipOutputStream(result)) {
+            documents.forEach(file -> addToZip(file, zip));
+            return result;
+        }
+    }
+
+    /**
+     * Add file to zip.
+     *
+     * @param file file to add
+     * @param zip  Zip, to add file to
+     */
+    @SneakyThrows
+    void addToZip(File file, ZipOutputStream zip) {
+        ZipEntry zipEntry = new ZipEntry(file.getName());
+        zip.putNextEntry(zipEntry);
+        zip.write(file.getData(), 0, file.getData().length);
+        zip.closeEntry();
+    }
 }

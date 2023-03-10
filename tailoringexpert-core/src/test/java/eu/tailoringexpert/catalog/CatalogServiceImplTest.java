@@ -24,15 +24,28 @@ package eu.tailoringexpert.catalog;
 import eu.tailoringexpert.domain.BaseRequirement;
 import eu.tailoringexpert.domain.Catalog;
 import eu.tailoringexpert.domain.File;
+import lombok.extern.log4j.Log4j2;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.MockedStatic;
+import org.mockito.Mockito;
 
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
 import java.util.Optional;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipInputStream;
+import java.util.zip.ZipOutputStream;
 
+import static java.nio.charset.StandardCharsets.UTF_8;
+import static java.util.Arrays.asList;
+import static java.util.Objects.nonNull;
 import static java.util.Optional.empty;
 import static java.util.Optional.of;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -40,11 +53,13 @@ import static org.assertj.core.api.Assertions.catchThrowable;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.mockStatic;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
+@Log4j2
 class CatalogServiceImplTest {
 
     private CatalogServiceRepository repositoryMock;
@@ -208,5 +223,119 @@ class CatalogServiceImplTest {
         assertThat(actual).isEmpty();
         verify(repositoryMock, times(1)).getCatalog("8.2.1");
         verify(documentServiceMock, times(1)).createCatalog(any(), any());
+    }
+
+    @Test
+    void createDocuments_CatalogNotExisting_EmptyReturned() {
+        // arrange
+        given(repositoryMock.getCatalog("8.2.1")).willReturn(empty());
+
+        // act
+        Optional<File> actual = service.createDocuments("8.2.1");
+
+        // assert
+        assertThat(actual).isEmpty();
+    }
+
+    @Test
+    void createDocuments_CatalogExisting_ZipReturned() throws IOException {
+        // arrange
+        Catalog<BaseRequirement> catalog = Catalog.<BaseRequirement>builder().version("8.2.1").build();
+        given(repositoryMock.getCatalog("8.2.1"))
+            .willReturn(of(catalog));
+
+        List<File> dokumente = asList(
+            File.builder()
+                .name("DUMMY-KATALOG.pdf")
+                .data("Testdokument".getBytes(UTF_8))
+                .build()
+        );
+        given(documentServiceMock.createAll(eq(catalog), any())).willReturn(dokumente);
+
+        // act
+        Optional<File> actual = service.createDocuments("8.2.1");
+
+        // assert
+        assertThat(actual).isNotEmpty();
+        assertThat(actual.get().getName()).isEqualTo("catalog_8.2.1.zip");
+        assertThat(actual.get().getType()).isEqualTo("zip");
+
+        Collection<String> zipDateien = fileNameInZip(actual.get().getData());
+        assertThat(zipDateien)
+            .hasSize(1)
+            .containsExactly("DUMMY-KATALOG.pdf");
+    }
+
+    Collection<String> fileNameInZip(byte[] zip) throws IOException {
+        Collection<String> result = new ArrayList<>();
+        ZipInputStream zin = new ZipInputStream(new ByteArrayInputStream(zip));
+        ZipEntry entry;
+        while (nonNull(entry = zin.getNextEntry())) {
+            result.add(entry.getName());
+            zin.closeEntry();
+        }
+        zin.close();
+        return result;
+    }
+
+    @Test
+    void createDocuments_CloseZipOutputStreamException_ExceptionThrown() throws Exception {
+        // arrange
+        Catalog<BaseRequirement> catalog = Catalog.<BaseRequirement>builder().version("8.2.1").build();
+        given(repositoryMock.getCatalog("8.2.1"))
+            .willReturn(of(catalog));
+
+        List<File> dokumente = asList(
+            File.builder()
+                .name("DUMMY-KATALOG.pdf")
+                .data("Testdokument".getBytes(UTF_8))
+                .build()
+        );
+        given(documentServiceMock.createAll(eq(catalog), any())).willReturn(dokumente);
+
+        CatalogServiceImpl serviceSpy = Mockito.spy(service);
+        given(serviceSpy.createZip(dokumente)).willThrow(new RuntimeException());
+
+        // act
+        Throwable actual = catchThrowable(() -> serviceSpy.createDocuments("8.2.1"));
+
+        // assert
+        assertThat(actual).isInstanceOf(RuntimeException.class);
+    }
+
+    @Test
+    void createZip_addToZipSimulatedException_ExceptionThrown() {
+        // arrange
+        List<File> files = List.of(
+            File.builder()
+                .name("DUMMY-KATALOG.pdf")
+                .data("Testdokument".getBytes(UTF_8))
+                .build()
+        );
+
+        CatalogServiceImpl serviceSpy = Mockito.spy(service);
+        doThrow(new RuntimeException()).when(serviceSpy).addToZip(any(File.class), any(ZipOutputStream.class));
+
+        // act
+        Throwable actual = catchThrowable(() -> serviceSpy.createZip(files));
+
+        // assert
+        assertThat(actual).isInstanceOf(RuntimeException.class);
+    }
+
+    @Test
+    void addToZip_ZipOutputStremException_ExceptionThrown() throws Exception {
+        // arrange
+        Throwable actual;
+        try (ZipOutputStream zipMock = mock(ZipOutputStream.class)) {
+            File file = File.builder().name("dummy.pdf").build();
+            doThrow(new IOException()).when(zipMock).putNextEntry(any());
+
+            // act
+            actual = catchThrowable(() -> service.addToZip(file, zipMock));
+        }
+
+        // assert
+        assertThat(actual).isInstanceOf(IOException.class);
     }
 }

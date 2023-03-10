@@ -42,7 +42,7 @@ import static java.util.Objects.nonNull;
  *
  * @author Michael Bädorf
  */
-@Mapper(componentModel = "jsr330")
+@Mapper
 public abstract class JPARequirementServiceRepositoryMapper {
 
     @Setter

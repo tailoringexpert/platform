@@ -1,0 +1,365 @@
+@charset "UTF-8";
+@page {
+    /*
+     * Size can be a length (not a percentage) for width and height
+     * or a standard page size such as:
+     * a4, a5, a3, b3, b4, letter, legal, ledger.
+     * A standard page size can be followed by either 'portrait' or 'landscape'.
+     *
+     * In theory, you can use different page sizes in one document, but this renderer
+     * currently uses the first page width as the width of the body. That means it
+     * is only practical to use different page heights in the one document.
+     * See danfickle/openhtmltopdf#176 or #119 for more information.
+     */
+    size: a4 portrait;
+
+    /*
+     * Margin box for each page. Accepts one-to-four values, similar
+     * to normal margin property.
+     */
+    margin: 50px;
+}
+
+@page:first {
+    background-image: url(img/background.png), url(img/image13.png);
+    background-size: contain, auto;
+
+    @top-left {
+        font-family: 'Noto Sans';
+        content: '';
+    }
+    @top-center {
+        font-family: 'Noto Sans';
+        content: '';
+    }
+    @top-right {
+        font-family: 'Noto Sans';
+        content: '';
+    }
+
+    @bottom-left {
+        font-family: 'Noto Sans';
+        content: '';
+    }
+    @bottom-center {
+        font-family: 'Noto Sans';
+        content: '';
+    }
+    @bottom-right {
+        font-family: 'Noto Sans';
+        content: '';
+    }
+}
+
+@page:left {
+    @top-left {
+        font-family: 'Noto Sans';
+        font-size: x-small;
+        content: element(dokument_datum);
+    }
+    @top-right {
+        font-family: 'Noto Sans';
+        font-size: x-small;
+        content: element(logo);
+    }
+
+    @bottom-left {
+        font-family: 'Noto Sans';
+        font-size: x-small;
+        content: element(dokumenttyp_projekt);
+        padding-bottom: 50px;
+    }
+    @bottom-right {
+        font-family: 'Noto Sans';
+        font-size: x-small;
+        content: 'Page ' counter(page);
+        border-top: 1px solid black;
+        padding-bottom: 50px;
+    }
+}
+
+@page:right {
+    @top-left {
+        font-family: 'Noto Sans';
+        font-size: x-small;
+        content: element(dokument_datum);
+    }
+    @top-right {
+        font-family: 'Noto Sans';
+        font-size: x-small;
+        content: element(logo);
+    }
+
+    @bottom-right {
+        font-family: 'Noto Sans';
+        font-size: x-small;
+        content: 'Page ' counter(page);
+        border-top: 1px solid black;
+        padding-bottom:50px;
+    }
+    @bottom-left {
+        font-family: 'Noto Sans';
+        font-size: x-small;
+        content: element(dokumenttyp_projekt);
+        padding-bottom: 50px;
+    }
+}
+
+/*
+ * An element can be placed on a named page. Any name can be used provided it is
+ * a valid CSS identifier. Elements are placed on this page using the page property.
+ */
+@page named {
+    @top-center {
+        font-family: 'Noto Sans';
+        content: 'You are on a named page for a change!';
+   }
+}
+
+
+/*
+ * NOTE: The element names here are made up to illustrate a concept.
+ * As the renderer works with XML, you can use any XML valid element name.
+ */
+page-after {
+    /*
+     * Most page elements only work on block or block-like elements.
+     */
+    display: block;
+
+    /*
+     * Create a page break after this element.
+     */
+    page-break-after: always;
+}
+
+page-before {
+    display: block;
+    /*
+     * Create a page break before this element.
+    */
+    page-break-before: always;
+}
+
+page-inside-avoid {
+    display:block;
+    height: 750px;
+
+    /*
+     * With page-break-inside the renderer will try (if possible) to avoid page breaks inside an element.
+     */
+    page-break-inside: avoid;
+}
+
+
+/*
+ * The widows property allows us to specify the minimum number of lines
+ * to fall onto the next page, if there is a page break inside our element.
+ * For example, you can use this to avoid a single line falling onto a
+ * new page. The widows property is satisfied by inserting space above
+ * the widows count of lines to make them fall onto a new page.
+ *
+ * Try: Changing widows to 0 and seeing how many lines are left on the new
+ * page. The default initial value of widows is 2.
+ */
+widows {
+    padding: 0 10px;
+    border: 1px solid red;
+    page-break-before: always;
+    display: block;
+    widows: 5;
+    line-height: 20px;
+    font-size: 16px;
+    margin-top: 698px;
+}
+
+spacer {
+    page-break-before: always;
+    display:block;
+    height: 878px;
+}
+
+spacer.four-lines {
+    height: 798px;
+}
+
+/*
+ * Orphans property is the pair of widows. It allows the author to specify
+ * the minimum number of lines that should occur on the page before a
+ * page-break. For example, we might want to prevent one line on the first page,
+ * followed by ten lines on the next.
+ * This property is satisfied by adding a new page before the element, if the
+ * orphans constraint is violated.
+ */
+orphans {
+    padding: 0 10px;
+    border: 1px solid green;
+    display: block;
+    widows: 0;
+    orphans: 3;
+    line-height: 20px;
+    font-size: 16px;
+}
+
+table {
+    /*
+     * With -fs-table-paginate on, the header and footer
+     * of a table will be repeated on each page that the table falls on.
+     */
+    -fs-table-paginate: paginate;
+
+    /*
+     * Similar to the orphans property, this property allows the author
+     * to specify how much of the block must show before a page-break.
+     * If the constraint is violated, a page break is added before the element.
+     * Very useful on elements not made of lines, such as tables, etc.
+     * TRY: Uncomment this property and see how the table moves to a new page
+     * to satisfy the constraint.
+     */
+    /* -fs-page-break-min-height: 100px; */
+    table-layout: fixed;
+}
+
+.logo {
+    width: 29px;
+    height: 24px;
+    position: absolute;
+    top: 10px;
+    right: 0px;
+}
+td {
+    vertical-align:top;
+    word-wrap:break-word;
+}
+
+@font-face {
+    font-family: Noto Sans;
+    src: url(fonts/noto_sans/NotoSans-Regular.ttf);
+}
+
+/*
+ * The body margin is in addition to the page margin,
+ * but the top body margin only applies to the first page and
+ * the bottom margin to the last page.
+ */
+body {
+    margin: 0;
+    font-family: 'Noto Sans';
+}
+
+
+named-page {
+    page-break-before: always;
+
+    /*
+     * The page property allows us to marry up an element with a @page rule.
+     */
+    page: named;
+    display: block;
+}
+
+ul.toc{
+    margin: 0;
+    list-style-type: none;
+}
+
+.toc a::after {
+    /*
+     * The target-counter function is useful for creating a
+     * table-of-contents or directing the user to a specific page.
+     * It takes as its first argument the hash link (in the form #id)
+     * to the element and returns the page that element is located on.
+     * We can use the attr function to pick up the href from the html.
+     */
+    content: leader(dotted) target-counter(attr(href), page);
+}
+
+.toc a:hover, a:visited, a:link, a:active {
+    text-decoration: none;
+}
+
+title-box {
+    position: relative;
+    top: 500px;
+    left: 100px;
+    display: block;
+    page-break-after: always;
+}
+
+dokument-typ {
+    /* h1 */
+    font-size: 2em;
+    font-weight: bolder;
+}
+dokument-typ::after {
+    content: "\A";
+    white-space: pre;
+}
+
+dokument-subtyp {
+    /* h3 */
+    font-size: 1.17em;
+    font-weight: bolder;
+}
+dokument-subtyp::after {
+    content: "\A";
+    white-space: pre;
+}
+
+dokument-projekt {
+    /* h2 */
+    font-size: 1.5em;
+    font-weight: bolder;
+}
+dokument-projekt::after {
+    content: "\A";
+    white-space: pre;
+}
+
+dokument-release {
+    /* h4 */
+    font-size: 1em;
+    font-weight: bolder;
+}
+dokument-release::after {
+    content: "\A";
+    white-space: pre;
+}
+
+header-box {
+    position: absolute;
+    top: 40px;
+    left: 50px;
+    display: block;
+    color: Azure;
+    font-family: Noto Sans;
+    page-break-after: always;
+}
+
+table.center{
+    margin-left: auto;
+    margin-right: auto;
+}
+span.no-margin > ul {
+ /**background-color: lightblue;  */
+    margin: 0 -1px;
+
+}
+span.no-margin > blockquote {
+/*background-color: lightblue;*/
+	margin-top: 0;
+}
+
+.strong {
+    font-weight: bold;
+}
+
+img.center {
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+ul.circle {
+    list-style-type: circle;
+}

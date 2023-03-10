@@ -207,7 +207,7 @@ package domain {
     ProjectEntity --> "1" CatalogEntity : catalogue
     ProjectEntity --> "1" ScreeningSheetEntity : screeningSheet
     ProjectEntity --> "1..*" TailoringEntity : tailorings
-
+    ProjectEntity --> "1" ProjectState : state
 
     interface CatalogVersion<<Projektion>> {
         getVersion() : String

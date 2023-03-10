@@ -21,9 +21,12 @@
  */
 package eu.tailoringexpert.project;
 
+import eu.tailoringexpert.TailoringexpertException;
 import eu.tailoringexpert.domain.BaseRequirement;
 import eu.tailoringexpert.domain.Catalog;
 import eu.tailoringexpert.domain.Project;
+import eu.tailoringexpert.domain.ProjectInformation;
+import eu.tailoringexpert.domain.ProjectState;
 import eu.tailoringexpert.domain.ScreeningSheet;
 import eu.tailoringexpert.domain.SelectionVector;
 import eu.tailoringexpert.domain.Tailoring;
@@ -35,6 +38,7 @@ import lombok.extern.log4j.Log4j2;
 
 import java.util.Optional;
 
+import static eu.tailoringexpert.domain.ProjectState.ONGOING;
 import static java.lang.Integer.parseInt;
 import static java.util.Comparator.comparingInt;
 import static java.util.Objects.isNull;
@@ -64,25 +68,30 @@ public class ProjectServiceImpl implements ProjectService {
      */
     @Override
     public CreateProjectTO createProject(String catalogVersion, byte[] screeningSheetData, SelectionVector applicableSelectionVector, String note) {
-        Catalog<BaseRequirement> catalog = repository.getBaseCatalog(catalogVersion);
-        ScreeningSheet screeningSheet = screeningSheetService.createScreeningSheet(screeningSheetData);
+        log.traceEntry(() -> catalogVersion);
 
+        ScreeningSheet screeningSheet = screeningSheetService.createScreeningSheet(screeningSheetData);
+        String identifier = screeningSheet.getProject();
+        if (repository.isExistingProject(identifier)) {
+            throw new TailoringexpertException("A project with name " + identifier + " already exists!\nEither change project identifier or add new tailoring to exitsing project " + identifier);
+        }
+
+        Catalog<BaseRequirement> catalog = repository.getBaseCatalog(catalogVersion);
         Tailoring tailoring = tailoringService.createTailoring("master", "1000", screeningSheet, applicableSelectionVector, note, catalog);
 
         Project project = repository.createProject(Project.builder()
             .screeningSheet(screeningSheet)
-            .identifier(screeningSheet.getProject())
+            .identifier(identifier)
             .tailoring(tailoring)
+            .state(ONGOING)
             .build()
         );
 
-        log.info("Project {} with phases {} created with catalog {}", screeningSheet.getProject(), tailoring.getPhases(), catalogVersion);
-        return CreateProjectTO.builder()
+        return log.traceExit(CreateProjectTO.builder()
             .project(project.getIdentifier())
             .tailoring(tailoring.getName())
             .selectionVector(applicableSelectionVector)
-            .build();
-
+            .build());
     }
 
     /**
@@ -90,11 +99,28 @@ public class ProjectServiceImpl implements ProjectService {
      */
     @Override
     public boolean deleteProject(String project) {
+        log.traceEntry(() -> project);
+
         Optional<Project> toDelete = repository.getProject(project);
         if (toDelete.isPresent()) {
-            return repository.deleteProject(project);
+            return log.traceExit(repository.deleteProject(project));
         }
-        return false;
+
+        return log.traceExit(false);
+    }
+
+    @Override
+    public Optional<ProjectInformation> updateState(String project, ProjectState state) {
+        log.traceEntry(() -> project, () -> state);
+
+        Optional<Project> oProject = repository.getProject(project);
+        if (oProject.isEmpty()) {
+            log.error("updating state of {} skipped because it does not exists", project);
+            return log.traceExit(empty());
+        }
+
+        Optional<ProjectInformation> result = repository.updateState(project, state);
+        return log.traceExit(result);
     }
 
     /**
@@ -102,22 +128,26 @@ public class ProjectServiceImpl implements ProjectService {
      */
     @Override
     public Optional<Tailoring> addTailoring(String project, String catalog, byte[] screeningSheetData, SelectionVector applicableSelectionVector, String note) {
-        log.info("STARTED  | adding tailoring to project {}", project);
+        log.traceEntry(() -> project, () -> catalog);
+
         Optional<Project> oProject = repository.getProject(project);
         if (oProject.isEmpty()) {
+            log.traceExit(false);
             return empty();
         }
 
         Catalog<BaseRequirement> baseCatalog = repository.getBaseCatalog(catalog);
         if (isNull(baseCatalog)) {
-            log.error("ABORTED  | catalog {} does not exist", catalog);
+            log.error("catalog {} does not exist", catalog);
+            log.traceExit();
             return empty();
         }
 
         ScreeningSheet screeningSheet = screeningSheetService.createScreeningSheet(screeningSheetData);
         // nur hinzufüegen, wenn "richtiges" Project
         if (!project.equals(screeningSheet.getProject())) {
-            log.error("ABORTED  | screeningsheet defines phase of project {} instead of {}", screeningSheet.getProject(), project);
+            log.error("screeningsheet defines phase of project {} instead of {}", screeningSheet.getProject(), project);
+            log.traceExit();
             return empty();
         }
 
@@ -144,7 +174,7 @@ public class ProjectServiceImpl implements ProjectService {
         );
 
         Optional<Tailoring> result = repository.addTailoring(project, tailoring);
-        log.info("FINISHED | adding phase {} to project {}", tailoringName, project);
+        log.traceExit(result.isPresent());
         return result;
     }
 
@@ -153,10 +183,12 @@ public class ProjectServiceImpl implements ProjectService {
      */
     @Override
     public Optional<Project> copyProject(String project, byte[] screeningSheetData) {
-        log.info("STARTED  | copyig project {}", project);
+        log.traceEntry(() -> project);
+
         Optional<Project> projectToCopy = repository.getProject(project);
         if (projectToCopy.isEmpty()) {
-            log.info("Project does not exist. Aborting");
+            log.error("Project does not exist. Aborting");
+            log.traceExit();
             return empty();
         }
 
@@ -179,7 +211,7 @@ public class ProjectServiceImpl implements ProjectService {
             });
 
         Optional<Project> result = of(repository.createProject(projectCopy));
-        log.info("FINISHED | project {} copied to {}", project, screeningSheet.getProject());
+        log.traceExit(result.isPresent());
         return result;
     }
 }

@@ -9,7 +9,7 @@ package renderer {
 package catalog {
 
     interface DocumentCreator {
-        createDocument(docId : String, catalog : Catalog<BaseRequirement>, placeholders : Map<String, String>) : File
+        createDocument(docId : String, catalog : Catalog<BaseRequirement>, placeholders : Map<String, Object>) : File
     }
 
     class BaseCatalogElement {

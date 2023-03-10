@@ -30,6 +30,7 @@ import org.junit.jupiter.api.Test;
 
 import java.time.LocalDateTime;
 import java.util.AbstractMap.SimpleEntry;
+import java.util.List;
 import java.util.Optional;
 
 import static java.util.Map.ofEntries;
@@ -85,5 +86,37 @@ class TenantDocumentServiceTest {
         // assert
         verify(tenentDocumentServiceMock, times(1)).createCatalog(catalog, erstellungsZeitpunt);
         assertThat(actual).isPresent();
+    }
+
+    @Test
+    void createAll_TenantNotExists_NoSuchMethodExceptionThrown() {
+        // arrange
+        TenantContext.setCurrentTenant("INVALD");
+        Catalog<BaseRequirement> catalog = Catalog.<BaseRequirement>builder().build();
+        LocalDateTime erstellungsZeitpunt = LocalDateTime.now();
+
+        // act
+        Exception actual = catchException(() -> service.createAll(catalog, erstellungsZeitpunt));
+
+        // assert
+        assertThat(actual).isInstanceOf(NoSuchMethodException.class);
+        verify(tenentDocumentServiceMock, times(0)).createAll(catalog, erstellungsZeitpunt);
+    }
+
+    @Test
+    void createAll_TenantExists_TenantImplementationReturned() {
+        // arrange
+        TenantContext.setCurrentTenant("TENANT");
+        Catalog<BaseRequirement> catalog = Catalog.<BaseRequirement>builder().build();
+        LocalDateTime erstellungsZeitpunt = LocalDateTime.now();
+
+        given(tenentDocumentServiceMock.createAll(catalog, erstellungsZeitpunt))
+            .willReturn(List.of());
+
+        // act
+        service.createAll(catalog, erstellungsZeitpunt);
+
+        // assert
+        verify(tenentDocumentServiceMock, times(1)).createAll(catalog, erstellungsZeitpunt);
     }
 }

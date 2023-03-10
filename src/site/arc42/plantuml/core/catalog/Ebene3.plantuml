@@ -4,17 +4,23 @@ hide empty members
 package catalog {
 
     interface DocumentCreator {
-        createDocument(docId : String, catalog : Catalog<BaseRequirement>, placeholders : Map<String, String>) : File
+        createDocument(docId : String, catalog : Catalog<BaseRequirement>, placeholders : Map<String, Object>) : File
     }
 
     interface DocumentService {
         createCatalog(catalog : Catalog<BaseRequirement>, creationTimestamp : LocalDateTime) : Optional<File>
+        createAll(catalog : Catalog<BaseRequirement>,  creationTimestamp : LocalDateTime) : Collection<File>
+    }
+
+    interface DocumentServiceRepository {
+        getSelectionVectorProfiles() : Collection<SelectionVectorProfile>
     }
 
     interface CatalogService {
         doImport(katalog : Catalog<BaseCatalogRequirement>) : boolean
         getCatalog(version : String) : Optional<Catalog<BaseRequirement>>
         createCatalog(version : String) : Optional<File>
+        createDocuments(version : String) : Optional<File>
     }
 
     interface CatalogServiceRepository {
@@ -27,6 +33,7 @@ package catalog {
     }
     CatalogService <|-- CatalogServiceImpl
     CatalogServiceImpl --> "1" CatalogServiceRepository : repository
+    CatalogServiceImpl --> "1" DocumentService : documentService
 
 }
 @enduml

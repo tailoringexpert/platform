@@ -60,7 +60,9 @@ public class ComparisonPDFDocumentCreator implements DocumentCreator {
     @Override
     public File createDocument(@NonNull String docId,
                                @NonNull Tailoring tailoring,
-                               @NonNull Map<String, String> placeholders) {
+                               @NonNull Map<String, Object> placeholders) {
+        log.traceEntry(() -> docId, () -> tailoring.getCatalog().getVersion(), () -> placeholders);
+
         Map<String, Object> parameter = new HashMap<>(placeholders);
 
         Collection<ComparisionElement> requirements = new LinkedList<>();
@@ -71,8 +73,10 @@ public class ComparisonPDFDocumentCreator implements DocumentCreator {
             .forEach(chapter -> addChapter(chapter, requirements));
 
         String html = templateEngine.process(tailoring.getCatalog().getVersion() + "/comparision", parameter);
+        File result = pdfEngine.process(docId, html, tailoring.getCatalog().getVersion());
 
-        return pdfEngine.process(docId, html, tailoring.getCatalog().getVersion());
+        log.traceExit();
+        return result;
     }
 
     /**

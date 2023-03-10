@@ -30,7 +30,7 @@ import org.mapstruct.Mapper;
  *
  * @author Michael Bädorf
  */
-@Mapper(componentModel = "jsr330")
+@Mapper
 public interface JPASelectionVectorProviderRepositoryMapper {
 
     SelectionVectorProfile toDomain(SelectionVectorProfileEntity entity);

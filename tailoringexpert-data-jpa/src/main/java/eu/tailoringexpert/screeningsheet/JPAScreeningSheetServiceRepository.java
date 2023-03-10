@@ -25,16 +25,17 @@ import eu.tailoringexpert.domain.Parameter;
 import eu.tailoringexpert.repository.ParameterRepository;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.log4j.Log4j2;
 
 import java.util.Collection;
-
-import static java.util.stream.Collectors.toList;
+import java.util.List;
 
 /**
  * Implementation of {@link ScreeningSheetServiceRepository}.
  *
  * @author Michael Bädorf
  */
+@Log4j2
 @RequiredArgsConstructor
 public class JPAScreeningSheetServiceRepository implements ScreeningSheetServiceRepository {
     @NonNull
@@ -48,9 +49,14 @@ public class JPAScreeningSheetServiceRepository implements ScreeningSheetService
      */
     @Override
     public Collection<Parameter> getParameter(Collection<String> names) {
-        return parameterRepository.findByNameIn(names)
+        log.traceEntry(() -> names);
+
+        List<Parameter> result = parameterRepository.findByNameIn(names)
             .stream()
             .map(mapper::toDomain)
-            .collect(toList());
+            .toList();
+
+        log.traceExit();
+        return result;
     }
 }

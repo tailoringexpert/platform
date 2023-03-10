@@ -47,6 +47,8 @@ public class TailoringRequirementExcelFileReader implements Function<byte[], Map
      */
     @Override
     public Map<String, Collection<ImportRequirement>> apply(byte[] data) {
+        log.traceEntry();
+
         Map<String, Collection<ImportRequirement>> result = new HashMap<>();
 
         try (ByteArrayInputStream is = new ByteArrayInputStream(data);
@@ -84,10 +86,12 @@ public class TailoringRequirementExcelFileReader implements Function<byte[], Map
                         .build());
                 }
             }
+            log.traceExit();
             return result;
         } catch (Exception e) {
             log.catching(e);
         }
+        log.traceExit();
         return emptyMap();
     }
 }

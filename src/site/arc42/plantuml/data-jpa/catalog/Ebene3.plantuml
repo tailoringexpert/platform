@@ -5,6 +5,7 @@ package repository {
     interface BaseCatalogRepository
     interface LogoRepository
     interface DRDRepository
+    interface SelectionVectorProfileRepository
 
 }
 package catalog {
@@ -31,6 +32,20 @@ package catalog {
     CatalogServiceRepository <|.. JPACatalogServiceRepository
     JPACatalogServiceRepository --> "1" JPACatalogServiceRepositoryMapper : mapper
     JPACatalogServiceRepository --> "1" BaseCatalogRepository : baseCatalogRepository
+
+    abstract JPADocumentServiceRepositoryMapper {
+        {abstract} getSelectionVectorProfiles(entity : Catalog<SelectionVectorProfileEntity>) : SelectionVectorProfile
+    }
+
+    interface DocumentServiceRepository {
+        getSelectionVectorProfiles() : Collection<SelectionVectorProfile>
+    }
+
+    class JPADocumentServiceRepository {
+    }
+    DocumentServiceRepository <|-- JPADocumentServiceRepository
+    JPADocumentServiceRepository --> "1" JPADocumentServiceRepositoryMapper : mapper
+    JPADocumentServiceRepository --> "1" SelectionVectorProfileRepository : selectionVectorProfileRepository
 }
 
 @enduml

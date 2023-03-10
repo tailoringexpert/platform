@@ -27,6 +27,7 @@ import eu.tailoringexpert.domain.BaseCatalogEntity;
 import eu.tailoringexpert.domain.Project;
 import eu.tailoringexpert.domain.ProjectEntity;
 import eu.tailoringexpert.domain.ProjectInformation;
+import eu.tailoringexpert.domain.ProjectState;
 import eu.tailoringexpert.domain.ScreeningSheet;
 import eu.tailoringexpert.domain.Tailoring;
 import eu.tailoringexpert.domain.TailoringEntity;
@@ -34,22 +35,25 @@ import eu.tailoringexpert.repository.BaseCatalogRepository;
 import eu.tailoringexpert.repository.ProjectRepository;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.log4j.Log4j2;
 import org.springframework.cache.annotation.Cacheable;
 
-import javax.transaction.Transactional;
+import jakarta.transaction.Transactional;
+
 import java.util.Collection;
+import java.util.List;
 import java.util.Optional;
 
 import static java.util.Objects.isNull;
 import static java.util.Optional.empty;
 import static java.util.Optional.ofNullable;
-import static java.util.stream.Collectors.toList;
 
 /**
  * Implementation of {@link ProjectServiceRepository}.
  *
  * @author Michael Bädorf
  */
+@Log4j2
 @RequiredArgsConstructor
 @Transactional
 public class JPAProjectServiceRepository implements ProjectServiceRepository {
@@ -71,8 +75,13 @@ public class JPAProjectServiceRepository implements ProjectServiceRepository {
     @Cacheable(CACHE_BASECATALOG)
     @Override
     public Catalog<BaseRequirement> getBaseCatalog(String version) {
+        log.traceEntry(() -> version);
+
         BaseCatalogEntity entity = baseCatalogRepository.findByVersion(version);
-        return mapper.toDomain(entity);
+        Catalog<BaseRequirement> result = mapper.toDomain(entity);
+
+        log.traceExit();
+        return result;
     }
 
     /**
@@ -80,9 +89,14 @@ public class JPAProjectServiceRepository implements ProjectServiceRepository {
      */
     @Override
     public Project createProject(Project project) {
+        log.traceEntry(project::getIdentifier);
+
         ProjectEntity toSave = mapper.createProject(project);
         toSave = projectRepository.save(toSave);
-        return mapper.toDomain(toSave);
+        Project result = mapper.toDomain(toSave);
+
+        log.traceExit();
+        return result;
     }
 
     /**
@@ -90,8 +104,9 @@ public class JPAProjectServiceRepository implements ProjectServiceRepository {
      */
     @Override
     public boolean deleteProject(String project) {
+        log.traceEntry(() -> project);
         Long deletedProjekte = projectRepository.deleteByIdentifier(project);
-        return deletedProjekte.intValue() > 0;
+        return log.traceExit(deletedProjekte.intValue() > 0);
     }
 
     /**
@@ -99,7 +114,10 @@ public class JPAProjectServiceRepository implements ProjectServiceRepository {
      */
     @Override
     public Optional<Project> getProject(String project) {
-        return ofNullable(mapper.toDomain(projectRepository.findByIdentifier(project)));
+        log.traceEntry(() -> project);
+        Optional<Project> result = ofNullable(mapper.toDomain(projectRepository.findByIdentifier(project)));
+        log.traceExit();
+        return result;
     }
 
     /**
@@ -107,13 +125,18 @@ public class JPAProjectServiceRepository implements ProjectServiceRepository {
      */
     @Override
     public Optional<Tailoring> addTailoring(String project, Tailoring tailoring) {
+        log.traceEntry(() -> project, tailoring::getName);
+
         ProjectEntity eProject = projectRepository.findByIdentifier(project);
         TailoringEntity eTailoring = mapper.toEntity(tailoring);
 
         eProject.getTailorings().add(eTailoring);
 
         projectRepository.flush();
-        return ofNullable(mapper.toDomain(eTailoring));
+        Optional<Tailoring> result = ofNullable(mapper.toDomain(eTailoring));
+
+        log.traceExit();
+        return result;
     }
 
     /**
@@ -121,10 +144,15 @@ public class JPAProjectServiceRepository implements ProjectServiceRepository {
      */
     @Override
     public Collection<ProjectInformation> getProjectInformations() {
-        return projectRepository.findAll()
+        log.traceEntry();
+
+        List<ProjectInformation> result = projectRepository.findAll()
             .stream()
             .map(mapper::getProjectInformationen)
-            .collect(toList());
+            .toList();
+
+        log.traceExit();
+        return result;
     }
 
     /**
@@ -132,7 +160,10 @@ public class JPAProjectServiceRepository implements ProjectServiceRepository {
      */
     @Override
     public Optional<ProjectInformation> getProjectInformation(String project) {
-        return ofNullable(mapper.getProjectInformationen(projectRepository.findByIdentifier(project)));
+        log.traceEntry(() -> project);
+        Optional<ProjectInformation> result = ofNullable(mapper.getProjectInformationen(projectRepository.findByIdentifier(project)));
+        log.traceExit();
+        return result;
     }
 
     /**
@@ -140,12 +171,18 @@ public class JPAProjectServiceRepository implements ProjectServiceRepository {
      */
     @Override
     public Optional<byte[]> getScreeningSheetFile(String project) {
+        log.traceEntry(() -> project);
+
         ProjectEntity entity = projectRepository.findByIdentifier(project);
         if (isNull(entity)) {
+            log.traceExit();
             return empty();
         }
 
-        return Optional.of(entity.getScreeningSheet().getData());
+        Optional<byte[]> result = Optional.of(entity.getScreeningSheet().getData());
+
+        log.traceExit();
+        return result;
     }
 
     /**
@@ -153,11 +190,46 @@ public class JPAProjectServiceRepository implements ProjectServiceRepository {
      */
     @Override
     public Optional<ScreeningSheet> getScreeningSheet(String project) {
+        log.traceEntry(() -> project);
+
         ProjectEntity entity = projectRepository.findByIdentifier(project);
         if (isNull(entity)) {
+            log.traceExit();
             return empty();
         }
 
-        return ofNullable(mapper.getScreeningSheet(entity.getScreeningSheet()));
+        Optional<ScreeningSheet> result = ofNullable(mapper.getScreeningSheet(entity.getScreeningSheet()));
+
+        log.traceExit();
+        return result;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public Optional<ProjectInformation> updateState(String project, ProjectState state) {
+        log.traceEntry(() -> project, () -> state);
+
+        ProjectEntity entity = projectRepository.findByIdentifier(project);
+        if (isNull(entity)) {
+            log.traceExit();
+            return empty();
+        }
+
+        entity.setState(state);
+        Optional<ProjectInformation> result = ofNullable(mapper.getProjectInformationen(entity));
+
+        log.traceExit();
+        return result;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public boolean isExistingProject(String project) {
+        log.traceEntry(() -> project);
+        return log.traceExit(projectRepository.existsProjectByIdentifier(project));
     }
 }

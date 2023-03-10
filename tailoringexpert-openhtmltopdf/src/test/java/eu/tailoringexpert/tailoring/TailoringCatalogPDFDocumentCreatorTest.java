@@ -37,6 +37,8 @@ import eu.tailoringexpert.domain.Tailoring;
 import eu.tailoringexpert.domain.TailoringRequirement;
 import eu.tailoringexpert.renderer.HTMLTemplateEngine;
 import eu.tailoringexpert.renderer.PDFEngine;
+import eu.tailoringexpert.renderer.RendererRequestConfiguration;
+import eu.tailoringexpert.renderer.RendererRequestConfigurationSupplier;
 import eu.tailoringexpert.renderer.ThymeleafTemplateEngine;
 import io.github.cdimascio.dotenv.Dotenv;
 import lombok.extern.log4j.Log4j2;
@@ -45,7 +47,7 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockserver.client.MockServerClient;
-import org.thymeleaf.spring5.SpringTemplateEngine;
+import org.thymeleaf.spring6.SpringTemplateEngine;
 import org.thymeleaf.templateresolver.FileTemplateResolver;
 
 import java.io.InputStream;
@@ -64,7 +66,6 @@ import static eu.tailoringexpert.domain.Phase.E;
 import static eu.tailoringexpert.domain.Phase.F;
 import static eu.tailoringexpert.domain.Phase.ZERO;
 import static java.nio.file.Files.readAllBytes;
-import static java.nio.file.Paths.get;
 import static java.util.Arrays.asList;
 import static java.util.Collections.unmodifiableCollection;
 import static java.util.List.of;
@@ -101,9 +102,9 @@ class TailoringCatalogPDFDocumentCreatorTest {
     @BeforeEach
     void setup() {
         Dotenv env = Dotenv.configure().ignoreIfMissing().load();
+
         this.templateHome = env.get("TEMPLATE_HOME", "src/test/resources/templates/");
         this.assetHome = env.get("ASSET_HOME", "src/test/resources/templates/");
-
         this.objectMapper = new ObjectMapper();
         this.objectMapper.registerModules(new ParameterNamesModule(), new JavaTimeModule(), new Jdk8Module());
         this.objectMapper.disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES);
@@ -119,10 +120,16 @@ class TailoringCatalogPDFDocumentCreatorTest {
         fileTemplateResolver.setCharacterEncoding("UTF-8");
         fileTemplateResolver.setOrder(1);
 
+        RendererRequestConfigurationSupplier supplier = () -> RendererRequestConfiguration.builder()
+            .id("unittest")
+            .name("TailoringExpert")
+            .templateHome(this.templateHome)
+            .build();
+
         SpringTemplateEngine springTemplateEngine = new SpringTemplateEngine();
         springTemplateEngine.addTemplateResolver(fileTemplateResolver);
 
-        HTMLTemplateEngine templateEngine = new ThymeleafTemplateEngine(springTemplateEngine);
+        HTMLTemplateEngine templateEngine = new ThymeleafTemplateEngine(springTemplateEngine, supplier);
 
         this.drdProviderMock = new DRDProvider(new DRDApplicablePredicate(Map.ofEntries(
             new SimpleEntry<>(ZERO, unmodifiableCollection(asList("MDR"))),
@@ -136,7 +143,7 @@ class TailoringCatalogPDFDocumentCreatorTest {
 
         this.creator = new TailoringCatalogPDFDocumentCreator(
             templateEngine,
-            new PDFEngine("TailoringExpert", get(this.templateHome).toAbsolutePath().toString()),
+            new PDFEngine(supplier),
             drdProviderMock
         );
     }
@@ -168,11 +175,12 @@ class TailoringCatalogPDFDocumentCreatorTest {
             .build();
 
         LocalDateTime now = LocalDateTime.now();
-        Map<String, String> platzhalter = new HashMap<>();
+        Map<String, Object> platzhalter = new HashMap<>();
         platzhalter.put("PROJEKT", "SAMPLE");
         platzhalter.put("DATUM", now.format(DateTimeFormatter.ofPattern("dd.MM.YYYY")));
         platzhalter.put("DOKUMENT", "SAMPLE-XY-Z-1940/DV7");
         platzhalter.put("${DRD_DOCID}", "SAMPLE_DOC");
+        platzhalter.put("SHOW_ALL", Boolean.FALSE);
 
         mockServer
             .when(request()

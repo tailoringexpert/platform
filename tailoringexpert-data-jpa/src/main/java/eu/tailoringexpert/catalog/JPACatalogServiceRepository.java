@@ -34,7 +34,8 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.cache.annotation.CacheEvict;
 
-import javax.transaction.Transactional;
+import jakarta.transaction.Transactional;
+
 import java.time.ZonedDateTime;
 import java.util.Collection;
 import java.util.Objects;
@@ -70,13 +71,14 @@ public class JPACatalogServiceRepository implements CatalogServiceRepository {
     @CacheEvict(cacheNames = {BaseCatalogRepository.CACHE_BASECATALOGLIST})
     @Transactional
     public Optional<Catalog<BaseRequirement>> createCatalog(Catalog<BaseRequirement> catalog, ZonedDateTime validFrom) {
+        log.traceEntry();
+
         if (isNull(catalog)) {
             return empty();
         }
 
         int numberOfChangedBaseCatalogValidities = baseCatalogRepository.setValidUntilForEmptyValidUntil(validFrom);
         log.info("Number of changed base catalogs validities: " + numberOfChangedBaseCatalogValidities);
-
 
         Collection<DRD> drds = apply(catalog.getToc());
         drds.forEach(domain -> {
@@ -87,7 +89,10 @@ public class JPACatalogServiceRepository implements CatalogServiceRepository {
         });
 
         BaseCatalogEntity toSave = mapper.createCatalog(catalog);
-        return ofNullable(mapper.createCatalog(baseCatalogRepository.save(toSave)));
+        Optional<Catalog<BaseRequirement>> result = ofNullable(mapper.createCatalog(baseCatalogRepository.save(toSave)));
+
+        log.traceExit();
+        return result;
     }
 
     /**
@@ -95,8 +100,13 @@ public class JPACatalogServiceRepository implements CatalogServiceRepository {
      */
     @Override
     public Optional<Catalog<BaseRequirement>> getCatalog(String version) {
+        log.traceEntry(version);
+
         BaseCatalogEntity entity = baseCatalogRepository.findByVersion(version);
-        return ofNullable(mapper.getCatalog(entity));
+        Optional<Catalog<BaseRequirement>> result = ofNullable(mapper.getCatalog(entity));
+
+        log.traceExit();
+        return result;
     }
 
     /**
@@ -104,7 +114,8 @@ public class JPACatalogServiceRepository implements CatalogServiceRepository {
      */
     @Override
     public boolean existsCatalog(String version) {
-        return baseCatalogRepository.existsByVersion(version);
+        log.traceEntry(() -> version);
+        return log.traceExit(baseCatalogRepository.existsByVersion(version));
     }
 
     /**

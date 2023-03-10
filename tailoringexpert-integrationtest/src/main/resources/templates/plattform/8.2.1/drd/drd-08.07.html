@@ -1,0 +1,91 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<head>
+    <title>DRD-08.07 - Static Verification Reporting</title>
+
+    <link rel="stylesheet" href="../css/page.css"/>
+    <link rel="stylesheet" href="../css/drd.css"/>
+</head>
+<body>
+<div th:fragment="content" id="drd-08.07">
+    <table class="titel" aria-label="title">
+        <tbody>
+        <tr>
+            <td><h2>DRD-08.07 - Static Verification Reporting</h2></td>
+        </tr>
+        </tbody>
+    </table>
+
+    <table class="reference" aria-label="reference">
+        <tbody>
+        <tr>
+            <td>Reference:</td>
+            <td></td>
+            <td></td>
+        </tr>
+        </tbody>
+    </table>
+
+    <table class="purpose" aria-label="purpose">
+        <tbody>
+        <tr>
+            <td>Purpose:</td>
+            <td>To demonstrate that the S/W code implements correct control and data flow, and the absence of run-time
+                errors.
+            </td>
+        </tr>
+        </tbody>
+    </table>
+
+    <table class="content" aria-label="content">
+        <tbody>
+        <tr>
+            <td>Content:</td>
+            <td>The report shall include that:
+                <ul>
+                    <li>the following run-time errors are absent:</li>
+                </ul>
+                <blockquote>
+                    <blockquote>
+                        <ul class="circle">
+                            <li>square roots of a negative number,</li>
+                            <li>overflows and underflows,</li>
+                            <li>out-of-bound array and pointer accesses,</li>
+                            <li>illegal type conversion,</li>
+                            <li>reading of non-initialized data;</li>
+                        </ul>
+                    </blockquote>
+                </blockquote>
+                <ul>
+                    <li>non-deterministic behavior is absent;</li>
+                    <li>data corruption is absent;</li>
+                    <li>security breaches is absent;</li>
+                    <li>internal consistency between S/W units is checked (number and types of parameters passed to
+                        functions - including function pointers in C language);
+                    </li>
+                    <li>the code implements correct control and data flow.</li>
+                </ul>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+
+    <table class="format" aria-label="format">
+        <tbody>
+        <tr>
+            <td>Format:</td>
+            <td>The required content will be automatically produced by the tool PolySpace Verifier.
+            </td>
+        </tr>
+        </tbody>
+    </table>
+
+    <page-before>
+        <div style="margin-top: 300px;text-align:center">
+            (THIS PAGE INTENTIONALLY LEFT BLANK)
+        </div>
+    </page-before>
+
+</div>
+</body>
+</html>

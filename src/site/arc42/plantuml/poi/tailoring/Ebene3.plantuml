@@ -4,13 +4,16 @@ hide empty members
 package tailoring {
 
     interface DocumentCreator {
-        createDocument(docId : String, tailoring : Tailoring, placeholders : Map<String, String>) : File
+        createDocument(docId : String, tailoring : Tailoring, placeholders : Map<String, Object>) : File
     }
 
     interface "BiFunction<Kapitel<TailoringRequirement>, Collection<Phase>, Map<DRD, Set<String>>>" as drdSupplier {
     }
 
     interface "Function<String, File>" as templateSupplier {
+    }
+
+    interface "RendererRequestConfigurationSupplier<RendererRequestConfiguration>" as RendererRequestConfigurationSupplier {
     }
 
     class TailoringCatalogExcelDocumentCreator {
@@ -20,7 +23,7 @@ package tailoring {
     class CMExcelDocumentCreator {
     }
     DocumentCreator <|-- CMExcelDocumentCreator
-    CMExcelDocumentCreator --> "1" templateSupplier : templateSupplier
+    CMExcelDocumentCreator --> "1" RendererRequestConfigurationSupplier : requestConfigurationSupplier
     CMExcelDocumentCreator --> "1" drdSupplier : drdProvider
 
     class DRDElement {

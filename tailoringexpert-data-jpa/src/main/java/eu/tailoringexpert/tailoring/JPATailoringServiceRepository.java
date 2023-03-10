@@ -38,12 +38,12 @@ import eu.tailoringexpert.repository.SelectionVectorProfileRepository;
 import eu.tailoringexpert.repository.TailoringRepository;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.log4j.Log4j2;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
@@ -56,6 +56,7 @@ import static java.util.Optional.ofNullable;
  *
  * @author Michael Bädorf
  */
+@Log4j2
 @Transactional
 @RequiredArgsConstructor
 public class JPATailoringServiceRepository implements TailoringServiceRepository {
@@ -80,7 +81,10 @@ public class JPATailoringServiceRepository implements TailoringServiceRepository
      */
     @Override
     public Optional<Project> getProject(String project) {
-        return ofNullable(mapper.toDomain(projectRepository.findByIdentifier(project)));
+        log.traceEntry(() -> project);
+        Optional<Project> result = ofNullable(mapper.toDomain(projectRepository.findByIdentifier(project)));
+        log.traceExit();
+        return result;
     }
 
     /**
@@ -88,12 +92,16 @@ public class JPATailoringServiceRepository implements TailoringServiceRepository
      */
     @Override
     public Tailoring updateTailoring(String project, Tailoring tailoring) {
+        log.traceEntry(() -> project, tailoring::getName);
+
         TailoringEntity toUpdate = projectRepository.findTailoring(project, tailoring.getName());
         if (nonNull(toUpdate)) {
             mapper.updateTailoring(tailoring, toUpdate);
             projectRepository.flush();
             return mapper.toDomain(toUpdate);
         }
+
+        log.traceExit();
         return tailoring;
     }
 
@@ -102,9 +110,11 @@ public class JPATailoringServiceRepository implements TailoringServiceRepository
      */
     @Override
     public Optional<Tailoring> updateFile(String project, String tailoring, File file) {
-        Optional<TailoringEntity> oTailoring = findTailoring(project, tailoring);
+        log.traceEntry(() -> project, () -> tailoring, file::getName);
 
+        Optional<TailoringEntity> oTailoring = findTailoring(project, tailoring);
         if (oTailoring.isEmpty()) {
+            log.traceExit();
             return empty();
         }
 
@@ -118,8 +128,10 @@ public class JPATailoringServiceRepository implements TailoringServiceRepository
                 return entity;
             });
         mapper.update(file, toUpdate);
+        Optional<Tailoring> result = ofNullable(mapper.toDomain(oTailoring.get()));
 
-        return ofNullable(mapper.toDomain(oTailoring.get()));
+        log.traceExit();
+        return result;
     }
 
     /**
@@ -127,11 +139,16 @@ public class JPATailoringServiceRepository implements TailoringServiceRepository
      */
     @Override
     public Optional<Tailoring> getTailoring(String project, String tailoring) {
+        log.traceEntry();
+
         if (isNull(project) || isNull(tailoring)) {
             return empty();
         }
         TailoringEntity entity = projectRepository.findTailoring(project, tailoring);
-        return ofNullable(mapper.toDomain(entity));
+        Optional<Tailoring> result = ofNullable(mapper.toDomain(entity));
+
+        log.traceExit();
+        return result;
     }
 
     /**
@@ -139,12 +156,17 @@ public class JPATailoringServiceRepository implements TailoringServiceRepository
      */
     @Override
     public Optional<ScreeningSheet> getScreeningSheet(String project, String tailoring) {
+        log.traceEntry(() -> project, () -> tailoring);
+
         TailoringEntity eTailoring = projectRepository.findTailoring(project, tailoring);
         if (isNull(eTailoring)) {
+            log.traceExit();
             return empty();
         }
+        Optional<ScreeningSheet> result = ofNullable(mapper.toScreeningSheetParameters(eTailoring.getScreeningSheet()));
 
-        return ofNullable(mapper.toScreeningSheetParameters(eTailoring.getScreeningSheet()));
+        log.traceExit();
+        return result;
     }
 
     /**
@@ -152,12 +174,17 @@ public class JPATailoringServiceRepository implements TailoringServiceRepository
      */
     @Override
     public Optional<byte[]> getScreeningSheetFile(String project, String tailoring) {
+        log.traceEntry(() -> project, () -> tailoring);
+
         TailoringEntity eTailoring = projectRepository.findTailoring(project, tailoring);
         if (isNull(eTailoring)) {
+            log.traceExit();
             return empty();
         }
+        Optional<byte[]> result = ofNullable(eTailoring.getScreeningSheet().getData());
 
-        return ofNullable(eTailoring.getScreeningSheet().getData());
+        log.traceExit();
+        return result;
     }
 
     /**
@@ -165,8 +192,11 @@ public class JPATailoringServiceRepository implements TailoringServiceRepository
      */
     @Override
     public Optional<DocumentSignature> updateDocumentSignature(String project, String tailoring, DocumentSignature signature) {
+        log.traceEntry(() -> project, () -> tailoring, () -> signature);
+
         TailoringEntity eTailoring = projectRepository.findTailoring(project, tailoring);
         if (isNull(eTailoring)) {
+            log.traceExit();
             return empty();
         }
 
@@ -176,11 +206,15 @@ public class JPATailoringServiceRepository implements TailoringServiceRepository
             .findFirst();
 
         if (toUpdate.isEmpty()) {
+            log.traceExit();
             return empty();
         }
 
         mapper.updateDocumentSignature(signature, toUpdate.get());
-        return of(mapper.toDomain(toUpdate.get()));
+        Optional<DocumentSignature> result = of(mapper.toDomain(toUpdate.get()));
+
+        log.traceExit();
+        return result;
     }
 
     /**
@@ -188,11 +222,17 @@ public class JPATailoringServiceRepository implements TailoringServiceRepository
      */
     @Override
     public Optional<Tailoring> updateName(String project, String tailoring, String name) {
+        log.traceEntry(() -> project, () -> tailoring, () -> name);
+
         Optional<TailoringEntity> oTailoring = findTailoring(project, tailoring);
         if (oTailoring.isPresent()) {
             oTailoring.get().setName(name);
-            return of(mapper.toDomain(oTailoring.get()));
+            Optional<Tailoring> result = of(mapper.toDomain(oTailoring.get()));
+            log.traceExit();
+            return result;
         }
+
+        log.traceExit();
         return empty();
     }
 
@@ -201,16 +241,22 @@ public class JPATailoringServiceRepository implements TailoringServiceRepository
      */
     @Override
     public Optional<List<File>> getFileList(String project, String tailoring) {
+        log.traceEntry(() -> project, () -> tailoring);
+
         Optional<TailoringEntity> entity = findTailoring(project, tailoring);
         if (entity.isEmpty()) {
+            log.traceExit();
             return empty();
         }
-        return of(entity
+        Optional<List<File>> result = of(entity
             .map(TailoringEntity::getFiles)
             .stream()
             .flatMap(Collection::stream)
             .map(mapper::toDomain)
-            .collect(Collectors.toList()));
+            .toList());
+
+        log.traceExit();
+        return result;
     }
 
     /**
@@ -218,8 +264,11 @@ public class JPATailoringServiceRepository implements TailoringServiceRepository
      */
     @Override
     public Optional<File> getFile(String project, String tailoring, String filename) {
+        log.traceEntry(() -> project, () -> tailoring, () -> filename);
+
         TailoringEntity eTailoring = projectRepository.findTailoring(project, tailoring);
         if (isNull(eTailoring)) {
+            log.traceExit();
             return empty();
         }
         Optional<FileEntity> dokument = eTailoring.getFiles()
@@ -227,16 +276,19 @@ public class JPATailoringServiceRepository implements TailoringServiceRepository
             .filter(entity -> entity.getName().equalsIgnoreCase(filename))
             .findFirst();
 
-        if (dokument.isPresent()) {
-            FileEntity entity = dokument.get();
-            return of(File.builder()
-                .name(entity.getName())
-                .data(entity.getData())
-                .build()
-            );
+        if (dokument.isEmpty()) {
+            log.traceExit();
+            return empty();
         }
 
-        return empty();
+        FileEntity entity = dokument.get();
+        Optional<File> result = of(File.builder()
+            .name(entity.getName())
+            .data(entity.getData())
+            .build()
+        );
+        log.traceExit();
+        return result;
     }
 
     /**
@@ -244,9 +296,11 @@ public class JPATailoringServiceRepository implements TailoringServiceRepository
      */
     @Override
     public boolean deleteFile(String project, String tailoring, String filename) {
+        log.traceEntry(() -> project, () -> tailoring, () -> filename);
+
         TailoringEntity eTailoring = projectRepository.findTailoring(project, tailoring);
         if (isNull(eTailoring)) {
-            return false;
+            return log.traceExit(false);
         }
 
         Optional<FileEntity> toDelete = eTailoring.getFiles()
@@ -255,10 +309,10 @@ public class JPATailoringServiceRepository implements TailoringServiceRepository
             .findFirst();
 
         if (toDelete.isEmpty()) {
-            return false;
+            return log.traceExit(false);
         }
 
-        return eTailoring.getFiles().remove(toDelete.get());
+        return log.traceExit(eTailoring.getFiles().remove(toDelete.get()));
     }
 
     /**
@@ -266,10 +320,15 @@ public class JPATailoringServiceRepository implements TailoringServiceRepository
      */
     @Override
     public Collection<SelectionVectorProfile> getSelectionVectorProfile() {
-        return selectionVectorProfileRepository.findAll()
+        log.traceEntry();
+
+        List<SelectionVectorProfile> result = selectionVectorProfileRepository.findAll()
             .stream()
             .map(mapper::toDomain)
-            .collect(Collectors.toList());
+            .toList();
+
+        log.traceExit();
+        return result;
     }
 
     /**
@@ -277,10 +336,15 @@ public class JPATailoringServiceRepository implements TailoringServiceRepository
      */
     @Override
     public Collection<DocumentSignature> getDefaultSignatures() {
-        return dokumentSigneeRepository.findAll()
+        log.traceEntry();
+
+        List<DocumentSignature> result = dokumentSigneeRepository.findAll()
             .stream()
             .map(mapper::getDefaultSignatures)
-            .collect(Collectors.toList());
+            .toList();
+
+        log.traceExit();
+        return result;
     }
 
     /**
@@ -288,12 +352,15 @@ public class JPATailoringServiceRepository implements TailoringServiceRepository
      */
     @Override
     public boolean deleteTailoring(String project, String tailoring) {
+        log.traceEntry(() -> project, () -> tailoring);
+
         TailoringEntity toDelete = projectRepository.findTailoring(project, tailoring);
-        if (nonNull(toDelete)) {
-            tailoringRepository.delete(toDelete);
-            return true;
+        if (isNull(toDelete)) {
+            return log.traceExit(false);
         }
-        return false;
+
+        tailoringRepository.delete(toDelete);
+        return log.traceExit(true);
     }
 
     /**
@@ -301,12 +368,20 @@ public class JPATailoringServiceRepository implements TailoringServiceRepository
      */
     @Override
     public Optional<Tailoring> addNote(String project, String tailoring, Note note) {
+        log.traceEntry(() -> project, () -> tailoring, () -> note);
+
         Optional<TailoringEntity> oTailoring = findTailoring(project, tailoring);
-        if (oTailoring.isPresent()) {
-            oTailoring.get().getNotes().add(mapper.toEntity(note));
-            return of(mapper.toDomain(oTailoring.get()));
+
+        if (oTailoring.isEmpty()) {
+            log.traceExit();
+            return empty();
         }
-        return empty();
+
+        oTailoring.get().getNotes().add(mapper.toEntity(note));
+        Optional<Tailoring> result = of(mapper.toDomain(oTailoring.get()));
+
+        log.traceExit();
+        return result;
     }
 
     /**
@@ -314,7 +389,8 @@ public class JPATailoringServiceRepository implements TailoringServiceRepository
      */
     @Override
     public boolean existsTailoring(String project, String name) {
-        return projectRepository.existsTailoring(project, name);
+        log.traceEntry(() -> project, () -> name);
+        return log.traceExit(projectRepository.existsTailoring(project, name));
     }
 
     /**
@@ -322,12 +398,20 @@ public class JPATailoringServiceRepository implements TailoringServiceRepository
      */
     @Override
     public Optional<Tailoring> setState(String project, String tailoring, TailoringState state) {
+        log.traceEntry(() -> project, () -> tailoring, () -> state);
+
         Optional<TailoringEntity> oTailoring = findTailoring(project, tailoring);
-        if (oTailoring.isPresent()) {
-            oTailoring.get().setState(state);
-            return of(mapper.toDomain(oTailoring.get()));
+        if (oTailoring.isEmpty()) {
+            log.traceExit();
+            return empty();
         }
-        return empty();
+
+        oTailoring.get().setState(state);
+        Optional<Tailoring> result = of(mapper.toDomain(oTailoring.get()));
+
+        log.traceExit();
+        return result;
+
     }
 
     /**

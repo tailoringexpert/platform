@@ -22,21 +22,21 @@
 package eu.tailoringexpert.screeningsheet;
 
 import eu.tailoringexpert.Tenant;
-import eu.tailoringexpert.domain.ScreeningSheet;
 import lombok.extern.log4j.Log4j2;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.pdmodel.interactive.form.PDCheckBox;
 import org.apache.pdfbox.pdmodel.interactive.form.PDField;
-import org.apache.pdfbox.pdmodel.interactive.form.PDTextField;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import java.util.stream.Collectors;
+import java.util.Optional;
 
-import static eu.tailoringexpert.domain.ScreeningSheet.PARAMETER_PHASE;
+import static eu.tailoringexpert.screeningsheet.PlattformScreeningSheetParameter.ALLGEMEIN;
+import static eu.tailoringexpert.screeningsheet.PlattformScreeningSheetParameter.PHASE;
+import static java.util.stream.Stream.of;
 
 @Log4j2
 @Tenant("plattform")
@@ -51,50 +51,65 @@ public class PlattformScreeningSheetParameterProvider implements ScreeningSheetP
             log.catching(e);
         }
 
-        List<PDField> textfelder = filterTextfelder(fields);
         Collection<ScreeningSheetParameterField> result = new ArrayList<>();
 
-        result.addAll(mapFields(textfelder, "Project", ScreeningSheet.PARAMETER_PROJECT));
+        List<PDField> textfelder = filterByType(fields, PDField.class);
+        ALLGEMEIN.getParameter()
+            .stream()
+            .map(parameter -> mapField(textfelder, parameter))
+            .filter(Optional::isPresent)
+            .map(Optional::get)
+            .forEach(result::add);
 
         List<PDField> selectedParameters = filterCheckedCheckboxes(fields);
-        result.addAll(mapFields(selectedParameters, PARAMETER_PHASE, "0"));
-        result.addAll(mapFields(selectedParameters, PARAMETER_PHASE, "A"));
-        result.addAll(mapFields(selectedParameters, PARAMETER_PHASE, "B"));
-        result.addAll(mapFields(selectedParameters, PARAMETER_PHASE, "C"));
-        result.addAll(mapFields(selectedParameters, PARAMETER_PHASE, "D"));
-        result.addAll(mapFields(selectedParameters, PARAMETER_PHASE, "E"));
-        result.addAll(mapFields(selectedParameters, PARAMETER_PHASE, "F"));
+        of(PHASE)
+            .map(parameterType -> mapField(selectedParameters, parameterType))
+            .forEach(result::addAll);
 
         return result;
     }
 
-    private static List<PDField> filterTextfelder(List<PDField> fields) {
+
+    private static <T extends PDField> List<T> filterByType(List<PDField> fields, Class<T> clz) {
         return fields.stream()
-            .filter(PDTextField.class::isInstance)
-            .collect(Collectors.toList());
+            .filter(clz::isInstance)
+            .map(clz::cast)
+            .toList();
     }
 
     private List<PDField> filterCheckedCheckboxes(List<PDField> fields) {
-        return fields.stream()
-            .filter(PDCheckBox.class::isInstance)
-            .map(PDCheckBox.class::cast)
+        return filterByType(fields, PDCheckBox.class)
+            .stream()
             .filter(PDCheckBox::isChecked)
-            .collect(Collectors.toList());
+            .map(PDField.class::cast)
+            .toList();
+
     }
 
-
-    private Collection<ScreeningSheetParameterField> mapFields(
+    private Collection<ScreeningSheetParameterField> mapField(
         List<PDField> fields,
-        String category,
-        String name) {
+        PlattformScreeningSheetParameter parameter) {
         return fields.stream()
-            .filter(field -> name.equalsIgnoreCase(field.getPartialName()))
+            .filter(field -> parameter.hasMember(field.getPartialName()))
             .map(field -> ScreeningSheetParameterField.builder()
-                .category(category)
+                .category(parameter.getCategory())
                 .name(field.getPartialName())
                 .label(field.getValueAsString())
                 .build())
-            .collect(Collectors.toList());
+            .toList();
+    }
+
+    private Optional<ScreeningSheetParameterField> mapField(
+        List<PDField> fields,
+        String name) {
+        return fields.stream()
+            .filter(field -> name.equals(field.getPartialName()))
+            .map(field -> ScreeningSheetParameterField.builder()
+                .category(name)
+                .name(field.getPartialName())
+                .label(field.getValueAsString())
+                .build())
+            .findFirst();
     }
 
 }

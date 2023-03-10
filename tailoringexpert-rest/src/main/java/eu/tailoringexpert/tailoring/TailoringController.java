@@ -49,6 +49,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.log4j.Log4j2;
 import org.springframework.hateoas.CollectionModel;
 import org.springframework.hateoas.EntityModel;
 import org.springframework.hateoas.UriTemplate;
@@ -93,7 +94,6 @@ import static eu.tailoringexpert.domain.ResourceMapper.TAILORING_SELECTIONVECTOR
 import static eu.tailoringexpert.domain.ResourceMapper.TAILORING_SIGNATURE;
 import static eu.tailoringexpert.domain.ResourceMapper.TAILORING_SIGNATURE_FACULTY;
 import static eu.tailoringexpert.domain.ResourceMapper.TAILORING_STATE;
-import static java.util.stream.Collectors.toList;
 import static org.springframework.hateoas.EntityModel.of;
 import static org.springframework.hateoas.server.mvc.BasicLinkBuilder.linkToCurrentMapping;
 import static org.springframework.http.HttpHeaders.ACCESS_CONTROL_EXPOSE_HEADERS;
@@ -112,6 +112,7 @@ import static org.springframework.http.ResponseEntity.ok;
  * @author Michael Bädorf
  */
 @Tag(name = "Tailoring Controller", description = "Management of tailorings")
+@Log4j2
 @RequiredArgsConstructor
 @RestController
 public class TailoringController {
@@ -141,14 +142,19 @@ public class TailoringController {
     public ResponseEntity<EntityModel<TailoringCatalogResource>> getCatalog(
         @Parameter(description = "Project identifier") @PathVariable String project,
         @Parameter(description = "Tailoring name") @PathVariable String tailoring) {
+        log.traceEntry();
+
         PathContextBuilder pathContext = PathContext.builder()
             .project(project)
             .tailoring(tailoring);
 
-        return tailoringService.getCatalog(project, tailoring)
+        ResponseEntity<EntityModel<TailoringCatalogResource>> result = tailoringService.getCatalog(project, tailoring)
             .map(serviceResult -> ok()
                 .body(of(mapper.toResource(pathContext, serviceResult))))
             .orElseGet(() -> notFound().build());
+
+        log.traceExit();
+        return result;
     }
 
     @Operation(summary = "Load all chapter with all contained requirements")
@@ -165,14 +171,19 @@ public class TailoringController {
         @Parameter(description = "Project identifier") @PathVariable String project,
         @Parameter(description = "Tailoring name") @PathVariable String tailoring,
         @Parameter(description = "Chapter number") @PathVariable String chapter) {
+        log.traceEntry();
+
         PathContextBuilder pathContext = PathContext.builder()
             .project(project)
             .tailoring(tailoring);
 
-        return tailoringService.getChapter(project, tailoring, chapter)
-            .map(k -> ok()
-                .body(of(mapper.toResource(pathContext, k))))
+        ResponseEntity<EntityModel<TailoringCatalogChapterResource>> result = tailoringService.getChapter(project, tailoring, chapter)
+            .map(c -> ok()
+                .body(of(mapper.toResource(pathContext, c))))
             .orElseGet(() -> notFound().build());
+
+        log.traceExit();
+        return result;
     }
 
     @Operation(summary = "Load screeningsheet data of tailoring")
@@ -188,14 +199,19 @@ public class TailoringController {
     public ResponseEntity<EntityModel<ScreeningSheetResource>> getScreeningSheet(
         @Parameter(description = "Project identifier") @PathVariable String project,
         @Parameter(description = "Tailoring name") @PathVariable String tailoring) {
+        log.traceEntry();
+
         PathContextBuilder pathContext = PathContext.builder()
             .project(project)
             .tailoring(tailoring);
 
-        return tailoringService.getScreeningSheet(project, tailoring)
+        ResponseEntity<EntityModel<ScreeningSheetResource>> result = tailoringService.getScreeningSheet(project, tailoring)
             .map(screeningSheet -> ok()
                 .body(of(mapper.toResource(pathContext, screeningSheet))))
             .orElseGet(() -> notFound().build());
+
+        log.traceExit();
+        return result;
     }
 
     @Operation(summary = "Load screeningsheet file of tailoring")
@@ -212,7 +228,9 @@ public class TailoringController {
     public ResponseEntity<byte[]> getScreeningSheetFile(
         @Parameter(description = "Project identifier") @PathVariable String project,
         @Parameter(description = "Tailoring name") @PathVariable String tailoring) {
-        return tailoringServiceRepository.getScreeningSheetFile(project, tailoring)
+        log.traceEntry();
+
+        ResponseEntity<byte[]> result = tailoringServiceRepository.getScreeningSheetFile(project, tailoring)
             .map(daten -> ok()
                 .header(CONTENT_DISPOSITION, ContentDisposition.builder(MediaTypeProvider.FORM_DATA).name(MediaTypeProvider.ATTACHMENT).filename("screeningsheet.pdf").build().toString())
                 .header(ACCESS_CONTROL_EXPOSE_HEADERS, CONTENT_DISPOSITION)
@@ -220,6 +238,9 @@ public class TailoringController {
                 .contentLength(daten.length)
                 .body(daten))
             .orElseGet(() -> notFound().build());
+
+        log.traceExit();
+        return result;
     }
 
     @Operation(summary = "Load sectionvector applied to tailoring")
@@ -235,14 +256,19 @@ public class TailoringController {
     public ResponseEntity<EntityModel<SelectionVectorResource>> getSelectionVector(
         @Parameter(description = "Project identifier") @PathVariable String project,
         @Parameter(description = "Tailoring name") @PathVariable String tailoring) {
+        log.traceEntry();
+
         PathContextBuilder pathContext = PathContext.builder()
             .project(project)
             .tailoring(tailoring);
 
-        return tailoringService.getSelectionVector(project, tailoring)
+        ResponseEntity<EntityModel<SelectionVectorResource>> result = tailoringService.getSelectionVector(project, tailoring)
             .map(selektionsVektor -> ok()
                 .body(of(mapper.toResource(pathContext, selektionsVektor))))
             .orElseGet(() -> notFound().build());
+
+        log.traceExit();
+        return result;
     }
 
     @Operation(summary = "Load all tailoring data")
@@ -258,14 +284,19 @@ public class TailoringController {
     public ResponseEntity<EntityModel<TailoringResource>> getTailoring(
         @Parameter(description = "Project identifier") @PathVariable String project,
         @Parameter(description = "Tailoring name") @PathVariable String tailoring) {
+        log.traceEntry();
+
         PathContextBuilder pathContext = PathContext.builder()
             .project(project)
             .tailoring(tailoring);
 
-        return tailoringServiceRepository.getTailoring(project, tailoring)
+        ResponseEntity<EntityModel<TailoringResource>> result = tailoringServiceRepository.getTailoring(project, tailoring)
             .map(loaded -> ok()
                 .body(of(mapper.toResource(pathContext, loaded))))
             .orElseGet(() -> notFound().build());
+
+        log.traceExit();
+        return result;
     }
 
     @Operation(summary = "Add file to tailoring")
@@ -282,9 +313,12 @@ public class TailoringController {
         @Parameter(description = "Project identifier") @PathVariable String project,
         @Parameter(description = "Tailoring name") @PathVariable String tailoring,
         @Parameter(description = "File to add") @RequestPart("datei") MultipartFile file) throws IOException {
+        log.traceEntry();
+
         Optional<Tailoring> serviceResult = tailoringService.addFile(project, tailoring, file.getOriginalFilename(), file.getBytes());
 
         if (serviceResult.isEmpty()) {
+            log.traceExit();
             return notFound().build();
         }
 
@@ -294,8 +328,11 @@ public class TailoringController {
             .build()
             .parameter();
         parameters.put("name", file.getOriginalFilename());
-        return created(UriTemplate.of(linkToCurrentMapping().toString() + "/" + TAILORING_ATTACHMENT).expand(parameters))
+        ResponseEntity<EntityModel<Void>> result = created(UriTemplate.of(linkToCurrentMapping() + "/" + TAILORING_ATTACHMENT).expand(parameters))
             .build();
+
+        log.traceExit();
+        return result;
     }
 
     @Operation(summary = "Generate all (tenant) documents of a specified tailoring.")
@@ -312,7 +349,9 @@ public class TailoringController {
     public ResponseEntity<byte[]> getDocuments(
         @Parameter(description = "Project identifier") @PathVariable String project,
         @Parameter(description = "Tailoring name") @PathVariable String tailoring) {
-        return tailoringService.createDocuments(project, tailoring)
+        log.traceEntry();
+
+        ResponseEntity<byte[]> result = tailoringService.createDocuments(project, tailoring)
             .map(dokument -> ok()
                 .header(CONTENT_DISPOSITION, ContentDisposition.builder(MediaTypeProvider.FORM_DATA).name(MediaTypeProvider.ATTACHMENT).filename(dokument.getName()).build().toString())
                 .header(ACCESS_CONTROL_EXPOSE_HEADERS, CONTENT_DISPOSITION)
@@ -320,6 +359,9 @@ public class TailoringController {
                 .contentLength(dokument.getLength())
                 .body(dokument.getData()))
             .orElseGet(() -> notFound().build());
+
+        log.traceExit();
+        return result;
     }
 
     @Operation(summary = "Generate tailoring requirement document")
@@ -336,7 +378,9 @@ public class TailoringController {
     public ResponseEntity<byte[]> getRequirementFile(
         @Parameter(description = "Project identifier") @PathVariable String project,
         @Parameter(description = "Tailoring name") @PathVariable String tailoring) {
-        return tailoringService.createRequirementDocument(project, tailoring)
+        log.traceEntry();
+
+        ResponseEntity<byte[]> result = tailoringService.createRequirementDocument(project, tailoring)
             .map(dokument -> ok()
                 .header(CONTENT_DISPOSITION, ContentDisposition.builder(MediaTypeProvider.FORM_DATA).name(MediaTypeProvider.ATTACHMENT).filename(dokument.getName()).build().toString())
                 .header(ACCESS_CONTROL_EXPOSE_HEADERS, CONTENT_DISPOSITION)
@@ -345,6 +389,8 @@ public class TailoringController {
                 .body(dokument.getData()))
             .orElseGet(() -> notFound().build());
 
+        log.traceExit();
+        return result;
     }
 
     @Operation(summary = "Load all requirements of requested chpater")
@@ -362,18 +408,23 @@ public class TailoringController {
         @Parameter(description = "Project identifier") @PathVariable String project,
         @Parameter(description = "Tailoring name") @PathVariable String tailoring,
         @Parameter(description = "Chapter number") @PathVariable String chapter) {
+        log.traceEntry();
+
         PathContextBuilder pathContext = PathContext.builder()
             .project(project)
             .tailoring(tailoring)
             .chapter(chapter);
 
-        return ok()
+        ResponseEntity<CollectionModel<EntityModel<TailoringRequirementResource>>> result = ok()
             .body(CollectionModel.of(
                 tailoringService.getRequirements(project, tailoring, chapter)
                     .stream()
                     .flatMap(Collection::stream)
                     .map(domain -> of(mapper.toResource(pathContext, domain)))
-                    .collect(toList())));
+                    .toList()));
+
+        log.traceExit();
+        return result;
     }
 
     @Operation(summary = "Ermittlung aller für eine Projektphase definierten Zeichnungen für Anforderungsdokumente")
@@ -389,17 +440,22 @@ public class TailoringController {
     public ResponseEntity<CollectionModel<DocumentSignatureResource>> getSigntures(
         @Parameter(description = "fachlicher Projektschlüssel") @PathVariable String project,
         @Parameter(description = "Identifier des Tailorings") @PathVariable String tailoring) {
+        log.traceEntry();
+
         PathContextBuilder pathContext = PathContext.builder()
             .project(project)
             .tailoring(tailoring);
 
-        return ok()
+        ResponseEntity<CollectionModel<DocumentSignatureResource>> result = ok()
             .body(CollectionModel.of(
                 tailoringService.getDocumentSignatures(project, tailoring)
                     .stream()
                     .flatMap(Collection::stream)
                     .map(domain -> mapper.toResource(pathContext, domain))
-                    .collect(toList())));
+                    .toList()));
+
+        log.traceExit();
+        return result;
     }
 
     @Operation(summary = "Update signature of tailoring")
@@ -417,15 +473,19 @@ public class TailoringController {
         @Parameter(description = "Tailoring name") @PathVariable String tailoring,
         @Parameter(description = "Faculty of signature") @PathVariable String faculty,
         @Parameter(description = "Signature data to use") @RequestBody DocumentSignature signature) {
+        log.traceEntry();
+
         PathContextBuilder pathContext = PathContext.builder()
             .project(project)
             .tailoring(tailoring);
 
-        return tailoringService.updateDocumentSignature(project, tailoring, signature)
+        ResponseEntity<EntityModel<DocumentSignatureResource>> result = tailoringService.updateDocumentSignature(project, tailoring, signature)
             .map(zeichnung -> ok()
                 .body(of(mapper.toResource(pathContext, zeichnung))))
             .orElseGet(() -> notFound().build());
 
+        log.traceExit();
+        return result;
     }
 
     @Operation(summary = "Update name of tailoring")
@@ -442,15 +502,19 @@ public class TailoringController {
         @Parameter(description = "Project identifier") @PathVariable String project,
         @Parameter(description = "Tailoring name") @PathVariable String tailoring,
         @Parameter(description = "New tailoring name") @RequestBody String name) {
+        log.traceEntry();
+
         PathContextBuilder pathContext = PathContext.builder()
             .project(project)
             .tailoring(name);
 
-        return tailoringService.updateName(project, tailoring, name)
+        ResponseEntity<EntityModel<TailoringResource>> result = tailoringService.updateName(project, tailoring, name)
             .map(projektPhase -> ok()
                 .body(of(mapper.toResource(pathContext, projektPhase))))
             .orElseThrow(() -> new ResourceException(PRECONDITION_FAILED, "Name could not be updated"));
 
+        log.traceExit();
+        return result;
     }
 
     @Operation(summary = "Load list of all attachment of tailoring")
@@ -466,19 +530,24 @@ public class TailoringController {
     public ResponseEntity<CollectionModel<FileResource>> getAttachmentList(
         @Parameter(description = "Project identifier") @PathVariable String project,
         @Parameter(description = "Tailoring name") @PathVariable String tailoring) {
+        log.traceEntry();
+
         PathContextBuilder pathContext = PathContext.builder()
             .project(project)
             .tailoring(tailoring);
 
-        return tailoringServiceRepository.getFileList(project, tailoring)
+        ResponseEntity<CollectionModel<FileResource>> result = tailoringServiceRepository.getFileList(project, tailoring)
             .map(data -> ok()
                 .body(CollectionModel.of(
                     data.stream()
                         .map(domain -> mapper.toResource(pathContext, domain))
-                        .collect(toList())
+                        .toList()
                 ))
             )
             .orElseGet(() -> notFound().build());
+
+        log.traceExit();
+        return result;
     }
 
     @GetMapping(TAILORING_ATTACHMENT)
@@ -487,7 +556,9 @@ public class TailoringController {
         @Parameter(description = "Project identifier") @PathVariable String project,
         @Parameter(description = "Tailoring name") @PathVariable String tailoring,
         @Parameter(description = "Name of File") @PathVariable String name) {
-        return tailoringServiceRepository.getFile(project, tailoring, name)
+        log.traceEntry();
+
+        ResponseEntity<byte[]> result = tailoringServiceRepository.getFile(project, tailoring, name)
             .map(daten -> ok()
                 .header(CONTENT_DISPOSITION, ContentDisposition.builder(MediaTypeProvider.FORM_DATA).name(MediaTypeProvider.ATTACHMENT).filename(name).build().toString())
                 .header(ACCESS_CONTROL_EXPOSE_HEADERS, CONTENT_DISPOSITION)
@@ -495,6 +566,9 @@ public class TailoringController {
                 .contentLength(daten.getData().length)
                 .body(daten.getData()))
             .orElseGet(() -> notFound().build());
+
+        log.traceExit();
+        return result;
     }
 
     @Operation(summary = "Get file attached to tailoring")
@@ -511,9 +585,14 @@ public class TailoringController {
         @Parameter(description = "Project identifier") @PathVariable String project,
         @Parameter(description = "Tailoring name") @PathVariable String tailoring,
         @Parameter(description = "Filename") @PathVariable("name") String name) {
-        return tailoringServiceRepository.deleteFile(project, tailoring, name) ?
+        log.traceEntry();
+
+        ResponseEntity<Void> result = tailoringServiceRepository.deleteFile(project, tailoring, name) ?
             ok().build() :
             notFound().build();
+
+        log.traceExit();
+        return result;
     }
 
     @Operation(summary = "Get document containg diffeences between automatic tailoring and current tailoring")
@@ -530,7 +609,9 @@ public class TailoringController {
     public ResponseEntity<byte[]> getComparisonDocument(
         @Parameter(description = "Project identifier") @PathVariable String project,
         @Parameter(description = "Tailoring name") @PathVariable String tailoring) {
-        return tailoringService.createComparisonDocument(project, tailoring)
+        log.traceEntry();
+
+        ResponseEntity<byte[]> result = tailoringService.createComparisonDocument(project, tailoring)
             .map(dokument -> ok()
                 .header(CONTENT_DISPOSITION, ContentDisposition.builder(MediaTypeProvider.FORM_DATA).name(MediaTypeProvider.ATTACHMENT).filename(dokument.getName()).build().toString())
                 .header(ACCESS_CONTROL_EXPOSE_HEADERS, CONTENT_DISPOSITION)
@@ -539,6 +620,8 @@ public class TailoringController {
                 .body(dokument.getData()))
             .orElseGet(() -> notFound().build());
 
+        log.traceExit();
+        return result;
     }
 
     @Operation(summary = "Get all definded selectionvector profiles")
@@ -552,14 +635,19 @@ public class TailoringController {
     })
     @GetMapping(value = ResourceMapper.SELECTIONVECTOR_PROFILE, produces = {"application/hal+json"})
     public ResponseEntity<CollectionModel<EntityModel<SelectionVectorProfileResource>>> getProfiles() {
+        log.traceEntry();
+
         PathContextBuilder pathContext = PathContext.builder();
         List<EntityModel<SelectionVectorProfileResource>> profile = tailoringServiceRepository.getSelectionVectorProfile()
             .stream()
             .map(profil -> of(mapper.toResource(pathContext, profil)))
-            .collect(toList());
+            .toList();
 
-        return ok()
+        ResponseEntity<CollectionModel<EntityModel<SelectionVectorProfileResource>>> result = ok()
             .body(CollectionModel.of(profile));
+
+        log.traceExit();
+        return result;
     }
 
     @Operation(summary = "Update requirement state in accordance to provided file")
@@ -569,8 +657,13 @@ public class TailoringController {
         @Parameter(description = "Project identifier") @PathVariable String project,
         @Parameter(description = "Tailoring name") @PathVariable String tailoring,
         @RequestPart("datei") MultipartFile datei) throws IOException {
+        log.traceEntry();
+
         tailoringService.updateImportedRequirements(project, tailoring, datei.getBytes());
-        return ResponseEntity.accepted().build();
+        ResponseEntity<EntityModel<Void>> result = ResponseEntity.accepted().build();
+
+        log.traceExit();
+        return result;
     }
 
     @Operation(summary = "Delete a tailoring")
@@ -586,6 +679,8 @@ public class TailoringController {
     public ResponseEntity<EntityModel<Void>> deleteTailoring(
         @Parameter(description = "Project identifier") @PathVariable String project,
         @Parameter(description = "Tailoring name") @PathVariable String tailoring) {
+        log.traceEntry();
+
         Optional<Boolean> deleted = tailoringService.deleteTailoring(project, tailoring);
 
         HttpStatus result = NOT_FOUND;
@@ -593,6 +688,7 @@ public class TailoringController {
             result = deleted.get().booleanValue() ? OK : PRECONDITION_FAILED;
         }
 
+        log.traceExit();
         return ResponseEntity.status(result).build();
     }
 
@@ -609,19 +705,24 @@ public class TailoringController {
     public ResponseEntity<CollectionModel<NoteResource>> getNotes(
         @Parameter(description = "Project identifier") @PathVariable String project,
         @Parameter(description = "Tailoring name") @PathVariable String tailoring) {
+        log.traceEntry();
+
         PathContextBuilder pathContext = PathContext.builder()
             .project(project)
             .tailoring(tailoring);
 
-        return tailoringService.getNotes(project, tailoring)
+        ResponseEntity<CollectionModel<NoteResource>> result = tailoringService.getNotes(project, tailoring)
             .map(data -> ok()
                 .body(CollectionModel.of(
                     data.stream()
                         .map(domain -> mapper.toResource(pathContext, domain))
-                        .collect(toList())
+                        .toList()
                 ))
             )
             .orElseGet(() -> notFound().build());
+
+        log.traceExit();
+        return result;
     }
 
     @Operation(summary = "Load note of a tailoring")
@@ -638,19 +739,23 @@ public class TailoringController {
         @Parameter(description = "Project identifier") @PathVariable String project,
         @Parameter(description = "Tailoring name") @PathVariable String tailoring,
         @Parameter(description = "Number of note") @PathVariable Integer note) {
+        log.traceEntry();
+
         PathContextBuilder pathContext = PathContext.builder()
             .project(project)
             .tailoring(tailoring)
             .note(note.toString());
 
-        return tailoringService.getNote(project, tailoring, note)
+        ResponseEntity<EntityModel<NoteResource>> result = tailoringService.getNote(project, tailoring, note)
             .map(loaded -> ok()
                 .body(of(mapper.toResource(pathContext, loaded))))
             .orElseGet(() -> notFound().build());
 
+        log.traceExit();
+        return result;
     }
 
-    @Operation(summary = "Add a new note totailoring")
+    @Operation(summary = "Add a new note to tailoring")
     @ApiResponses(value = {
         @ApiResponse(
             responseCode = "201", description = "Note added",
@@ -664,8 +769,11 @@ public class TailoringController {
         @Parameter(description = "Project identifier") @PathVariable String project,
         @Parameter(description = "Tailoring name") @PathVariable String tailoring,
         @Parameter(description = "Text of note to add") @RequestBody String note) {
+        log.traceEntry();
+
         Optional<Note> addedNote = tailoringService.addNote(project, tailoring, note);
         if (addedNote.isEmpty()) {
+            log.traceExit();
             return notFound().build();
         }
 
@@ -673,18 +781,21 @@ public class TailoringController {
             .project(project)
             .tailoring(tailoring);
 
-        return created(mapper.createLink(ResourceMapper.REL_SELF, linkToCurrentMapping().toString(),
+        ResponseEntity<EntityModel<Void>> result = created(mapper.createLink(ResourceMapper.REL_SELF, linkToCurrentMapping().toString(),
                 TAILORING_NOTE,
                 pathContext.note(addedNote.get().getNumber().toString()).build().parameter())
             .toUri())
             .build();
+
+        log.traceExit();
+        return result;
     }
 
     @Operation(summary = "Set state of tailoring")
     @ApiResponses(value = {
         @ApiResponse(
             responseCode = "200", description = "State changed",
-            content = @Content(mediaType = "application/json+hal", schema = @Schema(implementation = Void.class))),
+            content = @Content(mediaType = "application/json+hal", schema = @Schema(implementation = TailoringResource.class))),
         @ApiResponse(
             responseCode = "404", description = "Tailoring does not exist",
             content = @Content)
@@ -694,13 +805,18 @@ public class TailoringController {
         @Parameter(description = "Project identifier") @PathVariable String project,
         @Parameter(description = "Tailoring name") @PathVariable String tailoring,
         @Parameter(description = "State to set") @PathVariable TailoringState state) {
+        log.traceEntry();
+
         PathContextBuilder pathContext = PathContext.builder()
             .project(project)
             .tailoring(tailoring);
 
-        return tailoringService.updateState(project, tailoring, state)
+        ResponseEntity<EntityModel<TailoringResource>> result = tailoringService.updateState(project, tailoring, state)
             .map(updatedTailoring -> ok()
                 .body(of(mapper.toResource(pathContext, updatedTailoring))))
             .orElseGet(() -> notFound().build());
+
+        log.traceExit();
+        return result;
     }
 }

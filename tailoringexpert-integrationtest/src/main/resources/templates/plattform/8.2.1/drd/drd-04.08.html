@@ -1,0 +1,258 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<head>
+    <title>DRD-04.08 - Failure Mode, Effect &amp; Criticality Analysis (FMECA)</title>
+
+    <link rel="stylesheet" href="../css/page.css"/>
+    <link rel="stylesheet" href="../css/drd.css"/>
+</head>
+<body>
+<div th:fragment="content" id="drd-04.08">
+    <table class="titel" aria-label="title">
+        <tbody>
+        <tr>
+            <td><h2>DRD-04.08 - Failure Mode, Effect &amp; Criticality Analysis (FMECA)</h2>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+
+    <table class="reference" aria-label="reference">
+        <tbody>
+        <tr>
+            <td rowspan="2">Reference:</td>
+            <td>MIL-HDBK-338</td>
+            <td>Electronic Reliability Design Handbook</td>
+        </tr>
+        <tr>
+            <td>ECSS-Q-ST-30-02C</td>
+            <td>Space product assurance - Failure Modes, effects (and criticality) analysis (FMEA/FMECA)</td>
+        </tr>
+        </tbody>
+    </table>
+
+    <table class="purpose" aria-label="purpose">
+        <tbody>
+        <tr>
+            <td>Purpose:</td>
+            <td>The analysis shall be used to:
+                <ul>
+                    <li>identify single point failures,</li>
+                    <li>identify critical items,</li>
+                    <li>ensure that adequate telemetry and command capabilities are available to detect and control
+                        failures,
+                    </li>
+                    <li>identify design incompatibilities and inadequacies,</li>
+                    <li>verify, as far as possible, that all redundant elements and all critical and major failure modes
+                        can be fully tested at integrated system and subsystem level,
+                    </li>
+                    <li>clarify the effects of transients,</li>
+                    <li>identify monitoring and test capabilities in orbit,</li>
+                    <li>identify back-up operation modes and procedures.</li>
+                </ul>
+                The FMECA results shall be used to update the project/system requirements and to drive its design along
+                the project life cycle.
+            </td>
+        </tr>
+        </tbody>
+    </table>
+
+    <table class="content" aria-label="content">
+        <tbody>
+        <tr>
+            <td>Content:</td>
+            <td>
+                The FMECA can be initiated at any level of integration depending on the information available and the
+                requirements of the specific programme/project. <br/>
+                Failure modes of each block in the Functional Block Diagram or Functional Tree shall be analysed,
+                indicating the effect of item failure on the performance of the next higher assembly level. A
+                numerical reference for all items in the Functional Block Diagram or Functional Tree must be
+                provided by using a standard coding system.<br/>
+                The FMECA Report shall include all information necessary for understanding and reviewing the analysis:
+                <ul>
+                    <li>identification of configuration being analysed,</li>
+                    <li>identification of applicable functional and design description,</li>
+                    <li>identification of equipment, subsystem, system mission phase and operational phase under
+                        consideration,
+                    </li>
+                    <li>identification of item under consideration, its function, the assumed failure mode and the
+                        effect on other equipment/subsystems,
+                    </li>
+                    <li>appropriate design information (e.g. assembly drawings, circuit diagrams, etc. as far as
+                        necessary for understanding),
+                    </li>
+                    <li>Functional Diagram or Functional Tree,</li>
+                    <li>Reliability Block Diagram,</li>
+                    <li>identification of criticality categories,</li>
+                    <li>recommendations to improve the design.</li>
+                </ul>
+            </td>
+        </tr>
+        <tr>
+            <td></td>
+            <td>
+                The analysis shall be supported by lower level FMECA. All end effects of a lower level FMECA shall
+                become failure modes of the higher level FMECA (see figure Cause and effects of failure modes at
+                different level FMECAs). When any design/process changes are made, the FMECA will be updated and the
+                effects of new failure modes introduced by the changes will be carefully assessed. <br/>
+                All identified SPFs shall be listed in a Single Point Failure List.
+            </td>
+        </tr>
+        </tbody>
+    </table>
+
+    <table class="format" aria-label="format">
+        <tbody>
+        <tr>
+            <td>Format:</td>
+            <td>
+                The FMECA shall be presented on forms according to ECSS-Q-ST-30-02C or equivalent in-house forms.
+                The requirements of ECSS-Q-ST-30-02C may be tailored by the customer to suit specific programmes.
+                The FMECA worksheet shall contain the data elements identified in the FMEA.
+                SW reaction to HW failures are addressed by the Hardware Software Interaction Analysis (HASIA), if
+                required.
+            </td>
+        </tr>
+        </tbody>
+    </table>
+
+
+    <page-before>
+        <strong>FMECA Worksheet</strong>
+        <img src="drd-04.08_1.gif" class="center" width="430" height="740" alt="drd-04.08_1.gif"/>
+    </page-before>
+
+    <page-before>
+        <ol style="list-style-type:lower-alpha">
+            <li><strong>The documentation of the FMEA/FMECA shall be accomplished by completing the columns of the customer
+                approved worksheet.</strong><br/>
+                An example of FMEA/FMECA worksheet is shown in the figure. The use of this worksheet is not
+                mandatory but recommended.
+            </li>
+            <li><strong>Each FMEA/FMECA worksheet shall include in the header basic information including</strong>
+                <ul>
+                    <li>Identity of the product (hardware or function)</li>
+                    <li>Identity of corresponding equipment, subsystem and system (as applicable).</li>
+                </ul>
+            </li>
+
+            <li><strong>The FMEA/FMECA worksheet shall provide the following data elements:</strong>
+                <ol>
+                    <li>Identification number (for traceability purposes)</li>
+                    <li>Item/block<br/>
+                        <ol style="list-style-type:lower-alpha">
+                            <li>the name of the item or function being analysed, and</li>
+                            <li>the block of the reliability block diagram that is applicable to the analysis entry.
+                            </li>
+                        </ol>
+                    </li>
+                    <li>Function<br/>
+                        concise statement of the function performed by the item.
+                    </li>
+                    <li>Failure mode<br/>
+                        identification and description of all potential failure modes of the item or function under
+                        analysis.
+                        <p class="note">
+                            end effects of lower level FMECA are failure modes of the higher level FMECA
+                        </p>
+                    </li>
+                    <li>Failure cause<br/>
+                        identification and description of the most probable causes associated with the assumed failure
+                        mode.
+                        <p class="note" data-number="1">
+                            failure modes of lower level FMECA are failure causes of the higher level FMECA.
+                        </p>
+
+                        <p class="note" data-number="2">
+                            The failure cause are generally not identified when components are analysed (equipment level
+                            FMECA).
+                        </p>
+                    </li>
+                    <li>Mission phase/Operational mode concise statement of the mission phase and operational mode in
+                        which the failure is assumed to occur.
+                        <p class="note">
+                            These elements can be addressed in the header of the worksheet. Although all of the
+                            different mission phases or operational modes are taken into account, the record of results
+                            is limited to the phase or mode in which the worst failure effects occur.
+                        </p>
+                    </li>
+                    <li>Failure effects <br/>
+                        Identification of the consequences of each assumed failure mode at local effects and end effects
+                        levels.
+                        <p class="note" data-number="1" data-title="Local effects">
+                            Local effects concentrate specifically on the impact of the failure mode on the operation,
+                            function, or status of the item identified in the second column of the worksheet. The local
+                            effects are recorded when different from the failure modes. <br/>
+                            The purpose of defining local effects is to provide a basis for evaluating compensating
+                            provisions and for recommending corrective actions.
+                        </p>
+                        <p class="note" data-number="2" data-title="End effects">
+                            End effects define the effect that the analysed failure mode has on the operation, function,
+                            or status of the product under investigation and its interfaces, such that it allows
+                            integration into the next higher level FMECA.
+                        </p>
+                    </li>
+                    <li>Severity<br/>
+                        classification category assigned to each failure mode according to the worst potential end
+                        effect of the failure
+                    </li>
+                    <li>Failure detection method - Observable symptoms <br/>
+                        Describe the existing methods by which the effects can be detected.
+                        <p class="note">
+                            The failure detection means include telemetry (exact label), visual or audible warning
+                            devices, sensing instrumentation, other unique indications (e.g. the failure effect itself),
+                            or none.
+                        </p>
+                    </li>
+                    <li>Compensating provisions<br/>
+                        Identify the existing compensating provisions, such as design provisions or operator actions,
+                        which circumvent or<br/>
+                        mitigate the effect of the failure. Describe the existing preventive or compensatory provisions
+                        to prevent the failure mode, to reduce its effects, or to reduce its probability of occurrence.
+
+                        <p class="note" data-number="1" data-title="Design provisions">
+                            Compensating provisions are considered design provisions when they feature a design that
+                            nullifies the effects of a malfunction or failure, control, or deactivate product items to
+                            halt generation or propagation of failure effects, or activate backup or standby items.
+                            Design compensating provisions include:
+                        <ul class="circle">
+                            <li>redundant items or alternative modes of operation that allow continued and safe
+                                operation, and
+                            </li>
+                            <li>safety or relief devices which allow effective operation or limit the failure
+                                effects.<br/>
+                                <p class="note" data-number="2" data-title="Operator actions">
+                                    Compensating provisions are considered operator actions when the operator
+                                    circumvents or mitigates the effect of the postulated failure mode.
+                                </p>
+                            </li>
+                        </ul>
+                        </p>
+                    </li>
+                    <li>Severity number<br/>
+                        Identify the severity of a failure effect by assigning a severity number (SN).
+                    </li>
+                    <li>Failure mode probability<br/>
+                        assessment of the probability of occurrence of the assumed failure mode and the relevant
+                        probability number (PN)
+                    </li>
+                    <li>Criticality number<br/>
+                        Enter the criticality number (CN) by multiplying&#xa0; SN x PN
+                    </li>
+                    <li>Recommendations and remarks<br/>
+                        Describe recommended preventive or compensatory provisions to eliminate the failure mode, to
+                        reduce its effects, to reduce its probability of occurrence, or to improve its detectability, as
+                        well as any additional information being useful.
+                    </li>
+                </ol>
+            </li>
+        </ol>
+    </page-before>
+
+    <page-before>
+        <h3>Cause and effects of failure modes at different level FMECAs</h3>
+        <img src="drd-04.08_2.gif" class="center" width="547" height="810" alt="drd-04.08.2.gif"/>
+    </page-before>
+</div>
+</body>
+</html>

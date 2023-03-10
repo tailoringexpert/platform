@@ -20,6 +20,7 @@ package project {
         getProjectInformation(project : String) : Optional<ProjectInformation>
         getScreeningSheetFile(project : String) : Optional<byte[]>
         getScreeningSheet(project : String) : Optional<ScreeningSheet>
+        updateState(project : String, state : ProjectState) : Optional<ProjectInformation>
     }
 
     abstract class JPAProjectServiceRepositoryMapper {

@@ -36,7 +36,7 @@ public enum ScreeningSheetDataProviderSupplier {
     Identifier("identifier"),
     Projektleiter("projektleiter"),
     Abteilung("abteilung"),
-    Phase("phase");
+    Phase("Phase");
 
     private String name;
 

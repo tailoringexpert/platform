@@ -47,7 +47,6 @@ import static java.lang.String.format;
 import static java.util.Collections.emptyMap;
 import static java.util.Comparator.comparingInt;
 import static java.util.Objects.nonNull;
-import static java.util.stream.Collectors.toList;
 
 /**
  * Create PDF requirement catalog file.
@@ -75,8 +74,8 @@ public class TailoringCatalogPDFDocumentCreator implements DocumentCreator {
     @Override
     public File createDocument(String docId,
                                Tailoring tailoring,
-                               Map<String, String> placeholders) {
-        log.traceEntry("Start creating requirements document {}", docId);
+                               Map<String, Object> placeholders) {
+        log.traceEntry(() -> docId, () -> tailoring.getCatalog().getVersion(), () -> placeholders);
 
         Map<String, Object> parameter = new HashMap<>(placeholders);
         parameter.put("catalogVersion", tailoring.getCatalog().getVersion());
@@ -100,13 +99,12 @@ public class TailoringCatalogPDFDocumentCreator implements DocumentCreator {
 
         parameter.put("signatures", tailoring.getSignatures().stream()
             .sorted(comparingInt(DocumentSignature::getPosition))
-            .collect(toList()));
+            .toList());
 
         String html = templateEngine.process(tailoring.getCatalog().getVersion() + "/tailoringcatalog", parameter);
         File result = pdfEngine.process(docId, html, tailoring.getCatalog().getVersion() + "/tailoringcatalog");
 
-        log.traceExit("Finished creating requirements document {}", docId);
-
+        log.traceExit();
         return result;
     }
 
@@ -118,7 +116,7 @@ public class TailoringCatalogPDFDocumentCreator implements DocumentCreator {
      * @param level   chapter level
      * @param rows    collection to add elements to
      */
-    void addChapter(Chapter<TailoringRequirement> chapter, int level, Collection<CatalogElement> rows, Map<String, String> placeholders) {
+    void addChapter(Chapter<TailoringRequirement> chapter, int level, Collection<CatalogElement> rows, Map<String, Object> placeholders) {
         rows.add(CatalogElement.builder()
             .text(templateEngine.toXHTML(chapter.getNumber() + " " + chapter.getName(), emptyMap()))
             .chapter(chapter.getNumber())
@@ -138,7 +136,7 @@ public class TailoringCatalogPDFDocumentCreator implements DocumentCreator {
      * @param rows         collection to add to
      * @param placeholders placeholders to use for evaluation in requirement text
      */
-    void addRequirement(TailoringRequirement requirement, Collection<CatalogElement> rows, Map<String, String> placeholders) {
+    void addRequirement(TailoringRequirement requirement, Collection<CatalogElement> rows, Map<String, Object> placeholders) {
         StringBuilder referenzText = new StringBuilder();
         if (nonNull(requirement.getReference())) {
             if (nonNull(requirement.getReference().getLogo())) {

@@ -7,14 +7,14 @@ https://medium.com/keycloak/secure-vue-js-app-with-keycloak-94814181e344
 
 
 -Dspring.profiles.active=keycloak,multitenant
--DtenantConfigDir=C:\Users\baed_mi\entwicklung\baed_mi\git\dlr\tailoring-tenant-arzs\tailoring-tenant-arzs-config\src\main\resources\tenants
+-tenantConfigHome=C:\Users\baed_mi\entwicklung\baed_mi\git\dlr\tailoring-tenant-arzs\tailoring-tenant-arzs-config\src\main\resources\tenants
 -Dtenant.arzs="{ template:\"file://localhost/C:/Users/baed_mi/entwicklung/baed_mi/git/dlr/tailoring-tenant-arzs/tailoring-tenant-arzs/src/assembly/templates\", drd:\"file://localhost/C:/Users/baed_mi/entwicklung/baed_mi/git/dlr/tailoring-tenant-arzs/tailoring-tenant-arzs/src/assembly/assets/arzs\"}"
 -Dloader.main=de.dlr.rdps.tailoringexpert.App
 -Dloader.path=C:\Users\baed_mi\entwicklung\baed_mi\git\dlr\tailoring\tailoring-bootapp\target\tailoring-bootapp-0.0.1-SNAPSHOT-exec.jar,C:\Users\baed_mi\entwicklung\baed_mi\git\dlr\tailoring-tenant-arzs\tailoring-tenant-arzs\target\classes,C:\Users\baed_mi\entwicklung\baed_mi\git\dlr\tailoring-tenant-arzs\tailoring-tenant-arzs\target\lib,C:\Users\baed_mi\entwicklung\baed_mi\git\dlr\tailoring-tenant-arzs\tailoring-tenant-arzs-config\target\classes
 
 
 -Dspring.profiles.active=keycloak,multitenant
--DtenantConfigDir=C:\Users\micrf\entwicklung\micrf\git\dlr\tailoring-tenant-arzs\tailoring-tenant-arzs-config\src\main\resources\tenants
+-DtenanttenantConfigHome=C:\Users\micrf\entwicklung\micrf\git\dlr\tailoring-tenant-arzs\tailoring-tenant-arzs-config\src\main\resources\tenants
 -Dtenant.arzs="{ template:\"file://localhost/C:/Users/micrf/entwicklung/micrf/git/dlr/tailoring-tenant-arzs/tailoring-tenant-arzs/src/assembly/templates\", drd:\"file://localhost/C:/Users/micrf/entwicklung/micrf/git/dlr/tailoring-tenant-arzs/tailoring-tenant-arzs/src/assembly/assets/arzs\"}"
 -Dloader.main=de.dlr.rdps.tailoringexpert.App
 -Dloader.path=C:\Users\micrf\entwicklung\micrf\git\dlr\tailoring\tailoring-bootapp\target\tailoring-bootapp-0.0.1-SNAPSHOT-exec.jar,C:\Users\micrf\entwicklung\micrf\git\dlr\tailoring-tenant-arzs\tailoring-tenant-arzs\target\classes,C:\Users\micrf\entwicklung\micrf\git\dlr\tailoring-tenant-arzs\tailoring-tenant-arzs\target\lib,C:\Users\micrf\entwicklung\micrf\git\dlr\tailoring-tenant-arzs\tailoring-tenant-arzs-config\target\classes

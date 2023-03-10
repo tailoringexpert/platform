@@ -31,9 +31,9 @@ import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
-import java.util.Arrays;
-
 import static java.util.Collections.singletonList;
+import static java.util.List.of;
+import static org.springframework.security.web.header.writers.XXssProtectionHeaderWriter.HeaderValue.ENABLED;
 
 /**
  * Security Configuration to be used on a local system.
@@ -52,10 +52,10 @@ public class SecurityConfiguration {
     @Bean
     CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
-        configuration.setAllowedHeaders(Arrays.asList("*"));
+        configuration.setAllowedHeaders(of("*"));
         configuration.setAllowedOrigins(singletonList("*"));
-        configuration.setAllowedMethods(Arrays.asList("*"));
-        configuration.setExposedHeaders(Arrays.asList("*"));
+        configuration.setAllowedMethods(of("*"));
+        configuration.setExposedHeaders(of("*"));
         UrlBasedCorsConfigurationSource result = new UrlBasedCorsConfigurationSource();
         result.registerCorsConfiguration("/**", configuration);
         return result;
@@ -65,8 +65,12 @@ public class SecurityConfiguration {
     @SuppressWarnings("PMD.SignatureDeclareThrowsException")
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http.csrf().disable();
-        http.authorizeRequests().anyRequest().permitAll();
+        http.authorizeHttpRequests().anyRequest().permitAll();
         http.cors();
+        http.headers()
+            .xssProtection().headerValue(ENABLED)
+            .and()
+            .contentSecurityPolicy("script-src 'self'");
         return http.build();
     }
 
