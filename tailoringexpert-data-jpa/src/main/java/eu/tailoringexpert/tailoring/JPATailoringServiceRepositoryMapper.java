@@ -49,7 +49,6 @@ import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;
 
-import java.util.Collection;
 import java.util.LinkedList;
 import java.util.stream.Collectors;
 
@@ -92,13 +91,11 @@ public abstract class JPATailoringServiceRepositoryMapper {
             .findFirst()
             .ifPresent(parameter -> resource.project(parameter.getValue().toString()));
 
-        resource.phases((Collection<Phase>) entity.getParameters()
+        resource.phases(entity.getParameters()
             .stream()
             .filter(parameter -> ScreeningSheet.PARAMETER_PHASE.equalsIgnoreCase(parameter.getCategory()))
             .map(ScreeningSheetParameterEntity::getValue)
-            .map(Collection.class::cast)
-            .flatMap(Collection::stream)
-            .map(phase -> Phase.valueOf((String) phase))
+            .map(phase -> Phase.fromString((String) phase))
             .sorted(comparing(Phase::ordinal))
             .collect(Collectors.toCollection(LinkedList::new)));
     }
