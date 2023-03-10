@@ -42,15 +42,18 @@ import org.mapstruct.MappingTarget;
 import org.springframework.hateoas.Link;
 import org.springframework.hateoas.UriTemplate;
 
+import java.util.LinkedHashSet;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
-import java.util.stream.Collectors;
 
 import static java.util.Arrays.asList;
 import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
+import static java.util.stream.Collectors.groupingBy;
 import static java.util.stream.Collectors.joining;
+import static java.util.stream.Collectors.mapping;
+import static java.util.stream.Collectors.toCollection;
 import static org.springframework.hateoas.server.mvc.BasicLinkBuilder.linkToCurrentMapping;
 
 @Mapper
@@ -246,20 +249,28 @@ public abstract class ResourceMapper {
             return List.of();
         }
 
-        return parameters.stream()
-            .collect(Collectors.groupingBy(ScreeningSheetParameter::getCategory))
-            .entrySet()
+        // "persist" order of original provided categories
+        LinkedHashSet<String> orderedCategories = parameters.stream()
+            .map(ScreeningSheetParameter::getCategory)
+            .collect(toCollection(LinkedHashSet::new));
+
+        // construct "easily" concatination of values of each category
+        Map<String, String> category2ValueString = parameters.stream()
+            .collect(groupingBy(
+                ScreeningSheetParameter::getCategory,
+                mapping(parameter -> parameter.getValue().toString(), joining("; "))
+            ));
+
+        // create parameter in originally provided order
+        return orderedCategories
             .stream()
-            .map(entry -> ScreeningSheetParameterResource.builder()
-                .label(entry.getKey())
-                .value(entry.getValue()
-                    .stream()
-                    .map(ScreeningSheetParameter::getValue)
-                    .map(Objects::toString)
-                    .collect(joining("; ")))
-                .build()
+            .map(category ->
+                ScreeningSheetParameterResource.builder()
+                    .label(category)
+                    .value(category2ValueString.get(category))
+                    .build()
             )
-            .toList();
+            .collect(toCollection(LinkedList::new));
     }
 
     // Tailoring

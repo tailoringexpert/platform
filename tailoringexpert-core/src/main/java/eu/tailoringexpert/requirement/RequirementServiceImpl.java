@@ -75,11 +75,9 @@ public class RequirementServiceImpl implements RequirementService {
             if (!tailoringRequirement.get().getSelected().equals(selected)) {
                 TailoringRequirement requirement = handleSelected(tailoringRequirement.get(), selected, ZonedDateTime.now());
                 Optional<TailoringRequirement> result = repository.updateRequirement(project, tailoring, chapter, requirement);
-                log.info("selection state changed to {}", selected);
                 log.traceExit();
                 return result;
             }
-            log.info("no change in selection state");
             log.traceExit();
             return tailoringRequirement;
         }
@@ -109,7 +107,6 @@ public class RequirementServiceImpl implements RequirementService {
                     subChapter.getRequirements().stream().sorted(comparing(TailoringRequirement::getPosition));
                     handleSelected(subChapter, selected, now);
                 });
-            log.info("selection state of requirements of {}:{}:{} set to {}", project, tailoring, chapter, selected);
             log.traceExit();
             return repository.updateSelected(project, tailoring, tailoringChapter.get());
         }

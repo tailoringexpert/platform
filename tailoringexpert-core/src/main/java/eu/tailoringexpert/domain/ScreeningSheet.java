@@ -36,12 +36,12 @@ public class ScreeningSheet implements Serializable {
     /**
      * Name of the mandatory project parameter.
      */
-    public static final String PARAMETER_PROJECT = "project";
+    public static final String PARAMETER_PROJECT = "Project";
 
     /**
      * Name of the mandatory phases parameter.
      */
-    public static final String PARAMETER_PHASE = "phase";
+    public static final String PARAMETER_PHASE = "Phase";
 
     /**
      * Raw data of the file.
