@@ -1,5 +1,30 @@
 # Changelog
 
+## [v0.0.5](https://github.com/tailoringexpert/plattform/tree/v0.0.5) (03.10.2023)
+
+[Full Changelog](https://github.com/tailoringexpert/plattform/compare/v0.0.3...v0.0.5)
+
+**Implemented enhancements:**
+
+- Sort screeningsheet parameters in frontend as provided [\#143](https://github.com/tailoringexpert/plattform/issues/143)
+- Provide selectionvector profiles for base catalog creation [\#130](https://github.com/tailoringexpert/plattform/issues/130)
+- Add trace logging [\#127](https://github.com/tailoringexpert/plattform/issues/127)
+- Existing if project identifier is already used [\#123](https://github.com/tailoringexpert/plattform/issues/123)
+
+**Fixed bugs:**
+
+- Selecting requirement in intial tailoring [\#136](https://github.com/tailoringexpert/plattform/issues/136)
+- Failed test TailoringCatalogPDFDocumentCreatorTest [\#114](https://github.com/tailoringexpert/plattform/issues/114)
+
+**Closed issues:**
+
+- Migrate github deprecations [\#138](https://github.com/tailoringexpert/plattform/issues/138)
+- Change basecatalog placeholder to type Map\<String, Object\> [\#129](https://github.com/tailoringexpert/plattform/issues/129)
+- Reduce tenant implementation effort [\#108](https://github.com/tailoringexpert/plattform/issues/108)
+- Allow any object type as placeholder parameter for document creation [\#104](https://github.com/tailoringexpert/plattform/issues/104)
+- Resolve sonarlint findings [\#103](https://github.com/tailoringexpert/plattform/issues/103)
+- Archive project [\#49](https://github.com/tailoringexpert/plattform/issues/49)
+
 ## [v0.0.3](https://github.com/tailoringexpert/plattform/tree/v0.0.3) (12.23.2022)
 
 [Full Changelog](https://github.com/tailoringexpert/plattform/compare/v0.0.2...v0.0.3)
