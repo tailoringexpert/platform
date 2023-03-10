@@ -4,12 +4,13 @@ hide empty members
 package renderer {
     interface HTMLTemplateEngine
     class PDFEngine
+    class DRDFragment
 }
 
 package tailoring {
 
     interface DocumentCreator {
-        createDocument(docId : String, tailoring : Tailoring, placeholders : Map<String, String>) : File
+        createDocument(docId : String, tailoring : Tailoring, placeholders : Map<String, Object>) : File
     }
 
     class TailoringCatalogPDFDocumentCreator {
@@ -49,11 +50,6 @@ package tailoring {
         -action : String
     }
 
-    class DRDFragment {
-        -name : String
-        -number : String
-        -fragment : String
-    }
 
     class CatalogElement {
         -reference : String

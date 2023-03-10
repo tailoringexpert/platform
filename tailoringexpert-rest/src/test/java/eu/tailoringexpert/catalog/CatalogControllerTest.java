@@ -52,12 +52,15 @@ import org.springframework.http.converter.json.MappingJackson2HttpMessageConvert
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 
+import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Paths;
 import java.text.SimpleDateFormat;
 import java.time.ZonedDateTime;
 import java.util.function.Function;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipOutputStream;
 
 import static com.fasterxml.jackson.annotation.JsonAutoDetect.Visibility.ANY;
 import static com.fasterxml.jackson.annotation.PropertyAccessor.FIELD;
@@ -83,7 +86,10 @@ import static org.springframework.hateoas.MediaTypes.HAL_JSON_VALUE;
 import static org.springframework.http.HttpHeaders.ACCESS_CONTROL_EXPOSE_HEADERS;
 import static org.springframework.http.HttpHeaders.CONTENT_DISPOSITION;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
+import static org.springframework.http.MediaType.APPLICATION_OCTET_STREAM;
 import static org.springframework.http.MediaType.APPLICATION_PDF;
+import static org.springframework.http.MediaType.IMAGE_JPEG;
+import static org.springframework.http.MediaType.IMAGE_PNG;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
@@ -120,9 +126,9 @@ class CatalogControllerTest {
 
         ByteArrayHttpMessageConverter byteArrayHttpMessageConverter = new ByteArrayHttpMessageConverter();
         byteArrayHttpMessageConverter.setSupportedMediaTypes(asList(
-            MediaType.IMAGE_JPEG,
-            MediaType.IMAGE_PNG,
-            MediaType.APPLICATION_OCTET_STREAM,
+            IMAGE_JPEG,
+            IMAGE_PNG,
+            APPLICATION_OCTET_STREAM,
             APPLICATION_PDF,
             new MediaType("application", "vnd.openxmlformats-officedocument.wordprocessingml.document")
         ));
@@ -219,7 +225,7 @@ class CatalogControllerTest {
 
         ArgumentCaptor<PathContextBuilder> pathContextCaptor = ArgumentCaptor.forClass(PathContextBuilder.class);
         given(mapperMock.toResource(pathContextCaptor.capture(), katalogCaptor.capture()))
-            .willReturn(BaseCatalogVersionResource.builder().validFrom(ZonedDateTime.now()).build());
+            .willReturn(BaseCatalogVersionResource.builder().validFrom("01.01.2022").build());
 
 
         // act
@@ -275,7 +281,7 @@ class CatalogControllerTest {
     }
 
     @Test
-    void getBaseCatalogPring_BaseCatalogNotExists_StateNotFound() throws Exception {
+    void getBaseCatalogPrint_BaseCatalogNotExists_StateNotFound() throws Exception {
         // arrange
         given(serviceMock.createCatalog("8.2.1")).willReturn(empty());
 
@@ -359,6 +365,55 @@ class CatalogControllerTest {
 
         verify(mediaTypeProviderMock, times(1)).apply("json");
         assertThatNoException();
+    }
+
+    @Test
+    void getDocuments_BaseCatalogNotExists_StateNotFound() throws Exception {
+        // arrange
+        given(serviceMock.createCatalog("8.2.1")).willReturn(empty());
+
+        // act
+        ResultActions actual = mockMvc.perform(get("/catalog/8.2.1/document"));
+
+        // assert
+        actual.andExpect(status().isNotFound());
+        assertThatNoException();
+    }
+
+    @Test
+    void getDocuments_BaseCatalogExists_StateOK() throws Exception {
+        // arrange
+        byte[] data;
+        // file content not important. only size of byte[]
+        try (InputStream is = newInputStream(Paths.get("src/test/resources/screeningsheet_0d.pdf"))) {
+            assert nonNull(is);
+            data = is.readAllBytes();
+        }
+        ByteArrayOutputStream os = new ByteArrayOutputStream();
+        ZipOutputStream zip = new ZipOutputStream(os);
+        ZipEntry zipEntry = new ZipEntry("dummy.pdf");
+        zip.putNextEntry(zipEntry);
+        zip.write(data, 0, data.length);
+        zip.closeEntry();
+        zip.close();
+
+        given(serviceMock.createDocuments("8.2.1"))
+            .willReturn(of(File.builder().data(os.toByteArray()).name("catalog_8.2.1.zip").build()));
+
+        given(mediaTypeProviderMock.apply("zip"))
+            .willReturn(APPLICATION_OCTET_STREAM);
+
+        // act
+        ResultActions actual = mockMvc.perform(get("/catalog/8.2.1/document"));
+
+        // assert
+        actual.andExpect(status().isOk())
+            .andExpect(header().string(CONTENT_DISPOSITION, ContentDisposition.builder(FORM_DATA).name(ATTACHMENT).filename("catalog_8.2.1.zip").build().toString()))
+            .andExpect(header().string(ACCESS_CONTROL_EXPOSE_HEADERS, CONTENT_DISPOSITION))
+            .andExpect(content().contentType(APPLICATION_OCTET_STREAM))
+            .andExpect(content().bytes(os.toByteArray()));
+
+        verify(mediaTypeProviderMock, times(1)).apply("zip");
     }
 }
 

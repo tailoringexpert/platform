@@ -23,7 +23,6 @@ package eu.tailoringexpert.domain;
 
 import org.junit.jupiter.api.Test;
 
-import java.time.ZonedDateTime;
 import java.util.Collections;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -37,8 +36,8 @@ class BaseCatalogVersionResourceTest {
         // act
         BaseCatalogVersionResource actual = new BaseCatalogVersionResource(
             "8.2.1",
-            ZonedDateTime.now(),
-            ZonedDateTime.now(),
+            "31.12.2022",
+            "31.12.2022",
             Boolean.TRUE,
             Collections.emptyList()
         );
@@ -54,7 +53,7 @@ class BaseCatalogVersionResourceTest {
         // act
         BaseCatalogVersionResource actual = new BaseCatalogVersionResource(
             "8.2.1",
-            ZonedDateTime.now(),
+            "31.12.2022",
             null,
             Boolean.TRUE,
             Collections.emptyList()

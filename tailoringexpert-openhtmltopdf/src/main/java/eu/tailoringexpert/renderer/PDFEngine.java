@@ -23,7 +23,6 @@ package eu.tailoringexpert.renderer;
 
 import com.openhtmltopdf.pdfboxout.PdfRendererBuilder;
 import eu.tailoringexpert.domain.File;
-import lombok.Getter;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
@@ -47,14 +46,7 @@ import static org.apache.pdfbox.io.MemoryUsageSetting.setupTempFileOnly;
 public class PDFEngine {
 
     @NonNull
-    private String creator;
-
-    /**
-     * Hauptpfad im Dateisystem für die Auflösung von relativen Resourcen.
-     */
-    @NonNull
-    @Getter
-    private String baseUri;
+    private RendererRequestConfigurationSupplier requestConfigurationSupplier;
 
     /**
      * Creates PDF using provided HTML String.
@@ -65,26 +57,34 @@ public class PDFEngine {
      * @return Die erzeugte "PA" File
      */
     public File process(@NonNull String docId, @NonNull String html, @NonNull String pathSuffix) {
+        log.traceEntry(() -> docId);
+
         try (PDDocument document = new PDDocument(setupTempFileOnly())) {
             ByteArrayOutputStream os = new ByteArrayOutputStream();
             PdfRendererBuilder builder = new PdfRendererBuilder();
 
             addColorProfile(builder);
 
+            RendererRequestConfiguration configuration = requestConfigurationSupplier.get();
             builder
-                .withHtmlContent(html, new java.io.File(format("%s/%s/", baseUri, pathSuffix)).toURI().toString())
-                .withProducer(creator)
+                .withHtmlContent(html, new java.io.File(format("%s/%s/", configuration.getTemplateHome(), pathSuffix)).toURI().toString())
+                .withProducer(configuration.getName())
                 .usePDDocument(document)
                 .toStream(os)
                 .run();
 
-            return File.builder()
+            File result = File.builder()
                 .name(docId + ".pdf")
                 .data(os.toByteArray())
                 .build();
+
+            log.traceExit();
+            return result;
         } catch (Exception e) {
             log.catching(e);
         }
+
+        log.traceExit();
         return null;
     }
 

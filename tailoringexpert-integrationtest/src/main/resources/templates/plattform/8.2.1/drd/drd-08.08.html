@@ -1,0 +1,232 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<head>
+    <title>DRD-08.08 - Installation Plan</title>
+
+    <link rel="stylesheet" href="../css/page.css"/>
+    <link rel="stylesheet" href="../css/drd.css"/>
+</head>
+<body>
+<div th:fragment="content" id="drd-08.08">
+    <table class="titel" aria-label="title">
+        <tbody>
+        <tr>
+            <td><h2>DRD-08.08 - Installation Plan</h2></td>
+        </tr>
+        </tbody>
+    </table>
+
+    <table class="reference" aria-label="reference">
+        <tbody>
+        <tr>
+            <td>Reference:</td>
+            <td>N/A</td>
+        </tr>
+        </tbody>
+    </table>
+
+    <table class="purpose" aria-label="purpose">
+        <tbody>
+        <tr>
+            <td>Purpose:</td>
+            <td>The (Software) Installation Plan describes the procedures for installing and configuring the software
+                application in the production environments, including preparations and conversion from existing systems.
+            </td>
+        </tr>
+        </tbody>
+    </table>
+
+    <table class="content" aria-label="content">
+        <tbody>
+        <tr>
+            <td>Content:</td>
+            <td>The content of the installation Plan is in detail:<br/>
+                <h4>Title</h4>
+                The document to be created based on this DRD shall be titled &quot;[insert a descriptive modifier]
+                Software Installation Plan&quot;.<br/>
+                The descriptive modifier shall be selected to clearly identify the applicable product and level
+                specification.
+                <h4>Title page</h4>
+                The title page for this document shall identify the project document identification number, title of the
+                document, date of release and release authority.
+                <h4>Contents list</h4>
+                The contents list shall identify the title and location of every clause and major subclause, figure,
+                table and annex contained in the document.
+                <h4>Foreword</h4>
+                A foreword shall be included in the document which describes as many of the following items:
+                <ul>
+                    <li>identification of which organizational entity prepared the document,</li>
+                    <li>information regarding the approval of the document,</li>
+                    <li>identification of other organizations that contributed to the preparation of the document,</li>
+                    <li>a statement of effectivity identifying which other documents are cancelled and replaced in whole
+                        or in part,
+                    </li>
+                    <li>a statement of significant technical differences between this document and any previous
+                        document,
+                    </li>
+                    <li>the relationship of the document to other standards or documents.</li>
+                </ul>
+                <h4>Introduction</h4>
+                An introduction may be included to provide specific information or commentary about the technical
+                contents.
+
+                <h4>1. Scope and applicability</h4>
+                This clause shall describe the scope, applicability, and purpose of the (Software) Installation Plan
+                document.
+                <h4>1.1 Scope</h4>
+                <ol type="a">
+                    <li>This subclause shall contain a statement to define the goal of the (Software) Installation
+                        Plan.
+                    </li>
+                    <li>This subclause shall:
+                        <ul>
+                            <li>identify the software products to be produced by name and allocated CI number and</li>
+                            <li>describe the main capabilities provided by the software product.</li>
+                        </ul>
+                    </li>
+                </ol>
+                <h4>1.2 Purpose</h4>
+                This subclause shall contain a statement to define the use of the (Software) Installation Plan.
+                <h4>1.3 Document organization</h4>
+                This subclause shall describe what the rest of the document contains and shall explain how the rest of
+                the document is organized.
+
+                <h4>2. References</h4>
+                This clause shall contain the following subclauses.
+                <h4>2.1 Normative references</h4>
+                This subclause shall contain the following statements:<br/>
+                &quot;This document incorporates, by dated or undated reference, provisions from other publications.
+                These normative references are cited at appropriate places in the text and publications are listed
+                hereafter. For dated references, subsequent amendments to, or revisions of, any of these apply to this
+                document only when incorporated in it by amendment or revision. For undated references, the latest
+                edition of the publication referred applies.<br/>
+                [insert document identifier] [insert document title].&quot;
+                <h4>2.2 Informative references</h4>
+                This subclause shall contain the following statement:<br/>
+                &quot;The following documents, although not a part of this software requirements specification document,
+                clarify its contents:<br/>
+                [insert document identifier] [insert document title].&quot;
+
+                <h4>3. Terms, definitions and abbreviated terms</h4>
+                This clause shall contain the following subclauses.
+                <h4>3.1 Terms and definitions</h4>
+                <ol style="list-style-type:lower-alpha">
+                    <li>This subclause shall list any applicable project dictionary or glossary, and all unusual terms
+                        or terms with a meaning specific to this (Software) Installation Plan, with the definition for
+                        each term.
+                    </li>
+                    <li>If a project dictionary or glossary is applicable the following sentence shall be inserted:<br/>
+                        &quot;The definitions of [insert title and identifier of applicable dictionaries or glossaries]
+                        apply to this document.&quot;
+                    </li>
+                    <li>In case of terms and definitions specific to the software requirements specification, the
+                        following sentence shall be inserted:<br/>
+                        &quot;The following terms and definitions are specific to this document:<br/>
+                        [insert term] [insert definition].&quot;
+                    </li>
+                </ol>
+                <h4>3.2 Abbreviated terms</h4>
+                This subclause shall list all abbreviations used in the software requirements specification with the
+                full meaning or phrase for each abbreviation.
+
+                <h4>4. Installation overview</h4>
+                This clause shall provide a general description of the installation process to provide a frame of
+                reference.
+                <h4>4.1 Installation process</h4>
+                This subclause shall include a list of sites for software installation, the schedule dates, the method
+                of installation, the operation, and the maintenance.
+                <h4>4.2 Environmental considerations</h4>
+                This subclause shall summarize:
+                <ul>
+                    <li>the physical environment of the target system,</li>
+                    <li>the hardware environment in the target system,</li>
+                    <li>the operating environment in the target system.</li>
+                </ul>
+                <h4>4.3 Support materials</h4>
+                This subclause shall list the type, source, and quantity of support materials needed for the
+                installation.
+                <h4>4.4 Training</h4>
+                This subclause shall describe the supplier&apos;s plans for training personnel who will operate and/or
+                use the software installed at customer sites.
+                <h4>4.5 Constraints</h4>
+                <ol style="list-style-type:lower-alpha">
+                    <li>This subclause shall describe any items that will limit the options for installation the
+                        software.
+                    </li>
+                    <li>It should provide background information and seek to justify the constraints.</li>
+                </ol>
+
+                <h4>5. Installation Plan</h4>
+                This clause describes all activities for installation of software.
+                <h4>5.x (Site name)</h4>
+                This subclause shall identify a site or set of sites and shall be divided into the following subclauses
+                to discuss those sites. Multiple sites may be discussed together when the information for those sites is
+                generally the same.
+                <h4>5.x.1 Schedule</h4>
+                This subclause shall present a schedule of tasks to be accomplished during installation. It shall depict
+                the tasks in chronological order with beginning and ending dates of each task and supporting narrative
+                as necessary.
+                <h4>5.x.2 Software inventory</h4>
+                This subclause shall provide an inventory of the software needed to support the installation. The
+                software shall be identified by name, identification number, version number, release number,
+                configuration, and security classification, as applicable. This paragraph shall indicate whether the
+                software is expected to be on site or will be delivered for the installation and shall identify any
+                software to be used only to facilitate the installation process.
+                <h4>5.x.3 Facilities</h4>
+                This subclause shall detail the physical facilities and accommodations needed during the installation
+                period. This description shall include the following, as applicable:
+                <ol style="list-style-type:lower-alpha">
+                    <li>Classroom, work space, and training aids needed, specifying hours per day, number of days, and
+                        shifts
+                    </li>
+                    <li>Hardware that must be operational and available</li>
+                    <li>Transportation and lodging for the installation team.</li>
+                </ol>
+                <h4>5.x.4 Installation team</h4>
+                This subclause shall describe the composition of the installation team with the number, type, and skill
+                level of the personnel needed during the installation period, including the need for multishift
+                operation. Each team member's tasks shall be defined.
+                <h4>5.x.5 Installation procedures</h4>
+                This subclause shall provide step-by-step procedures for accomplishing the installation. References may
+                be made to other documents, such as software user manual. Safety precautions, marked by WARNING or
+                CAUTION, shall be included where applicable. The procedures shall include the following, as applicable:
+                <ol style="list-style-type:lower-alpha">
+                    <li>Entry and exit criteria</li>
+                    <li>Installing the software</li>
+                    <li>Test of installed software</li>
+                    <li>Initializing databases and other software with site-specific data</li>
+                    <li>Conversion from the current system, possibly involving running in parallel</li>
+                    <li>Dry run of the procedures in software user manual</li>
+                    <li>Backup procedure.</li>
+                </ol>
+                <h4>5.x.6 Data update procedures</h4>
+                This subclause shall present the data update procedures to be followed during the installation period.
+                When the data update procedures are the same as normal updating or processing procedures, reference may
+                be made to other documents, such as software user manual.
+
+                <h4>6. Traceability</h4>
+                <ol style="list-style-type:lower-alpha">
+                    <li>This subclause shall report the traceability matrices from the upper level specification
+                        requirements to the requirements contained in clause 5 and from the requirements contained in
+                        clause 5 to the upper level applicable specification (forward and backward traceability tables).
+                    </li>
+                    <li>In case this information is separately provided in the DJF, reference to this documentation
+                        shall be clearly stated.
+                    </li>
+                </ol>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+
+    <table class="format" aria-label="format">
+        <tbody>
+        <tr>
+            <td>Format:</td>
+            <td>In-House</td>
+        </tr>
+        </tbody>
+    </table>
+    </div>
+</body>
+</html>

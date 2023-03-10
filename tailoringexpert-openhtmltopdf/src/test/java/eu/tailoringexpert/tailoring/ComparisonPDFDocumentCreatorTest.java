@@ -37,12 +37,14 @@ import eu.tailoringexpert.domain.Tailoring;
 import eu.tailoringexpert.domain.TailoringRequirement;
 import eu.tailoringexpert.renderer.HTMLTemplateEngine;
 import eu.tailoringexpert.renderer.PDFEngine;
+import eu.tailoringexpert.renderer.RendererRequestConfiguration;
+import eu.tailoringexpert.renderer.RendererRequestConfigurationSupplier;
 import eu.tailoringexpert.renderer.ThymeleafTemplateEngine;
 import io.github.cdimascio.dotenv.Dotenv;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.thymeleaf.spring5.SpringTemplateEngine;
+import org.thymeleaf.spring6.SpringTemplateEngine;
 import org.thymeleaf.templateresolver.FileTemplateResolver;
 
 import java.io.InputStream;
@@ -51,7 +53,6 @@ import java.util.Collections;
 import java.util.List;
 import java.util.logging.Level;
 
-import static java.nio.file.Paths.get;
 import static java.util.Objects.nonNull;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.catchException;
@@ -89,12 +90,14 @@ class ComparisonPDFDocumentCreatorTest {
         SpringTemplateEngine springTemplateEngine = new SpringTemplateEngine();
         springTemplateEngine.addTemplateResolver(fileTemplateResolver);
 
-        HTMLTemplateEngine templateEngine = new ThymeleafTemplateEngine(springTemplateEngine);
+        RendererRequestConfigurationSupplier supplier = () -> RendererRequestConfiguration.builder()
+            .id("unittest")
+            .name("TailoringExpert")
+            .templateHome(this.templateHome)
+            .build();
+        HTMLTemplateEngine templateEngine = new ThymeleafTemplateEngine(springTemplateEngine, supplier);
 
-        this.creator = new ComparisonPDFDocumentCreator(
-            templateEngine,
-            new PDFEngine("TailoringExpert", get(this.templateHome).toAbsolutePath().toString())
-        );
+        this.creator = new ComparisonPDFDocumentCreator(templateEngine, new PDFEngine(supplier));
     }
 
     @Test

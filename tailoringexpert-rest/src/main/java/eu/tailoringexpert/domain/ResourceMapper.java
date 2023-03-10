@@ -42,15 +42,18 @@ import org.mapstruct.MappingTarget;
 import org.springframework.hateoas.Link;
 import org.springframework.hateoas.UriTemplate;
 
+import java.util.LinkedHashSet;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
-import java.util.stream.Collectors;
 
 import static java.util.Arrays.asList;
 import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
+import static java.util.stream.Collectors.groupingBy;
 import static java.util.stream.Collectors.joining;
+import static java.util.stream.Collectors.mapping;
+import static java.util.stream.Collectors.toCollection;
 import static org.springframework.hateoas.server.mvc.BasicLinkBuilder.linkToCurrentMapping;
 
 @Mapper
@@ -63,6 +66,7 @@ public abstract class ResourceMapper {
     public static final String PROJECT_SELECTIONVECTOR = "project/{project}/selectionvector";
     public static final String PROJECT_SCREENINGSHEET = "project/{project}/screeningsheet";
     public static final String PROJECT_SCREENINGSHEET_PDF = "project/{project}/screeningsheet/pdf";
+    public static final String PROJECT_STATE = "project/{project}/state/{state}";
     public static final String TAILORINGREQUIRMENT = "project/{project}/tailoring/{tailoring}/catalog/{chapter}/{requirement}";
     public static final String TAILORINGREQUIRMENT_SELECTED = "project/{project}/tailoring/{tailoring}/catalog/{chapter}/{requirement}/selected/{selected}";
     public static final String TAILORINGREQUIRMENT_TEXT = "project/{project}/tailoring/{tailoring}/catalog/{chapter}/{requirement}/text";
@@ -92,6 +96,8 @@ public abstract class ResourceMapper {
     public static final String BASECATALOG_VERSION = "catalog/{version}";
     public static final String BASECATALOG_VERSION_PDF = "catalog/{version}/pdf";
     public static final String BASECATALOG_VERSION_JSON = "catalog/{version}/json";
+
+    public static final String BASECATALOG_VERSION_DOCUMENT = "catalog/{version}/document";
 
     public static final String SCREENINGSHEET = "screeningsheet";
     public static final String SELECTIONVECTOR_PROFILE = "selectionvector";
@@ -125,6 +131,7 @@ public abstract class ResourceMapper {
     }
 
     @Mapping(target = "standard", expression = "java( domain.getValidUntil() == null)")
+    @Mapping(target = "validFrom", source = "validFrom", dateFormat = "dd.MM.yyyy")
     public abstract BaseCatalogVersionResource toResource(@Context PathContextBuilder pathContext, BaseCatalogVersion domain);
 
     @AfterMapping
@@ -136,7 +143,8 @@ public abstract class ResourceMapper {
             linkToCurrentMapping().slash(resolveParameter(PROJECT_NEW, context.parameter())).withRel(PROJECTS),
             createLink(REL_SELF, baseUri, BASECATALOG_VERSION, parameter),
             createLink(REL_PDF, baseUri, BASECATALOG_VERSION_PDF, parameter),
-            createLink(REL_JSON, baseUri, BASECATALOG_VERSION_JSON, parameter)
+            createLink(REL_JSON, baseUri, BASECATALOG_VERSION_JSON, parameter),
+            createLink(REL_DOCUMENT, baseUri, BASECATALOG_VERSION_DOCUMENT, parameter)
         ));
     }
 
@@ -144,6 +152,7 @@ public abstract class ResourceMapper {
     @BeforeMapping
     protected void updatePathContext(@Context PathContextBuilder pathContext, ProjectInformation domain) {
         pathContext.project(nonNull(domain) ? domain.getIdentifier() : null);
+        pathContext.projectState(nonNull(domain) ? domain.getState().nextState().name() : null);
     }
 
     @Mapping(target = "name", source = "identifier")
@@ -154,13 +163,15 @@ public abstract class ResourceMapper {
     protected void addLinks(@Context PathContextBuilder pathContext, @MappingTarget ProjectResourceBuilder resource) {
         PathContext context = pathContext.build();
         Map<String, String> parameter = context.parameter();
+        parameter.put(REL_STATE, parameter.get("projectstate"));
 
         String baseUri = linkToCurrentMapping().toString();
         resource.links(asList(
             createLink(REL_SELF, baseUri, PROJECT, parameter),
             createLink(REL_SELECTIONVECTOR, baseUri, PROJECT_SELECTIONVECTOR, parameter),
             createLink(REL_SCREENINGSHEET, baseUri, PROJECT_SCREENINGSHEET, parameter),
-            createLink(REL_TAILORING, baseUri, TAILORINGS, parameter)
+            createLink(REL_TAILORING, baseUri, TAILORINGS, parameter),
+            createLink(REL_STATE, baseUri, PROJECT_STATE, parameter)
         ));
     }
 
@@ -179,7 +190,7 @@ public abstract class ResourceMapper {
     protected void updatePathContext(@Context PathContextBuilder pathContext, TailoringInformation domain) {
         pathContext.tailoring(nonNull(domain) ? domain.getName() : null);
         pathContext.catalog(nonNull(domain) ? domain.getCatalogVersion() : null);
-        pathContext.state(nonNull(domain) ? domain.getState().nextState().name() : null);
+        pathContext.tailoringState(nonNull(domain) ? domain.getState().nextState().name() : null);
     }
 
     public abstract TailoringResource toResource(@Context PathContextBuilder pathContext, TailoringInformation domain);
@@ -188,6 +199,7 @@ public abstract class ResourceMapper {
     public void addLinks(@Context PathContextBuilder pathContext, @MappingTarget TailoringResourceBuilder resource) {
         PathContext context = pathContext.build();
         Map<String, String> parameter = context.parameter();
+        parameter.put(REL_STATE, parameter.get("tailoringstate"));
 
         String baseUri = linkToCurrentMapping().toString();
         resource.links(asList(
@@ -237,20 +249,28 @@ public abstract class ResourceMapper {
             return List.of();
         }
 
-        return parameters.stream()
-            .collect(Collectors.groupingBy(ScreeningSheetParameter::getCategory))
-            .entrySet()
+        // "persist" order of original provided categories
+        LinkedHashSet<String> orderedCategories = parameters.stream()
+            .map(ScreeningSheetParameter::getCategory)
+            .collect(toCollection(LinkedHashSet::new));
+
+        // construct "easily" concatination of values of each category
+        Map<String, String> category2ValueString = parameters.stream()
+            .collect(groupingBy(
+                ScreeningSheetParameter::getCategory,
+                mapping(parameter -> parameter.getValue().toString(), joining("; "))
+            ));
+
+        // create parameter in originally provided order
+        return orderedCategories
             .stream()
-            .map(entry -> ScreeningSheetParameterResource.builder()
-                .label(entry.getKey())
-                .value(entry.getValue()
-                    .stream()
-                    .map(ScreeningSheetParameter::getValue)
-                    .map(Objects::toString)
-                    .collect(joining("; ")))
-                .build()
+            .map(category ->
+                ScreeningSheetParameterResource.builder()
+                    .label(category)
+                    .value(category2ValueString.get(category))
+                    .build()
             )
-            .collect(Collectors.toList());
+            .collect(toCollection(LinkedList::new));
     }
 
     // Tailoring

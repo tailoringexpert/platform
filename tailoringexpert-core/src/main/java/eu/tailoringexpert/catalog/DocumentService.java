@@ -27,6 +27,7 @@ import eu.tailoringexpert.domain.Catalog;
 import eu.tailoringexpert.domain.File;
 
 import java.time.LocalDateTime;
+import java.util.Collection;
 import java.util.Optional;
 
 /**
@@ -45,5 +46,14 @@ public interface DocumentService {
      * @return created document file
      */
     Optional<File> createCatalog(Catalog<BaseRequirement> catalog, LocalDateTime creationTimestamp);
+
+    /**
+     * Creates all documents belonging to a base catalof.
+     *
+     * @param catalog           base catalog data for document creation
+     * @param creationTimestamp timestamp of document creation
+     * @return created document {@code zip-file}
+     */
+    Collection<File> createAll(Catalog<BaseRequirement> catalog, LocalDateTime creationTimestamp);
 
 }

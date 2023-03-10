@@ -24,9 +24,12 @@ package eu.tailoringexpert.catalog;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import eu.tailoringexpert.Tenants;
 import eu.tailoringexpert.domain.ResourceMapper;
+import eu.tailoringexpert.renderer.HTMLTemplateEngine;
+import eu.tailoringexpert.renderer.PDFEngine;
 import eu.tailoringexpert.repository.BaseCatalogRepository;
 import eu.tailoringexpert.repository.DRDRepository;
 import eu.tailoringexpert.repository.LogoRepository;
+import eu.tailoringexpert.repository.SelectionVectorProfileRepository;
 import lombok.NonNull;
 import org.springframework.beans.factory.ListableBeanFactory;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -78,10 +81,42 @@ public class CatalogConfiguration {
     }
 
     @Bean
+    JPADocumentServiceRepositoryMapper documentServiceRepositoryMapper() {
+        return new JPADocumentServiceRepositoryMapperImpl();
+    }
+
+    @Bean
+    DocumentServiceRepository documentServiceRepository(
+        @NonNull JPADocumentServiceRepositoryMapper mapper,
+        @NonNull SelectionVectorProfileRepository selectionVectorProfileRepository) {
+        return new JPADocumentServiceRepository(mapper, selectionVectorProfileRepository);
+    }
+
+    @Bean
     @Primary
     DocumentService catalogDocumentService(@NonNull ListableBeanFactory beanFactory) {
         Map<String, DocumentService> services = Tenants.get(beanFactory, DocumentService.class);
         return new TenantDocumentService(services);
     }
+
+    @Bean
+    BaseCatalogPDFDocumentCreator baseCatalogPDFDocumentCreator(
+        @NonNull HTMLTemplateEngine templateEngine,
+        @NonNull PDFEngine pdfEngine) {
+        return new BaseCatalogPDFDocumentCreator(templateEngine, pdfEngine);
+    }
+
+    @Bean
+    DRDProvider baseDRDdProvider() {
+        return new DRDProvider();
+    }
+
+    @Bean
+    BaseDRDPDFDocumentCreator baseDRDPDFDocumentCreator(@NonNull HTMLTemplateEngine templateEngine,
+                                                        @NonNull PDFEngine pdfEngine,
+                                                        @NonNull DRDProvider drdProvider) {
+        return new BaseDRDPDFDocumentCreator(templateEngine, pdfEngine, drdProvider);
+    }
+
 
 }

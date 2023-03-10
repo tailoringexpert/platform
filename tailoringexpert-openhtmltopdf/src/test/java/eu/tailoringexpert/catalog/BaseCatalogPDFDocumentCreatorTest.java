@@ -34,6 +34,7 @@ import eu.tailoringexpert.domain.Catalog;
 import eu.tailoringexpert.domain.File;
 import eu.tailoringexpert.renderer.HTMLTemplateEngine;
 import eu.tailoringexpert.renderer.PDFEngine;
+import eu.tailoringexpert.renderer.RendererRequestConfiguration;
 import eu.tailoringexpert.renderer.ThymeleafTemplateEngine;
 import io.github.cdimascio.dotenv.Dotenv;
 import lombok.extern.log4j.Log4j2;
@@ -42,7 +43,7 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockserver.client.MockServerClient;
-import org.thymeleaf.spring5.SpringTemplateEngine;
+import org.thymeleaf.spring6.SpringTemplateEngine;
 import org.thymeleaf.templateresolver.FileTemplateResolver;
 
 import java.io.InputStream;
@@ -106,11 +107,24 @@ class BaseCatalogPDFDocumentCreatorTest {
         SpringTemplateEngine springTemplateEngine = new SpringTemplateEngine();
         springTemplateEngine.addTemplateResolver(fileTemplateResolver);
 
-        HTMLTemplateEngine templateEngine = new ThymeleafTemplateEngine(springTemplateEngine);
+        HTMLTemplateEngine templateEngine = new ThymeleafTemplateEngine(
+            springTemplateEngine,
+            () -> RendererRequestConfiguration.builder()
+                .id("unittest")
+                .name("plattform")
+                .templateHome(this.templateHome)
+                .build()
+        );
 
         this.creator = new BaseCatalogPDFDocumentCreator(
             templateEngine,
-            new PDFEngine("TailoringExpert", get(this.templateHome).toAbsolutePath().toString())
+            new PDFEngine(
+                () -> RendererRequestConfiguration.builder()
+                    .id("plattform")
+                    .name("TailoringExpert")
+                    .templateHome(get(this.templateHome).toAbsolutePath().toString())
+                    .build()
+            )
         );
     }
 
@@ -126,7 +140,7 @@ class BaseCatalogPDFDocumentCreatorTest {
         webServerPortConsumer.accept(catalog);
 
         LocalDateTime now = LocalDateTime.now();
-        Map<String, String> platzhalter = new HashMap<>();
+        Map<String, Object> platzhalter = new HashMap<>();
         platzhalter.put("PROJEKT", "SAMPLE");
         platzhalter.put("DATUM", now.format(DateTimeFormatter.ofPattern("dd.MM.YYYY")));
         platzhalter.put("DOKUMENT", "DUMMY-XY-Z-1940/DV7");
@@ -159,7 +173,7 @@ class BaseCatalogPDFDocumentCreatorTest {
         Catalog<BaseRequirement> catalog = Catalog.<BaseRequirement>builder().build();
 
         LocalDateTime now = LocalDateTime.now();
-        Map<String, String> platzhalter = new HashMap<>();
+        Map<String, Object> platzhalter = new HashMap<>();
         platzhalter.put("PROJEKT", "SAMPLE");
         platzhalter.put("DATUM", now.format(DateTimeFormatter.ofPattern("dd.MM.YYYY")));
         platzhalter.put("DOKUMENT", "DUMMY-XY-Z-1940/DV7");
@@ -183,7 +197,7 @@ class BaseCatalogPDFDocumentCreatorTest {
             });
         }
 
-        Map<String, String> platzhalter = new HashMap<>();
+        Map<String, Object> platzhalter = new HashMap<>();
 
         // act
         Throwable actual = catchThrowable(() -> creator.createDocument(null, catalog, platzhalter));
@@ -195,7 +209,7 @@ class BaseCatalogPDFDocumentCreatorTest {
     @Test
     void createDocument_BaseCatalogNull_NullPointerExceptionThrown() throws Exception {
         // arrange
-        Map<String, String> platzhalter = new HashMap<>();
+        Map<String, Object> platzhalter = new HashMap<>();
 
         // act
         Throwable actual = catchThrowable(() -> creator.createDocument("4711", null, platzhalter));

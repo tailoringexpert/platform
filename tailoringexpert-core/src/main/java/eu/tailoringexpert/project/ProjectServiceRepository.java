@@ -25,6 +25,7 @@ import eu.tailoringexpert.domain.BaseRequirement;
 import eu.tailoringexpert.domain.Catalog;
 import eu.tailoringexpert.domain.Project;
 import eu.tailoringexpert.domain.ProjectInformation;
+import eu.tailoringexpert.domain.ProjectState;
 import eu.tailoringexpert.domain.ScreeningSheet;
 import eu.tailoringexpert.domain.Tailoring;
 
@@ -106,8 +107,23 @@ public interface ProjectServiceRepository {
      * Load all extracted data of screeningsheet.<p>
      * <strong>Raw data (file) not part of result!</strong>
      *
-     * @param project dentifier of project to get screeningsheet of
+     * @param project identifier of project to get screeningsheet of
      * @return ScreeningSheet data without file raw data
      */
     Optional<ScreeningSheet> getScreeningSheet(String project);
+
+    /**
+     * Updates state of project.
+     *
+     * @param project project to update state of
+     * @param state   state to set
+     */
+    Optional<ProjectInformation> updateState(String project, ProjectState state);
+
+    /**
+     * Checks, if project already exists
+     * @param project identifier to project to check
+     * @return true if identifier is used by an existing project
+     */
+    boolean isExistingProject(String project);
 }

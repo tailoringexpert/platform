@@ -23,6 +23,7 @@ package project {
         addTailoring(project : String, catalog : String, screeningSheetData : byte[], applicableSelectionVector : SelectionVector, note : String) : Optional<Tailoring>
         copyProject(project : String, screeningSheet: byte[]) : Optional<Project>
         deleteProject(project : String) : boolean
+        updateState(project : String, state : ProjectState) : Optional<ProjectInformation>
     }
 
     interface ProjectServiceRepository {
@@ -36,6 +37,7 @@ package project {
         getProjectInformation(project : String) : Optional<ProjectInformation>
         getScreeningSheetFile(project : String) : Optional<byte[]>
         getScreeningSheet(project : String) : Optional<ScreeningSheet>
+        updateState(project : String, state : ProjectState) : Optional<ProjectInformation>
     }
 
     class ProjectServiceImpl {

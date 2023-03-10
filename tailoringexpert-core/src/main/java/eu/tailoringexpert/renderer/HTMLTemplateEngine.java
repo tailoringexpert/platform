@@ -46,7 +46,7 @@ public interface HTMLTemplateEngine {
      * @param placeholders placeholders to replace in text
      * @return valid XHTML
      */
-    String toXHTML(String text, Map<String, String> placeholders);
+    String toXHTML(String text, Map<String, Object> placeholders);
 
 
 }

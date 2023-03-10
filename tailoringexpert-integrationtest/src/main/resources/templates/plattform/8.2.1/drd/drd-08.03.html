@@ -1,0 +1,355 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<head>
+    <title>DRD-08.03 - Software [Verification / Acceptance Test] Plan</title>
+
+    <link rel="stylesheet" href="tailoring.css"/>
+    <link rel="stylesheet" href="drd.css"/>
+</head>
+<body>
+<div th:fragment="content" id="drd-08.03">
+    <table class="titel" aria-label="title">
+        <tbody>
+        <tr>
+            <td><h2>DRD-08.03 - Software [Verification / Acceptance Test] Plan</h2></td>
+        </tr>
+        </tbody>
+    </table>
+
+
+    <table class="reference" aria-label="reference">
+        <tbody>
+        <tr>
+            <td rowspan="2"><strong><span>Reference:</span></strong></td>
+            <td>ECSS-E-ST-40C</td>
+            <td>Space engineering - Software</td>
+        </tr>
+        <tr>
+            <td>ECSS-Q-ST-80C</td>
+            <td>Space product assurance - Software product assurance</td>
+        </tr>
+        </tbody>
+    </table>
+
+    <table class="purpose" aria-label="purpose">
+        <tbody>
+        <tr>
+            <td>Purpose:</td>
+            <td>The Software [Verification / Acceptance Test] Plan describes the approach and the organization aspects
+                to implement the software verification / acceptance activities.
+            </td>
+        </tr>
+        </tbody>
+    </table>
+
+    <table class="content" aria-label="content">
+        <tbody>
+        <tr>
+            <td>Content:</td>
+            <td>
+                <h4>Title</h4>
+                The Software [Verification / Acceptance Test] Plan to be created on this DRD shall be titled as one of
+                the following:
+                <ul>
+                    <li>[insert a descriptive modifier] Software Verification Plan,</li>
+                    <li>[insert a descriptive modifier] Software Acceptance Test Plan</li>
+                </ul>
+                The descriptive modifier shall be selected to clearly identify the applicable product and level
+                specification.
+
+                <h4>Title page</h4>
+                The title page shall identify the project document identification number, title of the document, date of
+                release and release authority.
+
+                <h4>Contents list</h4>
+                The content list shall identify the title and location of every clause and major subclause, figure,
+                table and annex contained in the document.
+
+                <h4>Foreword</h4>
+                A foreword shall be included in the document which describes as many of the following items as are
+                appropriate:
+                <ul>
+                    <li>identification of which organizational entity prepared the document,</li>
+                    <li>information regarding the approval of the document,</li>
+                    <li>identification of other organizations that contributed to the preparation of the document,</li>
+                    <li>a statement of effectivity identifying which other documents are cancelled and replaced in whole
+                        or in part,
+                    </li>
+                    <li>a statement of significant technical differences between this document and any previous
+                        document,
+                    </li>
+                    <li>the relationship of the document to other standards or documents.</li>
+                </ul>
+
+                <h4>Introduction</h4>
+                An introduction may be included to provide specific information or commentary about the technical
+                contents.
+
+                <h4>1 Scope and applicability</h4>
+                This clause shall describe the scope, applicability and purpose of the Software [Verification /
+                Acceptance Test] Plan.
+
+                <h4>1.1 Scope</h4>
+                This subclause shall contain a statement to define the goal of the Software [Verification / Acceptance
+                Test] Plan.
+
+                <h4>1.2 Applicability</h4>
+                <ol start="1" style="list-style-type:lower-alpha">
+                    <li>This subclause shall contain a statement to define the use of the Software [Verification /
+                        Acceptance Test] Plan
+                    </li>
+                    <li>This subclause shall briefly define the purpose of this Software [Verification / Acceptance
+                        Test] Plan:
+                        <ul>
+                            <li>identify the software project (and the actual software items) for which this Software
+                                [Verification / Acceptance Test] Plan is written;
+                            </li>
+                            <li>identify the software products (documentation and code) to be verified and the
+                                documentation against which these will be verified;
+                            </li>
+                            <li>outline the goals of the verification / acceptance activities;</li>
+                            <li>specify the intended readers of this Software [Verification / Acceptance Test] Plan.
+                            </li>
+                        </ul>
+                    </li>
+                </ol>
+                <h4>1.3 Document organization</h4>
+                This subclause shall describe what the rest of the document contains and explain how the rest of
+                the
+                document is organized.
+
+                <h4>2 References</h4>
+                This clause shall describe the references content.
+
+                <h4>2.1 Normative references</h4>
+                This subclause shall contain the following statements:<br/>
+                "This document incorporates, by dated or undated reference, provisions from other publications.
+                These normative references are cited at appropriate places in the text and publications are listed
+                hereafter. For dated references, subsequent amendments to, or revisions of, any of these apply to this
+                document only when incorporated in it by amendment or revision. For undated references, the latest
+                edition of the publication referred applies.<br/>
+                [insert document identifier] [insert document title]."
+
+                <h4>2.2 Informative references</h4>
+                This subclause shall contain the following statement:<br/>
+                "The following documents, although not a part of this Software [Verification / Acceptance Test] Plan,
+                clarify its contents:<br/>
+                [insert document identifier] [insert document title]."
+
+                <h4>3 Terms, definitions and abbreviated terms</h4>
+                This clause shall contain the following subclauses:
+
+                <h4>3.1 Terms and definitions</h4>
+                <ol style="list-style-type:lower-alpha">
+                    <li>This subclause shall list any applicable project dictionary or glossary, and all unusual
+                        terms or terms with a meaning specific to this Software [Verification / Acceptance Test] Plan,
+                        with the definition for each term.
+                    </li>
+                    <li>If a project dictionary or glossary is applicable the following sentence shall be inserted:<br/>
+                        "The definitions of [insert title and identifier of applicable dictionaries or glossaries] apply
+                        to this document."
+                    </li>
+                    <li>In case of terms and definitions specific to the Software [Verification / Acceptance Test] Plan,
+                        the following sentence shall be inserted:<br/>
+                        "The following terms and definitions are specific to this document:<br/>
+                        [insert term] [insert definition]."
+                    </li>
+                </ol>
+
+                <h4>3.2 Abbreviated terms</h4>
+                This subclause shall list all abbreviations used in the Software [Verification / Acceptance Test] Plan
+                with the full meaning or phrase for each abbreviation.
+
+                <h4>4 Software verification / acceptance process overview</h4>
+                This clause shall describe the approach to be utilized to implement the verification / acceptance
+                process throughout the software life cycle, the required verification / acceptance effort, and
+                the level of required independence for the verification / acceptance tasks.
+
+                <h4>4.1 Organization</h4>
+                <ol style="list-style-type:lower-alpha">
+                    <li>This subclause shall describe the organization of the documentation review, proofs, tracing
+                        activities.
+                    </li>
+                    <li>Topics that shall be included are:
+                        <ul>
+                            <li>roles,</li>
+                            <li>reporting channels;</li>
+                            <li>levels of authority for resolving problems;</li>
+                            <li>organization relationships;</li>
+                            <li>level of required and implemented independence.</li>
+                        </ul>
+                    </li>
+                </ol>
+
+                <h4>4.2 Master schedule</h4>
+                <ol start="1" style="list-style-type:lower-alpha">
+                    <li>This subclause shall identify the schedule for the planned verification / acceptance activities.
+                    </li>
+                    <li>Information about reviews shall also be included.</li>
+                </ol>
+
+                <h4>4.3 Resource summary</h4>
+                This subclause shall summarize the resources needed to perform the verification / acceptance activities
+                such as staff, hardware and software tools.
+
+                <h4>4.4 Responsibilities</h4>
+                This subclause shall define the specific responsibilities.
+
+                <h4>4.5 Tools, techniques and methods</h4>
+                This subclause shall identify the software tools, techniques and methods used to execute the
+                verification / acceptance tasks throughout the software life cycle.
+
+                <h4>5 Control procedures for verification / acceptance process</h4>
+                This clause shall contain information (or reference to) about applicable management procedures
+                concerning the following aspects:
+                <ul>
+                    <li>problem reporting and resolution;</li>
+                    <li>deviation/waiver policy;</li>
+                    <li>control procedures</li>
+                </ul>
+
+                <h4>6 Verification / acceptance activities</h4>
+                <ol style="list-style-type:lower-alpha">
+                    <li>For each of the tasks pertaining to the verification / acceptance process, this clause shall
+                        describe which methods, tools, facilities are utilized and which outputs have to be produced.
+                        This includes the identification of internal reviews, walkthrough, inspections, etc.
+                    </li>
+                    <li>When the need of utilization of specific methods and tools is identified (e.g. formal proof), it
+                        shall be specified.
+                    </li>
+                    <li>This clause shall be structured in the following subclauses and each one should contain the
+                        above specified information per each software item under verification / acceptance.
+                    </li>
+                </ol>
+
+                <h4>6.1 Software requirements engineering process verification / acceptance</h4>
+                This subclause shall be organized as follows:
+
+                <h4>6.1.1 Activities<br/></h4>
+                This subclause shall list the verification / acceptance activities to be performed for this software
+                process and how these are accomplished.
+
+                <h4>6.1.2 Inputs</h4>
+                This subclause shall list the required inputs (e.g. draft SRS, draft software architectural design)
+                to accomplish the verification / acceptance activities for this software process.
+
+                <h4>6.1.3 Outputs</h4>
+                This subclause shall list the intermediate and final outputs (e.g. software verification / acceptance
+                requirements report, software architectural design to requirements traceability) documenting the
+                performed verification / acceptance activities for this software process.
+
+                <h4>6.1.4 Methodology, tools and facilities</h4>
+                This subclause shall identify the methodologies, tools and facilities utilized to accomplish the
+                verification / acceptance activities.
+
+                <h4>6.2 Software design engineering process verification / acceptance</h4>
+                This subclause shall be organized as follows:
+
+                <h4>6.2.1 Activities</h4>
+                This subclause shall list the verification / acceptance activities to be performed for this software
+                process and how these are accomplished.
+
+                <h4>6.2.2 Inputs</h4>
+                This subclause shall list the required inputs (e.g. software components design, code, software user
+                manual, software integration test plan) to accomplish the verification / acceptance activities for
+                this software process.
+
+                <h4>6.2.3 Outputs</h4>
+                This subclause shall list the intermediate and final outputs (e.g. software code verification /
+                acceptance report, evaluation of software validation testing specification) documenting the performed
+                verification / acceptance activities for this software process.
+
+                <h4>6.2.4 Methodology, tools and facilities</h4>
+                This subclause shall identify the methodologies, tools and facilities utilized to accomplish the
+                verification / acceptance activities.
+
+                <h4>6.3 Software validation and acceptance process verification / acceptance</h4>
+                This subclause shall be organized as follows:
+
+                <h4>6.3.1 Activities</h4>
+                This subclause shall list the verification / acceptance activities to be performed for this software
+                process and how these are accomplished.
+
+                <h4>6.3.2 Inputs</h4>
+                This subclause shall list the required inputs (e.g. software validation specification with respect to
+                the requirements baseline) to accomplish the verification / acceptance activities for this software
+                process.
+
+                <h4>6.3.3 Outputs</h4>
+                This subclause shall list the intermediate and final outputs (e.g. software validation testing
+                specification with respect to the requirements baseline) documenting the performed verification /
+                acceptance activities for this software process.
+
+                <h4>6.3.4 Methodology, tools and facilities</h4>
+                This subclause shall identify the methodologies, tools and facilities utilized to accomplish the
+                verification / acceptance activities.
+
+                <h4>6.4 Software product assurance process verification / acceptance</h4>
+                This subclause shall be organized as follows:
+
+                <h4>6.4.1 Activities</h4>
+                This subclause shall list the verification / acceptance activities to be performed for this software
+                process (e.g. review of the traceability matrices) and how these are accomplished.
+
+                <h4>6.4.2 Inputs</h4>
+                This subclause shall list the required inputs (e.g. tests results to be checked to verify the required
+                coverage has been met) to accomplish the verification / acceptance activities for this software process.
+
+                <h4>6.4.3 Outputs</h4>
+                This subclause shall list the intermediate and final outputs (e.g. contribution to the software product
+                assurance reports, contribution to metrics) documenting the performed verification / acceptance
+                activities for this software process.
+
+                <h4>6.4.4 Methodology, tools and facilities</h4>
+                This subclause shall identify the methodologies, tools and facilities utilized to accomplish the
+                software product assurance verification / acceptance activities.
+
+                <h4>7 Software verification / acceptance reporting</h4>
+                <ol style="list-style-type:lower-alpha">
+                    <li>This clause shall describe how the results of implementing then will be documented reports
+                        produced by the implementation of the verification / acceptance process shall be identified.
+                    </li>
+                    <li>The reports identified in ECSS-E-40 part1 and ECSS-Q-80 shall be referenced, as implemented by
+                        the specific software project for which this plan is written as well as any problem report
+                        mechanism adopted (e.g. utilization of RID from or problem report form).
+                    </li>
+                    <li>Forwarding procedure of this documentation to the customer shall be also addressed.</li>
+                </ol>
+
+                <h4>8. Software quality requirements verification (as per ECSS-Q-ST-80 clause 6.2.6.1)</h4>
+
+                <h4>8.1 Activities</h4>
+                This subclause shall list the verification activities to be performed and how these are
+                accomplished.
+                <p class="note">
+                Verification includes various techniques such as review, inspection, testing, walk-through,
+                cross-reading, desk-checking, model simulation, and many types of analysis such as traceability
+                analysis, formal proof or fault tree analysis.
+                </p>
+
+                <h4>8.2 Inputs</h4>
+                This subclause shall list the required inputs to accomplish the verification activities.
+
+                <h4>8.3 Outputs</h4>
+                This subclause shall list the intermediate and final outputs documenting the performed verification
+                activities.
+
+                <h4>8.4 Methodology, tools and facilities</h4>
+                This subclause shall describe the methodologies, tools and facilities utilized to accomplish the
+                software quality requirements verification activities.
+            </td>
+        </tr>
+        </tbody>
+    </table>
+
+    <table class="format" aria-label="format">
+        <tbody>
+        <tr>
+            <td><strong><span>Format:</span></strong></td>
+            <td>In-house</td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+</body>
+</html>

@@ -36,6 +36,7 @@ package project {
         +copyProject(project : String, screeningSheet : MultipartFile) : ResponseEntity<EntityModel<ProjectResource>>
         +postTailoring(project : String, request : ProjektAnlageRequest) : ResponseEntity<Void>
         +getSelectionVector(project : String) : ResponseEntity<EntityModel<SelectionVectorResource>>
+        +putState(project : String, state : ProjectState) : ResponseEntity<EntityModel<ProjectResource>>
     }
     ProjectController --> "1" ResourceMapper : mapper
     ProjectController --> "1" ProjectService : projectService

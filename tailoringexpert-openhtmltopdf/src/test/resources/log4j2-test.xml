@@ -37,15 +37,16 @@
                 <Pattern>%m%n</Pattern>
             </PatternLayout>
         </File>
+
         <Console name="STDOUT" target="SYSTEM_OUT">
-            <PatternLayout pattern="%m%n"/>
+            <PatternLayout pattern="[%c] %M | %m%n"/>
         </Console>
     </Appenders>
 
     <Loggers>
         <!-- Loggers -->
-        <Logger name="eu.tailoringexpert" level="DEBUG" additivity="false">
-            <AppenderRef ref="CONSOLE"/>
+        <Logger name="eu.tailoringexpert" level="TRACE" additivity="false">
+            <AppenderRef ref="STDOUT"/>
         </Logger>
 
         <Logger name="com.openhtmltopdf" level="DEBUG" additivity="false">

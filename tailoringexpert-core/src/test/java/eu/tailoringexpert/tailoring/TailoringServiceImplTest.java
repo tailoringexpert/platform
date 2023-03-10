@@ -812,7 +812,7 @@ class TailoringServiceImplTest {
 
         ScreeningSheet screeningSheet = ScreeningSheet.builder()
             .data(data)
-            .parameters(asList(ScreeningSheetParameter.builder().category(ScreeningSheetDataProviderSupplier.Phase.getName()).value(asList(E, F)).build()))
+            .phases(List.of(E, F))
             .selectionVector(SelectionVector.builder().build())
             .build();
 
@@ -865,7 +865,7 @@ class TailoringServiceImplTest {
 
         ScreeningSheet screeningSheet = ScreeningSheet.builder()
             .data(data)
-            .parameters(asList(ScreeningSheetParameter.builder().category(ScreeningSheetDataProviderSupplier.Phase.getName()).value(asList(E, F)).build()))
+            .phases(List.of(E, F))
             .selectionVector(SelectionVector.builder().build())
             .build();
 

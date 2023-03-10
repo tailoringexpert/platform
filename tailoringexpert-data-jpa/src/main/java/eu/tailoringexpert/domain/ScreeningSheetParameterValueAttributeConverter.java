@@ -24,7 +24,7 @@ package eu.tailoringexpert.domain;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.SneakyThrows;
 
-import javax.persistence.AttributeConverter;
+import jakarta.persistence.AttributeConverter;
 import java.util.Collection;
 
 public class ScreeningSheetParameterValueAttributeConverter implements AttributeConverter<Object, String> {

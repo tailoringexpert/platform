@@ -40,6 +40,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.log4j.Log4j2;
 import org.springframework.hateoas.CollectionModel;
 import org.springframework.hateoas.EntityModel;
 import org.springframework.http.ContentDisposition;
@@ -57,10 +58,10 @@ import java.util.Optional;
 import java.util.function.Function;
 
 import static eu.tailoringexpert.domain.ResourceMapper.BASECATALOG;
+import static eu.tailoringexpert.domain.ResourceMapper.BASECATALOG_VERSION_DOCUMENT;
 import static eu.tailoringexpert.domain.ResourceMapper.BASECATALOG_VERSION_JSON;
 import static eu.tailoringexpert.domain.ResourceMapper.BASECATALOG_VERSION;
 import static eu.tailoringexpert.domain.ResourceMapper.BASECATALOG_VERSION_PDF;
-import static java.util.stream.Collectors.toList;
 import static org.springframework.http.HttpHeaders.ACCESS_CONTROL_EXPOSE_HEADERS;
 import static org.springframework.http.HttpHeaders.CONTENT_DISPOSITION;
 import static org.springframework.http.HttpStatus.CREATED;
@@ -74,6 +75,7 @@ import static org.springframework.http.ResponseEntity.ok;
  * @author Michael Bädorf
  */
 @Tag(name = "Catalog Controller", description = "Management of base catalogs")
+@Log4j2
 @RequiredArgsConstructor
 @RestController
 public class CatalogController {
@@ -103,9 +105,13 @@ public class CatalogController {
     @PostMapping(value = BASECATALOG, produces = {"application/hal+json"})
     public ResponseEntity<Void> postBaseCatalog(
         @Parameter(description = "Base catalog to import") @RequestBody Catalog<BaseRequirement> catalog) {
-        return ResponseEntity
+        log.traceEntry();
+
+        ResponseEntity<Void> result = ResponseEntity
             .status(catalogService.doImport(catalog) ? CREATED : PRECONDITION_FAILED)
             .build();
+        log.traceExit();
+        return result;
     }
 
     @Operation(summary = "Retrieve all base catalog versions")
@@ -116,13 +122,17 @@ public class CatalogController {
     })
     @GetMapping(value = BASECATALOG, produces = {"application/hal+json"})
     public ResponseEntity<CollectionModel<EntityModel<BaseCatalogVersionResource>>> getBaseCatalogs() {
+        log.traceEntry();
+
         PathContextBuilder pathContext = PathContext.builder();
         List<EntityModel<BaseCatalogVersionResource>> catalogs = baseCatalogRepository.findCatalogVersionBy()
             .stream()
             .map(catalog -> EntityModel.of(mapper.toResource(pathContext, catalog)))
-            .collect(toList());
+            .toList();
 
-        return ok().body(CollectionModel.of(catalogs));
+        ResponseEntity<CollectionModel<EntityModel<BaseCatalogVersionResource>>> result = ok().body(CollectionModel.of(catalogs));
+        log.traceExit();
+        return result;
     }
 
     @Operation(summary = "Load base catalog of requested version")
@@ -137,9 +147,69 @@ public class CatalogController {
     @GetMapping(value = BASECATALOG_VERSION, produces = {"application/json"})
     public ResponseEntity<Catalog<BaseRequirement>> getBaseCatalog(
         @Parameter(description = "Requested base catalog version") @PathVariable String version) {
-        return catalogService.getCatalog(version)
+        log.traceEntry();
+
+        ResponseEntity<Catalog<BaseRequirement>> result = catalogService.getCatalog(version)
             .map(catalog -> ok().body(catalog))
             .orElseGet(() -> notFound().build());
+        log.traceExit();
+        return result;
+    }
+
+    @Operation(summary = "Create a printable base catalog")
+    @ApiResponses(value = {
+        @ApiResponse(
+            responseCode = "200", description = "Output document created",
+            content = @Content(mediaType = "application/octet-stream", schema = @Schema(implementation = byte[].class))),
+        @ApiResponse(
+            responseCode = "404", description = "Base catalog does not exist")
+    })
+    @GetMapping(value = BASECATALOG_VERSION_PDF, produces = "application/octet-stream")
+    @ResponseBody
+    public ResponseEntity<byte[]> getBaseCatalogPrint(
+        @Parameter(description = "Requested base catalog version") @PathVariable String version) {
+        log.traceEntry();
+
+        ResponseEntity<byte[]> result = catalogService.createCatalog(version)
+            .map(dokument -> ok()
+                .header(CONTENT_DISPOSITION, ContentDisposition.builder(MediaTypeProvider.FORM_DATA).name(MediaTypeProvider.ATTACHMENT).filename(dokument.getName()).build().toString())
+                .header(ACCESS_CONTROL_EXPOSE_HEADERS, CONTENT_DISPOSITION)
+                .contentType(mediaTypeProvider.apply(dokument.getType()))
+                .contentLength(dokument.getLength())
+                .body(dokument.getData()))
+            .orElseGet(() -> notFound().build());
+        log.traceExit();
+        return result;
+    }
+
+    @Operation(summary = "Load base catalog as JSON output")
+    @ApiResponses(value = {
+        @ApiResponse(
+            responseCode = "200", description = "Base catalog loaded"),
+        @ApiResponse(
+            responseCode = "404", description = "Base catalog does not exist")
+    })
+    @GetMapping(value = BASECATALOG_VERSION_JSON, produces = "application/json")
+    @ResponseBody
+    public ResponseEntity<byte[]> getBaseCatalogJson(
+        @Parameter(description = "Requested base catalog version") @PathVariable String version) throws JsonProcessingException {
+        log.traceEntry();
+
+        Optional<Catalog<BaseRequirement>> catalog = catalogService.getCatalog(version);
+        if (catalog.isEmpty()) {
+            log.traceExit();
+            return notFound().build();
+        }
+
+        byte[] data = objectMapper.writeValueAsBytes(catalog.get());
+        ResponseEntity<byte[]> result = ok()
+            .header(CONTENT_DISPOSITION, ContentDisposition.builder(MediaTypeProvider.FORM_DATA).name(MediaTypeProvider.ATTACHMENT).filename("catalog_v" + version + ".json").build().toString())
+            .header(ACCESS_CONTROL_EXPOSE_HEADERS, CONTENT_DISPOSITION)
+            .contentType(mediaTypeProvider.apply("json"))
+            .contentLength(data.length)
+            .body(data);
+        log.traceExit();
+        return result;
 
     }
 
@@ -151,11 +221,13 @@ public class CatalogController {
         @ApiResponse(
             responseCode = "404", description = "Base catalog does not exist")
     })
-    @GetMapping(value= BASECATALOG_VERSION_PDF, produces = "application/octet-stream")
+    @GetMapping(value = BASECATALOG_VERSION_DOCUMENT, produces = "application/octet-stream")
     @ResponseBody
-    public ResponseEntity<byte[]> getBaseCatalogPrint(
-        @Parameter(description = "Requested base catalog version") @PathVariable String version) {
-        return catalogService.createCatalog(version)
+    public ResponseEntity<byte[]> getDocuments(
+        @Parameter(description = "Requested all base catalog related documents") @PathVariable String version) {
+        log.traceEntry();
+
+        ResponseEntity<byte[]> result = catalogService.createDocuments(version)
             .map(dokument -> ok()
                 .header(CONTENT_DISPOSITION, ContentDisposition.builder(MediaTypeProvider.FORM_DATA).name(MediaTypeProvider.ATTACHMENT).filename(dokument.getName()).build().toString())
                 .header(ACCESS_CONTROL_EXPOSE_HEADERS, CONTENT_DISPOSITION)
@@ -163,31 +235,7 @@ public class CatalogController {
                 .contentLength(dokument.getLength())
                 .body(dokument.getData()))
             .orElseGet(() -> notFound().build());
-    }
-
-    @Operation(summary = "Load base catalog as JSON output")
-    @ApiResponses(value = {
-        @ApiResponse(
-            responseCode = "200", description = "Base catalog loaded"),
-        @ApiResponse(
-            responseCode = "404", description = "Base catalog does not exist")
-    })
-    @GetMapping(value= BASECATALOG_VERSION_JSON, produces = "application/json")
-    @ResponseBody
-    public ResponseEntity<byte[]> getBaseCatalogJson(
-        @Parameter(description = "Requested base catalog version") @PathVariable String version) throws JsonProcessingException {
-        Optional<Catalog<BaseRequirement>> result = catalogService.getCatalog(version);
-        if (result.isEmpty()) {
-            return notFound().build();
-        }
-
-        byte[] data = objectMapper.writeValueAsBytes(result.get());
-        return ok()
-            .header(CONTENT_DISPOSITION, ContentDisposition.builder(MediaTypeProvider.FORM_DATA).name(MediaTypeProvider.ATTACHMENT).filename("catalog_v" + version + ".json").build().toString())
-            .header(ACCESS_CONTROL_EXPOSE_HEADERS, CONTENT_DISPOSITION)
-            .contentType(mediaTypeProvider.apply("json"))
-            .contentLength(data.length)
-            .body(data);
-
+        log.traceExit();
+        return result;
     }
 }

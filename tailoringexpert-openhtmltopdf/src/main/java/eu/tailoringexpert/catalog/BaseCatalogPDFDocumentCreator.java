@@ -80,9 +80,11 @@ public class BaseCatalogPDFDocumentCreator implements DocumentCreator {
     @Override
     public File createDocument(@NonNull String docId,
                                @NonNull Catalog<BaseRequirement> catalog,
-                               @NonNull Map<String, String> placeholders) {
+                               @NonNull Map<String, Object> placeholders) {
+        log.traceEntry(() -> docId, catalog::getVersion, () -> placeholders);
+
         try {
-            Map<String, Object> parameter = new HashMap<>();
+            Map<String, Object> parameter = new HashMap<>(placeholders);
             parameter.put("catalogVersion", catalog.getVersion());
 
             Collection<BaseCatalogElement> requirements = new LinkedList<>();
@@ -103,11 +105,14 @@ public class BaseCatalogPDFDocumentCreator implements DocumentCreator {
                 });
 
             String html = templateEngine.process(catalog.getVersion() + "/basecatalog", parameter);
+            File result = pdfEngine.process(docId, html, catalog.getVersion());
 
-            return pdfEngine.process(docId, html, catalog.getVersion());
+            log.traceExit();
+            return result;
         } catch (Exception e) {
             log.catching(e);
         }
+        log.traceExit();
         return null;
     }
 

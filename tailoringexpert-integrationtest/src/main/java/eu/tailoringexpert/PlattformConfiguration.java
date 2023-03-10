@@ -22,50 +22,23 @@
 package eu.tailoringexpert;
 
 import eu.tailoringexpert.catalog.BaseCatalogPDFDocumentCreator;
-import eu.tailoringexpert.domain.Chapter;
-import eu.tailoringexpert.domain.DRD;
-import eu.tailoringexpert.domain.Phase;
-import eu.tailoringexpert.domain.TailoringRequirement;
+import eu.tailoringexpert.catalog.BaseDRDPDFDocumentCreator;
 import eu.tailoringexpert.project.JPAProjectServiceRepository;
-import eu.tailoringexpert.renderer.PDFEngine;
-import eu.tailoringexpert.renderer.PlattformThymeleafTemplateEngine;
-import eu.tailoringexpert.renderer.ThymeleafTemplateEngine;
 import eu.tailoringexpert.repository.BaseCatalogRepository;
 import eu.tailoringexpert.repository.DokumentSigneeRepository;
 import eu.tailoringexpert.repository.LogoRepository;
 import eu.tailoringexpert.screeningsheet.PlattformScreeningSheetParameterProvider;
 import eu.tailoringexpert.screeningsheet.PlattformSelectionVectorProvider;
 import eu.tailoringexpert.screeningsheet.SelectionVectorProvider;
-import eu.tailoringexpert.tailoring.CMPDFDocumentCreator;
-import eu.tailoringexpert.tailoring.CMExcelDocumentCreator;
-import eu.tailoringexpert.tailoring.ComparisonPDFDocumentCreator;
-import eu.tailoringexpert.tailoring.DRDPDFDocumentCreator;
 import eu.tailoringexpert.tailoring.DocumentCreator;
 import eu.tailoringexpert.tailoring.DocumentService;
 import eu.tailoringexpert.tailoring.PlattformDocumentService;
-import eu.tailoringexpert.tailoring.TailoringCatalogPDFDocumentCreator;
-import eu.tailoringexpert.tailoring.TailoringCatalogExcelDocumentCreator;
 import lombok.NonNull;
-import lombok.SneakyThrows;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cache.CacheManager;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.thymeleaf.spring5.SpringTemplateEngine;
-import org.thymeleaf.templateresolver.FileTemplateResolver;
-
-import java.io.File;
-import java.nio.file.Paths;
-import java.util.Collection;
-import java.util.Map;
-import java.util.Set;
-import java.util.function.BiFunction;
-import java.util.function.Function;
-
-import static java.nio.charset.StandardCharsets.UTF_8;
-import static org.thymeleaf.templatemode.TemplateMode.HTML;
 
 @Log4j2
 @Configuration
@@ -93,98 +66,14 @@ public class PlattformConfiguration {
         return new PlattformScreeningSheetParameterProvider();
     }
 
-    @Bean("plattformTemplateRoot")
-    String plattformTemplateRoot(@NonNull @Value("${templateRoot}") String templateRoot) {
-        return templateRoot + "/plattform/";
-    }
-
-    @Bean
-    PDFEngine plattformPdfEngine(@NonNull @Qualifier("plattformTemplateRoot") String templateRoot) {
-        return new PDFEngine("TailoringExpert", templateRoot);
-    }
-
-    @SneakyThrows
-    @Bean
-    ThymeleafTemplateEngine plattformTemplateEngine(@NonNull @Qualifier("plattformTemplateRoot") String templateRoot) {
-        SpringTemplateEngine springTemplateEngine = new SpringTemplateEngine();
-        FileTemplateResolver fileTemplateResolver = new FileTemplateResolver();
-        fileTemplateResolver.setPrefix(templateRoot);
-        fileTemplateResolver.setCacheable(false);
-        fileTemplateResolver.setSuffix(".html");
-        fileTemplateResolver.setTemplateMode(HTML);
-        fileTemplateResolver.setCharacterEncoding(UTF_8.toString());
-        fileTemplateResolver.setOrder(1);
-        fileTemplateResolver.setCheckExistence(true);
-        springTemplateEngine.addTemplateResolver(fileTemplateResolver);
-
-        return new PlattformThymeleafTemplateEngine(springTemplateEngine);
-    }
-
-
-    @Bean
-    Function<String, File> plattformExcelSupplier(@NonNull @Qualifier("plattformTemplateRoot") String templateRoot) {
-        return new Function<String, File>() {
-            @SneakyThrows
-            @Override
-            public File apply(String s) {
-                return Paths.get(templateRoot + s).toFile();
-            }
-        };
-    }
-
-
-    @Bean
-    DocumentCreator plattformTailoringCatalogDocumentCreator(
-        @NonNull @Qualifier("plattformTemplateEngine") ThymeleafTemplateEngine templateEngine,
-        @NonNull @Qualifier("plattformPdfEngine") PDFEngine pdfEngine,
-        @NonNull BiFunction<Chapter<TailoringRequirement>, Collection<Phase>, Map<DRD, Set<String>>> drdProvider) {
-        return new TailoringCatalogPDFDocumentCreator(templateEngine, pdfEngine, drdProvider);
-    }
-
-    @Bean
-    DocumentCreator plattformCMDocumentCreator(
-        @NonNull @Qualifier("plattformTemplateEngine") ThymeleafTemplateEngine templateEngine,
-        @NonNull @Qualifier("plattformPdfEngine") PDFEngine pdfEngine,
-        @NonNull BiFunction<Chapter<TailoringRequirement>, Collection<Phase>, Map<DRD, Set<String>>> drdProvider) {
-        return new CMPDFDocumentCreator(templateEngine, pdfEngine, drdProvider);
-    }
-
-    @Bean
-    DocumentCreator plattformDRDDocumentCreator(
-        @NonNull @Qualifier("plattformTemplateEngine") ThymeleafTemplateEngine templateEngine,
-        @NonNull @Qualifier("plattformPdfEngine") PDFEngine pdfEngine,
-        @NonNull BiFunction<Chapter<TailoringRequirement>, Collection<Phase>, Map<DRD, Set<String>>> drdProvider) {
-        return new DRDPDFDocumentCreator(templateEngine, pdfEngine, drdProvider);
-    }
-
-    @Bean
-    DocumentCreator plattformComparisionDocumentCreator(
-        @NonNull @Qualifier("plattformTemplateEngine") ThymeleafTemplateEngine templateEngine,
-        @NonNull @Qualifier("plattformPdfEngine") PDFEngine pdfEngine,
-        @NonNull BiFunction<Chapter<TailoringRequirement>, Collection<Phase>, Map<DRD, Set<String>>> drdProvider) {
-        return new ComparisonPDFDocumentCreator(templateEngine, pdfEngine);
-    }
-
-    @Bean
-    DocumentCreator plattformCMSpreadsheetCreator(
-        @NonNull @Qualifier("plattformExcelSupplier") Function<String, File> plattformExcelSupplier,
-        @NonNull BiFunction<Chapter<TailoringRequirement>, Collection<Phase>, Map<DRD, Set<String>>> drdProvider) {
-        return new CMExcelDocumentCreator(plattformExcelSupplier, drdProvider);
-    }
-
-    @Bean
-    DocumentCreator plattformTailoringCatalogSpreadsheetCreator() {
-        return new TailoringCatalogExcelDocumentCreator();
-    }
-
     @Bean
     DocumentService plattformDocumentService(
-        @NonNull @Qualifier("plattformTailoringCatalogDocumentCreator") DocumentCreator tailoringCatalogDocumentCreator,
-        @NonNull @Qualifier("plattformComparisionDocumentCreator") DocumentCreator comparisionDocumentCreator,
-        @NonNull @Qualifier("plattformDRDDocumentCreator") DocumentCreator drdDocumentCreator,
-        @NonNull @Qualifier("plattformCMDocumentCreator") DocumentCreator cmDocumentCreator,
-        @NonNull @Qualifier("plattformCMSpreadsheetCreator") DocumentCreator cmSpreadsheetCreator,
-        @NonNull @Qualifier("plattformTailoringCatalogSpreadsheetCreator") DocumentCreator tailoringCatalogSpreadsheetCreator) {
+        @NonNull @Qualifier("tailoringCatalogDocumentCreator") DocumentCreator tailoringCatalogDocumentCreator,
+        @NonNull @Qualifier("comparisionDocumentCreator") DocumentCreator comparisionDocumentCreator,
+        @NonNull @Qualifier("drdDocumentCreator") DocumentCreator drdDocumentCreator,
+        @NonNull @Qualifier("cmDocumentCreator") DocumentCreator cmDocumentCreator,
+        @NonNull @Qualifier("cmSpreadsheetCreator") DocumentCreator cmSpreadsheetCreator,
+        @NonNull @Qualifier("tailoringCatalogSpreadsheetCreator") DocumentCreator tailoringCatalogSpreadsheetCreator) {
         return new PlattformDocumentService(
             tailoringCatalogDocumentCreator,
             cmDocumentCreator,
@@ -195,16 +84,10 @@ public class PlattformConfiguration {
     }
 
     @Bean
-    BaseCatalogPDFDocumentCreator plattformBaseCatalogPDFDocumentCreator(
-        @NonNull @Qualifier("plattformTemplateEngine") ThymeleafTemplateEngine templateEngine,
-        @NonNull @Qualifier("plattformPdfEngine") PDFEngine pdfEngine) {
-        return new BaseCatalogPDFDocumentCreator(templateEngine, pdfEngine);
-    }
-
-    @Bean
     eu.tailoringexpert.catalog.PlattformDocumentService plattformCatalogDocumentService(
-        @NonNull @Qualifier("plattformBaseCatalogPDFDocumentCreator") BaseCatalogPDFDocumentCreator baseCatalogPDFDocumentCreator) {
-        return new eu.tailoringexpert.catalog.PlattformDocumentService(baseCatalogPDFDocumentCreator);
+        @NonNull BaseCatalogPDFDocumentCreator baseCatalogPDFDocumentCreator,
+        @NonNull BaseDRDPDFDocumentCreator baseDRDPDFDocumentCreator) {
+        return new eu.tailoringexpert.catalog.PlattformDocumentService(baseCatalogPDFDocumentCreator, baseDRDPDFDocumentCreator);
     }
 
 

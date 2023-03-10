@@ -42,6 +42,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Optional;
 
+import static eu.tailoringexpert.domain.ProjectState.COMPLETED;
 import static java.nio.charset.StandardCharsets.UTF_8;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
@@ -328,4 +329,57 @@ class JPAProjectServiceRepositoryTest {
 
     }
 
+    @Test
+    void updateState_ProjectNotExists_EmptyReturned() {
+        // arrange
+        given(projectRepositoryMock.findByIdentifier("SAMPLE")).willReturn(null);
+
+        // act
+        Optional<ProjectInformation> actual = repository.updateState("SAMPLE", COMPLETED);
+
+        // assert
+        assertThat(actual).isEmpty();
+        verify(mapperMock, times(0)).getProjectInformationen(any(ProjectEntity.class));
+    }
+
+    @Test
+    void updateState_ProjectExists_UpdatedInformationReturned() {
+        // arrange
+        ProjectEntity project = ProjectEntity.builder().build();
+        given(projectRepositoryMock.findByIdentifier("SAMPLE")).willReturn(project);
+        given(mapperMock.getProjectInformationen(project)).willReturn(ProjectInformation.builder().build());
+
+        // act
+        Optional<ProjectInformation> actual = repository.updateState("SAMPLE", COMPLETED);
+
+        // assert
+        assertThat(actual).isPresent();
+        verify(mapperMock, times(1)).getProjectInformationen(project);
+    }
+
+    @Test
+    void isExistingProject_ProjectNotExists_FalseReturned() {
+        // arrange
+        given(projectRepositoryMock.existsProjectByIdentifier("SAMPLE")).willReturn(false);
+
+        // act
+        boolean actual = repository.isExistingProject("SAMPLE");
+
+        // assert
+        assertThat(actual).isFalse();
+        verify(projectRepositoryMock, times(1)).existsProjectByIdentifier("SAMPLE");
+    }
+
+    @Test
+    void isExistingProject_ProjectExists_TrueReturned() {
+        // arrange
+        given(projectRepositoryMock.existsProjectByIdentifier("SAMPLE")).willReturn(true);
+
+        // act
+        boolean actual = repository.isExistingProject("SAMPLE");
+
+        // assert
+        assertThat(actual).isTrue();
+        verify(projectRepositoryMock, times(1)).existsProjectByIdentifier("SAMPLE");
+    }
 }

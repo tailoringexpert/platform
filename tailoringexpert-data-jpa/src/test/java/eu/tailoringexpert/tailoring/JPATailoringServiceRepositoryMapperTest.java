@@ -257,9 +257,13 @@ class JPATailoringServiceRepositoryMapperTest {
             .parameters(List.of(
                 ScreeningSheetParameterEntity.builder()
                     .category(ScreeningSheet.PARAMETER_PHASE)
-                    .value(List.of("F", "ZERO"))
+                    .value("0")
+                    .build(),
+                ScreeningSheetParameterEntity.builder()
+                    .category(ScreeningSheet.PARAMETER_PHASE)
+                    .value("F")
                     .build()
-                ))
+            ))
             .build();
 
         // act

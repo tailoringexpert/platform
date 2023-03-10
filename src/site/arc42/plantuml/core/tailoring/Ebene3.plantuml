@@ -25,7 +25,7 @@ package tailoring {
     DRDProvider --> "1" DRDApplicablePredicate : predicate
 
     interface DocumentCreator {
-        createDocument(docId : String, tailoring : Tailoring, placeholders : Map<String, String>) : File
+        createDocument(docId : String, tailoring : Tailoring, placeholders : Map<String, Object>) : File
     }
 
     interface TailoringDeletablePredicateRepository {

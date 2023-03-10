@@ -21,12 +21,14 @@
  */
 package eu.tailoringexpert.project;
 
+import eu.tailoringexpert.TailoringexpertException;
 import eu.tailoringexpert.domain.BaseRequirement;
 import eu.tailoringexpert.domain.Catalog;
 import eu.tailoringexpert.domain.Identifier;
 import eu.tailoringexpert.domain.Chapter;
 import eu.tailoringexpert.domain.Phase;
 import eu.tailoringexpert.domain.Project;
+import eu.tailoringexpert.domain.ProjectInformation;
 import eu.tailoringexpert.domain.ScreeningSheet;
 import eu.tailoringexpert.domain.ScreeningSheetParameter;
 import eu.tailoringexpert.domain.SelectionVector;
@@ -47,6 +49,8 @@ import java.util.Optional;
 
 import static eu.tailoringexpert.domain.Phase.E;
 import static eu.tailoringexpert.domain.Phase.F;
+import static eu.tailoringexpert.domain.ProjectState.COMPLETED;
+import static eu.tailoringexpert.domain.ProjectState.ONGOING;
 import static java.nio.file.Files.newInputStream;
 import static java.nio.file.Paths.get;
 import static java.util.Arrays.asList;
@@ -124,6 +128,29 @@ class ProjectServiceImplTest {
 
         //assert
         assertThat(actual).isInstanceOf(NullPointerException.class);
+    }
+
+    @Test
+    void createProject_ProjectAlreadyExists_TailoringexpertExceptionThrown() throws IOException {
+        // arrange
+        byte[] data;
+        try (InputStream is = newInputStream(get("src/test/resources/screeningsheet.pdf"))) {
+            assert nonNull(is);
+            data = is.readAllBytes();
+        }
+
+        ScreeningSheet screeningSheet = ScreeningSheet.builder()
+            .project("SAMPLE")
+            .build();
+        given(screeningSheetServiceMock.createScreeningSheet(any())).willReturn(screeningSheet);
+        given(repositoryMock.isExistingProject("SAMPLE")).willReturn(true);
+
+        // act
+        Throwable actual = catchThrowable(() -> service.createProject("SAMPLE", data, SelectionVector.builder().build(), null));
+
+        // assert
+        assertThat(actual).isInstanceOf(TailoringexpertException.class);
+        verify(repositoryMock, times(1)).isExistingProject("SAMPLE");
     }
 
     @Test
@@ -213,6 +240,7 @@ class ProjectServiceImplTest {
             .build();
         given(screeningSheetServiceMock.createScreeningSheet(any())).willReturn(screeningSheet);
 
+        given(repositoryMock.isExistingProject(any())).willReturn(false);
         given(tailoringServiceMock.createTailoring(any(), any(), eq(screeningSheet), any(), any(), eq(catalog))).willReturn(Tailoring.builder()
             .screeningSheet(screeningSheet)
             .phases(asList())
@@ -232,6 +260,7 @@ class ProjectServiceImplTest {
 
         // assert
         assertThat(actual.getProject()).isNotBlank();
+        assertThat(projectCaptor.getValue().getState()).isEqualTo(ONGOING);
         assertThat(projectCaptor.getValue().getTailorings().iterator().next().getNotes()).isNull();
     }
 
@@ -322,6 +351,7 @@ class ProjectServiceImplTest {
             .build();
         given(screeningSheetServiceMock.createScreeningSheet(any())).willReturn(screeningSheet);
 
+        given(repositoryMock.isExistingProject(any())).willReturn(false);
         given(tailoringServiceMock.createTailoring(any(), any(), eq(screeningSheet), any(), any(), eq(catalog))).willReturn(Tailoring.builder()
             .screeningSheet(screeningSheet)
             .phases(asList())
@@ -666,5 +696,33 @@ class ProjectServiceImplTest {
         // assert
         assertThat(actual).isPresent();
         assertThat(projectCopyCaptor.getValue().getTailorings()).hasSize(2);
+    }
+
+    @Test
+    void updateProjectState_ProjectNotExisting_EmptyReturned() throws IOException {
+        // arrange
+
+        given(repositoryMock.getProject("SAMPLE")).willReturn(empty());
+
+        // act
+        Optional<ProjectInformation> actual = service.updateState("SAMPLE", COMPLETED);
+
+        // assert
+        assertThat(actual).isEmpty();
+        verify(repositoryMock, times(0)).updateState(any(), any());
+    }
+
+    @Test
+    void updateProjectState_ProjectExisting_ServiceRepositoryCalled() {
+        // arrange
+        given(repositoryMock.getProject("SAMPLE")).willReturn(of(Project.builder().build()));
+        given(repositoryMock.updateState("SAMPLE", COMPLETED)).willReturn(of(ProjectInformation.builder().build()));
+
+        // act
+        Optional<ProjectInformation> actual = service.updateState("SAMPLE", COMPLETED);
+
+        // assert
+        assertThat(actual).isPresent();
+        verify(repositoryMock, times(1)).updateState("SAMPLE", COMPLETED);
     }
 }

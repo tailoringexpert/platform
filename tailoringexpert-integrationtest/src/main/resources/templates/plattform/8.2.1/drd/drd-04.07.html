@@ -1,0 +1,94 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<head>
+    <title>DRD-04.07 - Functional Tree (FT)</title>
+
+    <link rel="stylesheet" href="../css/page.css"/>
+    <link rel="stylesheet" href="../css/drd.css"/>
+</head>
+<body>
+<div th:fragment="content" id="drd-04.07">
+    <table class="titel" aria-label="title">
+        <tbody>
+        <tr>
+            <td><h2>DRD-04.07 - Functional Tree (FT)</h2></td>
+        </tr>
+        </tbody>
+    </table>
+
+    <table class="reference" aria-label="reference">
+        <tbody>
+        <tr>
+            <td rowspan="3">Reference:</td>
+            <td>MIL-HDBK-338</td>
+            <td>Electronic Reliability Design Handbook</td>
+        </tr>
+        <tr>
+            <td>ECSS-Q-ST-10C</td>
+            <td>Space engineering - System engineering general requirements</td>
+        </tr>
+        <tr>
+            <td>ECSS-Q-ST-30-02C</td>
+            <td>Space product assurance - Failure Modes, effects (and criticality) analysis (FMEA/FMECA)</td>
+        </tr>
+        </tbody>
+    </table>
+
+    <table class="purpose" aria-label="purpose">
+        <tbody>
+        <tr>
+            <td>Purpose:</td>
+            <td>In order to design, develop and prove a system/subsystem, the mission and consequent functions, that
+                the system shall perform, shall be clearly established. A FT shall be constructed to depict the
+                functional elements of the analysed product and their interdependencies.
+            </td>
+        </tr>
+        </tbody>
+    </table>
+
+    <table class="content" aria-label="content">
+        <tbody>
+        <tr>
+            <td>Content:</td>
+            <td>Tree structures shall provide clear visibility of the large number of functional elements making up a
+                system. A tree structure shall enable errors, omissions, inconsistencies and duplications to be detected
+                through the branches. A hierarchical structure starting at system level working down in detail shall
+                allow verification that the lower level functions are consistent with the top-level functions. The
+                functional elements are shown as blocks. A numerical reference for all blocks in the functional tree
+                shall be provided by using a standard coding system. The functional interdependencies between the blocks
+                are shown as logic gates. <br/>
+                The following functional analysis steps shall be implemented:
+                <ul>
+                    <li>define the system and boundaries of the system under analysis by using the relevant requirements
+                        documents;
+                    </li>
+                    <li>define the level of detail (depth of analysis);</li>
+                    <li>identify the system functions/operational modes/operational scenarios;</li>
+                    <li>represent the system by preparing the function tree(s), or functional matrix(ces), or functional
+                        block diagram(s).
+                    </li>
+                </ul>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+
+    <table class="format" aria-label="format">
+        <tbody>
+        <tr>
+            <td>Format:</td>
+            <td>Similar to the following example. The system functionality shall be distributed throughout the different
+                design levels (e.g. systems, subsystems, units).
+            </td>
+        </tr>
+        </tbody>
+    </table>
+
+    <page-before align="center">
+        <strong>Typical Functional Tree</strong>
+        <img src="drd-04.07.gif" class="center" width="581" height="820" alt="drd-04.07.gif"/>
+    </page-before>
+
+</div>
+</body>
+</html>

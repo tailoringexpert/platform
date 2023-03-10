@@ -1,0 +1,173 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<head>
+    <title>DRD-13.01 - System Security Plan</title>
+
+    <link rel="stylesheet" href="../page.css"/>
+    <link rel="stylesheet" href="../drd.css"/>
+</head>
+
+<body>
+<div th:fragment="content" id="drd-13.01">
+    <table class="titel" aria-label="title">
+        <tbody>
+        <tr>
+            <td>
+                <h2>DRD-13.01 - System Security Plan</h2>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+
+    <table class="reference" aria-label="reference">
+        <tbody>
+        <tr>
+            <td rowspan="3">Reference:</td>
+            <td>DLR-RF-PS-001</td>
+            <td>Product Assurance - Safety Requirements for DLR - Space Projects</td>
+        </tr>
+        <tr>
+            <td>CCSDS 350.7-G-1</td>
+            <td>Security Guide for Missions Planners Issue 1. (Green Book); Washington, D.C.: CCSDS, October2011.</td>
+        </tr>
+        </tbody>
+    </table>
+
+    <table class="purpose" aria-label="purpose">
+        <tbody>
+        <tr>
+            <td>Purpose:</td>
+            <td>This DRD is called from chapter 13.2.9 Security Management &amp; Security Plan.<br/>
+                The objective of system security planning is to improve protection of system resources. The protection
+                of a system must be documented in a system security plan.<br/>
+                The purpose of the system security plan is to provide an overview of the security requirements of the
+                system and describe the controls in place or planned for meeting those requirements. The system security
+                plan also delineates responsibilities and expected behavior of all individuals who access the system.
+                The system security plan should be viewed as documentation of the structured process of planning
+                adequate, cost-effective security protection for a system. It should reflect input from various managers
+                with responsibilities concerning the system, including information owners, the system owner.
+            </td>
+        </tr>
+        </tbody>
+    </table>
+
+
+    <table class="content" aria-label="content">
+        <tbody>
+        <tr>
+            <td>Content:</td>
+            <td>The content of the system security plan is in detail:
+                <h4>1. GENERAL SYSTEM INFORMATION</h4>
+                <h4>1.1. SYSTEM NAME</h4>
+                The System Name section should list the system name and/or any unique reference identifier(s) the
+                organization uses.
+                <h4>1.2. SYSTEM OPERATIONAL STATUS</h4>
+                The System Operational Status section should indicate the operational status of the system. If
+                more than one status is selected, the part of the system covered under each status should be listed:
+                <ul list-style-type="-">
+                    <li>Operational;</li>
+                    <li>Under Development;</li>
+                    <li>Major Modification.</li>
+                </ul>
+                <h4>1.3 RESPONSIBLE INDIVIDUALS</h4>
+                <h4>1.3.1 System Owner</h4>
+                The System Owner section should identify the individual with overall budgetary and management
+                authority over the development and operation of the system. The person may be identified by title and
+                agency, although it is preferable to include specific individual contact information (e.g., name, e-mail
+                address, and telephone number).
+                <h4>1.3.2 Authorizing Official</h4>
+                The Authorizing Official section should identify the individual designated by the organization
+                with overall authority and responsibility to approve the fitness of the system for operation. This may
+                be the system owner or another individual. The person may be identified by title and agency, although it
+                is preferable to include specific individual contact information (e.g., name, e-mail address, and
+                telephone number).
+                <h4>1.3.3 Assignment of Security Responsibility</h4>
+                The Assignment of Security Responsibility section should identify the individual with overall
+                authority and responsibility for the security of the system. The person may be identified by title and
+                agency, although it is preferable to include specific individual contact information (e.g., name, e-mail
+                address, and telephone number).
+                <h4>1.3.4 Other Designated Contacts</h4>
+                The Other Designated Contacts section should identify other key personnel, if applicable. The
+                person may be identified by title and agency, although it is preferable to include specific individual
+                contact information (e.g., name, e-mail address, and telephone number).
+
+                <h4>2. GENERAL SYSTEM DESCRIPTION</h4>
+                <h4>2.1. DATA TYPES AND SENSITIVITY</h4>
+                The Data Types and Sensitivity section should list the types of data the system processes and the
+                sensitivity of each data type with respect to confidentiality, integrity, and availability.<br/> Data
+                sensitivity is highly specific to the customer or mission needs.<br/> For illustrative purposes only,
+                likely data types of a hypothetical spacecraft would include:
+                <ul>
+                    <li>Spacecraft telecommands (low confidentiality, high integrity, high availability);</li>
+                    <li>Spacecraft telemetry (high confidentiality, high integrity, low availability);</li>
+                    <li> Data relay or rebroadcast data (low confidentiality, low integrity, moderate availability).
+                    </li>
+                </ul>
+                <h4>2.2 SYSTEM CRITICALITY</h4>
+                The types of data listed in 2.1, above, should be used to establish an overall criticality for the
+                system that will influence default protections for components within the system’s security boundary.
+                <h4>2.3 SYSTEM ENVIRONMENT</h4>
+                The System Environment section should provide a general technical description of the system. It
+                should identify the primary hardware, software, and communications components.
+
+                <h4>3. SYSTEM INTERCONNECTIONS</h4>
+                <h4>3.1. INFORMATION SHARING</h4>
+                The Information Sharing section should list interconnected systems and system identifiers (if
+                appropriate), provide the system, name, organization, system type (major application or general support
+                system), indicate if there is a formal agreement to interconnect on file, the date of said agreement,
+                data types exchanged, certification or accreditation status, and the authorizing official(s).
+                <h4>3.2. RELATED LAWS/REGULATIONS/POLICIES</h4>
+                The Related Laws/Regulations/Policies section should list any laws or regulations that establish
+                specific requirements for the confidentiality, integrity, or availability of the data in the system.
+
+                <h4>4. SECURITY CONTROLS</h4>
+                <h4>4.1. GENERAL</h4>
+                The Security Controls section should contain an appropriate security control baseline and a
+                thorough description of how all the security controls in the applicable baseline are being implemented
+                or are planned to be implemented. The description should contain:
+                <ol>
+                    <li>the security control title;</li>
+                    <li>how the security control is being implemented or is planned to be implemented;</li>
+                    <li>any scoping guidance that has been applied and what type of consideration; and</li>
+                    <li>whether the security control is a common control and who is responsible for its
+                        implementation.
+                    </li>
+                </ol>
+                <h4>4.2. SPACE SYSTEM SECURITY CONTROLS</h4>
+                The security controls listed in table A-1 of CCSDS 350.7-G-1 lists are a set of controls that have
+                been tailored to the most common needs of space systems, ground operations systems, and development
+                facilities for spacecraft or ground systems. Each of these controls, numbered and grouped according to
+                their related ISO 27001 subject areas (A.5, A.6, A.7, …), either references existing ISO 27001 controls
+                that are also applicable to space missions, or else lists objectives specific to space missions that are
+                absent from ISO 27001. These may be selected according to organizational needs to establish policies and
+                system requirements or recommend countermeasures to probable risks. These controls may also be used to
+                augment other controls if compliance with other control frameworks is required by law or policy.
+                <p>The security controls implemented for a particular system should take into consideration the entire
+                    duration of the mission, including pre- and post-flight periods. While different security controls
+                    may be appropriate for implementation during different mission phases, the overall selection of
+                    security controls for a mission should ensure that one phase's protections (e.g., for
+                    confidentiality of proprietary data) are not nullified by vulnerabilities left unmitigated during
+                    other phases.</p>
+                <p>The mission planner should evaluate the applicability of each of the controls below to the mission
+                    needs and objectives. Where certain controls are considered inappropriate, the plan should document
+                    the reasons. Where certain controls are considered necessary for a mission even if not recommended
+                    below, the plan should include them and document the reasons. Some controls that have not been
+                    provided in previous space missions may need to be provided in future ones, because of the changes
+                    in system capabilities and the threat environment.</p>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+
+
+    <table class="format" aria-label="format">
+        <tbody>
+        <tr>
+            <td>Format:</td>
+            <td>In-House, may be integrated in software user manual</td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+</body>
+</html>

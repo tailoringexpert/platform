@@ -21,14 +21,10 @@
  */
 package eu.tailoringexpert.renderer;
 
-import eu.tailoringexpert.TenantContext;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
-import lombok.SneakyThrows;
 
 import java.util.Map;
-
-import static java.util.Objects.isNull;
 
 /**
  * Proxy for providing tenant implementations of {@link HTMLTemplateEngine}.
@@ -39,30 +35,22 @@ import static java.util.Objects.isNull;
 public class TenantTemplateEngine implements HTMLTemplateEngine {
 
     @NonNull
-    private final Map<String, HTMLTemplateEngine> tenantEngine;
+    private final HTMLTemplateEngine templateEngine;
+
+    @NonNull
+    private RendererRequestConfigurationSupplier supplier;
 
     /**
      * {@inheritDoc}
      */
+
     @Override
-    @SneakyThrows
-    public String process(String template, Map<String, Object> variables) {
-        HTMLTemplateEngine engine = getTenantImplementation();
-        return engine.process(template, variables);
+    public String process(String template, Map<String, Object> parameter) {
+        return templateEngine.process("/" + supplier.get().getId() + "/" + template, parameter);
     }
 
     @Override
-    @SneakyThrows
-    public String toXHTML(String text, Map<String, String> placeholders) {
-        HTMLTemplateEngine engine = getTenantImplementation();
-        return engine.toXHTML(text, placeholders);
-    }
-
-    private HTMLTemplateEngine getTenantImplementation() throws NoSuchMethodException {
-        HTMLTemplateEngine result = tenantEngine.get(TenantContext.getCurrentTenant());
-        if (isNull(result)) {
-            throw new NoSuchMethodException("Tenant " + TenantContext.getCurrentTenant() + " does not implement " + HTMLTemplateEngine.class.getName());
-        }
-        return result;
+    public String toXHTML(String text, Map<String, Object> placeholders) {
+        return templateEngine.toXHTML(text, placeholders);
     }
 }

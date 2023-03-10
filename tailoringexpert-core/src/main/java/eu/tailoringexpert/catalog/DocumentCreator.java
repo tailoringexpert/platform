@@ -42,5 +42,5 @@ public interface DocumentCreator {
      * @param placeholders Placeholders to use in document generation
      * @return printable document of provided base catalog document data
      */
-    File createDocument(String docId, Catalog<BaseRequirement> catalog, Map<String, String> placeholders);
+    File createDocument(String docId, Catalog<BaseRequirement> catalog, Map<String, Object> placeholders);
 }

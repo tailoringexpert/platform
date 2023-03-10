@@ -68,7 +68,9 @@ public class CMPDFDocumentCreator implements DocumentCreator {
     @Override
     public File createDocument(String docId,
                                Tailoring tailoring,
-                               Map<String, String> placeholders) {
+                               Map<String, Object> placeholders) {
+        log.traceEntry(() -> docId, () -> tailoring.getCatalog().getVersion(), () -> placeholders);
+
         Map<String, Object> parameter = new HashMap<>(placeholders);
         parameter.put("signatures", tailoring.getSignatures());
 
@@ -84,8 +86,10 @@ public class CMPDFDocumentCreator implements DocumentCreator {
         addDRD(catalog.getToc(), drds, tailoring.getPhases());
 
         String html = templateEngine.process(catalog.getVersion() + "/cm", parameter);
+        File result = pdfEngine.process(docId, html, tailoring.getCatalog().getVersion());
 
-        return pdfEngine.process(docId, html, tailoring.getCatalog().getVersion());
+        log.traceExit();
+        return result;
     }
 
     /**
@@ -96,7 +100,7 @@ public class CMPDFDocumentCreator implements DocumentCreator {
      * @param level   chapter level
      * @param rows    collection to add elements to
      */
-    void addChapter(Chapter<TailoringRequirement> chapter, int level, Collection<CMElement> rows, Map<String, String> placeholders) {
+    void addChapter(Chapter<TailoringRequirement> chapter, int level, Collection<CMElement> rows, Map<String, Object> placeholders) {
         rows.add(CMElement.builder()
             .level(level)
             .number(templateEngine.toXHTML(chapter.getNumber(), emptyMap()))

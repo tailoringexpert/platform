@@ -28,6 +28,7 @@ import eu.tailoringexpert.domain.File;
 import eu.tailoringexpert.domain.Phase;
 import eu.tailoringexpert.domain.Tailoring;
 import eu.tailoringexpert.domain.TailoringRequirement;
+import eu.tailoringexpert.renderer.DRDFragment;
 import eu.tailoringexpert.renderer.HTMLTemplateEngine;
 import eu.tailoringexpert.renderer.PDFEngine;
 import lombok.NonNull;
@@ -67,8 +68,8 @@ public class DRDPDFDocumentCreator implements DocumentCreator {
     @Override
     public File createDocument(String docId,
                                Tailoring tailoring,
-                               Map<String, String> placeholders) {
-        log.traceEntry("Start creating DRD document {}", docId);
+                               Map<String, Object> placeholders) {
+        log.traceEntry(() -> docId, () -> tailoring.getCatalog().getVersion(), () -> placeholders);
 
         Map<String, Object> parameter = new HashMap<>(placeholders);
         parameter.put("catalogVersion", tailoring.getCatalog().getVersion());
@@ -82,8 +83,7 @@ public class DRDPDFDocumentCreator implements DocumentCreator {
         String html = templateEngine.process(catalog.getVersion() + "/drd", parameter);
         File result = pdfEngine.process(docId, html, catalog.getVersion() + "/drd");
 
-        log.traceExit("Finished creating DRD document {}", docId);
-
+        log.traceExit();
         return result;
     }
 
@@ -102,8 +102,8 @@ public class DRDPDFDocumentCreator implements DocumentCreator {
             .map(drd -> DRDFragment.builder()
                 .name(drd.getTitle())
                 .number(drd.getNumber())
-                .fragment("/" + catalogVersion + "/drd/drd-" + drd.getNumber())
-            .build())
+                .fragment(catalogVersion + "/drd/drd-" + drd.getNumber())
+                .build())
             .forEachOrdered(rows::add);
     }
 }

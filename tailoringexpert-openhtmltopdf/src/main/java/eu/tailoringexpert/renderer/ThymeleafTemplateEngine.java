@@ -23,6 +23,7 @@ package eu.tailoringexpert.renderer;
 
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.log4j.Log4j2;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Entities;
@@ -33,36 +34,51 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicReference;
 
+import static java.util.Objects.nonNull;
+
 /**
  * Implemenation of @see {@link HTMLTemplateEngine} using Thymeleaf and Jsoup.
  *
  * @author Michael Bädorf
  */
+@Log4j2
 @RequiredArgsConstructor
 public class ThymeleafTemplateEngine implements HTMLTemplateEngine {
 
     @NonNull
     private ITemplateEngine templateEngine;
 
+
+    @NonNull
+    private RendererRequestConfigurationSupplier requestConfigurationSupplier;
+
     /**
      * {@inheritDoc}
      */
     @Override
     public String process(String template, Map<String, Object> parameter) {
-        return templateEngine.process(template, new Context(Locale.GERMAN, parameter));
+        log.traceEntry(() -> template);
+        parameter.put("FRAGMENT_PREFIX", requestConfigurationSupplier.get().getFragmentPrefix());
+        String result = templateEngine.process(template, new Context(Locale.GERMAN, parameter));
+        log.traceExit();
+        return result;
     }
 
     /**
      * {@inheritDoc}
      */
     @Override
-    public String toXHTML(String text, Map<String, String> placeholders) {
+    public String toXHTML(String text, Map<String, Object> placeholders) {
         AtomicReference<String> updatedText = new AtomicReference<>(text);
         placeholders.entrySet()
-            .forEach(entry -> updatedText.set(updatedText.get().replace(entry.getKey(), entry.getValue())));
+            .forEach(entry -> updatedText.set(updatedText.get().replace(
+                entry.getKey(),
+                nonNull(entry.getValue()) ? entry.getValue().toString() : entry.getKey())
+            ));
         Document document = Jsoup.parseBodyFragment(updatedText.get());
         document.outputSettings().escapeMode(Entities.EscapeMode.xhtml);
         document.outputSettings().syntax(Document.OutputSettings.Syntax.xml);
         return document.body().html();
     }
+
 }
