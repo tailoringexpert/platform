@@ -1,8 +1,8 @@
 # Changelog
 
-## [v0.0.5](https://github.com/tailoringexpert/plattform/tree/v0.0.5) (03.10.2023)
+## [v0.0.4](https://github.com/tailoringexpert/plattform/tree/v0.0.4) (03.10.2023)
 
-[Full Changelog](https://github.com/tailoringexpert/plattform/compare/v0.0.3...v0.0.5)
+[Full Changelog](https://github.com/tailoringexpert/plattform/compare/v0.0.3...v0.0.4)
 
 **Implemented enhancements:**
 
