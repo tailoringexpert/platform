@@ -28,7 +28,6 @@ import eu.tailoringexpert.domain.File;
 import eu.tailoringexpert.domain.DocumentSignature;
 import eu.tailoringexpert.domain.Chapter;
 import eu.tailoringexpert.domain.BaseRequirement;
-import eu.tailoringexpert.domain.Phase;
 import eu.tailoringexpert.domain.ScreeningSheet;
 import eu.tailoringexpert.domain.SelectionVector;
 import eu.tailoringexpert.domain.Tailoring;
@@ -112,14 +111,8 @@ public class TailoringServiceImpl implements TailoringService {
             .selectionVector(applicableSelectionVector)
             .catalog(tailoringCatalog)
             .signatures(repository.getDefaultSignatures())
-            .state(TailoringState.CREATED);
-
-        // prüfe, ob phase(n) bereits vorhanden
-        screeningSheet.getParameters()
-            .stream()
-            .filter(parameter -> ScreeningSheet.PARAMETER_PHASE.equalsIgnoreCase(parameter.getCategory()))
-            .findFirst()
-            .ifPresent(parameter -> tailoringBuilder.phases((Collection<Phase>) parameter.getValue()));
+            .state(TailoringState.CREATED)
+            .phases(screeningSheet.getPhases());
 
         Tailoring result = tailoringBuilder
             .notes(nonNull(note) ? List.of(Note.builder()

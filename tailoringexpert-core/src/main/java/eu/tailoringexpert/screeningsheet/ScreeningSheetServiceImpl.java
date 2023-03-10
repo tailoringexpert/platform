@@ -35,14 +35,12 @@ import java.io.ByteArrayInputStream;
 import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Locale;
 import java.util.Objects;
 import java.util.Set;
 
 import static java.util.Comparator.comparing;
 import static java.util.function.Predicate.not;
 import static java.util.stream.Collectors.toCollection;
-import static java.util.stream.Collectors.toList;
 import static java.util.stream.Collectors.toUnmodifiableSet;
 
 /**
@@ -96,14 +94,6 @@ public class ScreeningSheetServiceImpl implements ScreeningSheetService {
             .filter(not(String::isEmpty))
             .orElseThrow(() -> new TailoringexpertException("Screeningsheet doesn't contain a project name!"));
 
-        Collection<Parameter> parameters = getParameter(screeningSheetParameters);
-
-        List<ScreeningSheetParameter> screeningSheetParameter = parameters
-            .stream()
-            .map(mapper::createScreeningSheet)
-            .collect(toList());
-
-        // phasen konvertieren und an liste hinzufügen
         List<Phase> phases = screeningSheetParameters
             .stream()
             .filter(entry -> ScreeningSheet.PARAMETER_PHASE.equalsIgnoreCase(entry.getCategory()))
@@ -111,25 +101,25 @@ public class ScreeningSheetServiceImpl implements ScreeningSheetService {
             .filter(Objects::nonNull)
             .sorted(comparing(Phase::ordinal))
             .collect(toCollection(LinkedList::new));
-        if (!phases.isEmpty()) {
-            screeningSheetParameter.add(ScreeningSheetParameter.builder()
-                .category(ScreeningSheet.PARAMETER_PHASE.substring(0, 1).toUpperCase(Locale.ROOT) + ScreeningSheet.PARAMETER_PHASE.substring(1))
-                .value(phases)
-                .build());
-        }
+
+        Collection<Parameter> parameters = getParameter(screeningSheetParameters);
+        List<ScreeningSheetParameter> screeningSheetParameter = parameters
+            .stream()
+            .map(mapper::createScreeningSheet)
+            .collect(toCollection(LinkedList::new));
 
         List<String> parameterConfigurationWithoutValues = parameters
             .stream()
             .map(Parameter::getName)
             .toList();
 
-
         // all parameter not defined in db, which have no effect on calculating a selectionvector
         screeningSheetParameter.addAll(screeningSheetParameters
             .stream()
-            .filter(entry -> !ScreeningSheet.PARAMETER_PHASE.equalsIgnoreCase(entry.getCategory()) && !parameterConfigurationWithoutValues.contains(entry.getName()))
+            .filter(entry -> !parameterConfigurationWithoutValues.contains(entry.getName()))
             .map(entry -> ScreeningSheetParameter.builder()
-                .category(entry.getName().substring(0, 1).toUpperCase(Locale.GERMANY) + entry.getName().substring(1))
+                .category(entry.getCategory())
+                .name(entry.getName())
                 .value(entry.getLabel())
                 .build())
             .toList());
