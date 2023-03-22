@@ -36,28 +36,32 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
+import static java.util.Optional.empty;
 import static java.util.Optional.ofNullable;
 
 @Tenant("plattform")
 @RequiredArgsConstructor
 public class PlattformDocumentService implements DocumentService {
     @NonNull
-    private DocumentCreator requirementDocumentCreator;
+    private DocumentCreator tailoringcatalogPDFDocumentCreator;
 
     @NonNull
-    private DocumentCreator cmDocumentCreator;
+    private DocumentCreator catalogSpreadsheetDocumentCreator;
 
     @NonNull
-    private DocumentCreator comparisionDocumentCreator;
+    private DocumentCreator comparisionPDFDocumentCreator;
 
     @NonNull
-    private DocumentCreator drdDocumentCreator;
+    private DocumentCreator drdPDFDocumentCreator;
 
     @NonNull
-    private DocumentCreator catalogSpreadsheetCreator;
+    private DocumentCreator cmPDFDocumentCreator;
 
     @NonNull
-    private DocumentCreator cmSpreadsheetCreator;
+    private DocumentCreator cmChapterBasedSpreadsheetDocumentCreator;
+
+    @NonNull
+    private DocumentCreator cmRequirementBasedSpreadsheetDocumentCreator;
 
     private static final String PARAMETER_PROJEKT = "PROJEKT";
 
@@ -96,7 +100,7 @@ public class PlattformDocumentService implements DocumentService {
         String docId = String.format("%s-AR-ZS-DLR-%s-DV-Tailoring-Diffs",
             tailoring.getScreeningSheet().getProject(),
             tailoring.getIdentifier());
-        File result = comparisionDocumentCreator.createDocument(docId, tailoring, platzhalter);
+        File result = comparisionPDFDocumentCreator.createDocument(docId, tailoring, platzhalter);
 
         return ofNullable(result);
 
@@ -112,7 +116,7 @@ public class PlattformDocumentService implements DocumentService {
 
         createCMDokument(tailoring, creationTimestamp).ifPresent(result::add);
 
-        createCMSpreadsheetDokument(tailoring, creationTimestamp).ifPresent(result::add);
+        createCMSpreadsheetDocument(tailoring, creationTimestamp).ifPresent(result::add);
         createTailoringRequirementDokument(tailoring, creationTimestamp).ifPresent(result::add);
 
         return result;
@@ -130,7 +134,7 @@ public class PlattformDocumentService implements DocumentService {
             tailoring.getScreeningSheet().getProject(),
             tailoring.getIdentifier(),
             "DRD");
-        File result = drdDocumentCreator.createDocument(docId, tailoring, platzhalter);
+        File result = drdPDFDocumentCreator.createDocument(docId, tailoring, platzhalter);
 
         return ofNullable(result);
     }
@@ -158,25 +162,55 @@ public class PlattformDocumentService implements DocumentService {
         platzhalter.put(PARAMETER_KATALOG_DOCID, katalogDocId);
         platzhalter.put("DRD_DOCID", drdDocId);
 
-        File result = cmDocumentCreator.createDocument(docId, tailoring, platzhalter);
+        File result = cmPDFDocumentCreator.createDocument(docId, tailoring, platzhalter);
 
         return ofNullable(result);
     }
 
-    Optional<File> createCMSpreadsheetDokument(Tailoring tailoring, LocalDateTime currentTime) {
-        Map<String, Object> platzhalter = new HashMap<>();
-        platzhalter.put(PARAMETER_PROJEKT, tailoring.getScreeningSheet().getProject());
-        platzhalter.put(PARAMETER_DATUM, currentTime.format(DateTimeFormatter.ofPattern(PATTERN_DATUM)));
+    Optional<File> createCMSpreadsheetDocument(Tailoring tailoring, LocalDateTime currentTime) {
+        Map<String, Object> placeholders = new HashMap<>();
+        placeholders.put(PARAMETER_PROJEKT, tailoring.getScreeningSheet().getProject());
+        placeholders.put(PARAMETER_DATUM, currentTime.format(DateTimeFormatter.ofPattern(PATTERN_DATUM)));
 
         String docId = String.format(FORMAT_BASIS_DATEINAME,
             tailoring.getScreeningSheet().getProject(),
             tailoring.getIdentifier(),
             "CM");
 
-        File result = cmSpreadsheetCreator.createDocument(docId, tailoring, platzhalter);
+        Optional<File> result = empty();
+        if (tailoring.getCatalog().getVersion().startsWith("EM")) {
+            result = createCMRequirementBasedSpreadsheetDocument(tailoring, docId, placeholders);
+        } else {
+            result = createCMChapterBasedSpreadsheetDocument(tailoring, docId, placeholders);
+        }
 
-        return ofNullable(result);
+        return result;
+    }
 
+    /**
+     * Create CM Excel document.
+     *
+     * @param tailoring tailoring to create CM document for
+     * @return created Excel File
+     */
+    Optional<File> createCMChapterBasedSpreadsheetDocument(Tailoring tailoring,
+                                                           String docId,
+                                                           Map<String, Object> placeholders) {
+        File document = cmChapterBasedSpreadsheetDocumentCreator.createDocument(docId, tailoring, placeholders);
+        return ofNullable(document);
+    }
+
+    /**
+     * Create CM Excel document.
+     *
+     * @param tailoring tailoring to create CM document for
+     * @return created Excel File
+     */
+    Optional<File> createCMRequirementBasedSpreadsheetDocument(Tailoring tailoring,
+                                                               String docId,
+                                                               Map<String, Object> placeholders) {
+        File document = cmRequirementBasedSpreadsheetDocumentCreator.createDocument(docId, tailoring, placeholders);
+        return ofNullable(document);
     }
 
     Optional<File> createTailoringRequirementDokument(Tailoring tailoring, LocalDateTime currentTime) {
@@ -189,7 +223,7 @@ public class PlattformDocumentService implements DocumentService {
             tailoring.getIdentifier(),
             "CONFIG");
 
-        File result = catalogSpreadsheetCreator.createDocument(docId, tailoring, platzhalter);
+        File result = catalogSpreadsheetDocumentCreator.createDocument(docId, tailoring, platzhalter);
 
         return ofNullable(result);
 
@@ -223,7 +257,7 @@ public class PlattformDocumentService implements DocumentService {
             .toList();
         platzhalter.put(PARAMETER_SELECTIONVECTOR, selectionVector);
 
-        File result = requirementDocumentCreator.createDocument(docId, tailoring, platzhalter);
+        File result = tailoringcatalogPDFDocumentCreator.createDocument(docId, tailoring, platzhalter);
 
         return ofNullable(result);
     }

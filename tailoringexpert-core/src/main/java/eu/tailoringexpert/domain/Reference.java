@@ -41,6 +41,16 @@ public class Reference implements Serializable {
     private String text;
 
     /**
+     * Issue of reference.
+     */
+    private String issue;
+
+    /**
+     * Date reference was released.
+     */
+    private String releaseDate;
+
+    /**
      * State if referenced text is changed.
      */
     private Boolean changed;

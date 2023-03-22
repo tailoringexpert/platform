@@ -28,11 +28,11 @@ import com.fasterxml.jackson.datatype.jdk8.Jdk8Module;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.fasterxml.jackson.module.paramnames.ParameterNamesModule;
 import eu.tailoringexpert.domain.Catalog;
+import eu.tailoringexpert.domain.Chapter;
 import eu.tailoringexpert.domain.DRD;
-import eu.tailoringexpert.domain.File;
 import eu.tailoringexpert.domain.DocumentSignature;
 import eu.tailoringexpert.domain.DocumentSignatureState;
-import eu.tailoringexpert.domain.Chapter;
+import eu.tailoringexpert.domain.File;
 import eu.tailoringexpert.domain.Phase;
 import eu.tailoringexpert.domain.Tailoring;
 import eu.tailoringexpert.domain.TailoringRequirement;
@@ -73,12 +73,12 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 
 @Log4j2
-class CMExcelDocumentCreatorTest {
+class CMRequirementBasedExcelDocumentCreatorTest {
 
     private ObjectMapper objectMapper;
     private FileSaver fileSaver;
     BiFunction<Chapter<TailoringRequirement>, Collection<Phase>, Map<DRD, Set<String>>> drdProviderMock;
-    private CMExcelDocumentCreator creator;
+    private CMRequirementBasedExcelDocumentCreator creator;
 
 
     @BeforeEach
@@ -99,7 +99,7 @@ class CMExcelDocumentCreatorTest {
                 new SimpleEntry<>(E, unmodifiableCollection(asList("ORR"))),
                 new SimpleEntry<>(F, unmodifiableCollection(asList("EOM")))
             )));
-        this.creator = new CMExcelDocumentCreator(
+        this.creator = new CMRequirementBasedExcelDocumentCreator(
             () -> RendererRequestConfiguration.builder()
                 .id("unittest")
                 .name("unittest")

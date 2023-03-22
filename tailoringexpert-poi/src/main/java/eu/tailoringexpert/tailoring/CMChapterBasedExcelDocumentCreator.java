@@ -41,6 +41,9 @@ import org.apache.poi.ss.usermodel.VerticalAlignment;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.ss.util.CellRangeAddress;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Entities;
 
 import java.io.ByteArrayOutputStream;
 import java.nio.file.Paths;
@@ -49,11 +52,13 @@ import java.util.LinkedList;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.BiFunction;
 
 import static eu.tailoringexpert.domain.File.FileBuilder;
 import static eu.tailoringexpert.domain.File.builder;
 import static java.nio.file.Files.newInputStream;
+import static java.util.Objects.nonNull;
 import static java.util.stream.Collectors.joining;
 import static java.util.stream.IntStream.range;
 import static org.apache.poi.ss.usermodel.FillPatternType.SOLID_FOREGROUND;
@@ -66,7 +71,7 @@ import static org.apache.poi.ss.usermodel.IndexedColors.GREY_25_PERCENT;
  */
 @Log4j2
 @RequiredArgsConstructor
-public class CMExcelDocumentCreator implements DocumentCreator {
+public class CMChapterBasedExcelDocumentCreator implements DocumentCreator {
     @NonNull
     private RendererRequestConfigurationSupplier requestConfigurationSupplier;
 
@@ -94,7 +99,7 @@ public class CMExcelDocumentCreator implements DocumentCreator {
 
                 Catalog<TailoringRequirement> catalog = tailoring.getCatalog();
                 catalog.getToc().getChapters()
-                    .forEach(chapter -> addChapter(chapter, 1, cmSheet));
+                    .forEach(chapter -> addChapter(chapter, 1, cmSheet, placeholders));
 
                 Collection<DRDElement> drds = new LinkedList<>();
                 addDRD(catalog.getToc(), drds, tailoring.getPhases());
@@ -214,11 +219,31 @@ public class CMExcelDocumentCreator implements DocumentCreator {
      * @param level   chapter level
      * @param sheet   sheet to add elements to
      */
-    private void addChapter(Chapter<TailoringRequirement> chapter, int level, Sheet sheet) {
-        addRow(sheet, level, chapter.getNumber(), chapter.getName());
+    private void addChapter(Chapter<TailoringRequirement> chapter,
+                            int level,
+                            Sheet sheet,
+                            Map<String, Object> placeholders) {
+        addRow(sheet, level, chapter.getNumber(), chapter.getName(), placeholders);
         AtomicInteger nextLevel = new AtomicInteger(level + 1);
         chapter.getChapters()
-            .forEach(subChapter -> addChapter(subChapter, nextLevel.get(), sheet));
+            .forEach(subChapter -> addChapter(subChapter, nextLevel.get(), sheet, placeholders));
+        addRequirements(chapter.getRequirements(), nextLevel.get(), sheet, placeholders);
+    }
+
+    /**
+     * Hook fpr adding also requirements to CM instead of only adding chapters.<p>
+     * The hook itself doesn't add requirements to CM.
+     *
+     * @param requirements requirements to add
+     * @param level        level of requirements
+     * @param sheet        sheet to add to
+     * @param placeholders placeholder to use
+     */
+    protected void addRequirements(Collection<TailoringRequirement> requirements,
+                                   int level,
+                                   Sheet sheet,
+                                   Map<String, Object> placeholders) {
+        // noop hook for adding requirements to cm
     }
 
     /**
@@ -259,7 +284,11 @@ public class CMExcelDocumentCreator implements DocumentCreator {
      * @param chapter number of chapter
      * @param title   title of chapter
      */
-    private void addRow(Sheet sheet, int level, String chapter, String title) {
+    protected void addRow(Sheet sheet,
+                          int level,
+                          String chapter,
+                          String title,
+                          Map<String, Object> placeholders) {
         Row row = sheet.createRow((short) sheet.getLastRowNum() + 1);
 
         CellStyle cellStyle;
@@ -271,10 +300,10 @@ public class CMExcelDocumentCreator implements DocumentCreator {
             cellStyle = sheet.getWorkbook().createCellStyle();
         }
 
-        row.createCell(0).setCellValue(chapter);
+        row.createCell(0).setCellValue(text(chapter, placeholders));
         row.getCell(0).setCellStyle(cellStyle);
 
-        row.createCell(1).setCellValue(title);
+        row.createCell(1).setCellValue(text(title, placeholders));
         row.getCell(1).setCellStyle(cellStyle);
 
         row.createCell(2).setCellStyle(cellStyle);
@@ -295,5 +324,25 @@ public class CMExcelDocumentCreator implements DocumentCreator {
         result.setFillForegroundColor(color.index);
         result.setFillPattern(SOLID_FOREGROUND);
         return result;
+    }
+
+    /**
+     * Replaces placeholders and removes all html tags to provide a plain text.
+     *
+     * @param text         text to modify
+     * @param placeholders placeholder for substituation
+     * @return plain text string with replaces placeholders
+     */
+    private String text(String text, Map<String, Object> placeholders) {
+        AtomicReference<String> updatedText = new AtomicReference<>(text);
+        placeholders.entrySet()
+            .forEach(entry -> updatedText.set(updatedText.get().replace(
+                entry.getKey(),
+                nonNull(entry.getValue()) ? entry.getValue().toString() : entry.getKey())
+            ));
+        Document document = Jsoup.parseBodyFragment(updatedText.get());
+        document.outputSettings().escapeMode(Entities.EscapeMode.xhtml);
+        document.outputSettings().syntax(Document.OutputSettings.Syntax.xml);
+        return document.body().text();
     }
 }

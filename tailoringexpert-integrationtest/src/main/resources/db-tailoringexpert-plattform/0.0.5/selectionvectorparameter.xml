@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+         http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
+
+    <changeSet id="1" author="tailoringexpert-plattform">
+        <insert tableName="SELECTIONVECTORPROFILEPARAMETER">
+            <column name="SELECTIONVECTORPROFILE_ID"
+                    valueComputed=" ( select SELECTIONVECTORPROFILE_ID from SELECTIONVECTORPROFILE where INTERNALKEY='LOW' )"/>
+            <column name="TYPE" value="N"/>
+            <column name="LEVEL" value="1"/>
+        </insert>
+        <rollback>
+            <delete tableName="SELECTIONVECTORPROFILEPARAMETER">
+                <where>SELECTIONVECTORPROFILE_ID = (Select SELECTIONVECTORPROFILE_ID from SELECTIONVECTORPROFILE where
+                    INTERNALKEY='LOW') AND TYPE='N'
+                </where>
+            </delete>
+        </rollback>
+    </changeSet>
+
+    <changeSet id="2" author="tailoringexpert-plattform">
+        <insert tableName="SELECTIONVECTORPROFILEPARAMETER">
+            <column name="SELECTIONVECTORPROFILE_ID"
+                    valueComputed=" ( select SELECTIONVECTORPROFILE_ID from SELECTIONVECTORPROFILE where INTERNALKEY='LOW' )"/>
+            <column name="TYPE" value="G"/>
+            <column name="LEVEL" value="1"/>
+        </insert>
+        <rollback>
+            <delete tableName="SELECTIONVECTORPROFILEPARAMETER">
+                <where>SELECTIONVECTORPROFILE_ID = (Select SELECTIONVECTORPROFILE_ID from SELECTIONVECTORPROFILE where
+                    INTERNALKEY='LOW') AND TYPE='G'
+                </where>
+            </delete>
+        </rollback>
+    </changeSet>
+
+    <changeSet id="3" author="tailoringexpert-plattform">
+        <insert tableName="SELECTIONVECTORPROFILEPARAMETER">
+            <column name="SELECTIONVECTORPROFILE_ID"
+                    valueComputed=" ( select SELECTIONVECTORPROFILE_ID from SELECTIONVECTORPROFILE where INTERNALKEY='MIDDLE' )"/>
+            <column name="TYPE" value="N"/>
+            <column name="LEVEL" value="1"/>
+        </insert>
+        <rollback>
+            <delete tableName="SELECTIONVECTORPROFILEPARAMETER">
+                <where>SELECTIONVECTORPROFILE_ID = (Select SELECTIONVECTORPROFILE_ID from SELECTIONVECTORPROFILE where
+                    INTERNALKEY='MIDDLE') AND TYPE='N'
+                </where>
+            </delete>
+        </rollback>
+    </changeSet>
+
+    <changeSet id="4" author="tailoringexpert-plattform">
+        <insert tableName="SELECTIONVECTORPROFILEPARAMETER">
+            <column name="SELECTIONVECTORPROFILE_ID"
+                    valueComputed=" ( select SELECTIONVECTORPROFILE_ID from SELECTIONVECTORPROFILE where INTERNALKEY='MIDDLE' )"/>
+            <column name="TYPE" value="G"/>
+            <column name="LEVEL" value="1"/>
+        </insert>
+        <rollback>
+            <delete tableName="SELECTIONVECTORPROFILEPARAMETER">
+                <where>SELECTIONVECTORPROFILE_ID = (Select SELECTIONVECTORPROFILE_ID from SELECTIONVECTORPROFILE where
+                    INTERNALKEY='MIDDLE') AND TYPE='G'
+                </where>
+            </delete>
+        </rollback>
+    </changeSet>
+
+    <changeSet id="5" author="tailoringexpert-plattform">
+        <insert tableName="SELECTIONVECTORPROFILEPARAMETER">
+            <column name="SELECTIONVECTORPROFILE_ID"
+                    valueComputed=" ( select SELECTIONVECTORPROFILE_ID from SELECTIONVECTORPROFILE where INTERNALKEY='HIGH' )"/>
+            <column name="TYPE" value="N"/>
+            <column name="LEVEL" value="1"/>
+        </insert>
+        <rollback>
+            <delete tableName="SELECTIONVECTORPROFILEPARAMETER">
+                <where>SELECTIONVECTORPROFILE_ID = (Select SELECTIONVECTORPROFILE_ID from SELECTIONVECTORPROFILE where
+                    INTERNALKEY='HIGH') AND TYPE='N'
+                </where>
+            </delete>
+        </rollback>
+    </changeSet>
+
+    <changeSet id="6" author="tailoringexpert-plattform">
+        <insert tableName="SELECTIONVECTORPROFILEPARAMETER">
+            <column name="SELECTIONVECTORPROFILE_ID"
+                    valueComputed=" ( select SELECTIONVECTORPROFILE_ID from SELECTIONVECTORPROFILE where INTERNALKEY='HIGH' )"/>
+            <column name="TYPE" value="G"/>
+            <column name="LEVEL" value="1"/>
+        </insert>
+        <rollback>
+            <delete tableName="SELECTIONVECTORPROFILEPARAMETER">
+                <where>SELECTIONVECTORPROFILE_ID = (Select SELECTIONVECTORPROFILE_ID from SELECTIONVECTORPROFILE where
+                    INTERNALKEY='HIGH') AND TYPE='G'
+                </where>
+            </delete>
+        </rollback>
+    </changeSet>
+
+</databaseChangeLog>
