@@ -162,6 +162,6 @@ public class CMPDFDocumentCreator implements DocumentCreator {
      * @return formatted xhtml text
      */
     private String xhtml(String text, Map<String, Object> placeholders) {
-        return templateEngine.toXHTML(text, emptyMap());
+        return templateEngine.toXHTML(text, placeholders);
     }
 }

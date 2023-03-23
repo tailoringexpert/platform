@@ -65,13 +65,14 @@ import static org.apache.poi.ss.usermodel.FillPatternType.SOLID_FOREGROUND;
 import static org.apache.poi.ss.usermodel.IndexedColors.GREY_25_PERCENT;
 
 /**
- * Create Excel Compliance Matrix file.
+ * Create Excel Compliance Matrix file. <p>
+ * Only chapters will be considered while generating the file.
  *
  * @author Michael Bädorf
  */
 @Log4j2
 @RequiredArgsConstructor
-public class CMChapterBasedExcelDocumentCreator implements DocumentCreator {
+public class CMExcelDocumentCreator implements DocumentCreator {
     @NonNull
     private RendererRequestConfigurationSupplier requestConfigurationSupplier;
 
@@ -243,6 +244,7 @@ public class CMChapterBasedExcelDocumentCreator implements DocumentCreator {
                                    int level,
                                    Sheet sheet,
                                    Map<String, Object> placeholders) {
+        // hook for adding also requirements to cm instead of "only" chapters
     }
 
     /**

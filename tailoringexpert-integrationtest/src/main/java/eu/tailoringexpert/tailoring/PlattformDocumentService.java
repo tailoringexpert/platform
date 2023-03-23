@@ -36,7 +36,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
-import static java.util.Optional.empty;
 import static java.util.Optional.ofNullable;
 
 @Tenant("plattform")
@@ -58,10 +57,10 @@ public class PlattformDocumentService implements DocumentService {
     private DocumentCreator cmPDFDocumentCreator;
 
     @NonNull
-    private DocumentCreator cmChapterBasedSpreadsheetDocumentCreator;
+    private DocumentCreator cmSpreadsheetDocumentCreator;
 
     @NonNull
-    private DocumentCreator cmRequirementBasedSpreadsheetDocumentCreator;
+    private DocumentCreator cmRequirementsSpreadsheetDocumentCreator;
 
     private static final String PARAMETER_PROJEKT = "PROJEKT";
 
@@ -177,11 +176,11 @@ public class PlattformDocumentService implements DocumentService {
             tailoring.getIdentifier(),
             "CM");
 
-        Optional<File> result = empty();
+        Optional<File> result;
         if (tailoring.getCatalog().getVersion().startsWith("EM")) {
-            result = createCMRequirementBasedSpreadsheetDocument(tailoring, docId, placeholders);
+            result = createCMRequirementsSpreadsheetDocument(tailoring, docId, placeholders);
         } else {
-            result = createCMChapterBasedSpreadsheetDocument(tailoring, docId, placeholders);
+            result = createCMSpreadsheetDocument(tailoring, docId, placeholders);
         }
 
         return result;
@@ -193,10 +192,10 @@ public class PlattformDocumentService implements DocumentService {
      * @param tailoring tailoring to create CM document for
      * @return created Excel File
      */
-    Optional<File> createCMChapterBasedSpreadsheetDocument(Tailoring tailoring,
-                                                           String docId,
-                                                           Map<String, Object> placeholders) {
-        File document = cmChapterBasedSpreadsheetDocumentCreator.createDocument(docId, tailoring, placeholders);
+    Optional<File> createCMSpreadsheetDocument(Tailoring tailoring,
+                                               String docId,
+                                               Map<String, Object> placeholders) {
+        File document = cmSpreadsheetDocumentCreator.createDocument(docId, tailoring, placeholders);
         return ofNullable(document);
     }
 
@@ -206,10 +205,10 @@ public class PlattformDocumentService implements DocumentService {
      * @param tailoring tailoring to create CM document for
      * @return created Excel File
      */
-    Optional<File> createCMRequirementBasedSpreadsheetDocument(Tailoring tailoring,
-                                                               String docId,
-                                                               Map<String, Object> placeholders) {
-        File document = cmRequirementBasedSpreadsheetDocumentCreator.createDocument(docId, tailoring, placeholders);
+    Optional<File> createCMRequirementsSpreadsheetDocument(Tailoring tailoring,
+                                                           String docId,
+                                                           Map<String, Object> placeholders) {
+        File document = cmRequirementsSpreadsheetDocumentCreator.createDocument(docId, tailoring, placeholders);
         return ofNullable(document);
     }
 

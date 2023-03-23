@@ -73,8 +73,8 @@ public class PlattformConfiguration {
         @NonNull @Qualifier("comparisionPDFDocumentCreator") DocumentCreator comparisionPDFDocumentCreator,
         @NonNull @Qualifier("drdPDFDocumentCreator") DocumentCreator drdPDFDocumentCreator,
         @NonNull @Qualifier("cmPDFDocumentCreator") DocumentCreator cmPDFDocumentCreator,
-        @NonNull @Qualifier("cmChapterBasedSpreadsheetDocumentCreator") DocumentCreator cmChapterBasedSpreadsheetDocumentCreator,
-        @NonNull @Qualifier("cmRequirementBasedSpreadsheetDocumentCreator") DocumentCreator cmRequirementBasedSpreadsheetDocumentCreator) {
+        @NonNull @Qualifier("cmSpreadsheetDocumentCreator") DocumentCreator cmSpreadsheetDocumentCreator,
+        @NonNull @Qualifier("cmRequirementsSpreadsheetDocumentCreator") DocumentCreator cmRequirementsSpreadsheetDocumentCreator) {
 
         return new PlattformDocumentService(
             tailoringCatalogPDFDocumentCreator,
@@ -82,8 +82,8 @@ public class PlattformConfiguration {
             comparisionPDFDocumentCreator,
             drdPDFDocumentCreator,
             cmPDFDocumentCreator,
-            cmChapterBasedSpreadsheetDocumentCreator,
-            cmRequirementBasedSpreadsheetDocumentCreator
+            cmSpreadsheetDocumentCreator,
+            cmRequirementsSpreadsheetDocumentCreator
         );
     }
 

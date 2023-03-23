@@ -73,12 +73,12 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 
 @Log4j2
-class CMRequirementBasedExcelDocumentCreatorTest {
+class CMRequirementsExcelDocumentCreatorTest {
 
     private ObjectMapper objectMapper;
     private FileSaver fileSaver;
     BiFunction<Chapter<TailoringRequirement>, Collection<Phase>, Map<DRD, Set<String>>> drdProviderMock;
-    private CMRequirementBasedExcelDocumentCreator creator;
+    private CMRequirementsExcelDocumentCreator creator;
 
 
     @BeforeEach
@@ -99,7 +99,7 @@ class CMRequirementBasedExcelDocumentCreatorTest {
                 new SimpleEntry<>(E, unmodifiableCollection(asList("ORR"))),
                 new SimpleEntry<>(F, unmodifiableCollection(asList("EOM")))
             )));
-        this.creator = new CMRequirementBasedExcelDocumentCreator(
+        this.creator = new CMRequirementsExcelDocumentCreator(
             () -> RendererRequestConfiguration.builder()
                 .id("unittest")
                 .name("unittest")

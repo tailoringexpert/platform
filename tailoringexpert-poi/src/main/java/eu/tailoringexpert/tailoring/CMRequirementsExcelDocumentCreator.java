@@ -26,7 +26,6 @@ import eu.tailoringexpert.domain.DRD;
 import eu.tailoringexpert.domain.Phase;
 import eu.tailoringexpert.domain.TailoringRequirement;
 import eu.tailoringexpert.renderer.RendererRequestConfigurationSupplier;
-import lombok.NonNull;
 import lombok.extern.log4j.Log4j2;
 import org.apache.poi.ss.usermodel.Sheet;
 
@@ -36,14 +35,15 @@ import java.util.Set;
 import java.util.function.BiFunction;
 
 /**
- * Create Excel Compliance Matrix file.
+ * Create Excel Compliance Matrix file.<p>
+ * Chapters and requirements will be considered while generating the file.
  *
  * @author Michael Bädorf
  */
 @Log4j2
-public class CMRequirementBasedExcelDocumentCreator extends CMChapterBasedExcelDocumentCreator {
-    public CMRequirementBasedExcelDocumentCreator(RendererRequestConfigurationSupplier requestConfigurationSupplier,
-                                                  BiFunction<Chapter<TailoringRequirement>, Collection<Phase>, Map<DRD, Set<String>>> drdProvider) {
+public class CMRequirementsExcelDocumentCreator extends CMExcelDocumentCreator {
+    public CMRequirementsExcelDocumentCreator(RendererRequestConfigurationSupplier requestConfigurationSupplier,
+                                              BiFunction<Chapter<TailoringRequirement>, Collection<Phase>, Map<DRD, Set<String>>> drdProvider) {
         super(requestConfigurationSupplier, drdProvider);
     }
 

@@ -217,17 +217,17 @@ public class TailoringConfiguration {
     }
 
     @Bean
-    DocumentCreator cmChapterBasedSpreadsheetDocumentCreator(
+    DocumentCreator cmSpreadsheetDocumentCreator(
         @NonNull RendererRequestConfigurationSupplier requestConfigurationSupplier,
         @NonNull BiFunction<Chapter<TailoringRequirement>, Collection<Phase>, Map<DRD, Set<String>>> drdProvider) {
-        return new CMChapterBasedExcelDocumentCreator(requestConfigurationSupplier, drdProvider);
+        return new CMExcelDocumentCreator(requestConfigurationSupplier, drdProvider);
     }
 
     @Bean
-    DocumentCreator cmRequirementBasedSpreadsheetDocumentCreator(
+    DocumentCreator cmRequirementsSpreadsheetDocumentCreator(
         @NonNull RendererRequestConfigurationSupplier requestConfigurationSupplier,
         @NonNull BiFunction<Chapter<TailoringRequirement>, Collection<Phase>, Map<DRD, Set<String>>> drdProvider) {
-        return new CMRequirementBasedExcelDocumentCreator(requestConfigurationSupplier, drdProvider);
+        return new CMRequirementsExcelDocumentCreator(requestConfigurationSupplier, drdProvider);
     }
 
     @Bean
