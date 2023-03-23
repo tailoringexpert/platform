@@ -133,7 +133,6 @@ public class CMPDFDocumentCreator implements DocumentCreator {
             .requirement(true)
             .build())
         );
-        // noop hook for adding requirements to cm
     }
 
     /**

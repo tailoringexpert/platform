@@ -243,7 +243,6 @@ public class CMChapterBasedExcelDocumentCreator implements DocumentCreator {
                                    int level,
                                    Sheet sheet,
                                    Map<String, Object> placeholders) {
-        // noop hook for adding requirements to cm
     }
 
     /**
