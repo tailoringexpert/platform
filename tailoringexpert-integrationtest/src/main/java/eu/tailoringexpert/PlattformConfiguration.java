@@ -68,19 +68,23 @@ public class PlattformConfiguration {
 
     @Bean
     DocumentService plattformDocumentService(
-        @NonNull @Qualifier("tailoringCatalogDocumentCreator") DocumentCreator tailoringCatalogDocumentCreator,
-        @NonNull @Qualifier("comparisionDocumentCreator") DocumentCreator comparisionDocumentCreator,
-        @NonNull @Qualifier("drdDocumentCreator") DocumentCreator drdDocumentCreator,
-        @NonNull @Qualifier("cmDocumentCreator") DocumentCreator cmDocumentCreator,
-        @NonNull @Qualifier("cmSpreadsheetCreator") DocumentCreator cmSpreadsheetCreator,
-        @NonNull @Qualifier("tailoringCatalogSpreadsheetCreator") DocumentCreator tailoringCatalogSpreadsheetCreator) {
+        @NonNull @Qualifier("tailoringCatalogPDFDocumentCreator") DocumentCreator tailoringCatalogPDFDocumentCreator,
+        @NonNull @Qualifier("tailoringCatalogSpreadsheetCreator") DocumentCreator tailoringCatalogSpreadsheetCreator,
+        @NonNull @Qualifier("comparisionPDFDocumentCreator") DocumentCreator comparisionPDFDocumentCreator,
+        @NonNull @Qualifier("drdPDFDocumentCreator") DocumentCreator drdPDFDocumentCreator,
+        @NonNull @Qualifier("cmPDFDocumentCreator") DocumentCreator cmPDFDocumentCreator,
+        @NonNull @Qualifier("cmSpreadsheetDocumentCreator") DocumentCreator cmSpreadsheetDocumentCreator,
+        @NonNull @Qualifier("cmRequirementsSpreadsheetDocumentCreator") DocumentCreator cmRequirementsSpreadsheetDocumentCreator) {
+
         return new PlattformDocumentService(
-            tailoringCatalogDocumentCreator,
-            cmDocumentCreator,
-            comparisionDocumentCreator,
-            drdDocumentCreator,
+            tailoringCatalogPDFDocumentCreator,
             tailoringCatalogSpreadsheetCreator,
-            cmSpreadsheetCreator);
+            comparisionPDFDocumentCreator,
+            drdPDFDocumentCreator,
+            cmPDFDocumentCreator,
+            cmSpreadsheetDocumentCreator,
+            cmRequirementsSpreadsheetDocumentCreator
+        );
     }
 
     @Bean

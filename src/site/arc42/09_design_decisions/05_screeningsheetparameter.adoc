@@ -1,0 +1,66 @@
+=== [short title of solved problem and solution]
+
+Status::  accepted
+Entscheider::
+* Michael Bädorf
+Datum::
+ 14.03.2023
+
+Technische Story:: n/a
+
+==== Kontext und Problemstellung
+
+Label/Texte der Screeningsheetparameter, die nicht für die Berechnung des Selektionsvektors benötigt werden
+
+==== Entscheidungstreiber
+
+* Einfachheit
+* Verständlichkeit
+
+==== Betrachtete Lösungsmöglichkeiten
+
+* Benutzen des Mechanismus wie für Parameter, die auch für die Berechnung verwendet werden
+* Definition der Texte durch den Mandanten im Screeningsheet
+
+==== Entscheidung
+
+Gewählte Alternative::
+Definition der Texte durch den Mandanten im Screeningsheet, weil
+* transparent und einfach zu zuverstehen und pflegen
+
+===== Positive Auswirkungen
+
+* Texte können durch den Mandanten ohne Aktualisierung der Datenbank angepasst werden
+* Transparent
+* Pflegeaufwand für geänderte Texte gering
+
+===== Negative Auswirkungen
+
+* Texte können "willkürlich" durch Benutzer geändert werden
+
+==== Vergleich der Alternativen
+
+==== Benutzen des Mechanismus wie für Parameter, die auch für die Berechnung verwendet werden
+
+===== Positiv
+
+* Die Label unterliegen einem Prozess, bevor diese ins System gelangen
+
+===== Negativ
+
+* Aufwändig zu pflegen
+* Datenbank wird schwerer zu lesen/verstehen
+
+===== Definition der Texte durch den Mandanten im Screeningsheet
+
+===== Positiv
+
+* einfach zu pflegen
+* unabhängig von Datenbankupdates/-releases
+* transparent
+
+===== Negativ
+
+* Text könnten ggf. inkonsistent sein, hat aber keinen Einfluß auf die Berechnung des Selektionsvektors
+
+==== Links

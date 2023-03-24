@@ -32,7 +32,9 @@
           "position" : "a",
           "reference" : {
             "text" : "Q-ST-10C Rev.1. para. 4.1",
+            "issue" : "Rev. 1",
             "changed" : false,
+            "releaseDate": "March 2023",
             "logo" : {
               "name" : "ECSS",
               "url" : "http://localhost/assets/8.2.1/catalog/ecss.png"

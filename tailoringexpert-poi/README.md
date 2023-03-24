@@ -1,4 +1,4 @@
 # tailoringexpert-poi
 
-Modul für die Bereitstellung von Excel Im- und Exprten der TailoringExpert Plattform.
+Module for creating Excel documents and importing Excel requirement state of tailorings.
 

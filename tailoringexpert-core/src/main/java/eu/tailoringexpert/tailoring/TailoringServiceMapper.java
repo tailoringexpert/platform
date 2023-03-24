@@ -104,7 +104,6 @@ public abstract class TailoringServiceMapper {
                 return containsAllLimitations(parameterValues, identifier.getLimitations()) && level == identifier.getLevel();
             });
 
-        log.info(applicable);
         builder.selected(Boolean.valueOf(applicable));
 
         log.traceExit();

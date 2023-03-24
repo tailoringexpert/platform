@@ -28,11 +28,11 @@ import com.fasterxml.jackson.datatype.jdk8.Jdk8Module;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.fasterxml.jackson.module.paramnames.ParameterNamesModule;
 import eu.tailoringexpert.domain.Catalog;
+import eu.tailoringexpert.domain.Chapter;
 import eu.tailoringexpert.domain.DRD;
-import eu.tailoringexpert.domain.File;
 import eu.tailoringexpert.domain.DocumentSignature;
 import eu.tailoringexpert.domain.DocumentSignatureState;
-import eu.tailoringexpert.domain.Chapter;
+import eu.tailoringexpert.domain.File;
 import eu.tailoringexpert.domain.Phase;
 import eu.tailoringexpert.domain.Tailoring;
 import eu.tailoringexpert.domain.TailoringRequirement;
@@ -53,7 +53,6 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.AbstractMap.SimpleEntry;
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 import java.util.function.BiFunction;
@@ -74,12 +73,12 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 
 @Log4j2
-class CMExcelDocumentCreatorTest {
+class CMRequirementsExcelDocumentCreatorTest {
 
     private ObjectMapper objectMapper;
     private FileSaver fileSaver;
     BiFunction<Chapter<TailoringRequirement>, Collection<Phase>, Map<DRD, Set<String>>> drdProviderMock;
-    private CMExcelDocumentCreator creator;
+    private CMRequirementsExcelDocumentCreator creator;
 
 
     @BeforeEach
@@ -100,7 +99,7 @@ class CMExcelDocumentCreatorTest {
                 new SimpleEntry<>(E, unmodifiableCollection(asList("ORR"))),
                 new SimpleEntry<>(F, unmodifiableCollection(asList("EOM")))
             )));
-        this.creator = new CMExcelDocumentCreator(
+        this.creator = new CMRequirementsExcelDocumentCreator(
             () -> RendererRequestConfiguration.builder()
                 .id("unittest")
                 .name("unittest")
@@ -133,13 +132,13 @@ class CMExcelDocumentCreatorTest {
             .phases(of(ZERO, A, B, C, D, E, F))
             .build();
 
-        Map<String, Object> parameter = new HashMap<>();
-        parameter.put("titel", "DRD Catalog");
-        parameter.put("beschreibung", "BESCHREIBUNG");
-        parameter.put("PROJEKT", "HRWS");
-        parameter.put("DATUM", LocalDateTime.now().format(DateTimeFormatter.ofPattern("dd.MM.YYYY")));
-        parameter.put("DOKUMENT", "HRWS-RD-PS-1940/DV7");
-        parameter.put("NULL_VALUE", null);
+        Map<String, Object> parameter = ofEntries(
+            Map.entry("titel", "DRD Catalog"),
+            Map.entry("beschreibung", "BESCHREIBUNG"),
+            Map.entry("PROJEKT", "HRWS"),
+            Map.entry("DATUM", LocalDateTime.now().format(DateTimeFormatter.ofPattern("dd.MM.YYYY"))),
+            Map.entry("DOKUMENT", "HRWS-RD-PS-1940/DV7")
+        );
 
         // act
         File actual = creator.createDocument("4711", tailoring, parameter);

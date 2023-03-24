@@ -30,6 +30,7 @@ import eu.tailoringexpert.domain.Tailoring;
 import eu.tailoringexpert.domain.TailoringRequirement;
 import eu.tailoringexpert.renderer.HTMLTemplateEngine;
 import eu.tailoringexpert.renderer.PDFEngine;
+import eu.tailoringexpert.tailoring.CatalogElement.CatalogElementBuilder;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
@@ -137,22 +138,28 @@ public class TailoringCatalogPDFDocumentCreator implements DocumentCreator {
      * @param placeholders placeholders to use for evaluation in requirement text
      */
     void addRequirement(TailoringRequirement requirement, Collection<CatalogElement> rows, Map<String, Object> placeholders) {
-        StringBuilder referenzText = new StringBuilder();
+        CatalogElementBuilder builder = CatalogElement.builder()
+            .applicable(requirement.getSelected().booleanValue())
+            .position(templateEngine.toXHTML(requirement.getPosition(), emptyMap()))
+            .text(templateEngine.toXHTML(requirement.getText(), placeholders))
+            .chapter(null)
+            .reference("")
+            .referenceIssue("")
+            .referenceReleaseDate("");
+
         if (nonNull(requirement.getReference())) {
+            StringBuilder referenzText = new StringBuilder();
             if (nonNull(requirement.getReference().getLogo())) {
                 String url = requirement.getReference().getLogo().getUrl();
                 referenzText.append(format(REFERENZ_LOGO_LINK, url, requirement.getReference().getLogo().getName()));
             }
             referenzText.append(requirement.getReference().getText() + (requirement.getReference().getChanged().booleanValue() ? "(mod)" : ""));
+            builder.reference(templateEngine.toXHTML(referenzText.toString(), emptyMap()))
+                .referenceIssue(nonNull(requirement.getReference().getIssue()) ? templateEngine.toXHTML(requirement.getReference().getIssue(), emptyMap()) : null)
+                .referenceReleaseDate(nonNull(requirement.getReference().getReleaseDate()) ? templateEngine.toXHTML(requirement.getReference().getReleaseDate(), emptyMap()) : null);
         }
 
-        rows.add(CatalogElement.builder()
-            .applicable(requirement.getSelected().booleanValue())
-            .reference(templateEngine.toXHTML(referenzText.toString(), emptyMap()))
-            .position(templateEngine.toXHTML(requirement.getPosition(), emptyMap()))
-            .text(templateEngine.toXHTML(requirement.getText(), placeholders))
-            .chapter(null)
-            .build());
+        rows.add(builder.build());
     }
 
     /**
@@ -171,6 +178,7 @@ public class TailoringCatalogPDFDocumentCreator implements DocumentCreator {
                 .requirements(entry.getValue())
                 .number(entry.getKey().getNumber())
                 .action(entry.getKey().getAction())
+                .subtitle(entry.getKey().getSubtitle())
                 .build()));
     }
 }

@@ -38,6 +38,10 @@ public class CatalogElement {
      */
     private String reference;
 
+    private String referenceIssue;
+
+    private String referenceReleaseDate;
+
     /**
      * Position to render element at.
      */

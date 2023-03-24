@@ -8,3 +8,5 @@ include::09_design_decisions/02_templateengine.adoc[]
 include::09_design_decisions/03_screeningsheet.adoc[]
 
 include::09_design_decisions/04_tailoringdateien.adoc[]
+
+include::09_design_decisions/05_screeningsheetparameter.adoc[]

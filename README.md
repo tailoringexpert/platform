@@ -46,7 +46,7 @@ in same package as service.
 
 ### Validation and Exceptionhandling
 
-In case no data will be returned due unknown paths (project, tailoring, ...) _Optional_ shall be return.
+In case no data will be returned due unknown paths (project, tailoring, ...) _Optional_ shall be returned.
 RestController shall return _404_ in case of _Optional.empty_.
 
 ### Business/Domain core
@@ -63,7 +63,7 @@ Data/Domain objects of all layers shall be created in package _domain_.
 
 ## Persistence
 
-Persistence objects and database access shall be implemented in _tailoring-data-jpa_.
+Persistence objects and database access shall be implemented in _tailoringexpert-data-jpa_.
 Dataobjects shall be created in package _domain_, spring data acces in _repository_
 OR-Mapping is to be implemented via annotations.
 

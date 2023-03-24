@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
+
+    <changeSet id="1" author="tailoringexpert">
+        <comment>columns for github issue #148</comment>
+        <addColumn tableName="BASEREQUIREMENT">
+            <column name="ISSUE" type="VARCHAR(16)"/>
+        </addColumn>
+        <rollback>
+            <dropColumn tableName="BASEREQUIREMENT" columnName="ISSUE"/>
+        </rollback>
+    </changeSet>
+
+    <changeSet id="2" author="tailoringexpert">
+        <comment>columns for github issue #148</comment>
+        <addColumn tableName="BASEREQUIREMENT">
+            <column name="RELEASEDATE" type="VARCHAR(32)"/>
+        </addColumn>
+        <rollback>
+            <dropColumn tableName="BASEREQUIREMENT" columnName="RELEASEDATE"/>
+        </rollback>
+    </changeSet>
+
+    <changeSet id="3" author="tailoringexpert">
+        <comment>columns for github issue #148</comment>
+        <addColumn tableName="TAILORINGREQUIREMENT">
+            <column name="ISSUE" type="VARCHAR(16)"/>
+        </addColumn>
+        <rollback>
+            <dropColumn tableName="TAILORINGREQUIREMENT" columnName="ISSUE"/>
+        </rollback>
+    </changeSet>
+
+    <changeSet id="4" author="tailoringexpert">
+        <comment>columns for github issue #148</comment>
+        <addColumn tableName="TAILORINGREQUIREMENT">
+            <column name="RELEASEDATE" type="VARCHAR(32)"/>
+        </addColumn>
+        <rollback>
+            <dropColumn tableName="TAILORINGREQUIREMENT" columnName="RELEASEDATE"/>
+        </rollback>
+    </changeSet>
+
+    <changeSet id="5" author="tailoringexpert">
+        <comment>columns for github issue #148</comment>
+        <addColumn tableName="DRD">
+            <column name="SUBTITLE" type="VARCHAR(255)"/>
+        </addColumn>
+        <rollback>
+            <dropColumn tableName="DRD" columnName="SUBTITLE"/>
+        </rollback>
+    </changeSet>
+
+</databaseChangeLog>
