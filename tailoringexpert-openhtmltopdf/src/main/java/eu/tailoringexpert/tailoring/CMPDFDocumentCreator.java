@@ -103,12 +103,36 @@ public class CMPDFDocumentCreator implements DocumentCreator {
     void addChapter(Chapter<TailoringRequirement> chapter, int level, Collection<CMElement> rows, Map<String, Object> placeholders) {
         rows.add(CMElement.builder()
             .level(level)
-            .number(templateEngine.toXHTML(chapter.getNumber(), emptyMap()))
-            .name(templateEngine.toXHTML(chapter.getName(), placeholders))
+            .number(xhtml(chapter.getNumber(), emptyMap()))
+            .name(xhtml(chapter.getName(), placeholders))
+            .requirement(false)
             .build());
         AtomicInteger nextLevel = new AtomicInteger(level + 1);
         chapter.getChapters()
             .forEach(subChapter -> addChapter(subChapter, nextLevel.get(), rows, placeholders));
+        addRequirements(chapter.getRequirements(), nextLevel.get(), rows, placeholders);
+    }
+
+    /**
+     * Hook fpr adding also requirements to CM instead of only adding chapters.<p>
+     * The hook itself doesn't add requirements to CM.
+     *
+     * @param requirements requirements to add
+     * @param level        level of requirements
+     * @param rows         collection to add elements to
+     * @param placeholders placeholder to use
+     */
+    protected void addRequirements(Collection<TailoringRequirement> requirements,
+                                   int level,
+                                   Collection<CMElement> rows,
+                                   Map<String, Object> placeholders) {
+        requirements.forEach(requirement -> rows.add(CMElement.builder()
+            .level(level)
+            .number(xhtml(requirement.getPosition(), emptyMap()))
+            .name(xhtml(requirement.getText(), placeholders))
+            .requirement(true)
+            .build())
+        );
     }
 
     /**
@@ -128,5 +152,16 @@ public class CMPDFDocumentCreator implements DocumentCreator {
                 .number(entry.getKey().getNumber())
                 .action(entry.getKey().getAction())
                 .build()));
+    }
+
+    /**
+     * Formats text with replaced placeholders as valid xhtml.
+     *
+     * @param text         text to format and replaced with placeholders
+     * @param placeholders placeholders to use
+     * @return formatted xhtml text
+     */
+    private String xhtml(String text, Map<String, Object> placeholders) {
+        return templateEngine.toXHTML(text, placeholders);
     }
 }

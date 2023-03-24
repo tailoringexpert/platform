@@ -45,6 +45,8 @@ public class DRDElement {
      */
     private String title;
 
+    private String subtitle;
+
     /**
      * Definition when to deliver the document.
      */

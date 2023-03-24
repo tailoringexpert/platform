@@ -79,7 +79,7 @@ public class TailoringConfiguration {
     }
 
     @Bean
-    DocumentCreator projektPhaseKatalogSpreadsheetCreator() {
+    DocumentCreator tailoringCatalogExcelDocumentCreator() {
         return new TailoringCatalogExcelDocumentCreator();
     }
 
@@ -188,14 +188,15 @@ public class TailoringConfiguration {
     }
 
     @Bean
-    DocumentCreator tailoringCatalogDocumentCreator(
+    DocumentCreator tailoringCatalogPDFDocumentCreator(
         @NonNull HTMLTemplateEngine templateEngine,
         @NonNull PDFEngine pdfEngine,
         @NonNull BiFunction<Chapter<TailoringRequirement>, Collection<Phase>, Map<DRD, Set<String>>> drdProvider) {
         return new TailoringCatalogPDFDocumentCreator(templateEngine, pdfEngine, drdProvider);
     }
+
     @Bean
-    DocumentCreator comparisionDocumentCreator(
+    DocumentCreator comparisionPDFDocumentCreator(
         @NonNull HTMLTemplateEngine templateEngine,
         @NonNull PDFEngine pdfEngine,
         @NonNull BiFunction<Chapter<TailoringRequirement>, Collection<Phase>, Map<DRD, Set<String>>> drdProvider) {
@@ -203,7 +204,7 @@ public class TailoringConfiguration {
     }
 
     @Bean
-    DocumentCreator drdDocumentCreator(
+    DocumentCreator drdPDFDocumentCreator(
         @NonNull HTMLTemplateEngine templateEngine,
         @NonNull PDFEngine pdfEngine,
         @NonNull BiFunction<Chapter<TailoringRequirement>, Collection<Phase>, Map<DRD, Set<String>>> drdProvider) {
@@ -216,13 +217,21 @@ public class TailoringConfiguration {
     }
 
     @Bean
-    DocumentCreator cmSpreadsheetCreator(
+    DocumentCreator cmSpreadsheetDocumentCreator(
         @NonNull RendererRequestConfigurationSupplier requestConfigurationSupplier,
         @NonNull BiFunction<Chapter<TailoringRequirement>, Collection<Phase>, Map<DRD, Set<String>>> drdProvider) {
         return new CMExcelDocumentCreator(requestConfigurationSupplier, drdProvider);
     }
+
     @Bean
-    DocumentCreator cmDocumentCreator(
+    DocumentCreator cmRequirementsSpreadsheetDocumentCreator(
+        @NonNull RendererRequestConfigurationSupplier requestConfigurationSupplier,
+        @NonNull BiFunction<Chapter<TailoringRequirement>, Collection<Phase>, Map<DRD, Set<String>>> drdProvider) {
+        return new CMRequirementsExcelDocumentCreator(requestConfigurationSupplier, drdProvider);
+    }
+
+    @Bean
+    DocumentCreator cmPDFDocumentCreator(
         @NonNull HTMLTemplateEngine templateEngine,
         @NonNull PDFEngine pdfEngine,
         @NonNull BiFunction<Chapter<TailoringRequirement>, Collection<Phase>, Map<DRD, Set<String>>> drdProvider) {
