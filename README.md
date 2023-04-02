@@ -106,9 +106,8 @@ Architecture documentation can be found here as [arc42](src/site/arc42/tailoring
 
 ### Prerequisites
 
-- Java 11 JDK
+- Java 17 JDK
 - Maven
-    - profile containing liquibase properties for integration test
 
 ### Build
 
@@ -121,7 +120,7 @@ Plattform can be build using
 
 ### Run
 
-For testing purpose there is a sample plattform in module `tailoringexpert-integrationtest`.
+For testing purpose there is a demo plattform in [github](https://github.com/tailoringexpert/demo).
 See instructions for setting up and running the (demo) system in [README.md](tailoringexpert-integrationtest/README.md)
 
 ## Links
