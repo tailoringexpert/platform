@@ -54,7 +54,6 @@
         <module>tailoringexpert-coverage</module>
         <module>tailoringexpert-security</module>
         <module>tailoringexpert-bootapp</module>
-        <module>tailoringexpert-integrationtest</module>
     </modules>
 
     <properties>
@@ -139,11 +138,6 @@
             <dependency>
                 <groupId>eu.tailoringexpert</groupId>
                 <artifactId>tailoringexpert-bootapp</artifactId>
-                <version>${project.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>eu.tailoringexpert</groupId>
-                <artifactId>tailoringexpert-integrationtest</artifactId>
                 <version>${project.version}</version>
             </dependency>
 

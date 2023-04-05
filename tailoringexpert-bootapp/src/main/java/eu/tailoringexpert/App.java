@@ -71,11 +71,10 @@ public class App {
 
     public static void main(String[] args) {
         SpringApplication.run(App.class, args);
-
     }
 
     @Bean
-    public StringEncryptor encryptorBean(@NonNull @Value("${jasypt.password}") String password) {
+    StringEncryptor encryptorBean(@Value("${jasypt.password}") String password) {
         StandardPBEStringEncryptor result = new StandardPBEStringEncryptor();
         result.setPassword(password);
         result.setAlgorithm("PBEWithMD5AndTripleDES");
@@ -94,7 +93,7 @@ public class App {
     @Bean
     Map<String, String> registerTenants(
         @Value("${tenantConfigHome}") String tenantConfigHome,
-        @NonNull @Qualifier("encryptorBean") StringEncryptor encryptor) {
+        @Qualifier("encryptorBean") StringEncryptor encryptor) {
         return TenantFactory.tenants(tenantConfigHome, encryptor);
     }
 
