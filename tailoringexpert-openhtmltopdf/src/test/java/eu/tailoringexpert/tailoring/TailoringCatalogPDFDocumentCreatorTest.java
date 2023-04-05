@@ -101,7 +101,7 @@ class TailoringCatalogPDFDocumentCreatorTest {
 
     @BeforeEach
     void setup() {
-        Dotenv env = Dotenv.configure().ignoreIfMissing().load();
+        Dotenv env = Dotenv.configure().systemProperties().ignoreIfMissing().load();
 
         this.templateHome = env.get("TEMPLATE_HOME", "src/test/resources/templates/");
         this.assetHome = env.get("ASSET_HOME", "src/test/resources/templates/");
