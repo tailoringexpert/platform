@@ -73,7 +73,7 @@
         <mapstruct.version>1.5.4.Final</mapstruct.version>
 
         <!-- plugins -->
-        <jacoco-maven-plugin.version>0.8.9</jacoco-maven-plugin.version>
+        <jacoco-maven-plugin.version>0.8.10</jacoco-maven-plugin.version>
         <liquibase-maven-plugin.version>4.21.1</liquibase-maven-plugin.version>
         <spring-boot-maven-plugin.version>3.0.6</spring-boot-maven-plugin.version>
         <springdoc-openapi-maven-plugin.version>1.4</springdoc-openapi-maven-plugin.version>
