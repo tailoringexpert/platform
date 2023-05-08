@@ -21,6 +21,7 @@
  */
 package eu.tailoringexpert.screeningsheet;
 
+import eu.tailoringexpert.TailoringexpertMapperConfig;
 import eu.tailoringexpert.domain.Parameter;
 import eu.tailoringexpert.domain.ScreeningSheetParameter;
 import org.mapstruct.Mapper;
@@ -31,7 +32,7 @@ import org.mapstruct.Mapping;
  *
  * @author Michael Bädorf
  */
-@Mapper
+@Mapper(config = TailoringexpertMapperConfig.class)
 public interface ScreeningSheetServiceMapper {
 
     @Mapping(target = "value", source = "label")

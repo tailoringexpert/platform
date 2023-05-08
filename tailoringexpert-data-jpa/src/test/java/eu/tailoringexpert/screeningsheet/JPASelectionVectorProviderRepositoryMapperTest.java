@@ -36,7 +36,7 @@ class JPASelectionVectorProviderRepositoryMapperTest {
 
     @BeforeEach
     void setup() {
-        this.mapper = new JPASelectionVectorProviderRepositoryMapperImpl();
+        this.mapper = new JPASelectionVectorProviderRepositoryMapperGenerated();
     }
 
     @Test

@@ -21,6 +21,7 @@
  */
 package eu.tailoringexpert.catalog;
 
+import eu.tailoringexpert.TailoringexpertMapperConfig;
 import eu.tailoringexpert.domain.BaseCatalogEntity;
 import eu.tailoringexpert.domain.BaseRequirement;
 import eu.tailoringexpert.domain.Catalog;
@@ -47,7 +48,7 @@ import static java.util.Objects.nonNull;
  *
  * @author Michael Bädorf
  */
-@Mapper
+@Mapper(config = TailoringexpertMapperConfig.class)
 public abstract class JPACatalogServiceRepositoryMapper {
 
     @Setter

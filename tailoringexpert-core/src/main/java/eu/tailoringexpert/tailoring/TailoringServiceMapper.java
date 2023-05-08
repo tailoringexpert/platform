@@ -21,6 +21,7 @@
  */
 package eu.tailoringexpert.tailoring;
 
+import eu.tailoringexpert.TailoringexpertMapperConfig;
 import eu.tailoringexpert.domain.BaseRequirement;
 import eu.tailoringexpert.domain.Catalog;
 import eu.tailoringexpert.domain.Phase;
@@ -52,7 +53,10 @@ import static java.util.stream.Collectors.toUnmodifiableSet;
  * @author Michael Bädorf
  */
 @Log4j2
-@Mapper(nullValueIterableMappingStrategy = NullValueMappingStrategy.RETURN_DEFAULT)
+@Mapper(
+    config = TailoringexpertMapperConfig.class,
+    nullValueIterableMappingStrategy = NullValueMappingStrategy.RETURN_DEFAULT
+)
 @SuppressWarnings("java:S1610")
 public abstract class TailoringServiceMapper {
 
