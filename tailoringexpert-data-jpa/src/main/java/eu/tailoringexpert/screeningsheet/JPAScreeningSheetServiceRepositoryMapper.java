@@ -22,6 +22,7 @@
 package eu.tailoringexpert.screeningsheet;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import eu.tailoringexpert.TailoringexpertMapperConfig;
 import eu.tailoringexpert.domain.Parameter;
 import eu.tailoringexpert.domain.Parameter.ParameterBuilder;
 import eu.tailoringexpert.domain.ParameterEntity;
@@ -41,7 +42,7 @@ import static java.lang.Integer.valueOf;
  *
  * @author Michael Bädorf
  */
-@Mapper
+@Mapper(config = TailoringexpertMapperConfig.class)
 public abstract class JPAScreeningSheetServiceRepositoryMapper {
 
     @Setter

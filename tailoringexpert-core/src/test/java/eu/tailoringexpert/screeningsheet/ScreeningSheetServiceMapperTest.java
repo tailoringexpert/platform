@@ -35,7 +35,7 @@ class ScreeningSheetServiceMapperTest {
 
     @BeforeEach
     void setup() {
-        this.mapper = new ScreeningSheetServiceMapperImpl();
+        this.mapper = new ScreeningSheetServiceMapperGenerated();
     }
 
     @Test

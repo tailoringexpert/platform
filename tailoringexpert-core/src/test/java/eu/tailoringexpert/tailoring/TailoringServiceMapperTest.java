@@ -54,7 +54,7 @@ class TailoringServiceMapperTest {
 
     @BeforeEach
     void setUp() {
-        this.mapper = new TailoringServiceMapperImpl();
+        this.mapper = new TailoringServiceMapperGenerated();
     }
 
     @Test

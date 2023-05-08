@@ -59,7 +59,7 @@ class JPATailoringServiceRepositoryMapperTest {
 
     @BeforeEach
     void setup() {
-        this.mapper = new JPATailoringServiceRepositoryMapperImpl();
+        this.mapper = new JPATailoringServiceRepositoryMapperGenerated();
 
         this.logoRepositoryMock = mock(LogoRepository.class);
         this.mapper.setLogoRepository(logoRepositoryMock);
