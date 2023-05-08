@@ -44,7 +44,7 @@ public class RequirementConfiguration {
     JPARequirementServiceRepositoryMapper jpaRequirementServiceRepositoryMapper(
         @NonNull LogoRepository logoRepository,
         @NonNull DRDRepository drdRepository) {
-        JPARequirementServiceRepositoryMapperImpl result = new JPARequirementServiceRepositoryMapperImpl();
+        JPARequirementServiceRepositoryMapperGenerated result = new JPARequirementServiceRepositoryMapperGenerated();
         result.setLogoRepository(logoRepository);
         result.setDrdRepository(drdRepository);
         return result;

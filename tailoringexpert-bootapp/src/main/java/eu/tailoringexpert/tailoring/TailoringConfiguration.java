@@ -73,7 +73,7 @@ public class TailoringConfiguration {
     @Bean
     JPATailoringServiceRepositoryMapper jpaTailoringServiceRepositoryMapper(
         @NonNull LogoRepository logoRepository) {
-        JPATailoringServiceRepositoryMapperImpl result = new JPATailoringServiceRepositoryMapperImpl();
+        JPATailoringServiceRepositoryMapperGenerated result = new JPATailoringServiceRepositoryMapperGenerated();
         result.setLogoRepository(logoRepository);
         return result;
     }
@@ -107,7 +107,7 @@ public class TailoringConfiguration {
 
     @Bean
     TailoringServiceMapper tailoringServiceMapper() {
-        return new TailoringServiceMapperImpl();
+        return new TailoringServiceMapperGenerated();
     }
 
     @Bean

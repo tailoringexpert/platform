@@ -21,6 +21,7 @@
  */
 package eu.tailoringexpert.requirement;
 
+import eu.tailoringexpert.TailoringexpertMapperConfig;
 import eu.tailoringexpert.domain.Chapter;
 import eu.tailoringexpert.domain.DRDEntity;
 import eu.tailoringexpert.domain.LogoEntity;
@@ -42,7 +43,7 @@ import static java.util.Objects.nonNull;
  *
  * @author Michael Bädorf
  */
-@Mapper
+@Mapper(config = TailoringexpertMapperConfig.class)
 public abstract class JPARequirementServiceRepositoryMapper {
 
     @Setter

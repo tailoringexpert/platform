@@ -42,7 +42,7 @@ public class ScreeningSheetConfiguration {
     @Bean
     JPAScreeningSheetServiceRepositoryMapper screeningSheetServiceRepositoryMapper(
         @NonNull ObjectMapper objectMapper) {
-        JPAScreeningSheetServiceRepositoryMapperImpl result = new JPAScreeningSheetServiceRepositoryMapperImpl();
+        JPAScreeningSheetServiceRepositoryMapperGenerated result = new JPAScreeningSheetServiceRepositoryMapperGenerated();
         result.setMapper(objectMapper);
         return result;
     }
@@ -70,7 +70,7 @@ public class ScreeningSheetConfiguration {
 
     @Bean
     ScreeningSheetServiceMapper screeningSheetServiceMapper() {
-        return new ScreeningSheetServiceMapperImpl();
+        return new ScreeningSheetServiceMapperGenerated();
     }
 
     @Bean
@@ -91,7 +91,7 @@ public class ScreeningSheetConfiguration {
 
     @Bean
     JPASelectionVectorProviderRepositoryMapper selectionVectorProviderRepositoryMapper() {
-        return new JPASelectionVectorProviderRepositoryMapperImpl();
+        return new JPASelectionVectorProviderRepositoryMapperGenerated();
     }
 
     @Bean

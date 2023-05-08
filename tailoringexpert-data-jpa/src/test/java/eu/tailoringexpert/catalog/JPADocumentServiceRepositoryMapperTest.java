@@ -37,7 +37,7 @@ class JPADocumentServiceRepositoryMapperTest {
 
     @BeforeEach
     void setup() {
-        this.mapper = new JPADocumentServiceRepositoryMapperImpl();
+        this.mapper = new JPADocumentServiceRepositoryMapperGenerated();
     }
 
     @Test
