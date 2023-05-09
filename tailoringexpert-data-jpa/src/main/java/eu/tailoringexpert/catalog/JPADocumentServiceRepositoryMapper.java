@@ -21,6 +21,7 @@
  */
 package eu.tailoringexpert.catalog;
 
+import eu.tailoringexpert.TailoringexpertMapperConfig;
 import eu.tailoringexpert.domain.SelectionVectorProfile;
 import eu.tailoringexpert.domain.SelectionVectorProfileEntity;
 import org.mapstruct.Mapper;
@@ -30,7 +31,7 @@ import org.mapstruct.Mapper;
  *
  * @author Michael Bädorf
  */
-@Mapper
+@Mapper(config = TailoringexpertMapperConfig.class)
 public abstract class JPADocumentServiceRepositoryMapper {
 
     public abstract SelectionVectorProfile getSelectionVectorProfiles(SelectionVectorProfileEntity entity);

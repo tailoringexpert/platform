@@ -21,10 +21,15 @@ package tailoring {
     DocumentCreator <|-- TailoringCatalogExcelDocumentCreator
 
     class CMExcelDocumentCreator {
+        #addRequirements(requirements : Collection<TailoringRequirement>, level : int, sheet : Sheet, placeholders : Map<String, Object>) : void
     }
     DocumentCreator <|-- CMExcelDocumentCreator
     CMExcelDocumentCreator --> "1" RendererRequestConfigurationSupplier : requestConfigurationSupplier
     CMExcelDocumentCreator --> "1" drdSupplier : drdProvider
+
+    class CMRequirementBasedExcelDocumentCreator {
+    }
+    CMExcelDocumentCreator <|-- CMRequirementsExcelDocumentCreator
 
     class DRDElement {
         title : String
@@ -32,6 +37,9 @@ package tailoring {
         requirements : Collection<String>
         number: String
         action : String
+    }
+
+    class CMRequirementsExcelDocumentCreator {
     }
 
     interface "Function<byte[], Map<String, Collection<ImportRequirement>>>" as requirementFunction {

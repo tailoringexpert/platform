@@ -48,6 +48,11 @@ public class DRD implements Serializable{
     private String title;
 
     /**
+     * Subtitle of the DRD.
+     */
+    private String subtitle;
+
+    /**
      * Definition when to deliver the document.
      */
     private String deliveryDate;

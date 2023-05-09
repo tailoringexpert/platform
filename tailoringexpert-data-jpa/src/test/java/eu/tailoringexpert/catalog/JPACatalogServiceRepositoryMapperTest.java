@@ -55,7 +55,7 @@ class JPACatalogServiceRepositoryMapperTest {
     void setup() {
         this.logoRepositoryMock = Mockito.mock(LogoRepository.class);
         this.drdRepositoryMock = Mockito.mock(DRDRepository.class);
-        this.mapper = new JPACatalogServiceRepositoryMapperImpl();
+        this.mapper = new JPACatalogServiceRepositoryMapperGenerated();
         this.mapper.setLogoRepository(logoRepositoryMock);
         this.mapper.setDrdRepository(drdRepositoryMock);
     }

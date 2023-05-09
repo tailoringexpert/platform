@@ -59,7 +59,7 @@ class JPAProjectServiceRepositoryMapperTest {
 
     @BeforeEach
     void setup() {
-        this.mapper = new JPAProjectServiceRepositoryMapperImpl();
+        this.mapper = new JPAProjectServiceRepositoryMapperGenerated();
 
         this.logoRepositoryMock = mock(LogoRepository.class);
         this.mapper.setLogoRepository(logoRepositoryMock);

@@ -37,7 +37,21 @@ class JasyptTest {
         encryptor.setAlgorithm("PBEWithMD5AndTripleDES");
 
         // act
-        String actual = encryptor.encrypt("PKlAziaWH2ovCSpZ4Ppo");
+        String actual = encryptor.encrypt("test1234");
+
+        // assert
+        log.debug(actual);
+        assertThatNoException();
+    }
+
+    @Test
+    void decrypt() {
+        StandardPBEStringEncryptor encryptor = new StandardPBEStringEncryptor();
+        encryptor.setPassword("DasIstDasHausVomNikolaus");
+        encryptor.setAlgorithm("PBEWithMD5AndTripleDES");
+
+        // act
+        String actual = encryptor.decrypt("/DclqFTC7fuEsNFMv6dGDLML+3GgsjEi");
 
         // assert
         log.debug(actual);

@@ -47,4 +47,9 @@ public class CMElement {
      * Name of chapter.
      */
     private String name;
+
+    /**
+     * Flaf, if element is requirement.
+     */
+    private boolean requirement;
 }

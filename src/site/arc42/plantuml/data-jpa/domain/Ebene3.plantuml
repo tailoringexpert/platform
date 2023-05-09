@@ -33,6 +33,7 @@ package domain {
         id : Long <<PK>>
         number : String
         title : String
+        subtitle : String
         deliveryDate : String
         action : String
     }
@@ -45,6 +46,8 @@ package domain {
 
     class ReferenceEntity <<Embeddable>>{
         text : String
+        issue : String
+        releaseDate : String
         changed : Boolean
     }
     ReferenceEntity --> "0..1" LogoEntity : logo
@@ -56,32 +59,32 @@ package domain {
         limitations : Set<String>
     }
 
-    class CatalogueRequirementEntity {
+    class BaseRequirementEntity {
         id : Long <<PK>>
         text : String
         postion : String
     }
-    CatalogueRequirementEntity --> "0..1" ReferenceEntity : reference
-    CatalogueRequirementEntity --> "0..*" Phase : phases <<ordered>>
-    CatalogueRequirementEntity --> "0..*" IdentifierEntity : identifiers <<unordered>>
-    CatalogueRequirementEntity --> "0..*" DRDEntity : drds <<unordered>>
+    BaseRequirementEntity --> "0..1" ReferenceEntity : reference
+    BaseRequirementEntity --> "0..*" Phase : phases <<ordered>>
+    BaseRequirementEntity --> "0..*" IdentifierEntity : identifiers <<unordered>>
+    BaseRequirementEntity --> "0..*" DRDEntity : drds <<unordered>>
 
-    class CatalogueChapterEntity {
+    class BaseCatalogChapterEntity {
         id : Long <<PK>>
         name : String
         position : int
         number : String
     }
-    CatalogueChapterEntity --> "0..*" CatalogueChapterEntity : chapter <<ordered>>
-    CatalogueChapterEntity --> "0..*" CatalogueRequirementEntity : requirements <<ordered>>
+    BaseCatalogChapterEntity --> "0..*" BaseCatalogChapterEntity : chapter <<ordered>>
+    BaseCatalogChapterEntity --> "0..*" BaseRequirementEntity : requirements <<ordered>>
 
-    class CatalogEntity {
+    class BaseCatalogEntity {
         id : Long <<PK>>
         version : String
         validFrom : ZonedDateTime
         validUntil : ZonedDateTime
     }
-    CatalogEntity --> "1" CatalogueChapterEntity : toc
+    BaseCatalogEntity --> "1" BaseCatalogChapterEntity : toc
 
     enum Phase {
         NULL("0")
@@ -129,15 +132,15 @@ package domain {
     TailoringRequirementEntity --> "0..1" ReferenceEntity : reference
     TailoringRequirementEntity --> "0..*" DRDEntity : drds <<unordered>>
 
-    class TailoringCatalogueChapterEntity {
+    class TailoringCatalogChapterEntity {
         id : Long <<PK>>
         name : String
         position : int
         chapter : String
-        getChapter(chapter : String) : Optional<TailoringCatalogueChapterEntity>
+        getChapter(chapter : String) : Optional<TailoringCatalogChapterEntity>
     }
-    TailoringCatalogueChapterEntity --> "0..*" TailoringCatalogueChapterEntity : chapters <<ordered>>
-    TailoringCatalogueChapterEntity --> "0..*" TailoringRequirementEntity : requirements <<ordered>>
+    TailoringCatalogChapterEntity --> "0..*" TailoringCatalogChapterEntity : chapters <<ordered>>
+    TailoringCatalogChapterEntity --> "0..*" TailoringRequirementEntity : requirements <<ordered>>
 
     enum DocumentSignatureType {
         PREPARED("Prepared")
@@ -183,7 +186,7 @@ package domain {
         creationTimestamp : ZonedDateTime
     }
     TailoringEntity --> "1" SelectionVectorEntity : selectionVector
-    TailoringEntity --> "1" CatalogEntity : baseCatalog
+    TailoringEntity --> "1" BaseCatalogEntity : baseCatalog
     TailoringEntity --> "1" ScreeningSheetEntity : screeningSheet
     TailoringEntity --> "1..*" Phase : phases
     TailoringEntity --> "1" TailoringCatalogueEntity : catalogue
@@ -196,7 +199,7 @@ package domain {
         id : Long <<PK>>
         version : String
     }
-    TailoringCatalogueEntity --> "1" TailoringCatalogueChapterEntity : toc
+    TailoringCatalogueEntity --> "1" TailoringCatalogChapterEntity : toc
 
     class ProjectEntity {
         id : Long <<PK>>
@@ -204,7 +207,7 @@ package domain {
         creationTimestamp : ZonedDateTime
         getTailoring(name : String) : Optional<TailoringEntity>
     }
-    ProjectEntity --> "1" CatalogEntity : catalogue
+    ProjectEntity --> "1" BaseCatalogEntity : catalogue
     ProjectEntity --> "1" ScreeningSheetEntity : screeningSheet
     ProjectEntity --> "1..*" TailoringEntity : tailorings
     ProjectEntity --> "1" ProjectState : state

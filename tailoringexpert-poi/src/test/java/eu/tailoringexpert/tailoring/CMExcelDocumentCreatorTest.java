@@ -53,6 +53,7 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.AbstractMap.SimpleEntry;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 import java.util.function.BiFunction;
@@ -132,13 +133,13 @@ class CMExcelDocumentCreatorTest {
             .phases(of(ZERO, A, B, C, D, E, F))
             .build();
 
-        Map<String, Object> parameter = ofEntries(
-            Map.entry("titel", "DRD Catalog"),
-            Map.entry("beschreibung", "BESCHREIBUNG"),
-            Map.entry("PROJEKT", "HRWS"),
-            Map.entry("DATUM", LocalDateTime.now().format(DateTimeFormatter.ofPattern("dd.MM.YYYY"))),
-            Map.entry("DOKUMENT", "HRWS-RD-PS-1940/DV7")
-        );
+        Map<String, Object> parameter = new HashMap<>();
+        parameter.put("titel", "DRD Catalog");
+        parameter.put("beschreibung", "BESCHREIBUNG");
+        parameter.put("PROJEKT", "HRWS");
+        parameter.put("DATUM", LocalDateTime.now().format(DateTimeFormatter.ofPattern("dd.MM.YYYY")));
+        parameter.put("DOKUMENT", "HRWS-RD-PS-1940/DV7");
+        parameter.put("NULL_VALUE", null);
 
         // act
         File actual = creator.createDocument("4711", tailoring, parameter);

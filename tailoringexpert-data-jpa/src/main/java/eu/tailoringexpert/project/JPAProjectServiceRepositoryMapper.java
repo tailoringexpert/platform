@@ -21,6 +21,7 @@
  */
 package eu.tailoringexpert.project;
 
+import eu.tailoringexpert.TailoringexpertMapperConfig;
 import eu.tailoringexpert.domain.DRD;
 import eu.tailoringexpert.domain.DRDEntity;
 import eu.tailoringexpert.domain.Catalog;
@@ -51,7 +52,7 @@ import static java.util.Objects.nonNull;
  *
  * @author Michael Bädorf
  */
-@Mapper
+@Mapper(config = TailoringexpertMapperConfig.class)
 public abstract class JPAProjectServiceRepositoryMapper {
 
     @Setter

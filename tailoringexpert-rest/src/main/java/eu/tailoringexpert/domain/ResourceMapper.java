@@ -21,6 +21,7 @@
  */
 package eu.tailoringexpert.domain;
 
+import eu.tailoringexpert.TailoringexpertMapperConfig;
 import eu.tailoringexpert.domain.BaseCatalogVersionResource.BaseCatalogVersionResourceBuilder;
 import eu.tailoringexpert.domain.DocumentSignatureResource.DocumentSignatureResourceBuilder;
 import eu.tailoringexpert.domain.FileResource.FileResourceBuilder;
@@ -56,7 +57,7 @@ import static java.util.stream.Collectors.mapping;
 import static java.util.stream.Collectors.toCollection;
 import static org.springframework.hateoas.server.mvc.BasicLinkBuilder.linkToCurrentMapping;
 
-@Mapper
+@Mapper(config = TailoringexpertMapperConfig.class)
 public abstract class ResourceMapper {
 
     // Resource URLs

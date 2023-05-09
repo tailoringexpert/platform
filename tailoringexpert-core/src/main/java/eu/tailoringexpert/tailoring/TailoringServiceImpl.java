@@ -489,10 +489,13 @@ public class TailoringServiceImpl implements TailoringService {
         ZipOutputStream zip = new ZipOutputStream(os);
         documents.forEach(dokument -> addToZip(dokument, zip));
         zip.close();
-        return log.traceExit(of(File.builder()
+
+        log.traceExit();
+        return of(File.builder()
             .name(project + "-" + tailoring + ".zip")
             .data(os.toByteArray())
-            .build()));
+            .build());
+
     }
 
     /**

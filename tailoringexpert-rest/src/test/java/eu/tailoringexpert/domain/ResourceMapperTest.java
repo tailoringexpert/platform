@@ -55,7 +55,7 @@ class ResourceMapperTest {
 
     @BeforeEach
     void setup() {
-        this.mapper = new ResourceMapperImpl();
+        this.mapper = new ResourceMapperGenerated();
 
         RequestContextHolder.setRequestAttributes(
             new ServletRequestAttributes(new MockHttpServletRequest())
