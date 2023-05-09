@@ -1,5 +1,19 @@
 # Changelog
 
+## [v0.0.5](https://github.com/tailoringexpert/plattform/tree/v0.0.5) (05.09.2023)
+
+[Full Changelog](https://github.com/tailoringexpert/plattform/compare/v0.0.4...v0.0.5)
+
+**Implemented enhancements:**
+
+- Requirement based compliance matrix [\#150](https://github.com/tailoringexpert/plattform/issues/150)
+- Informations on requirement reference [\#148](https://github.com/tailoringexpert/plattform/issues/148)
+
+**Closed issues:**
+
+- Change name of generated mapper from XXXInpl -\> XXXGenerated [\#166](https://github.com/tailoringexpert/plattform/issues/166)
+- Move integrationtest/demo to separate module [\#155](https://github.com/tailoringexpert/plattform/issues/155)
+
 ## [v0.0.4](https://github.com/tailoringexpert/plattform/tree/v0.0.4) (03.10.2023)
 
 [Full Changelog](https://github.com/tailoringexpert/plattform/compare/v0.0.3...v0.0.4)
