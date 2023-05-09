@@ -40,7 +40,7 @@ public class ProjectConfiguration {
         @NonNull BaseCatalogRepository baseCatalogRepository,
         @NonNull LogoRepository logoRepository,
         @NonNull DRDRepository drdRepository) {
-        JPAProjectServiceRepositoryMapperImpl result = new JPAProjectServiceRepositoryMapperImpl();
+        JPAProjectServiceRepositoryMapperGenerated result = new JPAProjectServiceRepositoryMapperGenerated();
         result.setBaseCatalogRepository(baseCatalogRepository);
         result.setLogoRepository(logoRepository);
         result.setDrdRepository(drdRepository);

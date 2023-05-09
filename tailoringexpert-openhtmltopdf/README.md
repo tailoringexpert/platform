@@ -1,3 +1,12 @@
 # tailoringexpert-openhtmltopdf
 
-Modul für die Bereitstellung von PDF Dateien der TailoringExpert Plattform.
+Module providing services for creating PDF files.
+At the moment services for
+
+* Basecatalog
+* Tailoringcatalog
+* DRD
+* CM
+
+are available.
+

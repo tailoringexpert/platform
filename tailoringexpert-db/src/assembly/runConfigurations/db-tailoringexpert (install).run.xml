@@ -1,5 +1,5 @@
 <component name="ProjectRunConfigurationManager">
-  <configuration default="false" name="db-tailoringexpert (drop)" type="MavenRunConfiguration" factoryName="Maven">
+  <configuration default="false" name="db-tailoringexpert (install)" type="MavenRunConfiguration" factoryName="Maven">
     <MavenSettings>
       <option name="myGeneralSettings">
         <MavenGeneralSettings>
@@ -31,8 +31,7 @@
               <option value="-Ddependency-check-maven.phase=deploy" />
               <option value="-DskipTests" />
               <option value="install" />
-              <option value="exec:exec@dropAll" />
-              <option value="-DskipTests" />
+              <option value="exec:exec@update" />
             </list>
           </option>
           <option name="pomFileName" />

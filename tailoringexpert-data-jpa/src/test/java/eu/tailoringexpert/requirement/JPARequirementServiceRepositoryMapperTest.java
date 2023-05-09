@@ -47,7 +47,7 @@ class JPARequirementServiceRepositoryMapperTest {
 
     @BeforeEach
     void setup() {
-        this.mapper = new JPARequirementServiceRepositoryMapperImpl();
+        this.mapper = new JPARequirementServiceRepositoryMapperGenerated();
 
         this.logoRepositoryMock = mock(LogoRepository.class);
         this.drdRepositoryMock = mock(DRDRepository.class);

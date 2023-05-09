@@ -41,7 +41,7 @@ class JPAScreeningSheetServiceRepositoryMapperTest {
 
     @BeforeEach
     void setup() {
-        this.mapper = new JPAScreeningSheetServiceRepositoryMapperImpl();
+        this.mapper = new JPAScreeningSheetServiceRepositoryMapperGenerated();
         this.mapper.setMapper(new ObjectMapper());
     }
 

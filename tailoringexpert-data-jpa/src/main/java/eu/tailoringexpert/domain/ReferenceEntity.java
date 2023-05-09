@@ -53,6 +53,18 @@ public class ReferenceEntity implements Serializable {
     private Boolean changed;
 
     /**
+     * Issue of reference.
+     */
+    @Column(name = "ISSUE")
+    private String issue;
+
+    /**
+     * Date reference was released.
+     */
+    @Column(name = "RELEASEDATE")
+    private String releaseDate;
+
+    /**
      * Logo of reference.
      */
     @OneToOne

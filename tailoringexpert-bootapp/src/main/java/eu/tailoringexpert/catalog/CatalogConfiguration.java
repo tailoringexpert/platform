@@ -48,7 +48,7 @@ public class CatalogConfiguration {
     JPACatalogServiceRepositoryMapper catalogServiceRepositoryMapper(
         @NonNull LogoRepository logoRepository,
         @NonNull DRDRepository drdRepository) {
-        JPACatalogServiceRepositoryMapperImpl result = new JPACatalogServiceRepositoryMapperImpl();
+        JPACatalogServiceRepositoryMapperGenerated result = new JPACatalogServiceRepositoryMapperGenerated();
         result.setLogoRepository(logoRepository);
         result.setDrdRepository(drdRepository);
         return result;
@@ -82,7 +82,7 @@ public class CatalogConfiguration {
 
     @Bean
     JPADocumentServiceRepositoryMapper documentServiceRepositoryMapper() {
-        return new JPADocumentServiceRepositoryMapperImpl();
+        return new JPADocumentServiceRepositoryMapperGenerated();
     }
 
     @Bean

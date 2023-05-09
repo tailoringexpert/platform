@@ -67,6 +67,9 @@ public class DRDEntity implements Serializable {
     @Column(name = "TITLE")
     private String title;
 
+    @Column(name="SUBTITLE")
+    private String subtitle;
+
     /**
      * Definition when to deliver the document.
      */

@@ -21,6 +21,7 @@
  */
 package eu.tailoringexpert.tailoring;
 
+import eu.tailoringexpert.TailoringexpertMapperConfig;
 import eu.tailoringexpert.domain.DocumentSignature;
 import eu.tailoringexpert.domain.FileEntity;
 import eu.tailoringexpert.domain.DocumentSigneeEntity;
@@ -60,7 +61,7 @@ import static java.util.Objects.nonNull;
  *
  * @author Michael Bädorf
  */
-@Mapper
+@Mapper(config = TailoringexpertMapperConfig.class)
 public abstract class JPATailoringServiceRepositoryMapper {
 
     @Setter

@@ -71,7 +71,6 @@ public class RequirementServiceImpl implements RequirementService {
 
         Optional<TailoringRequirement> tailoringRequirement = repository.getRequirement(project, tailoring, chapter, position);
         if (tailoringRequirement.isPresent()) {
-            log.info(tailoringRequirement.get().getSelected() + ": neu {}", selected);
             if (!tailoringRequirement.get().getSelected().equals(selected)) {
                 TailoringRequirement requirement = handleSelected(tailoringRequirement.get(), selected, ZonedDateTime.now());
                 Optional<TailoringRequirement> result = repository.updateRequirement(project, tailoring, chapter, requirement);

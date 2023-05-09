@@ -25,7 +25,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jdk8.Jdk8Module;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.fasterxml.jackson.module.paramnames.ParameterNamesModule;
-import eu.tailoringexpert.domain.ResourceMapperImpl;
+import eu.tailoringexpert.domain.ResourceMapperGenerated;
 import io.swagger.v3.oas.models.OpenAPI;
 import io.swagger.v3.oas.models.info.Info;
 import io.swagger.v3.oas.models.info.License;
@@ -98,7 +98,7 @@ public class RestConfiguration {
 
     @Bean
     AppController appController() {
-        return new AppController(new ResourceMapperImpl());
+        return new AppController(new ResourceMapperGenerated());
     }
 
 

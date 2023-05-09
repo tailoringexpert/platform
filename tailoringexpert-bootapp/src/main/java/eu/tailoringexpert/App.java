@@ -22,7 +22,6 @@
 package eu.tailoringexpert;
 
 import com.ulisesbocchio.jasyptspringboot.annotation.EnableEncryptableProperties;
-import lombok.NonNull;
 import lombok.extern.log4j.Log4j2;
 import org.jasypt.encryption.StringEncryptor;
 import org.jasypt.encryption.pbe.StandardPBEStringEncryptor;
@@ -71,11 +70,10 @@ public class App {
 
     public static void main(String[] args) {
         SpringApplication.run(App.class, args);
-
     }
 
     @Bean
-    public StringEncryptor encryptorBean(@NonNull @Value("${jasypt.password}") String password) {
+    StringEncryptor encryptorBean(@Value("${jasypt.password}") String password) {
         StandardPBEStringEncryptor result = new StandardPBEStringEncryptor();
         result.setPassword(password);
         result.setAlgorithm("PBEWithMD5AndTripleDES");
@@ -94,7 +92,7 @@ public class App {
     @Bean
     Map<String, String> registerTenants(
         @Value("${tenantConfigHome}") String tenantConfigHome,
-        @NonNull @Qualifier("encryptorBean") StringEncryptor encryptor) {
+        @Qualifier("encryptorBean") StringEncryptor encryptor) {
         return TenantFactory.tenants(tenantConfigHome, encryptor);
     }
 

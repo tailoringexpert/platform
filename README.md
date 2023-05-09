@@ -46,7 +46,7 @@ in same package as service.
 
 ### Validation and Exceptionhandling
 
-In case no data will be returned due unknown paths (project, tailoring, ...) _Optional_ shall be return.
+In case no data will be returned due unknown paths (project, tailoring, ...) _Optional_ shall be returned.
 RestController shall return _404_ in case of _Optional.empty_.
 
 ### Business/Domain core
@@ -63,7 +63,7 @@ Data/Domain objects of all layers shall be created in package _domain_.
 
 ## Persistence
 
-Persistence objects and database access shall be implemented in _tailoring-data-jpa_.
+Persistence objects and database access shall be implemented in _tailoringexpert-data-jpa_.
 Dataobjects shall be created in package _domain_, spring data acces in _repository_
 OR-Mapping is to be implemented via annotations.
 
@@ -106,9 +106,8 @@ Architecture documentation can be found here as [arc42](src/site/arc42/tailoring
 
 ### Prerequisites
 
-- Java 11 JDK
+- Java 17 JDK
 - Maven
-    - profile containing liquibase properties for integration test
 
 ### Build
 
@@ -121,7 +120,7 @@ Plattform can be build using
 
 ### Run
 
-For testing purpose there is a sample plattform in module `tailoringexpert-integrationtest`.
+For testing purpose there is a demo plattform in [github](https://github.com/tailoringexpert/demo).
 See instructions for setting up and running the (demo) system in [README.md](tailoringexpert-integrationtest/README.md)
 
 ## Links
