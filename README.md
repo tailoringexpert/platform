@@ -2,10 +2,10 @@
 
 ## About
 
-| __Build Status__ | [![build](https://github.com/tailoringexpert/tailoringexpert-plattform/actions/workflows/build.yml/badge.svg)](https://github.com/tailoringexpert/tailoringexpert-plattform/actions/workflows/build.yml) |
+| __Build Status__ | [![build](https://github.com/tailoringexpert/plattform/actions/workflows/build.yml/badge.svg)](https://github.com/tailoringexpert/plattform/actions/workflows/build.yml) |
 |:-----------------| :--- |
 | __Coverage__     | ![coverage](../badges/jacoco.svg) ![branches coverage](../badges/branches.svg) |
-| __Source Info__  | [![License](https://img.shields.io/github/license/tailoringexpert/tailoringexpert-plattform)](https://github.com/tailoringexpert/tailoringexpert-plattform/blob/main/LICENSE) ![GitHub top language](https://img.shields.io/github/languages/top/tailoringexpert/tailoringexpert-plattform) |
+| __Source Info__  | [![License](https://img.shields.io/github/license/tailoringexpert/plattform)](https://github.com/tailoringexpert/plattform/blob/main/LICENSE) ![GitHub top language](https://img.shields.io/github/languages/top/tailoringexpert/plattform) |
 
 ## Development policies
 
