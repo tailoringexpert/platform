@@ -92,7 +92,7 @@ Architecture documentation can be found here as [arc42](src/site/arc42/tailoring
 
 ### Level 0
 
-![alternative text](https://www.plantuml.com/plantuml/proxy?cache=no&src=https://raw.github.com/tailoringexpert/taloringexpert-plattform/src/site/arc42/plantuml/level0.plantuml "Level 0")
+![alternative text](https://www.plantuml.com/plantuml/proxy?cache=no&src=https://raw.githubusercontent.com/tailoringexpert/plattform/main/src/site/arc42/plantuml/level0.plantuml" Level 0")
 
 ## Level 1
 
