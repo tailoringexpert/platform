@@ -70,7 +70,7 @@ OR-Mapping is to be implemented via annotations.
 
 ## Use Cases
 
-![alt text](https://www.plantuml.com/plantuml/proxy?cache=no&src=https://raw.github.com/tailoringexpert/plattform/main/src/site/arc42/plantuml/Usecases.plantuml "Usecases")
+![alt text](https://www.plantuml.com/plantuml/proxy?cache=no&src=https://raw.github.com/tailoringexpert/plattform/README/src/site/arc42/plantuml/Usecases.plantuml "Usecases")
 
 ## Architecture documentation
 
