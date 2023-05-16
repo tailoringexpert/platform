@@ -70,7 +70,7 @@ OR-Mapping is to be implemented via annotations.
 
 ## Use Cases
 
-![alt text](src/site/plantuml/usecases.svg "Usecases")
+![alt text](https://www.plantuml.com/plantuml/proxy?cache=no&src=https://raw.github.com/tailoringexpert/plattform/main/src/site/arc42/plantuml/Usecases.plantuml "Usecases")
 
 ## Architecture documentation
 
@@ -92,7 +92,7 @@ Architecture documentation can be found here as [arc42](src/site/arc42/tailoring
 
 ### Level 0
 
-![alternative text](https://www.plantuml.com/plantuml/proxy?cache=no&src=https://raw.githubusercontent.com/tailoringexpert/plattform/main/src/site/arc42/plantuml/level0.plantuml "Level 0")
+![alternative text](https://www.plantuml.com/plantuml/proxy?cache=no&src=https://raw.github.com/tailoringexpert/plattform/main/src/site/arc42/plantuml/level0.plantuml "Level 0")
 
 ## Level 1
 
@@ -100,7 +100,7 @@ Architecture documentation can be found here as [arc42](src/site/arc42/tailoring
 
 ## Deployment
 
-![alternative text](https://www.plantuml.com/plantuml/proxy?cache=no&src=https://raw.github.com/tailoringexpert/tailoringexpert-plattform/src/site/arc42/plantuml/DeploymentDocker.plantuml "Deployment")
+![alternative text](https://www.plantuml.com/plantuml/proxy?cache=no&src=https://raw.github.com/tailoringexpert/plattform/main/src/site/arc42/plantuml/DeploymentDocker.plantuml "Deployment")
 
 ## Build application
 
