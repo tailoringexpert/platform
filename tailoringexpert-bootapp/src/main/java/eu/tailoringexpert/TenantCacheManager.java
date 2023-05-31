@@ -33,6 +33,9 @@ import java.util.LinkedHashSet;
 import java.util.Map;
 import java.util.Set;
 
+import static java.util.Collections.EMPTY_SET;
+import static java.util.Objects.isNull;
+
 @RequiredArgsConstructor
 public class TenantCacheManager implements CacheManager {
 
@@ -49,6 +52,10 @@ public class TenantCacheManager implements CacheManager {
     @Override
     public Collection<String> getCacheNames() {
         CacheManager cacheManager = cacheManagers.get(TenantContext.getCurrentTenant());
+        if (isNull(cacheManager)) {
+            return EMPTY_SET;
+        }
+
         Set<String> names = new LinkedHashSet<>(cacheManager.getCacheNames());
         return Collections.unmodifiableSet(names);
     }

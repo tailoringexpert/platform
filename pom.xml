@@ -63,7 +63,7 @@
         <maven.compiler.target>${java.version}</maven.compiler.target>
         <maven.javadoc.skip>true</maven.javadoc.skip>
         <license.licenseName>gpl_v3</license.licenseName>
-        <plattform.version>0.0.5</plattform.version>
+        <plattform.version>0.0.6-SNAPSHOT</plattform.version>
 
         <jacoco.version>0.8.7</jacoco.version>
         <junit-jupiter.version>5.9.3</junit-jupiter.version>
@@ -163,12 +163,6 @@
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-test</artifactId>
-        </dependency>
-
-        <dependency>
-            <groupId>org.mockito</groupId>
-            <artifactId>mockito-inline</artifactId>
-            <scope>test</scope>
         </dependency>
 
         <dependency>
@@ -366,7 +360,7 @@
                         <releaseBranchPrefix>release/</releaseBranchPrefix>
                         <hotfixBranchPrefix>hotfix/</hotfixBranchPrefix>
                         <supportBranchPrefix>support/</supportBranchPrefix>
-                        <versionTagPrefix></versionTagPrefix>
+                        <versionTagPrefix>v</versionTagPrefix>
                         <origin>origin</origin>
                     </gitFlowConfig>
                 </configuration>
