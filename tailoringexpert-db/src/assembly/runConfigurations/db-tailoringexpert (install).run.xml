@@ -5,6 +5,7 @@
         <MavenGeneralSettings>
           <option name="alwaysUpdateSnapshots" value="false" />
           <option name="checksumPolicy" value="NOT_SET" />
+          <option name="emulateTerminal" value="false" />
           <option name="failureBehavior" value="NOT_SET" />
           <option name="localRepository" value="" />
           <option name="mavenHome" value="Bundled (Maven 3)" />
@@ -41,7 +42,7 @@
             </map>
           </option>
           <option name="resolveToWorkspace" value="false" />
-          <option name="workingDirPath" value="$PROJECT_DIR$/../../../git/tailoringexpert/plattform/tailoringexpert-db" />
+          <option name="workingDirPath" value="$PROJECT_DIR$/../../git/tailoringexpert/plattform/tailoringexpert-db" />
         </MavenRunnerParameters>
       </option>
     </MavenSettings>
