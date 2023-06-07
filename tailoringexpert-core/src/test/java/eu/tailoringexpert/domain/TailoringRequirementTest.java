@@ -23,6 +23,8 @@ package eu.tailoringexpert.domain;
 
 import org.junit.jupiter.api.Test;
 
+import java.time.ZonedDateTime;
+
 import static java.util.Collections.emptyList;
 import static java.util.List.of;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -71,5 +73,100 @@ class TailoringRequirementTest {
 
         // assert
         assertThat(actual).isTrue();
+    }
+
+    @Test
+    void isChanged_SelectionChangedTextChangedNull_FalseReturned() {
+        // arrange
+        TailoringRequirement requirement = TailoringRequirement.builder()
+            .textChanged(null)
+            .selectionChanged(null)
+            .build();
+
+        // act
+        boolean actual = requirement.isChanged();
+
+        // assert
+        assertThat(actual).isFalse();
+    }
+
+    @Test
+    void isChanged_SelectionChangedNullTextChangedNotNull_TrueReturned() {
+        // arrange
+        TailoringRequirement requirement = TailoringRequirement.builder()
+            .textChanged(ZonedDateTime.now())
+            .selectionChanged(null)
+            .build();
+
+        // act
+        boolean actual = requirement.isChanged();
+
+        // assert
+        assertThat(actual).isTrue();
+    }
+
+    @Test
+    void isChanged_SelectionChangedNotNullTextChangedNull_TrueReturned() {
+        // arrange
+        TailoringRequirement requirement = TailoringRequirement.builder()
+            .textChanged(null)
+            .selectionChanged(ZonedDateTime.now())
+            .build();
+
+        // act
+        boolean actual = requirement.isChanged();
+
+        // assert
+        assertThat(actual).isTrue();
+    }
+
+
+    @Test
+    void getChangeDate_SelectionChangedTextChangedNull_NullReturned() {
+        // arrange
+        TailoringRequirement requirement = TailoringRequirement.builder()
+            .textChanged(null)
+            .selectionChanged(null)
+            .build();
+
+        // act
+        ZonedDateTime actual = requirement.getChangeDate();
+
+        // assert
+        assertThat(actual).isNull();
+    }
+
+    @Test
+    void getChangeDate_SelectionChangedNullTextChangedNotNull_TextDateReturned() {
+        // arrange
+        ZonedDateTime now = ZonedDateTime.now();
+
+        TailoringRequirement requirement = TailoringRequirement.builder()
+            .textChanged(now)
+            .selectionChanged(null)
+            .build();
+
+        // act
+        ZonedDateTime actual = requirement.getChangeDate();
+
+        // assert
+        assertThat(actual).isEqualTo(now);
+    }
+
+    @Test
+    void getChangeDate_SelectionChangedNotNullTextChangedNull_SelectionDateReturned() {
+        // arrange
+        ZonedDateTime now = ZonedDateTime.now();
+
+        TailoringRequirement requirement = TailoringRequirement.builder()
+            .textChanged(null)
+            .selectionChanged(now)
+            .build();
+
+        // act
+        ZonedDateTime actual = requirement.getChangeDate();
+
+        // assert
+        assertThat(actual).isEqualTo(now);
     }
 }

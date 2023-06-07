@@ -27,6 +27,10 @@ import lombok.Data;
 import java.io.Serializable;
 import java.time.ZonedDateTime;
 import java.util.Collection;
+import java.util.Objects;
+import java.util.stream.Stream;
+
+import static java.util.Objects.nonNull;
 
 @Data
 public class TailoringRequirement extends Requirement implements Serializable {
@@ -60,5 +64,21 @@ public class TailoringRequirement extends Requirement implements Serializable {
         this.selected = selected;
         this.selectionChanged = selectionChanged;
         this.textChanged = textChanged;
+    }
+
+    /**
+     * Check whether selection or text has been changed after initial tailoring.
+     *
+     * @return true if selection state is different or text has at least one time changed
+     */
+    public boolean isChanged() {
+        return nonNull(selectionChanged) || nonNull(textChanged);
+    }
+
+    public ZonedDateTime getChangeDate() {
+        return Stream.of(selectionChanged, textChanged)
+            .filter(Objects::nonNull)
+            .findFirst()
+            .orElse(null);
     }
 }
