@@ -107,8 +107,8 @@ public class ComparisonPDFDocumentCreator implements DocumentCreator {
         rows.add(ComparisionElement.builder()
             .section(templateEngine.toXHTML(requirement.getPosition(), emptyMap()))
             .selected(requirement.getSelected())
-            .changed(nonNull(requirement.getSelectionChanged()))
-            .changeDate(requirement.getSelectionChanged())
+            .changed(requirement.isChanged())
+            .changeDate(requirement.getChangeDate())
             .build());
     }
 }

@@ -68,6 +68,8 @@ package domain {
         selected : Boolean
         selectionChanged : ZonedDateTime
         textChanged : ZonedDateTime
+        +isChanged() : boolean
+        +getChangeDate() : ZonedDateTime
     }
     Requirement <|-- TailoringRequirement
 
