@@ -5,7 +5,7 @@
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
     <title th:text="${titel}">Product Assurance, Safety &amp; Sustainability Requirements</title>
     <meta name="description" th:content="${beschreibung}" content="DRD Katalog für"/>
-    <meta name="author" content="DLR AR-ZS"/>
+    <meta name="author" content="tailoringexpert"/>
     <meta name="subject" content="Project DRDa"/>
 
     <link rel="stylesheet" type="text/css" href="../css/page.css"/>
@@ -20,13 +20,13 @@
 </div>
 
 <div style="position: running(logo)">
-    <img class="logo" src="../css/img/dlr-logo.png" alt="DLR Logo" width="29px" height="24px"
+    <img class="logo" src="../css/img/logo.png" alt="logo" width="29px" height="24px"
          style="position: absolute;top:10px;right: 0px;"/>
 </div>
 
 <header-box>
-    <h1>DLR<br/>Product Assurance</h1>
-    <h2>Space Agency</h2>
+    <h1>tailoringexpert<br/>Product Assurance</h1>
+    <h2>Plattform</h2>
 </header-box>
 
 <div style="position: running(dokumenttyp_projekt);font-size:x-small;border-top: 1px solid black">
@@ -72,8 +72,8 @@
             <tbody>
             <tr>
                 <td>Scope</td>
-                <td>The contract holder shall establish and supply documents as specified in DLR-RFM document
-                    DLR-RF-PS-001 "Product Assurance &amp; Safety Requirements for DLR-Space Projects“. <br/>
+                <td>The contract holder shall establish and supply documents as specified in tailoringexpert document
+                     "Product Assurance &amp; Safety Requirements for tailoringexpert Projects“. <br/>
                     These documents are required to support hardware quality and reliability, to provide visibility for
                     evaluating quality status of hardware and software, and to provide visibility for
                     assessing the Product Assurance Programme.
@@ -83,7 +83,7 @@
             <tr>
                 <td><span style="font-weight: bold;">Purpose</span></td>
                 <td>A model set of Document Requirements Description (DRD) sheets is provided below and shall provide
-                    more detailed information of required data by DLR-RFM and shall also provide example in case of
+                    more detailed information of required data by tailoringexpert and shall also provide example in case of
                     applicable form sheets.In case of existing appropriate in-house form sheets the contractor shall use
                     his own forms in any case but the form sheets must reflect all required data of this specification
                     respectively in accordance to the DRD specification annexed below.
@@ -93,6 +93,7 @@
         </table>
     </div>
 
+    <div th:insert="__${FRAGMENT_PREFIX}__/__${catalogVersion}__/drd/abbreviations :: content"></div>
 
 </page-after>
 

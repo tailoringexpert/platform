@@ -103,7 +103,7 @@ public class TailoringCatalogPDFDocumentCreator implements DocumentCreator {
             .toList());
 
         String html = templateEngine.process(tailoring.getCatalog().getVersion() + "/tailoringcatalog", parameter);
-        File result = pdfEngine.process(docId, html, tailoring.getCatalog().getVersion() + "/tailoringcatalog");
+        File result = pdfEngine.process(docId, html, tailoring.getCatalog().getVersion() + "/catalog");
 
         log.traceExit();
         return result;
