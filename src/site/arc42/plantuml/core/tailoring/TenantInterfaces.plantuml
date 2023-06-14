@@ -7,10 +7,11 @@ skinparam componentStyle uml2
 '  BackgroundColor #white
 '}
 
-interface DocumentService {
-    createRequirementDocument(tailoring : Tailoring, creationTimestamp : LocalDateTime): Optional<File>
-    createComparisonDocument(tailoring : Tailoring, creationTimestamp : LocalDateTime): Optional<File>
-    createAll(tailoring : Tailoring, creationTimestamp : LocalDateTime): Optional<File>
+package tailoring {
+    interface DocumentService {
+        createRequirementDocument(tailoring : Tailoring, creationTimestamp : LocalDateTime): Optional<File>
+        createComparisonDocument(tailoring : Tailoring, creationTimestamp : LocalDateTime): Optional<File>
+        createAll(tailoring : Tailoring, creationTimestamp : LocalDateTime): Optional<File>
+    }
 }
-
 @enduml
