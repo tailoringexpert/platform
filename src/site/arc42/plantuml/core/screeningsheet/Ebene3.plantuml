@@ -2,14 +2,14 @@
 hide empty members
 
 package screeningsheet {
-    class ScreeningSheetParameterEintrag {
-        cateory : String
+    class ScreeningSheetParameterField {
+        category : String
         name : String
         label : String
     }
 
     interface ScreeningSheetParameterProvider {
-        parse(is : InputStream) :  Collection<ScreeningSheetParameterEintrag>
+        parse(is : InputStream) :  Collection<ScreeningSheetParameterField>
     }
 
     abstract class ScreeningSheetServiceMapper {

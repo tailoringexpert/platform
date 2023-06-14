@@ -33,7 +33,6 @@ import java.util.Optional;
  *
  * @author Michael Bädorf
  */
-@TenantInterface
 public interface CatalogService {
 
     /**
