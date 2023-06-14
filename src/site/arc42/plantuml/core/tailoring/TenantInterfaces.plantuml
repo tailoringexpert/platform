@@ -1,0 +1,16 @@
+@startuml TenantInterfaces.png
+hide empty members
+
+skinparam componentStyle uml2
+'skinparam component {
+'  BorderColor #grey
+'  BackgroundColor #white
+'}
+
+interface DocumentService {
+    createRequirementDocument(tailoring : Tailoring, creationTimestamp : LocalDateTime): Optional<File>
+    createComparisonDocument(tailoring : Tailoring, creationTimestamp : LocalDateTime): Optional<File>
+    createAll(tailoring : Tailoring, creationTimestamp : LocalDateTime): Optional<File>
+}
+
+@enduml

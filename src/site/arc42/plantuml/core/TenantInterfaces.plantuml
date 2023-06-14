@@ -1,0 +1,42 @@
+@startuml TenantInterfaces.png
+hide empty members
+
+skinparam componentStyle uml2
+'skinparam component {
+'  BorderColor #grey
+'  BackgroundColor #white
+'}
+
+package eu.tailoringexpert {
+    package catalog {
+        interface DocumentService {
+            createCatalog(catalog : Catalog<BaseRequirement>, creationTimestamp : LocalDateTime) : Optional<File>
+            createAll(catalog : Catalog<BaseRequirement>,  creationTimestamp : LocalDateTime) : Collection<File>
+        }
+    }
+
+    package requirement {
+        interface "RequirementModifiablePredicate<String, String>" as RequirementModifiablePredicate{
+            test(project : String, tailoring : String) : boolean
+        }
+
+    }
+
+    package screeningsheet {
+        interface ScreeningSheetParameterProvider {
+            parse(is : InputStream) :  Collection<ScreeningSheetParameterField>
+        }
+
+        interface SelectionVectorProvider<Collection<Parameter>, SelectionVector> {
+            apply(parameters : Collection<Parameter>) : SelectionVector
+        }
+    }
+    package tailoring {
+        interface DocumentService {
+            createRequirementDocument(tailoring : Tailoring, creationTimestamp : LocalDateTime): Optional<File>
+            createComparisonDocument(tailoring : Tailoring, creationTimestamp : LocalDateTime): Optional<File>
+            createAll(tailoring : Tailoring, creationTimestamp : LocalDateTime): Optional<File>
+        }
+    }
+}
+@enduml
