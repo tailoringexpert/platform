@@ -23,6 +23,7 @@ package eu.tailoringexpert.catalog;
 
 import eu.tailoringexpert.domain.BaseRequirement;
 import eu.tailoringexpert.domain.Catalog;
+import eu.tailoringexpert.domain.CatalogVersion;
 import eu.tailoringexpert.domain.File;
 import lombok.extern.log4j.Log4j2;
 import org.junit.jupiter.api.BeforeEach;
@@ -337,5 +338,66 @@ class CatalogServiceImplTest {
 
         // assert
         assertThat(actual).isInstanceOf(IOException.class);
+    }
+
+    @Test
+    void getCatalogVersions_NoCatalogsExist_EmptyCollectionReturned() {
+        // arrange
+        given(repositoryMock.getCatalogVersions()).willReturn(List.of());
+
+        // act
+        Collection<CatalogVersion> actual = service.getCatalogVersions();
+
+        // assert
+        assertThat(actual).isEmpty();
+        verify(repositoryMock, times(1)).getCatalogVersions();
+    }
+
+    @Test
+    void getCatalogVersions_2CatalogExist_CollectionWith2ElementsReturned() {
+        // arrange
+        given(repositoryMock.getCatalogVersions()).willReturn(List.of(
+            CatalogVersion.builder().version("7.2.1").build(),
+            CatalogVersion.builder().version("8.2.1").build()
+        ));
+
+        // act
+        Collection<CatalogVersion> actual = service.getCatalogVersions();
+
+        // assert
+        assertThat(actual).hasSize(2);
+        verify(repositoryMock, times(1)).getCatalogVersions();
+    }
+
+    @Test
+    void limitValidity_VersionNotExist_EmptyReturned() {
+        // arrange
+        ZonedDateTime now = ZonedDateTime.now();
+        given(repositoryMock.existsCatalog("8.2.1")).willReturn(false);
+
+        // act
+        Optional<CatalogVersion> actual = service.limitValidity("8.2.1", now);
+
+        // assert
+        assertThat(actual).isEmpty();
+        verify(repositoryMock, times(0)).limitCatalogValidity(any(), any());
+    }
+
+    @Test
+    void limitValidity_VersionExist_CatalogVersionReturned() {
+        // arrange
+        ZonedDateTime now = ZonedDateTime.now();
+        given(repositoryMock.existsCatalog("8.2.1"))
+            .willReturn(true);
+
+        given(repositoryMock.limitCatalogValidity("8.2.1", now))
+            .willReturn(of(CatalogVersion.builder().build()));
+
+        // act
+        Optional<CatalogVersion> actual = service.limitValidity("8.2.1", now);
+
+        // assert
+        assertThat(actual).isNotEmpty();
+        verify(repositoryMock, times(1)).limitCatalogValidity("8.2.1", now);
     }
 }

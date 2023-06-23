@@ -26,10 +26,10 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jdk8.Jdk8Module;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.fasterxml.jackson.module.paramnames.ParameterNamesModule;
-import eu.tailoringexpert.domain.BaseRequirement;
-import eu.tailoringexpert.domain.BaseCatalogVersion;
 import eu.tailoringexpert.domain.BaseCatalogVersionResource;
+import eu.tailoringexpert.domain.BaseRequirement;
 import eu.tailoringexpert.domain.Catalog;
+import eu.tailoringexpert.domain.CatalogVersion;
 import eu.tailoringexpert.domain.File;
 import eu.tailoringexpert.domain.PathContext;
 import eu.tailoringexpert.domain.PathContext.PathContextBuilder;
@@ -57,6 +57,7 @@ import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Paths;
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
 import java.time.ZonedDateTime;
 import java.util.function.Function;
 import java.util.zip.ZipEntry;
@@ -71,6 +72,8 @@ import static eu.tailoringexpert.domain.MediaTypeProvider.FORM_DATA;
 import static java.lang.Boolean.FALSE;
 import static java.lang.Boolean.TRUE;
 import static java.nio.file.Files.newInputStream;
+import static java.time.LocalTime.MIDNIGHT;
+import static java.time.ZoneId.systemDefault;
 import static java.util.Arrays.asList;
 import static java.util.Locale.GERMANY;
 import static java.util.Objects.nonNull;
@@ -92,6 +95,7 @@ import static org.springframework.http.MediaType.IMAGE_JPEG;
 import static org.springframework.http.MediaType.IMAGE_PNG;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.header;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -109,7 +113,6 @@ class CatalogControllerTest {
 
     @BeforeEach
     void setup() {
-        this.repositoryMock = mock(BaseCatalogRepository.class);
         this.serviceMock = mock(CatalogService.class);
         this.mapperMock = mock(ResourceMapper.class);
         this.mediaTypeProviderMock = mock(Function.class);
@@ -136,7 +139,6 @@ class CatalogControllerTest {
         this.mockMvc = standaloneSetup(new CatalogController(
             mapperMock,
             serviceMock,
-            repositoryMock,
             mediaTypeProviderMock,
             objectMapper))
             .setMessageConverters(new MappingJackson2HttpMessageConverter(objectMapper), byteArrayHttpMessageConverter)
@@ -188,7 +190,7 @@ class CatalogControllerTest {
         // arrange
         PathContextBuilder pathContext = PathContext.builder();
 
-        BaseCatalogVersion baseeCatalog7 = new BaseCatalogVersion() {
+        CatalogVersion baseCatalog7 = new CatalogVersion() {
             @Override
             public String getVersion() {
                 return "7.2.1";
@@ -204,7 +206,7 @@ class CatalogControllerTest {
                 return null;
             }
         };
-        BaseCatalogVersion baseCatalog8 = new BaseCatalogVersion() {
+        CatalogVersion baseCatalog8 = new CatalogVersion() {
             @Override
             public String getVersion() {
                 return "8.2.1";
@@ -220,11 +222,11 @@ class CatalogControllerTest {
                 return null;
             }
         };
-        ArgumentCaptor<BaseCatalogVersion> katalogCaptor = ArgumentCaptor.forClass(BaseCatalogVersion.class);
-        given(repositoryMock.findCatalogVersionBy()).willReturn(asList(baseeCatalog7, baseCatalog8));
+        ArgumentCaptor<CatalogVersion> catalogCaptor = ArgumentCaptor.forClass(CatalogVersion.class);
+        given(serviceMock.getCatalogVersions()).willReturn(asList(baseCatalog7, baseCatalog8));
 
         ArgumentCaptor<PathContextBuilder> pathContextCaptor = ArgumentCaptor.forClass(PathContextBuilder.class);
-        given(mapperMock.toResource(pathContextCaptor.capture(), katalogCaptor.capture()))
+        given(mapperMock.toResource(pathContextCaptor.capture(), catalogCaptor.capture()))
             .willReturn(BaseCatalogVersionResource.builder().validFrom("01.01.2022").build());
 
 
@@ -237,8 +239,8 @@ class CatalogControllerTest {
         // assert
         actual.andExpect(status().isOk());
 
-        verify(repositoryMock, times(1)).findCatalogVersionBy();
-        verify(mapperMock, times(2)).toResource(pathContextCaptor.capture(), katalogCaptor.capture());
+        verify(serviceMock, times(1)).getCatalogVersions();
+        verify(mapperMock, times(2)).toResource(pathContextCaptor.capture(), catalogCaptor.capture());
         Assertions.assertThat(pathContextCaptor.getValue().build()).isEqualTo(pathContext.build());
     }
 
@@ -414,6 +416,51 @@ class CatalogControllerTest {
             .andExpect(content().bytes(os.toByteArray()));
 
         verify(mediaTypeProviderMock, times(1)).apply("zip");
+    }
+
+    @Test
+    void putCatalogValidUntil_VersionNotExist_StateNotFound() throws Exception {
+        // arrange
+        LocalDate currentDate = LocalDate.of(2023, 1, 2);
+        ZonedDateTime validUntil = ZonedDateTime.of(currentDate, MIDNIGHT, systemDefault());
+        given(serviceMock.limitValidity("8.2.1", validUntil)).willReturn(empty());
+
+        // act
+        ResultActions actual = mockMvc.perform(put("/catalog/{version}/validuntil/{validuntil}", "8.2.1", "2023-01-02")
+            .accept(HAL_JSON_VALUE)
+            //.contentType(APPLICATION_JSON)
+            .characterEncoding(StandardCharsets.UTF_8.displayName())
+        );
+
+        // assert
+        actual.andExpect(status().isNotFound());
+
+        verify(serviceMock, times(1)).limitValidity("8.2.1", validUntil);
+        verify(mapperMock, times(0)).toResource(any(), any(CatalogVersion.class));
+    }
+
+    @Test
+    void putCatalogValidUntil_VersionExist_StateOK() throws Exception {
+        // arrange
+        LocalDate currentDate = LocalDate.of(2023, 1, 2);
+        ZonedDateTime validUntil = ZonedDateTime.of(currentDate, MIDNIGHT, systemDefault());
+        given(serviceMock.limitValidity("8.2.1", validUntil))
+            .willReturn(of(CatalogVersion.builder().build()));
+        given(mapperMock.toResource(any(PathContextBuilder.class), any(CatalogVersion.class)))
+            .willReturn(BaseCatalogVersionResource.builder().build());
+
+        // act
+        ResultActions actual = mockMvc.perform(put("/catalog/{version}/validuntil/{validuntil}", "8.2.1", "2023-01-02")
+            .accept(HAL_JSON_VALUE)
+            //.contentType(APPLICATION_JSON)
+            .characterEncoding(StandardCharsets.UTF_8.displayName())
+        );
+
+        // assert
+        actual.andExpect(status().isOk());
+
+        verify(serviceMock, times(1)).limitValidity("8.2.1", validUntil);
+        verify(mapperMock, times(1)).toResource(any(), any(CatalogVersion.class));
     }
 }
 

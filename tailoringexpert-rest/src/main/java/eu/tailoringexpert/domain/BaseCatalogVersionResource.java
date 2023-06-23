@@ -55,17 +55,17 @@ public class BaseCatalogVersionResource extends RepresentationModel<BaseCatalogV
     String validUntil;
 
     /**
-     * Flag indicating this version shall be preselected.
+     * Flag indicating this version is valid for new tailorings.
      */
-    Boolean standard;
+    Boolean valid;
 
     @Builder
-    public BaseCatalogVersionResource(String version, String validFrom, String validUntil, Boolean standard, List<Link> links) {
+    public BaseCatalogVersionResource(String version, String validFrom, String validUntil, Boolean valid, List<Link> links) {
         super();
         this.version = version;
         this.validFrom = validFrom;
         this.validUntil = validUntil;
-        this.standard = standard;
+        this.valid = valid;
         if (nonNull(links)) {
             add(links);
         }

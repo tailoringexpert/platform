@@ -23,7 +23,7 @@ package eu.tailoringexpert.domain;
 
 import java.time.ZonedDateTime;
 
-public interface BaseCatalogVersion {
+public interface BaseCatalogVersionProjection {
 
     /**
      * Returns Version of the catalog.

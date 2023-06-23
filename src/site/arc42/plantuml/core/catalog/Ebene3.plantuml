@@ -17,16 +17,20 @@ package catalog {
     }
 
     interface CatalogService {
-        doImport(katalog : Catalog<BaseCatalogRequirement>) : boolean
+        doImport(catalog : Catalog<BaseCatalogRequirement>) : boolean
         getCatalog(version : String) : Optional<Catalog<BaseRequirement>>
         createCatalog(version : String) : Optional<File>
         createDocuments(version : String) : Optional<File>
+        getCatalogVersions() : Collection<CatalogVersion>
+        limitValidity(version: String, validUntil : ZonedDateTime ) : Optional<CatalogVersion>
     }
 
     interface CatalogServiceRepository {
         createCatalog(catalog : Catalog<BaseRequirement>, validFrom : ZonedDateTime) : Optional<Catalog<BaseRequirement>>
         getCatalog(version : String) : Optional<Catalog<BaseRequirement>>
         existsCatalog( version : String ) : boolean
+        getCatalogVersions() : Collection<CatalogVersion>
+        limitCatalogValidity(version : String, validUntil : ZonedDateTime) : Optional<CatalogVersion>
     }
 
     class CatalogServiceImpl {

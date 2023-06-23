@@ -74,10 +74,9 @@ public class CatalogConfiguration {
     CatalogController catalogController(
         @NonNull ResourceMapper mapper,
         @NonNull CatalogService catalogService,
-        @NonNull BaseCatalogRepository baseCatalogRepository,
         @NonNull Function<String, MediaType> mediaTypeProvider,
         @NonNull ObjectMapper objectMapper) {
-        return new CatalogController(mapper, catalogService, baseCatalogRepository, mediaTypeProvider, objectMapper);
+        return new CatalogController(mapper, catalogService, mediaTypeProvider, objectMapper);
     }
 
     @Bean

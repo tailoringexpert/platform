@@ -97,7 +97,7 @@ public abstract class ResourceMapper {
     public static final String BASECATALOG_VERSION = "catalog/{version}";
     public static final String BASECATALOG_VERSION_PDF = "catalog/{version}/pdf";
     public static final String BASECATALOG_VERSION_JSON = "catalog/{version}/json";
-
+    public static final String BASECATALOG_VALIDUNTIL = "catalog/{version}/validuntil/{validuntil}";
     public static final String BASECATALOG_VERSION_DOCUMENT = "catalog/{version}/document";
 
     public static final String SCREENINGSHEET = "screeningsheet";
@@ -124,16 +124,18 @@ public abstract class ResourceMapper {
     private static final String REL_ATTACHMENT = "attachment";
     private static final String REL_NOTE = "note";
     private static final String REL_STATE = "state";
+    private static final String REL_VALIDUNTIL ="validuntil";
 
-    // Katalogversion
+    // CatalogVersion
     @BeforeMapping
-    protected void updatePathContext(@Context PathContextBuilder pathContext, BaseCatalogVersion domain) {
+    protected void updatePathContext(@Context PathContextBuilder pathContext, CatalogVersion domain) {
         pathContext.catalog(nonNull(domain) ? domain.getVersion() : null);
     }
 
-    @Mapping(target = "standard", expression = "java( domain.getValidUntil() == null)")
     @Mapping(target = "validFrom", source = "validFrom", dateFormat = "dd.MM.yyyy")
-    public abstract BaseCatalogVersionResource toResource(@Context PathContextBuilder pathContext, BaseCatalogVersion domain);
+    @Mapping(target = "validUntil", source = "validUntil", dateFormat = "dd.MM.yyyy")
+    @Mapping(target = "valid", expression = "java( domain.getValidUntil() == null || java.time.ZonedDateTime.now().isBefore(domain.getValidUntil()))")
+    public abstract BaseCatalogVersionResource toResource(@Context PathContextBuilder pathContext, CatalogVersion domain);
 
     @AfterMapping
     protected void addLinks(@Context PathContextBuilder pathContext, @MappingTarget BaseCatalogVersionResourceBuilder resource) {
@@ -145,7 +147,8 @@ public abstract class ResourceMapper {
             createLink(REL_SELF, baseUri, BASECATALOG_VERSION, parameter),
             createLink(REL_PDF, baseUri, BASECATALOG_VERSION_PDF, parameter),
             createLink(REL_JSON, baseUri, BASECATALOG_VERSION_JSON, parameter),
-            createLink(REL_DOCUMENT, baseUri, BASECATALOG_VERSION_DOCUMENT, parameter)
+            createLink(REL_DOCUMENT, baseUri, BASECATALOG_VERSION_DOCUMENT, parameter),
+            createLink(REL_VALIDUNTIL, baseUri, BASECATALOG_VALIDUNTIL, parameter)
         ));
     }
 

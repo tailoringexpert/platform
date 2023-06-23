@@ -45,6 +45,7 @@ package domain {
         +{static} TAILORING_NOTE = "project/{project}/tailoring/{tailoring}/note/{note}" : String
         +{static} BASECATALOG = "catalog" : String
         +{static} BASECATALOG_VERSION = "catalog/{version}" : String
+        +{static} BASECATALOG_VALIDUNTIL = "catalog/{version}/validuntil/{validuntil}" : String
         +{static} BASECATALOG_VERION_PDF = "catalog/{version}/pdf" : String
         +{static} BASECATALOG_VERION_JSON = "catalog/{version}/json" : String
         +{static} SCREENINGSHEET = "screeningsheet" : String
@@ -70,11 +71,16 @@ package domain {
         -{static} REL_IMPORT = "import" : String
         -{static} REL_ATTACHMENT = "attachment" : String
         -{static} REL_NOTE = "note" : String
-        
-        .. ProjektInformation ..
-        updatePathContext(pathContext : PathContextBuilder, domain : ProjektInformation): void
-        +{abstract} toResource(pathContext :  PathContextBuilder, domain : ProjektInformation) : ProjektInformationResource
-         addLinks(pathContext : PathContextBuilder, resource : ProjektInformationResourceBuilder) : void
+        -{static} REL_VALIDUNTIL = "validuntil" : String
+
+        .. CatalogVersion ..
+        updatePathContext(pathContext : PathContextBuilder, domain : CatalogVersion): void
+        +{abstract} toResource(pathContext :  PathContextBuilder, domain : CatalogVersion) : ProjectInformationResource
+        #addLinks(pathContext : PathContextBuilder, resource : BaseCatalogVersionResourceBuilder) : void
+        .. ProjectInformation ..
+        updatePathContext(pathContext : PathContextBuilder, domain : ProjectInformation): void
+        +{abstract} toResource(pathContext :  PathContextBuilder, domain : ProjectInformation) : ProjectInformationResource
+        #addLinks(pathContext : PathContextBuilder, resource : ProjectInformationResourceBuilder) : void
         .. ScreeningSheet ..
         updatePathContext(pathContext : PathContextBuilder, domain : ScreeningSheet): void
         +{abstract}  toResource(pathContext : PathContextBuilder, domain : ScreeningSheet) : ScreeningSheetResource
