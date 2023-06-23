@@ -23,6 +23,7 @@ package eu.tailoringexpert.catalog;
 
 import eu.tailoringexpert.domain.BaseRequirement;
 import eu.tailoringexpert.domain.Catalog;
+import eu.tailoringexpert.domain.CatalogVersion;
 import eu.tailoringexpert.domain.File;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
@@ -126,6 +127,29 @@ public class CatalogServiceImpl implements CatalogService {
             .build();
         log.traceExit(result.getName());
         return of(result);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public Collection<CatalogVersion> getCatalogVersions() {
+        return repository.getCatalogVersions();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public Optional<CatalogVersion> limitValidity(String version, ZonedDateTime validUntil) {
+        if (!repository.existsCatalog(version)) {
+            log.error("could not limit catalog {} because it does not exist", version);
+            log.traceExit();
+            return empty();
+        }
+
+        Optional<CatalogVersion> result = repository.limitCatalogValidity(version, validUntil);
+        return log.traceExit(result);
     }
 
 

@@ -67,7 +67,7 @@ class ResourceMapperTest {
         // arrange
         PathContextBuilder pathContext = PathContext.builder();
 
-        BaseCatalogVersion baseCatalogVersion = null;
+        CatalogVersion baseCatalogVersion = null;
 
         // act
         BaseCatalogVersionResource actual = mapper.toResource(pathContext, baseCatalogVersion);
@@ -77,11 +77,11 @@ class ResourceMapperTest {
     }
 
     @Test
-    void toResoure_BaseCatalogVersion_DataAndLinksReturned() {
+    void toResoure_BaseCatalogVersionValid_DataAndLinksReturned() {
         // arrange
         PathContextBuilder pathContext = PathContext.builder();
 
-        BaseCatalogVersion baseCatalogVersion = new BaseCatalogVersion() {
+        CatalogVersion baseCatalogVersion = new CatalogVersion() {
             @Override
             public String getVersion() {
                 return "8.2.1";
@@ -106,14 +106,58 @@ class ResourceMapperTest {
         assertThat(actual.getVersion()).isEqualTo("8.2.1");
         assertThat(actual.getValidFrom()).isNotNull();
         assertThat(actual.getValidUntil()).isNull();
-        assertThat(actual.getStandard()).isTrue();
+        assertThat(actual.getValid()).isTrue();
 
         assertThat(actual.getLinks()).containsExactlyInAnyOrder(
             Link.of("http://localhost/catalog/8.2.1", "self"),
             Link.of("http://localhost/catalog/8.2.1/project", "project"),
             Link.of("http://localhost/catalog/8.2.1/pdf", "pdf"),
             Link.of("http://localhost/catalog/8.2.1/json", "json"),
-            Link.of("http://localhost/catalog/8.2.1/document", "document")
+            Link.of("http://localhost/catalog/8.2.1/document", "document"),
+            Link.of("http://localhost/catalog/8.2.1/validuntil/{validuntil}", "validuntil")
+        );
+
+    }
+
+    @Test
+    void toResoure_BaseCatalogVersionNotValid_DataAndLinksReturned() {
+        // arrange
+        PathContextBuilder pathContext = PathContext.builder();
+
+        CatalogVersion baseCatalogVersion = new CatalogVersion() {
+            @Override
+            public String getVersion() {
+                return "8.2.1";
+            }
+
+            @Override
+            public ZonedDateTime getValidFrom() {
+                return ZonedDateTime.now();
+            }
+
+            @Override
+            public ZonedDateTime getValidUntil() {
+                return ZonedDateTime.now().minusDays(1);
+            }
+        };
+
+        // act
+        BaseCatalogVersionResource actual = mapper.toResource(pathContext, baseCatalogVersion);
+
+        // assert
+        assertThat(actual).isNotNull();
+        assertThat(actual.getVersion()).isEqualTo("8.2.1");
+        assertThat(actual.getValidFrom()).isNotNull();
+        assertThat(actual.getValidUntil()).isNotNull();
+        assertThat(actual.getValid()).isFalse();
+
+        assertThat(actual.getLinks()).containsExactlyInAnyOrder(
+            Link.of("http://localhost/catalog/8.2.1", "self"),
+            Link.of("http://localhost/catalog/8.2.1/project", "project"),
+            Link.of("http://localhost/catalog/8.2.1/pdf", "pdf"),
+            Link.of("http://localhost/catalog/8.2.1/json", "json"),
+            Link.of("http://localhost/catalog/8.2.1/document", "document"),
+            Link.of("http://localhost/catalog/8.2.1/validuntil/{validuntil}", "validuntil")
         );
 
     }

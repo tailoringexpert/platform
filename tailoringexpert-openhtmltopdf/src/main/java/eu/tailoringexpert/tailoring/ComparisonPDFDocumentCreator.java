@@ -37,7 +37,6 @@ import java.util.LinkedList;
 import java.util.Map;
 
 import static java.util.Collections.emptyMap;
-import static java.util.Objects.nonNull;
 
 /**
  * Create PDF document containg differences of automatic and manual tailoring.
