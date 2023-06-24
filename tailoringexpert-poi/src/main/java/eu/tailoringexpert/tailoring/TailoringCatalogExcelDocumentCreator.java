@@ -37,6 +37,7 @@ import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
 import java.io.ByteArrayOutputStream;
 import java.util.Map;
+import java.util.stream.StreamSupport;
 
 import static java.util.stream.IntStream.range;
 
@@ -63,6 +64,9 @@ public class TailoringCatalogExcelDocumentCreator implements DocumentCreator {
 
             range(0, sheet.getRow(0).getPhysicalNumberOfCells())
                 .forEach(sheet::autoSizeColumn);
+
+            copySheet(wb, 0);
+            deleteTextColumn(wb.getSheetAt(0));
 
             byte[] content;
             try (ByteArrayOutputStream os = new ByteArrayOutputStream()) {
@@ -91,9 +95,9 @@ public class TailoringCatalogExcelDocumentCreator implements DocumentCreator {
      * @param sheet   sheet to add elements to
      */
     private void addChapter(Chapter<TailoringRequirement> chapter, Sheet sheet) {
-        addRow(sheet, chapter.getName(), chapter.getNumber(), "");
+        addRow(sheet, chapter.getName(), chapter.getNumber(), "", "");
         chapter.getRequirements().forEach(
-            requirement -> addRow(sheet, "", requirement.getPosition(), requirement.getSelected().booleanValue() ? "JA" : "NEIN")
+            requirement -> addRow(sheet, "", requirement.getPosition(), requirement.getSelected().booleanValue() ? "JA" : "NEIN", requirement.getText())
         );
 
         chapter.getChapters()
@@ -121,7 +125,8 @@ public class TailoringCatalogExcelDocumentCreator implements DocumentCreator {
         row.createCell(2).setCellValue("Anwendbar");
         row.getCell(2).setCellStyle(headerCellStyle);
         result.setAutoFilter(new CellRangeAddress(0, 0, 0, 2));
-
+        row.createCell(3).setCellValue("Text");
+        row.getCell(3).setCellStyle(headerCellStyle);
         return result;
     }
 
@@ -132,11 +137,36 @@ public class TailoringCatalogExcelDocumentCreator implements DocumentCreator {
      * @param label      value of cell 0
      * @param position   value of cell 1
      * @param applicable value of cell 2
+     * @param text       value of cell 3
      */
-    private void addRow(Sheet sheet, String label, String position, String applicable) {
+    private void addRow(Sheet sheet, String label, String position, String applicable, String text) {
         Row row = sheet.createRow((short) sheet.getLastRowNum() + 1);
         row.createCell(0).setCellValue(label);
         row.createCell(1).setCellValue(position);
         row.createCell(2).setCellValue(applicable);
+        row.createCell(3).setCellValue(text);
+        row.getCell(3).getCellStyle().setWrapText(true);
+    }
+
+    /**
+     * Copies the sheet with the provided index.
+     *
+     * @param wb    workbook containg sheet to clone
+     * @param index index of sheet to clone
+     */
+    private void copySheet(Workbook wb, int index) {
+        wb.cloneSheet(index);
+        wb.setSheetName(1, wb.getSheetName(index) + "-Req't");
+    }
+
+    /**
+     * Deletes text column values of provided sheet.
+     *
+     * @param sheet sheet to delete text
+     */
+    private void deleteTextColumn(Sheet sheet) {
+        StreamSupport.stream(sheet.spliterator(), false)
+            .skip(1)
+            .forEach(row -> row.removeCell(row.getCell(3)));
     }
 }

@@ -243,6 +243,14 @@ public class CatalogController {
         return result;
     }
 
+    @Operation(summary = "Update the valid until date of a base catalog")
+    @ApiResponses(value = {
+        @ApiResponse(
+            responseCode = "200", description = "Valid until date changed"),
+        @ApiResponse(
+            responseCode = "404", description = "Base catalog does not exist",
+            content = @Content)
+    })
     @PutMapping(value = BASECATALOG_VALIDUNTIL, produces = {"application/hal+json"})
     public ResponseEntity<EntityModel<BaseCatalogVersionResource>> putCatalogValidUntil(
         @Parameter(description = "Version of catalog") @PathVariable String version,
