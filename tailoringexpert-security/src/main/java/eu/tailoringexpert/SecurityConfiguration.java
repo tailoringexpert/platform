@@ -24,6 +24,7 @@ package eu.tailoringexpert;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.web.SecurityFilterChain;
@@ -64,13 +65,13 @@ public class SecurityConfiguration {
     @Bean
     @SuppressWarnings("PMD.SignatureDeclareThrowsException")
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-        http.csrf().disable();
-        http.authorizeHttpRequests().anyRequest().permitAll();
-        http.cors();
-        http.headers()
-            .xssProtection().headerValue(ENABLED)
-            .and()
-            .contentSecurityPolicy("script-src 'self'");
+        http.csrf(csrf -> csrf.disable());
+        http.authorizeHttpRequests(requests -> requests.anyRequest().permitAll());
+        http.cors(Customizer.withDefaults());
+        http.headers(headers -> headers
+            .xssProtection(xss -> xss.headerValue(ENABLED))
+            .contentSecurityPolicy(policy -> policy.policyDirectives("script-src 'self'"))
+        );
         return http.build();
     }
 

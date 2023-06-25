@@ -58,6 +58,7 @@ import static java.util.stream.Collectors.toCollection;
 import static org.springframework.hateoas.server.mvc.BasicLinkBuilder.linkToCurrentMapping;
 
 @Mapper(config = TailoringexpertMapperConfig.class)
+@SuppressWarnings({"java:S6539"})
 public abstract class ResourceMapper {
 
     // Resource URLs
