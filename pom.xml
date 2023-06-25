@@ -3,7 +3,7 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>eu.tailoringexpert</groupId>
-    <artifactId>tailoringexpert-plattform</artifactId>
+    <artifactId>tailoringexpert-platform</artifactId>
     <packaging>pom</packaging>
     <name>${project.groupId}:${project.artifactId}</name>
     <version>0.0.6-SNAPSHOT</version>
