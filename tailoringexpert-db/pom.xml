@@ -10,7 +10,7 @@
 
     <parent>
         <groupId>eu.tailoringexpert</groupId>
-        <artifactId>tailoringexpert-plattform</artifactId>
+        <artifactId>tailoringexpert-platform</artifactId>
         <version>0.0.6-SNAPSHOT</version>
     </parent>
 
