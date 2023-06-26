@@ -111,18 +111,18 @@ public class TailoringCatalogExcelDocumentCreator implements DocumentCreator {
      * @return created worksheet
      */
     private Sheet createSheet(Workbook wb, Tailoring tailoring) {
-        Sheet result = wb.createSheet(tailoring.getName() + "-" + tailoring.getCatalog().getVersion());
+        Sheet result = wb.createSheet(tailoring.getName() + "-" + tailoring.getCatalog().getVersion() + "-IMPORT");
 
         CellStyle headerCellStyle = wb.createCellStyle();
         headerCellStyle.setFillForegroundColor(IndexedColors.GREY_25_PERCENT.index);
         headerCellStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
 
         Row row = result.createRow((short) 0);
-        row.createCell(0).setCellValue("Bezeichnung");
+        row.createCell(0).setCellValue("Label");
         row.getCell(0).setCellStyle(headerCellStyle);
         row.createCell(1).setCellValue("Chapter");
         row.getCell(1).setCellStyle(headerCellStyle);
-        row.createCell(2).setCellValue("Anwendbar");
+        row.createCell(2).setCellValue("Applicable");
         row.getCell(2).setCellStyle(headerCellStyle);
         result.setAutoFilter(new CellRangeAddress(0, 0, 0, 2));
         row.createCell(3).setCellValue("Text");
@@ -156,7 +156,9 @@ public class TailoringCatalogExcelDocumentCreator implements DocumentCreator {
      */
     private void copySheet(Workbook wb, int index) {
         wb.cloneSheet(index);
-        wb.setSheetName(1, wb.getSheetName(index) + "-Req't");
+        String baseName = wb.getSheetName(index);
+        String name = baseName.substring(0, baseName.lastIndexOf('-'))+ "-EXPORT";
+        wb.setSheetName(1, name);
     }
 
     /**
