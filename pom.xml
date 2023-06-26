@@ -30,9 +30,9 @@
     </licenses>
 
     <scm>
-        <connection>scm:git:https://github.com/tailoringexpert/plattform.git</connection>
-        <developerConnection>scm:git:https://github.com/tailoringexpert/plattform.git</developerConnection>
-        <url>https://github.com/tailoringexpert/plattform.git</url>
+        <connection>scm:git:https://github.com/tailoringexpert/platform.git</connection>
+        <developerConnection>scm:git:https://github.com/tailoringexpert/platform.git</developerConnection>
+        <url>https://github.com/tailoringexpert/platform.git</url>
       <tag>HEAD</tag>
   </scm>
 
