@@ -148,8 +148,8 @@ class TailoringCatalogExcelDocumentCreatorTest {
         try (ByteArrayInputStream is = new ByteArrayInputStream(actual.getData());
              Workbook workbook = WorkbookFactory.create(is)) {
             assertThat(workbook.getNumberOfSheets()).isEqualTo(2);
-            assertThat(workbook.getSheetAt(0).getSheetName()).isEqualTo("ut-8.2.1");
-            assertThat(workbook.getSheetAt(1).getSheetName()).isEqualTo("ut-8.2.1-Req't");
+            assertThat(workbook.getSheetAt(0).getSheetName()).isEqualTo("ut-8.2.1-IMPORT");
+            assertThat(workbook.getSheetAt(1).getSheetName()).isEqualTo("ut-8.2.1-EXPORT");
         }
     }
 }
