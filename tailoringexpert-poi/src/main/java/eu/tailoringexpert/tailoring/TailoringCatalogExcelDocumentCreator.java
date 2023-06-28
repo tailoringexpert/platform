@@ -31,15 +31,18 @@ import org.apache.poi.ss.usermodel.FillPatternType;
 import org.apache.poi.ss.usermodel.IndexedColors;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.ss.usermodel.VerticalAlignment;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.ss.util.CellRangeAddress;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
 import java.io.ByteArrayOutputStream;
+import java.util.Arrays;
 import java.util.Map;
 import java.util.stream.StreamSupport;
 
-import static java.util.stream.IntStream.range;
+import static java.util.Objects.nonNull;
+import static java.util.stream.IntStream.of;
 
 /**
  * Create Excel requirement catalog file.
@@ -59,14 +62,12 @@ public class TailoringCatalogExcelDocumentCreator implements DocumentCreator {
         try (Workbook wb = new XSSFWorkbook()) {
             Sheet sheet = createSheet(wb, tailoring);
 
-            tailoring.getCatalog().getToc().getChapters()
-                .forEach(gruppe -> addChapter(gruppe, sheet));
+            tailoring.getCatalog().getToc().getChapters().forEach(gruppe -> addChapter(gruppe, sheet));
 
-            range(0, sheet.getRow(0).getPhysicalNumberOfCells())
-                .forEach(sheet::autoSizeColumn);
+            Arrays.stream(new int[]{1, 2, 4, 5}).forEach(sheet::autoSizeColumn);
 
             copySheet(wb, 0);
-            deleteTextColumn(wb.getSheetAt(0));
+            deleteColumnsNotUsedForImportSheet(wb.getSheetAt(0));
 
             byte[] content;
             try (ByteArrayOutputStream os = new ByteArrayOutputStream()) {
@@ -74,10 +75,7 @@ public class TailoringCatalogExcelDocumentCreator implements DocumentCreator {
                 content = os.toByteArray();
             }
 
-            File result = File.builder()
-                .name(docId + ".xlsx")
-                .data(content)
-                .build();
+            File result = File.builder().name(docId + ".xlsx").data(content).build();
             log.traceExit();
             return result;
         } catch (Exception e) {
@@ -95,13 +93,10 @@ public class TailoringCatalogExcelDocumentCreator implements DocumentCreator {
      * @param sheet   sheet to add elements to
      */
     private void addChapter(Chapter<TailoringRequirement> chapter, Sheet sheet) {
-        addRow(sheet, chapter.getName(), chapter.getNumber(), "", "");
-        chapter.getRequirements().forEach(
-            requirement -> addRow(sheet, "", requirement.getPosition(), requirement.getSelected().booleanValue() ? "JA" : "NEIN", requirement.getText())
-        );
+        addRow(sheet, chapter.getName(), chapter.getNumber());
+        chapter.getRequirements().forEach(requirement -> addRow(sheet, requirement));
 
-        chapter.getChapters()
-            .forEach(subChapter -> addChapter(subChapter, sheet));
+        chapter.getChapters().forEach(subChapter -> addChapter(subChapter, sheet));
     }
 
     /**
@@ -116,37 +111,65 @@ public class TailoringCatalogExcelDocumentCreator implements DocumentCreator {
         CellStyle headerCellStyle = wb.createCellStyle();
         headerCellStyle.setFillForegroundColor(IndexedColors.GREY_25_PERCENT.index);
         headerCellStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
+        headerCellStyle.setVerticalAlignment(VerticalAlignment.TOP);
 
         Row row = result.createRow((short) 0);
         row.createCell(0).setCellValue("Label");
         row.getCell(0).setCellStyle(headerCellStyle);
+
         row.createCell(1).setCellValue("Chapter");
         row.getCell(1).setCellStyle(headerCellStyle);
         row.createCell(2).setCellValue("Applicable");
         row.getCell(2).setCellStyle(headerCellStyle);
-        result.setAutoFilter(new CellRangeAddress(0, 0, 0, 2));
         row.createCell(3).setCellValue("Text");
         row.getCell(3).setCellStyle(headerCellStyle);
+
+        row.createCell(4).setCellValue("Selection changed");
+        row.getCell(4).setCellStyle(headerCellStyle);
+        row.createCell(5).setCellValue("Text changed");
+        row.getCell(5).setCellStyle(headerCellStyle);
+
+        result.setColumnWidth(0, 40 * 256);
+        result.setColumnWidth(3, 60 * 256);
+        result.setAutoFilter(new CellRangeAddress(0, 0, 0, 5));
+
         return result;
     }
 
     /**
      * Add a row to provided sheet with provided parameters.
      *
-     * @param sheet      sheet to add row to
-     * @param label      value of cell 0
-     * @param position   value of cell 1
-     * @param applicable value of cell 2
-     * @param text       value of cell 3
+     * @param sheet    sheet to add row to
+     * @param label    value of cell 0
+     * @param position value of cell 1
      */
-    private void addRow(Sheet sheet, String label, String position, String applicable, String text) {
+    private void addRow(Sheet sheet, String label, String position) {
         Row row = sheet.createRow((short) sheet.getLastRowNum() + 1);
         row.createCell(0).setCellValue(label);
         row.createCell(1).setCellValue(position);
-        row.createCell(2).setCellValue(applicable);
-        row.createCell(3).setCellValue(text);
-        row.getCell(3).getCellStyle().setWrapText(true);
     }
+
+    /**
+     * Add a row to provided sheet with provided parameters.
+     *
+     * @param sheet       sheet to add row to
+     * @param requirement tailoring requirement to be displayed in row
+     */
+    private void addRow(Sheet sheet, TailoringRequirement requirement) {
+        CellStyle wrapStyle = sheet.getWorkbook().createCellStyle();
+        wrapStyle.setWrapText(true);
+        wrapStyle.setVerticalAlignment(VerticalAlignment.TOP);
+
+        Row row = sheet.createRow((short) sheet.getLastRowNum() + 1);
+        row.createCell(0).setCellValue("");
+        row.createCell(1).setCellValue(requirement.getPosition());
+        row.createCell(2).setCellValue(requirement.getSelected().booleanValue() ? "JA" : "NEIN");
+        row.createCell(3).setCellValue(requirement.getText());
+        row.getCell(3).setCellStyle(wrapStyle);
+        row.createCell(4).setCellValue(nonNull(requirement.getSelectionChanged()));
+        row.createCell(5).setCellValue(nonNull(requirement.getTextChanged()));
+    }
+
 
     /**
      * Copies the sheet with the provided index.
@@ -157,18 +180,23 @@ public class TailoringCatalogExcelDocumentCreator implements DocumentCreator {
     private void copySheet(Workbook wb, int index) {
         wb.cloneSheet(index);
         String baseName = wb.getSheetName(index);
-        String name = baseName.substring(0, baseName.lastIndexOf('-'))+ "-EXPORT";
-        wb.setSheetName(1, name);
+        String name = baseName.substring(0, baseName.lastIndexOf('-')) + "-EXPORT";
+        wb.setSheetName(wb.getNumberOfSheets() - 1, name);
     }
 
     /**
-     * Deletes text column values of provided sheet.
+     * Deletes columns in sheet which are not used as input for import.
      *
      * @param sheet sheet to delete text
      */
-    private void deleteTextColumn(Sheet sheet) {
+    private void deleteColumnsNotUsedForImportSheet(Sheet sheet) {
+        Row header = sheet.getRow(0);
+        of(4, 5).forEach(index -> header.removeCell(header.getCell(index)));
+
         StreamSupport.stream(sheet.spliterator(), false)
             .skip(1)
-            .forEach(row -> row.removeCell(row.getCell(3)));
+            .filter(row -> nonNull(row.getCell(3)))
+            .forEach(row -> of(3, 4, 5).forEach(index -> row.removeCell(row.getCell(index))));
+        sheet.setAutoFilter(new CellRangeAddress(0, 0, 0, 3));
     }
 }
