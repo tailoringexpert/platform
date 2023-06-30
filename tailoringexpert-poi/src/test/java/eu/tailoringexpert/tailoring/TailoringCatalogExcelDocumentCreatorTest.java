@@ -32,7 +32,6 @@ import eu.tailoringexpert.domain.File;
 import eu.tailoringexpert.domain.Tailoring;
 import eu.tailoringexpert.domain.TailoringRequirement;
 import lombok.extern.log4j.Log4j2;
-import org.apache.poi.openxml4j.util.ZipSecureFile;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.ss.usermodel.WorkbookFactory;
 import org.junit.jupiter.api.BeforeEach;
@@ -146,7 +145,6 @@ class TailoringCatalogExcelDocumentCreatorTest {
 
         // assert
         assertThat(actual).isNotNull();
-        ZipSecureFile.setMinInflateRatio(-1d);
         try (ByteArrayInputStream is = new ByteArrayInputStream(actual.getData());
              Workbook workbook = WorkbookFactory.create(is)) {
             assertThat(workbook.getNumberOfSheets()).isEqualTo(2);
