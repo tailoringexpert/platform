@@ -64,6 +64,7 @@ public class TailoringCatalogExcelDocumentCreator implements DocumentCreator {
 
             tailoring.getCatalog().getToc().getChapters().forEach(gruppe -> addChapter(gruppe, sheet));
 
+            applyTextStyle(sheet);
             Arrays.stream(new int[]{1, 2, 4, 5}).forEach(sheet::autoSizeColumn);
 
             copySheet(wb, 0);
@@ -156,16 +157,11 @@ public class TailoringCatalogExcelDocumentCreator implements DocumentCreator {
      * @param requirement tailoring requirement to be displayed in row
      */
     private void addRow(Sheet sheet, TailoringRequirement requirement) {
-        CellStyle wrapStyle = sheet.getWorkbook().createCellStyle();
-        wrapStyle.setWrapText(true);
-        wrapStyle.setVerticalAlignment(VerticalAlignment.TOP);
-
         Row row = sheet.createRow((short) sheet.getLastRowNum() + 1);
         row.createCell(0).setCellValue("");
         row.createCell(1).setCellValue(requirement.getPosition());
         row.createCell(2).setCellValue(requirement.getSelected().booleanValue() ? "JA" : "NEIN");
         row.createCell(3).setCellValue(requirement.getText());
-        row.getCell(3).setCellStyle(wrapStyle);
         row.createCell(4).setCellValue(nonNull(requirement.getSelectionChanged()));
         row.createCell(5).setCellValue(nonNull(requirement.getTextChanged()));
     }
@@ -198,5 +194,15 @@ public class TailoringCatalogExcelDocumentCreator implements DocumentCreator {
             .filter(row -> nonNull(row.getCell(3)))
             .forEach(row -> of(3, 4, 5).forEach(index -> row.removeCell(row.getCell(index))));
         sheet.setAutoFilter(new CellRangeAddress(0, 0, 0, 3));
+    }
+
+    void applyTextStyle(Sheet sheet) {
+        CellStyle wrapStyle = sheet.getWorkbook().createCellStyle();
+        wrapStyle.setWrapText(true);
+        wrapStyle.setVerticalAlignment(VerticalAlignment.TOP);
+        StreamSupport.stream(sheet.spliterator(), false)
+            .skip(1)
+            .filter(row -> nonNull(row.getCell(3)))
+            .forEach(row -> row.getCell(3).setCellStyle(wrapStyle));
     }
 }
