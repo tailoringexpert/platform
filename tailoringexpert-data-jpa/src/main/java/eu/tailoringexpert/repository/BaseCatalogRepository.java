@@ -29,6 +29,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.ZonedDateTime;
 import java.util.Collection;
@@ -93,6 +94,7 @@ public interface BaseCatalogRepository extends JpaRepository<BaseCatalogEntity, 
      * @param pointOfTime end of validity
      * @return number of updated base catalogs
      */
+    @Transactional
     @Modifying
     @Query("update #{#entityName} c set c.validUntil=:validUntil where c.version=:version")
     @CacheEvict(value = {CACHE_BASECATALOGLIST, CACHE_BASECATALOG}, allEntries = true)

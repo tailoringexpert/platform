@@ -32,7 +32,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.junit.jupiter.SpringJUnitConfig;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.io.IOException;
+import java.time.ZonedDateTime;
 import java.util.Collection;
 import java.util.stream.Stream;
 
@@ -86,7 +86,7 @@ class BaseCatalogRepositoryTest {
     }
 
     @Test
-    void findByVersion_BaseCatalogExists_BaseCatalogReturned() throws IOException {
+    void findByVersion_BaseCatalogExists_BaseCatalogReturned() {
         // arrange
         repository.save(BaseCatalogEntity.builder()
             .version("7.2.1")
@@ -104,7 +104,7 @@ class BaseCatalogRepositoryTest {
     }
 
     @Test
-    void findCatalogVersionBy_2BaseCatalogExists_ListWith2BaseCatalogsReturned() throws IOException {
+    void findCatalogVersionBy_2BaseCatalogExists_ListWith2BaseCatalogsReturned() {
         // arrange
         repository.save(BaseCatalogEntity.builder()
             .version("7.2.1")
@@ -151,7 +151,7 @@ class BaseCatalogRepositoryTest {
     }
 
     @Test
-    void findCatalogByVersion_VersionNotExist_NullReturned() throws IOException {
+    void findCatalogByVersion_VersionNotExist_NullReturned() {
         // arrange
         repository.save(BaseCatalogEntity.builder()
             .version("7.2.1")
@@ -170,7 +170,7 @@ class BaseCatalogRepositoryTest {
     }
 
     @Test
-    void findCatalogByVersion_2BaseCatalogExistsVersionExist_CorrectVersionReturned() throws IOException {
+    void findCatalogByVersion_2BaseCatalogExistsVersionExist_CorrectVersionReturned() {
         // arrange
         repository.save(BaseCatalogEntity.builder()
             .version("7.2.1")
@@ -186,6 +186,35 @@ class BaseCatalogRepositoryTest {
         // assert
         assertThat(actual)
             .isNotNull();
+    }
+
+    @Test
+    void setValidUntilForVersion_VersionNonExist_0Returned() {
+        // arrange
+        ZonedDateTime now = ZonedDateTime.now();
+
+        // act
+        int actual = repository.setValidUntilForVersion("8.2.1", now);
+
+        // assert
+        assertThat(actual).isZero();
+
+    }
+
+    @Test
+    void setValidUntilForVersion_VersionExist_1Returned() {
+        // arrange
+        ZonedDateTime now = ZonedDateTime.now();
+
+        repository.save(BaseCatalogEntity.builder()
+            .version("8.2.1")
+            .build());
+
+        // act
+        int actual = repository.setValidUntilForVersion("8.2.1", now);
+
+        // assert
+        assertThat(actual).isOne();
     }
 
 }
