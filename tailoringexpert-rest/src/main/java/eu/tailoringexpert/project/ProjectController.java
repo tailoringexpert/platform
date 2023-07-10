@@ -245,7 +245,9 @@ public class ProjectController {
             content = @Content(mediaType = "application/json+hal", schema = @Schema(implementation = ProjectResource.class))),
         @ApiResponse(
             responseCode = "404", description = "Project not copied",
-            content = @Content)
+            content = @Content),
+        @ApiResponse(
+            responseCode = "412", description = "Project name already exists")
     })
     @PostMapping(value = PROJECT, produces = {"application/hal+json"})
     @ResponseBody
@@ -255,9 +257,9 @@ public class ProjectController {
         log.traceEntry();
 
         ResponseEntity<EntityModel<ProjectResource>> result = projectService.copyProject(project, screeningSheet.getBytes())
-            .map(projektKopie -> ResponseEntity
-                .created(mapper.createLink(ResourceMapper.REL_SELF, linkToCurrentMapping().toString(), PROJECT, Map.of("project", projektKopie.getIdentifier())).toUri())
-                .body(of(mapper.toResource(PathContext.builder(), projektKopie))))
+            .map(copiedProject -> ResponseEntity
+                .created(mapper.createLink(ResourceMapper.REL_SELF, linkToCurrentMapping().toString(), PROJECT, Map.of("project", copiedProject.getIdentifier())).toUri())
+                .body(of(mapper.toResource(PathContext.builder(), copiedProject))))
             .orElseGet(() -> notFound().build());
 
         log.traceExit();
