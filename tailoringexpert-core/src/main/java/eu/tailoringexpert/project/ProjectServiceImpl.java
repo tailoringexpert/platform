@@ -193,14 +193,18 @@ public class ProjectServiceImpl implements ProjectService {
         }
 
         // annahme:
-        // 1. alle phasen werden kopiert und das projekt screeningsheet gesetzt
-        // 2. als screeningsheet pro phase wird das projekt screeningsheet gespeichert
-        // 3. selektionvektor der phase wird aus kopierten projekt übernommen (zur info)
-        // 4. KEIN neutailoring!
-
-        Project projectCopy = projectToCopy.get();
+        // 1. all phases will be copied, screeningsheet of new project will be set
+        // 2. selectionvector of copied tailoring wille also be copied
+        // 3. no tailoring updated
 
         ScreeningSheet screeningSheet = screeningSheetService.createScreeningSheet(screeningSheetData);
+        if (repository.isExistingProject(screeningSheet.getProject())) {
+            log.error("Exception while copying project because a project with same name already exists");
+            log.traceExit();
+            throw new TailoringexpertException("A project with name " + project + " already exists!\nEither change project identifier or add new tailoring to existing project.");
+        }
+
+        Project projectCopy = projectToCopy.get();
         projectCopy.setScreeningSheet(screeningSheet);
         projectCopy.setIdentifier(screeningSheet.getProject());
 

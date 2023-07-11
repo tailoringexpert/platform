@@ -138,7 +138,7 @@ class DRDPDFDocumentCreatorTest {
     }
 
     @Test
-    void createDocument() throws IOException {
+    void createDocument_ValidInput_FileCreated() throws IOException {
         // arrange
         Catalog<TailoringRequirement> catalog;
         try (InputStream is = this.getClass().getResourceAsStream("/tailoringcatalog.json")) {
@@ -173,8 +173,8 @@ class DRDPDFDocumentCreatorTest {
 
         mockServer
             .when(request()
-                .withMethod("GET")
-                .withPath("/assets/.*"))
+                .withMethod("GET"))
+//                .withPath("/assets/.*"))
             .respond(httpRequest -> {
                 String asset = httpRequest.getPath().getValue().substring("/assets".length());
                 java.io.File file = new java.io.File(this.assetHome + asset);

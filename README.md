@@ -2,10 +2,10 @@
 
 ## About
 
-| __Build Status__ | [![build](https://github.com/baedorf/tailoringexpert-plattform/actions/workflows/build.yml/badge.svg)](https://github.com/baedorf/tailoringexpert-plattform/actions/workflows/build.yml) |
+| __Build Status__ | [![build](https://github.com/tailoringexpert/plattform/actions/workflows/build.yml/badge.svg)](https://github.com/tailoringexpert/plattform/actions/workflows/build.yml) |
 |:-----------------| :--- |
 | __Coverage__     | ![coverage](../badges/jacoco.svg) ![branches coverage](../badges/branches.svg) |
-| __Source Info__  | [![License](https://img.shields.io/github/license/baedorf/tailoringexpert-plattform)](https://github.com/baedorf/tailoringexpert-plattform/blob/main/LICENSE) ![GitHub top language](https://img.shields.io/github/languages/top/baedorf/tailoringexpert-plattform) |
+| __Source Info__  | [![License](https://img.shields.io/github/license/tailoringexpert/plattform)](https://github.com/tailoringexpert/plattform/blob/main/LICENSE) ![GitHub top language](https://img.shields.io/github/languages/top/tailoringexpert/plattform) |
 
 ## Development policies
 
@@ -70,7 +70,7 @@ OR-Mapping is to be implemented via annotations.
 
 ## Use Cases
 
-![alt text](src/site/plantuml/usecases.svg "Usecases")
+![alt text](https://www.plantuml.com/plantuml/proxy?cache=no&src=https://raw.github.com/tailoringexpert/plattform/README/src/site/arc42/plantuml/Usecases.plantuml "Usecases")
 
 ## Architecture documentation
 
@@ -92,15 +92,15 @@ Architecture documentation can be found here as [arc42](src/site/arc42/tailoring
 
 ### Level 0
 
-![alternative text](https://www.plantuml.com/plantuml/proxy?cache=no&src=https://raw.github.com/baedorf/taloringexpert-plattform/src/site/arc42/plantuml/level0.plantuml "Level 0")
+![alternative text](https://www.plantuml.com/plantuml/proxy?cache=no&src=https://raw.github.com/tailoringexpert/plattform/main/src/site/arc42/plantuml/level0.plantuml "Level 0")
 
 ## Level 1
 
-![alternative text](https://www.plantuml.com/plantuml/proxy?cache=no&src=https://raw.github.com/baedorf/taloringexpert-plattform/src/site/arc42/plantuml/TailoringWhitebox.plantuml "Level 1")
+![alternative text](https://www.plantuml.com/plantuml/proxy?cache=no&src=https://raw.github.com/tailoringexpert/plattform/main/src/site/arc42/plantuml/TailoringWhitebox.plantuml "Level 1")
 
 ## Deployment
 
-![alternative text](https://www.plantuml.com/plantuml/proxy?cache=no&src=https://raw.github.com/baedorf/tailoringexpert-plattform/src/site/arc42/plantuml/DeploymentDocker.plantuml "Deployment")
+![alternative text](https://www.plantuml.com/plantuml/proxy?cache=no&src=https://raw.github.com/tailoringexpert/plattform/main/src/site/arc42/plantuml/DeploymentDocker.plantuml "Deployment")
 
 ## Build application
 

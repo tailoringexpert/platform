@@ -23,8 +23,10 @@ package eu.tailoringexpert.catalog;
 
 import eu.tailoringexpert.TailoringexpertMapperConfig;
 import eu.tailoringexpert.domain.BaseCatalogEntity;
+import eu.tailoringexpert.domain.BaseCatalogVersionProjection;
 import eu.tailoringexpert.domain.BaseRequirement;
 import eu.tailoringexpert.domain.Catalog;
+import eu.tailoringexpert.domain.CatalogVersion;
 import eu.tailoringexpert.domain.DRDEntity;
 import eu.tailoringexpert.domain.LogoEntity;
 import eu.tailoringexpert.repository.DRDRepository;
@@ -74,6 +76,10 @@ public abstract class JPACatalogServiceRepositoryMapper {
     }
 
     public abstract Catalog<BaseRequirement> getCatalog(BaseCatalogEntity entity);
+
+    public abstract CatalogVersion limitCatalogValidity(BaseCatalogVersionProjection entity);
+
+    public abstract CatalogVersion getCatalogVersions(BaseCatalogVersionProjection entity);
 
     @Qualifier
     @Target(METHOD)

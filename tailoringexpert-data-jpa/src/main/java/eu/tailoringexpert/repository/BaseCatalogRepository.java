@@ -22,13 +22,14 @@
 package eu.tailoringexpert.repository;
 
 import eu.tailoringexpert.domain.BaseCatalogEntity;
-import eu.tailoringexpert.domain.BaseCatalogVersion;
+import eu.tailoringexpert.domain.BaseCatalogVersionProjection;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.ZonedDateTime;
 import java.util.Collection;
@@ -58,17 +59,14 @@ public interface BaseCatalogRepository extends JpaRepository<BaseCatalogEntity, 
      * @return collection of base catalog versions defined in system
      */
     @Cacheable(CACHE_BASECATALOGLIST)
-    Collection<BaseCatalogVersion> findCatalogVersionBy();
+    Collection<BaseCatalogVersionProjection> findCatalogVersionBy();
 
     /**
-     * Set the valid until date of all base catalogs where valid until is open (Null).
+     * Loads "pure" version and validity of requested base catalog.
      *
-     * @param pointOfTime end validity of base catalog
-     * @return number of updated base catalogs
+     * @return base catalog version of requested base catalog
      */
-    @Modifying
-    @Query("update #{#entityName} c set c.validUntil=:validUntil where c.validUntil is Null")
-    int setValidUntilForEmptyValidUntil(@Param("validUntil") ZonedDateTime pointOfTime);
+    BaseCatalogVersionProjection findCatalogByVersion(String version);
 
     /**
      * Save a base catalog.
@@ -88,4 +86,19 @@ public interface BaseCatalogRepository extends JpaRepository<BaseCatalogEntity, 
      * @return true, of base catalog exists
      */
     boolean existsByVersion(String version);
+
+    /**
+     * Sets valid until of a requested base catalog version.
+     *
+     * @param version     base catalog version to update
+     * @param pointOfTime end of validity
+     * @return number of updated base catalogs
+     */
+    @Transactional
+    @Modifying
+    @Query("update #{#entityName} c set c.validUntil=:validUntil where c.version=:version")
+    @CacheEvict(value = {CACHE_BASECATALOGLIST, CACHE_BASECATALOG}, allEntries = true)
+    int setValidUntilForVersion(@Param("version") String version, @Param("validUntil") ZonedDateTime pointOfTime);
+
+
 }

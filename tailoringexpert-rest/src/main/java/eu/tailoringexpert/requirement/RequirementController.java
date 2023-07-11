@@ -145,7 +145,7 @@ public class RequirementController {
             responseCode = "404", description = "Requirement does not exist",
             content = @Content)
     })
-    @PutMapping(TAILORINGREQUIRMENT_TEXT)
+    @PutMapping(value = TAILORINGREQUIRMENT_TEXT, produces = {"application/hal+json"})
     public ResponseEntity<EntityModel<TailoringRequirementResource>> putRequirementText(
         @Parameter(description = "Project identifier") @PathVariable String project,
         @Parameter(description = "Tailoring name") @PathVariable String tailoring,
@@ -178,7 +178,7 @@ public class RequirementController {
             responseCode = "404", description = "Chapter does not exist",
             content = @Content)
     })
-    @PutMapping(CHAPTER_SELECTED)
+    @PutMapping(value = CHAPTER_SELECTED, produces = {"application/hal+json"})
     public ResponseEntity<EntityModel<TailoringCatalogChapterResource>> putRequirementsState(
         @Parameter(description = "Project identifier") @PathVariable String project,
         @Parameter(description = "Tailoring name") @PathVariable String tailoring,

@@ -101,7 +101,7 @@ class ComparisonPDFDocumentCreatorTest {
     }
 
     @Test
-    void createDocument() throws Exception {
+    void createDocument_ValidInput_FileCreated() throws Exception {
         // arrange
         Catalog<TailoringRequirement> catalog;
         try (InputStream is = this.getClass().getResourceAsStream("/tailoringcatalog.json")) {

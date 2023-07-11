@@ -39,6 +39,7 @@ import eu.tailoringexpert.screeningsheet.ScreeningSheetService;
 import eu.tailoringexpert.tailoring.TailoringService;
 import lombok.extern.log4j.Log4j2;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
 
@@ -650,6 +651,7 @@ class ProjectServiceImplTest {
         // assert
         assertThat(actual).isEmpty();
         verify(repositoryMock, times(0)).createProject(any());
+        verify(repositoryMock, times(0)).isExistingProject(any());
     }
 
     @Test
@@ -683,8 +685,11 @@ class ProjectServiceImplTest {
 
         given(screeningSheetServiceMock.createScreeningSheet(data))
             .willReturn(ScreeningSheet.builder()
-                .parameters(asList(ScreeningSheetParameter.builder().category(ScreeningSheetDataProviderSupplier.Identifier.getName()).value("H3SAT").build()))
+                .project("DUMMY")
+                .parameters(asList(ScreeningSheetParameter.builder().category(ScreeningSheetDataProviderSupplier.Identifier.getName()).value("DUMMY").build()))
                 .build());
+        given(repositoryMock.isExistingProject("DUMMY"))
+            .willReturn(false);
 
         ArgumentCaptor<Project> projectCopyCaptor = forClass(Project.class);
         given(repositoryMock.createProject(projectCopyCaptor.capture()))
@@ -696,6 +701,8 @@ class ProjectServiceImplTest {
         // assert
         assertThat(actual).isPresent();
         assertThat(projectCopyCaptor.getValue().getTailorings()).hasSize(2);
+        verify(repositoryMock, times(1)).isExistingProject(any());
+
     }
 
     @Test
@@ -724,5 +731,27 @@ class ProjectServiceImplTest {
         // assert
         assertThat(actual).isPresent();
         verify(repositoryMock, times(1)).updateState("SAMPLE", COMPLETED);
+    }
+
+    @Test
+    @DisplayName("github #202")
+    void copyProject_SameName_ProjectcopyNotCreated() throws IOException {
+        byte[] data = newInputStream(get("src/test/resources/screeningsheet.pdf")).readAllBytes();
+
+        given(repositoryMock.getProject("SAMPLE"))
+            .willReturn(of(Project.builder().identifier("SAMPLE").build()));
+        given(screeningSheetServiceMock.createScreeningSheet(data))
+            .willReturn(ScreeningSheet.builder().project("SAMPLE").build());
+        given(repositoryMock.isExistingProject("SAMPLE"))
+            .willReturn(true);
+
+
+        // act
+        Throwable actual = catchThrowable(() -> service.copyProject("SAMPLE", data));
+
+        // assert
+        assertThat(actual).isInstanceOf(TailoringexpertException.class);
+        verify(repositoryMock, times(0)).createProject(any());
+        verify(repositoryMock, times(1)).isExistingProject(any());
     }
 }

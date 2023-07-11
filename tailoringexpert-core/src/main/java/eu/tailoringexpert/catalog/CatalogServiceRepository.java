@@ -23,8 +23,10 @@ package eu.tailoringexpert.catalog;
 
 import eu.tailoringexpert.domain.BaseRequirement;
 import eu.tailoringexpert.domain.Catalog;
+import eu.tailoringexpert.domain.CatalogVersion;
 
 import java.time.ZonedDateTime;
+import java.util.Collection;
 import java.util.Optional;
 
 /**
@@ -59,4 +61,20 @@ public interface CatalogServiceRepository {
      * @return true, of base catalog exists
      */
     boolean existsCatalog(String version);
+
+    /**
+     * Loads all base catalog versions defined in system.
+     *
+     * @return all defined base catalog versions in system
+     */
+    Collection<CatalogVersion> getCatalogVersions();
+
+    /**
+     * Limits the validity of given catalog version.
+     *
+     * @param version    version of base catalog to limit
+     * @param validUntil validity end of base catalog
+     * @return Base information of limited catalog
+     */
+    Optional<CatalogVersion> limitCatalogValidity(String version, ZonedDateTime validUntil);
 }

@@ -3,15 +3,15 @@
     <modelVersion>4.0.0</modelVersion>
 
     <name>${project.groupId}:${project.artifactId}</name>
-    <description>Technologie neutrale Implementierung der Domäne</description>
+    <description>Core business implementation of platform domain</description>
 
     <artifactId>tailoringexpert-core</artifactId>
     <packaging>jar</packaging>
 
     <parent>
         <groupId>eu.tailoringexpert</groupId>
-        <artifactId>tailoringexpert-plattform</artifactId>
-        <version>0.0.6-SNAPSHOT</version>
+        <artifactId>tailoringexpert-platform</artifactId>
+        <version>0.0.6</version>
     </parent>
 
     <dependencies>

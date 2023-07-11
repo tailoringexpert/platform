@@ -105,7 +105,7 @@ public class BaseCatalogPDFDocumentCreator implements DocumentCreator {
                 });
 
             String html = templateEngine.process(catalog.getVersion() + "/basecatalog", parameter);
-            File result = pdfEngine.process(docId, html, catalog.getVersion());
+            File result = pdfEngine.process(docId, html, catalog.getVersion() + "/catalog");
 
             log.traceExit();
             return result;

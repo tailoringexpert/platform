@@ -22,8 +22,10 @@
 package eu.tailoringexpert.catalog;
 
 import eu.tailoringexpert.domain.BaseCatalogEntity;
+import eu.tailoringexpert.domain.BaseCatalogVersionProjection;
 import eu.tailoringexpert.domain.BaseRequirement;
 import eu.tailoringexpert.domain.Catalog;
+import eu.tailoringexpert.domain.CatalogVersion;
 import eu.tailoringexpert.domain.Chapter;
 import eu.tailoringexpert.domain.DRDEntity;
 import eu.tailoringexpert.repository.BaseCatalogRepository;
@@ -65,8 +67,6 @@ class JPACatalogServiceRepositoryTest {
     @Test
     void createCatalog_BaseCatalogEntityNull_EmptyReturned() {
         // arrange
-        given(baseCatalogRepositoryMock.setValidUntilForEmptyValidUntil(any())).willReturn(0);
-
         Catalog<BaseRequirement> catalog = Catalog.<BaseRequirement>builder()
             .toc(Chapter.<BaseRequirement>builder().build())
             .build();
@@ -92,8 +92,6 @@ class JPACatalogServiceRepositoryTest {
     @Test
     void createCatalog_BaseCatalogEntityNoNull_OptionalNotNullWirdZurueckGegeben() {
         // arrange
-        given(baseCatalogRepositoryMock.setValidUntilForEmptyValidUntil(any())).willReturn(0);
-
         Catalog<BaseRequirement> catalog = Catalog.<BaseRequirement>builder()
             .toc(Chapter.<BaseRequirement>builder().build())
             .build();
@@ -135,9 +133,6 @@ class JPACatalogServiceRepositoryTest {
     @Test
     void createCatalog_CatalogExistingDRD_ExistingDRDNotCreated() {
         // arrange
-        given(baseCatalogRepositoryMock.setValidUntilForEmptyValidUntil(any())).willReturn(0);
-
-
         Catalog<BaseRequirement> catalog = Catalog.<BaseRequirement>builder()
             .toc(Chapter.<BaseRequirement>builder()
                 .requirements(asList(
@@ -175,8 +170,6 @@ class JPACatalogServiceRepositoryTest {
     @Test
     void createCatalog_CatalogNewDRD_NewDRDCreated() {
         // arrange
-        given(baseCatalogRepositoryMock.setValidUntilForEmptyValidUntil(any())).willReturn(0);
-
         DRD drd = DRD.builder()
             .action("R")
             .number("04.11")
@@ -267,5 +260,57 @@ class JPACatalogServiceRepositoryTest {
 
         // assert
         assertThat(actual).isTrue();
+    }
+
+    @Test
+    void limitCatalogValidity_VersionNotExist_EmptyReturned() {
+        // arrange
+        ZonedDateTime now = ZonedDateTime.now();
+        given(baseCatalogRepositoryMock.setValidUntilForVersion("8.2.1", now)).willReturn(0);
+
+        // act
+        Optional<CatalogVersion> actual = repository.limitCatalogValidity("8.2.1", now);
+
+        // assert
+        assertThat(actual).isNotNull()
+            .isEmpty();
+        verify(baseCatalogRepositoryMock, times(0)).findCatalogByVersion("8.2.1");
+        verify(mapperMock, times(0)).limitCatalogValidity(any());
+    }
+
+    @Test
+    void limitCatalogValidity_VersionExist_CatalogVersionReturned() {
+        // arrange
+        ZonedDateTime now = ZonedDateTime.now();
+        given(baseCatalogRepositoryMock.setValidUntilForVersion("8.2.1", now)).willReturn(1);
+
+        BaseCatalogVersionProjection projection = new BaseCatalogVersionProjection() {
+            @Override
+            public String getVersion() {
+                return "8.2.1";
+            }
+
+            @Override
+            public ZonedDateTime getValidFrom() {
+                return null;
+            }
+
+            @Override
+            public ZonedDateTime getValidUntil() {
+                return now;
+            }
+        };
+        given(baseCatalogRepositoryMock.findCatalogByVersion("8.2.1")).willReturn(projection);
+        given(mapperMock.limitCatalogValidity(projection)).willReturn(CatalogVersion.builder().build());
+
+        // act
+        Optional<CatalogVersion> actual = repository.limitCatalogValidity("8.2.1", now);
+
+        // assert
+        assertThat(actual)
+            .isNotNull()
+            .isPresent();
+        verify(baseCatalogRepositoryMock, times(1)).findCatalogByVersion("8.2.1");
+        verify(mapperMock, times(1)).limitCatalogValidity(projection);
     }
 }
