@@ -129,7 +129,7 @@ class BaseCatalogPDFDocumentCreatorTest {
     }
 
     @Test
-    void createDocument_AllDataAvailable_FileReturned() throws Exception {
+    void createDocument_ValidInput_FileCreated() throws Exception {
         // arrange
         Catalog<BaseRequirement> catalog;
         try (InputStream is = this.getClass().getResourceAsStream("/basecatalog.json")) {

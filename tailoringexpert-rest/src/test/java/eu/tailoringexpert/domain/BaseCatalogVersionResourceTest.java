@@ -38,7 +38,7 @@ class BaseCatalogVersionResourceTest {
             "8.2.1",
             "31.12.2022",
             "31.12.2022",
-            Boolean.TRUE,
+            Boolean.FALSE,
             Collections.emptyList()
         );
 

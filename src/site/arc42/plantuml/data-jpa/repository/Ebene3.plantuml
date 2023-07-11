@@ -18,11 +18,12 @@ package repository {
     interface BaseCatalogRepository<BaseCatalogEntity, Long> {
         CACHE_BASECATALOG : String = "BaseCatalogRepository#BaseCatalog"
         CACHE_BASECATALOGLIST : String = "BaseCatalogRepository#BaseCatalogList"
-        findByVersion(version : String) : BaseCatalogEntity
-        findCatalogVersionBy() : Collection<KatalogVersion>
-        setValidUntilForEmptyValidUntil(pointOfTime : ZonedDateTime) : int
+        findByVersion( version : String ) : BaseCatalogEntity
+        findCatalogVersionBy() : Collection<BaseCatalogVersionProjection>
+        findCatalogByVersion( version : String ) : BaseCatalogVersionProjection
         save( entity : S) : <S extends BaseCatalogEntity>
         existsByVersion( version : String ) : boolean
+        setValidUntilForVersion( version : String, pointOfTime : ZonedDateTime) : int
     }
     JpaRepository <|-- BaseCatalogRepository
 

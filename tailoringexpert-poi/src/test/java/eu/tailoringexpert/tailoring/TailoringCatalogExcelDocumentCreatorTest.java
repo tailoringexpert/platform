@@ -32,9 +32,12 @@ import eu.tailoringexpert.domain.File;
 import eu.tailoringexpert.domain.Tailoring;
 import eu.tailoringexpert.domain.TailoringRequirement;
 import lombok.extern.log4j.Log4j2;
+import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.ss.usermodel.WorkbookFactory;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.nio.file.Files;
@@ -81,8 +84,21 @@ class TailoringCatalogExcelDocumentCreatorTest {
 
     }
 
+
+
     @Test
-    void createDokument_TailoringExists_FileCreated() throws Exception {
+    void createDocument_TailoringCatalogNull_NullReturned() throws Exception {
+        // arrange
+
+        // act
+        File actual = creator.createDocument("4711", Tailoring.builder().build(), emptyMap());
+
+        // assert
+        assertThat(actual).isNull();
+    }
+
+    @Test
+    void createDocument_ValidTailoringCatalog_NameIsDocIdXslx() throws Exception {
         // arrange
         Catalog<TailoringRequirement> catalog;
         try (InputStream is = this.getClass().getResourceAsStream("/tailoringkatalog.json")) {
@@ -92,6 +108,7 @@ class TailoringCatalogExcelDocumentCreatorTest {
         }
 
         Tailoring tailoring = Tailoring.builder()
+            .name("ut")
             .catalog(catalog)
             .signatures(emptyList())
             .phases(Arrays.asList(ZERO, A, B, C, D, E, F))
@@ -102,19 +119,37 @@ class TailoringCatalogExcelDocumentCreatorTest {
 
         // assert
         assertThat(actual).isNotNull();
-        fileSaver.accept("43.xlsx", actual.getData());
-
+        assertThat(actual.getName()).isEqualTo("42.xlsx");
+        fileSaver.accept(actual.getName(), actual.getData());
     }
 
     @Test
-    void createDokument_TailoringCatalogNull_NullReturned() throws Exception {
+    void createDocument_ValidTailoringCatalog_WorkbookWith2SheetsCreated() throws Exception {
         // arrange
+        Catalog<TailoringRequirement> catalog;
+        try (InputStream is = this.getClass().getResourceAsStream("/tailoringkatalog.json")) {
+            assert nonNull(is);
+            catalog = objectMapper.readValue(is, new TypeReference<Catalog<TailoringRequirement>>() {
+            });
+        }
+
+        Tailoring tailoring = Tailoring.builder()
+            .name("ut")
+            .catalog(catalog)
+            .signatures(emptyList())
+            .phases(Arrays.asList(ZERO, A, B, C, D, E, F))
+            .build();
 
         // act
-        File actual = creator.createDocument("4711", Tailoring.builder().build(), emptyMap());
+        File actual = creator.createDocument("42", tailoring, emptyMap());
 
         // assert
-        assertThat(actual).isNull();
+        assertThat(actual).isNotNull();
+        try (ByteArrayInputStream is = new ByteArrayInputStream(actual.getData());
+             Workbook workbook = WorkbookFactory.create(is)) {
+            assertThat(workbook.getNumberOfSheets()).isEqualTo(2);
+            assertThat(workbook.getSheetAt(0).getSheetName()).isEqualTo("ut-8.2.1-IMPORT");
+            assertThat(workbook.getSheetAt(1).getSheetName()).isEqualTo("ut-8.2.1-EXPORT");
+        }
     }
-
 }

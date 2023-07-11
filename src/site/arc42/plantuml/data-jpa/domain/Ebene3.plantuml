@@ -189,17 +189,17 @@ package domain {
     TailoringEntity --> "1" BaseCatalogEntity : baseCatalog
     TailoringEntity --> "1" ScreeningSheetEntity : screeningSheet
     TailoringEntity --> "1..*" Phase : phases
-    TailoringEntity --> "1" TailoringCatalogueEntity : catalogue
+    TailoringEntity --> "1" TailoringCatalogEntity : catalogue
     TailoringEntity --> "1" TailoringState : state
     TailoringEntity --> "1..*" DocumentSignatureEntity : signatures
     TailoringEntity --> "0..*" DocumentEntity : documents
     TailoringEntity --> "0..*" NoteEntity : notes
 
-    class TailoringCatalogueEntity {
+    class TailoringCatalogEntity {
         id : Long <<PK>>
         version : String
     }
-    TailoringCatalogueEntity --> "1" TailoringCatalogChapterEntity : toc
+    TailoringCatalogEntity --> "1" TailoringCatalogChapterEntity : toc
 
     class ProjectEntity {
         id : Long <<PK>>
@@ -212,7 +212,7 @@ package domain {
     ProjectEntity --> "1..*" TailoringEntity : tailorings
     ProjectEntity --> "1" ProjectState : state
 
-    interface CatalogVersion<<Projektion>> {
+    interface CatalogVersion<<Projection>> {
         getVersion() : String
         getValidFrom() : ZonedDateTime
         getValidUntil() : ZonedDateTime

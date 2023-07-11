@@ -1,0 +1,18 @@
+@startuml TenantInterfaces.png
+hide empty members
+
+skinparam componentStyle uml2
+'skinparam component {
+'  BorderColor #grey
+'  BackgroundColor #white
+'}
+package screeningsheet {
+    interface ScreeningSheetParameterProvider {
+        parse(is : InputStream) :  Collection<ScreeningSheetParameterField>
+    }
+
+    interface SelectionVectorProvider<Collection<Parameter>, SelectionVector> {
+        apply(parameters : Collection<Parameter>) : SelectionVector
+    }
+}
+@enduml

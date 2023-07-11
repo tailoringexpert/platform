@@ -1,0 +1,16 @@
+@startuml TenantInterfaces.png
+hide empty members
+
+skinparam componentStyle uml2
+'skinparam component {
+'  BorderColor #grey
+'  BackgroundColor #white
+'}
+
+package requirement {
+    interface "RequirementModifiablePredicate<String, String>" as RequirementModifiablePredicate{
+        test(project : String, tailoring : String) : boolean
+    }
+}
+
+@enduml

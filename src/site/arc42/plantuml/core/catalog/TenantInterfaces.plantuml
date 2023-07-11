@@ -1,0 +1,17 @@
+@startuml TenantInterfaces.png
+hide empty members
+
+skinparam componentStyle uml2
+'skinparam component {
+'  BorderColor #grey
+'  BackgroundColor #white
+'}
+
+package catalog {
+    interface DocumentService {
+        createCatalog(catalog : Catalog<BaseRequirement>, creationTimestamp : LocalDateTime) : Optional<File>
+        createAll(catalog : Catalog<BaseRequirement>,  creationTimestamp : LocalDateTime) : Collection<File>
+    }
+}
+
+@enduml

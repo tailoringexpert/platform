@@ -23,14 +23,13 @@ package eu.tailoringexpert.catalog;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import eu.tailoringexpert.domain.BaseRequirement;
 import eu.tailoringexpert.domain.BaseCatalogVersionResource;
+import eu.tailoringexpert.domain.BaseRequirement;
 import eu.tailoringexpert.domain.Catalog;
-import eu.tailoringexpert.domain.PathContext;
-import eu.tailoringexpert.domain.ResourceMapper;
-import eu.tailoringexpert.domain.PathContext.PathContextBuilder;
 import eu.tailoringexpert.domain.MediaTypeProvider;
-import eu.tailoringexpert.repository.BaseCatalogRepository;
+import eu.tailoringexpert.domain.PathContext;
+import eu.tailoringexpert.domain.PathContext.PathContextBuilder;
+import eu.tailoringexpert.domain.ResourceMapper;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -41,6 +40,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.hateoas.CollectionModel;
 import org.springframework.hateoas.EntityModel;
 import org.springframework.http.ContentDisposition;
@@ -49,19 +49,26 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.time.LocalDate;
+import java.time.ZonedDateTime;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.Function;
 
 import static eu.tailoringexpert.domain.ResourceMapper.BASECATALOG;
+import static eu.tailoringexpert.domain.ResourceMapper.BASECATALOG_VALIDUNTIL;
+import static eu.tailoringexpert.domain.ResourceMapper.BASECATALOG_VERSION;
 import static eu.tailoringexpert.domain.ResourceMapper.BASECATALOG_VERSION_DOCUMENT;
 import static eu.tailoringexpert.domain.ResourceMapper.BASECATALOG_VERSION_JSON;
-import static eu.tailoringexpert.domain.ResourceMapper.BASECATALOG_VERSION;
 import static eu.tailoringexpert.domain.ResourceMapper.BASECATALOG_VERSION_PDF;
+import static java.time.LocalTime.MIDNIGHT;
+import static java.time.ZoneId.systemDefault;
+import static org.springframework.format.annotation.DateTimeFormat.ISO.DATE;
 import static org.springframework.http.HttpHeaders.ACCESS_CONTROL_EXPOSE_HEADERS;
 import static org.springframework.http.HttpHeaders.CONTENT_DISPOSITION;
 import static org.springframework.http.HttpStatus.CREATED;
@@ -85,9 +92,6 @@ public class CatalogController {
 
     @NonNull
     private CatalogService catalogService;
-
-    @NonNull
-    private BaseCatalogRepository baseCatalogRepository;
 
     @NonNull
     private Function<String, MediaType> mediaTypeProvider;
@@ -125,7 +129,7 @@ public class CatalogController {
         log.traceEntry();
 
         PathContextBuilder pathContext = PathContext.builder();
-        List<EntityModel<BaseCatalogVersionResource>> catalogs = baseCatalogRepository.findCatalogVersionBy()
+        List<EntityModel<BaseCatalogVersionResource>> catalogs = catalogService.getCatalogVersions()
             .stream()
             .map(catalog -> EntityModel.of(mapper.toResource(pathContext, catalog)))
             .toList();
@@ -238,4 +242,31 @@ public class CatalogController {
         log.traceExit();
         return result;
     }
+
+    @Operation(summary = "Update the valid until date of a base catalog")
+    @ApiResponses(value = {
+        @ApiResponse(
+            responseCode = "200", description = "Valid until date changed"),
+        @ApiResponse(
+            responseCode = "404", description = "Base catalog does not exist",
+            content = @Content)
+    })
+    @PutMapping(value = BASECATALOG_VALIDUNTIL, produces = {"application/hal+json"})
+    public ResponseEntity<EntityModel<BaseCatalogVersionResource>> putCatalogValidUntil(
+        @Parameter(description = "Version of catalog") @PathVariable String version,
+        @Parameter(description = "end date of validity") @PathVariable @DateTimeFormat(iso = DATE) LocalDate validuntil) {
+        log.traceEntry();
+
+        PathContextBuilder pathContext = PathContext.builder();
+
+        ZonedDateTime validUntil = ZonedDateTime.of(validuntil, MIDNIGHT, systemDefault());
+        ResponseEntity<EntityModel<BaseCatalogVersionResource>> result = catalogService.limitValidity(version, validUntil)
+            .map(catalogVersion -> ok()
+                .body(EntityModel.of(mapper.toResource(pathContext, catalogVersion))))
+            .orElseGet(() -> notFound().build());
+
+        log.traceExit();
+        return result;
+    }
+
 }

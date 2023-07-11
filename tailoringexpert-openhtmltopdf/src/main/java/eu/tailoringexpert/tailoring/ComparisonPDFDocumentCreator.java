@@ -37,7 +37,6 @@ import java.util.LinkedList;
 import java.util.Map;
 
 import static java.util.Collections.emptyMap;
-import static java.util.Objects.nonNull;
 
 /**
  * Create PDF document containg differences of automatic and manual tailoring.
@@ -107,8 +106,8 @@ public class ComparisonPDFDocumentCreator implements DocumentCreator {
         rows.add(ComparisionElement.builder()
             .section(templateEngine.toXHTML(requirement.getPosition(), emptyMap()))
             .selected(requirement.getSelected())
-            .changed(nonNull(requirement.getSelectionChanged()))
-            .changeDate(requirement.getSelectionChanged())
+            .changed(requirement.isChanged())
+            .changeDate(requirement.getChangeDate())
             .build());
     }
 }

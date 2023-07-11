@@ -22,7 +22,9 @@
 package eu.tailoringexpert.catalog;
 
 import eu.tailoringexpert.domain.BaseCatalogEntity;
+import eu.tailoringexpert.domain.BaseCatalogVersionProjection;
 import eu.tailoringexpert.domain.BaseRequirement;
+import eu.tailoringexpert.domain.CatalogVersion;
 import eu.tailoringexpert.domain.DRD;
 import eu.tailoringexpert.domain.DRDEntity;
 import eu.tailoringexpert.domain.Chapter;
@@ -38,6 +40,7 @@ import jakarta.transaction.Transactional;
 
 import java.time.ZonedDateTime;
 import java.util.Collection;
+import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -77,9 +80,6 @@ public class JPACatalogServiceRepository implements CatalogServiceRepository {
             return empty();
         }
 
-        int numberOfChangedBaseCatalogValidities = baseCatalogRepository.setValidUntilForEmptyValidUntil(validFrom);
-        log.info("Number of changed base catalogs validities: " + numberOfChangedBaseCatalogValidities);
-
         Collection<DRD> drds = apply(catalog.getToc());
         drds.forEach(domain -> {
             DRDEntity entity = drdRepository.findByNumber(domain.getNumber());
@@ -116,6 +116,37 @@ public class JPACatalogServiceRepository implements CatalogServiceRepository {
     public boolean existsCatalog(String version) {
         log.traceEntry(() -> version);
         return log.traceExit(baseCatalogRepository.existsByVersion(version));
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public Collection<CatalogVersion> getCatalogVersions() {
+        log.traceEntry();
+
+        List<CatalogVersion> result = baseCatalogRepository.findCatalogVersionBy()
+            .stream()
+            .map(catalog -> mapper.getCatalogVersions(catalog))
+            .toList();
+
+        return log.traceExit(result);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public Optional<CatalogVersion> limitCatalogValidity(String version, ZonedDateTime validUntil) {
+        log.traceEntry(() -> version, () -> validUntil);
+
+        int changedItems = baseCatalogRepository.setValidUntilForVersion(version, validUntil);
+        if (changedItems == 0) {
+            return empty();
+        }
+        BaseCatalogVersionProjection updatedCatalog = baseCatalogRepository.findCatalogByVersion(version);
+        CatalogVersion result = mapper.limitCatalogValidity(updatedCatalog);
+        return log.traceExit(ofNullable(result));
     }
 
     /**
