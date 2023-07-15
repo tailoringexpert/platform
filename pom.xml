@@ -43,6 +43,19 @@
         </repository>
     </repositories>
 
+    <distributionManagement>
+        <snapshotRepository>
+            <id>tailoringexpert-snapshots</id>
+            <!--suppress UnresolvedMavenProperty -->
+            <url>${tailoringexpert-snapshots.repository}</url>
+        </snapshotRepository>
+        <repository>
+            <id>tailoringexpert-releases</id>
+            <!--suppress UnresolvedMavenProperty -->
+            <url>${tailoringexpert-releases.repository}</url>
+        </repository>
+    </distributionManagement>
+
     <modules>
         <module>tailoringexpert-core</module>
         <module>tailoringexpert-tenant</module>
