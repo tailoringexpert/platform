@@ -39,6 +39,11 @@
             <groupId>eu.tailoringexpert</groupId>
             <artifactId>tailoringexpert-tenant</artifactId>
         </dependency>
+        <dependency>
+            <groupId>eu.tailoringexpert</groupId>
+            <artifactId>tailoringexpert-security</artifactId>
+            <scope>provided</scope>
+        </dependency>
 
         <!-- spring -->
         <dependency>
@@ -109,11 +114,36 @@
                 <artifactId>spring-boot-maven-plugin</artifactId>
             </plugin>
             <plugin>
+                <artifactId>maven-resources-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>copy-catalog</id>
+                        <phase>generate-sources</phase>
+                        <goals>
+                            <goal>copy-resources</goal>
+                        </goals>
+                        <configuration>
+                            <outputDirectory>${project.build.directory}/docker</outputDirectory>
+                            <resources>
+                                <resource>
+                                    <directory>src/assembly/docker/config</directory>
+                                    <includes>
+                                        <include>**/*</include>
+                                    </includes>
+                                    <filtering>true</filtering>
+                                </resource>
+                            </resources>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-assembly-plugin</artifactId>
                 <configuration>
                     <descriptors>
                         <descriptor>src/assembly/distribution.xml</descriptor>
+                        <descriptor>src/assembly/docker.xml</descriptor>
                     </descriptors>
                 </configuration>
                 <executions>
