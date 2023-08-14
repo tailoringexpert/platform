@@ -34,6 +34,7 @@ import eu.tailoringexpert.domain.TailoringCatalogChapterResource.TailoringCatalo
 import eu.tailoringexpert.domain.TailoringCatalogResource.TailoringCatalogResourceBuilder;
 import eu.tailoringexpert.domain.TailoringRequirementResource.TailoringRequirementResourceBuilder;
 import eu.tailoringexpert.domain.TailoringResource.TailoringResourceBuilder;
+import lombok.Setter;
 import org.mapstruct.AfterMapping;
 import org.mapstruct.BeforeMapping;
 import org.mapstruct.Context;
@@ -55,7 +56,6 @@ import static java.util.stream.Collectors.groupingBy;
 import static java.util.stream.Collectors.joining;
 import static java.util.stream.Collectors.mapping;
 import static java.util.stream.Collectors.toCollection;
-import static org.springframework.hateoas.server.mvc.BasicLinkBuilder.linkToCurrentMapping;
 
 @Mapper(config = TailoringexpertMapperConfig.class)
 @SuppressWarnings({"java:S6539"})
@@ -125,7 +125,10 @@ public abstract class ResourceMapper {
     private static final String REL_ATTACHMENT = "attachment";
     private static final String REL_NOTE = "note";
     private static final String REL_STATE = "state";
-    private static final String REL_VALIDUNTIL ="validuntil";
+    private static final String REL_VALIDUNTIL = "validuntil";
+
+    @Setter
+    private String contextPath;
 
     // CatalogVersion
     @BeforeMapping
@@ -141,15 +144,14 @@ public abstract class ResourceMapper {
     @AfterMapping
     protected void addLinks(@Context PathContextBuilder pathContext, @MappingTarget BaseCatalogVersionResourceBuilder resource) {
         PathContext context = pathContext.build();
-        String baseUri = linkToCurrentMapping().toString();
         Map<String, String> parameter = context.parameter();
         resource.links(asList(
-            linkToCurrentMapping().slash(resolveParameter(PROJECT_NEW, context.parameter())).withRel(PROJECTS),
-            createLink(REL_SELF, baseUri, BASECATALOG_VERSION, parameter),
-            createLink(REL_PDF, baseUri, BASECATALOG_VERSION_PDF, parameter),
-            createLink(REL_JSON, baseUri, BASECATALOG_VERSION_JSON, parameter),
-            createLink(REL_DOCUMENT, baseUri, BASECATALOG_VERSION_DOCUMENT, parameter),
-            createLink(REL_VALIDUNTIL, baseUri, BASECATALOG_VALIDUNTIL, parameter)
+            createLink(PROJECTS, resolveParameter(PROJECT_NEW, context.parameter()), parameter),
+            createLink(REL_SELF, BASECATALOG_VERSION, parameter),
+            createLink(REL_PDF, BASECATALOG_VERSION_PDF, parameter),
+            createLink(REL_JSON, BASECATALOG_VERSION_JSON, parameter),
+            createLink(REL_DOCUMENT, BASECATALOG_VERSION_DOCUMENT, parameter),
+            createLink(REL_VALIDUNTIL, BASECATALOG_VALIDUNTIL, parameter)
         ));
     }
 
@@ -170,13 +172,12 @@ public abstract class ResourceMapper {
         Map<String, String> parameter = context.parameter();
         parameter.put(REL_STATE, parameter.get("projectstate"));
 
-        String baseUri = linkToCurrentMapping().toString();
         resource.links(asList(
-            createLink(REL_SELF, baseUri, PROJECT, parameter),
-            createLink(REL_SELECTIONVECTOR, baseUri, PROJECT_SELECTIONVECTOR, parameter),
-            createLink(REL_SCREENINGSHEET, baseUri, PROJECT_SCREENINGSHEET, parameter),
-            createLink(REL_TAILORING, baseUri, TAILORINGS, parameter),
-            createLink(REL_STATE, baseUri, PROJECT_STATE, parameter)
+            createLink(REL_SELF, PROJECT, parameter),
+            createLink(REL_SELECTIONVECTOR, PROJECT_SELECTIONVECTOR, parameter),
+            createLink(REL_SCREENINGSHEET, PROJECT_SCREENINGSHEET, parameter),
+            createLink(REL_TAILORING, TAILORINGS, parameter),
+            createLink(REL_STATE, PROJECT_STATE, parameter)
         ));
     }
 
@@ -206,22 +207,21 @@ public abstract class ResourceMapper {
         Map<String, String> parameter = context.parameter();
         parameter.put(REL_STATE, parameter.get("tailoringstate"));
 
-        String baseUri = linkToCurrentMapping().toString();
         resource.links(asList(
-                createLink(REL_SELF, baseUri, TAILORING, parameter),
-                createLink(REL_SCREENINGSHEET, baseUri, TAILORING_SCREENINGSHEET, parameter),
-                createLink(REL_SELECTIONVECTOR, baseUri, TAILORING_SELECTIONVECTOR, parameter),
-                createLink(REL_SIGNATURE, baseUri, TAILORING_SIGNATURE, parameter),
-                createLink(REL_DOCUMENT, baseUri, TAILORING_DOCUMENT, parameter),
-                createLink(REL_TAILORINGCATALOG_DOCUMENT, baseUri, TAILORING_DOCUMENT_CATALOG, parameter),
-                createLink(REL_COMPARE, baseUri, TAILORING_COMPARE, parameter),
-                createLink(REL_KATALOG, baseUri, TAILORING_CATALOG, parameter),
-                createLink(REL_NAME, baseUri, TAILORING_NAME, parameter),
-                createLink(REL_IMPORT, baseUri, TAILORING_REQUIREMENT_IMPORT, parameter),
-                createLink(REL_BASECATALOG_DOCUMENT, baseUri, BASECATALOG_VERSION_PDF, parameter),
-                createLink(REL_ATTACHMENT, baseUri, TAILORING_ATTACHMENTS, parameter),
-                createLink(REL_NOTE, baseUri, TAILORING_NOTES, parameter),
-                createLink(REL_STATE, baseUri, TAILORING_STATE, parameter)
+                createLink(REL_SELF, TAILORING, parameter),
+                createLink(REL_SCREENINGSHEET, TAILORING_SCREENINGSHEET, parameter),
+                createLink(REL_SELECTIONVECTOR, TAILORING_SELECTIONVECTOR, parameter),
+                createLink(REL_SIGNATURE, TAILORING_SIGNATURE, parameter),
+                createLink(REL_DOCUMENT, TAILORING_DOCUMENT, parameter),
+                createLink(REL_TAILORINGCATALOG_DOCUMENT, TAILORING_DOCUMENT_CATALOG, parameter),
+                createLink(REL_COMPARE, TAILORING_COMPARE, parameter),
+                createLink(REL_KATALOG, TAILORING_CATALOG, parameter),
+                createLink(REL_NAME, TAILORING_NAME, parameter),
+                createLink(REL_IMPORT, TAILORING_REQUIREMENT_IMPORT, parameter),
+                createLink(REL_BASECATALOG_DOCUMENT, BASECATALOG_VERSION_PDF, parameter),
+                createLink(REL_ATTACHMENT, TAILORING_ATTACHMENTS, parameter),
+                createLink(REL_NOTE, TAILORING_NOTES, parameter),
+                createLink(REL_STATE, TAILORING_STATE, parameter)
             )
         );
     }
@@ -240,10 +240,9 @@ public abstract class ResourceMapper {
         String file = isNull(context.getTailoring()) ? PROJECT_SCREENINGSHEET_PDF : TAILORING_SCREENINGSHEET_PDF;
 
         Map<String, String> parameter = context.parameter();
-        String baseUri = linkToCurrentMapping().toString();
         resource.links(asList(
-            createLink(REL_SELF, baseUri, self, parameter),
-            createLink("datei", baseUri, file, parameter))
+            createLink(REL_SELF, self, parameter),
+            createLink("datei", file, parameter))
         );
     }
 
@@ -307,11 +306,10 @@ public abstract class ResourceMapper {
         parameter.put(REL_SELECTED, null);
         parameter.put(REL_KAPITEL, resource.build().getNumber());
 
-        String baseUri = linkToCurrentMapping().toString();
         resource.links(asList(
-            createLink(REL_SELF, baseUri, TAILORING_CATALOG_CHAPTER, parameter),
-            createLink("requirement", baseUri, TAILORING_CATALOG_CHAPTER_REQUIREMENT, parameter),
-            createLink("selection", baseUri, CHAPTER_SELECTED, parameter))
+            createLink(REL_SELF, TAILORING_CATALOG_CHAPTER, parameter),
+            createLink("requirement", TAILORING_CATALOG_CHAPTER_REQUIREMENT, parameter),
+            createLink("selection", CHAPTER_SELECTED, parameter))
         );
     }
 
@@ -336,11 +334,10 @@ public abstract class ResourceMapper {
         PathContext context = pathContext.build();
         Map<String, String> parameter = context.parameter();
 
-        String baseUri = linkToCurrentMapping().toString();
         resource.links(asList(
-            createLink(REL_SELF, baseUri, TAILORINGREQUIRMENT, parameter),
-            createLink(REL_SELECTED, baseUri, TAILORINGREQUIRMENT_SELECTED, parameter),
-            createLink(REL_TEXT, baseUri, TAILORINGREQUIRMENT_TEXT, parameter))
+            createLink(REL_SELF, TAILORINGREQUIRMENT, parameter),
+            createLink(REL_SELECTED, TAILORINGREQUIRMENT_SELECTED, parameter),
+            createLink(REL_TEXT, TAILORINGREQUIRMENT_TEXT, parameter))
         );
     }
 
@@ -353,9 +350,8 @@ public abstract class ResourceMapper {
         Map<String, String> parameter = context.parameter();
         parameter.put("faculty", resource.build().getFaculty());
 
-        String baseUri = linkToCurrentMapping().toString();
         resource.links(asList(
-            createLink(REL_SELF, baseUri, TAILORING_SIGNATURE_FACULTY, parameter))
+            createLink(REL_SELF, TAILORING_SIGNATURE_FACULTY, parameter))
         );
     }
 
@@ -368,9 +364,8 @@ public abstract class ResourceMapper {
         Map<String, String> parameter = context.parameter();
         parameter.put("name", resource.build().getName());
 
-        String baseUri = linkToCurrentMapping().toString();
         resource.links(asList(
-            createLink(REL_SELF, baseUri, TAILORING_ATTACHMENT, parameter))
+            createLink(REL_SELF, TAILORING_ATTACHMENT, parameter))
         );
     }
 
@@ -381,14 +376,13 @@ public abstract class ResourceMapper {
     protected void addLinks(@Context PathContextBuilder pathContext, @MappingTarget SelectionVectorResourceBuilder resource) {
         PathContext context = pathContext.build();
         Map<String, String> parameter = context.parameter();
-        String baseUri = linkToCurrentMapping().toString();
         if (nonNull(context.getTailoring())) {
             resource.links(asList(
-                createLink(REL_SELF, baseUri, TAILORING_SELECTIONVECTOR, parameter))
+                createLink(REL_SELF, TAILORING_SELECTIONVECTOR, parameter))
             );
         } else if (nonNull(context.getProject())) {
             resource.links(asList(
-                createLink(REL_SELF, baseUri, PROJECT_SELECTIONVECTOR, parameter))
+                createLink(REL_SELF, PROJECT_SELECTIONVECTOR, parameter))
             );
         }
     }
@@ -401,9 +395,8 @@ public abstract class ResourceMapper {
         PathContext context = pathContext.build();
         Map<String, String> parameter = context.parameter();
 
-        String baseUri = linkToCurrentMapping().toString();
         resource.links(asList(
-            createLink(REL_SELF, baseUri, TAILORING_CATALOG, parameter))
+            createLink(REL_SELF, TAILORING_CATALOG, parameter))
         );
     }
 
@@ -424,9 +417,8 @@ public abstract class ResourceMapper {
         PathContext context = pathContext.build();
         Map<String, String> parameter = context.parameter();
 
-        String baseUri = linkToCurrentMapping().toString();
         resource.links(asList(
-            createLink(REL_SELF, baseUri, TAILORING_NOTE, parameter))
+            createLink(REL_SELF, TAILORING_NOTE, parameter))
         );
     }
 
@@ -442,7 +434,7 @@ public abstract class ResourceMapper {
 
     }
 
-    public Link createLink(String rel, String baseUri, String path, Map<String, String> parameter) {
-        return Link.of(baseUri + "/" + UriTemplate.of(resolveParameter(path, parameter)), rel);
+    public Link createLink(String rel, String path, Map<String, String> parameter) {
+        return Link.of(UriTemplate.of(this.contextPath + "/" + resolveParameter(path, parameter)), rel);
     }
 }

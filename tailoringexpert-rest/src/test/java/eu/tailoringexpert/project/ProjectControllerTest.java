@@ -170,7 +170,7 @@ class ProjectControllerTest {
             .build();
 
 
-        given(mapperMock.createLink(REL_SELF, "http://localhost", PROJECT, Map.of("project", "SAMPLE")))
+        given(mapperMock.createLink(REL_SELF, PROJECT, Map.of("project", "SAMPLE")))
             .willReturn(Link.of("http://localhost/project/SAMPLE", "self"));
 
 
@@ -412,7 +412,7 @@ class ProjectControllerTest {
         Project createdProject = Project.builder().identifier("SAMPLE2").build();
         given(projectServiceMock.copyProject("SAMPLE", data)).willReturn(Optional.of(createdProject));
 
-        given(mapperMock.createLink(REL_SELF, "http://localhost", PROJECT, Map.of("project", "SAMPLE2")))
+        given(mapperMock.createLink(REL_SELF, PROJECT, Map.of("project", "SAMPLE2")))
             .willReturn(Link.of("http://localhost/project/SAMPLE2", "self"));
 
         PathContextBuilder pathContext = PathContext.builder();
@@ -492,7 +492,7 @@ class ProjectControllerTest {
             .selectionVector(selectionVector)
             .build();
 
-        given(mapperMock.createLink(any(), any(), any(), any())).willReturn(Link.of("http://localhost/project/SAMPLE/tailoring/master1"));
+        given(mapperMock.createLink(any(), any(), any())).willReturn(Link.of("/project/SAMPLE/tailoring/master1"));
 
         // act
         ResultActions actual = mockMvc.perform(post("/project/{project}/tailoring", "SAMPLE")
@@ -505,7 +505,7 @@ class ProjectControllerTest {
         // assert
         actual
             .andExpect(status().isCreated())
-            .andExpect(header().string("Location", "http://localhost/project/SAMPLE/tailoring/master1"));
+            .andExpect(header().string("Location", "/project/SAMPLE/tailoring/master1"));
 
         verify(projectServiceMock, times(1)).addTailoring("SAMPLE", "8.2.1", data, selectionVector, null);
         verify(mapperMock, times(0)).toResource(any(), any(Tailoring.class));
