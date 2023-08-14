@@ -45,7 +45,6 @@ import static eu.tailoringexpert.domain.ResourceMapper.PROJECTS;
 import static eu.tailoringexpert.domain.ResourceMapper.SCREENINGSHEET;
 import static eu.tailoringexpert.domain.ResourceMapper.SELECTIONVECTOR_PROFILE;
 import static org.springframework.hateoas.CollectionModel.empty;
-import static org.springframework.hateoas.server.mvc.BasicLinkBuilder.linkToCurrentMapping;
 
 /**
  * REST-Controller for providing main rels of plattform.
@@ -73,10 +72,10 @@ public class AppController {
         ResponseEntity<CollectionModel<T>> result = ResponseEntity
             .ok()
             .body(empty(
-                    mapper.createLink("catalog", linkToCurrentMapping().toString(), BASECATALOG, parameter),
-                    mapper.createLink("project", linkToCurrentMapping().toString(), PROJECTS, parameter),
-                    mapper.createLink("screeningsheet", linkToCurrentMapping().toString(), SCREENINGSHEET, parameter),
-                    mapper.createLink("selectionvector", linkToCurrentMapping().toString(), SELECTIONVECTOR_PROFILE, parameter)
+                    mapper.createLink("catalog", BASECATALOG, parameter),
+                    mapper.createLink("project", PROJECTS, parameter),
+                    mapper.createLink("screeningsheet", SCREENINGSHEET, parameter),
+                    mapper.createLink("selectionvector", SELECTIONVECTOR_PROFILE, parameter)
                 )
             );
 

@@ -8,12 +8,12 @@
  * it under the terms of the GNU General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/gpl-3.0.html>.
@@ -38,10 +38,7 @@ import org.springframework.http.MediaType;
 import org.springframework.http.converter.ByteArrayHttpMessageConverter;
 import org.springframework.http.converter.json.Jackson2ObjectMapperBuilder;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
-import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.web.context.request.RequestContextHolder;
-import org.springframework.web.context.request.ServletRequestAttributes;
 
 import java.io.IOException;
 import java.text.SimpleDateFormat;
@@ -60,7 +57,6 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.springframework.hateoas.MediaTypes.HAL_JSON_VALUE;
-import static org.springframework.hateoas.server.mvc.BasicLinkBuilder.linkToCurrentMapping;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.setup.MockMvcBuilders.standaloneSetup;
 
@@ -94,10 +90,6 @@ class AppControllerTest {
             new MediaType("application", "vnd.openxmlformats-officedocument.wordprocessingml.document")
         ));
 
-        RequestContextHolder.setRequestAttributes(
-            new ServletRequestAttributes(new MockHttpServletRequest())
-        );
-
         this.mockMvc = standaloneSetup(new AppController(mapperMock))
             .setControllerAdvice(new ExceptionHandlerAdvice())
             .setMessageConverters(new MappingJackson2HttpMessageConverter(objectMapper), byteArrayHttpMessageConverter).build();
@@ -108,17 +100,17 @@ class AppControllerTest {
         // arrange
         Map<String, String> parameter = Collections.emptyMap();
 
-        BDDMockito.given(mapperMock.createLink(anyString(), anyString(), anyString(), anyMap()))
+        BDDMockito.given(mapperMock.createLink(anyString(), anyString(), anyMap()))
             .willAnswer(invocation -> Link.of(invocation.getArgument(0)));
 
         // act
         mockMvc.perform(get("/").accept(HAL_JSON_VALUE));
 
         // verify
-        verify(mapperMock, times(1)).createLink("catalog", linkToCurrentMapping().toString(), ResourceMapper.BASECATALOG, parameter);
-        verify(mapperMock, times(1)).createLink("project", linkToCurrentMapping().toString(), ResourceMapper.PROJECTS, parameter);
-        verify(mapperMock, times(1)).createLink("screeningsheet", linkToCurrentMapping().toString(), ResourceMapper.SCREENINGSHEET, parameter);
-        verify(mapperMock, times(1)).createLink("selectionvector", linkToCurrentMapping().toString(), ResourceMapper.SELECTIONVECTOR_PROFILE, parameter);
+        verify(mapperMock, times(1)).createLink("catalog", ResourceMapper.BASECATALOG, parameter);
+        verify(mapperMock, times(1)).createLink("project", ResourceMapper.PROJECTS, parameter);
+        verify(mapperMock, times(1)).createLink("screeningsheet", ResourceMapper.SCREENINGSHEET, parameter);
+        verify(mapperMock, times(1)).createLink("selectionvector", ResourceMapper.SELECTIONVECTOR_PROFILE, parameter);
     }
 
 }
