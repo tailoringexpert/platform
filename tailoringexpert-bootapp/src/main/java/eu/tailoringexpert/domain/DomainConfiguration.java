@@ -21,6 +21,7 @@
  */
 package eu.tailoringexpert.domain;
 
+import lombok.NonNull;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -28,7 +29,7 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 public class DomainConfiguration {
     @Bean
-    ResourceMapper resourceMapper(@Value("${server.servlet.context-path}") String contextPath) {
+    ResourceMapper resourceMapper(@NonNull @Value("${server.servlet.context-path}") String contextPath) {
         ResourceMapperGenerated result = new ResourceMapperGenerated();
         result.setContextPath(contextPath);
         return result;

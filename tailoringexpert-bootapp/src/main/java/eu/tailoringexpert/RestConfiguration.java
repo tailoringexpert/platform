@@ -25,12 +25,13 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jdk8.Jdk8Module;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.fasterxml.jackson.module.paramnames.ParameterNamesModule;
-import eu.tailoringexpert.domain.ResourceMapperGenerated;
+import eu.tailoringexpert.domain.ResourceMapper;
 import io.swagger.v3.oas.models.OpenAPI;
 import io.swagger.v3.oas.models.info.Info;
 import io.swagger.v3.oas.models.info.License;
 import io.swagger.v3.oas.models.media.StringSchema;
 import io.swagger.v3.oas.models.parameters.Parameter;
+import lombok.NonNull;
 import org.springdoc.core.customizers.OperationCustomizer;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -97,8 +98,8 @@ public class RestConfiguration {
     }
 
     @Bean
-    AppController appController() {
-        return new AppController(new ResourceMapperGenerated());
+    AppController appController(@NonNull ResourceMapper resourceMapper) {
+        return new AppController(resourceMapper);
     }
 
 
