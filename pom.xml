@@ -67,6 +67,7 @@
         <module>tailoringexpert-coverage</module>
         <module>tailoringexpert-security</module>
         <module>tailoringexpert-bootapp</module>
+        <module>tailoringexpert-distribution</module>
     </modules>
 
     <properties>

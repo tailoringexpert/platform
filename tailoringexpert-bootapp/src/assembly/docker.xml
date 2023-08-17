@@ -5,7 +5,7 @@
     <id>docker</id>
     <baseDirectory>/</baseDirectory>
     <formats>
-        <format>tar</format>
+        <format>tar.gz</format>
     </formats>
 
     <fileSets>
@@ -22,7 +22,6 @@
             <outputDirectory>/lib</outputDirectory>
             <includes>
                 <include>org.mariadb.jdbc:mariadb-java-client:jar</include>
-                <include>${project.groupId}:tailoringexpert-security:{project.version]:jar</include>
             </includes>
         </dependencySet>
     </dependencySets>
