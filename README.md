@@ -80,16 +80,17 @@ Architecture documentation can be found here as [arc42](src/site/arc42/tailoring
 
 ### Maven Modul-Struktur
 
-| Modulname                | Beschreibung                                                                                                                 |
-|:-------------------------|:-----------------------------------------------------------------------------------------------------------------------------|
-| tailoringexpert-core     | Business core of plattform.                                                                                                  |
-| tailoringexpert-data-jpa | Implementation of data access needed by core component                                                                       |
-| tailoringexpert-rest     | Component providing REST services of plattform                                                                               |
-| tailoringexpert-poi      | Module for importing requirements and generating Excel files using POI.                                                      | 
-| tailoringexpert-openhtmltopdf   | Module for generating PDF documents using  Openhtmltop.                                                                      | 
-| tailoringexpert-security | Security configuration using spring-security without using an external identity manager                                      |
-| tailoringexpert-tenant   | Proxies for tenant implementations of type TenantInterface. |
-
+| Modulname                     | Beschreibung                                                                                                                |
+|:------------------------------|:----------------------------------------------------------------------------------------------------------------------------|
+| tailoringexpert-core          | Business core of platform.                                                                                                  |
+| tailoringexpert-data-jpa      | Implementation of data access needed by core component                                                                      |
+| tailoringexpert-rest          | Component providing REST services of plattform                                                                              |
+| tailoringexpert-poi           | Module for importing requirements and generating Excel files using POI.                                                     | 
+| tailoringexpert-openhtmltopdf | Module for generating PDF documents using  Openhtmltop.                                                                     | 
+| tailoringexpert-security      | Security configuration using spring-security without using an external identity manager                                     |
+| tailoringexpert-tenant        | Proxies for tenant implementations of type TenantInterface.                                                                 |
+| tailoringexpert-bootapp       | Runnable app of platform                                                                                                    |
+| tailoringexpert-distribution | Module to create archive to be used for creating a platform docker image |
 ### Level 0
 
 ![alternative text](https://www.plantuml.com/plantuml/proxy?cache=no&src=https://raw.github.com/tailoringexpert/plattform/main/src/site/arc42/plantuml/level0.plantuml "Level 0")

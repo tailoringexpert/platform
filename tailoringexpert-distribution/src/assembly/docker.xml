@@ -18,24 +18,12 @@
 
     <dependencySets>
         <dependencySet>
-            <scope>provided</scope>
-            <outputDirectory>/lib</outputDirectory>
+            <useTransitiveDependencies>false</useTransitiveDependencies>
+            <unpack>true</unpack>
             <includes>
-                <include>org.mariadb.jdbc:mariadb-java-client:jar</include>
+                <include>${project.groupId}:tailoringexpert-bootapp</include>
+                <include>${project.groupId}:tailoringexpert-security</include>
             </includes>
         </dependencySet>
     </dependencySets>
-
-    <files>
-        <file>
-            <source>${project.build.directory}/${project.build.finalName}-exec.${project.packaging}</source>
-            <destName>tailoringexpert-exec.${project.packaging}</destName>
-        </file>
-        <file>
-            <source>${basedir}/src/assembly/docker/start.sh</source>
-            <destName>start.sh</destName>
-            <filtered>true</filtered>
-            <fileMode>755</fileMode>
-        </file>
-    </files>
 </assembly>
