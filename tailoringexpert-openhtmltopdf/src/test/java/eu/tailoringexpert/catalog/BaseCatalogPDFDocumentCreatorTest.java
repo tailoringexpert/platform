@@ -27,22 +27,21 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jdk8.Jdk8Module;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.fasterxml.jackson.module.paramnames.ParameterNamesModule;
+import com.openhtmltopdf.extend.FSDOMMutator;
 import eu.tailoringexpert.FileSaver;
-import eu.tailoringexpert.KatalogWebServerPortConsumer;
 import eu.tailoringexpert.domain.BaseRequirement;
 import eu.tailoringexpert.domain.Catalog;
 import eu.tailoringexpert.domain.File;
 import eu.tailoringexpert.renderer.HTMLTemplateEngine;
 import eu.tailoringexpert.renderer.PDFEngine;
 import eu.tailoringexpert.renderer.RendererRequestConfiguration;
+import eu.tailoringexpert.renderer.RendererRequestConfigurationSupplier;
+import eu.tailoringexpert.renderer.TailoringexpertDOMMutator;
 import eu.tailoringexpert.renderer.ThymeleafTemplateEngine;
 import io.github.cdimascio.dotenv.Dotenv;
 import lombok.extern.log4j.Log4j2;
-import org.junit.jupiter.api.AfterAll;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockserver.client.MockServerClient;
 import org.thymeleaf.spring6.SpringTemplateEngine;
 import org.thymeleaf.templateresolver.FileTemplateResolver;
 
@@ -52,48 +51,27 @@ import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
 import java.util.Map;
 
-import static java.nio.file.Files.readAllBytes;
-import static java.nio.file.Paths.get;
 import static java.util.Objects.nonNull;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.catchThrowable;
-import static org.mockserver.integration.ClientAndServer.startClientAndServer;
-import static org.mockserver.model.HttpRequest.request;
-import static org.mockserver.model.HttpResponse.response;
 
 @Log4j2
 class BaseCatalogPDFDocumentCreatorTest {
 
-    static int mockServerPort = 1080;
-    static MockServerClient mockServer;
-    KatalogWebServerPortConsumer webServerPortConsumer;
     String templateHome;
     String assetHome;
     ObjectMapper objectMapper;
     FileSaver fileSaver;
     BaseCatalogPDFDocumentCreator creator;
 
-    @BeforeAll
-    static void beforeAll() {
-        mockServer = startClientAndServer(mockServerPort);
-    }
-
-    @AfterAll
-    static void afterAll() {
-        mockServer.close();
-    }
-
     @BeforeEach
     void setup() {
         Dotenv env = Dotenv.configure().ignoreIfMissing().load();
         this.templateHome = env.get("TEMPLATE_HOME", "src/test/resources/templates/");
-        this.assetHome = env.get("ASSET_HOME", "src/test/resources/templates/");
 
         this.objectMapper = new ObjectMapper();
         this.objectMapper.registerModules(new ParameterNamesModule(), new JavaTimeModule(), new Jdk8Module());
         this.objectMapper.disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES);
-
-        this.webServerPortConsumer = new KatalogWebServerPortConsumer(1080);
 
         this.fileSaver = new FileSaver("target");
 
@@ -107,24 +85,20 @@ class BaseCatalogPDFDocumentCreatorTest {
         SpringTemplateEngine springTemplateEngine = new SpringTemplateEngine();
         springTemplateEngine.addTemplateResolver(fileTemplateResolver);
 
+        RendererRequestConfigurationSupplier supplier = () -> RendererRequestConfiguration.builder()
+            .id("unittest")
+            .name("plattform")
+            .templateHome(this.templateHome)
+            .build();
+
         HTMLTemplateEngine templateEngine = new ThymeleafTemplateEngine(
-            springTemplateEngine,
-            () -> RendererRequestConfiguration.builder()
-                .id("unittest")
-                .name("plattform")
-                .templateHome(this.templateHome)
-                .build()
+            springTemplateEngine, supplier
         );
 
+        FSDOMMutator domMutator = new TailoringexpertDOMMutator();
         this.creator = new BaseCatalogPDFDocumentCreator(
             templateEngine,
-            new PDFEngine(
-                () -> RendererRequestConfiguration.builder()
-                    .id("plattform")
-                    .name("TailoringExpert")
-                    .templateHome(get(this.templateHome).toAbsolutePath().toString())
-                    .build()
-            )
+            new PDFEngine(domMutator, supplier)
         );
     }
 
@@ -137,7 +111,6 @@ class BaseCatalogPDFDocumentCreatorTest {
             catalog = objectMapper.readValue(is, new TypeReference<Catalog<BaseRequirement>>() {
             });
         }
-        webServerPortConsumer.accept(catalog);
 
         LocalDateTime now = LocalDateTime.now();
         Map<String, Object> platzhalter = new HashMap<>();
@@ -145,19 +118,6 @@ class BaseCatalogPDFDocumentCreatorTest {
         platzhalter.put("DATUM", now.format(DateTimeFormatter.ofPattern("dd.MM.YYYY")));
         platzhalter.put("DOKUMENT", "DUMMY-XY-Z-1940/DV7");
         platzhalter.put("${DRD_DOCID}", "DUMMY_DOC");
-
-        mockServer
-            .when(request()
-                .withMethod("GET")
-                .withPath("/assets/.*"))
-            .respond(httpRequest -> {
-                String asset = httpRequest.getPath().getValue().substring("/assets".length());
-                java.io.File file = new java.io.File(this.assetHome + asset);
-
-                return response()
-                    .withStatusCode(200)
-                    .withBody(readAllBytes(file.toPath()));
-            });
 
         // act
         File actual = creator.createDocument("4711", catalog, platzhalter);
