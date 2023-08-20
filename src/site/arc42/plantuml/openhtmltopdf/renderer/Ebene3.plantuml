@@ -1,6 +1,12 @@
 @startuml Ebene3.png
 hide empty members
 
+component openhtmltopdf {
+        interface FSDOMMutator {
+            mutateDocument(document : org.w3c.dom.Document) : void
+        }
+}
+
 package renderer {
 
     class DRDFragment {
@@ -14,15 +20,19 @@ package renderer {
 
     class ThymeleafTemplateEngine {
         templateEngine : ITemplateEngine
-        toXHTML(text : String, platzhalter :  Map<String, Object>) : String
     }
     ThymeleafTemplateEngine --> "1" RendererRequestConfigurationSupplier : supplier
     HTMLTemplateEngine <|.. ThymeleafTemplateEngine
+
+    class TailoringexpertDOMMutator {
+    }
+    FSDOMMutator <|.. TailoringexpertDOMMutator
 
     class PDFEngine {
         baseUri : String
         process(docId : String, html : String, pfadSuffix : String) :  File
     }
+    PDFEngine --> "1" TailoringexpertDOMMutator : domMutator
     PDFEngine --> "1" RendererRequestConfigurationSupplier : supplier
 
 }

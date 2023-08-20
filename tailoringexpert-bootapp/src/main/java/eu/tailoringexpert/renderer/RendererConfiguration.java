@@ -21,6 +21,7 @@
  */
 package eu.tailoringexpert.renderer;
 
+import com.openhtmltopdf.extend.FSDOMMutator;
 import lombok.NonNull;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -73,7 +74,13 @@ public class RendererConfiguration {
     }
 
     @Bean
-    PDFEngine pdfEngine(@NonNull RendererRequestConfigurationSupplier rendererRequestConfigurationSupplier) {
-        return new PDFEngine(rendererRequestConfigurationSupplier);
+    FSDOMMutator fsdomMutator() {
+        return new TailoringexpertDOMMutator();
+    }
+
+    @Bean
+    PDFEngine pdfEngine(@NonNull FSDOMMutator fsdomMutator,
+                        @NonNull RendererRequestConfigurationSupplier rendererRequestConfigurationSupplier) {
+        return new PDFEngine(fsdomMutator, rendererRequestConfigurationSupplier);
     }
 }
