@@ -69,8 +69,15 @@ public class PDFEngine {
             addColorProfile(builder);
 
             RendererRequestConfiguration configuration = requestConfigurationSupplier.get();
-            String baseUri = new java.io.File(format("%s/%s/", configuration.getTemplateHome(), pathSuffix)).toURI().toString();
+            String baseUri = new java.io.File(
+                format("%s/%s/%s",
+                    configuration.getTemplateHome(),
+                    pathSuffix,
+                    "non-existing-base-uri-file.html")).toURI()
+                .toString();
+            log.info("using baseuri: " + baseUri);
             builder
+                .withUri(baseUri)
                 .withHtmlContent(html, baseUri)
                 .addDOMMutator(domMutator)
                 .withProducer(configuration.getName())
