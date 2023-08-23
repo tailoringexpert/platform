@@ -1,0 +1,83 @@
+=== Referenzierung von Bildern im Katalog
+
+Status:: accepted
+Entscheider:: Bädorf, Michael
+Datum:: 20.08.2023
+
+Technische Story:: https://github.com/tailoringexpert/platform/issues/214[#124]
+
+==== Kontext und Problemstellung
+
+Ein Katalog referenziert benötigte Bilder mittels einer URL. Dies führt zu dem Problem, dass pro Staging Umgebung ggf.
+ein eigener Katalog benötigt wird. Damit kann der Katalog dann aber auch ohne weitere Veränderung für die
+Dokumentengenerierung mittels _openhtmltopdf_  verwendet werden.
+Eine Möglichkeit nur einen Katalog für alle Staging Umgebungen zu benötigen ist der absolute Pfad auf einem Server,
+z. B. _/assets/$TENANT/$KATALOG/bild.png_. In diesem Fall kann das Bild aber nicht werden der Dokumentengenerierung
+gefunden werden, da die Plattform für die Dokumentengenerieung Resourcen, zumindest im Moment, relativ zum Template des
+Dokumentes sucht.
+Daher ist ein Anpassung der Dokumentengenerierung gesucht, die es trotzdem ermöglicht, mit nur einer Katalogversion
+sowie die Anzeige im Web als auch die Dokumentgenerierung zu unterstützen.
+
+==== Entscheidungstreiber
+
+* vereinheitlicherung der Mandantenkataloge
+* Berücksichtigung bereits installierter Kataloge
+
+==== Betrachtete Lösungsmöglichkeiten
+
+* Implementierung eines ResourceResolver
+* Implementierung eines DOMMutators
+
+==== Entscheidung
+
+Gewählte Alternative::
+Implementierung eines DOMMutators, weil
+
+* verständlicher, da keine Mehrfachausführung
+* dadurch (wahrscheinlich) auch performanter
+
+==== Vergleich der Alternativen
+
+===== Implementierung eines ResourceResolver
+
+Der ResourceResolver wird von _openhtmltopdf_ dann aufgerufen, um die _entgültige_ Datei aufzulösen.
+Dabei können die (Datei)Referenzen sowohl
+
+* relativ
+* absolut
+* jar
+
+sein. _URL_ werden nicht weiter untersucht, da diese Dateien nicht über das Dateisystem direkt zugreifbar sind.
+
+====== Postiv
+
+* einfach ins System zu integrieren
+* Bestehende Katalogs müssen nicht migriert werden
+* Werden Resourcen nur auf dem Dateisystem aufgelöst, so wird kann _Java Truststore_ benötigt.
+
+====== Negativ
+
+* es scheint so, das zumindest _css_ Resourcen mehrfach versucht werden aufzulösen. Dabei wird aber auch die
+bereits aufgelöste URI verwendet. Dies muss bei einem eigenen Resolver abgefangen werden.
+
+===== Implementierung eines DOMMutators
+
+Der _DOMMutator_ wird von _openhtmltopdf_ nach parsen des Dokuments vor dem Rendern des Dokumentes aufgerufen.
+Auf diesem Weg kann auf alle HTML Tags zugegriffen und diese auch modifiziert werden.
+Der Mutator kann so implementiert werden, dass aus der referenzierten Resource nur der Dateiname extrahiert und dieser
+relativ zur Dokumentenvorlage aufgelöst wird.
+
+====== Postiv
+
+* Einfach zu implementieren und ins System zu integrieren
+* Bestehende Katalogs müssen nicht migriert werden
+* Wird nur einmal aufgerufen. Damit keine Behandlung von Mehrfachaufrufen erforderlich.
+* Werden Resourcen nur auf dem Dateisystem aufgelöst, so wird kann _Java Truststore_ benötigt.
+
+
+====== Negativ
+
+* Es wird eine bestimmte Ablagestruktur der Resourcen benötigt. Alle dokumentspezifischen Resourcen müssen in einem
+Verzeichnis mit dem Namen des Dokumententyps abgelegt sein.
+
+==== Links

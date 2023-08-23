@@ -86,7 +86,7 @@ public class CMPDFDocumentCreator implements DocumentCreator {
         addDRD(catalog.getToc(), drds, tailoring.getPhases());
 
         String html = templateEngine.process(catalog.getVersion() + "/cm", parameter);
-        File result = pdfEngine.process(docId, html, tailoring.getCatalog().getVersion());
+        File result = pdfEngine.process(docId, html, tailoring.getCatalog().getVersion() + "/catalog");
 
         log.traceExit();
         return result;
