@@ -126,7 +126,7 @@
                             <outputDirectory>${project.build.directory}/docker</outputDirectory>
                             <resources>
                                 <resource>
-                                    <directory>src/assembly/docker/config</directory>
+                                    <directory>src/assembly/docker</directory>
                                     <includes>
                                         <include>**/*</include>
                                     </includes>
