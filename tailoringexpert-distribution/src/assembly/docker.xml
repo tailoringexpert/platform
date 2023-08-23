@@ -13,6 +13,7 @@
             <directory>${basedir}/src/assembly/docker</directory>
             <outputDirectory>/</outputDirectory>
             <filtered>true</filtered>
+            <lineEnding>unix</lineEnding>
         </fileSet>
     </fileSets>
 
