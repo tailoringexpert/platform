@@ -46,7 +46,7 @@ jobs:
             })
 
       - name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Generate changelog
         id: generate_changelog
