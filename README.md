@@ -70,7 +70,7 @@ OR-Mapping is to be implemented via annotations.
 
 ## Use Cases
 
-![alt text](https://www.plantuml.com/plantuml/proxy?cache=no&src=https://raw.github.com/tailoringexpert/plattform/README/src/site/arc42/plantuml/Usecases.plantuml "Usecases")
+![alternative text](https://www.plantuml.com/plantuml/proxy?cache=no&src=https://raw.github.com/tailoringexpert/plattform/main/src/site/arc42/plantuml/Usecases.plantuml "Usecases")
 
 ## Architecture documentation
 
@@ -123,6 +123,14 @@ Plattform can be build using
 
 For testing purpose there is a demo plattform in [github](https://github.com/tailoringexpert/demo).
 See instructions for setting up and running the (demo) system in [README.md](tailoringexpert-integrationtest/README.md)
+
+## Encrypting credentials (for platform boot-app)
+There is a commandline client _eu.tailoringexpert.JasyptClient_ in _tailoringxpert-bootapp_ module.
+
+Usage:
+> eu.tailoringexpert.JasyptClient --algorithm PBEWithMD5AndTripleDES --password ThisIsUsedToEncryptParameters --parameter param1 --parameter paramX
+
+If no algorithm was provided, PBEWithMD5AndTripleDES is used as default algorithm, which is also used by the bootapp.
 
 ## Links
 
