@@ -108,6 +108,7 @@ class JasyptClientTest {
         assertThat(actual).isEqualTo("PZxLBL7m8HSoK2EJWv7P");
     }
 
+    @Test
     void encryptDecryptRoundtrip() {
         // arrange
         JasyptConfig config = JasyptConfig.builder()

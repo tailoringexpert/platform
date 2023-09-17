@@ -42,6 +42,11 @@ import static java.util.stream.IntStream.range;
 public class TailoringexpertDOMMutator implements FSDOMMutator {
 
     /**
+     * Char to use for checking absolute url.
+     */
+    private static final char SLASH = '/';
+
+    /**
      * {@inheritDoc}
      */
     @Override
@@ -61,7 +66,7 @@ public class TailoringexpertDOMMutator implements FSDOMMutator {
             .map(Element.class::cast)
             .forEach(img -> {
                 String src = img.getAttribute("src");
-                if (src.charAt(0) == '/') {
+                if (src.charAt(0) == SLASH) {
                     img.setAttribute("src", new File(src).getName());
                     log.debug(src + " -> " + new File(src).getName());
                 }
