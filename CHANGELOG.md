@@ -1,15 +1,33 @@
 # Changelog
 
+## [v0.0.7](https://github.com/tailoringexpert/platform/tree/v0.0.7) (09.17.2023)
+
+[Full Changelog](https://github.com/tailoringexpert/platform/compare/v0.0.6...v0.0.7)
+
+**Implemented enhancements:**
+
+- Provide client application to encrypt bootapp credentials [\#218](https://github.com/tailoringexpert/platform/issues/218)
+- Standardisation of the use of tenant catalogs [\#214](https://github.com/tailoringexpert/platform/issues/214)
+- Change creation of HATEOAS links [\#211](https://github.com/tailoringexpert/platform/issues/211)
+- Missing blob type for screeningsheet liquibase changelog [\#205](https://github.com/tailoringexpert/platform/issues/205)
+
+**Closed issues:**
+
+- Creation of ResourceMapper in AppController [\#212](https://github.com/tailoringexpert/platform/issues/212)
+- Prepare container creation [\#209](https://github.com/tailoringexpert/platform/issues/209)
+- Move to next dependencies version [\#206](https://github.com/tailoringexpert/platform/issues/206)
+- Add distribution management [\#204](https://github.com/tailoringexpert/platform/issues/204)
+
 ## [v0.0.6](https://github.com/tailoringexpert/platform/tree/v0.0.6) (07.11.2023)
 
 [Full Changelog](https://github.com/tailoringexpert/platform/compare/v0.0.5...v0.0.6)
 
 **Implemented enhancements:**
 
+- Embedding images in requirements [\#183](https://github.com/tailoringexpert/platform/issues/183)
 - Export tailoring requirements data [\#198](https://github.com/tailoringexpert/platform/issues/198)
 - Export tailoring requirement text [\#195](https://github.com/tailoringexpert/platform/issues/195)
 - Delete a base catalog version [\#193](https://github.com/tailoringexpert/platform/issues/193)
-- Embedding images in requirements [\#183](https://github.com/tailoringexpert/platform/issues/183)
 
 **Fixed bugs:**
 
@@ -22,8 +40,9 @@
 
 **Closed issues:**
 
-- Migrate security configuration [\#196](https://github.com/tailoringexpert/platform/issues/196)
 - upload screening sheet [\#182](https://github.com/tailoringexpert/platform/issues/182)
+- Release preparation [\#203](https://github.com/tailoringexpert/platform/issues/203)
+- Migrate security configuration [\#196](https://github.com/tailoringexpert/platform/issues/196)
 - implement gitflow branching model [\#177](https://github.com/tailoringexpert/platform/issues/177)
 
 ## [v0.0.5](https://github.com/tailoringexpert/platform/tree/v0.0.5) (05.09.2023)
