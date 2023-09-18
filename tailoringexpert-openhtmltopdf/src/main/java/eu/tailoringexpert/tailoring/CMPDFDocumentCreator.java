@@ -126,13 +126,7 @@ public class CMPDFDocumentCreator implements DocumentCreator {
                                    int level,
                                    Collection<CMElement> rows,
                                    Map<String, Object> placeholders) {
-        requirements.forEach(requirement -> rows.add(CMElement.builder()
-            .level(level)
-            .number(xhtml(requirement.getPosition(), emptyMap()))
-            .name(xhtml(requirement.getText(), placeholders))
-            .requirement(true)
-            .build())
-        );
+        // hook for adding also requirements to cm instead of "only" chapters
     }
 
     /**
@@ -161,7 +155,7 @@ public class CMPDFDocumentCreator implements DocumentCreator {
      * @param placeholders placeholders to use
      * @return formatted xhtml text
      */
-    private String xhtml(String text, Map<String, Object> placeholders) {
+    protected String xhtml(String text, Map<String, Object> placeholders) {
         return templateEngine.toXHTML(text, placeholders);
     }
 }
