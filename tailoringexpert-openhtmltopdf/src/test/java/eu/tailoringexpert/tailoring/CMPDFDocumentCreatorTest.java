@@ -169,6 +169,6 @@ class CMPDFDocumentCreatorTest {
 
         // assert
         assertThat(actual).isNotNull();
-        fileSaver.accept("cm.pdf", actual.getData());
+        fileSaver.accept("cm_chapters.pdf", actual.getData());
     }
 }
