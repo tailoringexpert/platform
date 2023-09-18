@@ -11,5 +11,7 @@
     <include file="db-tailoringexpert/0.0.5/db.changelog-0.0.5.xml"/>
     <include file="db-tailoringexpert/0.0.6/db.changelog-0.0.6.xml"/>
     <include file="db-tailoringexpert/0.0.7/db.changelog-0.0.7.xml"/>
+    <include file="db-tailoringexpert/0.1.0/db.changelog-0.1.0.xml"/>
+
 
 </databaseChangeLog>

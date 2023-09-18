@@ -13,14 +13,6 @@
 
     <profiles>
         <profile>
-            <id>release</id>
-            <properties>
-                <gpg.homedir>${GPG_HOMEDIR}</gpg.homedir>
-                <gpg.keyname>${GPG_KEYNAME}</gpg.keyname>
-                <gpg.passphrase>${GPG_PASSPHRASE}</gpg.passphrase>
-            </properties>
-        </profile>
-        <profile>
             <id>nexus</id>
             <properties>
                 <tailoringexpert-releases.repository>${NEXUS_RELEASEURL}</tailoringexpert-releases.repository>
@@ -29,7 +21,6 @@
     </profiles>
 
     <activeProfiles>
-        <activeProfile>release</activeProfile>
         <activeProfile>nexus</activeProfile>
     </activeProfiles>
 </settings>

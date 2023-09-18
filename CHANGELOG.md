@@ -1,6 +1,14 @@
 # Changelog
 
-## [v0.0.7](https://github.com/tailoringexpert/platform/tree/v0.0.7) (09.17.2023)
+## [v0.1.0](https://github.com/tailoringexpert/platform/tree/v0.1.0) (09.18.2023)
+
+[Full Changelog](https://github.com/tailoringexpert/platform/compare/v0.0.7...v0.1.0)
+
+**Implemented enhancements:**
+
+- Provide base classes for generating PDF compliance documents per chapter and per requirement [\#222](https://github.com/tailoringexpert/platform/issues/222)
+
+## [v0.0.7](https://github.com/tailoringexpert/platform/tree/v0.0.7) (09.18.2023)
 
 [Full Changelog](https://github.com/tailoringexpert/platform/compare/v0.0.6...v0.0.7)
 
@@ -13,8 +21,9 @@
 
 **Closed issues:**
 
-- Creation of ResourceMapper in AppController [\#212](https://github.com/tailoringexpert/platform/issues/212)
 - Prepare container creation [\#209](https://github.com/tailoringexpert/platform/issues/209)
+- Prepare next release [\#221](https://github.com/tailoringexpert/platform/issues/221)
+- Creation of ResourceMapper in AppController [\#212](https://github.com/tailoringexpert/platform/issues/212)
 - Move to next dependencies version [\#206](https://github.com/tailoringexpert/platform/issues/206)
 - Add distribution management [\#204](https://github.com/tailoringexpert/platform/issues/204)
 
