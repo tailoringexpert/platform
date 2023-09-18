@@ -70,7 +70,7 @@ OR-Mapping is to be implemented via annotations.
 
 ## Use Cases
 
-![alt text](https://www.plantuml.com/plantuml/proxy?cache=no&src=https://raw.github.com/tailoringexpert/plattform/README/src/site/arc42/plantuml/Usecases.plantuml "Usecases")
+![alternative text](https://www.plantuml.com/plantuml/proxy?cache=no&src=https://raw.github.com/tailoringexpert/plattform/main/src/site/arc42/plantuml/Usecases.plantuml "Usecases")
 
 ## Architecture documentation
 
@@ -80,16 +80,17 @@ Architecture documentation can be found here as [arc42](src/site/arc42/tailoring
 
 ### Maven Modul-Struktur
 
-| Modulname                | Beschreibung                                                                                                                 |
-|:-------------------------|:-----------------------------------------------------------------------------------------------------------------------------|
-| tailoringexpert-core     | Business core of plattform.                                                                                                  |
-| tailoringexpert-data-jpa | Implementation of data access needed by core component                                                                       |
-| tailoringexpert-rest     | Component providing REST services of plattform                                                                               |
-| tailoringexpert-poi      | Module for importing requirements and generating Excel files using POI.                                                      | 
-| tailoringexpert-openhtmltopdf   | Module for generating PDF documents using  Openhtmltop.                                                                      | 
-| tailoringexpert-security | Security configuration using spring-security without using an external identity manager                                      |
-| tailoringexpert-tenant   | Proxies for tenant implementations of type TenantInterface. |
-
+| Modulname                     | Beschreibung                                                                                                                |
+|:------------------------------|:----------------------------------------------------------------------------------------------------------------------------|
+| tailoringexpert-core          | Business core of platform.                                                                                                  |
+| tailoringexpert-data-jpa      | Implementation of data access needed by core component                                                                      |
+| tailoringexpert-rest          | Component providing REST services of plattform                                                                              |
+| tailoringexpert-poi           | Module for importing requirements and generating Excel files using POI.                                                     | 
+| tailoringexpert-openhtmltopdf | Module for generating PDF documents using  Openhtmltop.                                                                     | 
+| tailoringexpert-security      | Security configuration using spring-security without using an external identity manager                                     |
+| tailoringexpert-tenant        | Proxies for tenant implementations of type TenantInterface.                                                                 |
+| tailoringexpert-bootapp       | Runnable app of platform                                                                                                    |
+| tailoringexpert-distribution | Module to create archive to be used for creating a platform docker image |
 ### Level 0
 
 ![alternative text](https://www.plantuml.com/plantuml/proxy?cache=no&src=https://raw.github.com/tailoringexpert/plattform/main/src/site/arc42/plantuml/level0.plantuml "Level 0")
@@ -122,6 +123,14 @@ Plattform can be build using
 
 For testing purpose there is a demo plattform in [github](https://github.com/tailoringexpert/demo).
 See instructions for setting up and running the (demo) system in [README.md](tailoringexpert-integrationtest/README.md)
+
+## Encrypting credentials (for platform boot-app)
+There is a commandline client _eu.tailoringexpert.JasyptClient_ in _tailoringxpert-bootapp_ module.
+
+Usage:
+> eu.tailoringexpert.JasyptClient --algorithm PBEWithMD5AndTripleDES --password ThisIsUsedToEncryptParameters --parameter param1 --parameter paramX
+
+If no algorithm was provided, PBEWithMD5AndTripleDES is used as default algorithm, which is also used by the bootapp.
 
 ## Links
 

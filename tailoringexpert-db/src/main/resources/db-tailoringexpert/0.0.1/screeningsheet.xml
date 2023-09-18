@@ -5,6 +5,7 @@
          http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
 
     <property name="blob_type" value="BYTEA" dbms="postgresql"/>
+    <property name="blob_type" value="LONGBLOB" dbms="mysql"/>
     <property name="blob_type" value="LONGBLOB" dbms="mariadb"/>
     <property name="blob_type" value="BLOB" dbms="h2"/>
 

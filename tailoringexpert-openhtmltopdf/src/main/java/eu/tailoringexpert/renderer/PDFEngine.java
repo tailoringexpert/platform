@@ -21,6 +21,7 @@
  */
 package eu.tailoringexpert.renderer;
 
+import com.openhtmltopdf.extend.FSDOMMutator;
 import com.openhtmltopdf.pdfboxout.PdfRendererBuilder;
 import eu.tailoringexpert.domain.File;
 import lombok.NonNull;
@@ -45,6 +46,8 @@ import static org.apache.pdfbox.io.MemoryUsageSetting.setupTempFileOnly;
 @Log4j2
 public class PDFEngine {
 
+    @NonNull FSDOMMutator domMutator;
+
     @NonNull
     private RendererRequestConfigurationSupplier requestConfigurationSupplier;
 
@@ -66,8 +69,17 @@ public class PDFEngine {
             addColorProfile(builder);
 
             RendererRequestConfiguration configuration = requestConfigurationSupplier.get();
+            String baseUri = new java.io.File(
+                format("%s/%s/%s",
+                    configuration.getTemplateHome(),
+                    pathSuffix,
+                    "non-existing-base-uri-file.html")).toURI()
+                .toString();
+            log.info("using baseuri: " + baseUri);
             builder
-                .withHtmlContent(html, new java.io.File(format("%s/%s/", configuration.getTemplateHome(), pathSuffix)).toURI().toString())
+                .withUri(baseUri)
+                .withHtmlContent(html, baseUri)
+                .addDOMMutator(domMutator)
                 .withProducer(configuration.getName())
                 .usePDDocument(document)
                 .toStream(os)

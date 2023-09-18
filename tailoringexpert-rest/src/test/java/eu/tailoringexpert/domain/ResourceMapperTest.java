@@ -26,9 +26,6 @@ import lombok.extern.log4j.Log4j2;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.hateoas.Link;
-import org.springframework.mock.web.MockHttpServletRequest;
-import org.springframework.web.context.request.RequestContextHolder;
-import org.springframework.web.context.request.ServletRequestAttributes;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -53,13 +50,13 @@ class ResourceMapperTest {
 
     private ResourceMapper mapper;
 
+    private String host;
+
     @BeforeEach
     void setup() {
+        this.host = "/api";
         this.mapper = new ResourceMapperGenerated();
-
-        RequestContextHolder.setRequestAttributes(
-            new ServletRequestAttributes(new MockHttpServletRequest())
-        );
+        this.mapper.setContextPath("/api");
     }
 
     @Test
@@ -109,12 +106,12 @@ class ResourceMapperTest {
         assertThat(actual.getValid()).isTrue();
 
         assertThat(actual.getLinks()).containsExactlyInAnyOrder(
-            Link.of("http://localhost/catalog/8.2.1", "self"),
-            Link.of("http://localhost/catalog/8.2.1/project", "project"),
-            Link.of("http://localhost/catalog/8.2.1/pdf", "pdf"),
-            Link.of("http://localhost/catalog/8.2.1/json", "json"),
-            Link.of("http://localhost/catalog/8.2.1/document", "document"),
-            Link.of("http://localhost/catalog/8.2.1/validuntil/{validuntil}", "validuntil")
+            Link.of(this.host + "/catalog/8.2.1", "self"),
+            Link.of(this.host + "/catalog/8.2.1/project", "project"),
+            Link.of(this.host + "/catalog/8.2.1/pdf", "pdf"),
+            Link.of(this.host + "/catalog/8.2.1/json", "json"),
+            Link.of(this.host + "/catalog/8.2.1/document", "document"),
+            Link.of(this.host + "/catalog/8.2.1/validuntil/{validuntil}", "validuntil")
         );
 
     }
@@ -152,12 +149,12 @@ class ResourceMapperTest {
         assertThat(actual.getValid()).isFalse();
 
         assertThat(actual.getLinks()).containsExactlyInAnyOrder(
-            Link.of("http://localhost/catalog/8.2.1", "self"),
-            Link.of("http://localhost/catalog/8.2.1/project", "project"),
-            Link.of("http://localhost/catalog/8.2.1/pdf", "pdf"),
-            Link.of("http://localhost/catalog/8.2.1/json", "json"),
-            Link.of("http://localhost/catalog/8.2.1/document", "document"),
-            Link.of("http://localhost/catalog/8.2.1/validuntil/{validuntil}", "validuntil")
+            Link.of(this.host + "/catalog/8.2.1", "self"),
+            Link.of(this.host + "/catalog/8.2.1/project", "project"),
+            Link.of(this.host + "/catalog/8.2.1/pdf", "pdf"),
+            Link.of(this.host + "/catalog/8.2.1/json", "json"),
+            Link.of(this.host + "/catalog/8.2.1/document", "document"),
+            Link.of(this.host + "/catalog/8.2.1/validuntil/{validuntil}", "validuntil")
         );
 
     }
@@ -201,11 +198,11 @@ class ResourceMapperTest {
         assertThat(actual.getTailorings()).extracting("name").containsExactlyInAnyOrder("master", "master1");
 
         assertThat(actual.getLinks()).containsExactlyInAnyOrder(
-            Link.of("http://localhost/project/SAMPLE", "self"),
-            Link.of("http://localhost/project/SAMPLE/selectionvector", "selectionvector"),
-            Link.of("http://localhost/project/SAMPLE/screeningsheet", "screeningsheet"),
-            Link.of("http://localhost/project/SAMPLE/tailoring", "tailoring"),
-            Link.of("http://localhost/project/SAMPLE/state/COMPLETED", "state")
+            Link.of(this.host + "/project/SAMPLE", "self"),
+            Link.of(this.host + "/project/SAMPLE/selectionvector", "selectionvector"),
+            Link.of(this.host + "/project/SAMPLE/screeningsheet", "screeningsheet"),
+            Link.of(this.host + "/project/SAMPLE/tailoring", "tailoring"),
+            Link.of(this.host + "/project/SAMPLE/state/COMPLETED", "state")
         );
     }
 
@@ -231,11 +228,11 @@ class ResourceMapperTest {
         assertThat(actual.getTailorings()).isNull();
 
         assertThat(actual.getLinks()).containsExactlyInAnyOrder(
-            Link.of("http://localhost/project/SAMPLE", "self"),
-            Link.of("http://localhost/project/SAMPLE/selectionvector", "selectionvector"),
-            Link.of("http://localhost/project/SAMPLE/screeningsheet", "screeningsheet"),
-            Link.of("http://localhost/project/SAMPLE/tailoring", "tailoring"),
-            Link.of("http://localhost/project/SAMPLE/state/COMPLETED", "state")
+            Link.of(this.host + "/project/SAMPLE", "self"),
+            Link.of(this.host + "/project/SAMPLE/selectionvector", "selectionvector"),
+            Link.of(this.host + "/project/SAMPLE/screeningsheet", "screeningsheet"),
+            Link.of(this.host + "/project/SAMPLE/tailoring", "tailoring"),
+            Link.of(this.host + "/project/SAMPLE/state/COMPLETED", "state")
         );
     }
 
@@ -268,11 +265,11 @@ class ResourceMapperTest {
         assertThat(actual.getTailorings()).extracting("name").containsExactlyInAnyOrder("master", "master1");
 
         assertThat(actual.getLinks()).containsExactlyInAnyOrder(
-            Link.of("http://localhost/project/SAMPLE", "self"),
-            Link.of("http://localhost/project/SAMPLE/selectionvector", "selectionvector"),
-            Link.of("http://localhost/project/SAMPLE/screeningsheet", "screeningsheet"),
-            Link.of("http://localhost/project/SAMPLE/tailoring", "tailoring"),
-            Link.of("http://localhost/project/SAMPLE/state/COMPLETED", "state")
+            Link.of(this.host + "/project/SAMPLE", "self"),
+            Link.of(this.host + "/project/SAMPLE/selectionvector", "selectionvector"),
+            Link.of(this.host + "/project/SAMPLE/screeningsheet", "screeningsheet"),
+            Link.of(this.host + "/project/SAMPLE/tailoring", "tailoring"),
+            Link.of(this.host + "/project/SAMPLE/state/COMPLETED", "state")
         );
     }
 
@@ -312,20 +309,20 @@ class ResourceMapperTest {
         assertThat(actual.getPhases()).containsExactlyInAnyOrderElementsOf(asList(A, C));
 
         assertThat(actual.getLinks()).containsExactlyInAnyOrder(
-            Link.of("http://localhost/project/SAMPLE/tailoring/master", "self"),
-            Link.of("http://localhost/project/SAMPLE/tailoring/master/screeningsheet", "screeningsheet"),
-            Link.of("http://localhost/project/SAMPLE/tailoring/master/selectionvector", "selectionvector"),
-            Link.of("http://localhost/project/SAMPLE/tailoring/master/signature", "signature"),
-            Link.of("http://localhost/project/SAMPLE/tailoring/master/document", "document"),
-            Link.of("http://localhost/project/SAMPLE/tailoring/master/document/catalog", "tailoringcatalog"),
-            Link.of("http://localhost/project/SAMPLE/tailoring/master/compare", "compare"),
-            Link.of("http://localhost/project/SAMPLE/tailoring/master/catalog", "catalog"),
-            Link.of("http://localhost/project/SAMPLE/tailoring/master/name", "name"),
-            Link.of("http://localhost/project/SAMPLE/tailoring/master/requirement/import", "import"),
-            Link.of("http://localhost/catalog/8.2.1/pdf", "basecatalog"),
-            Link.of("http://localhost/project/SAMPLE/tailoring/master/attachment", "attachment"),
-            Link.of("http://localhost/project/SAMPLE/tailoring/master/note", "note"),
-            Link.of("http://localhost/project/SAMPLE/tailoring/master/state/AGREED", "state")
+            Link.of(this.host + "/project/SAMPLE/tailoring/master", "self"),
+            Link.of(this.host + "/project/SAMPLE/tailoring/master/screeningsheet", "screeningsheet"),
+            Link.of(this.host + "/project/SAMPLE/tailoring/master/selectionvector", "selectionvector"),
+            Link.of(this.host + "/project/SAMPLE/tailoring/master/signature", "signature"),
+            Link.of(this.host + "/project/SAMPLE/tailoring/master/document", "document"),
+            Link.of(this.host + "/project/SAMPLE/tailoring/master/document/catalog", "tailoringcatalog"),
+            Link.of(this.host + "/project/SAMPLE/tailoring/master/compare", "compare"),
+            Link.of(this.host + "/project/SAMPLE/tailoring/master/catalog", "catalog"),
+            Link.of(this.host + "/project/SAMPLE/tailoring/master/name", "name"),
+            Link.of(this.host + "/project/SAMPLE/tailoring/master/requirement/import", "import"),
+            Link.of(this.host + "/catalog/8.2.1/pdf", "basecatalog"),
+            Link.of(this.host + "/project/SAMPLE/tailoring/master/attachment", "attachment"),
+            Link.of(this.host + "/project/SAMPLE/tailoring/master/note", "note"),
+            Link.of(this.host + "/project/SAMPLE/tailoring/master/state/AGREED", "state")
         );
     }
 
@@ -389,8 +386,8 @@ class ResourceMapperTest {
             .build());
 
         assertThat(actual.getLinks()).containsExactlyInAnyOrder(
-            Link.of("http://localhost/project/SAMPLE/screeningsheet", "self"),
-            Link.of("http://localhost/project/SAMPLE/screeningsheet/pdf", "datei")
+            Link.of(this.host + "/project/SAMPLE/screeningsheet", "self"),
+            Link.of(this.host + "/project/SAMPLE/screeningsheet/pdf", "datei")
 
         );
     }
@@ -416,8 +413,8 @@ class ResourceMapperTest {
         assertThat(actual.getParameters()).isEmpty();
 
         assertThat(actual.getLinks()).containsExactlyInAnyOrder(
-            Link.of("http://localhost/project/SAMPLE/screeningsheet", "self"),
-            Link.of("http://localhost/project/SAMPLE/screeningsheet/pdf", "datei")
+            Link.of(this.host + "/project/SAMPLE/screeningsheet", "self"),
+            Link.of(this.host + "/project/SAMPLE/screeningsheet/pdf", "datei")
 
         );
     }
@@ -454,8 +451,8 @@ class ResourceMapperTest {
             .build());
 
         assertThat(actual.getLinks()).containsExactlyInAnyOrder(
-            Link.of("http://localhost/project/SAMPLE/tailoring/master/screeningsheet", "self"),
-            Link.of("http://localhost/project/SAMPLE/tailoring/master/screeningsheet/pdf", "datei")
+            Link.of(this.host + "/project/SAMPLE/tailoring/master/screeningsheet", "self"),
+            Link.of(this.host + "/project/SAMPLE/tailoring/master/screeningsheet/pdf", "datei")
 
         );
     }
@@ -500,8 +497,8 @@ class ResourceMapperTest {
         assertThat(actual.getData()).isEqualTo(data);
 
         assertThat(actual.getLinks()).containsExactlyInAnyOrder(
-            Link.of("http://localhost/project/SAMPLE/screeningsheet", "self"),
-            Link.of("http://localhost/project/SAMPLE/screeningsheet/pdf", "datei")
+            Link.of(this.host + "/project/SAMPLE/screeningsheet", "self"),
+            Link.of(this.host + "/project/SAMPLE/screeningsheet/pdf", "datei")
 
         );
     }
@@ -538,8 +535,8 @@ class ResourceMapperTest {
             .build());
 
         assertThat(actual.getLinks()).containsExactlyInAnyOrder(
-            Link.of("http://localhost/project/SAMPLE/tailoring/master/screeningsheet", "self"),
-            Link.of("http://localhost/project/SAMPLE/tailoring/master/screeningsheet/pdf", "datei")
+            Link.of(this.host + "/project/SAMPLE/tailoring/master/screeningsheet", "self"),
+            Link.of(this.host + "/project/SAMPLE/tailoring/master/screeningsheet/pdf", "datei")
 
         );
     }
@@ -589,11 +586,11 @@ class ResourceMapperTest {
         assertThat(actual.getTailorings()).hasSize(1);
 
         assertThat(actual.getLinks()).containsExactlyInAnyOrder(
-            Link.of("http://localhost/project/SAMPLE", "self"),
-            Link.of("http://localhost/project/SAMPLE/selectionvector", "selectionvector"),
-            Link.of("http://localhost/project/SAMPLE/screeningsheet", "screeningsheet"),
-            Link.of("http://localhost/project/SAMPLE/tailoring", "tailoring"),
-            Link.of("http://localhost/project/SAMPLE/state/{state}", "state")
+            Link.of(this.host + "/project/SAMPLE", "self"),
+            Link.of(this.host + "/project/SAMPLE/selectionvector", "selectionvector"),
+            Link.of(this.host + "/project/SAMPLE/screeningsheet", "screeningsheet"),
+            Link.of(this.host + "/project/SAMPLE/tailoring", "tailoring"),
+            Link.of(this.host + "/project/SAMPLE/state/{state}", "state")
         );
     }
 
@@ -638,20 +635,20 @@ class ResourceMapperTest {
         assertThat(actual.getCatalogVersion()).isNotNull();
 
         assertThat(actual.getLinks()).containsExactlyInAnyOrder(
-            Link.of("http://localhost/project/SAMPLE/tailoring/master", "self"),
-            Link.of("http://localhost/project/SAMPLE/tailoring/master/screeningsheet", "screeningsheet"),
-            Link.of("http://localhost/project/SAMPLE/tailoring/master/selectionvector", "selectionvector"),
-            Link.of("http://localhost/project/SAMPLE/tailoring/master/signature", "signature"),
-            Link.of("http://localhost/project/SAMPLE/tailoring/master/document", "document"),
-            Link.of("http://localhost/project/SAMPLE/tailoring/master/catalog", "catalog"),
-            Link.of("http://localhost/project/SAMPLE/tailoring/master/name", "name"),
-            Link.of("http://localhost/project/SAMPLE/tailoring/master/attachment", "attachment"),
-            Link.of("http://localhost/project/SAMPLE/tailoring/master/document/catalog", "tailoringcatalog"),
-            Link.of("http://localhost/project/SAMPLE/tailoring/master/compare", "compare"),
-            Link.of("http://localhost/project/SAMPLE/tailoring/master/requirement/import", "import"),
-            Link.of("http://localhost/catalog/8.2.1/pdf", "basecatalog"),
-            Link.of("http://localhost/project/SAMPLE/tailoring/master/note", "note"),
-            Link.of("http://localhost/project/SAMPLE/tailoring/master/state/{state}", "state")
+            Link.of(this.host + "/project/SAMPLE/tailoring/master", "self"),
+            Link.of(this.host + "/project/SAMPLE/tailoring/master/screeningsheet", "screeningsheet"),
+            Link.of(this.host + "/project/SAMPLE/tailoring/master/selectionvector", "selectionvector"),
+            Link.of(this.host + "/project/SAMPLE/tailoring/master/signature", "signature"),
+            Link.of(this.host + "/project/SAMPLE/tailoring/master/document", "document"),
+            Link.of(this.host + "/project/SAMPLE/tailoring/master/catalog", "catalog"),
+            Link.of(this.host + "/project/SAMPLE/tailoring/master/name", "name"),
+            Link.of(this.host + "/project/SAMPLE/tailoring/master/attachment", "attachment"),
+            Link.of(this.host + "/project/SAMPLE/tailoring/master/document/catalog", "tailoringcatalog"),
+            Link.of(this.host + "/project/SAMPLE/tailoring/master/compare", "compare"),
+            Link.of(this.host + "/project/SAMPLE/tailoring/master/requirement/import", "import"),
+            Link.of(this.host + "/catalog/8.2.1/pdf", "basecatalog"),
+            Link.of(this.host + "/project/SAMPLE/tailoring/master/note", "note"),
+            Link.of(this.host + "/project/SAMPLE/tailoring/master/state/{state}", "state")
         );
     }
 
@@ -695,9 +692,9 @@ class ResourceMapperTest {
         assertThat(actual.getReference()).isEqualTo("Eine Reference");
 
         assertThat(actual.getLinks()).containsExactlyInAnyOrder(
-            Link.of("http://localhost/project/SAMPLE/tailoring/master/catalog/1.4/c", "self"),
-            Link.of("http://localhost/project/SAMPLE/tailoring/master/catalog/1.4/c/selected/false", "selected"),
-            Link.of("http://localhost/project/SAMPLE/tailoring/master/catalog/1.4/c/text", "text")
+            Link.of(this.host + "/project/SAMPLE/tailoring/master/catalog/1.4/c", "self"),
+            Link.of(this.host + "/project/SAMPLE/tailoring/master/catalog/1.4/c/selected/false", "selected"),
+            Link.of(this.host + "/project/SAMPLE/tailoring/master/catalog/1.4/c/text", "text")
         );
     }
 
@@ -728,9 +725,9 @@ class ResourceMapperTest {
         assertThat(actual.getReference()).isEqualTo("Eine Reference");
 
         assertThat(actual.getLinks()).containsExactlyInAnyOrder(
-            Link.of("http://localhost/project/SAMPLE/tailoring/master/catalog/1.4/c", "self"),
-            Link.of("http://localhost/project/SAMPLE/tailoring/master/catalog/1.4/c/selected/true", "selected"),
-            Link.of("http://localhost/project/SAMPLE/tailoring/master/catalog/1.4/c/text", "text")
+            Link.of(this.host + "/project/SAMPLE/tailoring/master/catalog/1.4/c", "self"),
+            Link.of(this.host + "/project/SAMPLE/tailoring/master/catalog/1.4/c/selected/true", "selected"),
+            Link.of(this.host + "/project/SAMPLE/tailoring/master/catalog/1.4/c/text", "text")
         );
     }
 
@@ -772,7 +769,7 @@ class ResourceMapperTest {
         assertThat(actual.getApplicable()).isEqualTo(documentSignature.getApplicable());
 
         assertThat(actual.getLinks()).containsExactlyInAnyOrder(
-            Link.of("http://localhost/project/SAMPLE/tailoring/master/signature/Software", "self")
+            Link.of(this.host + "/project/SAMPLE/tailoring/master/signature/Software", "self")
         );
     }
 
@@ -808,9 +805,9 @@ class ResourceMapperTest {
         assertThat(actual).isNotNull();
 
         assertThat(actual.getLinks()).containsExactlyInAnyOrder(
-            Link.of("http://localhost/project/SAMPLE/tailoring/master/catalog/1.1", "self"),
-            Link.of("http://localhost/project/SAMPLE/tailoring/master/catalog/1.1/requirement", "requirement"),
-            Link.of("http://localhost/project/SAMPLE/tailoring/master/catalog/1.1/selected/{selected}", "selection")
+            Link.of(this.host + "/project/SAMPLE/tailoring/master/catalog/1.1", "self"),
+            Link.of(this.host + "/project/SAMPLE/tailoring/master/catalog/1.1/requirement", "requirement"),
+            Link.of(this.host + "/project/SAMPLE/tailoring/master/catalog/1.1/selected/{selected}", "selection")
         );
     }
 
@@ -862,7 +859,7 @@ class ResourceMapperTest {
         assertThat(actual.getLevels()).containsEntry("R", 10);
 
         assertThat(actual.getLinks()).containsExactlyInAnyOrder(
-            Link.of("http://localhost/project/SAMPLE/selectionvector", "self")
+            Link.of(this.host + "/project/SAMPLE/selectionvector", "self")
         );
     }
 
@@ -903,7 +900,7 @@ class ResourceMapperTest {
         assertThat(actual.getLevels()).containsEntry("R", 10);
 
         assertThat(actual.getLinks()).containsExactlyInAnyOrder(
-            Link.of("http://localhost/project/SAMPLE/tailoring/master/selectionvector", "self")
+            Link.of(this.host + "/project/SAMPLE/tailoring/master/selectionvector", "self")
         );
     }
 
@@ -975,7 +972,7 @@ class ResourceMapperTest {
         assertThat(actual).isNotNull();
 
         assertThat(actual.getLinks()).containsExactlyInAnyOrder(
-            Link.of("http://localhost/project/SAMPLE/tailoring/master/catalog", "self")
+            Link.of(this.host + "/project/SAMPLE/tailoring/master/catalog", "self")
         );
     }
 
@@ -1000,7 +997,7 @@ class ResourceMapperTest {
         assertThat(actual).isNotNull();
 
         assertThat(actual.getLinks()).containsExactlyInAnyOrder(
-            Link.of("http://localhost/project/SAMPLE/tailoring/master/note/1", "self")
+            Link.of(this.host + "/project/SAMPLE/tailoring/master/note/1", "self")
         );
     }
 
@@ -1024,7 +1021,7 @@ class ResourceMapperTest {
         assertThat(actual).isNotNull();
 
         assertThat(actual.getLinks()).containsExactlyInAnyOrder(
-            Link.of("http://localhost/project/SAMPLE/tailoring/master/attachment/demo.pdf", "self")
+            Link.of(this.host + "/project/SAMPLE/tailoring/master/attachment/demo.pdf", "self")
         );
     }
 }

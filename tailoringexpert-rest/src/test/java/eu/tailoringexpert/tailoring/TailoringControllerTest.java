@@ -445,7 +445,7 @@ class TailoringControllerTest {
         // assert
         actual
             .andExpect(status().isCreated())
-            .andExpect(header().string("Location", "http://localhost/project/SAMPLE/tailoring/master/attachment/DUMMY_CM.pdf"));
+            .andExpect(header().string("Location", "/project/SAMPLE/tailoring/master/attachment/DUMMY_CM.pdf"));
 
         verify(serviceMock, times(1)).addFile("SAMPLE", "master", "DUMMY_CM.pdf", data);
 //        assertThat(pathContextCaptor.getValue().build()).isEqualTo(PathContext.builder().project("SAMPLE").tailoring("master").build());
@@ -1115,7 +1115,7 @@ class TailoringControllerTest {
     void postNote_TailoringExists_StateCreated() throws Exception {
         // arrange
         given(serviceMock.addNote("SAMPLE", "master", "Hello")).willReturn(Optional.of(Note.builder().number(2).build()));
-        given(mapperMock.createLink(any(), any(), any(), any())).willReturn(Link.of("/project/SAMPLE/tailoring/master/note/2"));
+        given(mapperMock.createLink(any(), any(), any())).willReturn(Link.of("/project/SAMPLE/tailoring/master/note/2"));
 
         // act
         ResultActions actual = mockMvc.perform(post("/project/{project}/tailoring/{tailoring}/note", "SAMPLE", "master")

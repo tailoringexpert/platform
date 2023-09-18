@@ -22,23 +22,23 @@
 package eu.tailoringexpert.tailoring;
 
 import eu.tailoringexpert.ResourceException;
-import eu.tailoringexpert.domain.FileResource;
 import eu.tailoringexpert.domain.DocumentSignature;
 import eu.tailoringexpert.domain.DocumentSignatureResource;
+import eu.tailoringexpert.domain.FileResource;
+import eu.tailoringexpert.domain.MediaTypeProvider;
 import eu.tailoringexpert.domain.Note;
 import eu.tailoringexpert.domain.NoteResource;
-import eu.tailoringexpert.domain.SelectionVectorProfileResource;
-import eu.tailoringexpert.domain.Tailoring;
-import eu.tailoringexpert.domain.TailoringCatalogResource;
-import eu.tailoringexpert.domain.MediaTypeProvider;
 import eu.tailoringexpert.domain.PathContext;
 import eu.tailoringexpert.domain.PathContext.PathContextBuilder;
 import eu.tailoringexpert.domain.ResourceMapper;
 import eu.tailoringexpert.domain.ScreeningSheetResource;
+import eu.tailoringexpert.domain.SelectionVectorProfileResource;
 import eu.tailoringexpert.domain.SelectionVectorResource;
+import eu.tailoringexpert.domain.Tailoring;
+import eu.tailoringexpert.domain.TailoringCatalogChapterResource;
+import eu.tailoringexpert.domain.TailoringCatalogResource;
 import eu.tailoringexpert.domain.TailoringRequirementResource;
 import eu.tailoringexpert.domain.TailoringResource;
-import eu.tailoringexpert.domain.TailoringCatalogChapterResource;
 import eu.tailoringexpert.domain.TailoringState;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -76,8 +76,8 @@ import java.util.Optional;
 import java.util.function.Function;
 
 import static eu.tailoringexpert.domain.ResourceMapper.TAILORING;
-import static eu.tailoringexpert.domain.ResourceMapper.TAILORING_ATTACHMENTS;
 import static eu.tailoringexpert.domain.ResourceMapper.TAILORING_ATTACHMENT;
+import static eu.tailoringexpert.domain.ResourceMapper.TAILORING_ATTACHMENTS;
 import static eu.tailoringexpert.domain.ResourceMapper.TAILORING_CATALOG;
 import static eu.tailoringexpert.domain.ResourceMapper.TAILORING_CATALOG_CHAPTER;
 import static eu.tailoringexpert.domain.ResourceMapper.TAILORING_CATALOG_CHAPTER_REQUIREMENT;
@@ -95,7 +95,6 @@ import static eu.tailoringexpert.domain.ResourceMapper.TAILORING_SIGNATURE;
 import static eu.tailoringexpert.domain.ResourceMapper.TAILORING_SIGNATURE_FACULTY;
 import static eu.tailoringexpert.domain.ResourceMapper.TAILORING_STATE;
 import static org.springframework.hateoas.EntityModel.of;
-import static org.springframework.hateoas.server.mvc.BasicLinkBuilder.linkToCurrentMapping;
 import static org.springframework.http.HttpHeaders.ACCESS_CONTROL_EXPOSE_HEADERS;
 import static org.springframework.http.HttpHeaders.CONTENT_DISPOSITION;
 import static org.springframework.http.HttpStatus.NOT_FOUND;
@@ -328,7 +327,7 @@ public class TailoringController {
             .build()
             .parameter();
         parameters.put("name", file.getOriginalFilename());
-        ResponseEntity<EntityModel<Void>> result = created(UriTemplate.of(linkToCurrentMapping() + "/" + TAILORING_ATTACHMENT).expand(parameters))
+        ResponseEntity<EntityModel<Void>> result = created(UriTemplate.of("/" + TAILORING_ATTACHMENT).expand(parameters))
             .build();
 
         log.traceExit();
@@ -781,7 +780,7 @@ public class TailoringController {
             .project(project)
             .tailoring(tailoring);
 
-        ResponseEntity<EntityModel<Void>> result = created(mapper.createLink(ResourceMapper.REL_SELF, linkToCurrentMapping().toString(),
+        ResponseEntity<EntityModel<Void>> result = created(mapper.createLink(ResourceMapper.REL_SELF,
                 TAILORING_NOTE,
                 pathContext.note(addedNote.get().getNumber().toString()).build().parameter())
             .toUri())

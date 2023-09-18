@@ -21,11 +21,13 @@
  */
 package eu.tailoringexpert.renderer;
 
+import com.openhtmltopdf.extend.FSDOMMutator;
 import eu.tailoringexpert.domain.File;
 import org.apache.pdfbox.io.IOUtils;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.MockedStatic;
+import org.mockito.Mockito;
 
 import java.io.IOException;
 
@@ -41,13 +43,14 @@ class PDFEngineTest {
     @BeforeEach
     void beforeEach() {
         this.engine =
-            new PDFEngine(
-                () -> RendererRequestConfiguration.builder()
-                    .id("plattform")
-                    .name("TailoringExpert")
-                    .templateHome("baseuri")
-                    .build()
-            );
+                new PDFEngine(
+                        Mockito.mock(FSDOMMutator.class),
+                        () -> RendererRequestConfiguration.builder()
+                                .id("plattform")
+                                .name("TailoringExpert")
+                                .templateHome("baseuri")
+                                .build()
+                );
     }
 
     @Test
