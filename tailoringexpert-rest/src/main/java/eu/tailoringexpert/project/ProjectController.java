@@ -72,7 +72,6 @@ import static eu.tailoringexpert.domain.ResourceMapper.PROJECT_STATE;
 import static eu.tailoringexpert.domain.ResourceMapper.TAILORING;
 import static eu.tailoringexpert.domain.ResourceMapper.TAILORINGS;
 import static org.springframework.hateoas.EntityModel.of;
-import static org.springframework.hateoas.server.mvc.BasicLinkBuilder.linkToCurrentMapping;
 import static org.springframework.http.HttpHeaders.ACCESS_CONTROL_EXPOSE_HEADERS;
 import static org.springframework.http.HttpHeaders.CONTENT_DISPOSITION;
 import static org.springframework.http.HttpStatus.BAD_REQUEST;
@@ -136,7 +135,7 @@ public class ProjectController {
 
         CreateProjectTO project = projectService.createProject(version, request.getScreeningSheet().getData(), request.getSelectionVector(), request.getNote());
         ResponseEntity<Void> result = ResponseEntity
-            .created(mapper.createLink(ResourceMapper.REL_SELF, linkToCurrentMapping().toString(), PROJECT, Map.of("project", project.getProject())).toUri())
+            .created(mapper.createLink(ResourceMapper.REL_SELF, PROJECT, Map.of("project", project.getProject())).toUri())
             .build();
 
         log.traceExit();
@@ -258,7 +257,7 @@ public class ProjectController {
 
         ResponseEntity<EntityModel<ProjectResource>> result = projectService.copyProject(project, screeningSheet.getBytes())
             .map(copiedProject -> ResponseEntity
-                .created(mapper.createLink(ResourceMapper.REL_SELF, linkToCurrentMapping().toString(), PROJECT, Map.of("project", copiedProject.getIdentifier())).toUri())
+                .created(mapper.createLink(ResourceMapper.REL_SELF, PROJECT, Map.of("project", copiedProject.getIdentifier())).toUri())
                 .body(of(mapper.toResource(PathContext.builder(), copiedProject))))
             .orElseGet(() -> notFound().build());
 
@@ -290,7 +289,7 @@ public class ProjectController {
             .tailoring(tailoring.get().getName());
 
         ResponseEntity<EntityModel<Void>> result = ResponseEntity
-            .created(mapper.createLink(ResourceMapper.REL_SELF, linkToCurrentMapping().toString(),
+            .created(mapper.createLink(ResourceMapper.REL_SELF,
                     TAILORING,
                     pathContext.build().parameter())
                 .toUri())

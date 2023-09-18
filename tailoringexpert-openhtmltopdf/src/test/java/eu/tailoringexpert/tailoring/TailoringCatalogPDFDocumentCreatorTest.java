@@ -27,6 +27,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jdk8.Jdk8Module;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.fasterxml.jackson.module.paramnames.ParameterNamesModule;
+import com.openhtmltopdf.extend.FSDOMMutator;
 import eu.tailoringexpert.FileSaver;
 import eu.tailoringexpert.KatalogWebServerPortConsumer;
 import eu.tailoringexpert.domain.File;
@@ -39,6 +40,7 @@ import eu.tailoringexpert.renderer.HTMLTemplateEngine;
 import eu.tailoringexpert.renderer.PDFEngine;
 import eu.tailoringexpert.renderer.RendererRequestConfiguration;
 import eu.tailoringexpert.renderer.RendererRequestConfigurationSupplier;
+import eu.tailoringexpert.renderer.TailoringexpertDOMMutator;
 import eu.tailoringexpert.renderer.ThymeleafTemplateEngine;
 import io.github.cdimascio.dotenv.Dotenv;
 import lombok.extern.log4j.Log4j2;
@@ -84,7 +86,6 @@ class TailoringCatalogPDFDocumentCreatorTest {
     String templateHome;
     String assetHome;
     DRDProvider drdProviderMock;
-    DRDApplicablePredicate drdApplicablePredicate;
     ObjectMapper objectMapper;
     FileSaver fileSaver;
     TailoringCatalogPDFDocumentCreator creator;
@@ -141,15 +142,16 @@ class TailoringCatalogPDFDocumentCreatorTest {
             new SimpleEntry<>(F, unmodifiableCollection(asList("EOM")))
         )));
 
+        FSDOMMutator domMutator = new TailoringexpertDOMMutator();
         this.creator = new TailoringCatalogPDFDocumentCreator(
             templateEngine,
-            new PDFEngine(supplier),
+            new PDFEngine(domMutator, supplier),
             drdProviderMock
         );
     }
 
     @Test
-    void createDocument_ValidInput_FileCreated() throws Exception {
+    void createDocument_ImgAbsoulteAndWithUrl_FileCreated() throws Exception {
         // arrange
         Catalog<TailoringRequirement> catalog;
         try (InputStream is = this.getClass().getResourceAsStream("/tailoringcatalog.json")) {
@@ -202,4 +204,5 @@ class TailoringCatalogPDFDocumentCreatorTest {
         assertThat(actual).isNotNull();
         fileSaver.accept("tailoringcatalog.pdf", actual.getData());
     }
+
 }

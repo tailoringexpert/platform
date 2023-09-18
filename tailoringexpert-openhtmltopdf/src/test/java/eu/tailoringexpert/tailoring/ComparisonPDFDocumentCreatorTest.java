@@ -27,7 +27,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jdk8.Jdk8Module;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.fasterxml.jackson.module.paramnames.ParameterNamesModule;
-import com.openhtmltopdf.util.XRLog;
+import com.openhtmltopdf.extend.FSDOMMutator;
 import eu.tailoringexpert.FileSaver;
 import eu.tailoringexpert.domain.File;
 import eu.tailoringexpert.domain.Catalog;
@@ -39,9 +39,9 @@ import eu.tailoringexpert.renderer.HTMLTemplateEngine;
 import eu.tailoringexpert.renderer.PDFEngine;
 import eu.tailoringexpert.renderer.RendererRequestConfiguration;
 import eu.tailoringexpert.renderer.RendererRequestConfigurationSupplier;
+import eu.tailoringexpert.renderer.TailoringexpertDOMMutator;
 import eu.tailoringexpert.renderer.ThymeleafTemplateEngine;
 import io.github.cdimascio.dotenv.Dotenv;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.thymeleaf.spring6.SpringTemplateEngine;
@@ -51,7 +51,6 @@ import java.io.InputStream;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
-import java.util.logging.Level;
 
 import static java.util.Objects.nonNull;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -63,11 +62,6 @@ class ComparisonPDFDocumentCreatorTest {
     ObjectMapper objectMapper;
     FileSaver fileSaver;
     ComparisonPDFDocumentCreator creator;
-
-    @BeforeAll
-    static void beforeAll() {
-        XRLog.listRegisteredLoggers().forEach(logger -> XRLog.setLevel(logger, Level.FINEST));
-    }
 
     @BeforeEach
     void setup() {
@@ -92,12 +86,14 @@ class ComparisonPDFDocumentCreatorTest {
 
         RendererRequestConfigurationSupplier supplier = () -> RendererRequestConfiguration.builder()
             .id("unittest")
-            .name("TailoringExpert")
+            .name("plattform")
             .templateHome(this.templateHome)
             .build();
+
         HTMLTemplateEngine templateEngine = new ThymeleafTemplateEngine(springTemplateEngine, supplier);
 
-        this.creator = new ComparisonPDFDocumentCreator(templateEngine, new PDFEngine(supplier));
+        FSDOMMutator domMutator = new TailoringexpertDOMMutator();
+        this.creator = new ComparisonPDFDocumentCreator(templateEngine, new PDFEngine(domMutator, supplier));
     }
 
     @Test

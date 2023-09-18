@@ -41,14 +41,14 @@ public class KatalogWebServerPortConsumer<T extends Requirement> implements Cons
     @Override
     public void accept(Catalog<T> catalog) {
         catalog.allChapters()
-            .forEach(kapitel -> kapitel.getRequirements()
-                .forEach(anforderung -> {
-                    String text = anforderung.getText();
+            .forEach(chapter -> chapter.getRequirements()
+                .forEach(requirement -> {
+                    String text = requirement.getText();
                     if (text.contains("http://localhost/")) {
-                        anforderung.setText(text.replace("http://localhost/", "http://localhost:" + port + "/"));
+                        requirement.setText(text.replace("http://localhost/", "http://localhost:" + port + "/"));
                     }
 
-                    Reference reference = anforderung.getReference();
+                    Reference reference = requirement.getReference();
                     if (nonNull(reference)) {
                         Logo logo = reference.getLogo();
                         if (nonNull(logo)) {

@@ -11,7 +11,7 @@
     <parent>
         <groupId>eu.tailoringexpert</groupId>
         <artifactId>tailoringexpert-platform</artifactId>
-        <version>0.0.6</version>
+        <version>0.0.7</version>
     </parent>
 
     <properties>
@@ -59,7 +59,6 @@
                         <phase>package</phase>
                         <goals>
                             <goal>single</goal>
-                            <goal>directory</goal>
                         </goals>
                     </execution>
                 </executions>

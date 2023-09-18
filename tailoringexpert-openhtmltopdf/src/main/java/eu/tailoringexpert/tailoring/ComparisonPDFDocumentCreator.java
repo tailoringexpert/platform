@@ -72,7 +72,7 @@ public class ComparisonPDFDocumentCreator implements DocumentCreator {
             .forEach(chapter -> addChapter(chapter, requirements));
 
         String html = templateEngine.process(tailoring.getCatalog().getVersion() + "/comparision", parameter);
-        File result = pdfEngine.process(docId, html, tailoring.getCatalog().getVersion());
+        File result = pdfEngine.process(docId, html, tailoring.getCatalog().getVersion() + "/comparision");
 
         log.traceExit();
         return result;
