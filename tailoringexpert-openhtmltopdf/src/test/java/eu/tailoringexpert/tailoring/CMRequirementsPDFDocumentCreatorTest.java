@@ -29,9 +29,14 @@ import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.fasterxml.jackson.module.paramnames.ParameterNamesModule;
 import com.openhtmltopdf.extend.FSDOMMutator;
 import eu.tailoringexpert.FileSaver;
+import eu.tailoringexpert.domain.Catalog;
 import eu.tailoringexpert.domain.Chapter;
+import eu.tailoringexpert.domain.DRD;
 import eu.tailoringexpert.domain.DocumentSignature;
+import eu.tailoringexpert.domain.DocumentSignatureState;
 import eu.tailoringexpert.domain.File;
+import eu.tailoringexpert.domain.Phase;
+import eu.tailoringexpert.domain.Tailoring;
 import eu.tailoringexpert.domain.TailoringRequirement;
 import eu.tailoringexpert.renderer.HTMLTemplateEngine;
 import eu.tailoringexpert.renderer.PDFEngine;
@@ -39,11 +44,6 @@ import eu.tailoringexpert.renderer.RendererRequestConfiguration;
 import eu.tailoringexpert.renderer.RendererRequestConfigurationSupplier;
 import eu.tailoringexpert.renderer.TailoringexpertDOMMutator;
 import eu.tailoringexpert.renderer.ThymeleafTemplateEngine;
-import eu.tailoringexpert.domain.DRD;
-import eu.tailoringexpert.domain.DocumentSignatureState;
-import eu.tailoringexpert.domain.Catalog;
-import eu.tailoringexpert.domain.Phase;
-import eu.tailoringexpert.domain.Tailoring;
 import io.github.cdimascio.dotenv.Dotenv;
 import lombok.extern.log4j.Log4j2;
 import org.junit.jupiter.api.BeforeEach;
@@ -76,14 +76,14 @@ import static java.util.Objects.nonNull;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @Log4j2
-class CMPDFDocumentCreatorTest {
+class CMRequirementsPDFDocumentCreatorTest {
 
     String templateHome;
     String assetHome;
     ObjectMapper objectMapper;
     FileSaver fileSaver;
     BiFunction<Chapter<TailoringRequirement>, Collection<Phase>, Map<DRD, Set<String>>> drdProviderMock;
-    CMPDFDocumentCreator creator;
+    CMRequirementsPDFDocumentCreator creator;
 
     @BeforeEach
     void setup() {
@@ -125,7 +125,7 @@ class CMPDFDocumentCreatorTest {
         )));
 
         FSDOMMutator domMutator = new TailoringexpertDOMMutator();
-        this.creator = new CMPDFDocumentCreator(
+        this.creator = new CMRequirementsPDFDocumentCreator(
             templateEngine,
             new PDFEngine(domMutator, supplier),
             drdProviderMock
@@ -169,6 +169,6 @@ class CMPDFDocumentCreatorTest {
 
         // assert
         assertThat(actual).isNotNull();
-        fileSaver.accept("cm_chapters.pdf", actual.getData());
+        fileSaver.accept("cm_requirements.pdf", actual.getData());
     }
 }
