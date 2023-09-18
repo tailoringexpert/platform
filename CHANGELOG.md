@@ -4,6 +4,10 @@
 
 [Full Changelog](https://github.com/tailoringexpert/platform/compare/v0.0.7...v0.1.0)
 
+**Implemented enhancements:**
+
+- Provide base classes for generating PDF compliance documents per chapter and per requirement [\#222](https://github.com/tailoringexpert/platform/issues/222)
+
 ## [v0.0.7](https://github.com/tailoringexpert/platform/tree/v0.0.7) (09.18.2023)
 
 [Full Changelog](https://github.com/tailoringexpert/platform/compare/v0.0.6...v0.0.7)
