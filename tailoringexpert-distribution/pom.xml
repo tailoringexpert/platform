@@ -47,7 +47,6 @@
                         <phase>package</phase>
                         <goals>
                             <goal>single</goal>
-<!--                            <goal>directory</goal>-->
                         </goals>
                     </execution>
                 </executions>
