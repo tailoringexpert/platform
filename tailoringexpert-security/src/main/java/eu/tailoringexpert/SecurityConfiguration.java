@@ -65,7 +65,6 @@ public class SecurityConfiguration {
     @Bean
     @SuppressWarnings("PMD.SignatureDeclareThrowsException")
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-        http.csrf(csrf -> csrf.disable());
         http.authorizeHttpRequests(requests -> requests.anyRequest().permitAll());
         http.cors(Customizer.withDefaults());
         http.headers(headers -> headers
