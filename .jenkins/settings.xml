@@ -18,9 +18,16 @@
                 <tailoringexpert-releases.repository>${NEXUS_RELEASEURL}</tailoringexpert-releases.repository>
             </properties>
         </profile>
+        <profile>
+            <id>sonar</id>
+            <properties>
+				<sonar.host>${SONAR_HOSTURL}</sonar.host>
+				<sonar.token>${SONAR_TOKEN}</sonar.token>
+            </properties>
+        </profile>
     </profiles>
 
     <activeProfiles>
-        <activeProfile>nexus</activeProfile>
+        <activeProfile>nexus,sonar</activeProfile>
     </activeProfiles>
 </settings>
