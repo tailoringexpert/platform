@@ -140,7 +140,7 @@ public class TailoringServiceImpl implements TailoringService {
             return empty();
         }
 
-        BigInteger hash = new BigInteger(1, MessageDigest.getInstance("MD5").digest(data));
+        BigInteger hash = new BigInteger(1, MessageDigest.getInstance("SHA-256").digest(data));
         File file = File.builder()
             .name(filename)
             .data(data)
