@@ -35,6 +35,8 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.time.ZonedDateTime;
+import java.util.Collection;
+import java.util.List;
 import java.util.Optional;
 
 import static java.util.Arrays.asList;
@@ -312,5 +314,39 @@ class JPACatalogServiceRepositoryTest {
             .isPresent();
         verify(baseCatalogRepositoryMock, times(1)).findCatalogByVersion("8.2.1");
         verify(mapperMock, times(1)).limitCatalogValidity(projection);
+    }
+
+    @Test
+    void getCatalogVersions_CatalogVersionExists_CatalogVersionListReturned() {
+        // arrange
+        BaseCatalogVersionProjection catalog = new BaseCatalogVersionProjection() {
+
+            @Override
+            public String getVersion() {
+                return "8.2.1";
+            }
+
+            @Override
+            public ZonedDateTime getValidFrom() {
+                return ZonedDateTime.now();
+            }
+
+            @Override
+            public ZonedDateTime getValidUntil() {
+                return null;
+            }
+        };
+        given(baseCatalogRepositoryMock.findCatalogVersionBy())
+            .willReturn(List.of(catalog));
+        given(mapperMock.getCatalogVersions(catalog))
+            .willReturn(CatalogVersion.builder().build());
+
+        // act
+        Collection<CatalogVersion> actual = repository.getCatalogVersions();
+
+        // assert
+        assertThat(actual).hasSize(1);
+        verify(baseCatalogRepositoryMock, times(1)).findCatalogVersionBy();
+        verify(mapperMock, times(1)).getCatalogVersions(catalog);
     }
 }

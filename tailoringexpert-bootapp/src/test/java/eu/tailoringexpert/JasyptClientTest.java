@@ -27,10 +27,17 @@ import eu.tailoringexpert.JasyptClient.JasyptConfig;
 import eu.tailoringexpert.JasyptClient.JasyptParameter;
 import lombok.extern.log4j.Log4j2;
 import org.junit.jupiter.api.Test;
+import org.mockito.MockedStatic;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatNoException;
 import static org.assertj.core.api.Assertions.catchThrowable;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.mockStatic;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 
 @Log4j2
 class JasyptClientTest {
@@ -126,4 +133,33 @@ class JasyptClientTest {
         assertThat(actual).isEqualTo("PZxLBL7m8HSoK2EJWv7P");
     }
 
+    @Test
+    void main_ParametersAvailable_AllParametersEncrypted() throws Exception {
+        // arrange
+        String[] args = new String[]{"--parameter", "test1234", "--parameter", "1234test", "--password", "DasIstDasHausVomNikolaus"};
+        JasyptClient clientMock = mock(JasyptClient.class);
+
+        // act
+        try (MockedStatic<JasyptClient> client = mockStatic(JasyptClient.class)) {
+            client.when(() -> JasyptClient.createInstance()).thenReturn(clientMock);
+            client.when(() -> JasyptClient.main(any())).thenCallRealMethod();
+            JasyptClient.main(args);
+        }
+
+        // assert
+        verify(clientMock, times(1)).encrypt(any(JasyptConfig.class), eq("test1234"));
+        verify(clientMock, times(1)).encrypt(any(JasyptConfig.class), eq("1234test"));
+    }
+
+    @Test
+    void main_ParameteNotAvailable_ExceptionThrown() throws Exception {
+        // arrange
+        String[] args = new String[]{"--password", "DasIstDasHausVomNikolaus"};
+
+        // act
+        Throwable actual = catchThrowable(() -> JasyptClient.main(args));
+
+        // assert
+        assertThat(actual).isInstanceOf(ParameterException.class);
+    }
 }
