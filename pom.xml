@@ -90,6 +90,7 @@
 
         <sonar.projectKey>${project.groupId}:${project.artifactId}</sonar.projectKey>
         <sonar.projectName>${sonar.projectKey}</sonar.projectName>
+        <sonar.exclusions>**/*Configuration.java, **/App.java</sonar.exclusions>
 
         <!-- plugins -->
         <jacoco-maven-plugin.version>0.8.10</jacoco-maven-plugin.version>

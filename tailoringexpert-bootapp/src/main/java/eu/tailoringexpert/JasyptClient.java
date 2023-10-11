@@ -42,10 +42,14 @@ import java.util.List;
 public class JasyptClient {
 
 
+    public static JasyptClient createInstance() {
+        return new JasyptClient();
+    }
+
     public static void main(String[] args) {
         JasyptConfig config = new JasyptConfig();
         JasyptParameter parameter = new JasyptParameter();
-        JasyptClient client = new JasyptClient();
+        JasyptClient client = createInstance();
 
         JCommander.newBuilder()
             .addObject(new Object[]{config, parameter})
