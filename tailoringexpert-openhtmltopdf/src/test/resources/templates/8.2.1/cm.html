@@ -203,7 +203,7 @@
         </tr>
         </thead>
         <tbody>
-        <tr th:each="chapter : ${chapters}" th:classappend="${chapter.level<3}?'kapitelEbene' + ${chapter.level}">
+        <tr th:each="chapter : ${chapters}" th:if="${not chapter.requirement}" th:classappend="${chapter.level<3}?'kapitelEbene' + ${chapter.level}">
             <td th:utext="${chapter.number}">Referenz</td>
             <td th:utext="${chapter.name}" th:attrappend="colspan=${chapter.level<3}?4">Position</td>
             <td th:if="${chapter.level}>2"></td>

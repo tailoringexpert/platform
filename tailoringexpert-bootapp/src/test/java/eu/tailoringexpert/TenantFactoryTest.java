@@ -30,8 +30,8 @@ import org.springframework.jdbc.datasource.DriverManagerDataSource;
 
 import javax.sql.DataSource;
 import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.OutputStream;
 import java.lang.reflect.Field;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -62,7 +62,7 @@ class TenantFactoryTest {
     @AfterEach
     void afterEach() throws Exception {
         Field field = TenantContext.class.getDeclaredField("registeredTenants");
-        field.setAccessible(true);
+        field.setAccessible(true); //NOPMD - suppressed AvoidAccessibilityAlteration - TODO need to unset tenants
         field.set(null, new HashMap<>());
         field.setAccessible(false);
     }
@@ -73,7 +73,7 @@ class TenantFactoryTest {
         String tenantConfigRoot = Paths.get("tenants").toAbsolutePath().toString();
 
         // act
-        Map<String, String> actual = null;
+        Map<String, String> actual;
         try (MockedStatic<TenantFactory> tf = mockStatic(TenantFactory.class)) {
             tf.when(() -> TenantFactory.findByFileExtension(eq(Paths.get(tenantConfigRoot)), eq(".properties")))
                 .thenReturn(Stream.<Path>empty());
@@ -94,7 +94,7 @@ class TenantFactoryTest {
         Properties properties = createProperties();
 
         // act
-        Map<String, String> actual = null;
+        Map<String, String> actual;
         try (MockedStatic<TenantFactory> tf = mockStatic(TenantFactory.class)) {
             tf.when(() -> TenantFactory.findByFileExtension(eq(Paths.get(tenantConfigRoot)), eq(".properties")))
                 .thenReturn(Stream.of(file.toPath()));
@@ -118,7 +118,7 @@ class TenantFactoryTest {
         Properties properties = createProperties();
 
         // act
-        DataSource actual = null;
+        DataSource actual;
         try (MockedStatic<TenantFactory> tf = mockStatic(TenantFactory.class)) {
             tf.when(() -> TenantFactory.findByFileExtension(eq(Paths.get(tenantConfigRoot)), eq(".properties")))
                 .thenReturn(Stream.of(file.toPath()));
@@ -159,10 +159,12 @@ class TenantFactoryTest {
         // arrange
         File propertiesFile = createFile();
 
-        FileOutputStream fos = new FileOutputStream(propertiesFile);
-        createProperties().store(fos, "for test");
+        try (OutputStream fos = Files.newOutputStream(propertiesFile.toPath())) {
+            createProperties().store(fos, "for test");
+        }
+
         // act
-        Properties actual = null;
+        Properties actual;
         try (MockedStatic<TenantFactory> tf = mockStatic(TenantFactory.class)) {
             tf.when(() -> TenantFactory.loadProperties(any(), any())).thenCallRealMethod();
             actual = TenantFactory.loadProperties(propertiesFile, this.encryptor);
@@ -219,7 +221,7 @@ class TenantFactoryTest {
         properties.put("spring.datasource.username", "tailoringexpert_demo");
         properties.put("spring.datasource.password", "ENC(4qBa1ScLN/2lSdLpjRcdqnBtlN5zQrVW54n04C3f90U=)");
 
-        properties.store(new FileOutputStream(result), "unittest");
+        properties.store(Files.newOutputStream(result.toPath()), "unittest");
         return result;
     }
 
