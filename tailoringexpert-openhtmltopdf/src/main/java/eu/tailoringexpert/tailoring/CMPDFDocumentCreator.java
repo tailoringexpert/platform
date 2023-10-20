@@ -127,6 +127,13 @@ public class CMPDFDocumentCreator implements DocumentCreator {
                                    Collection<CMElement> rows,
                                    Map<String, Object> placeholders) {
         // hook for adding also requirements to cm instead of "only" chapters
+        requirements.forEach(requirement -> rows.add(CMElement.builder()
+            .level(level)
+            .number(xhtml(requirement.getPosition(), emptyMap()))
+            .name(xhtml(requirement.getText(), placeholders))
+            .requirement(true)
+            .build())
+        );
     }
 
     /**
