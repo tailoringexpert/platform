@@ -47,7 +47,6 @@ import static lombok.AccessLevel.PRIVATE;
 @NoArgsConstructor(access = PRIVATE)
 public class TenantFactory {
 
-    @SneakyThrows
     public static Map<String, String> tenants(
         final String tenantConfigRoot,
         final StringEncryptor encryptor) {

@@ -31,7 +31,9 @@ import org.springframework.jdbc.datasource.DriverManagerDataSource;
 import javax.sql.DataSource;
 import java.io.File;
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.lang.reflect.Field;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.HashMap;
@@ -40,8 +42,10 @@ import java.util.Properties;
 import java.util.stream.Stream;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.catchThrowable;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.mockStatic;
 
 class TenantFactoryTest {
@@ -153,7 +157,6 @@ class TenantFactoryTest {
     @Test
     void loadProperties_FileExits_PropertiesReturned() throws Exception {
         // arrange
-        String tenantConfigRoot = Paths.get("tenants").toAbsolutePath().toString();
         File propertiesFile = createFile();
 
         FileOutputStream fos = new FileOutputStream(propertiesFile);
@@ -168,6 +171,39 @@ class TenantFactoryTest {
         // assert
         assertThat(actual).isNotNull();
         assertThat(actual.getProperty("id")).isEqualTo("demo");
+    }
+
+    @Test
+    void findByFileExtension_FileExceptionMocked_ExceptionThrown() {
+        // arrange
+        Path path = Paths.get("tenants");
+
+        // act
+        Throwable actual;
+        try (MockedStatic<Files> files = mockStatic(Files.class)) {
+            files.when(() -> Files.walk(path, 1)).thenThrow(new IOException());
+            actual = catchThrowable(() -> TenantFactory.findByFileExtension(path, ".properties"));
+        }
+
+        // assert
+        assertThat(actual).isInstanceOf(IOException.class);
+    }
+
+    @Test
+    void loadProperties_FileExceptionMocked_ExceptionThrown() {
+        // arrange
+        File file = Paths.get("tenants", "test.properties").toFile();
+        StandardPBEStringEncryptor encryptorMock = mock(StandardPBEStringEncryptor.class);
+
+        // act
+        Throwable actual;
+        try (MockedStatic<Files> files = mockStatic(Files.class)) {
+            files.when(() -> Files.newInputStream(any())).thenThrow(new IOException());
+            actual = catchThrowable(() -> TenantFactory.loadProperties(file, encryptorMock));
+        }
+
+        // assert
+        assertThat(actual).isInstanceOf(IOException.class);
     }
 
     private File createFile() throws Exception {
