@@ -52,7 +52,7 @@ import static jakarta.persistence.GenerationType.TABLE;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-@Entity(name = "TailoringKatalog")
+@Entity(name = "TailoringCatalog")
 @Table(name = "TAILORINGCATALOG")
 public class TailoringCatalogEntity implements Serializable {
     private static final long serialVersionUID = 3354894662905267412L;
