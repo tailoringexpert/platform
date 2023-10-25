@@ -106,7 +106,7 @@
         <dependency-check-maven.phase>install</dependency-check-maven.phase>
         <maven-gpg-plugin.version>3.0.1</maven-gpg-plugin.version>
         <maven-javadoc-plugin.version>3.6.0</maven-javadoc-plugin.version>
-        <maven-licence-plugin.verision>2.2.0</maven-licence-plugin.verision>
+        <maven-licence-plugin.verision>2.3.0</maven-licence-plugin.verision>
         <maven-resources-plugin.version>3.3.1</maven-resources-plugin.version>
         <maven-source-plugin.version>3.3.0</maven-source-plugin.version>
         <maven-surefire-plugin.version>3.2.1</maven-surefire-plugin.version>
