@@ -26,12 +26,33 @@ pipeline {
         NEXUS_CREDENTIALS = credentials('NEXUS_CREDENTIALS')
 		SONAR_TOKEN = credentials('TAILORINGEXPERT_SONAR_TOKEN')
 		GIT_REPOSITORY = 'tailoringexpert/platform.git'	
+        MVN_SKIP_MODULES = '--projects !tailoringexpert-distribution'
+        
+        // other (external) defined env vars
+        // M2_VOLUME maven      repoository volume
+        // GPG_VOLUME           gpg key volume
+        // GIT_COMMITTER_NAME   name of the git committer
+        // GIT_COMMITTER_EMAIL  mail of the git committer
+        // NEXUS_SNAPSHOTURL    url to deploy snapshots to
+        // NEXUS_RELEASEURL     url to deploy releases to
     }
 
     agent {
 		docker {
 			image 'tailoringexpert/mvn-openjdk-17'
-			args '-v $M2_VOLUME:/home/.m2 -v $GPG_VOLUME:/home/.gnupg -e GIT_CREDENTIALS=$GIT_CREDENTIALS -e GIT_COMMITTER_NAME=$GIT_COMMITTER_NAME -e GIT_COMMITTER_EMAIL=$GIT_COMMITTER_EMAIL -e NEXUS_SNAPSHOTURL=$NEXUS_SNAPSHOTURL -e NEXUS_RELEASEURL=$NEXUS_RELEASEURL -e NEXUS_CREDENTIALS_USR=$NEXUS_CREDENTIALS_USR -e NEXUS_CREDENTIALS_PSW=$NEXUS_CREDENTIALS_PSW -e GPG_SIGNKEY=$GPG_SIGNKEY -e SONAR_TOKEN=$SONAR_TOKEN'
+			args '''
+                -v $M2_VOLUME:/home/.m2 \
+                -v $GPG_VOLUME:/home/.gnupg\
+                -e GIT_CREDENTIALS=$GIT_CREDENTIALS \
+                -e GIT_COMMITTER_NAME=$GIT_COMMITTER_NAME \
+                -e GIT_COMMITTER_EMAIL=$GIT_COMMITTER_EMAIL \
+                -e NEXUS_SNAPSHOTURL=$NEXUS_SNAPSHOTURL \
+                -e NEXUS_RELEASEURL=$NEXUS_RELEASEURL \
+                -e NEXUS_CREDENTIALS_USR=$NEXUS_CREDENTIALS_USR \
+                -e NEXUS_CREDENTIALS_PSW=$NEXUS_CREDENTIALS_PSW \
+                -e GPG_SIGNKEY=$GPG_SIGNKEY \
+                -e SONAR_TOKEN=$SONAR_TOKEN
+            '''
        }	   
     }
 
@@ -42,20 +63,26 @@ pipeline {
     stages {
         stage('checkout') {
              steps {
+                script {
+                    checkoutBranch = params.RELEASE_BUILD ? 'develop' : params.BRANCH
+                    currentBuild.displayName = "#${env.BUILD_ID} | " + (params.RELEASE_BUILD ?  "RELEASE " : ("${checkoutBranch}" + (params.DEPLOY ? " (deploy)" : "")))
+                }
+                sh "echo checking out ${checkoutBranch}"             
+             
 				cleanWs()
-                git branch: params.BRANCH, url: env.GIT_URL, credentialsId: GIT_CREDENTIALS_ID
+                git branch: "${checkoutBranch}", url: env.GIT_URL, credentialsId: GIT_CREDENTIALS_ID
              }
         }
 
         stage('build') {
             steps {
-				sh "mvn --settings .jenkins/settings.xml --projects !tailoringexpert-distribution -DskipTests clean compile"
+				sh "mvn --settings .jenkins/settings.xml -DskipTests ${MVN_SKIP_MODULES} clean compile"
             }
         }
 
         stage('verify') {
             steps {
-				sh "mvn --settings .jenkins/settings.xml --projects !tailoringexpert-distribution verify"
+				sh "mvn --settings .jenkins/settings.xml ${MVN_SKIP_MODULES} verify"
             }
 
             post {
@@ -81,7 +108,7 @@ pipeline {
 		stage("quality gate") {
             steps {
 			    withSonarQubeEnv('default') {
-	            	sh "mvn --settings .jenkins/settings.xml --projects !tailoringexpert-distribution sonar:sonar"
+	            	sh "mvn --settings .jenkins/settings.xml ${MVN_SKIP_MODULES} sonar:sonar"
                 }
               timeout(time: 1, unit: 'HOURS') {
                 waitForQualityGate abortPipeline: true, credentialsId: '${SONAR_TOKEN}'
@@ -108,7 +135,7 @@ pipeline {
 				sh('git config commit.gpgsign true')
 				sh('git config user.signingkey $GPG_SIGNKEY')
 				
-				sh "mvn --settings .jenkins/settings.xml' -B -Dresume=false -DargLine=' -DprocessAllModules --settings .jenkins/settings.xml' -DgpgSignTag=true -DgpgSignCommit=true  gitflow:release  -DpostReleaseGoals=deploy"
+				sh "mvn --settings .jenkins/settings.xml -B -Dresume=false -DargLine='-DprocessAllModules --settings .jenkins/settings.xml' -DskipTestProject=true  -DgpgSignTag=true -DgpgSignCommit=true -DpostReleaseGoals=deploy gitflow:release" 
 
 				// remove credentials
 				sh('git remote set-url origin $GIT_URL')
@@ -126,7 +153,7 @@ pipeline {
             steps {
                 script {
 					if (params.DEPLOY) {
-						sh 'mvn --settings .jenkins/settings.xml -DskipTests deploy'
+						sh "mvn --settings .jenkins/settings.xml -DskipTests deploy"
 					} else {
 						sh 'exit 0'
 					}
