@@ -25,7 +25,7 @@ import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import org.springframework.cache.Cache;
 import org.springframework.cache.CacheManager;
-import org.springframework.lang.Nullable;
+import org.springframework.cache.support.NoOpCache;
 
 import java.util.Collection;
 import java.util.Collections;
@@ -35,6 +35,7 @@ import java.util.Set;
 
 import static java.util.Collections.EMPTY_SET;
 import static java.util.Objects.isNull;
+import static java.util.Objects.nonNull;
 
 @RequiredArgsConstructor
 public class TenantCacheManager implements CacheManager {
@@ -43,11 +44,11 @@ public class TenantCacheManager implements CacheManager {
     private Map<String, CacheManager> cacheManagers;
 
     @Override
-    @Nullable
     public Cache getCache(String name) {
         CacheManager cacheManager = cacheManagers.get(TenantContext.getCurrentTenant());
-        return cacheManager.getCache(name);
+        return nonNull(cacheManager) ? cacheManager.getCache(name) : new NoOpCache(name);
     }
+
 
     @Override
     public Collection<String> getCacheNames() {

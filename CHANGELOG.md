@@ -1,5 +1,18 @@
 # Changelog
 
+## [v0.1.1](https://github.com/tailoringexpert/platform/tree/v0.1.1) (11.08.2023)
+
+[Full Changelog](https://github.com/tailoringexpert/platform/compare/v0.1.0...v0.1.1)
+
+**Closed issues:**
+
+- Create Jenkinsfile [\#237](https://github.com/tailoringexpert/platform/issues/237)
+- German entity names [\#233](https://github.com/tailoringexpert/platform/issues/233)
+- Add all requirements to datatset for pdf compliance matrix creation [\#232](https://github.com/tailoringexpert/platform/issues/232)
+- Fix sonar security hotspot findings [\#227](https://github.com/tailoringexpert/platform/issues/227)
+- Integrate sonar in maven build [\#226](https://github.com/tailoringexpert/platform/issues/226)
+- Prepare new development version [\#223](https://github.com/tailoringexpert/platform/issues/223)
+
 ## [v0.1.0](https://github.com/tailoringexpert/platform/tree/v0.1.0) (09.18.2023)
 
 [Full Changelog](https://github.com/tailoringexpert/platform/compare/v0.0.7...v0.1.0)

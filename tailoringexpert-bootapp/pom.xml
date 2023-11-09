@@ -12,7 +12,7 @@
     <parent>
         <groupId>eu.tailoringexpert</groupId>
         <artifactId>tailoringexpert-platform</artifactId>
-        <version>0.1.0</version>
+        <version>0.1.1</version>
     </parent>
 
     <dependencies>
@@ -120,6 +120,7 @@
                 <artifactId>spring-boot-maven-plugin</artifactId>
             </plugin>
             <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-resources-plugin</artifactId>
                 <executions>
                     <execution>

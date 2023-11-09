@@ -47,7 +47,6 @@ import static lombok.AccessLevel.PRIVATE;
 @NoArgsConstructor(access = PRIVATE)
 public class TenantFactory {
 
-    @SneakyThrows
     public static Map<String, String> tenants(
         final String tenantConfigRoot,
         final StringEncryptor encryptor) {
@@ -108,7 +107,7 @@ public class TenantFactory {
         return result;
     }
 
-    private static DataSource buildDataSource(final Properties properties) {
+    static DataSource buildDataSource(final Properties properties) {
         final DriverManagerDataSource result = new DriverManagerDataSource();
         result.setDriverClassName(properties.getProperty("spring.datasource.driver-class-name"));
         result.setUrl(properties.getProperty("spring.datasource.url"));
@@ -124,7 +123,7 @@ public class TenantFactory {
      * @return loaded encrypted properties
      */
     @SneakyThrows
-    private static Properties loadProperties(final File file, final StringEncryptor encryptor) {
+    static Properties loadProperties(final File file, final StringEncryptor encryptor) {
         final Properties properties = new Properties();
         try (InputStream fis = newInputStream(file.toPath())) {
             properties.load(fis);
@@ -133,7 +132,7 @@ public class TenantFactory {
     }
 
     @SneakyThrows
-    private static Stream<Path> findByFileExtension(Path path, String fileExtension) {
+    static Stream<Path> findByFileExtension(Path path, String fileExtension) {
         return Files.walk(path, 1)
             .filter(p -> p.getFileName().toString().endsWith(fileExtension));
     }
