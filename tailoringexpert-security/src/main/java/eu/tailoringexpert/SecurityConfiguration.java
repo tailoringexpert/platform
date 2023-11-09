@@ -32,6 +32,7 @@ import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
+
 import static java.util.Collections.singletonList;
 import static java.util.List.of;
 import static org.springframework.security.web.header.writers.XXssProtectionHeaderWriter.HeaderValue.ENABLED;
@@ -65,13 +66,14 @@ public class SecurityConfiguration {
     @Bean
     @SuppressWarnings("PMD.SignatureDeclareThrowsException")
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-        http.csrf(csrf -> csrf.disable());
-        http.authorizeHttpRequests(requests -> requests.anyRequest().permitAll());
-        http.cors(Customizer.withDefaults());
-        http.headers(headers -> headers
-            .xssProtection(xss -> xss.headerValue(ENABLED))
-            .contentSecurityPolicy(policy -> policy.policyDirectives("script-src 'self'"))
-        );
+        http
+            .csrf(csrf -> csrf.disable())
+            .authorizeHttpRequests(requests -> requests.anyRequest().permitAll())
+            .cors(Customizer.withDefaults())
+            .headers(headers -> headers
+                .xssProtection(xss -> xss.headerValue(ENABLED))
+                .contentSecurityPolicy(policy -> policy.policyDirectives("script-src 'self'"))
+            );
         return http.build();
     }
 

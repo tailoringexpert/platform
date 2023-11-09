@@ -238,13 +238,6 @@ public class TailoringConfiguration {
         return new CMPDFDocumentCreator(templateEngine, pdfEngine, drdProvider);
     }
 
-    @Bean
-    DocumentCreator cmRequirementsPDFDocumentCreator(
-        @NonNull HTMLTemplateEngine templateEngine,
-        @NonNull PDFEngine pdfEngine,
-        @NonNull BiFunction<Chapter<TailoringRequirement>, Collection<Phase>, Map<DRD, Set<String>>> drdProvider) {
-        return new CMRequirementsPDFDocumentCreator(templateEngine, pdfEngine, drdProvider);
-    }
 
     private <T> Map<String, T> getTenantImplementierungen(ListableBeanFactory beanFactory, Class<T> clz) {
         return beanFactory.getBeansOfType(clz)

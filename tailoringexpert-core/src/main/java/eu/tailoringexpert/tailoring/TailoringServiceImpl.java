@@ -68,6 +68,8 @@ import static java.util.Optional.ofNullable;
 @RequiredArgsConstructor
 public class TailoringServiceImpl implements TailoringService {
 
+    public static final String MSG_TAILORING_DOES_NOT_EXISTS = "Tailoring does not exists";
+
     @NonNull
     private TailoringServiceRepository repository;
 
@@ -135,12 +137,12 @@ public class TailoringServiceImpl implements TailoringService {
         log.traceEntry(() -> project, () -> tailoring, () -> filename);
 
         if (!repository.existsTailoring(project, tailoring)) {
-            log.error("Tailoring does not exists");
+            log.error(MSG_TAILORING_DOES_NOT_EXISTS);
             log.traceExit();
             return empty();
         }
 
-        BigInteger hash = new BigInteger(1, MessageDigest.getInstance("MD5").digest(data));
+        BigInteger hash = new BigInteger(1, MessageDigest.getInstance("SHA-256").digest(data));
         File file = File.builder()
             .name(filename)
             .data(data)
@@ -162,7 +164,7 @@ public class TailoringServiceImpl implements TailoringService {
 
         Optional<Tailoring> oTailoring = repository.getTailoring(project, tailoring);
         if (oTailoring.isEmpty()) {
-            log.error("Tailoring does not exists");
+            log.error(MSG_TAILORING_DOES_NOT_EXISTS);
             log.traceExit();
             return empty();
         }
@@ -182,7 +184,7 @@ public class TailoringServiceImpl implements TailoringService {
 
         Optional<Tailoring> oTailoring = repository.getTailoring(project, tailoring);
         if (oTailoring.isEmpty()) {
-            log.error("Tailoring does not exists");
+            log.error(MSG_TAILORING_DOES_NOT_EXISTS);
             log.traceExit();
             return empty();
         }
@@ -200,7 +202,7 @@ public class TailoringServiceImpl implements TailoringService {
 
         Optional<Tailoring> oTailoring = repository.getTailoring(project, tailoring);
         if (oTailoring.isEmpty()) {
-            log.error("Tailoring does not exists");
+            log.error(MSG_TAILORING_DOES_NOT_EXISTS);
             log.traceExit();
             return empty();
         }
@@ -236,7 +238,7 @@ public class TailoringServiceImpl implements TailoringService {
 
         Optional<Tailoring> oTailoring = repository.getTailoring(project, tailoring);
         if (oTailoring.isEmpty()) {
-            log.info("Tailoring does not exists");
+            log.info(MSG_TAILORING_DOES_NOT_EXISTS);
             return log.traceExit(empty());
         }
 
@@ -252,7 +254,7 @@ public class TailoringServiceImpl implements TailoringService {
 
         Optional<Tailoring> oTailoring = repository.getTailoring(project, tailoring);
         if (oTailoring.isEmpty()) {
-            log.info("Tailoring does not exists");
+            log.info(MSG_TAILORING_DOES_NOT_EXISTS);
             return log.traceExit(empty());
         }
 
@@ -268,7 +270,7 @@ public class TailoringServiceImpl implements TailoringService {
 
         Optional<Tailoring> oTailoring = repository.getTailoring(project, tailoring);
         if (oTailoring.isEmpty()) {
-            log.info("Tailoring does not exists");
+            log.info(MSG_TAILORING_DOES_NOT_EXISTS);
             return log.traceExit(empty());
         }
 
@@ -284,7 +286,7 @@ public class TailoringServiceImpl implements TailoringService {
 
         Optional<Tailoring> oTailoring = repository.getTailoring(project, tailoring);
         if (oTailoring.isEmpty()) {
-            log.info("Tailoring does not exists");
+            log.info(MSG_TAILORING_DOES_NOT_EXISTS);
             return log.traceExit(empty());
         }
 

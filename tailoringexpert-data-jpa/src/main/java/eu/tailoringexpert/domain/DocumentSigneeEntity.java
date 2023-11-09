@@ -43,7 +43,7 @@ import static jakarta.persistence.GenerationType.TABLE;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-@Entity(name = "DokumentZeichner")
+@Entity(name = "DocumentSignee")
 @Table(name = "DOCUMENTSIGNEE")
 public class DocumentSigneeEntity implements Serializable {
     private static final long serialVersionUID = 2199876579780053096L;
