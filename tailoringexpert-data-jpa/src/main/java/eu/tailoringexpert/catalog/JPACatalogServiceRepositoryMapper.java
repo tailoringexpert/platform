@@ -22,11 +22,13 @@
 package eu.tailoringexpert.catalog;
 
 import eu.tailoringexpert.TailoringexpertMapperConfig;
+import eu.tailoringexpert.domain.BaseCatalogChapterEntity;
 import eu.tailoringexpert.domain.BaseCatalogEntity;
 import eu.tailoringexpert.domain.BaseCatalogVersionProjection;
 import eu.tailoringexpert.domain.BaseRequirement;
 import eu.tailoringexpert.domain.Catalog;
 import eu.tailoringexpert.domain.CatalogVersion;
+import eu.tailoringexpert.domain.Chapter;
 import eu.tailoringexpert.domain.DRDEntity;
 import eu.tailoringexpert.domain.LogoEntity;
 import eu.tailoringexpert.repository.DRDRepository;
@@ -34,8 +36,11 @@ import eu.tailoringexpert.repository.LogoRepository;
 import eu.tailoringexpert.domain.DRD;
 import eu.tailoringexpert.domain.Logo;
 import lombok.Setter;
+import org.mapstruct.AfterMapping;
+import org.mapstruct.Builder;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
+import org.mapstruct.MappingTarget;
 import org.mapstruct.Qualifier;
 
 import java.lang.annotation.Retention;
@@ -50,7 +55,10 @@ import static java.util.Objects.nonNull;
  *
  * @author Michael Bädorf
  */
-@Mapper(config = TailoringexpertMapperConfig.class)
+@Mapper(
+    config = TailoringexpertMapperConfig.class,
+    builder = @Builder(disableBuilder = true)
+)
 public abstract class JPACatalogServiceRepositoryMapper {
 
     @Setter
@@ -81,10 +89,19 @@ public abstract class JPACatalogServiceRepositoryMapper {
 
     public abstract CatalogVersion getCatalogVersions(BaseCatalogVersionProjection entity);
 
+    public abstract BaseCatalogChapterEntity createCatalog(Chapter<BaseRequirement> domain);
+
+    @AfterMapping
+    public void addRequirementsIdentifier(@MappingTarget BaseCatalogChapterEntity entity) {
+        if (nonNull(entity.getRequirements())) {
+            entity.getRequirements()
+                .forEach(requirement -> requirement.setNumber(entity.getNumber() + "." + requirement.getPosition()));
+        }
+    }
+
     @Qualifier
     @Target(METHOD)
     @Retention(CLASS)
     public @interface DoIgnore {
     }
-
 }
