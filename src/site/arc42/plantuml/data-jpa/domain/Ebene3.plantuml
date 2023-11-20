@@ -63,6 +63,7 @@ package domain {
         id : Long <<PK>>
         text : String
         postion : String
+        number: String
     }
     BaseRequirementEntity --> "0..1" ReferenceEntity : reference
     BaseRequirementEntity --> "0..*" Phase : phases <<ordered>>
