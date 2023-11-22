@@ -32,20 +32,23 @@ import eu.tailoringexpert.domain.ScreeningSheetEntity;
 import eu.tailoringexpert.domain.ScreeningSheetParameterEntity;
 import eu.tailoringexpert.domain.SelectionVector;
 import eu.tailoringexpert.domain.Tailoring;
+import eu.tailoringexpert.domain.TailoringCatalogChapterEntity;
 import eu.tailoringexpert.domain.TailoringRequirement;
 import eu.tailoringexpert.domain.TailoringEntity;
 import eu.tailoringexpert.domain.TailoringCatalogEntity;
+import eu.tailoringexpert.domain.TailoringRequirementEntity;
 import eu.tailoringexpert.domain.TailoringState;
 import eu.tailoringexpert.repository.LogoRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import java.util.Arrays;
-import java.util.List;
 
 import static eu.tailoringexpert.domain.Phase.F;
 import static eu.tailoringexpert.domain.Phase.ZERO;
+import static java.util.Arrays.asList;
+import static java.util.List.of;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.tuple;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.mock;
@@ -128,13 +131,13 @@ class JPATailoringServiceRepositoryMapperTest {
             .catalog(Catalog.<TailoringRequirement>builder()
                 .version("8.2.1")
                 .toc(Chapter.<TailoringRequirement>builder()
-                    .requirements(Arrays.asList(
+                    .requirements(of(
                         TailoringRequirement.builder()
                             .position("a")
                             .text("Text")
                             .build()
                     ))
-                    .chapters(Arrays.asList(
+                    .chapters(of(
                         Chapter.<TailoringRequirement>builder()
                             .number("1.1")
                             .build()
@@ -194,7 +197,7 @@ class JPATailoringServiceRepositoryMapperTest {
     void toScreeningSheetParameters_ProjectNotNull_IdentifierNotNull() {
         // arrange
         ScreeningSheetEntity entity = ScreeningSheetEntity.builder()
-            .parameters(List.of(
+            .parameters(of(
                 ScreeningSheetParameterEntity.builder()
                     .category(ScreeningSheet.PARAMETER_PROJECT)
                     .value("Sample")
@@ -214,7 +217,7 @@ class JPATailoringServiceRepositoryMapperTest {
     void toScreeningSheetParameters_ProjectNull_IdentifierNull() {
         // arrange
         ScreeningSheetEntity entity = ScreeningSheetEntity.builder()
-            .parameters(List.of(
+            .parameters(of(
                 ScreeningSheetParameterEntity.builder()
                     .category("Project lead")
                     .value("Someone")
@@ -234,7 +237,7 @@ class JPATailoringServiceRepositoryMapperTest {
     void toScreeningSheetParameters_PhasesNull_PhasesEmptyList() {
         // arrange
         ScreeningSheetEntity entity = ScreeningSheetEntity.builder()
-            .parameters(List.of(
+            .parameters(of(
                 ScreeningSheetParameterEntity.builder()
                     .category("Project lead")
                     .value("Someone")
@@ -254,7 +257,7 @@ class JPATailoringServiceRepositoryMapperTest {
     void toScreeningSheetParameters_PhasesNotNull_PhasesList() {
         // arrange
         ScreeningSheetEntity entity = ScreeningSheetEntity.builder()
-            .parameters(List.of(
+            .parameters(of(
                 ScreeningSheetParameterEntity.builder()
                     .category(ScreeningSheet.PARAMETER_PHASE)
                     .value("0")
@@ -273,5 +276,63 @@ class JPATailoringServiceRepositoryMapperTest {
         assertThat(actual).isNotNull();
         assertThat(actual.getPhases()).hasSize(2);
         assertThat(actual.getPhases()).containsExactly(ZERO, F);
+    }
+
+    @Test
+    void toEntity_ChapterWithRequirements_EntityRequirementsContainsValidNumber() {
+        // arrange
+        Chapter<TailoringRequirement> domain = Chapter.<TailoringRequirement>builder()
+            .number("1.2.1")
+            .requirements(asList(
+                TailoringRequirement.builder()
+                    .text("Requirement 1")
+                    .position("a")
+                    .build(),
+                TailoringRequirement.builder()
+                    .text("Requirement 2")
+                    .position("b")
+                    .build())
+            )
+            .build();
+
+        // act
+        TailoringCatalogChapterEntity actual = mapper.toEntity(domain);
+
+        // assert
+        assertThat(actual.getRequirements())
+            .hasSize(2)
+            .extracting(TailoringRequirementEntity::getPosition, TailoringRequirementEntity::getNumber)
+            .containsOnly(
+                tuple("a", "1.2.1.a"),
+                tuple("b", "1.2.1.b")
+            );
+    }
+
+    @Test
+    void toEntity_ChapterNullRequirements_EntityNullRequirementsReturned() {
+        // arrange
+        Chapter<TailoringRequirement> domain = Chapter.<TailoringRequirement>builder()
+            .number("1.2.1")
+            .requirements(null)
+            .build();
+
+        // act
+        TailoringCatalogChapterEntity actual = mapper.toEntity(domain);
+
+        // assert
+        assertThat(actual.getRequirements())
+            .isNull();
+    }
+
+    @Test
+    void toEntity_ChapterNull_NullReturned() {
+        // arrange
+        Chapter<TailoringRequirement> domain = null;
+
+        // act
+        TailoringCatalogChapterEntity actual = mapper.toEntity(domain);
+
+        // assert
+        assertThat(actual).isNull();
     }
 }

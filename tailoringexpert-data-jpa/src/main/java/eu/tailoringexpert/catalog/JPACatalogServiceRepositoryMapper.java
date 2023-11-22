@@ -36,11 +36,9 @@ import eu.tailoringexpert.repository.LogoRepository;
 import eu.tailoringexpert.domain.DRD;
 import eu.tailoringexpert.domain.Logo;
 import lombok.Setter;
-import org.mapstruct.AfterMapping;
 import org.mapstruct.Builder;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
-import org.mapstruct.MappingTarget;
 import org.mapstruct.Qualifier;
 
 import java.lang.annotation.Retention;
@@ -48,6 +46,7 @@ import java.lang.annotation.Target;
 
 import static java.lang.annotation.ElementType.METHOD;
 import static java.lang.annotation.RetentionPolicy.CLASS;
+import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
 
 /**
@@ -55,10 +54,7 @@ import static java.util.Objects.nonNull;
  *
  * @author Michael Bädorf
  */
-@Mapper(
-    config = TailoringexpertMapperConfig.class,
-    builder = @Builder(disableBuilder = true)
-)
+@Mapper(config = TailoringexpertMapperConfig.class)
 public abstract class JPACatalogServiceRepositoryMapper {
 
     @Setter
@@ -66,6 +62,9 @@ public abstract class JPACatalogServiceRepositoryMapper {
 
     @Setter
     private DRDRepository drdRepository;
+
+    private JPACatalogServiceRepositoryMapper.BaseCatalogChapterEntityMapper bccMapper =
+        new JPACatalogServiceRepositoryMapper$BaseCatalogChapterEntityMapperGenerated();
 
     @Mapping(target = "validFrom", expression = "java( java.time.ZonedDateTime.now())")
     public abstract BaseCatalogEntity createCatalog(Catalog<BaseRequirement> domain);
@@ -76,7 +75,7 @@ public abstract class JPACatalogServiceRepositoryMapper {
         return nonNull(domain) ? logoRepository.findByName(domain.getName()) : null;
     }
 
-    @DoIgnore
+    @DoNotSelectForMapping
     public abstract DRDEntity createCatalog(DRD domain);
 
     DRDEntity resolve(DRD domain) {
@@ -89,19 +88,29 @@ public abstract class JPACatalogServiceRepositoryMapper {
 
     public abstract CatalogVersion getCatalogVersions(BaseCatalogVersionProjection entity);
 
-    public abstract BaseCatalogChapterEntity createCatalog(Chapter<BaseRequirement> domain);
-
-    @AfterMapping
-    public void addRequirementsIdentifier(@MappingTarget BaseCatalogChapterEntity entity) {
-        if (nonNull(entity.getRequirements())) {
-            entity.getRequirements()
-                .forEach(requirement -> requirement.setNumber(entity.getNumber() + "." + requirement.getPosition()));
+    public BaseCatalogChapterEntity toEntity(Chapter<BaseRequirement> domain) {
+        if (isNull(domain)) {
+            return null;
         }
+        BaseCatalogChapterEntity result = bccMapper.toEntity(domain);
+        if (nonNull(result.getRequirements())) {
+            result.getRequirements()
+                .forEach(requirement -> requirement.setNumber(result.getNumber() + "." + requirement.getPosition()));
+        }
+        return result;
+    }
+
+    /**
+     * Single mapping interface instead of creationg and using a dectorator.
+     */
+    @Mapper(config = TailoringexpertMapperConfig.class)
+    public interface BaseCatalogChapterEntityMapper {
+        BaseCatalogChapterEntity toEntity(Chapter<BaseRequirement> domain);
     }
 
     @Qualifier
     @Target(METHOD)
     @Retention(CLASS)
-    public @interface DoIgnore {
+    public @interface DoNotSelectForMapping {
     }
 }

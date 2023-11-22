@@ -21,7 +21,7 @@ package catalog {
         {abstract} createCatalog(entity : BaseCatalogEntity) : Catalog<BaseRequirement>
         {abstract} getCatalog(entity: BaseCatalogEntity) : Catalog<BaseRequirement>
         {abstract} createCatalog(domain : DRD) : DRDEntity
-        {abstract} createCatalog(domain : Chapter<BaseRequirement>) : BaseCatalogChapterEntity
+        {abstract} toEntity(domain : Chapter<BaseRequirement>) : BaseCatalogChapterEntity
         resolve(domain : Logo) : LogoEntity
         resolve(domain : DRD) : DRDEntity
         addRequirementsIdentifier(entity : BaseCatalogChapterEntity) : void
