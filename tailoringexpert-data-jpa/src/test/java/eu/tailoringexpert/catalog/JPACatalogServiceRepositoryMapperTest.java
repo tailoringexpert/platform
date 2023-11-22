@@ -244,7 +244,7 @@ class JPACatalogServiceRepositoryMapperTest {
             .build();
 
         // act
-        BaseCatalogChapterEntity actual = mapper.createCatalog(toc);
+        BaseCatalogChapterEntity actual = mapper.toEntity(toc);
 
         // assert
         assertThat(actual.getRequirements())
@@ -265,7 +265,7 @@ class JPACatalogServiceRepositoryMapperTest {
             .build();
 
         // act
-        BaseCatalogChapterEntity actual = mapper.createCatalog(toc);
+        BaseCatalogChapterEntity actual = mapper.toEntity(toc);
 
         // assert
         assertThat(actual.getRequirements())

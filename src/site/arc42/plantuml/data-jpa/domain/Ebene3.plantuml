@@ -129,6 +129,7 @@ package domain {
         selected : Boolean
         selectionChanged : ZonedDateTime
         textChanged : ZonedDateTime
+        number: String
     }
     TailoringRequirementEntity --> "0..1" ReferenceEntity : reference
     TailoringRequirementEntity --> "0..*" DRDEntity : drds <<unordered>>
