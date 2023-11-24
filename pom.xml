@@ -378,14 +378,6 @@
                 <configuration>
                     <failOnError>false</failOnError>
                 </configuration>
-                <executions>
-                    <execution>
-                        <phase>${dependency-check-maven.phase}</phase>
-                        <goals>
-                            <goal>check</goal>
-                        </goals>
-                    </execution>
-                </executions>
             </plugin>
             <plugin>
                 <groupId>com.amashchenko.maven.plugin</groupId>
