@@ -36,7 +36,6 @@ import eu.tailoringexpert.repository.LogoRepository;
 import eu.tailoringexpert.domain.DRD;
 import eu.tailoringexpert.domain.Logo;
 import lombok.Setter;
-import org.mapstruct.Builder;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.Qualifier;
