@@ -58,14 +58,16 @@ import static org.mockito.Mockito.verify;
 class JPATailoringServiceRepositoryMapperTest {
 
     private LogoRepository logoRepositoryMock;
+    private TailoringCatalogChapterEntityMapper tailoringCatalogChapterEntityMapperMock;
     private JPATailoringServiceRepositoryMapper mapper;
 
     @BeforeEach
     void setup() {
-        this.mapper = new JPATailoringServiceRepositoryMapperGenerated();
-
         this.logoRepositoryMock = mock(LogoRepository.class);
+        this.tailoringCatalogChapterEntityMapperMock = mock(TailoringCatalogChapterEntityMapper.class);
+        this.mapper = new JPATailoringServiceRepositoryMapperGenerated();
         this.mapper.setLogoRepository(logoRepositoryMock);
+        this.mapper.setTailoringCatalogChapterEntityMapper(tailoringCatalogChapterEntityMapperMock);
     }
 
 
@@ -127,22 +129,24 @@ class JPATailoringServiceRepositoryMapperTest {
     @Test
     void updateTailoring_TailoringNotNull_OnlyCatalogSelectionVectorStateUpdated() {
         // arrange
+        Chapter<TailoringRequirement> toc = Chapter.<TailoringRequirement>builder()
+            .requirements(of(
+                TailoringRequirement.builder()
+                    .position("a")
+                    .text("Text")
+                    .build()
+            ))
+            .chapters(of(
+                Chapter.<TailoringRequirement>builder()
+                    .number("1.1")
+                    .build()
+            ))
+            .build();
+
         Tailoring domain = Tailoring.builder()
             .catalog(Catalog.<TailoringRequirement>builder()
                 .version("8.2.1")
-                .toc(Chapter.<TailoringRequirement>builder()
-                    .requirements(of(
-                        TailoringRequirement.builder()
-                            .position("a")
-                            .text("Text")
-                            .build()
-                    ))
-                    .chapters(of(
-                        Chapter.<TailoringRequirement>builder()
-                            .number("1.1")
-                            .build()
-                    ))
-                    .build())
+                .toc(toc)
                 .build())
             .screeningSheet(ScreeningSheet.builder().build())
             .state(TailoringState.AGREED)
@@ -150,6 +154,23 @@ class JPATailoringServiceRepositoryMapperTest {
             .selectionVector(SelectionVector.builder()
                 .build())
             .build();
+
+        given(tailoringCatalogChapterEntityMapperMock.toEntity(toc)).willReturn(
+            TailoringCatalogChapterEntity.builder()
+                .requirements(of(
+                    TailoringRequirementEntity.builder()
+                        .position("a")
+                        .text("Text")
+                        .build()
+                ))
+                .chapters(of(
+                        TailoringCatalogChapterEntity.builder()
+                            .number("1.1")
+                            .build()
+                    )
+                )
+                .build()
+        );
 
         TailoringEntity entity = new TailoringEntity();
 
@@ -295,6 +316,25 @@ class JPATailoringServiceRepositoryMapperTest {
             )
             .build();
 
+        given(tailoringCatalogChapterEntityMapperMock.toEntity(domain)).willReturn(
+            TailoringCatalogChapterEntity.builder()
+                .number("1.2.1")
+                .requirements(
+                    of(
+                        TailoringRequirementEntity.builder()
+                            .text("Requirement 1")
+                            .position("a")
+                            .build(),
+                        TailoringRequirementEntity.builder()
+                            .text("Requirement 2")
+                            .position("b")
+                            .build()
+                    )
+
+                )
+                .build()
+        );
+
         // act
         TailoringCatalogChapterEntity actual = mapper.toEntity(domain);
 
@@ -315,6 +355,13 @@ class JPATailoringServiceRepositoryMapperTest {
             .number("1.2.1")
             .requirements(null)
             .build();
+
+        given(tailoringCatalogChapterEntityMapperMock.toEntity(domain)).willReturn(
+            TailoringCatalogChapterEntity.builder()
+                .number("1.2.1")
+                .requirements(null)
+                .build()
+        );
 
         // act
         TailoringCatalogChapterEntity actual = mapper.toEntity(domain);
