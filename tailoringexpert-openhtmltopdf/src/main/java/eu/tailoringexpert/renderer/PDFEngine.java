@@ -62,7 +62,7 @@ public class PDFEngine {
     public File process(@NonNull String docId, @NonNull String html, @NonNull String pathSuffix) {
         log.traceEntry(() -> docId);
 
-        try (PDDocument document = new PDDocument(setupTempFileOnly())) {
+        try (PDDocument document = new PDDocument()) {
             ByteArrayOutputStream os = new ByteArrayOutputStream();
             PdfRendererBuilder builder = new PdfRendererBuilder();
 

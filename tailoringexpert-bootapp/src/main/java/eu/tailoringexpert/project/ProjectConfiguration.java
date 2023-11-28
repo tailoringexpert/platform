@@ -63,7 +63,7 @@ public class ProjectConfiguration {
     }
 
     @Bean
-    ProjectController projektController(
+    ProjectController projectController(
         @NonNull ResourceMapper mapper,
         @NonNull ProjectService projectService,
         @NonNull ProjectServiceRepository projectServiceRepository) {

@@ -21,15 +21,15 @@
         </dependency>
 
         <dependency>
-            <groupId>com.openhtmltopdf</groupId>
+            <groupId>at.datenwort.openhtmltopdf</groupId>
             <artifactId>openhtmltopdf-core</artifactId>
         </dependency>
         <dependency>
-            <groupId>com.openhtmltopdf</groupId>
+            <groupId>at.datenwort.openhtmltopdf</groupId>
             <artifactId>openhtmltopdf-pdfbox</artifactId>
         </dependency>
         <dependency>
-            <groupId>com.openhtmltopdf</groupId>
+            <groupId>at.datenwort.openhtmltopdf</groupId>
             <artifactId>openhtmltopdf-java2d</artifactId>
         </dependency>
 
