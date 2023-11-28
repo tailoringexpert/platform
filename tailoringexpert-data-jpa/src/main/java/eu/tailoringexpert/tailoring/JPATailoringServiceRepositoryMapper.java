@@ -71,8 +71,8 @@ public abstract class JPATailoringServiceRepositoryMapper {
     @Setter
     private LogoRepository logoRepository;
 
-    private TailoringCatalogChapterEntityMapper tccMapper =
-        new JPATailoringServiceRepositoryMapper$TailoringCatalogChapterEntityMapperGenerated();
+    @Setter
+    private TailoringCatalogChapterEntityMapper tailoringCatalogChapterEntityMapper;
 
     abstract Project toDomain(ProjectEntity entity);
 
@@ -132,19 +132,11 @@ public abstract class JPATailoringServiceRepositoryMapper {
             return null;
         }
 
-        TailoringCatalogChapterEntity result = tccMapper.toEntity(domain);
+        TailoringCatalogChapterEntity result = tailoringCatalogChapterEntityMapper.toEntity(domain);
         if (nonNull(result.getRequirements())) {
             result.getRequirements()
                 .forEach(requirement -> requirement.setNumber(result.getNumber() + "." + requirement.getPosition()));
         }
         return result;
-    }
-
-    /**
-     * Single mapping interface instead of creationg and using a dectorator.
-     */
-    @Mapper(config = TailoringexpertMapperConfig.class)
-    public interface TailoringCatalogChapterEntityMapper {
-        TailoringCatalogChapterEntity toEntity(Chapter<TailoringRequirement> domain);
     }
 }

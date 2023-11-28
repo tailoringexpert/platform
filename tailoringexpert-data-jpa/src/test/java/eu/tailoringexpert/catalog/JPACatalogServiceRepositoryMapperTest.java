@@ -39,6 +39,8 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 
+import java.util.List;
+
 import static java.util.Arrays.asList;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.tuple;
@@ -52,15 +54,18 @@ class JPACatalogServiceRepositoryMapperTest {
 
     private LogoRepository logoRepositoryMock;
     private DRDRepository drdRepositoryMock;
+    private BaseCatalogChapterEntityMapper baseCatalogChapterEntityMapperMock;
     private JPACatalogServiceRepositoryMapper mapper;
 
     @BeforeEach
     void setup() {
         this.logoRepositoryMock = Mockito.mock(LogoRepository.class);
         this.drdRepositoryMock = Mockito.mock(DRDRepository.class);
+        this.baseCatalogChapterEntityMapperMock = Mockito.mock(BaseCatalogChapterEntityMapper.class);
         this.mapper = new JPACatalogServiceRepositoryMapperGenerated();
         this.mapper.setLogoRepository(logoRepositoryMock);
         this.mapper.setDrdRepository(drdRepositoryMock);
+        this.mapper.setBaseCatalogChapterEntityMapper(baseCatalogChapterEntityMapperMock);
     }
 
     @Test
@@ -243,6 +248,25 @@ class JPACatalogServiceRepositoryMapperTest {
             )
             .build();
 
+        given(baseCatalogChapterEntityMapperMock.toEntity(toc)).willReturn(
+            BaseCatalogChapterEntity.builder()
+                .number("1.2.1")
+                .requirements(
+                    List.of(
+                        BaseRequirementEntity.builder()
+                            .text("Requirement 1")
+                            .position("a")
+                            .build(),
+                        BaseRequirementEntity.builder()
+                            .text("Requirement 2")
+                            .position("b")
+                            .build()
+                    )
+
+                )
+                .build()
+        );
+
         // act
         BaseCatalogChapterEntity actual = mapper.toEntity(toc);
 
@@ -263,6 +287,13 @@ class JPACatalogServiceRepositoryMapperTest {
             .number("1.2.1")
             .requirements(null)
             .build();
+
+        given(baseCatalogChapterEntityMapperMock.toEntity(toc)).willReturn(
+            BaseCatalogChapterEntity.builder()
+                .number("1.2.1")
+                .requirements(null)
+                .build()
+        );
 
         // act
         BaseCatalogChapterEntity actual = mapper.toEntity(toc);

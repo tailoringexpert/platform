@@ -72,9 +72,11 @@ public class TailoringConfiguration {
 
     @Bean
     JPATailoringServiceRepositoryMapper jpaTailoringServiceRepositoryMapper(
-        @NonNull LogoRepository logoRepository) {
+        @NonNull LogoRepository logoRepository,
+        @NonNull TailoringCatalogChapterEntityMapper tailoringCatalogChapterEntityMapper) {
         JPATailoringServiceRepositoryMapperGenerated result = new JPATailoringServiceRepositoryMapperGenerated();
         result.setLogoRepository(logoRepository);
+        result.setTailoringCatalogChapterEntityMapper(tailoringCatalogChapterEntityMapper);
         return result;
     }
 
@@ -183,7 +185,7 @@ public class TailoringConfiguration {
     TailoringDeletablePredicate tailoringDeletablePredicate(
         @NonNull DefaultTailoringDeletablePredicate defaultTailoringDeletablePredicate,
         @NonNull ListableBeanFactory beanFactory) {
-        Map<String, TailoringDeletablePredicate> predicates = getTenantImplementierungen(beanFactory, TailoringDeletablePredicate.class);
+        Map<String, TailoringDeletablePredicate> predicates = getTenantImplementations(beanFactory, TailoringDeletablePredicate.class);
         return new TenantTailoringDeletablePredicate(predicates, defaultTailoringDeletablePredicate);
     }
 
@@ -238,8 +240,12 @@ public class TailoringConfiguration {
         return new CMPDFDocumentCreator(templateEngine, pdfEngine, drdProvider);
     }
 
+    @Bean
+    TailoringCatalogChapterEntityMapper tailoringCatalogChapterEntityMapper() {
+        return new TailoringCatalogChapterEntityMapperGenerated();
+    }
 
-    private <T> Map<String, T> getTenantImplementierungen(ListableBeanFactory beanFactory, Class<T> clz) {
+    private <T> Map<String, T> getTenantImplementations(ListableBeanFactory beanFactory, Class<T> clz) {
         return beanFactory.getBeansOfType(clz)
             .values()
             .stream()

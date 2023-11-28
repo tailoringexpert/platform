@@ -62,8 +62,8 @@ public abstract class JPACatalogServiceRepositoryMapper {
     @Setter
     private DRDRepository drdRepository;
 
-    private JPACatalogServiceRepositoryMapper.BaseCatalogChapterEntityMapper bccMapper =
-        new JPACatalogServiceRepositoryMapper$BaseCatalogChapterEntityMapperGenerated();
+    @Setter
+    private BaseCatalogChapterEntityMapper baseCatalogChapterEntityMapper;
 
     @Mapping(target = "validFrom", expression = "java( java.time.ZonedDateTime.now())")
     public abstract BaseCatalogEntity createCatalog(Catalog<BaseRequirement> domain);
@@ -87,24 +87,17 @@ public abstract class JPACatalogServiceRepositoryMapper {
 
     public abstract CatalogVersion getCatalogVersions(BaseCatalogVersionProjection entity);
 
+    @DoNotSelectForMapping
     public BaseCatalogChapterEntity toEntity(Chapter<BaseRequirement> domain) {
         if (isNull(domain)) {
             return null;
         }
-        BaseCatalogChapterEntity result = bccMapper.toEntity(domain);
+        BaseCatalogChapterEntity result = baseCatalogChapterEntityMapper.toEntity(domain);
         if (nonNull(result.getRequirements())) {
             result.getRequirements()
                 .forEach(requirement -> requirement.setNumber(result.getNumber() + "." + requirement.getPosition()));
         }
         return result;
-    }
-
-    /**
-     * Single mapping interface instead of creationg and using a dectorator.
-     */
-    @Mapper(config = TailoringexpertMapperConfig.class)
-    public interface BaseCatalogChapterEntityMapper {
-        BaseCatalogChapterEntity toEntity(Chapter<BaseRequirement> domain);
     }
 
     @Qualifier
