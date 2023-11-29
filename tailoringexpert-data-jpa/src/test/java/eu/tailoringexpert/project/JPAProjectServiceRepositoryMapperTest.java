@@ -35,8 +35,10 @@ import eu.tailoringexpert.domain.ScreeningSheet;
 import eu.tailoringexpert.domain.ScreeningSheetEntity;
 import eu.tailoringexpert.domain.SelectionVectorEntity;
 import eu.tailoringexpert.domain.Tailoring;
+import eu.tailoringexpert.domain.TailoringCatalogChapterEntity;
 import eu.tailoringexpert.domain.TailoringEntity;
 import eu.tailoringexpert.domain.TailoringInformation;
+import eu.tailoringexpert.domain.TailoringRequirementEntity;
 import eu.tailoringexpert.repository.BaseCatalogRepository;
 import eu.tailoringexpert.repository.DRDRepository;
 import eu.tailoringexpert.repository.LogoRepository;
@@ -45,6 +47,7 @@ import org.junit.jupiter.api.Test;
 
 import static java.util.Arrays.asList;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.tuple;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.mock;
@@ -311,5 +314,52 @@ class JPAProjectServiceRepositoryMapperTest {
         assertThat(actual).isNotNull();
         assertThat(actual.getNumber()).isEqualTo("4711");
         verify(drdRepositoryMock, times(1)).findByNumber("4711");
+    }
+
+
+    @Test
+    void addNumber_ChapterWithRequirements_EntityRequirementsContainsValidNumber() {
+        // arrange
+        TailoringCatalogChapterEntity.TailoringCatalogChapterEntityBuilder builder = TailoringCatalogChapterEntity.builder()
+            .number("1.2.1")
+            .requirements(asList(
+                TailoringRequirementEntity.builder()
+                    .text("Requirement 1")
+                    .position("a")
+                    .build(),
+                TailoringRequirementEntity.builder()
+                    .text("Requirement 2")
+                    .position("b")
+                    .build())
+            );
+
+        // act
+        mapper.addNumber(builder);
+
+        // assert
+        TailoringCatalogChapterEntity actual = builder.build();
+        assertThat(actual.getRequirements())
+            .hasSize(2)
+            .extracting(TailoringRequirementEntity::getPosition, TailoringRequirementEntity::getNumber)
+            .containsOnly(
+                tuple("a", "1.2.1.a"),
+                tuple("b", "1.2.1.b")
+            );
+    }
+
+    @Test
+    void addNumber_ChapterNullRequirements_EntityNullRequirementsReturned() {
+        // arrange
+        TailoringCatalogChapterEntity.TailoringCatalogChapterEntityBuilder builder = TailoringCatalogChapterEntity.builder()
+            .number("1.2.1")
+            .requirements(null);
+
+        // act
+        mapper.addNumber(builder);
+
+        // assert
+        TailoringCatalogChapterEntity actual = builder.build();
+        assertThat(actual.getRequirements())
+            .isNull();
     }
 }

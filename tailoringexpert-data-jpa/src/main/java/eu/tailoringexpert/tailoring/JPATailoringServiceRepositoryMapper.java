@@ -22,7 +22,6 @@
 package eu.tailoringexpert.tailoring;
 
 import eu.tailoringexpert.TailoringexpertMapperConfig;
-import eu.tailoringexpert.domain.Chapter;
 import eu.tailoringexpert.domain.DocumentSignature;
 import eu.tailoringexpert.domain.FileEntity;
 import eu.tailoringexpert.domain.DocumentSigneeEntity;
@@ -42,9 +41,7 @@ import eu.tailoringexpert.domain.ScreeningSheetParameterEntity;
 import eu.tailoringexpert.domain.SelectionVectorProfile;
 import eu.tailoringexpert.domain.SelectionVectorProfileEntity;
 import eu.tailoringexpert.domain.Tailoring;
-import eu.tailoringexpert.domain.TailoringCatalogChapterEntity;
 import eu.tailoringexpert.domain.TailoringEntity;
-import eu.tailoringexpert.domain.TailoringRequirement;
 import eu.tailoringexpert.repository.LogoRepository;
 import lombok.Setter;
 import org.mapstruct.AfterMapping;
@@ -57,7 +54,6 @@ import java.util.LinkedList;
 import java.util.stream.Collectors;
 
 import static java.util.Comparator.comparing;
-import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
 
 /**
@@ -70,9 +66,6 @@ public abstract class JPATailoringServiceRepositoryMapper {
 
     @Setter
     private LogoRepository logoRepository;
-
-    @Setter
-    private TailoringCatalogChapterEntityMapper tailoringCatalogChapterEntityMapper;
 
     abstract Project toDomain(ProjectEntity entity);
 
@@ -124,19 +117,5 @@ public abstract class JPATailoringServiceRepositoryMapper {
 
     LogoEntity resolve(Logo domain) {
         return nonNull(domain) ? logoRepository.findByName(domain.getName()) : null;
-    }
-
-
-    TailoringCatalogChapterEntity toEntity(Chapter<TailoringRequirement> domain) {
-        if (isNull(domain)) {
-            return null;
-        }
-
-        TailoringCatalogChapterEntity result = tailoringCatalogChapterEntityMapper.toEntity(domain);
-        if (nonNull(result.getRequirements())) {
-            result.getRequirements()
-                .forEach(requirement -> requirement.setNumber(result.getNumber() + "." + requirement.getPosition()));
-        }
-        return result;
     }
 }

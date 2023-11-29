@@ -47,12 +47,10 @@ public class CatalogConfiguration {
     @Bean
     JPACatalogServiceRepositoryMapper catalogServiceRepositoryMapper(
         @NonNull LogoRepository logoRepository,
-        @NonNull DRDRepository drdRepository,
-        @NonNull BaseCatalogChapterEntityMapper baseCatalogChapterEntityMapper) {
+        @NonNull DRDRepository drdRepository) {
         JPACatalogServiceRepositoryMapperGenerated result = new JPACatalogServiceRepositoryMapperGenerated();
         result.setLogoRepository(logoRepository);
         result.setDrdRepository(drdRepository);
-        result.setBaseCatalogChapterEntityMapper(baseCatalogChapterEntityMapper);
         return result;
     }
 
@@ -117,11 +115,6 @@ public class CatalogConfiguration {
                                                         @NonNull PDFEngine pdfEngine,
                                                         @NonNull DRDProvider drdProvider) {
         return new BaseDRDPDFDocumentCreator(templateEngine, pdfEngine, drdProvider);
-    }
-
-    @Bean
-    BaseCatalogChapterEntityMapper baseCatalogChapterEntityMapper() {
-        return new BaseCatalogChapterEntityMapperGenerated();
     }
 
 

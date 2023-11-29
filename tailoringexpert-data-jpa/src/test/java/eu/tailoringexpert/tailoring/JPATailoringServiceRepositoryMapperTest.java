@@ -32,23 +32,18 @@ import eu.tailoringexpert.domain.ScreeningSheetEntity;
 import eu.tailoringexpert.domain.ScreeningSheetParameterEntity;
 import eu.tailoringexpert.domain.SelectionVector;
 import eu.tailoringexpert.domain.Tailoring;
-import eu.tailoringexpert.domain.TailoringCatalogChapterEntity;
 import eu.tailoringexpert.domain.TailoringRequirement;
 import eu.tailoringexpert.domain.TailoringEntity;
 import eu.tailoringexpert.domain.TailoringCatalogEntity;
-import eu.tailoringexpert.domain.TailoringRequirementEntity;
 import eu.tailoringexpert.domain.TailoringState;
 import eu.tailoringexpert.repository.LogoRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-
 import static eu.tailoringexpert.domain.Phase.F;
 import static eu.tailoringexpert.domain.Phase.ZERO;
-import static java.util.Arrays.asList;
 import static java.util.List.of;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.tuple;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.mock;
@@ -58,16 +53,13 @@ import static org.mockito.Mockito.verify;
 class JPATailoringServiceRepositoryMapperTest {
 
     private LogoRepository logoRepositoryMock;
-    private TailoringCatalogChapterEntityMapper tailoringCatalogChapterEntityMapperMock;
     private JPATailoringServiceRepositoryMapper mapper;
 
     @BeforeEach
     void setup() {
         this.logoRepositoryMock = mock(LogoRepository.class);
-        this.tailoringCatalogChapterEntityMapperMock = mock(TailoringCatalogChapterEntityMapper.class);
         this.mapper = new JPATailoringServiceRepositoryMapperGenerated();
         this.mapper.setLogoRepository(logoRepositoryMock);
-        this.mapper.setTailoringCatalogChapterEntityMapper(tailoringCatalogChapterEntityMapperMock);
     }
 
 
@@ -154,23 +146,6 @@ class JPATailoringServiceRepositoryMapperTest {
             .selectionVector(SelectionVector.builder()
                 .build())
             .build();
-
-        given(tailoringCatalogChapterEntityMapperMock.toEntity(toc)).willReturn(
-            TailoringCatalogChapterEntity.builder()
-                .requirements(of(
-                    TailoringRequirementEntity.builder()
-                        .position("a")
-                        .text("Text")
-                        .build()
-                ))
-                .chapters(of(
-                        TailoringCatalogChapterEntity.builder()
-                            .number("1.1")
-                            .build()
-                    )
-                )
-                .build()
-        );
 
         TailoringEntity entity = new TailoringEntity();
 
@@ -299,87 +274,4 @@ class JPATailoringServiceRepositoryMapperTest {
         assertThat(actual.getPhases()).containsExactly(ZERO, F);
     }
 
-    @Test
-    void toEntity_ChapterWithRequirements_EntityRequirementsContainsValidNumber() {
-        // arrange
-        Chapter<TailoringRequirement> domain = Chapter.<TailoringRequirement>builder()
-            .number("1.2.1")
-            .requirements(asList(
-                TailoringRequirement.builder()
-                    .text("Requirement 1")
-                    .position("a")
-                    .build(),
-                TailoringRequirement.builder()
-                    .text("Requirement 2")
-                    .position("b")
-                    .build())
-            )
-            .build();
-
-        given(tailoringCatalogChapterEntityMapperMock.toEntity(domain)).willReturn(
-            TailoringCatalogChapterEntity.builder()
-                .number("1.2.1")
-                .requirements(
-                    of(
-                        TailoringRequirementEntity.builder()
-                            .text("Requirement 1")
-                            .position("a")
-                            .build(),
-                        TailoringRequirementEntity.builder()
-                            .text("Requirement 2")
-                            .position("b")
-                            .build()
-                    )
-
-                )
-                .build()
-        );
-
-        // act
-        TailoringCatalogChapterEntity actual = mapper.toEntity(domain);
-
-        // assert
-        assertThat(actual.getRequirements())
-            .hasSize(2)
-            .extracting(TailoringRequirementEntity::getPosition, TailoringRequirementEntity::getNumber)
-            .containsOnly(
-                tuple("a", "1.2.1.a"),
-                tuple("b", "1.2.1.b")
-            );
-    }
-
-    @Test
-    void toEntity_ChapterNullRequirements_EntityNullRequirementsReturned() {
-        // arrange
-        Chapter<TailoringRequirement> domain = Chapter.<TailoringRequirement>builder()
-            .number("1.2.1")
-            .requirements(null)
-            .build();
-
-        given(tailoringCatalogChapterEntityMapperMock.toEntity(domain)).willReturn(
-            TailoringCatalogChapterEntity.builder()
-                .number("1.2.1")
-                .requirements(null)
-                .build()
-        );
-
-        // act
-        TailoringCatalogChapterEntity actual = mapper.toEntity(domain);
-
-        // assert
-        assertThat(actual.getRequirements())
-            .isNull();
-    }
-
-    @Test
-    void toEntity_ChapterNull_NullReturned() {
-        // arrange
-        Chapter<TailoringRequirement> domain = null;
-
-        // act
-        TailoringCatalogChapterEntity actual = mapper.toEntity(domain);
-
-        // assert
-        assertThat(actual).isNull();
-    }
 }

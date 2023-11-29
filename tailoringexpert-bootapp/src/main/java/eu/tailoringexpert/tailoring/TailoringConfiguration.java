@@ -72,11 +72,9 @@ public class TailoringConfiguration {
 
     @Bean
     JPATailoringServiceRepositoryMapper jpaTailoringServiceRepositoryMapper(
-        @NonNull LogoRepository logoRepository,
-        @NonNull TailoringCatalogChapterEntityMapper tailoringCatalogChapterEntityMapper) {
+        @NonNull LogoRepository logoRepository) {
         JPATailoringServiceRepositoryMapperGenerated result = new JPATailoringServiceRepositoryMapperGenerated();
         result.setLogoRepository(logoRepository);
-        result.setTailoringCatalogChapterEntityMapper(tailoringCatalogChapterEntityMapper);
         return result;
     }
 
@@ -238,11 +236,6 @@ public class TailoringConfiguration {
         @NonNull PDFEngine pdfEngine,
         @NonNull BiFunction<Chapter<TailoringRequirement>, Collection<Phase>, Map<DRD, Set<String>>> drdProvider) {
         return new CMPDFDocumentCreator(templateEngine, pdfEngine, drdProvider);
-    }
-
-    @Bean
-    TailoringCatalogChapterEntityMapper tailoringCatalogChapterEntityMapper() {
-        return new TailoringCatalogChapterEntityMapperGenerated();
     }
 
     private <T> Map<String, T> getTenantImplementations(ListableBeanFactory beanFactory, Class<T> clz) {
