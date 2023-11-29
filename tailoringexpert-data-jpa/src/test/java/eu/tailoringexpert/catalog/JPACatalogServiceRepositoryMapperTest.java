@@ -22,6 +22,7 @@
 package eu.tailoringexpert.catalog;
 
 import eu.tailoringexpert.domain.BaseCatalogChapterEntity;
+import eu.tailoringexpert.domain.BaseCatalogChapterEntity.BaseCatalogChapterEntityBuilder;
 import eu.tailoringexpert.domain.BaseCatalogEntity;
 import eu.tailoringexpert.domain.BaseRequirement;
 import eu.tailoringexpert.domain.BaseRequirementEntity;
@@ -39,7 +40,6 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 
-import java.util.List;
 
 import static java.util.Arrays.asList;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -54,18 +54,15 @@ class JPACatalogServiceRepositoryMapperTest {
 
     private LogoRepository logoRepositoryMock;
     private DRDRepository drdRepositoryMock;
-    private BaseCatalogChapterEntityMapper baseCatalogChapterEntityMapperMock;
     private JPACatalogServiceRepositoryMapper mapper;
 
     @BeforeEach
     void setup() {
         this.logoRepositoryMock = Mockito.mock(LogoRepository.class);
         this.drdRepositoryMock = Mockito.mock(DRDRepository.class);
-        this.baseCatalogChapterEntityMapperMock = Mockito.mock(BaseCatalogChapterEntityMapper.class);
         this.mapper = new JPACatalogServiceRepositoryMapperGenerated();
         this.mapper.setLogoRepository(logoRepositoryMock);
         this.mapper.setDrdRepository(drdRepositoryMock);
-        this.mapper.setBaseCatalogChapterEntityMapper(baseCatalogChapterEntityMapperMock);
     }
 
     @Test
@@ -232,43 +229,24 @@ class JPACatalogServiceRepositoryMapperTest {
 
 
     @Test
-    void createCatalog_ChapterWithRequirements_EntityRequirementsContainsValidNumber() {
+    void addNumber_ChapterWithRequirements_EntityRequirementsContainsValidNumber() {
         // arrange
-        Chapter<BaseRequirement> toc = Chapter.<BaseRequirement>builder()
+        BaseCatalogChapterEntityBuilder builder = BaseCatalogChapterEntity.builder()
             .number("1.2.1")
             .requirements(asList(
-                BaseRequirement.builder()
+                BaseRequirementEntity.builder()
                     .text("Requirement 1")
                     .position("a")
                     .build(),
-                BaseRequirement.builder()
+                BaseRequirementEntity.builder()
                     .text("Requirement 2")
                     .position("b")
                     .build())
-            )
-            .build();
-
-        given(baseCatalogChapterEntityMapperMock.toEntity(toc)).willReturn(
-            BaseCatalogChapterEntity.builder()
-                .number("1.2.1")
-                .requirements(
-                    List.of(
-                        BaseRequirementEntity.builder()
-                            .text("Requirement 1")
-                            .position("a")
-                            .build(),
-                        BaseRequirementEntity.builder()
-                            .text("Requirement 2")
-                            .position("b")
-                            .build()
-                    )
-
-                )
-                .build()
-        );
+            );
 
         // act
-        BaseCatalogChapterEntity actual = mapper.toEntity(toc);
+        mapper.addNumber(builder);
+        BaseCatalogChapterEntity actual = builder.build();
 
         // assert
         assertThat(actual.getRequirements())
@@ -283,20 +261,13 @@ class JPACatalogServiceRepositoryMapperTest {
     @Test
     void createCatalog_ChapterNullRequirements_EntityNullRequirementsReturned() {
         // arrange
-        Chapter<BaseRequirement> toc = Chapter.<BaseRequirement>builder()
+        BaseCatalogChapterEntityBuilder builder = BaseCatalogChapterEntity.builder()
             .number("1.2.1")
-            .requirements(null)
-            .build();
-
-        given(baseCatalogChapterEntityMapperMock.toEntity(toc)).willReturn(
-            BaseCatalogChapterEntity.builder()
-                .number("1.2.1")
-                .requirements(null)
-                .build()
-        );
+            .requirements(null);
 
         // act
-        BaseCatalogChapterEntity actual = mapper.toEntity(toc);
+        mapper.addNumber(builder);
+        BaseCatalogChapterEntity actual = builder.build();
 
         // assert
         assertThat(actual.getRequirements())

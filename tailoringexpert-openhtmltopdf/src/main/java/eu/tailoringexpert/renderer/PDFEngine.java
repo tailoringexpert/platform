@@ -35,7 +35,6 @@ import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
 
 import static java.lang.String.format;
-import static org.apache.pdfbox.io.MemoryUsageSetting.setupTempFileOnly;
 
 /**
  * Engine for creating PDF output of HTML input.

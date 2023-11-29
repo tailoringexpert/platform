@@ -35,15 +35,18 @@ import eu.tailoringexpert.domain.ProjectInformation;
 import eu.tailoringexpert.domain.ScreeningSheet;
 import eu.tailoringexpert.domain.ScreeningSheetEntity;
 import eu.tailoringexpert.domain.Tailoring;
+import eu.tailoringexpert.domain.TailoringCatalogChapterEntity;
 import eu.tailoringexpert.domain.TailoringEntity;
 import eu.tailoringexpert.domain.TailoringInformation;
 import eu.tailoringexpert.repository.BaseCatalogRepository;
 import eu.tailoringexpert.repository.DRDRepository;
 import eu.tailoringexpert.repository.LogoRepository;
 import lombok.Setter;
+import org.mapstruct.AfterMapping;
 import org.mapstruct.BeanMapping;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
+import org.mapstruct.MappingTarget;
 
 import static java.util.Objects.nonNull;
 
@@ -111,4 +114,15 @@ public abstract class JPAProjectServiceRepositoryMapper {
     DRDEntity resolve(DRD domain) {
         return nonNull(domain) ? drdRepository.findByNumber(domain.getNumber()) : null;
     }
+
+    @AfterMapping
+    public void addNumber(@MappingTarget TailoringCatalogChapterEntity.TailoringCatalogChapterEntityBuilder builder) {
+        TailoringCatalogChapterEntity entity = builder.build();
+        if (nonNull(entity.getRequirements())) {
+            entity.getRequirements()
+                .forEach(requirement -> requirement.setNumber(entity.getNumber() + "." + requirement.getPosition()));
+        }
+        builder.requirements(entity.getRequirements());
+    }
+
 }

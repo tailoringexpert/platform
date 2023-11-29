@@ -23,12 +23,12 @@ package eu.tailoringexpert.catalog;
 
 import eu.tailoringexpert.TailoringexpertMapperConfig;
 import eu.tailoringexpert.domain.BaseCatalogChapterEntity;
+import eu.tailoringexpert.domain.BaseCatalogChapterEntity.BaseCatalogChapterEntityBuilder;
 import eu.tailoringexpert.domain.BaseCatalogEntity;
 import eu.tailoringexpert.domain.BaseCatalogVersionProjection;
 import eu.tailoringexpert.domain.BaseRequirement;
 import eu.tailoringexpert.domain.Catalog;
 import eu.tailoringexpert.domain.CatalogVersion;
-import eu.tailoringexpert.domain.Chapter;
 import eu.tailoringexpert.domain.DRDEntity;
 import eu.tailoringexpert.domain.LogoEntity;
 import eu.tailoringexpert.repository.DRDRepository;
@@ -36,8 +36,10 @@ import eu.tailoringexpert.repository.LogoRepository;
 import eu.tailoringexpert.domain.DRD;
 import eu.tailoringexpert.domain.Logo;
 import lombok.Setter;
+import org.mapstruct.AfterMapping;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
+import org.mapstruct.MappingTarget;
 import org.mapstruct.Qualifier;
 
 import java.lang.annotation.Retention;
@@ -45,7 +47,6 @@ import java.lang.annotation.Target;
 
 import static java.lang.annotation.ElementType.METHOD;
 import static java.lang.annotation.RetentionPolicy.CLASS;
-import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
 
 /**
@@ -61,9 +62,6 @@ public abstract class JPACatalogServiceRepositoryMapper {
 
     @Setter
     private DRDRepository drdRepository;
-
-    @Setter
-    private BaseCatalogChapterEntityMapper baseCatalogChapterEntityMapper;
 
     @Mapping(target = "validFrom", expression = "java( java.time.ZonedDateTime.now())")
     public abstract BaseCatalogEntity createCatalog(Catalog<BaseRequirement> domain);
@@ -87,17 +85,14 @@ public abstract class JPACatalogServiceRepositoryMapper {
 
     public abstract CatalogVersion getCatalogVersions(BaseCatalogVersionProjection entity);
 
-    @DoNotSelectForMapping
-    public BaseCatalogChapterEntity toEntity(Chapter<BaseRequirement> domain) {
-        if (isNull(domain)) {
-            return null;
+    @AfterMapping
+    public void addNumber(@MappingTarget BaseCatalogChapterEntityBuilder builder) {
+        BaseCatalogChapterEntity entity = builder.build();
+        if (nonNull(entity.getRequirements())) {
+            entity.getRequirements()
+                .forEach(requirement -> requirement.setNumber(entity.getNumber() + "." + requirement.getPosition()));
         }
-        BaseCatalogChapterEntity result = baseCatalogChapterEntityMapper.toEntity(domain);
-        if (nonNull(result.getRequirements())) {
-            result.getRequirements()
-                .forEach(requirement -> requirement.setNumber(result.getNumber() + "." + requirement.getPosition()));
-        }
-        return result;
+        builder.requirements(entity.getRequirements());
     }
 
     @Qualifier
