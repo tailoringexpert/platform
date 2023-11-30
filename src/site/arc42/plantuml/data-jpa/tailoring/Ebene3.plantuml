@@ -44,7 +44,7 @@ package tailoring {
         {abstract} getDefaultSignatures(entity : DocumentSigneeEntity) : DocumentSignee
         {abstract} toEntity(entity : Note) : NoteEntity
         {abstract} toEntity(domain : Chapter<TailoringRequirement>) : TailoringCatalogChapterEntity
-        addRequirementsIdentifier(entity : TailoringCatalogChapterEntity) : void
+        addNumber(builder : TailoringCatalogChapterEntityBuilder) : void
         resolve(domain: Logo) : LogoEntity
     }
     JPAProjektServiceRepositoryMapper -->  "1" LogoRepository : logoRepository
