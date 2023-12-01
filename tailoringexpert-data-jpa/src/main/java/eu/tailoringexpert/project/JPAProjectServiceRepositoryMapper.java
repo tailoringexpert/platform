@@ -70,6 +70,7 @@ public abstract class JPAProjectServiceRepositoryMapper {
     @Mapping(target = "screeningSheet.data", source = "entity.screeningSheet.data")
     abstract Project toDomain(ProjectEntity entity);
 
+    @Mapping(target = "creationTimestamp", expression = "java( java.time.ZonedDateTime.now())")
     abstract TailoringEntity toEntity(Tailoring domain);
 
     abstract Tailoring toDomain(TailoringEntity entity);
