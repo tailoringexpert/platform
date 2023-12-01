@@ -40,11 +40,9 @@ import eu.tailoringexpert.repository.LogoRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import java.util.Arrays;
-import java.util.List;
-
 import static eu.tailoringexpert.domain.Phase.F;
 import static eu.tailoringexpert.domain.Phase.ZERO;
+import static java.util.List.of;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
@@ -59,9 +57,8 @@ class JPATailoringServiceRepositoryMapperTest {
 
     @BeforeEach
     void setup() {
-        this.mapper = new JPATailoringServiceRepositoryMapperGenerated();
-
         this.logoRepositoryMock = mock(LogoRepository.class);
+        this.mapper = new JPATailoringServiceRepositoryMapperGenerated();
         this.mapper.setLogoRepository(logoRepositoryMock);
     }
 
@@ -124,22 +121,24 @@ class JPATailoringServiceRepositoryMapperTest {
     @Test
     void updateTailoring_TailoringNotNull_OnlyCatalogSelectionVectorStateUpdated() {
         // arrange
+        Chapter<TailoringRequirement> toc = Chapter.<TailoringRequirement>builder()
+            .requirements(of(
+                TailoringRequirement.builder()
+                    .position("a")
+                    .text("Text")
+                    .build()
+            ))
+            .chapters(of(
+                Chapter.<TailoringRequirement>builder()
+                    .number("1.1")
+                    .build()
+            ))
+            .build();
+
         Tailoring domain = Tailoring.builder()
             .catalog(Catalog.<TailoringRequirement>builder()
                 .version("8.2.1")
-                .toc(Chapter.<TailoringRequirement>builder()
-                    .requirements(Arrays.asList(
-                        TailoringRequirement.builder()
-                            .position("a")
-                            .text("Text")
-                            .build()
-                    ))
-                    .chapters(Arrays.asList(
-                        Chapter.<TailoringRequirement>builder()
-                            .number("1.1")
-                            .build()
-                    ))
-                    .build())
+                .toc(toc)
                 .build())
             .screeningSheet(ScreeningSheet.builder().build())
             .state(TailoringState.AGREED)
@@ -194,7 +193,7 @@ class JPATailoringServiceRepositoryMapperTest {
     void toScreeningSheetParameters_ProjectNotNull_IdentifierNotNull() {
         // arrange
         ScreeningSheetEntity entity = ScreeningSheetEntity.builder()
-            .parameters(List.of(
+            .parameters(of(
                 ScreeningSheetParameterEntity.builder()
                     .category(ScreeningSheet.PARAMETER_PROJECT)
                     .value("Sample")
@@ -214,7 +213,7 @@ class JPATailoringServiceRepositoryMapperTest {
     void toScreeningSheetParameters_ProjectNull_IdentifierNull() {
         // arrange
         ScreeningSheetEntity entity = ScreeningSheetEntity.builder()
-            .parameters(List.of(
+            .parameters(of(
                 ScreeningSheetParameterEntity.builder()
                     .category("Project lead")
                     .value("Someone")
@@ -234,7 +233,7 @@ class JPATailoringServiceRepositoryMapperTest {
     void toScreeningSheetParameters_PhasesNull_PhasesEmptyList() {
         // arrange
         ScreeningSheetEntity entity = ScreeningSheetEntity.builder()
-            .parameters(List.of(
+            .parameters(of(
                 ScreeningSheetParameterEntity.builder()
                     .category("Project lead")
                     .value("Someone")
@@ -254,7 +253,7 @@ class JPATailoringServiceRepositoryMapperTest {
     void toScreeningSheetParameters_PhasesNotNull_PhasesList() {
         // arrange
         ScreeningSheetEntity entity = ScreeningSheetEntity.builder()
-            .parameters(List.of(
+            .parameters(of(
                 ScreeningSheetParameterEntity.builder()
                     .category(ScreeningSheet.PARAMETER_PHASE)
                     .value("0")
@@ -274,4 +273,5 @@ class JPATailoringServiceRepositoryMapperTest {
         assertThat(actual.getPhases()).hasSize(2);
         assertThat(actual.getPhases()).containsExactly(ZERO, F);
     }
+
 }

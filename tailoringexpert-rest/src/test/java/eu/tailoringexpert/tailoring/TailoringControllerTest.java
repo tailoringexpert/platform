@@ -535,7 +535,7 @@ class TailoringControllerTest {
         given(serviceMock.createRequirementDocument("SAMPLE", "master")).willReturn(empty());
 
         // act
-        ResultActions actual = mockMvc.perform(get("/project/{project}/tailoring/{tailoring}/dokument", "SAMPLE", "master")
+        ResultActions actual = mockMvc.perform(get("/project/{project}/tailoring/{tailoring}/document", "SAMPLE", "master")
             .accept("application/zip")
         );
 

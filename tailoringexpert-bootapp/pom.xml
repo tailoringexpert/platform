@@ -12,7 +12,7 @@
     <parent>
         <groupId>eu.tailoringexpert</groupId>
         <artifactId>tailoringexpert-platform</artifactId>
-        <version>0.1.1</version>
+        <version>0.1.2</version>
     </parent>
 
     <dependencies>
@@ -68,11 +68,6 @@
         </dependency>
 
         <dependency>
-            <groupId>org.springframework.cloud</groupId>
-            <artifactId>spring-cloud-starter-config</artifactId>
-        </dependency>
-
-        <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-security</artifactId>
         </dependency>
@@ -118,6 +113,15 @@
             <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
+                <configuration>
+                    <excludeGroupIds>
+                        org.mariadb.jdbc,
+                        org.projectlombok,
+                        org.mapstruct,
+                        org.junit.jupiter,
+                        org.junit.platform,
+                    </excludeGroupIds>
+                </configuration>
             </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>

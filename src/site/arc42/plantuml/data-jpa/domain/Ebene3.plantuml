@@ -63,6 +63,7 @@ package domain {
         id : Long <<PK>>
         text : String
         postion : String
+        number: String
     }
     BaseRequirementEntity --> "0..1" ReferenceEntity : reference
     BaseRequirementEntity --> "0..*" Phase : phases <<ordered>>
@@ -128,6 +129,7 @@ package domain {
         selected : Boolean
         selectionChanged : ZonedDateTime
         textChanged : ZonedDateTime
+        number: String
     }
     TailoringRequirementEntity --> "0..1" ReferenceEntity : reference
     TailoringRequirementEntity --> "0..*" DRDEntity : drds <<unordered>>

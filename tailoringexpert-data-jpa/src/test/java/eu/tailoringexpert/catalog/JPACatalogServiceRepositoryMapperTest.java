@@ -22,8 +22,10 @@
 package eu.tailoringexpert.catalog;
 
 import eu.tailoringexpert.domain.BaseCatalogChapterEntity;
+import eu.tailoringexpert.domain.BaseCatalogChapterEntity.BaseCatalogChapterEntityBuilder;
 import eu.tailoringexpert.domain.BaseCatalogEntity;
 import eu.tailoringexpert.domain.BaseRequirement;
+import eu.tailoringexpert.domain.BaseRequirementEntity;
 import eu.tailoringexpert.domain.Catalog;
 import eu.tailoringexpert.domain.Chapter;
 import eu.tailoringexpert.domain.DRD;
@@ -33,18 +35,21 @@ import eu.tailoringexpert.domain.LogoEntity;
 import eu.tailoringexpert.domain.Phase;
 import eu.tailoringexpert.repository.DRDRepository;
 import eu.tailoringexpert.repository.LogoRepository;
+import lombok.extern.log4j.Log4j2;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 
-import java.util.Arrays;
 
+import static java.util.Arrays.asList;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.tuple;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
+@Log4j2
 class JPACatalogServiceRepositoryMapperTest {
 
     private LogoRepository logoRepositoryMock;
@@ -96,11 +101,11 @@ class JPACatalogServiceRepositoryMapperTest {
         Catalog<BaseRequirement> catalog = Catalog.<BaseRequirement>builder()
             .version("8.2.1")
             .toc(Chapter.<BaseRequirement>builder()
-                .requirements(Arrays.asList(
+                .requirements(asList(
                     BaseRequirement.builder()
                         .position("a")
                         .text("Requirement")
-                        .phases(Arrays.asList(Phase.ZERO))
+                        .phases(asList(Phase.ZERO))
                         .build()
                 ))
                 .build())
@@ -222,4 +227,50 @@ class JPACatalogServiceRepositoryMapperTest {
         verify(drdRepositoryMock, times(1)).findByNumber("drd-47.11");
     }
 
+
+    @Test
+    void addNumber_ChapterWithRequirements_EntityRequirementsContainsValidNumber() {
+        // arrange
+        BaseCatalogChapterEntityBuilder builder = BaseCatalogChapterEntity.builder()
+            .number("1.2.1")
+            .requirements(asList(
+                BaseRequirementEntity.builder()
+                    .text("Requirement 1")
+                    .position("a")
+                    .build(),
+                BaseRequirementEntity.builder()
+                    .text("Requirement 2")
+                    .position("b")
+                    .build())
+            );
+
+        // act
+        mapper.addNumber(builder);
+        BaseCatalogChapterEntity actual = builder.build();
+
+        // assert
+        assertThat(actual.getRequirements())
+            .hasSize(2)
+            .extracting(BaseRequirementEntity::getPosition, BaseRequirementEntity::getNumber)
+            .containsOnly(
+                tuple("a", "1.2.1.a"),
+                tuple("b", "1.2.1.b")
+            );
+    }
+
+    @Test
+    void createCatalog_ChapterNullRequirements_EntityNullRequirementsReturned() {
+        // arrange
+        BaseCatalogChapterEntityBuilder builder = BaseCatalogChapterEntity.builder()
+            .number("1.2.1")
+            .requirements(null);
+
+        // act
+        mapper.addNumber(builder);
+        BaseCatalogChapterEntity actual = builder.build();
+
+        // assert
+        assertThat(actual.getRequirements())
+            .isNull();
+    }
 }

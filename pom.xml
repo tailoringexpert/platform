@@ -7,7 +7,7 @@
     <artifactId>tailoringexpert-platform</artifactId>
     <packaging>pom</packaging>
     <name>${project.groupId}:${project.artifactId}</name>
-    <version>0.1.1</version>
+    <version>0.1.2</version>
 
     <inceptionYear>2022</inceptionYear>
 
@@ -79,10 +79,10 @@
         <maven.compiler.target>${java.version}</maven.compiler.target>
         <maven.javadoc.skip>true</maven.javadoc.skip>
         <license.licenseName>gpl_v3</license.licenseName>
-        <plattform.version>0.1.1</plattform.version>
+        <plattform.version>0.1.2</plattform.version>
 
         <jacoco.version>0.8.7</jacoco.version>
-        <junit-jupiter.version>5.9.3</junit-jupiter.version>
+        <junit-jupiter.version>5.10.1</junit-jupiter.version>
 
         <lombok.version>1.18.30</lombok.version>
         <lombok-mapstruct-binding.version>0.2.0</lombok-mapstruct-binding.version>
@@ -94,15 +94,15 @@
 
         <!-- plugins -->
         <jacoco-maven-plugin.version>0.8.11</jacoco-maven-plugin.version>
-        <liquibase-maven-plugin.version>4.24.0</liquibase-maven-plugin.version>
-        <spring-boot-maven-plugin.version>3.1.5</spring-boot-maven-plugin.version>
+        <liquibase-maven-plugin.version>4.25.0</liquibase-maven-plugin.version>
+        <spring-boot-maven-plugin.version>3.2.0</spring-boot-maven-plugin.version>
         <springdoc-openapi-maven-plugin.version>1.4</springdoc-openapi-maven-plugin.version>
 
         <gitflow-maven-plugin.version>1.20.0</gitflow-maven-plugin.version>
         <lombok-maven-plugin.version>1.18.20.0</lombok-maven-plugin.version>
-        <maven-exec-plugin.version>3.1.0</maven-exec-plugin.version>
+        <maven-exec-plugin.version>3.1.1</maven-exec-plugin.version>
         <maven-compiler-plugin.version>3.11.0</maven-compiler-plugin.version>
-        <dependency-check-maven.version>8.4.2</dependency-check-maven.version>
+        <dependency-check-maven.version>9.0.1</dependency-check-maven.version>
         <dependency-check-maven.phase>install</dependency-check-maven.phase>
         <maven-gpg-plugin.version>3.0.1</maven-gpg-plugin.version>
         <maven-assembly-plugin.version>3.6.0</maven-assembly-plugin.version>
@@ -378,14 +378,6 @@
                 <configuration>
                     <failOnError>false</failOnError>
                 </configuration>
-                <executions>
-                    <execution>
-                        <phase>${dependency-check-maven.phase}</phase>
-                        <goals>
-                            <goal>check</goal>
-                        </goals>
-                    </execution>
-                </executions>
             </plugin>
             <plugin>
                 <groupId>com.amashchenko.maven.plugin</groupId>
