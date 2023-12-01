@@ -34,4 +34,5 @@ public class DomainConfiguration {
         result.setContextPath(contextPath);
         return result;
     }
+
 }

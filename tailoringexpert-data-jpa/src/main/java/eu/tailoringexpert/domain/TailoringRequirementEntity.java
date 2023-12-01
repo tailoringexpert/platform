@@ -111,6 +111,12 @@ public class TailoringRequirementEntity implements Serializable {
      */
     @Column(name = "TEXTCHANGED")
     private ZonedDateTime textChanged;
+
+    /**
+     * Complete number containing full qualified chapter and postion.
+     */
+    @Column(name = "NUMBER")
+    private String number;
 }
 
 

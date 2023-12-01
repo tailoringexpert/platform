@@ -183,7 +183,7 @@ public class TailoringConfiguration {
     TailoringDeletablePredicate tailoringDeletablePredicate(
         @NonNull DefaultTailoringDeletablePredicate defaultTailoringDeletablePredicate,
         @NonNull ListableBeanFactory beanFactory) {
-        Map<String, TailoringDeletablePredicate> predicates = getTenantImplementierungen(beanFactory, TailoringDeletablePredicate.class);
+        Map<String, TailoringDeletablePredicate> predicates = getTenantImplementations(beanFactory, TailoringDeletablePredicate.class);
         return new TenantTailoringDeletablePredicate(predicates, defaultTailoringDeletablePredicate);
     }
 
@@ -238,8 +238,7 @@ public class TailoringConfiguration {
         return new CMPDFDocumentCreator(templateEngine, pdfEngine, drdProvider);
     }
 
-
-    private <T> Map<String, T> getTenantImplementierungen(ListableBeanFactory beanFactory, Class<T> clz) {
+    private <T> Map<String, T> getTenantImplementations(ListableBeanFactory beanFactory, Class<T> clz) {
         return beanFactory.getBeansOfType(clz)
             .values()
             .stream()

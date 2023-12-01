@@ -118,6 +118,4 @@ public abstract class JPATailoringServiceRepositoryMapper {
     LogoEntity resolve(Logo domain) {
         return nonNull(domain) ? logoRepository.findByName(domain.getName()) : null;
     }
-
-
 }

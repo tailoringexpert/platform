@@ -22,6 +22,8 @@
 package eu.tailoringexpert.catalog;
 
 import eu.tailoringexpert.TailoringexpertMapperConfig;
+import eu.tailoringexpert.domain.BaseCatalogChapterEntity;
+import eu.tailoringexpert.domain.BaseCatalogChapterEntity.BaseCatalogChapterEntityBuilder;
 import eu.tailoringexpert.domain.BaseCatalogEntity;
 import eu.tailoringexpert.domain.BaseCatalogVersionProjection;
 import eu.tailoringexpert.domain.BaseRequirement;
@@ -34,8 +36,10 @@ import eu.tailoringexpert.repository.LogoRepository;
 import eu.tailoringexpert.domain.DRD;
 import eu.tailoringexpert.domain.Logo;
 import lombok.Setter;
+import org.mapstruct.AfterMapping;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
+import org.mapstruct.MappingTarget;
 import org.mapstruct.Qualifier;
 
 import java.lang.annotation.Retention;
@@ -68,7 +72,7 @@ public abstract class JPACatalogServiceRepositoryMapper {
         return nonNull(domain) ? logoRepository.findByName(domain.getName()) : null;
     }
 
-    @DoIgnore
+    @DoNotSelectForMapping
     public abstract DRDEntity createCatalog(DRD domain);
 
     DRDEntity resolve(DRD domain) {
@@ -81,10 +85,19 @@ public abstract class JPACatalogServiceRepositoryMapper {
 
     public abstract CatalogVersion getCatalogVersions(BaseCatalogVersionProjection entity);
 
+    @AfterMapping
+    public void addNumber(@MappingTarget BaseCatalogChapterEntityBuilder builder) {
+        BaseCatalogChapterEntity entity = builder.build();
+        if (nonNull(entity.getRequirements())) {
+            entity.getRequirements()
+                .forEach(requirement -> requirement.setNumber(entity.getNumber() + "." + requirement.getPosition()));
+        }
+        builder.requirements(entity.getRequirements());
+    }
+
     @Qualifier
     @Target(METHOD)
     @Retention(CLASS)
-    public @interface DoIgnore {
+    public @interface DoNotSelectForMapping {
     }
-
 }

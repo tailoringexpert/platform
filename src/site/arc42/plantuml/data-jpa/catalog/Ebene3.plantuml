@@ -21,8 +21,11 @@ package catalog {
         {abstract} createCatalog(entity : BaseCatalogEntity) : Catalog<BaseRequirement>
         {abstract} getCatalog(entity: BaseCatalogEntity) : Catalog<BaseRequirement>
         {abstract} createCatalog(domain : DRD) : DRDEntity
+        {abstract} toEntity(domain : Chapter<BaseRequirement>) : BaseCatalogChapterEntity
         resolve(domain : Logo) : LogoEntity
         resolve(domain : DRD) : DRDEntity
+        addNumber(builder : BaseCatalogChapterEntityBuilder) : void
+
     }
     JPACatalogServiceRepositoryMapper --> "1" LogoRepository : logoRepository
     JPACatalogServiceRepositoryMapper --> "1" DRDRepository : drdRepository

@@ -35,7 +35,6 @@ import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
 
 import static java.lang.String.format;
-import static org.apache.pdfbox.io.MemoryUsageSetting.setupTempFileOnly;
 
 /**
  * Engine for creating PDF output of HTML input.
@@ -62,7 +61,7 @@ public class PDFEngine {
     public File process(@NonNull String docId, @NonNull String html, @NonNull String pathSuffix) {
         log.traceEntry(() -> docId);
 
-        try (PDDocument document = new PDDocument(setupTempFileOnly())) {
+        try (PDDocument document = new PDDocument()) {
             ByteArrayOutputStream os = new ByteArrayOutputStream();
             PdfRendererBuilder builder = new PdfRendererBuilder();
 
