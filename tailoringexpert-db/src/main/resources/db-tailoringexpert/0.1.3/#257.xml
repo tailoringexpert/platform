@@ -5,7 +5,7 @@
 
     <changeSet id="1" author="tailoringexpert">
         <comment>column size for md hash for github issue #257</comment>
-        <modifyDataType tableName="FILE" columnName="MD5" newDataType="VARCHAR(40)"/>
+        <modifyDataType tableName="FILE" columnName="MD5" newDataType="VARCHAR(64)"/>
     </changeSet>
 
 </databaseChangeLog>
