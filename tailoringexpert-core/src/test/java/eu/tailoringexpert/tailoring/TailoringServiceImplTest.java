@@ -1062,8 +1062,8 @@ class TailoringServiceImplTest {
 
         given(tailoringAnforderungFileReaderMock.apply(data)).willReturn(Map.ofEntries(
                 new AbstractMap.SimpleEntry<>("1", asList(
-                    ImportRequirement.builder().position("a").applicable("JEIN").build(),
-                    ImportRequirement.builder().position("b").applicable("NEIN").build()
+                    ImportRequirement.builder().position("a").applicable("YNO").build(),
+                    ImportRequirement.builder().position("b").applicable("NO").build()
                 ))
             )
         );
@@ -1085,8 +1085,8 @@ class TailoringServiceImplTest {
 
         given(tailoringAnforderungFileReaderMock.apply(data)).willReturn(Map.ofEntries(
                 new AbstractMap.SimpleEntry<>("1", asList(
-                    ImportRequirement.builder().position("a").applicable("JA").build(),
-                    ImportRequirement.builder().position("b").applicable("NEIN").build()
+                    ImportRequirement.builder().position("a").applicable("YES").build(),
+                    ImportRequirement.builder().position("b").applicable("NO").build()
                 ))
             )
         );
@@ -1109,8 +1109,8 @@ class TailoringServiceImplTest {
 
         given(tailoringAnforderungFileReaderMock.apply(data)).willReturn(Map.ofEntries(
                 new AbstractMap.SimpleEntry<>("1", asList(
-                    ImportRequirement.builder().position("a").applicable("JA").text("Dies ist der neue Text").build(),
-                    ImportRequirement.builder().position("b").applicable("NEIN").build()
+                    ImportRequirement.builder().position("a").applicable("YES").text("Dies ist der neue Text").build(),
+                    ImportRequirement.builder().position("b").applicable("NO").build()
                 ))
             )
         );
