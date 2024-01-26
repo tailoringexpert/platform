@@ -180,13 +180,18 @@ public class JPARequirementServiceRepository implements RequirementServiceReposi
         @NonNull Chapter<TailoringRequirement> chapter) {
         log.traceEntry(() -> project, () -> tailoring, () -> chapter);
 
-        Optional<TailoringCatalogChapterEntity> oChapter = findChapter(project, tailoring, chapter.getNumber());
-        if (oChapter.isEmpty()) {
+        Optional<TailoringCatalogChapterEntity> oEntity = findChapter(project, tailoring, chapter.getNumber());
+        if (oEntity.isEmpty()) {
             log.traceExit();
             return empty();
         }
-        mapper.updateChapter(chapter, oChapter.get());
-        Optional<Chapter<TailoringRequirement>> result = of(mapper.toDomain(oChapter.get()));
+        mapper.updateChapter(chapter, oEntity.get());
+        oEntity.get().getRequirements()
+            .stream()
+            .filter(requirement -> isNull(requirement.getNumber()))
+            .forEach(requirement -> requirement.setNumber(chapter.getNumber() + "." + requirement.getPosition()));
+
+        Optional<Chapter<TailoringRequirement>> result = of(mapper.toDomain(oEntity.get()));
 
         log.traceExit();
         return result;
