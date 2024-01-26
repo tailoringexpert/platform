@@ -1,13 +1,44 @@
 # Changelog
 
-## [v0.1.1](https://github.com/tailoringexpert/platform/tree/v0.1.1) (11.08.2023)
+## [vv0.1.3](https://github.com/tailoringexpert/platform/tree/vv0.1.3) (01.26.2024)
+
+[Full Changelog](https://github.com/tailoringexpert/platform/compare/v0.1.2...vv0.1.3)
+
+**Implemented enhancements:**
+
+- Change applicable column in Excel to boolean [\#249](https://github.com/tailoringexpert/platform/issues/249)
+
+**Fixed bugs:**
+
+- Missing number in new tailoring requirement [\#278](https://github.com/tailoringexpert/platform/issues/278)
+- Change column length for file hash/checksum [\#257](https://github.com/tailoringexpert/platform/issues/257)
+
+## [v0.1.2](https://github.com/tailoringexpert/platform/tree/v0.1.2) (12.01.2023)
+
+[Full Changelog](https://github.com/tailoringexpert/platform/compare/v0.1.1...v0.1.2)
+
+**Implemented enhancements:**
+
+- Add tailoring requirement identifier [\#246](https://github.com/tailoringexpert/platform/issues/246)
+- Add base requirement unique identifier [\#245](https://github.com/tailoringexpert/platform/issues/245)
+
+**Fixed bugs:**
+
+- Set creation timestamp of tailoring [\#255](https://github.com/tailoringexpert/platform/issues/255)
+- Wrong url in TailoringControllerTest [\#250](https://github.com/tailoringexpert/platform/issues/250)
+
+**Closed issues:**
+
+- Cleanup springboot platform jar [\#254](https://github.com/tailoringexpert/platform/issues/254)
+
+## [v0.1.1](https://github.com/tailoringexpert/platform/tree/v0.1.1) (11.09.2023)
 
 [Full Changelog](https://github.com/tailoringexpert/platform/compare/v0.1.0...v0.1.1)
 
 **Closed issues:**
 
-- Create Jenkinsfile [\#237](https://github.com/tailoringexpert/platform/issues/237)
 - German entity names [\#233](https://github.com/tailoringexpert/platform/issues/233)
+- Create Jenkinsfile [\#237](https://github.com/tailoringexpert/platform/issues/237)
 - Add all requirements to datatset for pdf compliance matrix creation [\#232](https://github.com/tailoringexpert/platform/issues/232)
 - Fix sonar security hotspot findings [\#227](https://github.com/tailoringexpert/platform/issues/227)
 - Integrate sonar in maven build [\#226](https://github.com/tailoringexpert/platform/issues/226)
