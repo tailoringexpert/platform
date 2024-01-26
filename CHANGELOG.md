@@ -1,18 +1,5 @@
 # Changelog
 
-## [vv0.1.3](https://github.com/tailoringexpert/platform/tree/vv0.1.3) (01.26.2024)
-
-[Full Changelog](https://github.com/tailoringexpert/platform/compare/v0.1.2...vv0.1.3)
-
-**Implemented enhancements:**
-
-- Change applicable column in Excel to boolean [\#249](https://github.com/tailoringexpert/platform/issues/249)
-
-**Fixed bugs:**
-
-- Missing number in new tailoring requirement [\#278](https://github.com/tailoringexpert/platform/issues/278)
-- Change column length for file hash/checksum [\#257](https://github.com/tailoringexpert/platform/issues/257)
-
 ## [v0.1.2](https://github.com/tailoringexpert/platform/tree/v0.1.2) (12.01.2023)
 
 [Full Changelog](https://github.com/tailoringexpert/platform/compare/v0.1.1...v0.1.2)
