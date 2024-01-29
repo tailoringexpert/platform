@@ -27,6 +27,9 @@ import eu.tailoringexpert.domain.Tailoring;
 import eu.tailoringexpert.domain.TailoringRequirement;
 import lombok.extern.log4j.Log4j2;
 import org.apache.poi.ss.usermodel.CellStyle;
+import org.apache.poi.ss.usermodel.DataValidation;
+import org.apache.poi.ss.usermodel.DataValidationConstraint;
+import org.apache.poi.ss.usermodel.DataValidationHelper;
 import org.apache.poi.ss.usermodel.FillPatternType;
 import org.apache.poi.ss.usermodel.IndexedColors;
 import org.apache.poi.ss.usermodel.Row;
@@ -34,6 +37,7 @@ import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.VerticalAlignment;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.ss.util.CellRangeAddress;
+import org.apache.poi.ss.util.CellRangeAddressList;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
 import java.io.ByteArrayOutputStream;
@@ -65,6 +69,8 @@ public class TailoringCatalogExcelDocumentCreator implements DocumentCreator {
             tailoring.getCatalog().getToc().getChapters().forEach(gruppe -> addChapter(gruppe, sheet));
 
             applyTextStyle(sheet);
+            applyValidationToColumn(sheet, 2);
+            Arrays.stream(new int[]{2, 4, 5}).forEach(column -> applyValidationToColumn(sheet, column));
             Arrays.stream(new int[]{1, 2, 4, 5}).forEach(sheet::autoSizeColumn);
 
             copySheet(wb, 0);
@@ -160,10 +166,10 @@ public class TailoringCatalogExcelDocumentCreator implements DocumentCreator {
         Row row = sheet.createRow((short) sheet.getLastRowNum() + 1);
         row.createCell(0).setCellValue("");
         row.createCell(1).setCellValue(requirement.getPosition());
-        row.createCell(2).setCellValue(requirement.getSelected().booleanValue() ? "JA" : "NEIN");
+        row.createCell(2).setCellValue(requirement.getSelected().booleanValue() ? "YES" : "NO");
         row.createCell(3).setCellValue(requirement.getText());
-        row.createCell(4).setCellValue(nonNull(requirement.getSelectionChanged()));
-        row.createCell(5).setCellValue(nonNull(requirement.getTextChanged()));
+        row.createCell(4).setCellValue(nonNull(requirement.getSelectionChanged()) ? "YES" : "NO");
+        row.createCell(5).setCellValue(nonNull(requirement.getTextChanged()) ? "YES" : "NO");
     }
 
 
@@ -204,5 +210,18 @@ public class TailoringCatalogExcelDocumentCreator implements DocumentCreator {
             .skip(1)
             .filter(row -> nonNull(row.getCell(3)))
             .forEach(row -> row.getCell(3).setCellStyle(wrapStyle));
+    }
+
+    void applyValidationToColumn(Sheet sheet, int column) {
+        DataValidationHelper dvHelper = sheet.getDataValidationHelper();
+        DataValidationConstraint dvConstraint = dvHelper.createExplicitListConstraint(new String[]{"YES", "NO"});
+
+        CellRangeAddressList addressList = new CellRangeAddressList(1, sheet.getLastRowNum(), column, column);
+        DataValidation validation = dvHelper.createValidation(dvConstraint, addressList);
+
+        validation.setSuppressDropDownArrow(false);
+        validation.setShowErrorBox(true);
+
+        sheet.addValidationData(validation);
     }
 }
