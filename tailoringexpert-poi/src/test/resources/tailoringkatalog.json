@@ -19,8 +19,8 @@
           "reference" : null,
           "drds" : [ ],
           "selected" : true,
-          "selectionChanged" : null,
-          "textChanged" : null
+          "selectionChanged" : "2024-01-26T13:16:55.646898896+01:00[Europe/Paris]",
+          "textChanged" : "2024-01-26T13:16:55.646898896+01:00[Europe/Paris]"
         } ]
       }, {
         "name" : "Objectives",

@@ -32,8 +32,11 @@ import eu.tailoringexpert.domain.File;
 import eu.tailoringexpert.domain.Tailoring;
 import eu.tailoringexpert.domain.TailoringRequirement;
 import lombok.extern.log4j.Log4j2;
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.ss.usermodel.WorkbookFactory;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -83,7 +86,6 @@ class TailoringCatalogExcelDocumentCreatorTest {
         this.creator = new TailoringCatalogExcelDocumentCreator();
 
     }
-
 
 
     @Test
@@ -151,5 +153,23 @@ class TailoringCatalogExcelDocumentCreatorTest {
             assertThat(workbook.getSheetAt(0).getSheetName()).isEqualTo("ut-8.2.1-IMPORT");
             assertThat(workbook.getSheetAt(1).getSheetName()).isEqualTo("ut-8.2.1-EXPORT");
         }
+    }
+
+    @Test
+    void applyValidationToColumn_XSSFDataValidation_ValidationAddedToSheet() {
+        // arrange
+        Sheet sheet = new XSSFWorkbook().createSheet();
+        Row row = sheet.createRow((short) sheet.getLastRowNum() + 1);
+        row.createCell(0).setCellValue("HEADER");
+        row = sheet.createRow((short) sheet.getLastRowNum() + 1);
+        row.createCell(0).setCellValue("YES");
+
+        // act
+        creator.applyValidationToColumn(sheet, 0);
+
+        // assert
+        assertThat(sheet.getDataValidations()).hasSize(1);
+        assertThat(sheet.getDataValidations().get(0).getShowErrorBox()).isTrue();
+        assertThat(sheet.getDataValidations().get(0).getSuppressDropDownArrow()).isFalse();
     }
 }

@@ -87,8 +87,8 @@ public class TailoringServiceImpl implements TailoringService {
     @NonNull
     private Function<byte[], Map<String, Collection<ImportRequirement>>> tailoringAnforderungFileReader;
 
-    private static final String YES = "JA";
-    private static final String NO = "NEIN";
+    private static final String YES = "YES";
+    private static final String NO = "NO";
 
     /**
      * {@inheritDoc}
