@@ -64,6 +64,7 @@ import static eu.tailoringexpert.domain.ResourceMapper.BASECATALOG;
 import static eu.tailoringexpert.domain.ResourceMapper.BASECATALOG_VALIDUNTIL;
 import static eu.tailoringexpert.domain.ResourceMapper.BASECATALOG_VERSION;
 import static eu.tailoringexpert.domain.ResourceMapper.BASECATALOG_VERSION_DOCUMENT;
+import static eu.tailoringexpert.domain.ResourceMapper.BASECATALOG_VERSION_EXCEL;
 import static eu.tailoringexpert.domain.ResourceMapper.BASECATALOG_VERSION_JSON;
 import static eu.tailoringexpert.domain.ResourceMapper.BASECATALOG_VERSION_PDF;
 import static java.time.LocalTime.MIDNIGHT;
@@ -212,6 +213,33 @@ public class CatalogController {
             .contentType(mediaTypeProvider.apply("json"))
             .contentLength(data.length)
             .body(data);
+        log.traceExit();
+        return result;
+
+    }
+
+    @Operation(summary = "Load base catalog as Excel output")
+    @ApiResponses(value = {
+        @ApiResponse(
+            responseCode = "200", description = "Base catalog loaded"),
+        @ApiResponse(
+            responseCode = "404", description = "Base catalog does not exist")
+    })
+    @GetMapping(value = BASECATALOG_VERSION_EXCEL, produces = "application/octet-stream")
+    @ResponseBody
+    public ResponseEntity<byte[]> getBaseCatalogExcel(
+        @Parameter(description = "Requested base catalog version") @PathVariable String version) {
+        log.traceEntry();
+
+        ResponseEntity<byte[]> result = catalogService.createCatalogExcel(version)
+            .map(dokument -> ok()
+                .header(CONTENT_DISPOSITION, ContentDisposition.builder(MediaTypeProvider.FORM_DATA).name(MediaTypeProvider.ATTACHMENT).filename(dokument.getName()).build().toString())
+                .header(ACCESS_CONTROL_EXPOSE_HEADERS, CONTENT_DISPOSITION)
+                .contentType(mediaTypeProvider.apply(dokument.getType()))
+                .contentLength(dokument.getLength())
+                .body(dokument.getData()))
+            .orElseGet(() -> notFound().build());
+
         log.traceExit();
         return result;
 

@@ -327,6 +327,50 @@ class CatalogControllerTest {
     }
 
     @Test
+    void getBaseCatalogExcel_BaseCatalogNotExists_StateNotFound() throws Exception {
+        // arrange
+        given(serviceMock.createCatalogExcel("8.2.1")).willReturn(empty());
+
+        // act
+        ResultActions actual = mockMvc.perform(get("/catalog/8.2.1/excel"));
+
+        // assert
+        actual.andExpect(status().isNotFound());
+        assertThatNoException();
+    }
+
+    @Test
+    void getBaseCatalogExcel_BaseCatalogExists_StateOK() throws Exception {
+        // arrange
+        byte[] data;
+        // file content not important. only size of byte[]
+        try (InputStream is = newInputStream(Paths.get("src/test/resources/basecatalog.xlsx"))) {
+            assert nonNull(is);
+            data = is.readAllBytes();
+        }
+        given(serviceMock.createCatalogExcel("8.2.1"))
+            .willReturn(of(File.builder()
+                .name("8.2.1.xlsx")
+                .data(data)
+                .build()));
+
+        given(mediaTypeProviderMock.apply("xlsx"))
+            .willReturn(APPLICATION_OCTET_STREAM);
+
+        // act
+        ResultActions actual = mockMvc.perform(get("/catalog/8.2.1/excel"));
+
+        // assert
+        actual.andExpect(status().isOk())
+            .andExpect(header().string(CONTENT_DISPOSITION, ContentDisposition.builder(FORM_DATA).name(ATTACHMENT).filename("8.2.1.xlsx").build().toString()))
+            .andExpect(header().string(ACCESS_CONTROL_EXPOSE_HEADERS, CONTENT_DISPOSITION))
+            .andExpect(content().contentType(APPLICATION_OCTET_STREAM))
+            .andExpect(content().bytes(data));
+
+        verify(mediaTypeProviderMock, times(1)).apply("xlsx");
+    }
+
+    @Test
     void getBaseCatalogJson_BaseCatalogNotExists_StateNotFound() throws Exception {
         // arrange
         given(serviceMock.getCatalog("8.2.1"))

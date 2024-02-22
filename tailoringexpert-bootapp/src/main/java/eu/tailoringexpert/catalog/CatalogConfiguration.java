@@ -23,6 +23,8 @@ package eu.tailoringexpert.catalog;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import eu.tailoringexpert.Tenants;
+import eu.tailoringexpert.domain.BaseRequirement;
+import eu.tailoringexpert.domain.Catalog;
 import eu.tailoringexpert.domain.ResourceMapper;
 import eu.tailoringexpert.renderer.HTMLTemplateEngine;
 import eu.tailoringexpert.renderer.PDFEngine;
@@ -31,6 +33,7 @@ import eu.tailoringexpert.repository.DRDRepository;
 import eu.tailoringexpert.repository.LogoRepository;
 import eu.tailoringexpert.repository.SelectionVectorProfileRepository;
 import lombok.NonNull;
+import org.apache.poi.ss.usermodel.Sheet;
 import org.springframework.beans.factory.ListableBeanFactory;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
@@ -39,6 +42,7 @@ import org.springframework.context.annotation.Primary;
 import org.springframework.http.MediaType;
 
 import java.util.Map;
+import java.util.function.BiConsumer;
 import java.util.function.Function;
 
 @Configuration
@@ -117,5 +121,32 @@ public class CatalogConfiguration {
         return new BaseDRDPDFDocumentCreator(templateEngine, pdfEngine, drdProvider);
     }
 
+
+    @Bean
+    @Qualifier("drdSheetCreator")
+    BiConsumer<Catalog<BaseRequirement>, Sheet> drdSheetCreator() {
+        return new DRDSheetCreator();
+    }
+
+    @Bean
+    @Qualifier("logoSheetCreator")
+    BiConsumer<Catalog<BaseRequirement>, Sheet> logoSheetCreator() {
+        return new LogoSheetCreator();
+    }
+
+    @Bean
+    @Qualifier("requirementSheetCreator")
+    BiConsumer<Catalog<BaseRequirement>, Sheet> requirementSheetCreator() {
+        return new RequirementSheetCreator();
+    }
+
+    @Bean
+    BaseCatalogExcelDocumentCreator baseCatalogExportExcelDocumentCreator(
+        @NonNull @Qualifier("requirementSheetCreator") BiConsumer<Catalog<BaseRequirement>, Sheet> requirementSheetCreator,
+        @NonNull @Qualifier("drdSheetCreator") BiConsumer<Catalog<BaseRequirement>, Sheet> logoSheetCreator,
+        @NonNull @Qualifier("logoSheetCreator") BiConsumer<Catalog<BaseRequirement>, Sheet> drdSheetCreator
+    ) {
+        return new BaseCatalogExcelDocumentCreator(requirementSheetCreator, drdSheetCreator, logoSheetCreator);
+    }
 
 }

@@ -1,0 +1,49 @@
+@startuml Ebene3.png
+hide empty members
+
+package tailoring {
+
+    interface DocumentCreator {
+        createDocument(docId : String, tailoring : Tailoring, placeholders : Map<String, Object>) : File
+    }
+
+    interface "BiConsumer<Catalog<BaseRequirement>, Sheet>" as sheetCreator {
+    }
+
+    class Styles {
+        headerStyle : CellStyle
+        defaultStyle : CellStyle
+    }
+
+    abstract class AbstractRequirementsBasedSheetCreator {
+        {abstract}addHeader(sheet : Sheet, styles: Styles) : void
+        {abstract}addChapter(chapter : Chapter<BaseRequirement>, sheet : Sheet, styles: Styles) : void
+    }
+    sheetCreator <|.. AbstractRequirementsBasedSheetCreator
+
+    class RequirementSheetCreator {
+    }
+    sheetCreator <|.. RequirementSheetCreator
+
+    RequirementSheetCreator -[dotted]-> Styles : <use>
+
+    class DRDSheetCreator {
+    }
+    AbstractRequirementsBasedSheetCreator <|-- DRDSheetCreator
+    DRDSheetCreator -[dotted]-> Styles : <use>
+
+    class LogoSheetCreator {
+    }
+    AbstractRequirementsBasedSheetCreator <|-- LogoSheetCreator
+    LogoSheetCreator -[dotted]-> Styles : <use>
+
+    class BaseCatalogExportExcelDocumentCreator {
+    }
+    DocumentCreator <|-- BaseCatalogExportExcelDocumentCreator
+
+    BaseCatalogExportExcelDocumentCreator --> "1" sheetCreator : requirementSheetCreator
+    BaseCatalogExportExcelDocumentCreator --> "1" sheetCreator : drdSheetCreator
+    BaseCatalogExportExcelDocumentCreator --> "1" sheetCreator : logoSheetCreator
+
+}
+@enduml

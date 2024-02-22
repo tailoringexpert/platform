@@ -227,6 +227,54 @@ class CatalogServiceImplTest {
     }
 
     @Test
+    void createExcelCatalog_CatalogNotExisting_EmptyReturned() {
+        // arrange
+        given(repositoryMock.getCatalog(any())).willReturn(empty());
+
+        // act
+        Optional<File> actual = service.createCatalogExcel("8.2.1");
+
+        // assert
+        assertThat(actual).isEmpty();
+        verify(repositoryMock, times(1)).getCatalog("8.2.1");
+    }
+
+    @Test
+    void createExcelCatalog_CatalogExists_FileReturned() {
+        // arrange
+        given(repositoryMock.getCatalog(any())).willReturn(of(Catalog.<BaseRequirement>builder().build()));
+
+        given(documentServiceMock.createCatalogExcel(any(), any())).willReturn(of(File.builder().build()));
+
+        // act
+        Optional<File> actual = service.createCatalogExcel("8.2.1");
+
+        // assert
+        assertThat(actual).isNotEmpty();
+        verify(repositoryMock, times(1)).getCatalog("8.2.1");
+        verify(documentServiceMock, times(1)).createCatalogExcel(any(), any());
+    }
+
+    @Test
+    void createExcelCatalog_DocumentServiceEmptyResult_EmptyReturned() {
+        // arrange
+        given(repositoryMock.getCatalog(any())).willReturn(of(Catalog.<BaseRequirement>builder().build()));
+
+        given(documentServiceMock.createCatalog(any(), any())).willReturn(empty());
+
+        // act
+        Optional<File> actual = service.createCatalogExcel("8.2.1");
+
+        // assert
+        assertThat(actual).isEmpty();
+        verify(repositoryMock, times(1)).getCatalog("8.2.1");
+        verify(documentServiceMock, times(1)).createCatalogExcel(any(), any());
+    }
+
+
+
+
+    @Test
     void createDocuments_CatalogNotExisting_EmptyReturned() {
         // arrange
         given(repositoryMock.getCatalog("8.2.1")).willReturn(empty());
