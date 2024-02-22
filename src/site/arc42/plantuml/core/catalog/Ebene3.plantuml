@@ -9,6 +9,7 @@ package catalog {
 
     interface DocumentService {
         createCatalog(catalog : Catalog<BaseRequirement>, creationTimestamp : LocalDateTime) : Optional<File>
+        createCatalogExcel(catalog : Catalog<BaseRequirement>, creationTimestamp : LocalDateTime) : Optional<File>
         createAll(catalog : Catalog<BaseRequirement>,  creationTimestamp : LocalDateTime) : Collection<File>
     }
 
@@ -20,6 +21,7 @@ package catalog {
         doImport(catalog : Catalog<BaseCatalogRequirement>) : boolean
         getCatalog(version : String) : Optional<Catalog<BaseRequirement>>
         createCatalog(version : String) : Optional<File>
+        createCatalogExcel(version : String) : Optional<File>;
         createDocuments(version : String) : Optional<File>
         getCatalogVersions() : Collection<CatalogVersion>
         limitValidity(version: String, validUntil : ZonedDateTime ) : Optional<CatalogVersion>

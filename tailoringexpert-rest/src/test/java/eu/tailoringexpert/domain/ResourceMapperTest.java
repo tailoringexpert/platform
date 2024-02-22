@@ -109,6 +109,7 @@ class ResourceMapperTest {
             Link.of(this.host + "/catalog/8.2.1", "self"),
             Link.of(this.host + "/catalog/8.2.1/project", "project"),
             Link.of(this.host + "/catalog/8.2.1/pdf", "pdf"),
+            Link.of(this.host + "/catalog/8.2.1/excel", "excel"),
             Link.of(this.host + "/catalog/8.2.1/json", "json"),
             Link.of(this.host + "/catalog/8.2.1/document", "document"),
             Link.of(this.host + "/catalog/8.2.1/validuntil/{validuntil}", "validuntil")
@@ -152,6 +153,7 @@ class ResourceMapperTest {
             Link.of(this.host + "/catalog/8.2.1", "self"),
             Link.of(this.host + "/catalog/8.2.1/project", "project"),
             Link.of(this.host + "/catalog/8.2.1/pdf", "pdf"),
+            Link.of(this.host + "/catalog/8.2.1/excel", "excel"),
             Link.of(this.host + "/catalog/8.2.1/json", "json"),
             Link.of(this.host + "/catalog/8.2.1/document", "document"),
             Link.of(this.host + "/catalog/8.2.1/validuntil/{validuntil}", "validuntil")

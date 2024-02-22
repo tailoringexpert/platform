@@ -62,6 +62,14 @@ public interface CatalogService {
     Optional<File> createCatalog(String version);
 
     /**
+     * Creates printable version of base catalog.
+     *
+     * @param version Version of base catalog to create document
+     * @return If base catalog availabe, a printable document, else empty
+     */
+    Optional<File> createCatalogExcel(String version);
+
+    /**
      * Create all documents of basecatalog.<p>
      * Documents will be provided in {@code Zip-File}.
      *

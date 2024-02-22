@@ -103,6 +103,23 @@ public class CatalogServiceImpl implements CatalogService {
         return result;
     }
 
+    @Override
+    public Optional<File> createCatalogExcel(String version) {
+        log.traceEntry(() -> version);
+        @SuppressWarnings("PMD.PrematureDeclaration") final LocalDateTime creationTimestamp = LocalDateTime.now();
+
+        Optional<Catalog<BaseRequirement>> catalog = repository.getCatalog(version);
+        if (catalog.isEmpty()) {
+            log.error("catalog document NOT created due to non existing catalog version");
+            log.traceExit();
+            return empty();
+        }
+
+        Optional<File> result = documentService.createCatalogExcel(catalog.get(), creationTimestamp);
+        log.traceExit();
+        return result;
+    }
+
     /**
      * {@inheritDoc}
      */
