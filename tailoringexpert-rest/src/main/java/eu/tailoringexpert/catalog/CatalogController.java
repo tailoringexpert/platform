@@ -51,9 +51,12 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.time.LocalDate;
 import java.time.ZonedDateTime;
 import java.util.List;
@@ -61,14 +64,17 @@ import java.util.Optional;
 import java.util.function.Function;
 
 import static eu.tailoringexpert.domain.ResourceMapper.BASECATALOG;
+import static eu.tailoringexpert.domain.ResourceMapper.BASECATALOG_CONVERT_EXCEL;
 import static eu.tailoringexpert.domain.ResourceMapper.BASECATALOG_VALIDUNTIL;
 import static eu.tailoringexpert.domain.ResourceMapper.BASECATALOG_VERSION;
 import static eu.tailoringexpert.domain.ResourceMapper.BASECATALOG_VERSION_DOCUMENT;
 import static eu.tailoringexpert.domain.ResourceMapper.BASECATALOG_VERSION_EXCEL;
 import static eu.tailoringexpert.domain.ResourceMapper.BASECATALOG_VERSION_JSON;
 import static eu.tailoringexpert.domain.ResourceMapper.BASECATALOG_VERSION_PDF;
+import static eu.tailoringexpert.domain.ResourceMapper.REL_CONVERT;
 import static java.time.LocalTime.MIDNIGHT;
 import static java.time.ZoneId.systemDefault;
+import static java.util.Collections.emptyMap;
 import static org.springframework.format.annotation.DateTimeFormat.ISO.DATE;
 import static org.springframework.http.HttpHeaders.ACCESS_CONTROL_EXPOSE_HEADERS;
 import static org.springframework.http.HttpHeaders.CONTENT_DISPOSITION;
@@ -135,7 +141,9 @@ public class CatalogController {
             .map(catalog -> EntityModel.of(mapper.toResource(pathContext, catalog)))
             .toList();
 
-        ResponseEntity<CollectionModel<EntityModel<BaseCatalogVersionResource>>> result = ok().body(CollectionModel.of(catalogs));
+        ResponseEntity<CollectionModel<EntityModel<BaseCatalogVersionResource>>> result = ok()
+            .body(CollectionModel.of(catalogs, mapper.createLink(REL_CONVERT, BASECATALOG_CONVERT_EXCEL, emptyMap())
+            ));
         log.traceExit();
         return result;
     }
@@ -185,6 +193,31 @@ public class CatalogController {
             .orElseGet(() -> notFound().build());
         log.traceExit();
         return result;
+    }
+
+    @Operation(summary = "Convert (Excel) data to JSON base catalog")
+    @ApiResponses(value = {
+        @ApiResponse(
+            responseCode = "200", description = "Base catalog converted")
+    })
+    @PostMapping(value = BASECATALOG_CONVERT_EXCEL, produces = "application/json")
+    @ResponseBody
+    public ResponseEntity<byte[]> postBaseCatalogFile(
+        @RequestPart("file") MultipartFile file) throws IOException {
+        log.traceEntry();
+
+        Catalog<BaseRequirement> catalog = catalogService.doConvert(file.getBytes());
+
+        byte[] data = objectMapper.writeValueAsBytes(catalog);
+        ResponseEntity<byte[]> result = ok()
+            .header(CONTENT_DISPOSITION, ContentDisposition.builder(MediaTypeProvider.FORM_DATA).name(MediaTypeProvider.ATTACHMENT).filename("catalog_" + catalog.getVersion() + ".json").build().toString())
+            .header(ACCESS_CONTROL_EXPOSE_HEADERS, CONTENT_DISPOSITION)
+            .contentType(mediaTypeProvider.apply("json"))
+            .contentLength(data.length)
+            .body(data);
+        log.traceExit();
+        return result;
+
     }
 
     @Operation(summary = "Load base catalog as JSON output")

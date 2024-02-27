@@ -8,12 +8,12 @@
  * it under the terms of the GNU General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/gpl-3.0.html>.
@@ -37,6 +37,11 @@ import static java.util.Objects.nonNull;
 import static java.util.stream.Collectors.joining;
 import static java.util.stream.IntStream.range;
 
+/**
+ * Creates an Excel sheet of requirements contained in basecatalog.
+ *
+ * @author Michael Bädorf
+ */
 @Log4j2
 public class RequirementSheetCreator implements BiConsumer<Catalog<BaseRequirement>, Sheet> {
 
@@ -65,9 +70,9 @@ public class RequirementSheetCreator implements BiConsumer<Catalog<BaseRequireme
      */
     private void addChapter(Chapter<BaseRequirement> chapter, Sheet sheet, Styles styles) {
         addRow(chapter.getNumber(), chapter.getName(), sheet, styles);
-
-        chapter.getChapters().forEach(subChapter -> addChapter(subChapter, sheet, styles));
         chapter.getRequirements().forEach(requirement -> addRow(requirement, sheet, styles));
+        chapter.getChapters().forEach(subChapter -> addChapter(subChapter, sheet, styles));
+
     }
 
     /**

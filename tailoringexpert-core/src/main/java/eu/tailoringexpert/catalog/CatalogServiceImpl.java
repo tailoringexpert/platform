@@ -35,6 +35,7 @@ import java.time.LocalDateTime;
 import java.time.ZonedDateTime;
 import java.util.Collection;
 import java.util.Optional;
+import java.util.function.Function;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
@@ -56,6 +57,9 @@ public class CatalogServiceImpl implements CatalogService {
     @NonNull
     private DocumentService documentService;
 
+    @NonNull
+    private Function<byte[], Catalog<BaseRequirement>> file2Catalog;
+
     /**
      * {@inheritDoc}
      */
@@ -71,6 +75,15 @@ public class CatalogServiceImpl implements CatalogService {
 
         Optional<Catalog<BaseRequirement>> result = repository.createCatalog(catalog, now);
         return log.traceExit(result.isPresent());
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public Catalog<BaseRequirement> doConvert(byte[] data) {
+        log.traceEntry();
+        return log.traceExit(file2Catalog.apply(data));
     }
 
     /**

@@ -48,6 +48,7 @@ package domain {
         +{static} BASECATALOG_VALIDUNTIL = "catalog/{version}/validuntil/{validuntil}" : String
         +{static} BASECATALOG_VERSION_PDF = "catalog/{version}/pdf" : String
         +{static} BASECATALOG_VERSION_EXCEL = "catalog/{version}/excel" : String
+        +{static} BASECATALOG_CONVERT_EXCEL = "catalog/convert/excel" : String
         +{static} BASECATALOG_VERSION_JSON = "catalog/{version}/json" : String
         +{static} SCREENINGSHEET = "screeningsheet" : String
         +{static} SELECTIONVECTOR_PROFILE = "selectionvector" : String
@@ -63,6 +64,7 @@ package domain {
         +{static} REL_EXCEL = "excel" : String
         +{static} REL_TAILORINGCATALOG_DOCUMENT = "tailoringcatalog" : String
         +{static} REL_BASECATALOG_DOCUMENT = "basecatalog" : String
+        +{static} REL_CONVERT = "convert" : String
         +{static} REL_SIGNATURE = "signature" : String
         +{static} REL_KAPITEL = "chapter" : String
         +{static} REL_TEXT = "text" : String

@@ -137,4 +137,30 @@ class BaseCatalogExcelDocumentCreatorTest {
         verify(drdSheetCreator, times(1)).accept(eq(catalog), any(Sheet.class));
         verify(logoSheetCreator, times(1)).accept(eq(catalog), any(Sheet.class));
     }
+
+    @Test
+    void createDocument_NoMocks_FileCreated() throws IOException {
+        // arrange
+        Catalog<BaseRequirement> catalog;
+        try (InputStream is = this.getClass().getResourceAsStream("/basecatalog.json")) {
+            assert nonNull(is);
+            catalog = objectMapper.readValue(is, new TypeReference<Catalog<BaseRequirement>>() {
+            });
+        }
+        BaseCatalogExcelDocumentCreator creator = new BaseCatalogExcelDocumentCreator(
+            new RequirementSheetCreator(),
+            new DRDSheetCreator(),
+            new LogoSheetCreator()
+        );
+
+        Map<String, Object> parameter = new HashMap<>();
+
+        // act
+        File actual = creator.createDocument("4711", catalog, parameter);
+
+        // assert
+        assertThat(actual).isNotNull();
+        fileSaver.accept("basecatalog.xlsx", actual.getData());
+
+    }
 }

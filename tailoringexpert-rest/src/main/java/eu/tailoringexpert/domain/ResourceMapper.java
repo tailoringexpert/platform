@@ -99,6 +99,7 @@ public abstract class ResourceMapper {
     public static final String BASECATALOG_VERSION_PDF = "catalog/{version}/pdf";
     public static final String BASECATALOG_VERSION_JSON = "catalog/{version}/json";
     public static final String BASECATALOG_VERSION_EXCEL = "catalog/{version}/excel";
+    public static final String BASECATALOG_CONVERT_EXCEL = "catalog/convert/excel";
     public static final String BASECATALOG_VALIDUNTIL = "catalog/{version}/validuntil/{validuntil}";
     public static final String BASECATALOG_VERSION_DOCUMENT = "catalog/{version}/document";
 
@@ -114,6 +115,7 @@ public abstract class ResourceMapper {
     public static final String REL_PDF = "pdf";
     public static final String REL_EXCEL = "excel";
     public static final String REL_JSON = "json";
+    public static final String REL_CONVERT = "convert";
     public static final String REL_TAILORINGCATALOG_DOCUMENT = "tailoringcatalog";
     public static final String REL_BASECATALOG_DOCUMENT = "basecatalog";
     public static final String REL_SIGNATURE = "signature";

@@ -18,6 +18,7 @@ package catalog {
 
     class CatalogController {
         +postBaseCatalog(catalog : Catalog<BaseRequirement>) : ResponseEntity<Void>
+        +postBaseCatalogFile(file : MultipartFile) : ResponseEntity<byte[]>
         +getBaseCatalogs() : ResponseEntity<CollectionModel<EntityModel<BaseCatalogVersionResource>>>
         +getBaseCatalog(version : String) : ResponseEntity<Catalog<BaseRequirement>>
         +getBaseCatalogPrint(version : String) : ResponseEntity<byte[]>
