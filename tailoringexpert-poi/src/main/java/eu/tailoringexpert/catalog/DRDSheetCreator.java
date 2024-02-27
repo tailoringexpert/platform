@@ -36,15 +36,20 @@ import java.util.stream.Collectors;
 import static java.util.Comparator.comparing;
 import static java.util.stream.IntStream.range;
 
+/**
+ * Creates a Excel sheet of DRDs contained in basecatalog.
+ *
+ * @author Michael Bädorf
+ */
 @Log4j2
 public class DRDSheetCreator extends AbstractRequirementsBasedSheetCreator {
-
 
     /**
      * Add header to sheet
      *
      * @param sheet sheet to add header to
      */
+    @Override
     void addHeader(Sheet sheet, Styles styles) {
 
         Row row = sheet.createRow((short) 0);
@@ -64,6 +69,7 @@ public class DRDSheetCreator extends AbstractRequirementsBasedSheetCreator {
      * @param chapter chapter evaluate
      * @param sheet   sheet to add elements to
      */
+    @Override
     void addChapter(Chapter<BaseRequirement> chapter, Sheet sheet, Styles styles) {
         chapter.allRequirements()
             .filter(BaseRequirement::hasDRD)

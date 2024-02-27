@@ -33,6 +33,7 @@ import org.mockito.Mockito;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
@@ -40,6 +41,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
+import java.util.function.Function;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 import java.util.zip.ZipOutputStream;
@@ -65,13 +67,19 @@ class CatalogServiceImplTest {
 
     private CatalogServiceRepository repositoryMock;
     private DocumentService documentServiceMock;
+    private Function<byte[], Catalog<BaseRequirement>> file2CatalogConverterMock;
     private CatalogServiceImpl service;
 
     @BeforeEach
     void setup() {
         this.repositoryMock = mock(CatalogServiceRepository.class);
         this.documentServiceMock = mock(DocumentService.class);
-        this.service = new CatalogServiceImpl(repositoryMock, documentServiceMock);
+        this.file2CatalogConverterMock = mock(Function.class);
+        this.service = new CatalogServiceImpl(
+            repositoryMock,
+            documentServiceMock,
+            file2CatalogConverterMock
+        );
     }
 
     @Test
@@ -272,8 +280,6 @@ class CatalogServiceImplTest {
     }
 
 
-
-
     @Test
     void createDocuments_CatalogNotExisting_EmptyReturned() {
         // arrange
@@ -447,5 +453,21 @@ class CatalogServiceImplTest {
         // assert
         assertThat(actual).isNotEmpty();
         verify(repositoryMock, times(1)).limitCatalogValidity("8.2.1", now);
+    }
+
+    @Test
+    void doConvert_Mock_CatalogReturned() {
+        // arrange
+        String dummyContent = "dummy";
+
+        given(file2CatalogConverterMock.apply(dummyContent.getBytes(UTF_8)))
+            .willReturn(Catalog.<BaseRequirement>builder().build());
+
+        // act
+        Catalog<BaseRequirement> actual = service.doConvert(dummyContent.getBytes(UTF_8));
+
+        // assert
+        assertThat(actual).isNotNull();
+        verify(file2CatalogConverterMock, times(1)).apply(dummyContent.getBytes(UTF_8));
     }
 }

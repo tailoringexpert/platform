@@ -34,12 +34,13 @@ import eu.tailoringexpert.domain.File;
 import eu.tailoringexpert.domain.PathContext;
 import eu.tailoringexpert.domain.PathContext.PathContextBuilder;
 import eu.tailoringexpert.domain.ResourceMapper;
-import eu.tailoringexpert.repository.BaseCatalogRepository;
 import lombok.extern.log4j.Log4j2;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
+import org.springframework.hateoas.Link;
+import org.springframework.hateoas.UriTemplate;
 import org.springframework.hateoas.mediatype.MessageResolver;
 import org.springframework.hateoas.mediatype.hal.CurieProvider;
 import org.springframework.hateoas.mediatype.hal.Jackson2HalModule;
@@ -49,6 +50,7 @@ import org.springframework.http.MediaType;
 import org.springframework.http.converter.ByteArrayHttpMessageConverter;
 import org.springframework.http.converter.json.Jackson2ObjectMapperBuilder;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
+import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 
@@ -69,12 +71,16 @@ import static com.fasterxml.jackson.databind.DeserializationFeature.FAIL_ON_UNKN
 import static com.fasterxml.jackson.databind.SerializationFeature.FAIL_ON_EMPTY_BEANS;
 import static eu.tailoringexpert.domain.MediaTypeProvider.ATTACHMENT;
 import static eu.tailoringexpert.domain.MediaTypeProvider.FORM_DATA;
+import static eu.tailoringexpert.domain.ResourceMapper.BASECATALOG_CONVERT_EXCEL;
+import static eu.tailoringexpert.domain.ResourceMapper.REL_CONVERT;
 import static java.lang.Boolean.FALSE;
 import static java.lang.Boolean.TRUE;
+import static java.nio.charset.StandardCharsets.UTF_8;
 import static java.nio.file.Files.newInputStream;
 import static java.time.LocalTime.MIDNIGHT;
 import static java.time.ZoneId.systemDefault;
 import static java.util.Arrays.asList;
+import static java.util.Collections.emptyMap;
 import static java.util.Locale.GERMANY;
 import static java.util.Objects.nonNull;
 import static java.util.Optional.empty;
@@ -93,7 +99,9 @@ import static org.springframework.http.MediaType.APPLICATION_OCTET_STREAM;
 import static org.springframework.http.MediaType.APPLICATION_PDF;
 import static org.springframework.http.MediaType.IMAGE_JPEG;
 import static org.springframework.http.MediaType.IMAGE_PNG;
+import static org.springframework.http.MediaType.MULTIPART_FORM_DATA;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.multipart;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
@@ -105,7 +113,6 @@ import static org.springframework.test.web.servlet.setup.MockMvcBuilders.standal
 class CatalogControllerTest {
 
     CatalogService serviceMock;
-    BaseCatalogRepository repositoryMock;
     Function<String, MediaType> mediaTypeProviderMock;
     ObjectMapper objectMapper;
     ResourceMapper mapperMock;
@@ -228,6 +235,8 @@ class CatalogControllerTest {
         ArgumentCaptor<PathContextBuilder> pathContextCaptor = ArgumentCaptor.forClass(PathContextBuilder.class);
         given(mapperMock.toResource(pathContextCaptor.capture(), catalogCaptor.capture()))
             .willReturn(BaseCatalogVersionResource.builder().validFrom("01.01.2022").build());
+        given(mapperMock.createLink(REL_CONVERT, BASECATALOG_CONVERT_EXCEL, emptyMap()))
+            .willReturn(Link.of(UriTemplate.of("/catalog/excel/convert"), "convert"));
 
 
         // act
@@ -505,6 +514,27 @@ class CatalogControllerTest {
 
         verify(serviceMock, times(1)).limitValidity("8.2.1", validUntil);
         verify(mapperMock, times(1)).toResource(any(), any(CatalogVersion.class));
+    }
+
+    @Test
+    void postBaseCatalogFile_FileNotEmpty_StateOk() throws Exception {
+        // arrange
+        byte[] data = "Excel Import File".getBytes(UTF_8);
+        MockMultipartFile dokument = new MockMultipartFile("file", "basecatalog.xlsx",
+            "text/plain", data);
+
+        given(serviceMock.doConvert(data)).willReturn(Catalog.<BaseRequirement>builder().version("8.2.1").build());
+
+        // act
+        ResultActions actual = mockMvc.perform(multipart("/catalog/convert/excel")
+            .file(dokument)
+            .contentType(MULTIPART_FORM_DATA)
+        );
+
+        // assert
+        actual.andExpect(status().isOk());
+
+        verify(serviceMock, times(1)).doConvert(data);
     }
 }
 

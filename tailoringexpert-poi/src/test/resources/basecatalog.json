@@ -4985,7 +4985,7 @@
             "drds" : [ {
               "number" : "02.05",
               "title" : "Qualification Certificate for Launch Segment",
-              "deliveryDate" : "AR\n",
+              "deliveryDate" : "AR",
               "action" : "AC"
             } ],
             "identifiers" : [ {
@@ -5190,7 +5190,7 @@
             "drds" : [ {
               "number" : "02.04",
               "title" : "Critical Items List",
-              "deliveryDate" : "SRR; PDR; CDR; QR; AR; FRR; LRR\n",
+              "deliveryDate" : "SRR; PDR; CDR; QR; AR; FRR; LRR",
               "action" : "A"
             } ],
             "identifiers" : [ {
@@ -5720,7 +5720,7 @@
           "drds" : [ {
             "number" : "03.12",
             "title" : "Operational and Technical Documentation - (for Projects with RSA)",
-            "deliveryDate" : "latest 15 days before Acceptance Review or in accordance to the contract\n",
+            "deliveryDate" : "latest 15 days before Acceptance Review or in accordance to the contract",
             "action" : "R"
           } ],
           "identifiers" : [ {
@@ -6891,7 +6891,7 @@
             "drds" : [ {
               "number" : "05.10",
               "title" : "Safety Non-Compliance Report (ISS_CM_031)",
-              "deliveryDate" : "initial written report, latest 3 working days after identification\n",
+              "deliveryDate" : "initial written report, latest 3 working days after identification",
               "action" : "AC"
             } ],
             "identifiers" : [ {
@@ -8467,7 +8467,7 @@
               "drds" : [ {
                 "number" : "02.04",
                 "title" : "Critical Items List",
-                "deliveryDate" : "SRR; PDR; CDR; QR; AR; FRR; LRR\n",
+                "deliveryDate" : "SRR; PDR; CDR; QR; AR; FRR; LRR",
                 "action" : "A"
               } ],
               "identifiers" : [ {
@@ -8525,7 +8525,7 @@
             },
             "drds" : [ {
               "number" : "03.06",
-              "title" : "MIP Plan\n",
+              "title" : "MIP Plan",
               "deliveryDate" : "PDR; CDR; MRR",
               "action" : "AC"
             } ],
@@ -8559,7 +8559,7 @@
             "reference" : null,
             "drds" : [ {
               "number" : "03.06",
-              "title" : "MIP Plan\n",
+              "title" : "MIP Plan",
               "deliveryDate" : "PDR; CDR; MRR",
               "action" : "AC"
             } ],
@@ -9294,7 +9294,7 @@
             "drds" : [ {
               "number" : "03.12",
               "title" : "Operational and Technical Documentation - (for Projects with RSA)",
-              "deliveryDate" : "latest 15 days before Acceptance Review or in accordance to the contract\n",
+              "deliveryDate" : "latest 15 days before Acceptance Review or in accordance to the contract",
               "action" : "R"
             } ],
             "identifiers" : [ {
@@ -9779,7 +9779,7 @@
             "drds" : [ {
               "number" : "02.04",
               "title" : "Critical Items List",
-              "deliveryDate" : "SRR; PDR; CDR; QR; AR; FRR; LRR\n",
+              "deliveryDate" : "SRR; PDR; CDR; QR; AR; FRR; LRR",
               "action" : "A"
             } ],
             "identifiers" : [ {
@@ -9802,7 +9802,7 @@
             "drds" : [ {
               "number" : "02.04",
               "title" : "Critical Items List",
-              "deliveryDate" : "SRR; PDR; CDR; QR; AR; FRR; LRR\n",
+              "deliveryDate" : "SRR; PDR; CDR; QR; AR; FRR; LRR",
               "action" : "A"
             } ],
             "identifiers" : [ {
@@ -9837,7 +9837,7 @@
             "drds" : [ {
               "number" : "02.04",
               "title" : "Critical Items List",
-              "deliveryDate" : "SRR; PDR; CDR; QR; AR; FRR; LRR\n",
+              "deliveryDate" : "SRR; PDR; CDR; QR; AR; FRR; LRR",
               "action" : "A"
             } ],
             "identifiers" : [ {
@@ -9860,7 +9860,7 @@
             "drds" : [ {
               "number" : "02.04",
               "title" : "Critical Items List",
-              "deliveryDate" : "SRR; PDR; CDR; QR; AR; FRR; LRR\n",
+              "deliveryDate" : "SRR; PDR; CDR; QR; AR; FRR; LRR",
               "action" : "A"
             } ],
             "identifiers" : [ {
@@ -9887,7 +9887,7 @@
             "drds" : [ {
               "number" : "02.04",
               "title" : "Critical Items List",
-              "deliveryDate" : "SRR; PDR; CDR; QR; AR; FRR; LRR\n",
+              "deliveryDate" : "SRR; PDR; CDR; QR; AR; FRR; LRR",
               "action" : "A"
             } ],
             "identifiers" : [ {
@@ -9907,7 +9907,7 @@
             "drds" : [ {
               "number" : "02.04",
               "title" : "Critical Items List",
-              "deliveryDate" : "SRR; PDR; CDR; QR; AR; FRR; LRR\n",
+              "deliveryDate" : "SRR; PDR; CDR; QR; AR; FRR; LRR",
               "action" : "A"
             } ],
             "identifiers" : [ {
@@ -9958,7 +9958,7 @@
           "drds" : [ {
             "number" : "02.04",
             "title" : "Critical Items List",
-            "deliveryDate" : "SRR; PDR; CDR; QR; AR; FRR; LRR\n",
+            "deliveryDate" : "SRR; PDR; CDR; QR; AR; FRR; LRR",
             "action" : "A"
           } ],
           "identifiers" : [ {
@@ -10631,7 +10631,7 @@
               "drds" : [ {
                 "number" : "02.04",
                 "title" : "Critical Items List",
-                "deliveryDate" : "SRR; PDR; CDR; QR; AR; FRR; LRR\n",
+                "deliveryDate" : "SRR; PDR; CDR; QR; AR; FRR; LRR",
                 "action" : "A"
               } ],
               "identifiers" : [ {
@@ -10738,7 +10738,7 @@
               "drds" : [ {
                 "number" : "02.04",
                 "title" : "Critical Items List",
-                "deliveryDate" : "SRR; PDR; CDR; QR; AR; FRR; LRR\n",
+                "deliveryDate" : "SRR; PDR; CDR; QR; AR; FRR; LRR",
                 "action" : "A"
               } ],
               "identifiers" : [ {
@@ -10762,7 +10762,7 @@
               "drds" : [ {
                 "number" : "02.04",
                 "title" : "Critical Items List",
-                "deliveryDate" : "SRR; PDR; CDR; QR; AR; FRR; LRR\n",
+                "deliveryDate" : "SRR; PDR; CDR; QR; AR; FRR; LRR",
                 "action" : "A"
               } ],
               "identifiers" : [ {
@@ -13781,7 +13781,7 @@
               "drds" : [ {
                 "number" : "04.17",
                 "title" : "Availability Assessment Report",
-                "deliveryDate" : "PDR; CDR; AR\n",
+                "deliveryDate" : "PDR; CDR; AR",
                 "action" : "R"
               } ],
               "identifiers" : [ {
@@ -13815,7 +13815,7 @@
               "drds" : [ {
                 "number" : "04.17",
                 "title" : "Availability Assessment Report",
-                "deliveryDate" : "PDR; CDR; AR\n",
+                "deliveryDate" : "PDR; CDR; AR",
                 "action" : "R"
               } ],
               "identifiers" : [ {
@@ -13874,7 +13874,7 @@
               "drds" : [ {
                 "number" : "04.17",
                 "title" : "Availability Assessment Report",
-                "deliveryDate" : "PDR; CDR; AR\n",
+                "deliveryDate" : "PDR; CDR; AR",
                 "action" : "R"
               } ],
               "identifiers" : [ {
@@ -13897,7 +13897,7 @@
               "drds" : [ {
                 "number" : "04.17",
                 "title" : "Availability Assessment Report",
-                "deliveryDate" : "PDR; CDR; AR\n",
+                "deliveryDate" : "PDR; CDR; AR",
                 "action" : "R"
               } ],
               "identifiers" : [ {
@@ -13931,7 +13931,7 @@
               "drds" : [ {
                 "number" : "04.17",
                 "title" : "Availability Assessment Report",
-                "deliveryDate" : "PDR; CDR; AR\n",
+                "deliveryDate" : "PDR; CDR; AR",
                 "action" : "R"
               } ],
               "identifiers" : [ {
@@ -13947,7 +13947,7 @@
               "drds" : [ {
                 "number" : "04.17",
                 "title" : "Availability Assessment Report",
-                "deliveryDate" : "PDR; CDR; AR\n",
+                "deliveryDate" : "PDR; CDR; AR",
                 "action" : "R"
               } ],
               "identifiers" : [ {
@@ -14393,7 +14393,7 @@
             "drds" : [ {
               "number" : "02.04",
               "title" : "Critical Items List",
-              "deliveryDate" : "SRR; PDR; CDR; QR; AR; FRR; LRR\n",
+              "deliveryDate" : "SRR; PDR; CDR; QR; AR; FRR; LRR",
               "action" : "A"
             } ],
             "identifiers" : [ {
@@ -14685,7 +14685,7 @@
               "reference" : null,
               "drds" : [ {
                 "number" : "05.25",
-                "title" : "Safety Verification Tracking Log (ECSS-Q-40 Form)\n",
+                "title" : "Safety Verification Tracking Log (ECSS-Q-40 Form)",
                 "deliveryDate" : "QR; AR",
                 "action" : "R"
               } ],
@@ -14972,7 +14972,7 @@
           },
           "drds" : [ {
             "number" : "05.25",
-            "title" : "Safety Verification Tracking Log (ECSS-Q-40 Form)\n",
+            "title" : "Safety Verification Tracking Log (ECSS-Q-40 Form)",
             "deliveryDate" : "QR; AR",
             "action" : "R"
           } ],
@@ -15181,7 +15181,7 @@
             "drds" : [ {
               "number" : "05.07",
               "title" : "Safety Data Package (SDP)",
-              "deliveryDate" : "PDR; CDR; QR; AR; ORR; FRR; LRR\n",
+              "deliveryDate" : "PDR; CDR; QR; AR; ORR; FRR; LRR",
               "action" : "R"
             } ],
             "identifiers" : [ {
@@ -15353,7 +15353,7 @@
               "drds" : [ {
                 "number" : "05.10",
                 "title" : "Safety Non-Compliance Report (ISS_CM_031)",
-                "deliveryDate" : "initial written report, latest 3 working days after identification\n",
+                "deliveryDate" : "initial written report, latest 3 working days after identification",
                 "action" : "AC"
               } ],
               "identifiers" : [ {
@@ -16262,7 +16262,7 @@
                 "drds" : [ {
                   "number" : "07.02",
                   "title" : "Declared Material List (DML)",
-                  "deliveryDate" : "PDR; CDR; QR; AR; MPCB\n",
+                  "deliveryDate" : "PDR; CDR; QR; AR; MPCB",
                   "action" : "R (if there will be no MPCB for the project, AC)"
                 } ],
                 "identifiers" : [ {
@@ -16316,7 +16316,7 @@
                   "level" : 1,
                   "limitations" : [ "ISS" ]
                 } ],
-                "phases" : [ ]
+                "phases" : [ "ZERO", "A", "B", "C", "D", "E" ]
               }, {
                 "text" : "<p>Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.</p><p>Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.</p><p>Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.</p><p>Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.</p>",
                 "position" : "b",
@@ -16327,7 +16327,7 @@
                   "level" : 1,
                   "limitations" : [ "ISS" ]
                 } ],
-                "phases" : [ ]
+                "phases" : [ "ZERO", "A", "B", "C", "D", "E" ]
               } ]
             }, {
               "name" : "Materials Offgassing in Habitable Areas",
@@ -16380,7 +16380,7 @@
                   "level" : 1,
                   "limitations" : [ "ISS" ]
                 } ],
-                "phases" : [ ]
+                "phases" : [ "ZERO", "A", "B", "C", "D", "E" ]
               } ]
             }, {
               "name" : "Fluid Compatibility",
@@ -16412,7 +16412,7 @@
                   "level" : 1,
                   "limitations" : [ "ISS" ]
                 } ],
-                "phases" : [ ]
+                "phases" : [ "ZERO", "A", "B", "C", "D", "E" ]
               } ]
             }, {
               "name" : "Volatile Organic Compound Approval",
@@ -16547,7 +16547,7 @@
                 "level" : 1,
                 "limitations" : [ "ISS" ]
               } ],
-              "phases" : [ ]
+              "phases" : [ "ZERO", "A", "B", "C", "D", "E" ]
             } ]
           } ],
           "requirements" : [ {
@@ -18035,7 +18035,7 @@
               "reference" : null,
               "drds" : [ {
                 "number" : "05.21",
-                "title" : "Hazardous Materials Summary Table (JSC Form HMST)\n",
+                "title" : "Hazardous Materials Summary Table (JSC Form HMST)",
                 "deliveryDate" : "PDR; CDR; AR",
                 "action" : "R"
               } ],
@@ -18536,7 +18536,7 @@
           },
           "drds" : [ {
             "number" : "05.25",
-            "title" : "Safety Verification Tracking Log (ECSS-Q-40 Form)\n",
+            "title" : "Safety Verification Tracking Log (ECSS-Q-40 Form)",
             "deliveryDate" : "QR; AR",
             "action" : "R"
           } ],
@@ -18559,7 +18559,7 @@
           },
           "drds" : [ {
             "number" : "05.25",
-            "title" : "Safety Verification Tracking Log (ECSS-Q-40 Form)\n",
+            "title" : "Safety Verification Tracking Log (ECSS-Q-40 Form)",
             "deliveryDate" : "QR; AR",
             "action" : "R"
           } ],
@@ -20413,7 +20413,7 @@
               "drds" : [ {
                 "number" : "02.04",
                 "title" : "Critical Items List",
-                "deliveryDate" : "SRR; PDR; CDR; QR; AR; FRR; LRR\n",
+                "deliveryDate" : "SRR; PDR; CDR; QR; AR; FRR; LRR",
                 "action" : "A"
               } ],
               "identifiers" : [ {
@@ -23218,7 +23218,7 @@
             "drds" : [ {
               "number" : "02.04",
               "title" : "Critical Items List",
-              "deliveryDate" : "SRR; PDR; CDR; QR; AR; FRR; LRR\n",
+              "deliveryDate" : "SRR; PDR; CDR; QR; AR; FRR; LRR",
               "action" : "A"
             } ],
             "identifiers" : [ {
@@ -24230,7 +24230,7 @@
           }, {
             "number" : "07.02",
             "title" : "Declared Material List (DML)",
-            "deliveryDate" : "PDR; CDR; QR; AR; MPCB\n",
+            "deliveryDate" : "PDR; CDR; QR; AR; MPCB",
             "action" : "R (if there will be no MPCB for the project, AC)"
           }, {
             "number" : "07.01",
@@ -24268,7 +24268,7 @@
           }, {
             "number" : "07.02",
             "title" : "Declared Material List (DML)",
-            "deliveryDate" : "PDR; CDR; QR; AR; MPCB\n",
+            "deliveryDate" : "PDR; CDR; QR; AR; MPCB",
             "action" : "R (if there will be no MPCB for the project, AC)"
           }, {
             "number" : "07.01",
@@ -24316,7 +24316,7 @@
             }, {
               "number" : "07.02",
               "title" : "Declared Material List (DML)",
-              "deliveryDate" : "PDR; CDR; QR; AR; MPCB\n",
+              "deliveryDate" : "PDR; CDR; QR; AR; MPCB",
               "action" : "R (if there will be no MPCB for the project, AC)"
             } ],
             "identifiers" : [ {
@@ -24395,7 +24395,7 @@
             }, {
               "number" : "07.02",
               "title" : "Declared Material List (DML)",
-              "deliveryDate" : "PDR; CDR; QR; AR; MPCB\n",
+              "deliveryDate" : "PDR; CDR; QR; AR; MPCB",
               "action" : "R (if there will be no MPCB for the project, AC)"
             }, {
               "number" : "07.01",
@@ -24439,7 +24439,7 @@
             }, {
               "number" : "07.02",
               "title" : "Declared Material List (DML)",
-              "deliveryDate" : "PDR; CDR; QR; AR; MPCB\n",
+              "deliveryDate" : "PDR; CDR; QR; AR; MPCB",
               "action" : "R (if there will be no MPCB for the project, AC)"
             } ],
             "identifiers" : [ {
@@ -24579,7 +24579,7 @@
             "drds" : [ {
               "number" : "07.02",
               "title" : "Declared Material List (DML)",
-              "deliveryDate" : "PDR; CDR; QR; AR; MPCB\n",
+              "deliveryDate" : "PDR; CDR; QR; AR; MPCB",
               "action" : "R (if there will be no MPCB for the project, AC)"
             } ],
             "identifiers" : [ {
@@ -25638,7 +25638,7 @@
             "drds" : [ {
               "number" : "07.02",
               "title" : "Declared Material List (DML)",
-              "deliveryDate" : "PDR; CDR; QR; AR; MPCB\n",
+              "deliveryDate" : "PDR; CDR; QR; AR; MPCB",
               "action" : "R (if there will be no MPCB for the project, AC)"
             } ],
             "identifiers" : [ {
@@ -25762,7 +25762,7 @@
             }, {
               "number" : "07.02",
               "title" : "Declared Material List (DML)",
-              "deliveryDate" : "PDR; CDR; QR; AR; MPCB\n",
+              "deliveryDate" : "PDR; CDR; QR; AR; MPCB",
               "action" : "R (if there will be no MPCB for the project, AC)"
             }, {
               "number" : "07.01",
@@ -26388,7 +26388,7 @@
               "drds" : [ {
                 "number" : "02.04",
                 "title" : "Critical Items List",
-                "deliveryDate" : "SRR; PDR; CDR; QR; AR; FRR; LRR\n",
+                "deliveryDate" : "SRR; PDR; CDR; QR; AR; FRR; LRR",
                 "action" : "A"
               }, {
                 "number" : "07.06",
@@ -26442,7 +26442,7 @@
               }, {
                 "number" : "07.02",
                 "title" : "Declared Material List (DML)",
-                "deliveryDate" : "PDR; CDR; QR; AR; MPCB\n",
+                "deliveryDate" : "PDR; CDR; QR; AR; MPCB",
                 "action" : "R (if there will be no MPCB for the project, AC)"
               } ],
               "identifiers" : [ {
@@ -27084,7 +27084,7 @@
               "drds" : [ {
                 "number" : "02.04",
                 "title" : "Critical Items List",
-                "deliveryDate" : "SRR; PDR; CDR; QR; AR; FRR; LRR\n",
+                "deliveryDate" : "SRR; PDR; CDR; QR; AR; FRR; LRR",
                 "action" : "A"
               }, {
                 "number" : "07.07",
@@ -27146,7 +27146,7 @@
               }, {
                 "number" : "07.02",
                 "title" : "Declared Material List (DML)",
-                "deliveryDate" : "PDR; CDR; QR; AR; MPCB\n",
+                "deliveryDate" : "PDR; CDR; QR; AR; MPCB",
                 "action" : "R (if there will be no MPCB for the project, AC)"
               }, {
                 "number" : "07.01",
@@ -38106,7 +38106,7 @@
         "position" : 6,
         "number" : "12.6",
         "chapters" : [ {
-          "name" : "Numerical Implementation Limits for Forward Contamination Calculations not Otherwise Specified\n",
+          "name" : "Numerical Implementation Limits for Forward Contamination Calculations not Otherwise Specified",
           "position" : 1,
           "number" : "12.6.1",
           "chapters" : [ ],

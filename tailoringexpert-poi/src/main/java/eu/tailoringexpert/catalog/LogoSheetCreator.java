@@ -38,6 +38,11 @@ import static java.util.Comparator.comparing;
 import static java.util.Objects.nonNull;
 import static java.util.stream.IntStream.range;
 
+/**
+ * Creates an Excel sheet of logos contained in basecatalog.
+ *
+ * @author Michael Bädorf
+ */
 @Log4j2
 public class LogoSheetCreator extends AbstractRequirementsBasedSheetCreator {
 
@@ -46,6 +51,7 @@ public class LogoSheetCreator extends AbstractRequirementsBasedSheetCreator {
      *
      * @param sheet sheet to add header to
      */
+    @Override
     void addHeader(Sheet sheet, Styles styles) {
         Row row = sheet.createRow((short) 0);
         row.createCell(0).setCellValue("Name");
@@ -62,6 +68,7 @@ public class LogoSheetCreator extends AbstractRequirementsBasedSheetCreator {
      * @param chapter chapter evaluate
      * @param sheet   sheet to add elements to
      */
+    @Override
     void addChapter(Chapter<BaseRequirement> chapter, Sheet sheet, Styles styles) {
         chapter.allRequirements().filter(requirement -> nonNull(requirement.getReference())).map(Requirement::getReference).filter(reference -> nonNull(reference.getLogo())).map(Reference::getLogo).sorted(comparing(Logo::getName)).collect(Collectors.toCollection(LinkedHashSet::new)).forEach(logo -> {
             Row row = sheet.createRow((short) sheet.getLastRowNum() + 1);
