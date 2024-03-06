@@ -24,6 +24,7 @@ package eu.tailoringexpert.tailoring;
 import eu.tailoringexpert.ResourceException;
 import eu.tailoringexpert.domain.DocumentSignature;
 import eu.tailoringexpert.domain.DocumentSignatureResource;
+import eu.tailoringexpert.domain.File;
 import eu.tailoringexpert.domain.FileResource;
 import eu.tailoringexpert.domain.MediaTypeProvider;
 import eu.tailoringexpert.domain.Note;
@@ -34,7 +35,6 @@ import eu.tailoringexpert.domain.ResourceMapper;
 import eu.tailoringexpert.domain.ScreeningSheetResource;
 import eu.tailoringexpert.domain.SelectionVectorProfileResource;
 import eu.tailoringexpert.domain.SelectionVectorResource;
-import eu.tailoringexpert.domain.Tailoring;
 import eu.tailoringexpert.domain.TailoringCatalogChapterResource;
 import eu.tailoringexpert.domain.TailoringCatalogResource;
 import eu.tailoringexpert.domain.TailoringRequirementResource;
@@ -124,6 +124,9 @@ public class TailoringController {
 
     @NonNull
     private TailoringServiceRepository tailoringServiceRepository;
+
+    @NonNull
+    private AttachmentService attachmentService;
 
     @NonNull
     private Function<String, MediaType> mediaTypeProvider;
@@ -314,7 +317,8 @@ public class TailoringController {
         @Parameter(description = "File to add") @RequestPart("datei") MultipartFile file) throws IOException {
         log.traceEntry();
 
-        Optional<Tailoring> serviceResult = tailoringService.addFile(project, tailoring, file.getOriginalFilename(), file.getBytes());
+        File toSave = File.builder().name(file.getOriginalFilename()).data(file.getBytes()).build();
+        Optional<File> serviceResult = attachmentService.save(project, tailoring, toSave);
 
         if (serviceResult.isEmpty()) {
             log.traceExit();
@@ -535,15 +539,12 @@ public class TailoringController {
             .project(project)
             .tailoring(tailoring);
 
-        ResponseEntity<CollectionModel<FileResource>> result = tailoringServiceRepository.getFileList(project, tailoring)
-            .map(data -> ok()
-                .body(CollectionModel.of(
-                    data.stream()
-                        .map(domain -> mapper.toResource(pathContext, domain))
-                        .toList()
-                ))
-            )
-            .orElseGet(() -> notFound().build());
+        Collection<File> files = attachmentService.list(project, tailoring);
+        ResponseEntity<CollectionModel<FileResource>> result = ok().body(CollectionModel.of(
+            files.stream()
+                .map(domain -> mapper.toResource(pathContext, domain))
+                .toList()
+        ));
 
         log.traceExit();
         return result;
@@ -557,7 +558,7 @@ public class TailoringController {
         @Parameter(description = "Name of File") @PathVariable String name) {
         log.traceEntry();
 
-        ResponseEntity<byte[]> result = tailoringServiceRepository.getFile(project, tailoring, name)
+        ResponseEntity<byte[]> result = attachmentService.load(project, tailoring, name)
             .map(daten -> ok()
                 .header(CONTENT_DISPOSITION, ContentDisposition.builder(MediaTypeProvider.FORM_DATA).name(MediaTypeProvider.ATTACHMENT).filename(name).build().toString())
                 .header(ACCESS_CONTROL_EXPOSE_HEADERS, CONTENT_DISPOSITION)
@@ -586,7 +587,7 @@ public class TailoringController {
         @Parameter(description = "Filename") @PathVariable("name") String name) {
         log.traceEntry();
 
-        ResponseEntity<Void> result = tailoringServiceRepository.deleteFile(project, tailoring, name) ?
+        ResponseEntity<Void> result = attachmentService.delete(project, tailoring, name) ?
             ok().build() :
             notFound().build();
 

@@ -14,15 +14,11 @@ package tailoring {
     interface TailoringServiceRepository {
         getProject(project : String) : Optional<Project>
         updateTailoring(project : String, tailoring : Tailoring) : Tailoring
-        updateFile(project : String, tailoring : String, file : File) : Tailoring
         getTailoring(project : String, tailoring : String): Optional<Tailoring>
         getScreeningSheet(project : String, tailoring : String): Optional<ScreeningSheet>
         getScreeningSheetFile(project : String, tailoring : String): Optional<byte[]>
         updateDocumentSignature(project : String, tailoring : String, signature : DocumentSignature) : Optional<DocumentSignature>
         updateName(project : String, tailoring : String, name : String) : Optional<Tailoring>
-        getFileList(project : String, tailoring : String): Optional<List<File>>
-        getFile(project : String, tailoring : String, name : String) : Optional<File>
-        deleteFile(project : String, tailoring : String, name : String) : boolean
         getSelectionVectorProfile() : Collection<SelectionVectorProfile>
         getDefaultSignatures() : Collection<DocumentSignature>
         deleteTailoring(project : String, tailoring : String)
@@ -34,7 +30,6 @@ package tailoring {
         {abstract} toDomain(entity : ProjektEntity) : Projekt
         {abstract} toDomain(entity : TailoringEntity) : Tailoring
         {abstract} updateTailoring(domain : Tailoring,  entity : TailoringEntity) : void
-        {abstract} update(file : File, entity : FileEntity) : void
         {abstract} toScreeningSheetParameters(entity : ScreeningSheetEntity) : ScreeningSheet
         toScreeningSheetParameters(entity : ScreeningSheetEntity, resource : ScreeningSheetBuilder) : void
         {abstract} updateDocumentSignature(domain : DokumentZeichnung, entity : DokumentZeichnungEntity) : void

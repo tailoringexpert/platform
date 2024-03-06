@@ -252,4 +252,60 @@ class ProjectRepositoryTest {
         assertThat(actual).isTrue();
     }
 
+//
+//    @Test
+//    void findTailoringIdentifier_TailoringExists_StateReturned() throws IOException {
+//        // arrange
+//        ProjectEntity project = ProjectEntity.builder()
+//            .identifier("SAMPLE")
+//            .state(ONGOING)
+//            .tailorings(Arrays.asList(
+//                TailoringEntity.builder()
+//                    .name("master")
+//                    .identifier("1000")
+//                    .state(TailoringState.CREATED)
+//                    .build(),
+//                TailoringEntity.builder()
+//                    .name("master1")
+//                    .identifier("1001")
+//                    .state(TailoringState.AGREED)
+//                    .build()
+//            ))
+//            .build();
+//        repository.save(project);
+//
+//        // act
+//        String actual = repository.findTailoringIdentifier("SAMPLE", "master1");
+//
+//        // assert
+//        assertThat(actual).isEqualTo("1001");
+//    }
+//
+//    @Test
+//    void findTailoringIdentifier_TailoringNotExists_NullReturned() throws IOException {
+//        // arrange
+//        ProjectEntity project = ProjectEntity.builder()
+//            .identifier("SAMPLE")
+//            .state(ONGOING)
+//            .tailorings(Arrays.asList(
+//                TailoringEntity.builder()
+//                    .name("master")
+//                    .identifier("1000")
+//                    .state(TailoringState.CREATED)
+//                    .build(),
+//                TailoringEntity.builder()
+//                    .name("master1")
+//                    .identifier("1001")
+//                    .state(TailoringState.AGREED)
+//                    .build()
+//            ))
+//            .build();
+//        repository.save(project);
+//
+//        // act
+//        String actual = repository.findTailoringIdentifier("SAMPLE_1", "master1");
+//
+//        // assert
+//        assertThat(actual).isNull();
+//    }
 }

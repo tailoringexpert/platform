@@ -20,5 +20,23 @@ package tailoring {
     TailoringDeletablePredicate <|.. TenantTailoringDeletablePredicate
     TenantTailoringDeletablePredicate --> "1" DefaultTailoringDeletablePredicate : defaultPredicate
 
+    interface AttachmentService {
+        load(project : String, tailoring : String, filename: String) :  Optional<File>
+        list(project : String, tailoring : String) : Collection<File>
+        save(project : String, tailoring : String, file : File) : Optional<File>
+        delete(project : String, tailoring : String, filename: String) : boolean
+    }
+
+    interface "BiFunction<T, U, R>" as biFunction
+    class "TenantTailoringPathProvider<String, String, Path>" as tenantTailoringPathProvider{
+    }
+    biFunction <|.. TenantTailoringPathProvider
+
+
+    class TenantAttachmentService {
+    }
+    AttachmentService <|.. TenantAttachmentService
+    TenantAttachmentService --> "1" TenantTailoringPathProvider : pathProvider
+
 }
 @enduml

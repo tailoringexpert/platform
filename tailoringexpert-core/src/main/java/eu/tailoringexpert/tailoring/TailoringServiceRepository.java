@@ -21,7 +21,6 @@
  */
 package eu.tailoringexpert.tailoring;
 
-import eu.tailoringexpert.domain.File;
 import eu.tailoringexpert.domain.DocumentSignature;
 import eu.tailoringexpert.domain.Note;
 import eu.tailoringexpert.domain.Project;
@@ -31,7 +30,6 @@ import eu.tailoringexpert.domain.Tailoring;
 import eu.tailoringexpert.domain.TailoringState;
 
 import java.util.Collection;
-import java.util.List;
 import java.util.Optional;
 
 /**
@@ -57,16 +55,6 @@ public interface TailoringServiceRepository {
      * @return updated tailoring
      */
     Tailoring updateTailoring(String project, Tailoring tailoring);
-
-    /**
-     * Update file in tailoring.
-     *
-     * @param project   project identifier
-     * @param tailoring tailoring name
-     * @param file      file to update in tailoring
-     * @return updated tailoring
-     */
-    Optional<Tailoring> updateFile(String project, String tailoring, File file);
 
     /**
      * Load tailoring by name.
@@ -114,37 +102,6 @@ public interface TailoringServiceRepository {
      * @return Im Falle der Aktualisierung das neue Tailoring, sonst empty
      */
     Optional<Tailoring> updateName(String project, String tailoring, String name);
-
-    /**
-     * Load filelist of tailoring.
-     * <p>
-     * Raw-Data (bytearray) will <strong>NOT</strong> be loaded!
-     *
-     * @param project   project identifier
-     * @param tailoring tailoring name
-     * @return List of files without file data
-     */
-    Optional<List<File>> getFileList(String project, String tailoring);
-
-    /**
-     * Load a file.
-     *
-     * @param project   project identifier
-     * @param tailoring tailoring name
-     * @param filename  name of file to load
-     * @return Rohdaten der File
-     */
-    Optional<File> getFile(String project, String tailoring, String filename);
-
-    /**
-     * Delete a file.
-     *
-     * @param project   project identifier
-     * @param tailoring tailoring name
-     * @param filename  name of file to delete
-     * @return true, if file deleted
-     */
-    boolean deleteFile(String project, String tailoring, String filename);
 
     /**
      * Load defined selectionvector profiles.

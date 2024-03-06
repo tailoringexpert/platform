@@ -65,7 +65,7 @@
         <module>tailoringexpert-db</module>
         <module>tailoringexpert-rest</module>
         <module>tailoringexpert-openhtmltopdf</module>
-        <module>tailoringexpert-poi</module>
+        <module>tailoringexpert-poi</module>        
         <module>tailoringexpert-coverage</module>
         <module>tailoringexpert-security</module>
         <module>tailoringexpert-bootapp</module>
