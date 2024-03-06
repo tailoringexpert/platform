@@ -21,8 +21,6 @@
  */
 package eu.tailoringexpert.tailoring;
 
-import eu.tailoringexpert.domain.FileEntity;
-import eu.tailoringexpert.domain.File;
 import eu.tailoringexpert.domain.DocumentSignature;
 import eu.tailoringexpert.domain.DocumentSignatureEntity;
 import eu.tailoringexpert.domain.Note;
@@ -105,34 +103,6 @@ public class JPATailoringServiceRepository implements TailoringServiceRepository
         return tailoring;
     }
 
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public Optional<Tailoring> updateFile(String project, String tailoring, File file) {
-        log.traceEntry(() -> project, () -> tailoring, file::getName);
-
-        Optional<TailoringEntity> oTailoring = findTailoring(project, tailoring);
-        if (oTailoring.isEmpty()) {
-            log.traceExit();
-            return empty();
-        }
-
-        FileEntity toUpdate = oTailoring.get().getFiles()
-            .stream()
-            .filter(entity -> entity.getName().equalsIgnoreCase(file.getName()))
-            .findFirst()
-            .orElseGet(() -> {
-                FileEntity entity = new FileEntity();
-                oTailoring.get().getFiles().add(entity);
-                return entity;
-            });
-        mapper.update(file, toUpdate);
-        Optional<Tailoring> result = ofNullable(mapper.toDomain(oTailoring.get()));
-
-        log.traceExit();
-        return result;
-    }
 
     /**
      * {@inheritDoc}
@@ -234,85 +204,6 @@ public class JPATailoringServiceRepository implements TailoringServiceRepository
 
         log.traceExit();
         return empty();
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public Optional<List<File>> getFileList(String project, String tailoring) {
-        log.traceEntry(() -> project, () -> tailoring);
-
-        Optional<TailoringEntity> entity = findTailoring(project, tailoring);
-        if (entity.isEmpty()) {
-            log.traceExit();
-            return empty();
-        }
-        Optional<List<File>> result = of(entity
-            .map(TailoringEntity::getFiles)
-            .stream()
-            .flatMap(Collection::stream)
-            .map(mapper::toDomain)
-            .toList());
-
-        log.traceExit();
-        return result;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public Optional<File> getFile(String project, String tailoring, String filename) {
-        log.traceEntry(() -> project, () -> tailoring, () -> filename);
-
-        TailoringEntity eTailoring = projectRepository.findTailoring(project, tailoring);
-        if (isNull(eTailoring)) {
-            log.traceExit();
-            return empty();
-        }
-        Optional<FileEntity> dokument = eTailoring.getFiles()
-            .stream()
-            .filter(entity -> entity.getName().equalsIgnoreCase(filename))
-            .findFirst();
-
-        if (dokument.isEmpty()) {
-            log.traceExit();
-            return empty();
-        }
-
-        FileEntity entity = dokument.get();
-        Optional<File> result = of(File.builder()
-            .name(entity.getName())
-            .data(entity.getData())
-            .build()
-        );
-        log.traceExit();
-        return result;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public boolean deleteFile(String project, String tailoring, String filename) {
-        log.traceEntry(() -> project, () -> tailoring, () -> filename);
-
-        TailoringEntity eTailoring = projectRepository.findTailoring(project, tailoring);
-        if (isNull(eTailoring)) {
-            return log.traceExit(false);
-        }
-
-        Optional<FileEntity> toDelete = eTailoring.getFiles()
-            .stream()
-            .filter(entity -> entity.getName().equalsIgnoreCase(filename))
-            .findFirst();
-
-        if (toDelete.isEmpty()) {
-            return log.traceExit(false);
-        }
-
-        return log.traceExit(eTailoring.getFiles().remove(toDelete.get()));
     }
 
     /**

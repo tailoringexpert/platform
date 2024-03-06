@@ -153,8 +153,8 @@ public class CatalogConfiguration {
     @Bean
     BaseCatalogExcelDocumentCreator baseCatalogExportExcelDocumentCreator(
         @NonNull @Qualifier("requirementSheetCreator") BiConsumer<Catalog<BaseRequirement>, Sheet> requirementSheetCreator,
-        @NonNull @Qualifier("drdSheetCreator") BiConsumer<Catalog<BaseRequirement>, Sheet> logoSheetCreator,
-        @NonNull @Qualifier("logoSheetCreator") BiConsumer<Catalog<BaseRequirement>, Sheet> drdSheetCreator
+        @NonNull @Qualifier("drdSheetCreator") BiConsumer<Catalog<BaseRequirement>, Sheet> drdSheetCreator,
+        @NonNull @Qualifier("logoSheetCreator") BiConsumer<Catalog<BaseRequirement>, Sheet> logoSheetCreator
     ) {
         return new BaseCatalogExcelDocumentCreator(requirementSheetCreator, drdSheetCreator, logoSheetCreator);
     }

@@ -23,10 +23,8 @@ package eu.tailoringexpert.tailoring;
 
 import eu.tailoringexpert.TailoringexpertMapperConfig;
 import eu.tailoringexpert.domain.DocumentSignature;
-import eu.tailoringexpert.domain.FileEntity;
 import eu.tailoringexpert.domain.DocumentSigneeEntity;
 import eu.tailoringexpert.domain.DocumentSignatureEntity;
-import eu.tailoringexpert.domain.File;
 import eu.tailoringexpert.domain.Logo;
 import eu.tailoringexpert.domain.LogoEntity;
 import eu.tailoringexpert.domain.Note;
@@ -77,8 +75,6 @@ public abstract class JPATailoringServiceRepositoryMapper {
     @Mapping(target = "state", source = "domain.state")
     abstract void updateTailoring(Tailoring domain, @MappingTarget TailoringEntity entity);
 
-    abstract void update(File domain, @MappingTarget FileEntity entity);
-
     @BeanMapping(ignoreByDefault = true)
     @Mapping(target = "selectionVector", source = "entity.selectionVector")
     @Mapping(target = "parameters", source = "entity.parameters")
@@ -104,9 +100,6 @@ public abstract class JPATailoringServiceRepositoryMapper {
     abstract void updateDocumentSignature(DocumentSignature domain, @MappingTarget DocumentSignatureEntity entity);
 
     abstract DocumentSignature toDomain(DocumentSignatureEntity entity);
-
-    @Mapping(target = "data", ignore = true)
-    abstract File toDomain(FileEntity entity);
 
     abstract SelectionVectorProfile toDomain(SelectionVectorProfileEntity entity);
 

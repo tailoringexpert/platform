@@ -40,6 +40,7 @@
             <groupId>eu.tailoringexpert</groupId>
             <artifactId>tailoringexpert-tenant</artifactId>
         </dependency>
+
         <dependency>
             <groupId>eu.tailoringexpert</groupId>
             <artifactId>tailoringexpert-security</artifactId>

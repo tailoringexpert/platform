@@ -16,6 +16,9 @@ package tailoring {
     interface TailoringServiceRepository {
     }
 
+    interface AttachmentService {
+    }
+
     class TailoringController {
         +getCatalog(project : String, tailoring: String) : ResponseEntity<EntityModel<TailoringCatalogResource>>
         +getChapter(project : String, tailoring : String, chapter : String) : ResponseEntity<EntityModel<TailoringCatalogChapterResource>>
@@ -43,8 +46,9 @@ package tailoring {
 
 
     TailoringController --> "1" ResourceMapper : mapper
-    TailoringController --> "1" TailoringService : TailoringService
-    TailoringController --> "1" TailoringServiceRepository : TailoringServiceRepository
+    TailoringController --> "1" TailoringService : tailoringService
+    TailoringController --> "1" TailoringServiceRepository : tailoringServiceRepository
+    TailoringController --> "1" AttachmentService : attachmentService
 
 }
 @enduml

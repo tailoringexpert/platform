@@ -41,13 +41,11 @@ import lombok.extern.log4j.Log4j2;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
-import org.mockito.MockedStatic;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
+
 import java.util.AbstractMap;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -84,7 +82,6 @@ import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.mockStatic;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -102,6 +99,8 @@ class TailoringServiceImplTest {
     private RequirementService requirementServiceMock;
     private Function<byte[], Map<String, Collection<ImportRequirement>>> tailoringAnforderungFileReaderMock;
 
+    private AttachmentService attachmentServiceMock;
+
     @BeforeEach
     void setup() {
         this.repositoryMock = mock(TailoringServiceRepository.class);
@@ -110,87 +109,16 @@ class TailoringServiceImplTest {
         this.documentServiceMock = mock(DocumentService.class);
         this.requirementServiceMock = mock(RequirementService.class);
         this.tailoringAnforderungFileReaderMock = mock(Function.class);
+        this.attachmentServiceMock = mock(AttachmentService.class);
         this.service = new TailoringServiceImpl(
             repositoryMock,
             mapperMock,
             tailoringDeletableMock,
             documentServiceMock,
             requirementServiceMock,
-            tailoringAnforderungFileReaderMock
+            tailoringAnforderungFileReaderMock,
+            attachmentServiceMock
         );
-    }
-
-    @Test
-    void addFile_TailoringNotExits_FileNotAdded() throws IOException {
-        // arrange
-        byte[] data;
-        try (InputStream is = newInputStream(get("src/test/resources/screeningsheet.pdf"))) {
-            assert nonNull(is);
-            data = is.readAllBytes();
-        }
-        given(repositoryMock.existsTailoring("DUMMY", "master")).willReturn(false);
-
-        // act
-        Optional<Tailoring> actual = service.addFile("DUMMY", "master", "dummy.pdf", data);
-
-        // assert
-        assertThat(actual).isEmpty();
-        verify(repositoryMock, times(0)).updateFile(anyString(), anyString(), any());
-
-    }
-
-    @Test
-    void addFile_TailoringExitsMessageDigestException_ExceptionThrown() throws IOException {
-        // arrange
-        byte[] data;
-        try (InputStream is = newInputStream(get("src/test/resources/screeningsheet.pdf"))) {
-            assert nonNull(is);
-            data = is.readAllBytes();
-        }
-        given(repositoryMock.existsTailoring("DUMMY", "master")).willReturn(true);
-
-        // act
-        Throwable actual;
-        try (MockedStatic<MessageDigest> md = mockStatic(MessageDigest.class)) {
-            md.when(() -> MessageDigest.getInstance(anyString())).thenThrow(new NoSuchAlgorithmException());
-            actual = catchThrowable(() -> service.addFile("DUMMY", "master", "dummy.pdf", data));
-        }
-
-
-        // assert
-        assertThat(actual).isInstanceOf(NoSuchAlgorithmException.class);
-        verify(repositoryMock, times(0)).updateFile(anyString(), anyString(), any());
-
-    }
-
-
-    @Test
-    void addFile_TailoringFileExists_FileUpdated() throws IOException {
-        // arrange
-        byte[] data;
-        try (InputStream is = newInputStream(get("src/test/resources/screeningsheet.pdf"))) {
-            assert nonNull(is);
-            data = is.readAllBytes();
-        }
-
-        given(repositoryMock.existsTailoring("SAMPLE", "master")).willReturn(true);
-
-        given(repositoryMock.updateFile(eq("SAMPLE"), eq("master"), any()))
-            .willAnswer(invocation -> of(Tailoring.builder()
-                .files(asList(
-                    File.builder()
-                        .name("dummy.pdf")
-                        .build()))
-                .build())
-            );
-
-
-        // act
-        Optional<Tailoring> actual = service.addFile("SAMPLE", "master", "dummy.pdf", data);
-
-        // assert
-        assertThat(actual).isPresent();
-        assertThat(actual.get().getFiles()).hasSize(1);
     }
 
     @Test

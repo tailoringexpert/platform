@@ -87,4 +87,5 @@ public interface ProjectRepository extends JpaRepository<ProjectEntity, Long> {
      * @return true if identifier of the project is already used
      */
     boolean existsProjectByIdentifier(String project);
+
 }

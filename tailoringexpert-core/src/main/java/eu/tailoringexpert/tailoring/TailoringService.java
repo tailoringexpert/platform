@@ -60,17 +60,6 @@ public interface TailoringService {
     Tailoring createTailoring(String name, String identifier, ScreeningSheet screeningSheet, SelectionVector applicableSelectionVector, String note, Catalog<BaseRequirement> catalog);
 
     /**
-     * Add a file to tailoring
-     *
-     * @param project   project identidier
-     * @param tailoring tailoring, file to add to
-     * @param name      name of file to add
-     * @param data      Raw-data of file
-     * @return Tailoring, with added file
-     */
-    Optional<Tailoring> addFile(String project, String tailoring, String name, byte[] data);
-
-    /**
      * Create a requirements document of tailoring.
      *
      * @param project   Project identifier
