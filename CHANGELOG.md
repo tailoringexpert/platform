@@ -1,6 +1,16 @@
 # Changelog
 
-## [v0.1.3](https://github.com/tailoringexpert/platform/tree/v0.1.3) (01.26.2024)
+## [v0.1.4](https://github.com/tailoringexpert/platform/tree/v0.1.4) (03.06.2024)
+
+[Full Changelog](https://github.com/tailoringexpert/platform/compare/v0.1.3...v0.1.4)
+
+**Implemented enhancements:**
+
+- Implement basecatalog Excel to JSON interface [\#283](https://github.com/tailoringexpert/platform/issues/283)
+- Create basecatalog Excel export [\#282](https://github.com/tailoringexpert/platform/issues/282)
+- Storage of tailoring attachments [\#286](https://github.com/tailoringexpert/platform/issues/286)
+
+## [v0.1.3](https://github.com/tailoringexpert/platform/tree/v0.1.3) (01.29.2024)
 
 [Full Changelog](https://github.com/tailoringexpert/platform/compare/v0.1.2...v0.1.3)
 
