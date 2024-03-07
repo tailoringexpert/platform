@@ -46,7 +46,6 @@ package tailoring {
 
     interface TailoringService {
         createTailoring(name : String, identifier : String, screeningSheetData : byte[], applicableSelectionVectore : SelectionVector, catalog : Catalog<BaseRequirement>) : Tailoring
-        addFile(project : String, tailoring : String, name : String, data : byte[]) Optional<Tailoring>
         createRequirementDocument(project : String, tailoring : String): Optional<File>
         createComparisonDocument(project : String, tailoring : String): Optional<File>
         createDocuments(project : String, tailoring : String): Optional<File>
@@ -65,6 +64,13 @@ package tailoring {
         getNote(project : String, tailoring : String, note : Integer) : Optional<Note>
     }
 
+    interface AttachmentService {
+        load(project : String, tailoring : String, filename: String) :  Optional<File>
+        list(project : String, tailoring : String) : Collection<File>
+        save(project : String, tailoring : String, file : File) : Optional<File>
+        delete(project : String, tailoring : String, filename: String) : boolean
+    }
+
     abstract class TailoringServiceMapper {
         toTailoringInformation(domain : Tailoring) : TailoringInformation
         toTailoringCatalog(catalog : Catalog<BaseRequirement>, screeningSheet : ScreeningSheet, selectionVector : SelectionVector) : Catalog<TailoringRequirement>
@@ -74,7 +80,6 @@ package tailoring {
     interface TailoringServiceRepository {
         getProject(project : String) : Optional<Project>
         updateTailoring(project : String, tailoring : Tailoring) : Tailoring
-        updateFile(project : String, tailoring : String, file : File) : Tailoring
         getTailoring(project : String, tailoring : String): Optional<Tailoring>
         getScreeningSheet(project : String, tailoring : String): Optional<ScreeningSheet>
         getScreeningSheetFile(project : String, tailoring : String): Optional<byte[]>

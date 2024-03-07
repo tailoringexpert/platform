@@ -1,0 +1,91 @@
+@startuml Ebene3.png
+hide empty members
+
+package tailoring {
+
+    interface DocumentCreator {
+        createDocument(docId : String, tailoring : Tailoring, placeholders : Map<String, Object>) : File
+    }
+
+    interface "BiConsumer<Catalog<BaseRequirement>, Sheet>" as sheetCreator {
+    }
+
+    class Styles {
+        headerStyle : CellStyle
+        defaultStyle : CellStyle
+    }
+
+    abstract class AbstractRequirementsBasedSheetCreator {
+        {abstract}addHeader(sheet : Sheet, styles: Styles) : void
+        {abstract}addChapter(chapter : Chapter<BaseRequirement>, sheet : Sheet, styles: Styles) : void
+    }
+    sheetCreator <|.. AbstractRequirementsBasedSheetCreator
+
+    class RequirementSheetCreator {
+    }
+    sheetCreator <|.. RequirementSheetCreator
+
+    RequirementSheetCreator -[dotted]-> Styles : <use>
+
+    class DRDSheetCreator {
+    }
+    AbstractRequirementsBasedSheetCreator <|-- DRDSheetCreator
+    DRDSheetCreator -[dotted]-> Styles : <use>
+
+    class LogoSheetCreator {
+    }
+    AbstractRequirementsBasedSheetCreator <|-- LogoSheetCreator
+    LogoSheetCreator -[dotted]-> Styles : <use>
+
+    class BaseCatalogExportExcelDocumentCreator {
+    }
+    DocumentCreator <|-- BaseCatalogExportExcelDocumentCreator
+
+    BaseCatalogExportExcelDocumentCreator --> "1" sheetCreator : requirementSheetCreator
+    BaseCatalogExportExcelDocumentCreator --> "1" sheetCreator : drdSheetCreator
+    BaseCatalogExportExcelDocumentCreator --> "1" sheetCreator : logoSheetCreator
+
+    interface "Function<I, R>" as function {
+    }
+    interface "BiFunction<T, U, R>" as biFunction {
+    }
+
+
+
+    class "ToChapterFunction<Sheet, Chapter<BaseRequirement>>" as chapterFunction {
+    }
+    function <|-- chapterFunction
+    chapterFunction --> "1" drdMappingFunction : toDRDMapping
+    chapterFunction --> "1" logoMappingFunction : toLogoMapping
+    chapterFunction --> "1" identifierFunction : toIdentifier
+    chapterFunction --> "1" logoFunction : toLogo
+    chapterFunction --> "1" referenceFunction: toReference
+
+    class "ToDRDMappingFunction<Sheet, Map<String, DRD>>" as drdMappingFunction {
+    }
+    function <|-- drdMappingFunction
+
+    class "ToIdentifierFunction<String, Identifier>" as identifierFunction{
+    }
+    function <|-- identifierFunction
+
+    class "ToLogoFunction<String, Map<String, Logo>, Logo>" as logoFunction{
+    }
+    biFunction <|-- logoFunction
+
+    class "ToLogoMappingFunction<Sheet, Map<String, Logo>>" as logoMappingFunction {
+    }
+    function <|-- logoMappingFunction
+
+    class "ToReferenceFunction<String, Logo, Reference>" as referenceFunction{
+    }
+    biFunction <|-- referenceFunction
+
+    class "Excel2CatalogConverter<byte[], Catalog<BaseRequirement>>" as excel2CatalogConverter {
+    }
+    function <|-- excel2CatalogConverter
+    excel2CatalogConverter --> "1" chapterFunction : toChapter
+
+
+}
+@enduml

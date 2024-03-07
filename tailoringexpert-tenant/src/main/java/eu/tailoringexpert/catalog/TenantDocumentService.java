@@ -60,6 +60,16 @@ public class TenantDocumentService implements DocumentService {
      */
     @Override
     @SneakyThrows
+    public Optional<File> createCatalogExcel(Catalog<BaseRequirement> catalog, LocalDateTime creationTimestamp) {
+        DocumentService service = getTenantImplementation();
+        return service.createCatalogExcel(catalog, creationTimestamp);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    @SneakyThrows
     public Collection<File> createAll(Catalog<BaseRequirement> catalog, LocalDateTime creationTimestamp) {
         DocumentService service = getTenantImplementation();
         return service.createAll(catalog, creationTimestamp);
@@ -68,7 +78,7 @@ public class TenantDocumentService implements DocumentService {
     private DocumentService getTenantImplementation() throws NoSuchMethodException {
         DocumentService result = tenantService.get(TenantContext.getCurrentTenant());
         if (isNull(result)) {
-            throw new NoSuchMethodException("Tenant " + TenantContext.getCurrentTenant() + " does not implement "+ DocumentService.class.getName());
+            throw new NoSuchMethodException("Tenant " + TenantContext.getCurrentTenant() + " does not implement " + DocumentService.class.getName());
         }
         return result;
     }

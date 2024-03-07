@@ -46,6 +46,15 @@ public interface CatalogService {
     boolean doImport(Catalog<BaseRequirement> catalog);
 
     /**
+     * Converts the given data a base catalog.<p>
+     * Please note that the data file is dependent on the registered input factory.
+     *
+     * @param data data to convert to a basecatalog
+     * @return The created basecatalog
+     */
+    Catalog<BaseRequirement> doConvert(byte[] data);
+
+    /**
      * Load base catalog of requested version.
      *
      * @param version version to load
@@ -60,6 +69,14 @@ public interface CatalogService {
      * @return If base catalog availabe, a printable document, else empty
      */
     Optional<File> createCatalog(String version);
+
+    /**
+     * Creates printable version of base catalog.
+     *
+     * @param version Version of base catalog to create document
+     * @return If base catalog availabe, a printable document, else empty
+     */
+    Optional<File> createCatalogExcel(String version);
 
     /**
      * Create all documents of basecatalog.<p>

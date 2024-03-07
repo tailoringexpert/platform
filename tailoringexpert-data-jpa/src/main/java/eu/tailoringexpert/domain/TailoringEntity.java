@@ -44,7 +44,6 @@ import java.io.Serializable;
 import java.time.ZonedDateTime;
 import java.util.Collection;
 import java.util.List;
-import java.util.Set;
 
 import static jakarta.persistence.CascadeType.ALL;
 import static jakarta.persistence.EnumType.STRING;
@@ -133,13 +132,6 @@ public class TailoringEntity implements Serializable {
         joinColumns = @JoinColumn(name = "TAILORING_ID")
     )
     private Collection<DocumentSignatureEntity> signatures;
-
-    /**
-     * Attached files to tailoring.
-     */
-    @OneToMany(cascade = ALL, orphanRemoval = true, fetch = LAZY)
-    @JoinColumn(name = "TAILORING_ID", referencedColumnName = "TAILORING_ID", nullable = false)
-    private Set<FileEntity> files;
 
     /**
      * Notes of tailoring.

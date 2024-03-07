@@ -128,6 +128,8 @@ class TailoringControllerTest {
 
     TailoringService serviceMock;
     TailoringServiceRepository repositoryMock;
+
+    AttachmentService attachmentServiceMock;
     Function<String, MediaType> mediaTypeProviderMock;
 
     ObjectMapper objectMapper;
@@ -138,6 +140,7 @@ class TailoringControllerTest {
     void setup() throws IOException {
         this.serviceMock = mock(TailoringService.class);
         this.repositoryMock = mock(TailoringServiceRepository.class);
+        this.attachmentServiceMock = mock(AttachmentService.class);
         this.mediaTypeProviderMock = mock(Function.class);
         this.mapperMock = mock(ResourceMapper.class);
 
@@ -165,6 +168,7 @@ class TailoringControllerTest {
             mapperMock,
             serviceMock,
             repositoryMock,
+            attachmentServiceMock,
             mediaTypeProviderMock))
             .setControllerAdvice(new ExceptionHandlerAdvice())
             .setMessageConverters(new MappingJackson2HttpMessageConverter(objectMapper), byteArrayHttpMessageConverter, new StringHttpMessageConverter()).build()
@@ -428,8 +432,10 @@ class TailoringControllerTest {
         Tailoring tailoring = Tailoring.builder()
             .name("master")
             .build();
-        given(serviceMock.addFile("SAMPLE", "master", "DUMMY_CM.pdf", data))
-            .willReturn(Optional.of(tailoring));
+
+        File toSave = File.builder().name("DUMMY_CM.pdf").data(data).build();
+        given(attachmentServiceMock.save("SAMPLE", "master", toSave))
+            .willReturn(Optional.of(toSave));
 
         ArgumentCaptor<PathContextBuilder> pathContextCaptor = forClass(PathContextBuilder.class);
         given(mapperMock.toResource(pathContextCaptor.capture(), eq(tailoring)))
@@ -447,8 +453,7 @@ class TailoringControllerTest {
             .andExpect(status().isCreated())
             .andExpect(header().string("Location", "/project/SAMPLE/tailoring/master/attachment/DUMMY_CM.pdf"));
 
-        verify(serviceMock, times(1)).addFile("SAMPLE", "master", "DUMMY_CM.pdf", data);
-//        assertThat(pathContextCaptor.getValue().build()).isEqualTo(PathContext.builder().project("SAMPLE").tailoring("master").build());
+        verify(attachmentServiceMock, times(1)).save("SAMPLE", "master", toSave);
     }
 
     @Test
@@ -463,7 +468,8 @@ class TailoringControllerTest {
         MockMultipartFile dokument = new MockMultipartFile("datei", "DUMMY_CM.pdf",
             "text/plain", data);
 
-        given(serviceMock.addFile("SAMPLE", "master", "DUMMY_CM.pdf", data))
+        File toSave = File.builder().name("DUMMY_CM.pdf").data(data).build();
+        given(attachmentServiceMock.save("SAMPLE", "master", toSave))
             .willReturn(empty());
 
         // act
@@ -476,7 +482,7 @@ class TailoringControllerTest {
         // assert
         actual.andExpect(status().isNotFound());
 
-        verify(serviceMock, times(1)).addFile("SAMPLE", "master", "DUMMY_CM.pdf", data);
+        verify(attachmentServiceMock, times(1)).save("SAMPLE", "master", toSave);
         verify(mapperMock, times(0)).toResource(any(), any(Tailoring.class));
 
         assertThatNoException();
@@ -710,8 +716,8 @@ class TailoringControllerTest {
         File file1 = File.builder().build();
         File file2 = File.builder().build();
 
-        given(repositoryMock.getFileList("SAMPLE", "master"))
-            .willReturn(Optional.of(of(file1, file2)));
+        given(attachmentServiceMock.list("SAMPLE", "master"))
+            .willReturn(of(file1, file2));
 
         ArgumentCaptor<PathContextBuilder> pathContextCaptor = forClass(PathContextBuilder.class);
         given(mapperMock.toResource(pathContextCaptor.capture(), any(File.class)))
@@ -725,7 +731,7 @@ class TailoringControllerTest {
         // assert
         actual.andExpect(status().isOk());
 
-        verify(repositoryMock, times(1)).getFileList("SAMPLE", "master");
+        verify(attachmentServiceMock, times(1)).list("SAMPLE", "master");
         verify(mapperMock, times(2)).toResource(pathContextCaptor.capture(), any(File.class));
         assertThat(pathContextCaptor.getValue().build()).isEqualTo(PathContext.builder().project("SAMPLE").tailoring("master").build());
     }
@@ -733,7 +739,7 @@ class TailoringControllerTest {
     @Test
     void getAttachmentList_TailoringNotExists_StateOk() throws Exception {
         // arrange
-        given(repositoryMock.getFileList("SAMPLE", "master")).willReturn(empty());
+        given(attachmentServiceMock.list("SAMPLE", "master")).willReturn(emptyList());
 
         ArgumentCaptor<PathContextBuilder> pathContextCaptor = forClass(PathContextBuilder.class);
         given(mapperMock.toResource(pathContextCaptor.capture(), any(File.class)))
@@ -745,9 +751,9 @@ class TailoringControllerTest {
         );
 
         // assert
-        actual.andExpect(status().isNotFound());
+        actual.andExpect(status().isOk());
 
-        verify(repositoryMock, times(1)).getFileList("SAMPLE", "master");
+        verify(attachmentServiceMock, times(1)).list("SAMPLE", "master");
         verify(mapperMock, times(0)).toResource(pathContextCaptor.capture(), any(File.class));
     }
 
@@ -831,7 +837,7 @@ class TailoringControllerTest {
     @Test
     void getAttachment_AttachmentNotExists_StateNotFound() throws Exception {
         // arrange
-        given(repositoryMock.getFile("SAMPLE", "master", "DOCID-42.pdf")).willReturn(empty());
+        given(attachmentServiceMock.load("SAMPLE", "master", "DOCID-42.pdf")).willReturn(empty());
 
         // act
         ResultActions actual = mockMvc.perform(get("/project/{project}/tailoring/{tailoring}/attachment/{name}", "SAMPLE", "master", "DOCID-42.pdf"));
@@ -839,13 +845,13 @@ class TailoringControllerTest {
         // assert
         actual.andExpect(status().isNotFound());
 
-        verify(repositoryMock, times(1)).getFile("SAMPLE", "master", "DOCID-42.pdf");
+        verify(attachmentServiceMock, times(1)).load("SAMPLE", "master", "DOCID-42.pdf");
     }
 
     @Test
     void getAttachment_AttachmentExists_StateOk() throws Exception {
         // arrange
-        given(repositoryMock.getFile("SAMPLE", "master", "DOCID-42.pdf")).willReturn(Optional.of(
+        given(attachmentServiceMock.load("SAMPLE", "master", "DOCID-42.pdf")).willReturn(Optional.of(
                 File.builder()
                     .data("Blindtext".getBytes(UTF_8))
                     .name("DOCID_42.pdf")
@@ -862,7 +868,7 @@ class TailoringControllerTest {
         actual.andExpect(header().string("Access-Control-Expose-Headers", "Content-Disposition"));
         actual.andExpect(content().contentType("application/json"));
 
-        verify(repositoryMock, times(1)).getFile("SAMPLE", "master", "DOCID-42.pdf");
+        verify(attachmentServiceMock, times(1)).load("SAMPLE", "master", "DOCID-42.pdf");
     }
 
     @Test
@@ -989,7 +995,7 @@ class TailoringControllerTest {
     @Test
     void deleteAttachment_AttachmentNotExists_StateNotFound() throws Exception {
         // arrange
-        given(repositoryMock.deleteFile("SAMPLE", "master", "SAMPLE-CM-4711.pdf")).willReturn(false);
+        given(attachmentServiceMock.delete("SAMPLE", "master", "SAMPLE-CM-4711.pdf")).willReturn(false);
         // act
         ResultActions actual = mockMvc.perform(delete(
             "/project/{project}/tailoring/{tailoring}/attachment/{name}",
@@ -1004,7 +1010,7 @@ class TailoringControllerTest {
     @Test
     void deleteAttachment_AttachmentExists_StateOk() throws Exception {
         // arrange
-        given(repositoryMock.deleteFile("SAMPLE", "master", "SAMPLE-CM-4711.pdf")).willReturn(true);
+        given(attachmentServiceMock.delete("SAMPLE", "master", "SAMPLE-CM-4711.pdf")).willReturn(true);
         // act
         ResultActions actual = mockMvc.perform(delete(
             "/project/{project}/tailoring/{tailoring}/attachment/{name}",

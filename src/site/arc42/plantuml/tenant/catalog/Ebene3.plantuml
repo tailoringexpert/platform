@@ -5,6 +5,7 @@ package catalog {
 
     interface DocumentService {
         createCatalog(catalog : Catalog<BaseRequirement>, creationTimestamp : LocalDateTime) : Optional<File>
+        createCatalogExcel(catalog : Catalog<BaseRequirement>, creationTimestamp : LocalDateTime) : Optional<File>
         createAll(catalog : Catalog<BaseRequirement>, creationTimestamp : LocalDateTime) : Optional<File>
     }
 

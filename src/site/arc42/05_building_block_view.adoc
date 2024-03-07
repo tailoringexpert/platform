@@ -203,6 +203,8 @@ Enthaltene Bausteine::
 |===
 | **Name** | **Verantwortung**
 
+| _xref:_whitebox_tailoringexpert_poicatalog[catalog]_
+|_Implementierungsschicht der POI Import-/Export Schnittstellen_
 | _xref:_whitebox_tailoringexpert_poitailoring[tailoring]_
 |_Implementierungsschicht der Schnittstelle **DocumentCreator**_
 |===
@@ -470,6 +472,14 @@ plantuml::plantuml/openhtmltopdf/tailoring/Ebene3.plantuml[target="{plantumls-ou
 ==== Whitebox _tailoringexpert-openhtmltopdf:catalog_
 .tailoringexpert-openhtmltopdf:catalog
 plantuml::plantuml/openhtmltopdf/catalog/Ebene3.plantuml[target="{plantumls-outdir}/05/generator-openhtmltopdf/catalog", format=svg, alt=Whitebox tailoringexpert-openhtmltopdf:catalog"]
+
+==== Whitebox _tailoringexpert-poi:catalog
+.tailoringexpert-poi:catalog
+plantuml::plantuml/poi/catalog/Ebene3.plantuml[target="{plantumls-outdir}/05/poi/catalog", format=svg, alt=Whitebox tailoringexpert-poi:catalog"]
+
+==== Whitebox _tailoringexpert-poi:tailoring
+.tailoringexpert-poi:tailoring
+plantuml::plantuml/poi/tailoring/Ebene3.plantuml[target="{plantumls-outdir}/05/poi/tailoring", format=svg, alt=Whitebox tailoringexpert-poi:tailoring"]
 
 
 ==== Whitebox _tailoringexpert-rest:requirement_
