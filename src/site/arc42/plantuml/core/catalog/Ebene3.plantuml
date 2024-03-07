@@ -9,6 +9,7 @@ package catalog {
 
     interface DocumentService {
         createCatalog(catalog : Catalog<BaseRequirement>, creationTimestamp : LocalDateTime) : Optional<File>
+        createCatalogExcel(catalog : Catalog<BaseRequirement>, creationTimestamp : LocalDateTime) : Optional<File>
         createAll(catalog : Catalog<BaseRequirement>,  creationTimestamp : LocalDateTime) : Collection<File>
     }
 
@@ -18,8 +19,10 @@ package catalog {
 
     interface CatalogService {
         doImport(catalog : Catalog<BaseCatalogRequirement>) : boolean
+        doConvert(data : byte[]) : Catalog<BaseRequirement>
         getCatalog(version : String) : Optional<Catalog<BaseRequirement>>
         createCatalog(version : String) : Optional<File>
+        createCatalogExcel(version : String) : Optional<File>;
         createDocuments(version : String) : Optional<File>
         getCatalogVersions() : Collection<CatalogVersion>
         limitValidity(version: String, validUntil : ZonedDateTime ) : Optional<CatalogVersion>
@@ -38,6 +41,12 @@ package catalog {
     CatalogService <|-- CatalogServiceImpl
     CatalogServiceImpl --> "1" CatalogServiceRepository : repository
     CatalogServiceImpl --> "1" DocumentService : documentService
+    CatalogServiceImpl --> "1" file2Catalog : file2Catalog
+
+    interface "Function<byte[], Catalog<BaseRequirement>>" as file2Catalog {
+    }
 
 }
+
+
 @enduml

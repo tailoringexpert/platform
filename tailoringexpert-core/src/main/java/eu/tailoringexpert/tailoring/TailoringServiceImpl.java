@@ -50,6 +50,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.function.Function;
+import java.util.function.Predicate;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
@@ -58,6 +59,7 @@ import static java.util.Objects.nonNull;
 import static java.util.Optional.empty;
 import static java.util.Optional.of;
 import static java.util.Optional.ofNullable;
+import static java.util.function.Predicate.not;
 
 /**
  * Implementation of {@link TailoringService}.
@@ -86,6 +88,9 @@ public class TailoringServiceImpl implements TailoringService {
 
     @NonNull
     private Function<byte[], Map<String, Collection<ImportRequirement>>> tailoringAnforderungFileReader;
+
+    @NonNull
+    private AttachmentService attachmentService;
 
     private static final String YES = "YES";
     private static final String NO = "NO";
@@ -126,31 +131,6 @@ public class TailoringServiceImpl implements TailoringService {
         log.traceExit();
         return result;
 
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    @SneakyThrows
-    public Optional<Tailoring> addFile(String project, String tailoring, String filename, byte[] data) {
-        log.traceEntry(() -> project, () -> tailoring, () -> filename);
-
-        if (!repository.existsTailoring(project, tailoring)) {
-            log.error(MSG_TAILORING_DOES_NOT_EXISTS);
-            log.traceExit();
-            return empty();
-        }
-
-        BigInteger hash = new BigInteger(1, MessageDigest.getInstance("SHA-256").digest(data));
-        File file = File.builder()
-            .name(filename)
-            .data(data)
-            .hash(hash.toString(16))
-            .build();
-
-        log.traceExit();
-        return repository.updateFile(project, tailoring, file);
     }
 
     /**
@@ -346,10 +326,9 @@ public class TailoringServiceImpl implements TailoringService {
                 if (YES.equalsIgnoreCase(requirement.getApplicable()) || NO.equalsIgnoreCase(requirement.getApplicable())) {
                     boolean selected = YES.equalsIgnoreCase(requirement.getApplicable());
                     requirementService.handleSelected(project, tailoring, chapter, requirement.getPosition(), selected);
-
-                    if (nonNull(requirement.getText()) && !requirement.getText().trim().isEmpty()) {
-                        requirementService.handleText(project, tailoring, chapter, requirement.getPosition(), requirement.getText());
-                    }
+                    ofNullable(requirement.getText())
+                        .filter(not(String::isBlank))
+                        .ifPresent(text -> requirementService.handleText(project, tailoring, chapter, requirement.getPosition(), text));
                 }
             });
         });

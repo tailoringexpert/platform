@@ -150,13 +150,6 @@ package domain {
         RELEASED("Released")
     }
 
-    class DocumentEntity {
-        id : Long <<PK>>
-        name : String
-        data : byte []
-        hash : String
-    }
-
     class DocumentSignatureEntity {
         faculty : String
         signee : String
@@ -194,7 +187,6 @@ package domain {
     TailoringEntity --> "1" TailoringCatalogEntity : catalogue
     TailoringEntity --> "1" TailoringState : state
     TailoringEntity --> "1..*" DocumentSignatureEntity : signatures
-    TailoringEntity --> "0..*" DocumentEntity : documents
     TailoringEntity --> "0..*" NoteEntity : notes
 
     class TailoringCatalogEntity {

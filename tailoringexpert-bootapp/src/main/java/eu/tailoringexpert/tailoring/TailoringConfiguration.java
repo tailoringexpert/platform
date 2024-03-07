@@ -33,6 +33,7 @@ import eu.tailoringexpert.domain.TailoringRequirement;
 import eu.tailoringexpert.renderer.HTMLTemplateEngine;
 import eu.tailoringexpert.renderer.PDFEngine;
 import eu.tailoringexpert.renderer.RendererRequestConfigurationSupplier;
+import eu.tailoringexpert.repository.TailoringIdentifierProviderRepository;
 import eu.tailoringexpert.requirement.RequirementService;
 import eu.tailoringexpert.repository.DokumentSigneeRepository;
 import eu.tailoringexpert.repository.LogoRepository;
@@ -41,12 +42,15 @@ import eu.tailoringexpert.repository.SelectionVectorProfileRepository;
 import eu.tailoringexpert.repository.TailoringRepository;
 import lombok.NonNull;
 import org.springframework.beans.factory.ListableBeanFactory;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
 import org.springframework.http.MediaType;
 
+import java.nio.file.Path;
+import java.security.MessageDigest;
 import java.util.AbstractMap.SimpleEntry;
 import java.util.Collection;
 import java.util.Map;
@@ -123,14 +127,18 @@ public class TailoringConfiguration {
         @NonNull TailoringDeletablePredicate tailoringDeletablePredicate,
         @NonNull DocumentService documentService,
         @NonNull RequirementService requirementService,
-        @NonNull Function<byte[], Map<String, Collection<ImportRequirement>>> tailoringAnforderungFileReader) {
+        @NonNull Function<byte[], Map<String, Collection<ImportRequirement>>> tailoringAnforderungFileReader,
+        @NonNull AttachmentService attachmentService
+    ) {
         return new TailoringServiceImpl(
             repository,
             mapper,
             tailoringDeletablePredicate,
             documentService,
             requirementService,
-            tailoringAnforderungFileReader);
+            tailoringAnforderungFileReader,
+            attachmentService
+        );
     }
 
     @Bean
@@ -164,8 +172,11 @@ public class TailoringConfiguration {
         @NonNull ResourceMapper mapper,
         @NonNull TailoringService tailoringService,
         @NonNull TailoringServiceRepository tailoringServiceRepository,
+        @NonNull AttachmentService attachmentService,
         @NonNull Function<String, MediaType> mediaTypeProvider) {
-        return new TailoringController(mapper, tailoringService, tailoringServiceRepository, mediaTypeProvider);
+        return new TailoringController(
+            mapper, tailoringService, tailoringServiceRepository, attachmentService, mediaTypeProvider
+        );
     }
 
     @Bean
@@ -236,6 +247,22 @@ public class TailoringConfiguration {
         @NonNull PDFEngine pdfEngine,
         @NonNull BiFunction<Chapter<TailoringRequirement>, Collection<Phase>, Map<DRD, Set<String>>> drdProvider) {
         return new CMPDFDocumentCreator(templateEngine, pdfEngine, drdProvider);
+    }
+
+
+    @Bean
+    BiFunction<String, String, Path> tailoringPathProvider(
+        @NonNull @Value("${attachmentHome}") String basedir,
+        @NonNull TailoringIdentifierProviderRepository tailoringIdentifierProvider
+    ) {
+        return new TenantTailoringPathProvider(basedir, tailoringIdentifierProvider);
+    }
+
+    @Bean
+    AttachmentService attachmentService(
+        @NonNull @Qualifier("tailoringPathProvider") BiFunction<String, String, Path> tailoringPathProvider
+    ) throws Exception {
+        return new TenantAttachmentService(tailoringPathProvider, MessageDigest.getInstance("SHA-256"));
     }
 
     private <T> Map<String, T> getTenantImplementations(ListableBeanFactory beanFactory, Class<T> clz) {

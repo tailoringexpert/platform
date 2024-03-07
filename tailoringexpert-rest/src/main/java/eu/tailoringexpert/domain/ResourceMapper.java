@@ -98,6 +98,8 @@ public abstract class ResourceMapper {
     public static final String BASECATALOG_VERSION = "catalog/{version}";
     public static final String BASECATALOG_VERSION_PDF = "catalog/{version}/pdf";
     public static final String BASECATALOG_VERSION_JSON = "catalog/{version}/json";
+    public static final String BASECATALOG_VERSION_EXCEL = "catalog/{version}/excel";
+    public static final String BASECATALOG_CONVERT_EXCEL = "catalog/convert/excel";
     public static final String BASECATALOG_VALIDUNTIL = "catalog/{version}/validuntil/{validuntil}";
     public static final String BASECATALOG_VERSION_DOCUMENT = "catalog/{version}/document";
 
@@ -111,7 +113,9 @@ public abstract class ResourceMapper {
     public static final String REL_TAILORING = "tailoring";
     public static final String REL_KATALOG = "catalog";
     public static final String REL_PDF = "pdf";
+    public static final String REL_EXCEL = "excel";
     public static final String REL_JSON = "json";
+    public static final String REL_CONVERT = "convert";
     public static final String REL_TAILORINGCATALOG_DOCUMENT = "tailoringcatalog";
     public static final String REL_BASECATALOG_DOCUMENT = "basecatalog";
     public static final String REL_SIGNATURE = "signature";
@@ -149,6 +153,7 @@ public abstract class ResourceMapper {
             createLink(PROJECTS, resolveParameter(PROJECT_NEW, context.parameter()), parameter),
             createLink(REL_SELF, BASECATALOG_VERSION, parameter),
             createLink(REL_PDF, BASECATALOG_VERSION_PDF, parameter),
+            createLink(REL_EXCEL, BASECATALOG_VERSION_EXCEL, parameter),
             createLink(REL_JSON, BASECATALOG_VERSION_JSON, parameter),
             createLink(REL_DOCUMENT, BASECATALOG_VERSION_DOCUMENT, parameter),
             createLink(REL_VALIDUNTIL, BASECATALOG_VALIDUNTIL, parameter)

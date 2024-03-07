@@ -39,7 +39,7 @@ import java.util.Optional;
 public interface DocumentService {
 
     /**
-     * Create a base catalog document.
+     * Create a base catalog pdf document.
      *
      * @param catalog           base catalog data for document creation
      * @param creationTimestamp timestanp of document creation
@@ -56,4 +56,12 @@ public interface DocumentService {
      */
     Collection<File> createAll(Catalog<BaseRequirement> catalog, LocalDateTime creationTimestamp);
 
+    /**
+     * Create a base catalog excel document.
+     *
+     * @param catalog           base catalog data for document creation
+     * @param creationTimestamp timestanp of document creation
+     * @return created document file
+     */
+    Optional<File> createCatalogExcel(Catalog<BaseRequirement> catalog, LocalDateTime creationTimestamp);
 }

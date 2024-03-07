@@ -8,6 +8,9 @@ skinparam componentStyle uml2
 component [generator-poi] {
     [domain]
 
+    [catalog]
+    [domain] <-- [catalog]
+
     [tailoring]
     [domain] <-- [tailoring]
 
