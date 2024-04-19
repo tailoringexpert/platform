@@ -21,6 +21,7 @@
  */
 package eu.tailoringexpert.tailoring;
 
+import eu.tailoringexpert.domain.Catalog;
 import eu.tailoringexpert.domain.DocumentSignature;
 import eu.tailoringexpert.domain.DocumentSignatureEntity;
 import eu.tailoringexpert.domain.DocumentSigneeEntity;
@@ -34,7 +35,10 @@ import eu.tailoringexpert.domain.ScreeningSheetEntity;
 import eu.tailoringexpert.domain.SelectionVectorProfile;
 import eu.tailoringexpert.domain.SelectionVectorProfileEntity;
 import eu.tailoringexpert.domain.Tailoring;
+import eu.tailoringexpert.domain.TailoringCatalogChapterProjection;
+import eu.tailoringexpert.domain.TailoringCatalogProjection;
 import eu.tailoringexpert.domain.TailoringEntity;
+import eu.tailoringexpert.domain.TailoringRequirement;
 import eu.tailoringexpert.domain.TailoringState;
 import eu.tailoringexpert.repository.DokumentSigneeRepository;
 import eu.tailoringexpert.repository.ProjectRepository;
@@ -561,5 +565,75 @@ class JPATailoringServiceRepositoryTest {
 
         // assert
         verify(projectRepositoryMock, times(1)).existsTailoring("SAMPLE", "master");
+    }
+
+    @Test
+    void getCatalog_ProjectNull_EmptyReturned() {
+        // arrange
+
+        // act
+        Optional<Catalog<TailoringRequirement>> actual = repository.getCatalog(null, "master");
+
+        // assert
+        assertThat(actual).isEmpty();
+    }
+
+    @Test
+    void getCatalog_TailoringNull_EmptyReturned() {
+        // arrange
+
+        // act
+        Optional<Catalog<TailoringRequirement>> actual = repository.getCatalog("DUMMY", null);
+
+        // assert
+        assertThat(actual).isEmpty();
+    }
+
+    @Test
+    void getCatalog_TailoringExists_CatalogReturned() {
+        // arrange
+        TailoringCatalogProjection catalog = new TailoringCatalogProjection() {
+            @Override
+            public String getVersion() {
+                return "8.2.1";
+            }
+
+            @Override
+            public TailoringCatalogChapterProjection getToc() {
+                return new TailoringCatalogChapterProjection() {
+
+                    @Override
+                    public String getName() {
+                        return "/";
+                    }
+
+                    @Override
+                    public int getPosition() {
+                        return 0;
+                    }
+
+                    @Override
+                    public String getNumber() {
+                        return "1";
+                    }
+
+                    @Override
+                    public List<TailoringCatalogChapterProjection> getChapters() {
+                        return List.of();
+                    }
+                };
+            }
+        };
+
+        given(projectRepositoryMock.findTailoringCatalog("DUMMY", "master")).willReturn(catalog);
+
+        given(mapperMock.getCatalog(catalog)).willReturn(Catalog.<TailoringRequirement>builder().build());
+
+        // act
+        Optional<Catalog<TailoringRequirement>> actual = repository.getCatalog("DUMMY", "master");
+
+        // assert
+        assertThat(actual).isNotEmpty();
+        verify(mapperMock, times(1)).getCatalog(catalog);
     }
 }

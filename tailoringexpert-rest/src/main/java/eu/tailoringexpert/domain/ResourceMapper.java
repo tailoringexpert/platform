@@ -301,15 +301,17 @@ public abstract class ResourceMapper {
         }
     }
 
+    @Mapping(source = "chapters", target = "nodes")
+    @Mapping(source="number", target="id")
     public abstract TailoringCatalogChapterResource toResource(@Context PathContextBuilder pathContext, Chapter<TailoringRequirement> domain);
 
     @AfterMapping
     protected void addLinks(@Context PathContextBuilder pathContext, @MappingTarget TailoringCatalogChapterResourceBuilder resource) {
         PathContext context = pathContext.build();
-        pathContext.chapter(resource.build().getNumber());
+        pathContext.chapter(resource.build().getId());
         Map<String, String> parameter = context.parameter();
         parameter.put(REL_SELECTED, null);
-        parameter.put(REL_KAPITEL, resource.build().getNumber());
+        parameter.put(REL_KAPITEL, resource.build().getId());
 
         resource.links(asList(
             createLink(REL_SELF, TAILORING_CATALOG_CHAPTER, parameter),

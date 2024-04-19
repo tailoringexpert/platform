@@ -117,6 +117,7 @@ class BaseCatalogRepositoryTest {
         Collection<BaseCatalogVersionProjection> actual = repository.findCatalogVersionBy();
 
         // assert
+        log.debug(actual);
         assertThat(actual)
             .isNotNull()
             .hasSize(2);

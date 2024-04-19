@@ -150,7 +150,9 @@ public class TailoringController {
             .project(project)
             .tailoring(tailoring);
 
-        ResponseEntity<EntityModel<TailoringCatalogResource>> result = tailoringService.getCatalog(project, tailoring)
+
+        ResponseEntity<EntityModel<TailoringCatalogResource>> result =  tailoringServiceRepository.getCatalog(project, tailoring)
+            // tailoringService.getCatalog(project, tailoring)
             .map(serviceResult -> ok()
                 .body(of(mapper.toResource(pathContext, serviceResult))))
             .orElseGet(() -> notFound().build());

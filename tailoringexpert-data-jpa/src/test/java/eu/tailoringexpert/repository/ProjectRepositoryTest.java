@@ -22,7 +22,11 @@
 package eu.tailoringexpert.repository;
 
 import eu.tailoringexpert.domain.ProjectEntity;
+import eu.tailoringexpert.domain.TailoringCatalogChapterEntity;
+import eu.tailoringexpert.domain.TailoringCatalogEntity;
 import eu.tailoringexpert.domain.TailoringEntity;
+import eu.tailoringexpert.domain.TailoringCatalogProjection;
+import eu.tailoringexpert.domain.TailoringRequirementEntity;
 import eu.tailoringexpert.domain.TailoringState;
 import lombok.extern.log4j.Log4j2;
 import org.junit.jupiter.api.Test;
@@ -32,6 +36,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.io.IOException;
 import java.util.Arrays;
+import java.util.List;
 
 import static eu.tailoringexpert.domain.Phase.E;
 import static eu.tailoringexpert.domain.Phase.F;
@@ -42,6 +47,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 @Log4j2
 @SpringJUnitConfig(classes = {DBConfiguration.class})
 @Transactional
+
 class ProjectRepositoryTest {
 
     @Autowired
@@ -308,4 +314,52 @@ class ProjectRepositoryTest {
 //        // assert
 //        assertThat(actual).isNull();
 //    }
+@Test
+void findTailoringCatalog_2BaseCatalogExists_ListWith2BaseCatalogsReturned() {
+    // arrange
+    ProjectEntity project = ProjectEntity.builder()
+        .identifier("SAMPLE")
+        .state(ONGOING)
+        .tailorings(Arrays.asList(
+            TailoringEntity.builder()
+                .name("master")
+                .catalog(TailoringCatalogEntity.builder()
+                    .toc(TailoringCatalogChapterEntity.builder()
+                        .name("General")
+                        .number("1")
+                        .chapters(List.of(
+                            TailoringCatalogChapterEntity.builder()
+                                .name("subchapter 1.1")
+                                .number("1.1")
+                                .chapters(List.of(
+                                    TailoringCatalogChapterEntity.builder()
+                                        .number("subchaper 1.2")
+                                        .build()
+                                ))
+                                .build()
+                        ))
+                        .requirements(List.of(
+                            TailoringRequirementEntity.builder().build()
+                        ))
+                        .build())
+                    .build())
+                .build()
+        ))
+        .build();
+    repository.save(project);
+
+
+    // act
+    TailoringEntity actual = repository.findTailoring("SAMPLE", "master" );
+    TailoringCatalogProjection projection = repository.findTailoringCatalog("SAMPLE", "master");
+//    TailoringCatalogChapterProjection projection = repository.findTailoringCatalog("SAMPLE", "master");
+
+    // assert
+//    log.debug(actual);
+    log.debug(projection.getToc());
+    assertThat(actual)
+        .isNotNull();
 }
+
+}
+
