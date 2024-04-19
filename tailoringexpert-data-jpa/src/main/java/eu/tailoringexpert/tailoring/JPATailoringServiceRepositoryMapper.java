@@ -22,6 +22,7 @@
 package eu.tailoringexpert.tailoring;
 
 import eu.tailoringexpert.TailoringexpertMapperConfig;
+import eu.tailoringexpert.domain.Catalog;
 import eu.tailoringexpert.domain.DocumentSignature;
 import eu.tailoringexpert.domain.DocumentSigneeEntity;
 import eu.tailoringexpert.domain.DocumentSignatureEntity;
@@ -39,7 +40,9 @@ import eu.tailoringexpert.domain.ScreeningSheetParameterEntity;
 import eu.tailoringexpert.domain.SelectionVectorProfile;
 import eu.tailoringexpert.domain.SelectionVectorProfileEntity;
 import eu.tailoringexpert.domain.Tailoring;
+import eu.tailoringexpert.domain.TailoringCatalogProjection;
 import eu.tailoringexpert.domain.TailoringEntity;
+import eu.tailoringexpert.domain.TailoringRequirement;
 import eu.tailoringexpert.repository.LogoRepository;
 import lombok.Setter;
 import org.mapstruct.AfterMapping;
@@ -111,4 +114,6 @@ public abstract class JPATailoringServiceRepositoryMapper {
     LogoEntity resolve(Logo domain) {
         return nonNull(domain) ? logoRepository.findByName(domain.getName()) : null;
     }
+
+    abstract Catalog<TailoringRequirement> getCatalog(TailoringCatalogProjection projection);
 }

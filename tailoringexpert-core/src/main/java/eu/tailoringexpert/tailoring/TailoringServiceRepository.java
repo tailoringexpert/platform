@@ -21,12 +21,14 @@
  */
 package eu.tailoringexpert.tailoring;
 
+import eu.tailoringexpert.domain.Catalog;
 import eu.tailoringexpert.domain.DocumentSignature;
 import eu.tailoringexpert.domain.Note;
 import eu.tailoringexpert.domain.Project;
 import eu.tailoringexpert.domain.ScreeningSheet;
 import eu.tailoringexpert.domain.SelectionVectorProfile;
 import eu.tailoringexpert.domain.Tailoring;
+import eu.tailoringexpert.domain.TailoringRequirement;
 import eu.tailoringexpert.domain.TailoringState;
 
 import java.util.Collection;
@@ -155,7 +157,14 @@ public interface TailoringServiceRepository {
      */
     Optional<Tailoring> setState(String project, String tailoring, TailoringState state);
 
-
+    /**
+     * Load tailoring catalog by name.
+     *
+     * @param project   project identifier
+     * @param tailoring tailoring name
+     * @return loaded tailoring catalog
+     */
+    Optional<Catalog<TailoringRequirement>> getCatalog(String project, String tailoring);
 }
 
 

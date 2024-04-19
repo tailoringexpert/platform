@@ -21,6 +21,7 @@
  */
 package eu.tailoringexpert.tailoring;
 
+import eu.tailoringexpert.domain.Catalog;
 import eu.tailoringexpert.domain.DocumentSignature;
 import eu.tailoringexpert.domain.DocumentSignatureEntity;
 import eu.tailoringexpert.domain.Note;
@@ -28,7 +29,9 @@ import eu.tailoringexpert.domain.Project;
 import eu.tailoringexpert.domain.ScreeningSheet;
 import eu.tailoringexpert.domain.SelectionVectorProfile;
 import eu.tailoringexpert.domain.Tailoring;
+import eu.tailoringexpert.domain.TailoringCatalogProjection;
 import eu.tailoringexpert.domain.TailoringEntity;
+import eu.tailoringexpert.domain.TailoringRequirement;
 import eu.tailoringexpert.domain.TailoringState;
 import eu.tailoringexpert.repository.DokumentSigneeRepository;
 import eu.tailoringexpert.repository.ProjectRepository;
@@ -299,6 +302,21 @@ public class JPATailoringServiceRepository implements TailoringServiceRepository
 
         oTailoring.get().setState(state);
         Optional<Tailoring> result = of(mapper.toDomain(oTailoring.get()));
+
+        log.traceExit();
+        return result;
+
+    }
+
+    @Override
+    public Optional<Catalog<TailoringRequirement>> getCatalog(String project, String tailoring) {
+        log.traceEntry();
+
+        if (isNull(project) || isNull(tailoring)) {
+            return empty();
+        }
+        TailoringCatalogProjection projection = projectRepository.findTailoringCatalog(project, tailoring);
+        Optional<Catalog<TailoringRequirement>> result = ofNullable(mapper.getCatalog(projection));
 
         log.traceExit();
         return result;

@@ -47,12 +47,12 @@ public class TailoringCatalogChapterResource extends RepresentationModel<Tailori
     /**
      * (Full) Number of chapter.
      */
-    private String number;
+    private String id;
 
     /**
      * Concatenated number and name of chapter.
      */
-    private String chapterName;
+    private String label;
 
     /**
      * Requirements defined in chapter.
@@ -62,17 +62,17 @@ public class TailoringCatalogChapterResource extends RepresentationModel<Tailori
     /**
      * List of subchapters.
      */
-    private List<TailoringCatalogChapterResource> chapters;
+    private List<TailoringCatalogChapterResource> nodes;
 
     @Builder
-    public TailoringCatalogChapterResource(String name, String number, List<TailoringRequirementResource> requirements, List<TailoringCatalogChapterResource> chapters, List<Link> links) {
+    public TailoringCatalogChapterResource(String name, String id, List<TailoringRequirementResource> requirements, List<TailoringCatalogChapterResource> nodes, List<Link> links) {
         super();
 
         this.name = name;
-        this.number = number;
-        this.chapters = chapters;
+        this.id = id;
+        this.nodes = nodes;
         this.requirements = requirements;
-        this.chapterName = this.number + " " + this.name;
+        this.label = this.id + " " + this.name;
 
         if (nonNull(links)) {
             add(links);

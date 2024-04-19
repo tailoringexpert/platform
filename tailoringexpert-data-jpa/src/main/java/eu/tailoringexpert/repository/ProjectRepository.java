@@ -22,6 +22,7 @@
 package eu.tailoringexpert.repository;
 
 import eu.tailoringexpert.domain.ProjectEntity;
+import eu.tailoringexpert.domain.TailoringCatalogProjection;
 import eu.tailoringexpert.domain.TailoringEntity;
 import eu.tailoringexpert.domain.TailoringState;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -88,4 +89,7 @@ public interface ProjectRepository extends JpaRepository<ProjectEntity, Long> {
      */
     boolean existsProjectByIdentifier(String project);
 
+
+    @Query("Select t.catalog.version as version, t.catalog.toc as toc from #{#entityName} p inner join p.tailorings t where p.identifier=:project and t.name=:name")
+    TailoringCatalogProjection findTailoringCatalog(@Param("project") String project, @Param("name") String name);
 }
