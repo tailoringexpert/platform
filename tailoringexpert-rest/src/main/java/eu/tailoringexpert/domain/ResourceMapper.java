@@ -301,6 +301,7 @@ public abstract class ResourceMapper {
         }
     }
 
+    @Mapping(source = "requirements", target = "requirements")
     @Mapping(source = "chapters", target = "nodes")
     @Mapping(source="number", target="id")
     public abstract TailoringCatalogChapterResource toResource(@Context PathContextBuilder pathContext, Chapter<TailoringRequirement> domain);
