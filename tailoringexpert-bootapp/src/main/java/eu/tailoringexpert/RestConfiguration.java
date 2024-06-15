@@ -21,7 +21,11 @@
  */
 package eu.tailoringexpert;
 
+import com.fasterxml.jackson.annotation.JsonSetter;
+import com.fasterxml.jackson.annotation.Nulls;
+import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.cfg.MutableConfigOverride;
 import com.fasterxml.jackson.datatype.jdk8.Jdk8Module;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.fasterxml.jackson.module.paramnames.ParameterNamesModule;
@@ -54,6 +58,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
+import java.util.List;
 
 import static com.fasterxml.jackson.annotation.JsonAutoDetect.Visibility.ANY;
 import static com.fasterxml.jackson.annotation.PropertyAccessor.FIELD;
@@ -67,17 +72,21 @@ public class RestConfiguration {
 
     @Bean
     ObjectMapper objectMapper() {
-        return Jackson2ObjectMapperBuilder.json()
+        ObjectMapper result = Jackson2ObjectMapperBuilder.json()
             .modules(new Jackson2HalModule(), new JavaTimeModule(), new ParameterNamesModule(), new Jdk8Module())
             .featuresToEnable()
             .featuresToEnable(INDENT_OUTPUT)
             .featuresToDisable(FAIL_ON_EMPTY_BEANS)
+            .featuresToDisable(DeserializationFeature.ACCEPT_EMPTY_ARRAY_AS_NULL_OBJECT)
             .visibility(FIELD, ANY)
             .dateFormat(new SimpleDateFormat("yyyy-MM-dd", GERMANY))
             .handlerInstantiator(
                 new Jackson2HalModule.HalHandlerInstantiator(new EvoInflectorLinkRelationProvider(),
                     CurieProvider.NONE, MessageResolver.DEFAULTS_ONLY))
             .build();
+        MutableConfigOverride override = result.configOverride(List.class);
+        override.setSetterInfo(JsonSetter.Value.forValueNulls(Nulls.AS_EMPTY));
+        return result;
     }
 
     @Bean

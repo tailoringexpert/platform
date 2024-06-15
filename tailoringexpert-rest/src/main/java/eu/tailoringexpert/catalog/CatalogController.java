@@ -22,6 +22,7 @@
 package eu.tailoringexpert.catalog;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import eu.tailoringexpert.domain.BaseCatalogVersionResource;
 import eu.tailoringexpert.domain.BaseRequirement;
@@ -65,6 +66,7 @@ import java.util.function.Function;
 
 import static eu.tailoringexpert.domain.ResourceMapper.BASECATALOG;
 import static eu.tailoringexpert.domain.ResourceMapper.BASECATALOG_CONVERT_EXCEL;
+import static eu.tailoringexpert.domain.ResourceMapper.BASECATALOG_PREVIEW_PDF;
 import static eu.tailoringexpert.domain.ResourceMapper.BASECATALOG_VALIDUNTIL;
 import static eu.tailoringexpert.domain.ResourceMapper.BASECATALOG_VERSION;
 import static eu.tailoringexpert.domain.ResourceMapper.BASECATALOG_VERSION_DOCUMENT;
@@ -329,5 +331,28 @@ public class CatalogController {
         log.traceExit();
         return result;
     }
+    @Operation(summary = "Converts JSON base catalog")
+    @ApiResponses(value = {
+        @ApiResponse(
+            responseCode = "200", description = "Base catalog converted")
+    })
+    @PostMapping(value = BASECATALOG_PREVIEW_PDF, produces = "application/octet-stream")
+    @ResponseBody
+    public ResponseEntity<byte[]> postBaseCatalogPreview(
+        @Parameter(description = "Base catalog to preview") @RequestBody Catalog<BaseRequirement> catalog) {
+        log.traceEntry();
 
+        ResponseEntity<byte[]> result = catalogService.createDocuments(catalog)
+            .map(dokument -> ok()
+                .header(CONTENT_DISPOSITION, ContentDisposition.builder(MediaTypeProvider.FORM_DATA).name(MediaTypeProvider.ATTACHMENT).filename(dokument.getName()).build().toString())
+                .header(ACCESS_CONTROL_EXPOSE_HEADERS, CONTENT_DISPOSITION)
+                .contentType(mediaTypeProvider.apply(dokument.getType()))
+                .contentLength(dokument.getLength())
+                .body(dokument.getData()))
+            .orElseGet(() -> notFound().build());
+
+        log.traceExit();
+        return result;
+
+    }
 }

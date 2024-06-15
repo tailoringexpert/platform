@@ -41,6 +41,7 @@ import java.util.zip.ZipOutputStream;
 
 import static java.util.Optional.empty;
 import static java.util.Optional.of;
+import static java.util.Optional.ofNullable;
 
 /**
  * Implementation of {@link CatalogService}.
@@ -59,6 +60,8 @@ public class CatalogServiceImpl implements CatalogService {
 
     @NonNull
     private Function<byte[], Catalog<BaseRequirement>> file2Catalog;
+
+    private static final String MSG_CATALOGDOCUMENT_NOT_CREATED = "catalog document NOT created due to non existing catalog version.";
 
     /**
      * {@inheritDoc}
@@ -106,7 +109,7 @@ public class CatalogServiceImpl implements CatalogService {
 
         Optional<Catalog<BaseRequirement>> catalog = repository.getCatalog(version);
         if (catalog.isEmpty()) {
-            log.error("catalog document NOT created due to non existing catalog version");
+            log.error(MSG_CATALOGDOCUMENT_NOT_CREATED);
             log.traceExit();
             return empty();
         }
@@ -117,13 +120,35 @@ public class CatalogServiceImpl implements CatalogService {
     }
 
     @Override
+    public Optional<File> createDocuments(Catalog<BaseRequirement> catalog) {
+        log.traceEntry();
+        @SuppressWarnings("PMD.PrematureDeclaration") final LocalDateTime creationTimestamp = LocalDateTime.now();
+
+        if (ofNullable(catalog).isEmpty()) {
+            log.error(MSG_CATALOGDOCUMENT_NOT_CREATED);
+            log.traceExit();
+            return empty();
+        }
+
+        Collection<File> documents = documentService.createAll(catalog, creationTimestamp);
+        ByteArrayOutputStream os = createZip(documents);
+
+        File result = File.builder()
+            .name("catalog_" + catalog.getVersion()+ ".zip")
+            .data(os.toByteArray())
+            .build();
+        log.traceExit(result.getName());
+        return of(result);
+    }
+
+    @Override
     public Optional<File> createCatalogExcel(String version) {
         log.traceEntry(() -> version);
         @SuppressWarnings("PMD.PrematureDeclaration") final LocalDateTime creationTimestamp = LocalDateTime.now();
 
         Optional<Catalog<BaseRequirement>> catalog = repository.getCatalog(version);
         if (catalog.isEmpty()) {
-            log.error("catalog document NOT created due to non existing catalog version");
+            log.error(MSG_CATALOGDOCUMENT_NOT_CREATED);
             log.traceExit();
             return empty();
         }
@@ -139,24 +164,12 @@ public class CatalogServiceImpl implements CatalogService {
     @Override
     public Optional<File> createDocuments(String version) {
         log.traceEntry(() -> version);
-        @SuppressWarnings("PMD.PrematureDeclaration") final LocalDateTime creationTimestamp = LocalDateTime.now();
 
         Optional<Catalog<BaseRequirement>> catalog = repository.getCatalog(version);
-        if (catalog.isEmpty()) {
-            log.error("output documents NOT created due to non existing catalogue version");
-            log.traceExit();
-            return empty();
-        }
+        Optional<File> result = createDocuments(catalog.orElse(null));
 
-        Collection<File> documents = documentService.createAll(catalog.get(), creationTimestamp);
-        ByteArrayOutputStream os = createZip(documents);
-
-        File result = File.builder()
-            .name("catalog_" + version + ".zip")
-            .data(os.toByteArray())
-            .build();
-        log.traceExit(result.getName());
-        return of(result);
+        log.traceExit();
+        return result;
     }
 
     /**

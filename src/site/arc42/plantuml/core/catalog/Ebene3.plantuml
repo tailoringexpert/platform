@@ -26,6 +26,7 @@ package catalog {
         createDocuments(version : String) : Optional<File>
         getCatalogVersions() : Collection<CatalogVersion>
         limitValidity(version: String, validUntil : ZonedDateTime ) : Optional<CatalogVersion>
+        createDocuments(catalog : Catalog<BaseRequirement>) :  Optional<File>
     }
 
     interface CatalogServiceRepository {

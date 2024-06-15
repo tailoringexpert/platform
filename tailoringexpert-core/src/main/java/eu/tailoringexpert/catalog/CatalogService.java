@@ -73,6 +73,14 @@ public interface CatalogService {
     /**
      * Creates printable version of base catalog.
      *
+     * @param catalog base catalog data to create document of
+     * @return If base catalog availabe, a printable document, else empty
+     */
+    Optional<File> createDocuments(Catalog<BaseRequirement> catalog);
+
+    /**
+     * Creates printable version of base catalog.
+     *
      * @param version Version of base catalog to create document
      * @return If base catalog availabe, a printable document, else empty
      */

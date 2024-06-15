@@ -33,7 +33,6 @@ import org.mockito.Mockito;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
-import java.nio.charset.StandardCharsets;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
@@ -469,5 +468,49 @@ class CatalogServiceImplTest {
         // assert
         assertThat(actual).isNotNull();
         verify(file2CatalogConverterMock, times(1)).apply(dummyContent.getBytes(UTF_8));
+    }
+
+    @Test
+    void createDocuments_NullInput_MockCalled() {
+        // arrange
+        Catalog<BaseRequirement> catalog = null;
+
+        LocalDateTime now =
+            LocalDateTime.of(2020, 12, 1, 8, 0, 0);
+
+        // act
+        Optional<File> actual = null;
+        try (MockedStatic<LocalDateTime> dateTimeMock = mockStatic(LocalDateTime.class)) {
+            dateTimeMock.when(LocalDateTime::now).thenReturn(now);
+            actual = service.createDocuments(catalog);
+        }
+
+        // assert
+        assertThat(actual).isEmpty();
+        verify(documentServiceMock, times(0)).createAll(catalog, now);
+    }
+
+    @Test
+    void createDocuments_ValidInput_MockCalled() {
+        // arrange
+        Catalog<BaseRequirement> catalog = Catalog.<BaseRequirement>builder().build();
+
+        LocalDateTime now =
+            LocalDateTime.of(2020, 12, 1, 8, 0, 0);
+
+        given(documentServiceMock.createAll(eq(catalog), any()))
+            .willReturn(List.of(File.builder().name("preview.pdf").data("dummy".getBytes(UTF_8)).build()));
+
+        // act
+        Optional<File> actual = null;
+        try (MockedStatic<LocalDateTime> dateTimeMock = mockStatic(LocalDateTime.class)) {
+            dateTimeMock.when(LocalDateTime::now).thenReturn(now);
+            dateTimeMock.when(() -> LocalDateTime.ofInstant(any(), any())).thenReturn(now);
+            actual = service.createDocuments(catalog);
+        }
+
+        // assert
+        assertThat(actual).isPresent();
+        verify(documentServiceMock, times(1)).createAll(catalog, now);
     }
 }
