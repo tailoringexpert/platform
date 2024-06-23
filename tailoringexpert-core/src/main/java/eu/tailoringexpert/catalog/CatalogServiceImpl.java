@@ -21,6 +21,7 @@
  */
 package eu.tailoringexpert.catalog;
 
+import eu.tailoringexpert.TailoringexpertException;
 import eu.tailoringexpert.domain.BaseRequirement;
 import eu.tailoringexpert.domain.Catalog;
 import eu.tailoringexpert.domain.CatalogVersion;
@@ -192,6 +193,24 @@ public class CatalogServiceImpl implements CatalogService {
         }
 
         Optional<CatalogVersion> result = repository.limitCatalogValidity(version, validUntil);
+        return log.traceExit(result);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public Optional<Boolean> deleteCatalog(String version) {
+        log.traceEntry(() -> version);
+        if (!repository.existsCatalog(version)){
+            return log.traceExit("base catalog " + version + " does not exists", empty());
+        }
+
+        if(repository.isCatalogUsed(version)) {
+            log.traceExit();
+            throw log.throwing(new TailoringexpertException("Base catalog version is already used in projects"));
+        }
+        Optional<Boolean> result = of(repository.deleteCatalog(version));
         return log.traceExit(result);
     }
 

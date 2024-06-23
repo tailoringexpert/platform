@@ -110,4 +110,12 @@ public interface CatalogService {
      * @return Base Information of limited catalog
      */
     Optional<CatalogVersion> limitValidity(String version, ZonedDateTime validUntil);
+
+    /**
+     * Deletes a catalog if not used in any project
+     *
+     * @param version version to delete
+     * @return true, if deleted, in all other cases, even non-existing, false
+     */
+    Optional<Boolean> deleteCatalog(String version);
 }

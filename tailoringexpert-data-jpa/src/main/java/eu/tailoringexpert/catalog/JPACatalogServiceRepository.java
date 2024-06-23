@@ -21,6 +21,7 @@
  */
 package eu.tailoringexpert.catalog;
 
+import eu.tailoringexpert.TailoringexpertException;
 import eu.tailoringexpert.domain.BaseCatalogEntity;
 import eu.tailoringexpert.domain.BaseCatalogVersionProjection;
 import eu.tailoringexpert.domain.BaseRequirement;
@@ -31,6 +32,7 @@ import eu.tailoringexpert.domain.Chapter;
 import eu.tailoringexpert.domain.Catalog;
 import eu.tailoringexpert.repository.BaseCatalogRepository;
 import eu.tailoringexpert.repository.DRDRepository;
+import eu.tailoringexpert.repository.TailoringCatalogRepository;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
@@ -66,6 +68,9 @@ public class JPACatalogServiceRepository implements CatalogServiceRepository {
 
     @NonNull
     private DRDRepository drdRepository;
+
+    @NonNull
+    private TailoringCatalogRepository tailoringCatalogRepository;
 
     /**
      * {@inheritDoc}
@@ -149,6 +154,31 @@ public class JPACatalogServiceRepository implements CatalogServiceRepository {
         return log.traceExit(ofNullable(result));
     }
 
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    @Transactional
+    public boolean deleteCatalog(String version) {
+        log.traceEntry(() -> version);
+        try {
+            baseCatalogRepository.deleteByVersion(version);
+        } catch (Exception e) {
+            throw log.throwing(new TailoringexpertException(e.getMessage()));
+        }
+
+        return log.traceExit(!existsCatalog(version));
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public boolean isCatalogUsed(String version) {
+        log.traceEntry(() -> version);
+
+        return log.traceExit(tailoringCatalogRepository.existsByVersion(version));
+    }
     /**
      * Select all DRDs referenced in requirements of chapter and all subchapters.
      *

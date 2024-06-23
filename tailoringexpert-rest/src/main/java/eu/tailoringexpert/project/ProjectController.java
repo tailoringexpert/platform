@@ -53,7 +53,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestPart;
-import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -198,7 +197,6 @@ public class ProjectController {
             content = @Content(mediaType = "application/json+hal", schema = @Schema(implementation = byte[].class)))
     })
     @GetMapping(PROJECT_SCREENINGSHEET_PDF)
-    @ResponseBody
     public ResponseEntity<byte[]> getScreeningSheetFile(
         @Parameter(description = "Project identifier") @PathVariable String project) {
         log.traceEntry();
@@ -249,7 +247,6 @@ public class ProjectController {
             responseCode = "412", description = "Project name already exists")
     })
     @PostMapping(value = PROJECT, produces = {"application/hal+json"})
-    @ResponseBody
     public ResponseEntity<EntityModel<ProjectResource>> copyProject(
         @Parameter(description = "Project identifier") @PathVariable String project,
         @Parameter(description = "Raw data of screeningsheet") @RequestPart("datei") MultipartFile screeningSheet) throws IOException {

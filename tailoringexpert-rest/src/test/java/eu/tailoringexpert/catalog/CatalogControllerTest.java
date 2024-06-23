@@ -26,6 +26,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jdk8.Jdk8Module;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.fasterxml.jackson.module.paramnames.ParameterNamesModule;
+import eu.tailoringexpert.TailoringexpertException;
 import eu.tailoringexpert.domain.BaseCatalogVersionResource;
 import eu.tailoringexpert.domain.BaseRequirement;
 import eu.tailoringexpert.domain.Catalog;
@@ -85,10 +86,8 @@ import static java.util.Locale.GERMANY;
 import static java.util.Objects.nonNull;
 import static java.util.Optional.empty;
 import static java.util.Optional.of;
-import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatNoException;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
@@ -103,6 +102,7 @@ import static org.springframework.http.MediaType.APPLICATION_PDF;
 import static org.springframework.http.MediaType.IMAGE_JPEG;
 import static org.springframework.http.MediaType.IMAGE_PNG;
 import static org.springframework.http.MediaType.MULTIPART_FORM_DATA;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.multipart;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -568,6 +568,36 @@ class CatalogControllerTest {
             .andExpect(content().bytes("dummy".getBytes(UTF_8)));
 
         verify(serviceMock, times(1)).createDocuments(catalog);
+    }
+
+    @Test
+    void deleteCatalog_NonExistingCatalog_StateNotFound() throws Exception {
+        // arrange
+        given(serviceMock.deleteCatalog("8.3")).willReturn(empty());
+
+        // act
+
+        ResultActions actual = mockMvc.perform(delete("/catalog/{version}", "8.3"));
+
+        // assert
+        actual.andExpect(status().isNotFound());
+
+        verify(serviceMock, times(1)).deleteCatalog("8.3");
+    }
+
+    @Test
+    void deleteCatalog_ExistingCatalog_StateOk() throws Exception {
+        // arrange
+        given(serviceMock.deleteCatalog("8.3")).willReturn(of(Boolean.TRUE));
+
+        // act
+
+        ResultActions actual = mockMvc.perform(delete("/catalog/{version}", "8.3"));
+
+        // assert
+        actual.andExpect(status().isOk());
+
+        verify(serviceMock, times(1)).deleteCatalog("8.3");
     }
 }
 

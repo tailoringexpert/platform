@@ -6,6 +6,7 @@ package repository {
     interface LogoRepository
     interface DRDRepository
     interface SelectionVectorProfileRepository
+    interface TailoringCatalogRepository
 
 }
 package catalog {
@@ -14,6 +15,8 @@ package catalog {
         getCatalog(version : String) : Optional<Catalog<BaseRequirement>>
         existsCatalog( version : String ) : boolean
         limitCatalogValidity( version : String, validUntil : ZonedDateTime ) : Optional<CatalogVersion>
+        deleteCatalog(version : String) : boolean
+        isCatalogUsed(version : String) : boolean
     }
 
     abstract JPACatalogServiceRepositoryMapper {
@@ -36,6 +39,7 @@ package catalog {
     CatalogServiceRepository <|.. JPACatalogServiceRepository
     JPACatalogServiceRepository --> "1" JPACatalogServiceRepositoryMapper : mapper
     JPACatalogServiceRepository --> "1" BaseCatalogRepository : baseCatalogRepository
+    JPACatalogServiceRepository --> "1" TailoringCatalogRepository : tailoringCatalogRepository
 
     abstract JPADocumentServiceRepositoryMapper {
         {abstract} getSelectionVectorProfiles(entity : Catalog<SelectionVectorProfileEntity>) : SelectionVectorProfile

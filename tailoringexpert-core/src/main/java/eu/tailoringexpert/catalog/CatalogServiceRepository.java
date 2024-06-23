@@ -77,4 +77,20 @@ public interface CatalogServiceRepository {
      * @return Base information of limited catalog
      */
     Optional<CatalogVersion> limitCatalogValidity(String version, ZonedDateTime validUntil);
+
+    /**
+     * Deletes base catalog of provided version.
+     *
+     * @param version version of base catalog to delete
+     * @return true, if deleted
+     */
+    boolean deleteCatalog(String version);
+
+    /**
+     * Checks, of base catalog of provided version is used in any tailoring.
+     *
+     * @param version base catalog version to check
+     * @return true, if used by at least one tailoring
+     */
+    boolean isCatalogUsed(String version);
 }

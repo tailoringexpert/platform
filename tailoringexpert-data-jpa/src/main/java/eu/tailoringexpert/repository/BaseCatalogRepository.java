@@ -100,5 +100,12 @@ public interface BaseCatalogRepository extends JpaRepository<BaseCatalogEntity, 
     @CacheEvict(value = {CACHE_BASECATALOGLIST, CACHE_BASECATALOG}, allEntries = true)
     int setValidUntilForVersion(@Param("version") String version, @Param("validUntil") ZonedDateTime pointOfTime);
 
+    /**
+     * Deletes the requested base catalog version.
+     *
+     * @param version version of base catalog to delete
+     */
+    void deleteByVersion(String version);
+
 
 }

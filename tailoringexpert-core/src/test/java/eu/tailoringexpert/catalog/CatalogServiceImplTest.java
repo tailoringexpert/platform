@@ -21,6 +21,7 @@
  */
 package eu.tailoringexpert.catalog;
 
+import eu.tailoringexpert.TailoringexpertException;
 import eu.tailoringexpert.domain.BaseRequirement;
 import eu.tailoringexpert.domain.Catalog;
 import eu.tailoringexpert.domain.CatalogVersion;
@@ -513,4 +514,69 @@ class CatalogServiceImplTest {
         assertThat(actual).isPresent();
         verify(documentServiceMock, times(1)).createAll(catalog, now);
     }
+
+    @Test
+    void deleteCatalog_NonExistingCatalog_EmptyReturned() {
+        // arrange
+        given(repositoryMock.existsCatalog("8.3.0"))
+            .willReturn(false);
+
+        // act
+        Optional<Boolean> actual = service.deleteCatalog("8.3.0");
+
+        // assert
+        assertThat(actual).isEmpty();
+        verify(repositoryMock, times(0)).deleteCatalog("8.3.0");
+    }
+
+    @Test
+    void deleteCatalog_ExistingCatalogUsedInProjects_ExceptiomThrown() {
+        // arrange
+        given(repositoryMock.existsCatalog("8.3.0"))
+            .willReturn(true);
+        given(repositoryMock.isCatalogUsed("8.3.0"))
+            .willReturn(true);
+
+        // act
+        Throwable actual = catchThrowable(() ->service.deleteCatalog("8.3.0"));
+
+        // assert
+        assertThat(actual).isInstanceOf(TailoringexpertException.class);
+        verify(repositoryMock, times(0)).deleteCatalog("8.3.0");
+    }
+
+    @Test
+    void deleteCatalog_ExistingCatalogNotDeleted_FalseReturned() {
+        // arrange
+        given(repositoryMock.existsCatalog("8.3.0"))
+            .willReturn(true);
+        given(repositoryMock.deleteCatalog("8.3.0"))
+            .willReturn(false);
+
+        // act
+        Optional<Boolean> actual = service.deleteCatalog("8.3.0");
+
+        // assert
+        assertThat(actual).isPresent();
+        assertThat(actual.get()).isFalse();
+        verify(repositoryMock, times(1)).deleteCatalog("8.3.0");
+    }
+
+    @Test
+    void deleteCatalog_ExistingCatalogDeletable_TrueReturned() {
+        // arrange
+        given(repositoryMock.existsCatalog("8.3.0"))
+            .willReturn(true);
+        given(repositoryMock.deleteCatalog("8.3.0"))
+            .willReturn(true);
+
+        // act
+        Optional<Boolean> actual = service.deleteCatalog("8.3.0");
+
+        // assert
+        assertThat(actual).isPresent();
+        assertThat(actual.get()).isTrue();
+        verify(repositoryMock, times(1)).deleteCatalog("8.3.0");
+    }
+
 }
