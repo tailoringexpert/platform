@@ -27,6 +27,8 @@ package catalog {
         getCatalogVersions() : Collection<CatalogVersion>
         limitValidity(version: String, validUntil : ZonedDateTime ) : Optional<CatalogVersion>
         createDocuments(catalog : Catalog<BaseRequirement>) :  Optional<File>
+        deleteCatalog(version : String) : boolean
+        isCatalogUsed(version : String) : boolean
     }
 
     interface CatalogServiceRepository {
@@ -35,6 +37,7 @@ package catalog {
         existsCatalog( version : String ) : boolean
         getCatalogVersions() : Collection<CatalogVersion>
         limitCatalogValidity(version : String, validUntil : ZonedDateTime) : Optional<CatalogVersion>
+        deleteCatalogByVersion( version : String ) : boolean
     }
 
     class CatalogServiceImpl {

@@ -64,7 +64,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestPart;
-import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -226,7 +225,6 @@ public class TailoringController {
             content = @Content)
     })
     @GetMapping(TAILORING_SCREENINGSHEET_PDF)
-    @ResponseBody
     public ResponseEntity<byte[]> getScreeningSheetFile(
         @Parameter(description = "Project identifier") @PathVariable String project,
         @Parameter(description = "Tailoring name") @PathVariable String tailoring) {
@@ -348,7 +346,6 @@ public class TailoringController {
             content = @Content)
     })
     @GetMapping(TAILORING_DOCUMENT)
-    @ResponseBody
     public ResponseEntity<byte[]> getDocuments(
         @Parameter(description = "Project identifier") @PathVariable String project,
         @Parameter(description = "Tailoring name") @PathVariable String tailoring) {
@@ -377,7 +374,6 @@ public class TailoringController {
             content = @Content)
     })
     @GetMapping(TAILORING_DOCUMENT_CATALOG)
-    @ResponseBody
     public ResponseEntity<byte[]> getRequirementFile(
         @Parameter(description = "Project identifier") @PathVariable String project,
         @Parameter(description = "Tailoring name") @PathVariable String tailoring) {
@@ -406,7 +402,6 @@ public class TailoringController {
             content = @Content)
     })
     @GetMapping(TAILORING_CATALOG_CHAPTER_REQUIREMENT)
-    @ResponseBody
     public ResponseEntity<CollectionModel<EntityModel<TailoringRequirementResource>>> getRequirements(
         @Parameter(description = "Project identifier") @PathVariable String project,
         @Parameter(description = "Tailoring name") @PathVariable String tailoring,
@@ -551,7 +546,6 @@ public class TailoringController {
     }
 
     @GetMapping(TAILORING_ATTACHMENT)
-    @ResponseBody
     public ResponseEntity<byte[]> getAttachment(
         @Parameter(description = "Project identifier") @PathVariable String project,
         @Parameter(description = "Tailoring name") @PathVariable String tailoring,
@@ -605,7 +599,6 @@ public class TailoringController {
             content = @Content)
     })
     @GetMapping(TAILORING_COMPARE)
-    @ResponseBody
     public ResponseEntity<byte[]> getComparisonDocument(
         @Parameter(description = "Project identifier") @PathVariable String project,
         @Parameter(description = "Tailoring name") @PathVariable String tailoring) {

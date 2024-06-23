@@ -24,6 +24,7 @@ package repository {
         save( entity : S) : <S extends BaseCatalogEntity>
         existsByVersion( version : String ) : boolean
         setValidUntilForVersion( version : String, pointOfTime : ZonedDateTime) : int
+        deleteCatalogByVersion( version : String ) : void
     }
     JpaRepository <|-- BaseCatalogRepository
 
@@ -55,5 +56,9 @@ package repository {
     }
     JpaRepository <|-- SelectionVectorProfileRepository
 
+    interface TailoringCatalogRepository<TailoringCatalogEntity, Long> {
+        existsByVersion( version : String ) : boolean
+    }
+    JpaRepository <|-- TailoringCatalogRepository
 }
 @enduml

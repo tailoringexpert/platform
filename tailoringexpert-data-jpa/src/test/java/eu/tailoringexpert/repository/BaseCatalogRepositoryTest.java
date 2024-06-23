@@ -24,6 +24,7 @@ package eu.tailoringexpert.repository;
 import eu.tailoringexpert.domain.BaseCatalogEntity;
 import eu.tailoringexpert.domain.BaseCatalogVersionProjection;
 import eu.tailoringexpert.domain.BaseRequirementEntity;
+import eu.tailoringexpert.domain.DRDEntity;
 import eu.tailoringexpert.domain.IdentifierEntity;
 import eu.tailoringexpert.domain.BaseCatalogChapterEntity;
 import lombok.extern.log4j.Log4j2;
@@ -217,5 +218,107 @@ class BaseCatalogRepositoryTest {
         assertThat(actual).isOne();
     }
 
+    @Test
+    void deleteCatalogByVersion_NonExistingCatalog_BaseCatalogExists() {
+        // arrange
+        BaseRequirementEntity requirement = BaseRequirementEntity.builder()
+            .phase(A)
+            .text("First requirement")
+            .drds(of(
+                DRDEntity.builder()
+                    .number("DRD-01.01")
+                    .build()
+            ))
+            .build();
+
+        BaseCatalogChapterEntity toc = BaseCatalogChapterEntity.builder()
+            .requirements(asList(requirement))
+            .name("Chapter 1")
+            .position(1)
+            .build();
+
+        BaseCatalogEntity entity = BaseCatalogEntity.builder()
+            .version("7.2")
+            .toc(toc)
+            .build();
+        repository.save(entity);
+
+        assert repository.existsByVersion("7.2") == true;
+
+        // act
+        repository.deleteByVersion("8.3");
+
+        // assert
+        assertThat(repository.existsByVersion("7.2")).isTrue();
+    }
+
+    @Test
+    void deleteCatalogByVersion_TwoCatalogsSameDRD_BaseCatalogDeleted() {
+        // arrange
+        BaseRequirementEntity requirement = BaseRequirementEntity.builder()
+            .phase(A)
+            .text("First requirement")
+            .drds(of(
+                DRDEntity.builder()
+                    .number("DRD-01.01")
+                    .build()
+            ))
+            .build();
+
+        BaseCatalogChapterEntity toc = BaseCatalogChapterEntity.builder()
+            .requirements(asList(requirement))
+            .name("Chapter 1")
+            .position(1)
+            .build();
+
+        BaseCatalogEntity catalog_72 = BaseCatalogEntity.builder()
+            .version("7.2")
+            .toc(BaseCatalogChapterEntity.builder()
+                .requirements(asList(
+                    BaseRequirementEntity.builder()
+                        .phase(A)
+                        .text("First requirement")
+                        .drds(of(
+                            DRDEntity.builder()
+                                .number("DRD-01.01")
+                                .build()
+                        ))
+                        .build()
+                ))
+                .name("Chapter 1")
+                .position(1)
+                .build())
+            .build();
+        repository.save(catalog_72);
+        assert repository.existsByVersion("7.2") == true;
+
+        BaseCatalogEntity catalog_83 = BaseCatalogEntity.builder()
+            .version("8.3")
+            .toc(BaseCatalogChapterEntity.builder()
+                .requirements(asList(
+                    BaseRequirementEntity.builder()
+                        .phase(A)
+                        .text("First requirement")
+                        .drds(of(
+                            DRDEntity.builder()
+                                .number("DRD-01.01")
+                                .build()
+                        ))
+                        .build()
+                ))
+                .name("Chapter 1")
+                .position(1)
+                .build())
+            .build();
+        repository.save(catalog_83);
+        assert repository.existsByVersion("8.3") == true;
+
+        // act
+        repository.deleteByVersion("8.3");
+
+        // assert
+        assertThat(repository.existsByVersion("7.2")).isTrue();
+        assertThat(repository.existsByVersion("8.3")).isFalse();
+    }
 }
 

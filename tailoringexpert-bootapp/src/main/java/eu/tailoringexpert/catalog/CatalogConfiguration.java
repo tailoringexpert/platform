@@ -37,6 +37,7 @@ import eu.tailoringexpert.repository.BaseCatalogRepository;
 import eu.tailoringexpert.repository.DRDRepository;
 import eu.tailoringexpert.repository.LogoRepository;
 import eu.tailoringexpert.repository.SelectionVectorProfileRepository;
+import eu.tailoringexpert.repository.TailoringCatalogRepository;
 import lombok.NonNull;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.springframework.beans.factory.ListableBeanFactory;
@@ -69,8 +70,9 @@ public class CatalogConfiguration {
     CatalogServiceRepository catalogServiceRepository(
         @NonNull JPACatalogServiceRepositoryMapper mapper,
         @NonNull BaseCatalogRepository baseCatalogRepository,
-        @NonNull DRDRepository drdRepository) {
-        return new JPACatalogServiceRepository(mapper, baseCatalogRepository, drdRepository);
+        @NonNull DRDRepository drdRepository,
+        @NonNull TailoringCatalogRepository tailoringCatalogRepository) {
+        return new JPACatalogServiceRepository(mapper, baseCatalogRepository, drdRepository, tailoringCatalogRepository);
     }
 
 
