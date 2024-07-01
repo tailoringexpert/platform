@@ -193,12 +193,18 @@ package domain {
 
     class TailoringCatalogChapterResource {
         name : String
-        chapter : String
+        chapters : String
         chapterName : String
     }
     RepresentationModel <|-- TailoringCatalogChapterResource
     TailoringCatalogChapterResource --> "0..*" TailoringCatalogChapterResource : chapters
     TailoringCatalogChapterResource --> "0..*" TailoringRequirementResource : requirements
+    abstract class TailoringCatalogChapterResourceMixIn {
+        name<<id>> : String
+        chapters<<nodes>> : String
+        chapterName<<label>> : String
+    }
+    
     class BaseCatalogVersionResource {
         version : String
         validFrom : LocalDate
@@ -241,11 +247,11 @@ package domain {
     }
     RepresentationModel <|-- SelektionsVektorResource
 
-    class SelectionVektorProfileResource {
+    class SelectionVectorProfileResource {
         name : String
         levels : Map<String, Integer>
     }
-    RepresentationModel <|-- SelectionVektorProfileResource
+    RepresentationModel <|-- SelectionVectorProfileResource
 
     interface "Function<String, MediaType>" as mediaTypeFunction {
     }

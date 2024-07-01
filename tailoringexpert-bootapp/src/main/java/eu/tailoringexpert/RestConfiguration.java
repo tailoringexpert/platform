@@ -30,6 +30,8 @@ import com.fasterxml.jackson.datatype.jdk8.Jdk8Module;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.fasterxml.jackson.module.paramnames.ParameterNamesModule;
 import eu.tailoringexpert.domain.ResourceMapper;
+import eu.tailoringexpert.domain.TailoringCatalogChapterResource;
+import eu.tailoringexpert.domain.TailoringCatalogChapterResourceMixIn;
 import io.swagger.v3.oas.models.OpenAPI;
 import io.swagger.v3.oas.models.info.Info;
 import io.swagger.v3.oas.models.info.License;
@@ -83,6 +85,7 @@ public class RestConfiguration {
             .handlerInstantiator(
                 new Jackson2HalModule.HalHandlerInstantiator(new EvoInflectorLinkRelationProvider(),
                     CurieProvider.NONE, MessageResolver.DEFAULTS_ONLY))
+            .mixIn(TailoringCatalogChapterResource.class, TailoringCatalogChapterResourceMixIn.class)
             .build();
         MutableConfigOverride override = result.configOverride(List.class);
         override.setSetterInfo(JsonSetter.Value.forValueNulls(Nulls.AS_EMPTY));

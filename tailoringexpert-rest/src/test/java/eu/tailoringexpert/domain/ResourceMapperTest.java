@@ -32,6 +32,7 @@ import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.List;
 
 import static eu.tailoringexpert.domain.Phase.A;
 import static eu.tailoringexpert.domain.Phase.C;
@@ -798,6 +799,9 @@ class ResourceMapperTest {
 
         Chapter<TailoringRequirement> chapter = Chapter.<TailoringRequirement>builder()
             .number("1.1")
+            .chapters(List.of(
+               Chapter.<TailoringRequirement>builder().name("1.2").build()
+            ))
             .build();
 
         // act
