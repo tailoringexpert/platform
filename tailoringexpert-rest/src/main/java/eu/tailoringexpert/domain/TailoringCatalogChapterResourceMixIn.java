@@ -19,23 +19,27 @@
  * <http://www.gnu.org/licenses/gpl-3.0.html>.
  * #L%
  */
-package eu.tailoringexpert.repository;
+package eu.tailoringexpert.domain;
 
-import eu.tailoringexpert.domain.TailoringCatalogEntity;
-import org.springframework.data.jpa.repository.JpaRepository;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
-/**
- * Spring Data access layer of {@link TailoringCatalogEntity}.
- *
- * @author Michael Bädorf
- */
-public interface TailoringCatalogRepository extends JpaRepository<TailoringCatalogEntity, Long> {
+import java.util.List;
+
+public abstract class TailoringCatalogChapterResourceMixIn {
+
+    @JsonProperty("id")
+    private String number;
 
     /**
-     * Checks if base catalog of requested version already used in any tailoring catalog.
-     *
-     * @param version version of base catalog to check usage of
-     * @return true, of base catalog is used
+     * Concatenated number and name of chapter.
      */
-    boolean existsByVersion(String version);
+    @JsonProperty("label")
+    private String chapterName;
+
+
+    /**
+     * List of subchapters.
+     */
+    @JsonProperty("nodes")
+    private List<TailoringCatalogChapterResource> chapters;
 }

@@ -1,5 +1,5 @@
 <component name="ProjectRunConfigurationManager">
-  <configuration default="false" name="db-tailoringexpert (install)" type="MavenRunConfiguration" factoryName="Maven">
+  <configuration default="false" name="db-tailoringexpert (install)" type="MavenRunConfiguration" factoryName="Maven" editBeforeRun="true" activateToolWindowBeforeRun="false">
     <MavenSettings>
       <option name="myGeneralSettings">
         <MavenGeneralSettings>
@@ -39,9 +39,7 @@
           <option name="multimoduleDir" />
           <option name="pomFileName" />
           <option name="profilesMap">
-            <map>
-              <entry key="tailoringexpert-arsu.local" value="true" />
-            </map>
+            <map />
           </option>
           <option name="projectsCmdOptionValues">
             <list />
