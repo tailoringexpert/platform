@@ -30,14 +30,13 @@ import com.fasterxml.jackson.datatype.jdk8.Jdk8Module;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.fasterxml.jackson.module.paramnames.ParameterNamesModule;
 import eu.tailoringexpert.domain.ResourceMapper;
-import eu.tailoringexpert.domain.TailoringCatalogChapterResource;
-import eu.tailoringexpert.domain.TailoringCatalogChapterResourceMixIn;
 import io.swagger.v3.oas.models.OpenAPI;
 import io.swagger.v3.oas.models.info.Info;
 import io.swagger.v3.oas.models.info.License;
 import io.swagger.v3.oas.models.media.StringSchema;
 import io.swagger.v3.oas.models.parameters.Parameter;
 import lombok.NonNull;
+import lombok.extern.log4j.Log4j2;
 import org.springdoc.core.customizers.OperationCustomizer;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -58,9 +57,11 @@ import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.List;
+import java.util.Optional;
 
 import static com.fasterxml.jackson.annotation.JsonAutoDetect.Visibility.ANY;
 import static com.fasterxml.jackson.annotation.PropertyAccessor.FIELD;
@@ -69,12 +70,14 @@ import static com.fasterxml.jackson.databind.SerializationFeature.INDENT_OUTPUT;
 import static java.util.Arrays.asList;
 import static java.util.Locale.GERMANY;
 
+@Log4j2
 @Configuration
 public class RestConfiguration {
 
     @Bean
-    ObjectMapper objectMapper() {
-        ObjectMapper result = Jackson2ObjectMapperBuilder.json()
+    ObjectMapper objectMapper(@Value("#{${mixIns}}") List<String> mixIns) {
+
+        Jackson2ObjectMapperBuilder builder = Jackson2ObjectMapperBuilder.json()
             .modules(new Jackson2HalModule(), new JavaTimeModule(), new ParameterNamesModule(), new Jdk8Module())
             .featuresToEnable()
             .featuresToEnable(INDENT_OUTPUT)
@@ -84,9 +87,21 @@ public class RestConfiguration {
             .dateFormat(new SimpleDateFormat("yyyy-MM-dd", GERMANY))
             .handlerInstantiator(
                 new Jackson2HalModule.HalHandlerInstantiator(new EvoInflectorLinkRelationProvider(),
-                    CurieProvider.NONE, MessageResolver.DEFAULTS_ONLY))
-            .mixIn(TailoringCatalogChapterResource.class, TailoringCatalogChapterResourceMixIn.class)
-            .build();
+                    CurieProvider.NONE, MessageResolver.DEFAULTS_ONLY));
+
+        Optional.ofNullable(mixIns)
+            .ifPresent(oMixIns ->
+                oMixIns.forEach(mixIn -> {
+                    String[] config = mixIn.split(":");
+                    try {
+                        log.info("Register MixIn {} for {}", config[1], config[0]);
+                        builder.mixIn(Class.forName(config[0]), Class.forName(config[1]));
+                    } catch (ClassNotFoundException e) {
+                        throw log.throwing(new RuntimeException(e));
+                    }
+                }));
+
+        ObjectMapper result = builder.build();
         MutableConfigOverride override = result.configOverride(List.class);
         override.setSetterInfo(JsonSetter.Value.forValueNulls(Nulls.AS_EMPTY));
         return result;
