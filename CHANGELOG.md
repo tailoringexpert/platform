@@ -1,14 +1,28 @@
 # Changelog
 
-## [v0.1.4](https://github.com/tailoringexpert/platform/tree/v0.1.4) (03.06.2024)
+## [v0.1.5](https://github.com/tailoringexpert/platform/tree/v0.1.5) (07.23.2024)
+
+[Full Changelog](https://github.com/tailoringexpert/platform/compare/v0.1.4...v0.1.5)
+
+**Closed issues:**
+
+- Interface for deletion of unused basecatalogs [\#309](https://github.com/tailoringexpert/platform/issues/309)
+- Provide interface for preview of json basecatalogs [\#303](https://github.com/tailoringexpert/platform/issues/303)
+- \(Possible\) Adaptions of REST Service interfaces to optimize/simplify web representation [\#295](https://github.com/tailoringexpert/platform/issues/295)
+
+## [v0.1.4](https://github.com/tailoringexpert/platform/tree/v0.1.4) (03.07.2024)
 
 [Full Changelog](https://github.com/tailoringexpert/platform/compare/v0.1.3...v0.1.4)
 
 **Implemented enhancements:**
 
+- Storage of tailoring attachments [\#286](https://github.com/tailoringexpert/platform/issues/286)
 - Implement basecatalog Excel to JSON interface [\#283](https://github.com/tailoringexpert/platform/issues/283)
 - Create basecatalog Excel export [\#282](https://github.com/tailoringexpert/platform/issues/282)
-- Storage of tailoring attachments [\#286](https://github.com/tailoringexpert/platform/issues/286)
+
+**Closed issues:**
+
+- v0.1.4 release preparation [\#287](https://github.com/tailoringexpert/platform/issues/287)
 
 ## [v0.1.3](https://github.com/tailoringexpert/platform/tree/v0.1.3) (01.29.2024)
 
