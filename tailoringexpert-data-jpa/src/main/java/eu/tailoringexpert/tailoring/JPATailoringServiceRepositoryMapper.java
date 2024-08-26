@@ -69,13 +69,14 @@ public abstract class JPATailoringServiceRepositoryMapper {
 
     abstract Tailoring toDomain(TailoringEntity entity);
 
-    @BeanMapping(ignoreByDefault = true)
+    @Mapping(target = "name", ignore = true)
+    @Mapping(target = "identifier", ignore = true)
     @Mapping(target = "catalog", source = "domain.catalog")
     @Mapping(target = "selectionVector", source = "domain.selectionVector")
     @Mapping(target = "state", source = "domain.state")
     abstract void updateTailoring(Tailoring domain, @MappingTarget TailoringEntity entity);
 
-    @BeanMapping(ignoreByDefault = true)
+    @Mapping(target = "data", ignore = true)
     @Mapping(target = "selectionVector", source = "entity.selectionVector")
     @Mapping(target = "parameters", source = "entity.parameters")
     abstract ScreeningSheet toScreeningSheetParameters(ScreeningSheetEntity entity);
