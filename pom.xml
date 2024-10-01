@@ -43,6 +43,10 @@
             <id>ossrh</id>
             <url>https://s01.oss.sonatype.org/content/repositories/snapshots</url>
         </repository>
+        <repository>
+            <id>tailoringexpert</id>
+            <url>${tailoringexpert.repositories}</url>
+        </repository>
     </repositories>
 
     <distributionManagement>
