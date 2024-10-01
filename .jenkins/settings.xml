@@ -30,6 +30,7 @@
             <properties>
                 <tailoringexpert-releases.repository>${NEXUS_RELEASEURL}</tailoringexpert-releases.repository>
 				<tailoringexpert-snapshots.repository>${NEXUS_SNAPSHOTURL}</tailoringexpert-snapshots.repository>
+                <tailoringexpert.repository>${NEXUS_URL}</tailoringexpert.repository>
             </properties>
         </profile>
         <profile>
