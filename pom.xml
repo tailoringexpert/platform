@@ -45,7 +45,7 @@
         </repository>
         <repository>
             <id>tailoringexpert</id>
-            <url>${tailoringexpert.repositories}</url>
+            <url>${tailoringexpert.repository}</url>
         </repository>
     </repositories>
 
