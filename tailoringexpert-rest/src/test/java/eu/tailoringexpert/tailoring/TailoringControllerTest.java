@@ -225,7 +225,7 @@ class TailoringControllerTest {
         given(serviceMock.getChapter("SAMPLE", "master", "1.1")).willReturn(empty());
 
         // act
-        ResultActions actual = mockMvc.perform(get("/project/{project}/tailoring/{tailoring}/catalog/{chapter}/", "SAMPLE", "master", "1.1"));
+        ResultActions actual = mockMvc.perform(get("/project/{project}/tailoring/{tailoring}/catalog/{chapter}", "SAMPLE", "master", "1.1"));
 
         // assert
         actual.andExpect(status().isNotFound());
@@ -248,7 +248,7 @@ class TailoringControllerTest {
             .willReturn(TailoringCatalogChapterResource.builder().build());
 
         // act
-        ResultActions actual = mockMvc.perform(get("/project/{project}/tailoring/{tailoring}/catalog/{chapter}/", "SAMPLE", "master", "1.1")
+        ResultActions actual = mockMvc.perform(get("/project/{project}/tailoring/{tailoring}/catalog/{chapter}", "SAMPLE", "master", "1.1")
             .accept(HAL_JSON_VALUE)
         );
 
