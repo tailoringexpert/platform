@@ -99,7 +99,7 @@
         <!-- plugins -->
         <jacoco-maven-plugin.version>0.8.12</jacoco-maven-plugin.version>
         <liquibase-maven-plugin.version>4.30.0</liquibase-maven-plugin.version>
-        <spring-boot-maven-plugin.version>3.3.4</spring-boot-maven-plugin.version>
+        <spring-boot-maven-plugin.version>3.4.0</spring-boot-maven-plugin.version>
         <springdoc-openapi-maven-plugin.version>1.4</springdoc-openapi-maven-plugin.version>
 
         <gitflow-maven-plugin.version>1.21.0</gitflow-maven-plugin.version>
