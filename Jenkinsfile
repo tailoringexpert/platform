@@ -41,7 +41,7 @@ pipeline {
         docker {
             image 'tailoringexpert/maven:3.9-eclipse-temurin-17-alpine'
             args '''  
-				-u 1001
+                -u 1001
                 -v $GPG_VOLUME:/.gnupg\
                 -v $PWD:/data \
                 -v $M2_VOLUME:/home/maven \
@@ -90,19 +90,38 @@ pipeline {
 
             post {
                 success {
-                    jacoco(
-                        execPattern: '**/**.exec',
-                        exclusionPattern: '**/App.class, **/*Configuration*.class,  **/*MapperGenerated.class',
-                        classPattern: '**/classes',
-                        sourcePattern: '**/src/main/java',
-
-                        minimumInstructionCoverage: '98',
-                        minimumBranchCoverage: '98',
-                        minimumComplexityCoverage:'98',
-                        minimumLineCoverage: '98',
-                        minimumMethodCoverage: '100',
-                        minimumClassCoverage: '100'
-
+                    recordCoverage (                        
+                        tools: [
+                            [
+                                parser: 'JACOCO'
+                            ]
+                        ],
+                        qualityGates: [
+                            [
+                                criticality: 'NOTE', 
+                                integerThreshold: 98, 
+                                metric: 'INSTRUCTION', 
+                                threshold: 98.0
+                            ], 
+                            [
+                                criticality: 'NOTE', 
+                                integerThreshold: 98, 
+                                metric: 'BRANCH', 
+                                threshold: 98.0
+                            ], 
+                            [
+                                criticality: 'NOTE', 
+                                integerThreshold: 100, 
+                                metric: 'METHOD', 
+                                threshold: 98.0
+                            ], 
+                            [
+                                criticality: 'NOTE', 
+                                integerThreshold: 98, 
+                                metric: 'LINE', 
+                                threshold: 98.0
+                            ]
+                        ] 
                     )
                 }
             }
