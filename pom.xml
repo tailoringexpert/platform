@@ -247,6 +247,9 @@
                     <version>${jacoco-maven-plugin.version}</version>
                     <configuration>
                         <excludes>
+                            <exclude>**/*MixIn.class</exclude>
+                            <exclude>**/*Configuration.class</exclude>
+                            <exclude>**/App.class</exclude>
                             <exclude>**/*MapperGenerated.class</exclude>
                         </excludes>
                     </configuration>
