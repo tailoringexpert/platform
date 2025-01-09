@@ -39,7 +39,7 @@ pipeline {
 
     agent {
         docker {
-            image 'tailoringexpert/maven:3.9-eclipse-temurin-17-alpine'
+            image 'tailoringexpert/maven:3.9-eclipse-23'
             args '''  
                 -u 1001
                 -v $GPG_VOLUME:/.gnupg\
