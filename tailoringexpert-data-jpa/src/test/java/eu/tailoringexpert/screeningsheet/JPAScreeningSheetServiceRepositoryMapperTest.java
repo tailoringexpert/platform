@@ -21,7 +21,6 @@
  */
 package eu.tailoringexpert.screeningsheet;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import eu.tailoringexpert.domain.DatenType;
@@ -83,7 +82,7 @@ class JPAScreeningSheetServiceRepositoryMapperTest {
     }
 
     @Test
-    void toDomain_MatrixParameterTypeInvalidJson_JsonMappingExceptionThrown() throws JsonProcessingException {
+    void toDomain_MatrixParameterTypeInvalidJson_JsonMappingExceptionThrown() {
         // arrange
         String value = "[[]";
         ParameterEntity entity = ParameterEntity.builder()

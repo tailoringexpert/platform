@@ -255,23 +255,7 @@ class BaseCatalogRepositoryTest {
     @Test
     void deleteCatalogByVersion_TwoCatalogsSameDRD_BaseCatalogDeleted() {
         // arrange
-        BaseRequirementEntity requirement = BaseRequirementEntity.builder()
-            .phase(A)
-            .text("First requirement")
-            .drds(of(
-                DRDEntity.builder()
-                    .number("DRD-01.01")
-                    .build()
-            ))
-            .build();
-
-        BaseCatalogChapterEntity toc = BaseCatalogChapterEntity.builder()
-            .requirements(asList(requirement))
-            .name("Chapter 1")
-            .position(1)
-            .build();
-
-        BaseCatalogEntity catalog_72 = BaseCatalogEntity.builder()
+        BaseCatalogEntity catalog72 = BaseCatalogEntity.builder()
             .version("7.2")
             .toc(BaseCatalogChapterEntity.builder()
                 .requirements(asList(
@@ -289,10 +273,10 @@ class BaseCatalogRepositoryTest {
                 .position(1)
                 .build())
             .build();
-        repository.save(catalog_72);
+        repository.save(catalog72);
         assert repository.existsByVersion("7.2") == true;
 
-        BaseCatalogEntity catalog_83 = BaseCatalogEntity.builder()
+        BaseCatalogEntity catalog83 = BaseCatalogEntity.builder()
             .version("8.3")
             .toc(BaseCatalogChapterEntity.builder()
                 .requirements(asList(
@@ -310,7 +294,7 @@ class BaseCatalogRepositoryTest {
                 .position(1)
                 .build())
             .build();
-        repository.save(catalog_83);
+        repository.save(catalog83);
         assert repository.existsByVersion("8.3") == true;
 
         // act

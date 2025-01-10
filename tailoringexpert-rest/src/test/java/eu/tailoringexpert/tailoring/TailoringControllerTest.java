@@ -71,7 +71,6 @@ import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 
-import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Paths;
 import java.text.SimpleDateFormat;
@@ -137,7 +136,7 @@ class TailoringControllerTest {
     MockMvc mockMvc;
 
     @BeforeEach
-    void setup() throws IOException {
+    void setup() {
         this.serviceMock = mock(TailoringService.class);
         this.repositoryMock = mock(TailoringServiceRepository.class);
         this.attachmentServiceMock = mock(AttachmentService.class);

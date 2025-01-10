@@ -43,7 +43,6 @@ import eu.tailoringexpert.domain.TailoringEntity;
 import eu.tailoringexpert.repository.LogoRepository;
 import lombok.Setter;
 import org.mapstruct.AfterMapping;
-import org.mapstruct.BeanMapping;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;

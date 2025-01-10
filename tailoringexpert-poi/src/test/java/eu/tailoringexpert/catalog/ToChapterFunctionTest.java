@@ -93,7 +93,7 @@ class ToChapterFunctionTest {
             wb = WorkbookFactory.create(is);
         }
 
-        ToChapterFunction toFunction = new ToChapterFunction(
+        ToChapterFunction noMocksToFunction = new ToChapterFunction(
             new ToDRDMappingFunction(),
             new ToLogoMappingFunction(),
             new ToIdentifierFunction(),
@@ -103,7 +103,7 @@ class ToChapterFunctionTest {
         );
 
         // act
-        Chapter<BaseRequirement> actual = toFunction.apply(wb.getSheetAt(0));
+        Chapter<BaseRequirement> actual = noMocksToFunction.apply(wb.getSheetAt(0));
 
         // assert
         log.debug(actual);

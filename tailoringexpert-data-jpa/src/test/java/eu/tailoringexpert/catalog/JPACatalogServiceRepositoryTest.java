@@ -35,7 +35,6 @@ import eu.tailoringexpert.repository.DRDRepository;
 import eu.tailoringexpert.repository.TailoringCatalogRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mockito;
 
 import java.time.ZonedDateTime;
 import java.util.Collection;

@@ -64,7 +64,7 @@ class FileTest {
     }
 
     @Test
-    void getName_DocIdUndTypeVorhanden_ZusammengesetzterName() throws IOException {
+    void getName_DocIdUndTypeVorhanden_ZusammengesetzterName() {
         // arrange
         File file = File.builder()
             .name("hallo.du")
@@ -78,7 +78,7 @@ class FileTest {
     }
 
     @Test
-    void getName_NoFileTypeEnding_NameReturned() throws IOException {
+    void getName_NoFileTypeEnding_NameReturned() {
         // arrange
         File file = File.builder()
             .name("hallodu")
@@ -92,7 +92,7 @@ class FileTest {
     }
 
     @Test
-    void getType_DocIdAndTypeExist_TypeReturned() throws IOException {
+    void getType_DocIdAndTypeExist_TypeReturned()  {
         // arrange
         File file = File.builder()
             .name("hallodu.pdf")
@@ -106,7 +106,7 @@ class FileTest {
     }
 
     @Test
-    void getType_TypeNotExist_NullReturned() throws IOException {
+    void getType_TypeNotExist_NullReturned()  {
         // arrange
         File file = File.builder()
             .name("hallodu")

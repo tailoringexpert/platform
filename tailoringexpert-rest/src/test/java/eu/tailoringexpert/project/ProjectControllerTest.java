@@ -451,15 +451,11 @@ class ProjectControllerTest {
         given(spy.getBytes()).willThrow(IOException.class);
 
         // act
-//        Throwable actual = null;
-//        try {
         Throwable actual = catchThrowable(() -> mockMvc.perform(multipart("/project/{project}", "SAMPLE")
             .file(spy)
             .contentType(MULTIPART_FORM_DATA)
             .accept("application/hal+json")
         ));
-//        } catch (Exception e) {
-//        }
 
         // assert
         assertThat(actual).isNotNull();

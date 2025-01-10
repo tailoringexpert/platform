@@ -36,7 +36,6 @@ import org.springframework.hateoas.mediatype.hal.Jackson2HalModule;
 import org.springframework.hateoas.server.core.EvoInflectorLinkRelationProvider;
 import org.springframework.http.converter.json.Jackson2ObjectMapperBuilder;
 
-import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.List;
 
@@ -53,7 +52,7 @@ class TailoringCatalogChapterResourceMixInTest {
     ObjectMapper objectMapper;
 
     @BeforeEach
-    void setup() throws IOException {
+    void setup(){
 
         this.objectMapper = Jackson2ObjectMapperBuilder.json()
             .modules(new Jackson2HalModule(), new JavaTimeModule(), new ParameterNamesModule(), new Jdk8Module())

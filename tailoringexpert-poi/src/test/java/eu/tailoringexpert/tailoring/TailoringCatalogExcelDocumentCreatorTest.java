@@ -89,7 +89,7 @@ class TailoringCatalogExcelDocumentCreatorTest {
 
 
     @Test
-    void createDocument_TailoringCatalogNull_NullReturned() throws Exception {
+    void createDocument_TailoringCatalogNull_NullReturned() {
         // arrange
 
         // act

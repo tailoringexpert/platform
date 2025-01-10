@@ -248,7 +248,7 @@ class ScreeningSheetServiceImplTest {
     }
 
     @Test
-    void createScreeningSheet_DataNotExists_NullPointerExceptionThrown() throws IOException {
+    void createScreeningSheet_DataNotExists_NullPointerExceptionThrown() {
         // arrange
 
         // act
@@ -274,7 +274,7 @@ class ScreeningSheetServiceImplTest {
     }
 
     @Test
-    void createScreeningSheet_ScreeningSheetParameterProjectNullLabel_TailoringexpertExceptionThrown() throws Exception {
+    void createScreeningSheet_ScreeningSheetParameterProjectNullLabel_TailoringexpertExceptionThrown()  {
         // arrange
         given(screeningDataProviderMock.parse(any())).willReturn(
             List.of(
@@ -295,7 +295,7 @@ class ScreeningSheetServiceImplTest {
     }
 
     @Test
-    void createScreeningSheet_ScreeningSheetParameterProjectEmptyLabel_TailoringexpertExceptionThrown() throws Exception {
+    void createScreeningSheet_ScreeningSheetParameterProjectEmptyLabel_TailoringexpertExceptionThrown() {
         // arrange
         given(screeningDataProviderMock.parse(any())).willReturn(
             List.of(

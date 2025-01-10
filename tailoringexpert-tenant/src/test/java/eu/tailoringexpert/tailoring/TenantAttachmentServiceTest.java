@@ -181,7 +181,7 @@ class TenantAttachmentServiceTest {
     }
 
     @Test
-    void load_InputStreamExecptionMocked() throws IOException {
+    void load_InputStreamExecptionMocked()  {
         // arrange
         Path file = Paths.get(this.basedir + "/PLATFORM/test/1000/dummy.pdf");
 

@@ -199,11 +199,11 @@ class TailoringServiceMapperTest {
             .level("R", 10)
             .build();
 
-        TailoringRequirementBuilder TailoringRequirementBuilder = TailoringRequirement.builder();
+        TailoringRequirementBuilder tailoringRequirementBuilder = TailoringRequirement.builder();
 
         // act
-        mapper.toTailoringRequirement(requirement, screeningSheet, selectionVector, TailoringRequirementBuilder);
-        TailoringRequirement actual = TailoringRequirementBuilder.build();
+        mapper.toTailoringRequirement(requirement, screeningSheet, selectionVector, tailoringRequirementBuilder);
+        TailoringRequirement actual = tailoringRequirementBuilder.build();
 
         // assert
         assertThat(actual.getSelected()).isTrue();
@@ -276,11 +276,11 @@ class TailoringServiceMapperTest {
             .level("R", 10)
             .build();
 
-        TailoringRequirementBuilder TailoringRequirementBuilder = TailoringRequirement.builder();
+        TailoringRequirementBuilder tailoringRequirementBuilder = TailoringRequirement.builder();
 
         // act
-        mapper.toTailoringRequirement(requirement, screeningSheet, selectionVector, TailoringRequirementBuilder);
-        TailoringRequirement actual = TailoringRequirementBuilder.build();
+        mapper.toTailoringRequirement(requirement, screeningSheet, selectionVector, tailoringRequirementBuilder);
+        TailoringRequirement actual = tailoringRequirementBuilder.build();
 
         // assert
         assertThat(actual.getSelected()).isTrue();
@@ -357,11 +357,11 @@ class TailoringServiceMapperTest {
             .level("R", 10)
             .build();
 
-        TailoringRequirementBuilder TailoringRequirementBuilder = TailoringRequirement.builder();
+        TailoringRequirementBuilder tailoringRequirementBuilder = TailoringRequirement.builder();
 
         // act
-        mapper.toTailoringRequirement(requirement, screeningSheet, selectionVector, TailoringRequirementBuilder);
-        TailoringRequirement actual = TailoringRequirementBuilder.build();
+        mapper.toTailoringRequirement(requirement, screeningSheet, selectionVector, tailoringRequirementBuilder);
+        TailoringRequirement actual = tailoringRequirementBuilder.build();
 
         // assert
         assertThat(actual.getSelected()).isFalse();
@@ -436,11 +436,11 @@ class TailoringServiceMapperTest {
             .level("R", 10)
             .build();
 
-        TailoringRequirementBuilder TailoringRequirementBuilder = TailoringRequirement.builder();
+        TailoringRequirementBuilder tailoringRequirementBuilder = TailoringRequirement.builder();
 
         // act
-        mapper.toTailoringRequirement(requirement, screeningSheet, selectionVector, TailoringRequirementBuilder);
-        TailoringRequirement actual = TailoringRequirementBuilder.build();
+        mapper.toTailoringRequirement(requirement, screeningSheet, selectionVector, tailoringRequirementBuilder);
+        TailoringRequirement actual = tailoringRequirementBuilder.build();
 
         // assert
         assertThat(actual.getSelected()).isTrue();
@@ -519,11 +519,11 @@ class TailoringServiceMapperTest {
             .level("R", 10)
             .build();
 
-        TailoringRequirementBuilder TailoringRequirementBuilder = TailoringRequirement.builder();
+        TailoringRequirementBuilder tailoringRequirementBuilder = TailoringRequirement.builder();
 
         // act
-        mapper.toTailoringRequirement(requirement, screeningSheet, selectionVector, TailoringRequirementBuilder);
-        TailoringRequirement actual = TailoringRequirementBuilder.build();
+        mapper.toTailoringRequirement(requirement, screeningSheet, selectionVector, tailoringRequirementBuilder);
+        TailoringRequirement actual = tailoringRequirementBuilder.build();
 
         // assert
         assertThat(actual.getSelected()).isTrue();
@@ -602,11 +602,11 @@ class TailoringServiceMapperTest {
             .level("R", 10)
             .build();
 
-        TailoringRequirementBuilder TailoringRequirementBuilder = TailoringRequirement.builder();
+        TailoringRequirementBuilder tailoringRequirementBuilder = TailoringRequirement.builder();
 
         // act
-        mapper.toTailoringRequirement(requirement, screeningSheet, selectionVector, TailoringRequirementBuilder);
-        TailoringRequirement actual = TailoringRequirementBuilder.build();
+        mapper.toTailoringRequirement(requirement, screeningSheet, selectionVector, tailoringRequirementBuilder);
+        TailoringRequirement actual = tailoringRequirementBuilder.build();
 
         // assert
         assertThat(actual.getSelected()).isFalse();
@@ -682,11 +682,11 @@ class TailoringServiceMapperTest {
             .level("R", 10)
             .build();
 
-        TailoringRequirementBuilder TailoringRequirementBuilder = TailoringRequirement.builder();
+        TailoringRequirementBuilder tailoringRequirementBuilder = TailoringRequirement.builder();
 
         // act
-        mapper.toTailoringRequirement(requirement, screeningSheet, selectionVector, TailoringRequirementBuilder);
-        TailoringRequirement actual = TailoringRequirementBuilder.build();
+        mapper.toTailoringRequirement(requirement, screeningSheet, selectionVector, tailoringRequirementBuilder);
+        TailoringRequirement actual = tailoringRequirementBuilder.build();
 
         // assert
         assertThat(actual.getSelected()).isTrue();
@@ -763,11 +763,11 @@ class TailoringServiceMapperTest {
             .level("R", 10)
             .build();
 
-        TailoringRequirementBuilder TailoringRequirementBuilder = TailoringRequirement.builder();
+        TailoringRequirementBuilder tailoringRequirementBuilder = TailoringRequirement.builder();
 
         // act
-        mapper.toTailoringRequirement(requirement, screeningSheet, selectionVector, TailoringRequirementBuilder);
-        TailoringRequirement actual = TailoringRequirementBuilder.build();
+        mapper.toTailoringRequirement(requirement, screeningSheet, selectionVector, tailoringRequirementBuilder);
+        TailoringRequirement actual = tailoringRequirementBuilder.build();
 
         // assert
         assertThat(actual.getSelected()).isTrue();
@@ -840,11 +840,11 @@ class TailoringServiceMapperTest {
             .level("R", 10)
             .build();
 
-        TailoringRequirementBuilder TailoringRequirementBuilder = TailoringRequirement.builder();
+        TailoringRequirementBuilder tailoringRequirementBuilder = TailoringRequirement.builder();
 
         // act
-        mapper.toTailoringRequirement(requirement, screeningSheet, selectionVector, TailoringRequirementBuilder);
-        TailoringRequirement actual = TailoringRequirementBuilder.build();
+        mapper.toTailoringRequirement(requirement, screeningSheet, selectionVector, tailoringRequirementBuilder);
+        TailoringRequirement actual = tailoringRequirementBuilder.build();
 
         // assert
         assertThat(actual.getSelected()).isTrue();
@@ -921,11 +921,11 @@ class TailoringServiceMapperTest {
             .level("R", 10)
             .build();
 
-        TailoringRequirementBuilder TailoringRequirementBuilder = TailoringRequirement.builder();
+        TailoringRequirementBuilder tailoringRequirementBuilder = TailoringRequirement.builder();
 
         // act
-        mapper.toTailoringRequirement(requirement, screeningSheet, selectionVector, TailoringRequirementBuilder);
-        TailoringRequirement actual = TailoringRequirementBuilder.build();
+        mapper.toTailoringRequirement(requirement, screeningSheet, selectionVector, tailoringRequirementBuilder);
+        TailoringRequirement actual = tailoringRequirementBuilder.build();
 
         // assert
         assertThat(actual.getSelected()).isFalse();
@@ -1051,10 +1051,10 @@ class TailoringServiceMapperTest {
             .level("R", 10)
             .build();
 
-        TailoringRequirementBuilder TailoringRequirementBuilder = TailoringRequirement.builder();
+        TailoringRequirementBuilder tailoringRequirementBuilder = TailoringRequirement.builder();
 
         // act
-        Throwable actual = catchThrowable(() -> mapper.toTailoringRequirement(requirement, screeningSheet, selectionVector, TailoringRequirementBuilder));
+        Throwable actual = catchThrowable(() -> mapper.toTailoringRequirement(requirement, screeningSheet, selectionVector, tailoringRequirementBuilder));
 
         // assert
         assertThat(actual).isInstanceOf(RuntimeException.class);
@@ -1128,11 +1128,11 @@ class TailoringServiceMapperTest {
             .build();
 
 
-        TailoringRequirementBuilder TailoringRequirementBuilder = TailoringRequirement.builder();
+        TailoringRequirementBuilder tailoringRequirementBuilder = TailoringRequirement.builder();
 
         // act
-        mapper.toTailoringRequirement(requirement, screeningSheet, selectionVector, TailoringRequirementBuilder);
-        TailoringRequirement actual = TailoringRequirementBuilder.build();
+        mapper.toTailoringRequirement(requirement, screeningSheet, selectionVector, tailoringRequirementBuilder);
+        TailoringRequirement actual = tailoringRequirementBuilder.build();
 
         // assert
         assertThat(actual.getSelected()).isTrue();
