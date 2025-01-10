@@ -334,7 +334,7 @@ class CatalogServiceImplTest {
     }
 
     @Test
-    void createDocuments_CloseZipOutputStreamException_ExceptionThrown() throws Exception {
+    void createDocuments_CloseZipOutputStreamException_ExceptionThrown() {
         // arrange
         Catalog<BaseRequirement> catalog = Catalog.<BaseRequirement>builder().version("8.2.1").build();
         given(repositoryMock.getCatalog("8.2.1"))
@@ -538,7 +538,7 @@ class CatalogServiceImplTest {
             .willReturn(true);
 
         // act
-        Throwable actual = catchThrowable(() ->service.deleteCatalog("8.3.0"));
+        Throwable actual = catchThrowable(() -> service.deleteCatalog("8.3.0"));
 
         // assert
         assertThat(actual).isInstanceOf(TailoringexpertException.class);

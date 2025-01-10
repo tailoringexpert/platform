@@ -45,7 +45,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 class ArchitectureTest {
 
-    static String PACKAGEIDENTIFIERS = "eu.tailoringexpert..";
+    static final String PACKAGEIDENTIFIERS = "eu.tailoringexpert..";
 
     private static JavaClasses classes;
 

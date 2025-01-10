@@ -48,7 +48,7 @@ class ArchitectureTest {
 
     static JavaClasses classes;
 
-    static String PACKAGEIDENTIFIERS = "eu.tailoringexpert..";
+    static final String PACKAGEIDENTIFIERS = "eu.tailoringexpert..";
 
     @BeforeAll
     static void setup() {

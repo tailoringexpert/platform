@@ -59,8 +59,6 @@ class Excel2CatalogConverterTest {
     void setup() {
         this.objectMapper = new ObjectMapper();
         this.objectMapper.registerModules(new ParameterNamesModule(), new JavaTimeModule(), new Jdk8Module());
-//        this.objectMapper.setSerializationInclusion(JsonInclude.Include.NON_ABSENT);
-
 
         this.objectMapper.disable(DeserializationFeature.ACCEPT_EMPTY_ARRAY_AS_NULL_OBJECT);
 
@@ -128,11 +126,11 @@ class Excel2CatalogConverterTest {
             new BuildingChapterConsumer()
         );
 
-        Excel2CatalogConverter toFunction = new Excel2CatalogConverter(toChapter);
+        Excel2CatalogConverter noMocksToFunction = new Excel2CatalogConverter(toChapter);
 
 
         // act
-        Catalog<BaseRequirement> actual = toFunction.apply(data);
+        Catalog<BaseRequirement> actual = noMocksToFunction.apply(data);
 
         Catalog<BaseRequirement> catalog;
         try (InputStream is = this.getClass().getResourceAsStream("/basecatalog.json")) {

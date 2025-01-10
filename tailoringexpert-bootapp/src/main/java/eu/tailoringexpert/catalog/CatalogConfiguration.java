@@ -135,19 +135,16 @@ public class CatalogConfiguration {
 
 
     @Bean
-    @Qualifier("drdSheetCreator")
     BiConsumer<Catalog<BaseRequirement>, Sheet> drdSheetCreator() {
         return new DRDSheetCreator();
     }
 
     @Bean
-    @Qualifier("logoSheetCreator")
     BiConsumer<Catalog<BaseRequirement>, Sheet> logoSheetCreator() {
         return new LogoSheetCreator();
     }
 
     @Bean
-    @Qualifier("requirementSheetCreator")
     BiConsumer<Catalog<BaseRequirement>, Sheet> requirementSheetCreator() {
         return new RequirementSheetCreator();
     }

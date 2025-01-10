@@ -128,7 +128,7 @@ class BaseCatalogPDFDocumentCreatorTest {
     }
 
     @Test
-    void createDocument_CatalogNoToc_NullReturned() throws Exception {
+    void createDocument_CatalogNoToc_NullReturned() {
         // arrange
         Catalog<BaseRequirement> catalog = Catalog.<BaseRequirement>builder().build();
 
@@ -167,7 +167,7 @@ class BaseCatalogPDFDocumentCreatorTest {
     }
 
     @Test
-    void createDocument_BaseCatalogNull_NullPointerExceptionThrown() throws Exception {
+    void createDocument_BaseCatalogNull_NullPointerExceptionThrown() {
         // arrange
         Map<String, Object> platzhalter = new HashMap<>();
 

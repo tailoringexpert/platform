@@ -28,8 +28,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.junit.jupiter.SpringJUnitConfig;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.io.IOException;
-
 import static org.assertj.core.api.Assertions.assertThat;
 
 
@@ -41,7 +39,7 @@ class LogoRepositoryTest {
     LogoRepository repository;
 
     @Test
-    void findByName_LogoExist_LogoEntityReturned() throws IOException {
+    void findByName_LogoExist_LogoEntityReturned() {
         // arrange
         repository.save(LogoEntity.builder()
             .name("ecss")

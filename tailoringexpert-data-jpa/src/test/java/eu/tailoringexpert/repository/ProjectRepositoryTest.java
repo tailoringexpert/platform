@@ -30,7 +30,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.junit.jupiter.SpringJUnitConfig;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.io.IOException;
 import java.util.Arrays;
 
 import static eu.tailoringexpert.domain.Phase.E;
@@ -51,7 +50,7 @@ class ProjectRepositoryTest {
     ProjectRepository repository;
 
     @Test
-    void save_ProjectEntityValid_ProjectSaved() throws IOException {
+    void save_ProjectEntityValid_ProjectSaved() {
         // arrange
 
         // act
@@ -76,7 +75,7 @@ class ProjectRepositoryTest {
     }
 
     @Test
-    void findByIdentifier_ProjectExists_ProjectReturned() throws IOException {
+    void findByIdentifier_ProjectExists_ProjectReturned() {
         // arrange
         repository.save(ProjectEntity.builder().identifier("SAMPLE").state(ONGOING).build());
         repository.save(ProjectEntity.builder().identifier("SAMPLE2").state(ONGOING).build());
@@ -90,7 +89,7 @@ class ProjectRepositoryTest {
     }
 
     @Test
-    void findTailoringe_2TailoringExists_RequestedTailoringReturned() throws IOException {
+    void findTailoringe_2TailoringExists_RequestedTailoringReturned() {
         // arrange
         ProjectEntity project = ProjectEntity.builder()
             .identifier("SAMPLE")
@@ -114,7 +113,7 @@ class ProjectRepositoryTest {
     }
 
     @Test
-    void deleteByIdentifier_ProjectExists_ProjectDeleted() throws IOException {
+    void deleteByIdentifier_ProjectExists_ProjectDeleted() {
         // arrange
         repository.save(ProjectEntity.builder().identifier("SAMPLE").state(ONGOING).build());
         repository.save(ProjectEntity.builder().identifier("SAMPLE2").state(ONGOING).build());
@@ -130,7 +129,7 @@ class ProjectRepositoryTest {
     }
 
     @Test
-    void existsTailoring_TailoringExists_TrueReturned() throws IOException {
+    void existsTailoring_TailoringExists_TrueReturned() {
         // arrange
         ProjectEntity project = ProjectEntity.builder()
             .identifier("SAMPLE")
@@ -154,7 +153,7 @@ class ProjectRepositoryTest {
     }
 
     @Test
-    void existsTailoring_TailoringNotExists_TrueReturned() throws IOException {
+    void existsTailoring_TailoringNotExists_TrueReturned() {
         // arrange
         ProjectEntity project = ProjectEntity.builder()
             .identifier("SAMPLE")
@@ -178,7 +177,7 @@ class ProjectRepositoryTest {
     }
 
     @Test
-    void findTailoringState_TailoringExists_StateReturned() throws IOException {
+    void findTailoringState_TailoringExists_StateReturned(){
         // arrange
         ProjectEntity project = ProjectEntity.builder()
             .identifier("SAMPLE")
@@ -204,7 +203,7 @@ class ProjectRepositoryTest {
     }
 
     @Test
-    void findTailoringState_TailoringNotExists_TrueReturned() throws IOException {
+    void findTailoringState_TailoringNotExists_TrueReturned() {
         // arrange
         ProjectEntity project = ProjectEntity.builder()
             .identifier("SAMPLE")
@@ -252,60 +251,4 @@ class ProjectRepositoryTest {
         assertThat(actual).isTrue();
     }
 
-//
-//    @Test
-//    void findTailoringIdentifier_TailoringExists_StateReturned() throws IOException {
-//        // arrange
-//        ProjectEntity project = ProjectEntity.builder()
-//            .identifier("SAMPLE")
-//            .state(ONGOING)
-//            .tailorings(Arrays.asList(
-//                TailoringEntity.builder()
-//                    .name("master")
-//                    .identifier("1000")
-//                    .state(TailoringState.CREATED)
-//                    .build(),
-//                TailoringEntity.builder()
-//                    .name("master1")
-//                    .identifier("1001")
-//                    .state(TailoringState.AGREED)
-//                    .build()
-//            ))
-//            .build();
-//        repository.save(project);
-//
-//        // act
-//        String actual = repository.findTailoringIdentifier("SAMPLE", "master1");
-//
-//        // assert
-//        assertThat(actual).isEqualTo("1001");
-//    }
-//
-//    @Test
-//    void findTailoringIdentifier_TailoringNotExists_NullReturned() throws IOException {
-//        // arrange
-//        ProjectEntity project = ProjectEntity.builder()
-//            .identifier("SAMPLE")
-//            .state(ONGOING)
-//            .tailorings(Arrays.asList(
-//                TailoringEntity.builder()
-//                    .name("master")
-//                    .identifier("1000")
-//                    .state(TailoringState.CREATED)
-//                    .build(),
-//                TailoringEntity.builder()
-//                    .name("master1")
-//                    .identifier("1001")
-//                    .state(TailoringState.AGREED)
-//                    .build()
-//            ))
-//            .build();
-//        repository.save(project);
-//
-//        // act
-//        String actual = repository.findTailoringIdentifier("SAMPLE_1", "master1");
-//
-//        // assert
-//        assertThat(actual).isNull();
-//    }
 }

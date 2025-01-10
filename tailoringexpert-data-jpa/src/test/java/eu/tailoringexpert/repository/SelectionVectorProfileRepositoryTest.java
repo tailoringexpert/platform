@@ -28,8 +28,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.junit.jupiter.SpringJUnitConfig;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.io.IOException;
-
 import static org.assertj.core.api.Assertions.assertThat;
 
 @Log4j2
@@ -41,7 +39,7 @@ class SelectionVectorProfileRepositoryTest {
     SelectionVectorProfileRepository repository;
 
     @Test
-    void findByInternalKey_InternalKeyExists_SelectionVectorProfileReturned() throws IOException {
+    void findByInternalKey_InternalKeyExists_SelectionVectorProfileReturned() {
         // arrange
         repository.save(SelectionVectorProfileEntity.builder().name("Profile1").internalKey("PROFILE1").build());
         repository.save(SelectionVectorProfileEntity.builder().name("Profile2").internalKey("PROFILE2").build());
