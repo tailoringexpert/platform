@@ -21,6 +21,7 @@
  */
 package eu.tailoringexpert.catalog;
 
+import eu.tailoringexpert.TailoringexpertException;
 import eu.tailoringexpert.domain.BaseRequirement;
 import eu.tailoringexpert.domain.Chapter;
 import eu.tailoringexpert.domain.DRD;
@@ -30,6 +31,7 @@ import eu.tailoringexpert.domain.Phase;
 import eu.tailoringexpert.domain.Reference;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.log4j.Log4j2;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 
@@ -55,6 +57,7 @@ import static org.apache.poi.ss.usermodel.Row.MissingCellPolicy.CREATE_NULL_AS_B
  * @author Michael Bädorf
  */
 @RequiredArgsConstructor
+@Log4j2
 public class ToChapterFunction implements Function<Sheet, Chapter<BaseRequirement>> {
 
     @NonNull
@@ -123,14 +126,19 @@ public class ToChapterFunction implements Function<Sheet, Chapter<BaseRequiremen
 
 
     private Chapter<BaseRequirement> createChapter(Row row) {
-        Chapter<BaseRequirement> result = new Chapter<>();
-        String number = row.getCell(0, CREATE_NULL_AS_BLANK).getStringCellValue();
-        result.setName(row.getCell(1, CREATE_NULL_AS_BLANK).getStringCellValue());
-        result.setNumber(number);
-        result.setPosition(getPosition(number));
-        result.setRequirements(new LinkedList<>());
-        result.setChapters(new LinkedList<>());
-        return result;
+        try {
+            Chapter<BaseRequirement> result = new Chapter<>();
+            String number = row.getCell(0, CREATE_NULL_AS_BLANK).getStringCellValue();
+            result.setName(row.getCell(1, CREATE_NULL_AS_BLANK).getStringCellValue());
+            result.setNumber(number);
+            result.setPosition(getPosition(number));
+            result.setRequirements(new LinkedList<>());
+            result.setChapters(new LinkedList<>());
+            return result;
+        } catch (Exception nfe) {
+            throw new TailoringexpertException("Could not convert worksheet chapter row " + (row.getRowNum() + 1));
+
+        }
     }
 
     private BaseRequirement createRequirement(Row row, Map<String, Logo> logos, Map<String, DRD> drds) {
