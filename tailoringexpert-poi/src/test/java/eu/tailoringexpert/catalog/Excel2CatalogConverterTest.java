@@ -28,6 +28,7 @@ import com.fasterxml.jackson.datatype.jdk8.Jdk8Module;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.fasterxml.jackson.module.paramnames.ParameterNamesModule;
 import eu.tailoringexpert.FileSaver;
+import eu.tailoringexpert.TailoringexpertException;
 import eu.tailoringexpert.domain.BaseRequirement;
 import eu.tailoringexpert.domain.Catalog;
 import eu.tailoringexpert.domain.Chapter;
@@ -41,6 +42,7 @@ import java.util.function.Function;
 
 import static java.util.Objects.nonNull;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.catchThrowable;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.mock;
@@ -71,7 +73,7 @@ class Excel2CatalogConverterTest {
     }
 
     @Test
-    void apply_MockThrowsException_NullReturned() throws Exception {
+    void apply_MockThrowsException_ExceptionThrown() throws Exception {
         // arrange
         byte[] data;
         try (InputStream is = this.getClass().getResourceAsStream("/basecatalog.xlsx")) {
@@ -82,11 +84,12 @@ class Excel2CatalogConverterTest {
         given(toChapterMock.apply(any())).willThrow(new RuntimeException("exception test"));
 
         // act
-        Catalog<BaseRequirement> actual = toFunction.apply(data);
+        Throwable actual = catchThrowable(() -> toFunction.apply(data));
 
         // assert
-        assertThat(actual).isNull();
-        verify(toChapterMock).apply(any(Sheet.class));
+        assertThat(actual)
+            .isInstanceOf(RuntimeException.class)
+            .hasMessage("exception test");
     }
 
     @Test
@@ -142,5 +145,35 @@ class Excel2CatalogConverterTest {
         // assert
         fileSaver.accept("export.json", objectMapper.writerWithDefaultPrettyPrinter().writeValueAsBytes(actual));
         assertThat(actual).isEqualTo(catalog);
+    }
+
+    @Test
+    void apply_NoMocksChapterWithoutPhases_TailoringExceptionThrown() throws Exception {
+        // arrange
+        byte[] data;
+        try (InputStream is = this.getClass().getResourceAsStream("/basecatalog_requirement_without_phase.xlsx")) {
+            assert nonNull(is);
+            data = is.readAllBytes();
+        }
+
+        ToChapterFunction toChapter = new ToChapterFunction(
+            new ToDRDMappingFunction(),
+            new ToLogoMappingFunction(),
+            new ToIdentifierFunction(),
+            new ToLogoFunction(),
+            new ToReferenceFunction(),
+            new BuildingChapterConsumer()
+        );
+
+        Excel2CatalogConverter noMocksToFunction = new Excel2CatalogConverter(toChapter);
+
+
+        // act
+        Throwable actual = catchThrowable(() -> noMocksToFunction.apply(data));
+
+        // assert
+        assertThat(actual)
+            .isInstanceOf(TailoringexpertException.class)
+            .hasMessage("Could not convert worksheet chapter row 3");
     }
 }
