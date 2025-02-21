@@ -477,7 +477,7 @@
                         <version>${maven-javadoc-plugin.version}</version>
                         <extensions>true</extensions>
                         <configuration>
-                            <finalName>tailoringexpert-plattform</finalName>
+                            <finalName>tailoringexpert-platform</finalName>
                             <sourcepath>
                                 ${project.build.directory}/generated-sources/delombok:${project.build.directory}/generated-sources/annotations
                             </sourcepath>

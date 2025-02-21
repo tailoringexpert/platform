@@ -1,6 +1,6 @@
 # tailoringexpert-core
 
-Business core of tailoringexpert plattform.
+Business core of tailoringexpert platform.
 Interfaces to be implemented by any tenant are marked as `@TenantInterface`.
 
 ## Implementation restrictions

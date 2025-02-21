@@ -88,7 +88,7 @@ class TenantContextTest {
         return Stream.of(
             Arguments.of("TENANT", null, "TENANT"),
             Arguments.of("TENANT", " ", "TENANT"),
-            Arguments.of("TENANT ", "Plattform", "Plattform")
+            Arguments.of("TENANT ", "Platform", "Platform")
         );
     }
 

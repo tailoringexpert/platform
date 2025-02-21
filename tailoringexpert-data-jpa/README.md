@@ -43,7 +43,7 @@ As before mentioned all needed connection parameters shall be defined in a dedic
 Using such a profile an example of invoking maven looks like
 
 ```
-mvn -P tailoringexpert-plattform.local -DskipTests install exec:exec@dropAll exec:exec@install exec:exec@update 
+mvn -P tailoringexpert-platform.local -DskipTests install exec:exec@dropAll exec:exec@install exec:exec@update 
 ```
 
 There is also an intellij run configuration provided in this module.

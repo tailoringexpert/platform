@@ -171,9 +171,9 @@
 
 **Closed issues:**
 
-- Distribute plattform assets as assembly [\#93](https://github.com/tailoringexpert/platform/issues/93)
-- Distribute plattform templates as assembly [\#92](https://github.com/tailoringexpert/platform/issues/92)
-- Distribute plattform liquibase as assembly [\#91](https://github.com/tailoringexpert/platform/issues/91)
+- Distribute platform assets as assembly [\#93](https://github.com/tailoringexpert/platform/issues/93)
+- Distribute platform templates as assembly [\#92](https://github.com/tailoringexpert/platform/issues/92)
+- Distribute platform liquibase as assembly [\#91](https://github.com/tailoringexpert/platform/issues/91)
 
 ## [v0.0.2](https://github.com/tailoringexpert/platform/tree/v0.0.2) (12.19.2022)
 

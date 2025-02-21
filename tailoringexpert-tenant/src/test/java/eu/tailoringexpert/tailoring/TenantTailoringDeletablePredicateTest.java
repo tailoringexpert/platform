@@ -44,7 +44,7 @@ class TenantTailoringDeletablePredicateTest {
         this.defaultPredicate = mock(TailoringDeletablePredicate.class);
         this.tenantPredicate = mock(TailoringDeletablePredicate.class);
         this.predicate = new TenantTailoringDeletablePredicate(
-            Map.of("PLATTFORM", tenantPredicate),
+            Map.of("PLATFORM", tenantPredicate),
             this.defaultPredicate
         );
     }
@@ -65,7 +65,7 @@ class TenantTailoringDeletablePredicateTest {
     @Test
     void test_TenantExists_TenantPredicateCalled() {
         // arrange
-        TenantContext.setCurrentTenant("PLATTFORM");
+        TenantContext.setCurrentTenant("PLATFORM");
 
         // act
         predicate.test("SAMPLE", "master");

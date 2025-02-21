@@ -86,7 +86,7 @@ class ComparisonPDFDocumentCreatorTest {
 
         RendererRequestConfigurationSupplier supplier = () -> RendererRequestConfiguration.builder()
             .id("unittest")
-            .name("plattform")
+            .name("platform")
             .templateHome(this.templateHome)
             .build();
 
