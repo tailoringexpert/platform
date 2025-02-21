@@ -46,7 +46,7 @@ class PDFEngineTest {
                 new PDFEngine(
                         Mockito.mock(FSDOMMutator.class),
                         () -> RendererRequestConfiguration.builder()
-                                .id("plattform")
+                                .id("platform")
                                 .name("TailoringExpert")
                                 .templateHome("baseuri")
                                 .build()

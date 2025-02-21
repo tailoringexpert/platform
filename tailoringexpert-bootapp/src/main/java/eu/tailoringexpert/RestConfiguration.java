@@ -153,7 +153,7 @@ public class RestConfiguration {
             new Info()
                 .title("Tailoring API")
                 .version(version)
-                .description("Tailoringexpert is a multi tenant plattform to create easily, fast and reproduceable requirement documentation based on a general requirement catalog on a limited set of parameters, which characterize the specific project.")
+                .description("Tailoringexpert is a multi tenant platform to create easily, fast and reproduceable requirement documentation based on a general requirement catalog on a limited set of parameters, which characterize the specific project.")
                 .license(new License()
                     .name("GNU General Public License v3.0")
                     .url("https://www.gnu.org/licenses/gpl-3.0")

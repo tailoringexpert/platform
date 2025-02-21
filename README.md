@@ -2,16 +2,16 @@
 
 ## About
 
-| __Build Status__ | [![build](https://github.com/tailoringexpert/plattform/actions/workflows/build.yml/badge.svg)](https://github.com/tailoringexpert/plattform/actions/workflows/build.yml) |
-|:-----------------| :--- |
-| __Coverage__     | ![coverage](../badges/jacoco.svg) ![branches coverage](../badges/branches.svg) |
-| __Source Info__  | [![License](https://img.shields.io/github/license/tailoringexpert/plattform)](https://github.com/tailoringexpert/plattform/blob/main/LICENSE) ![GitHub top language](https://img.shields.io/github/languages/top/tailoringexpert/plattform) |
+| __Build Status__ | [![build](https://github.com/tailoringexpert/platform/actions/workflows/build.yml/badge.svg)](https://github.com/tailoringexpert/platform/actions/workflows/build.yml)                                                                     |
+|:-----------------|:--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| __Coverage__     | ![coverage](../badges/jacoco.svg) ![branches coverage](../badges/branches.svg)                                                                                                                                                              |
+| __Source Info__  | [![License](https://img.shields.io/github/license/tailoringexpert/platform)](https://github.com/tailoringexpert/platform/blob/main/LICENSE) ![GitHub top language](https://img.shields.io/github/languages/top/tailoringexpert/plattform) |
 
 ## Development policies
 
 ### Dependency Injection
 
-Tailoringexport plattform is realized using Spring. Following rules shall be followed:
+Tailoringexport platform is realized using Spring. Following rules shall be followed:
 
 * Dependency Injection(DI) has to be performed via Java configuration
 * autoconfiguration is forbidden except for Spring-Data-Repositories
@@ -70,7 +70,7 @@ OR-Mapping is to be implemented via annotations.
 
 ## Use Cases
 
-![alternative text](https://www.plantuml.com/plantuml/proxy?cache=no&src=https://raw.github.com/tailoringexpert/plattform/main/src/site/arc42/plantuml/Usecases.plantuml "Usecases")
+![alternative text](https://www.plantuml.com/plantuml/proxy?cache=no&src=https://raw.github.com/tailoringexpert/platform/main/src/site/arc42/plantuml/Usecases.plantuml "Usecases")
 
 ## Architecture documentation
 
@@ -84,7 +84,7 @@ Architecture documentation can be found here as [arc42](src/site/arc42/tailoring
 |:------------------------------|:----------------------------------------------------------------------------------------------------------------------------|
 | tailoringexpert-core          | Business core of platform.                                                                                                  |
 | tailoringexpert-data-jpa      | Implementation of data access needed by core component                                                                      |
-| tailoringexpert-rest          | Component providing REST services of plattform                                                                              |
+| tailoringexpert-rest          | Component providing REST services of platform                                                                              |
 | tailoringexpert-poi           | Module for importing requirements and generating Excel files using POI.                                                     | 
 | tailoringexpert-openhtmltopdf | Module for generating PDF documents using  Openhtmltop.                                                                     | 
 | tailoringexpert-security      | Security configuration using spring-security without using an external identity manager                                     |
@@ -93,15 +93,15 @@ Architecture documentation can be found here as [arc42](src/site/arc42/tailoring
 | tailoringexpert-distribution | Module to create archive to be used for creating a platform docker image |
 ### Level 0
 
-![alternative text](https://www.plantuml.com/plantuml/proxy?cache=no&src=https://raw.github.com/tailoringexpert/plattform/main/src/site/arc42/plantuml/level0.plantuml "Level 0")
+![alternative text](https://www.plantuml.com/plantuml/proxy?cache=no&src=https://raw.github.com/tailoringexpert/platform/main/src/site/arc42/plantuml/level0.plantuml "Level 0")
 
 ## Level 1
 
-![alternative text](https://www.plantuml.com/plantuml/proxy?cache=no&src=https://raw.github.com/tailoringexpert/plattform/main/src/site/arc42/plantuml/TailoringWhitebox.plantuml "Level 1")
+![alternative text](https://www.plantuml.com/plantuml/proxy?cache=no&src=https://raw.github.com/tailoringexpert/platform/main/src/site/arc42/plantuml/TailoringWhitebox.plantuml "Level 1")
 
 ## Deployment
 
-![alternative text](https://www.plantuml.com/plantuml/proxy?cache=no&src=https://raw.github.com/tailoringexpert/plattform/main/src/site/arc42/plantuml/DeploymentDocker.plantuml "Deployment")
+![alternative text](https://www.plantuml.com/plantuml/proxy?cache=no&src=https://raw.github.com/tailoringexpert/platform/main/src/site/arc42/plantuml/DeploymentDocker.plantuml "Deployment")
 
 ## Build application
 
@@ -112,16 +112,16 @@ Architecture documentation can be found here as [arc42](src/site/arc42/tailoring
 
 ### Build
 
-To build the plattform it is recommended to create a profile containing `liquibase` properties for intgegration test
+To build the platform it is recommended to create a profile containing `liquibase` properties for intgegration test
 database connection.
 
-Plattform can be build using
+Platform can be build using
 
-> mvn -P tailoringexpert-plattform.local clean install
+> mvn -P tailoringexpert-platform.local clean install
 
 ### Run
 
-For testing purpose there is a demo plattform in [github](https://github.com/tailoringexpert/demo).
+For testing purpose there is a demo platform in [github](https://github.com/tailoringexpert/demo).
 See instructions for setting up and running the (demo) system in [README.md](tailoringexpert-integrationtest/README.md)
 
 ## Encrypting credentials (for platform boot-app)

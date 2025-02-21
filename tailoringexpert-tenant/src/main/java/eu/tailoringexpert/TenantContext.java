@@ -41,7 +41,7 @@ import static lombok.AccessLevel.PRIVATE;
 public class TenantContext {
 
     /**
-     * Registered tenants of plattform instance.
+     * Registered tenants of platform instance.
      */
     private static Map<String, String> registeredTenants = new HashMap<>();
 

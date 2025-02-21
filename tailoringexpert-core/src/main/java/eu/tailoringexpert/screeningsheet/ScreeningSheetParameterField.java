@@ -25,7 +25,7 @@ import lombok.Builder;
 import lombok.Value;
 
 /**
- * Data object for screeningsheet parameters to pass to plattform.
+ * Data object for screeningsheet parameters to pass to platform.
  *
  * @author Michael Bädorf
  */

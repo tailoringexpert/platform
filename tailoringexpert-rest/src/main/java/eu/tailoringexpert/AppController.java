@@ -49,7 +49,7 @@ import static eu.tailoringexpert.domain.ResourceMapper.SELECTIONVECTOR_PROFILE;
 import static org.springframework.hateoas.CollectionModel.empty;
 
 /**
- * REST-Controller for providing main rels of plattform.
+ * REST-Controller for providing main rels of platform.
  *
  * @author Michael Bädorf
  */
