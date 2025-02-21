@@ -36,6 +36,7 @@ import org.springframework.hateoas.mediatype.hal.Jackson2HalModule;
 import org.springframework.hateoas.server.core.EvoInflectorLinkRelationProvider;
 import org.springframework.http.converter.json.Jackson2ObjectMapperBuilder;
 
+import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.List;
 
@@ -47,12 +48,12 @@ import static java.util.Locale.GERMANY;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @Log4j2
-class TailoringCatalogChapterResourceMixInTest {
+class TailoringCatalogChapterResourcePrimevueMixInTest {
 
     ObjectMapper objectMapper;
 
     @BeforeEach
-    void setup(){
+    void setup() {
 
         this.objectMapper = Jackson2ObjectMapperBuilder.json()
             .modules(new Jackson2HalModule(), new JavaTimeModule(), new ParameterNamesModule(), new Jdk8Module())
@@ -62,8 +63,8 @@ class TailoringCatalogChapterResourceMixInTest {
             .dateFormat(new SimpleDateFormat("yyyy-MM-dd", GERMANY))
             .handlerInstantiator(
                 new Jackson2HalModule.HalHandlerInstantiator(new EvoInflectorLinkRelationProvider(),
-                    CurieProvider.NONE.NONE, MessageResolver.DEFAULTS_ONLY))
-            .mixIn(TailoringCatalogChapterResource.class, TailoringCatalogChapterResourceMixIn.class)
+                    CurieProvider.NONE, MessageResolver.DEFAULTS_ONLY))
+            .mixIn(TailoringCatalogChapterResource.class, TailoringCatalogChapterResourcePrimevueMixIn.class)
             .build();
     }
 
@@ -82,12 +83,15 @@ class TailoringCatalogChapterResourceMixInTest {
         // assert
         log.debug(actual);
         JsonNode json = objectMapper.readTree(actual);
-        assertThat(json.has("id")).isTrue();
+        assertThat(json.has("id")).isFalse();
+        assertThat(json.has("key")).isTrue();
         assertThat(json.has("number")).isFalse();
         assertThat(json.has("label")).isTrue();
         assertThat(json.has("chapterName")).isFalse();
-        assertThat(json.has("nodes")).isTrue();
+        assertThat(json.has("requirements")).isFalse();
+        assertThat(json.has("data")).isTrue();
         assertThat(json.has("chapters")).isFalse();
+        assertThat(json.has("children")).isTrue();
     }
 
 }

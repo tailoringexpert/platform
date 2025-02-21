@@ -25,9 +25,9 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 import java.util.List;
 
-public abstract class TailoringCatalogChapterResourceMixIn {
+public abstract class TailoringCatalogChapterResourcePrimevueMixIn {
 
-    @JsonProperty("id")
+    @JsonProperty("key")
     private String number;
 
     /**
@@ -40,6 +40,12 @@ public abstract class TailoringCatalogChapterResourceMixIn {
     /**
      * List of subchapters.
      */
-    @JsonProperty("nodes")
+    @JsonProperty("children")
     private List<TailoringCatalogChapterResource> chapters;
+
+    /**
+     * List of requirements.
+     */
+    @JsonProperty("data")
+    private List<TailoringRequirementResource> requirements;
 }
