@@ -222,7 +222,7 @@ class JPACatalogServiceRepositoryTest {
     @Test
     void getCatalog_NonExistingVersion_EmptyReturned() {
         // arrange
-        given(baseCatalogRepositoryMock.findByVersion("4711")).willReturn(null);
+        given(baseCatalogRepositoryMock.findByVersion("4711", BaseCatalogEntity.class)).willReturn(null);
 
         // act
         Optional<Catalog<BaseRequirement>> actual = repository.getCatalog("4711");
@@ -235,7 +235,7 @@ class JPACatalogServiceRepositoryTest {
     void getCatalog_ExisitingVersion_OptionalReturned() {
         // arrange
         BaseCatalogEntity baseCatalogEntity = BaseCatalogEntity.builder().build();
-        given(baseCatalogRepositoryMock.findByVersion("4711")).willReturn(baseCatalogEntity);
+        given(baseCatalogRepositoryMock.findByVersion("4711", BaseCatalogEntity.class)).willReturn(baseCatalogEntity);
 
         given(mapperMock.getCatalog(baseCatalogEntity)).willReturn(Catalog.<BaseRequirement>builder().build());
 

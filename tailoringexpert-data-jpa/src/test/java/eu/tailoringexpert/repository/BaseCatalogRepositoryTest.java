@@ -97,7 +97,7 @@ class BaseCatalogRepositoryTest {
             .build());
 
         // act
-        BaseCatalogEntity actual = repository.findByVersion("8.2.1");
+        BaseCatalogEntity actual = repository.findByVersion("8.2.1", BaseCatalogEntity.class);
 
         // assert
         assertThat(actual).isNotNull();
@@ -243,7 +243,7 @@ class BaseCatalogRepositoryTest {
             .build();
         repository.save(entity);
 
-        assert repository.existsByVersion("7.2") == true;
+        assert repository.existsByVersion("7.2");
 
         // act
         repository.deleteByVersion("8.3");
@@ -274,7 +274,7 @@ class BaseCatalogRepositoryTest {
                 .build())
             .build();
         repository.save(catalog72);
-        assert repository.existsByVersion("7.2") == true;
+        assert repository.existsByVersion("7.2");
 
         BaseCatalogEntity catalog83 = BaseCatalogEntity.builder()
             .version("8.3")
@@ -295,7 +295,7 @@ class BaseCatalogRepositoryTest {
                 .build())
             .build();
         repository.save(catalog83);
-        assert repository.existsByVersion("8.3") == true;
+        assert repository.existsByVersion("8.3");
 
         // act
         repository.deleteByVersion("8.3");
@@ -304,5 +304,6 @@ class BaseCatalogRepositoryTest {
         assertThat(repository.existsByVersion("7.2")).isTrue();
         assertThat(repository.existsByVersion("8.3")).isFalse();
     }
+
 }
 

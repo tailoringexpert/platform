@@ -107,7 +107,7 @@ public class JPACatalogServiceRepository implements CatalogServiceRepository {
     public Optional<Catalog<BaseRequirement>> getCatalog(String version) {
         log.traceEntry(version);
 
-        BaseCatalogEntity entity = baseCatalogRepository.findByVersion(version);
+        BaseCatalogEntity entity = baseCatalogRepository.findByVersion(version, BaseCatalogEntity.class);
         Optional<Catalog<BaseRequirement>> result = ofNullable(mapper.getCatalog(entity));
 
         log.traceExit();

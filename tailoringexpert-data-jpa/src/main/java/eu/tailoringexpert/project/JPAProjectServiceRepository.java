@@ -77,7 +77,7 @@ public class JPAProjectServiceRepository implements ProjectServiceRepository {
     public Catalog<BaseRequirement> getBaseCatalog(String version) {
         log.traceEntry(() -> version);
 
-        BaseCatalogEntity entity = baseCatalogRepository.findByVersion(version);
+        BaseCatalogEntity entity = baseCatalogRepository.findByVersion(version, BaseCatalogEntity.class);
         Catalog<BaseRequirement> result = mapper.toDomain(entity);
 
         log.traceExit();

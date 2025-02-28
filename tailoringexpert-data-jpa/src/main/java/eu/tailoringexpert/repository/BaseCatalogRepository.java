@@ -51,7 +51,7 @@ public interface BaseCatalogRepository extends JpaRepository<BaseCatalogEntity, 
      * @return loaded base catalog
      */
     @Cacheable(CACHE_BASECATALOG)
-    BaseCatalogEntity findByVersion(String version);
+    <T> T findByVersion(String version, Class<T> clz);
 
     /**
      * Loads "pure" version and validities of all defined base catalogs.

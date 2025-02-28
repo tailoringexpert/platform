@@ -74,7 +74,7 @@ class JPAProjectServiceRepositoryTest {
     @Test
     void getBaseCatalog_BaseCatalogNotExists_NullReturned() {
         // arrange
-        given(baseCatalogRepositoryMock.findByVersion("8.2.1")).willReturn(null);
+        given(baseCatalogRepositoryMock.findByVersion("8.2.1", BaseCatalogEntity.class)).willReturn(null);
         given(mapperMock.toDomain((BaseCatalogEntity) null)).willReturn(null);
 
         // act
@@ -89,7 +89,7 @@ class JPAProjectServiceRepositoryTest {
         // arrange
         BaseCatalogEntity baseCatalog = BaseCatalogEntity.builder().build();
 
-        given(baseCatalogRepositoryMock.findByVersion("8.2.1")).willReturn(baseCatalog);
+        given(baseCatalogRepositoryMock.findByVersion("8.2.1", BaseCatalogEntity.class)).willReturn(baseCatalog);
         given(mapperMock.toDomain(baseCatalog)).willReturn(Catalog.<BaseRequirement>builder().build());
 
         // act
