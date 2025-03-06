@@ -48,6 +48,7 @@ public interface BaseCatalogRepository extends JpaRepository<BaseCatalogEntity, 
      * Load a dedicated base catalog.
      *
      * @param version version of base catalog to load
+     * @param <T> clz type of query result ot return
      * @return loaded base catalog
      */
     @Cacheable(CACHE_BASECATALOG)

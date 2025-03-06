@@ -57,6 +57,7 @@ package tailoring {
         -chapter : String
         -text : String
         -applicable : boolean
+        -level : int
     }
 
 
