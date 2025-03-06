@@ -129,6 +129,7 @@ public class BaseCatalogPDFDocumentCreator implements DocumentCreator {
         rows.add(BaseCatalogElement.builder()
             .text(templateEngine.toXHTML(chapter.getNumber() + " " + chapter.getName(), emptyMap()))
             .chapter(chapter.getNumber())
+                .level(level)
             .build());
         chapter.getRequirements()
             .forEach(requirement -> addRequirement(requirement, rows));

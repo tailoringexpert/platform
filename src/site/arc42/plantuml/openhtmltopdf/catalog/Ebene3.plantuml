@@ -20,6 +20,7 @@ package catalog {
         -applicable : boolean
         -phases : Collection<String>
         -identifiers : Collection<String>
+        -level : int
     }
 
     class BaseCatalogPDFDocumentCreator {
