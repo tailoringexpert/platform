@@ -39,12 +39,7 @@ import lombok.extern.log4j.Log4j2;
 import org.springframework.hateoas.EntityModel;
 import org.springframework.hateoas.UriTemplate;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import static eu.tailoringexpert.domain.ResourceMapper.CHAPTER_SELECTED;
 import static eu.tailoringexpert.domain.ResourceMapper.TAILORINGREQUIRMENT;
@@ -151,7 +146,7 @@ public class RequirementController {
         @Parameter(description = "Tailoring name") @PathVariable String tailoring,
         @Parameter(description = "Chapter number") @PathVariable String chapter,
         @Parameter(description = "Requirement position in chapter") @PathVariable String requirement,
-        @Parameter(description = "New requirement text") @RequestBody String text) {
+        @Parameter(description = "New requirement text") @RequestParam String text) {
         log.traceEntry();
 
         PathContextBuilder pathContext = PathContext.builder()

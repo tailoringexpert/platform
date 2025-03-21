@@ -68,6 +68,7 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.springframework.hateoas.MediaTypes.HAL_JSON_VALUE;
+import static org.springframework.http.MediaType.APPLICATION_FORM_URLENCODED;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
@@ -233,8 +234,8 @@ class RequirementControllerTest {
         // act
         ResultActions actual = mockMvc.perform(put("/project/{project}/tailoring/{tailoring}/catalog/{chapter}/{requirement}/text", "SAMPLE", "master", "1.1", "a")
             .accept(HAL_JSON_VALUE)
-            .content(objectMapper.writeValueAsString("Dies ist ein neuer Text"))
-            .contentType(MediaType.APPLICATION_JSON)
+            .param("text", "Dies ist ein neuer Text")
+            .contentType(APPLICATION_FORM_URLENCODED)
             .characterEncoding(StandardCharsets.UTF_8.displayName())
         );
 
@@ -254,8 +255,8 @@ class RequirementControllerTest {
         // act
         ResultActions actual = mockMvc.perform(put("/project/{project}/tailoring/{tailoring}/catalog/{chapter}/{requirement}/text", "SAMPLE", "master", "1.1", "a")
             .accept(HAL_JSON_VALUE)
-            .content(objectMapper.writeValueAsString("Dies ist ein neuer Text"))
-            .contentType(MediaType.APPLICATION_JSON)
+            .param("text","Dies ist ein neuer Text")
+            .contentType(APPLICATION_FORM_URLENCODED)
             .characterEncoding(StandardCharsets.UTF_8.displayName())
         );
 
