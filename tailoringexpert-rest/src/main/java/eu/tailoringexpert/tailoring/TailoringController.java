@@ -57,14 +57,7 @@ import org.springframework.http.ContentDisposition;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestPart;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
@@ -499,7 +492,7 @@ public class TailoringController {
     public ResponseEntity<EntityModel<TailoringResource>> putName(
         @Parameter(description = "Project identifier") @PathVariable String project,
         @Parameter(description = "Tailoring name") @PathVariable String tailoring,
-        @Parameter(description = "New tailoring name") @RequestBody String name) {
+        @Parameter(description = "New tailoring name") @RequestParam String name) {
         log.traceEntry();
 
         PathContextBuilder pathContext = PathContext.builder()
@@ -757,11 +750,11 @@ public class TailoringController {
             responseCode = "404", description = "Tailoring does not exist",
             content = @Content)
     })
-    @PostMapping(TAILORING_NOTES)
+    @PostMapping(value = TAILORING_NOTES, consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE)
     public ResponseEntity<EntityModel<Void>> postNote(
         @Parameter(description = "Project identifier") @PathVariable String project,
         @Parameter(description = "Tailoring name") @PathVariable String tailoring,
-        @Parameter(description = "Text of note to add") @RequestBody String note) {
+        @Parameter(description = "Text of note to add") @RequestParam String note) {
         log.traceEntry();
 
         Optional<Note> addedNote = tailoringService.addNote(project, tailoring, note);

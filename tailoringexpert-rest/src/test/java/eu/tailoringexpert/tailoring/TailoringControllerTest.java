@@ -105,13 +105,7 @@ import static org.springframework.hateoas.MediaTypes.HAL_JSON_VALUE;
 import static org.springframework.http.HttpHeaders.ACCESS_CONTROL_EXPOSE_HEADERS;
 import static org.springframework.http.HttpHeaders.CONTENT_DISPOSITION;
 import static org.springframework.http.HttpHeaders.CONTENT_TYPE;
-import static org.springframework.http.MediaType.APPLICATION_JSON;
-import static org.springframework.http.MediaType.APPLICATION_OCTET_STREAM;
-import static org.springframework.http.MediaType.APPLICATION_PDF;
-import static org.springframework.http.MediaType.IMAGE_JPEG;
-import static org.springframework.http.MediaType.IMAGE_PNG;
-import static org.springframework.http.MediaType.MULTIPART_FORM_DATA;
-import static org.springframework.http.MediaType.TEXT_PLAIN_VALUE;
+import static org.springframework.http.MediaType.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.multipart;
@@ -675,8 +669,8 @@ class TailoringControllerTest {
         // act
         ResultActions actual = mockMvc.perform(put("/project/{project}/tailoring/{tailoring}/name", "SAMPLE", "master")
             .accept(HAL_JSON_VALUE)
-            .content(objectMapper.writeValueAsString("test"))
-            .contentType(APPLICATION_JSON)
+            .param("name", "test")
+            .contentType(APPLICATION_FORM_URLENCODED_VALUE)
             .characterEncoding(UTF_8.displayName())
         );
 
@@ -697,8 +691,8 @@ class TailoringControllerTest {
         // act
         ResultActions actual = mockMvc.perform(put("/project/{project}/tailoring/{tailoring}/name", "SAMPLE", "master")
             .accept(HAL_JSON_VALUE)
-            .content(objectMapper.writeValueAsString("test"))
-            .contentType(APPLICATION_JSON)
+            .param("name", "test")
+            .contentType(APPLICATION_FORM_URLENCODED_VALUE)
             .characterEncoding(UTF_8.displayName()));
 
         // assert
@@ -1107,8 +1101,9 @@ class TailoringControllerTest {
 
         // act
         ResultActions actual = mockMvc.perform(post("/project/{project}/tailoring/{tailoring}/note", "SAMPLE", "master")
-            .content("Hello")
-            .contentType(TEXT_PLAIN_VALUE)
+            .param("note", "Hello")
+            .contentType(APPLICATION_FORM_URLENCODED_VALUE)
+            .characterEncoding(UTF_8.displayName())
         );
 
         // assert
@@ -1124,8 +1119,9 @@ class TailoringControllerTest {
 
         // act
         ResultActions actual = mockMvc.perform(post("/project/{project}/tailoring/{tailoring}/note", "SAMPLE", "master")
-            .contentType("text/plain")
-            .content("Hello")
+            .param("note", "Hello")
+            .contentType(APPLICATION_FORM_URLENCODED)
+            .characterEncoding(UTF_8.displayName())
         );
 
         // assert
