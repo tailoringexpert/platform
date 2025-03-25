@@ -390,7 +390,7 @@ class ResourceMapperTest {
 
         assertThat(actual.getLinks()).containsExactlyInAnyOrder(
             Link.of(this.host + "/project/SAMPLE/screeningsheet", "self"),
-            Link.of(this.host + "/project/SAMPLE/screeningsheet/pdf", "datei")
+            Link.of(this.host + "/project/SAMPLE/screeningsheet/pdf", "file")
 
         );
     }
@@ -417,7 +417,7 @@ class ResourceMapperTest {
 
         assertThat(actual.getLinks()).containsExactlyInAnyOrder(
             Link.of(this.host + "/project/SAMPLE/screeningsheet", "self"),
-            Link.of(this.host + "/project/SAMPLE/screeningsheet/pdf", "datei")
+            Link.of(this.host + "/project/SAMPLE/screeningsheet/pdf", "file")
 
         );
     }
@@ -455,7 +455,7 @@ class ResourceMapperTest {
 
         assertThat(actual.getLinks()).containsExactlyInAnyOrder(
             Link.of(this.host + "/project/SAMPLE/tailoring/master/screeningsheet", "self"),
-            Link.of(this.host + "/project/SAMPLE/tailoring/master/screeningsheet/pdf", "datei")
+            Link.of(this.host + "/project/SAMPLE/tailoring/master/screeningsheet/pdf", "file")
 
         );
     }
@@ -501,7 +501,7 @@ class ResourceMapperTest {
 
         assertThat(actual.getLinks()).containsExactlyInAnyOrder(
             Link.of(this.host + "/project/SAMPLE/screeningsheet", "self"),
-            Link.of(this.host + "/project/SAMPLE/screeningsheet/pdf", "datei")
+            Link.of(this.host + "/project/SAMPLE/screeningsheet/pdf", "file")
 
         );
     }

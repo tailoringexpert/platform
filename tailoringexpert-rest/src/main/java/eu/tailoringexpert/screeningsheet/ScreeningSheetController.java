@@ -34,6 +34,7 @@ import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.hateoas.EntityModel;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestPart;
@@ -68,12 +69,12 @@ public class ScreeningSheetController {
             responseCode = "200", description = "Screeningsheet parsed",
             content = @Content(mediaType = "application/json+hal", schema = @Schema(implementation = ScreeningSheetResource.class))),
         @ApiResponse(
-            responseCode = "404", description = "Scrreningsheet could not be parsed",
+            responseCode = "404", description = "Screeningsheet could not be parsed",
             content = @Content)
     })
-    @PostMapping(value = SCREENINGSHEET, produces = {"application/hal+json"})
+    @PostMapping(value = SCREENINGSHEET, consumes = { MediaType.MULTIPART_FORM_DATA_VALUE }, produces = {"application/hal+json"})
     public ResponseEntity<EntityModel<ScreeningSheetResource>> postScreeningSheet(
-        @RequestPart("datei") MultipartFile file) throws IOException {
+        MultipartFile file) throws IOException {
         log.traceEntry();
 
         ResponseEntity<EntityModel<ScreeningSheetResource>> result = ofNullable(screeningSheetService.createScreeningSheet(file.getBytes()))

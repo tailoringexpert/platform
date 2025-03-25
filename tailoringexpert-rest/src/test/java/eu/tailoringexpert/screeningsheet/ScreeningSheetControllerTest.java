@@ -118,7 +118,7 @@ class ScreeningSheetControllerTest {
             data = is.readAllBytes();
         }
 
-        MockMultipartFile dokument = new MockMultipartFile("datei", "screeningsheet_0d.pdf",
+        MockMultipartFile dokument = new MockMultipartFile("file", "screeningsheet_0d.pdf",
             "text/plain", data);
 
         ScreeningSheet screeningSheet = ScreeningSheet.builder().build();
@@ -152,7 +152,7 @@ class ScreeningSheetControllerTest {
             data = is.readAllBytes();
         }
 
-        MockMultipartFile dokument = new MockMultipartFile("datei", "screeningsheet_0d.pdf",
+        MockMultipartFile dokument = new MockMultipartFile("file", "screeningsheet_0d.pdf",
             "text/plain", data);
 
 

@@ -378,7 +378,7 @@ class ProjectControllerTest {
             data = is.readAllBytes();
         }
 
-        MockMultipartFile screeningSheet = new MockMultipartFile("datei", "screeningsheet_0d.pdf",
+        MockMultipartFile screeningSheet = new MockMultipartFile("file", "screeningsheet_0d.pdf",
             "text/plain", data);
 
         given(projectServiceMock.copyProject("SAMPLE", data)).willReturn(empty());
@@ -406,7 +406,7 @@ class ProjectControllerTest {
             data = is.readAllBytes();
         }
 
-        MockMultipartFile screeningSheet = new MockMultipartFile("datei", "screeningsheet_0d.pdf",
+        MockMultipartFile screeningSheet = new MockMultipartFile("file", "screeningsheet_0d.pdf",
             "text/plain", data);
 
         Project createdProject = Project.builder().identifier("SAMPLE2").build();
@@ -444,7 +444,7 @@ class ProjectControllerTest {
             data = is.readAllBytes();
         }
 
-        MockMultipartFile screeningSheet = new MockMultipartFile("datei", "screeningsheet_0d.pdf",
+        MockMultipartFile screeningSheet = new MockMultipartFile("file", "screeningsheet_0d.pdf",
             "text/plain", data);
 
         MockMultipartFile spy = spy(screeningSheet);

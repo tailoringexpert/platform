@@ -301,11 +301,11 @@ public class TailoringController {
             responseCode = "404", description = "Tailoring does not exist",
             content = @Content)
     })
-    @PostMapping(value = TAILORING_ATTACHMENTS, produces = {"application/hal+json"})
+    @PostMapping(value = TAILORING_ATTACHMENTS, consumes = { MediaType.MULTIPART_FORM_DATA_VALUE }, produces = {"application/hal+json"})
     public ResponseEntity<EntityModel<Void>> postFile(
         @Parameter(description = "Project identifier") @PathVariable String project,
         @Parameter(description = "Tailoring name") @PathVariable String tailoring,
-        @Parameter(description = "File to add") @RequestPart("datei") MultipartFile file) throws IOException {
+        @Parameter(description = "File to add") MultipartFile file) throws IOException {
         log.traceEntry();
 
         File toSave = File.builder().name(file.getOriginalFilename()).data(file.getBytes()).build();
@@ -642,10 +642,10 @@ public class TailoringController {
     public ResponseEntity<EntityModel<Void>> postRequirements(
         @Parameter(description = "Project identifier") @PathVariable String project,
         @Parameter(description = "Tailoring name") @PathVariable String tailoring,
-        @RequestPart("datei") MultipartFile datei) throws IOException {
+        MultipartFile file) throws IOException {
         log.traceEntry();
 
-        tailoringService.updateImportedRequirements(project, tailoring, datei.getBytes());
+        tailoringService.updateImportedRequirements(project, tailoring, file.getBytes());
         ResponseEntity<EntityModel<Void>> result = ResponseEntity.accepted().build();
 
         log.traceExit();

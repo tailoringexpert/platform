@@ -248,7 +248,7 @@ public abstract class ResourceMapper {
         Map<String, String> parameter = context.parameter();
         resource.links(asList(
             createLink(REL_SELF, self, parameter),
-            createLink("datei", file, parameter))
+            createLink("file", file, parameter))
         );
     }
 

@@ -26,7 +26,7 @@ package tailoring {
         +getScreeningSheetFile(project : String, tailoring : String) : ResponseEntity<byte[]>
         +getSelectionVector(project : String, tailoring : String) :  ResponseEntity<EntityModel<SelectionVectorResource>>
         +getTailoring(project : String, tailoring : String): ResponseEntity<EntityModel<TailoringResource>>
-        +postFile(project : String, tailoring : String, datei : MultipartFile): ResponseEntity<EntityModel<Void>>
+        +postFile(project : String, tailoring : String, file : MultipartFile): ResponseEntity<EntityModel<Void>>
         +getDocuments(project : String, tailoring : String) : ResponseEntity<byte[]>
         +getRequirementFile(project : String, tailoring : String) : ResponseEntity<byte[]>
         +getRequirements(project : String, tailoring : String, chapter : String ) : ResponseEntity<CollectionModel<EntityModel<TailoringRequirementResource>>>
@@ -38,7 +38,7 @@ package tailoring {
         +deleteAttachment(project : String, tailoring : String, name : String) : ResponseEntity<byte[]>
         +getComparisonDocument(project : String, tailoring : String, name : String) : ResponseEntity<byte[]>
         +getProfiles() : ResponseEntity<CollectionModel<EntityModel<SelectionVectorProfileResource>>>
-        +postRequirements(project : String, tailoring : String, datei : MultipartFile) : ResponseEntity<EntityModel<Void>>
+        +postRequirements(project : String, tailoring : String, file : MultipartFile) : ResponseEntity<EntityModel<Void>>
         +deleteTailoring(project : String, tailoring : String): ResponseEntity<EntityModel<Void>>
         +getNotes(project : String, tailoring : String): ResponseEntity<CollectionModel<NoteResource>>
         +getNote(project : String, tailoring : String, note: Integer): ResponseEntity<EntityModel<NoteResource>>
