@@ -246,13 +246,13 @@ public class ProjectController {
         @ApiResponse(
             responseCode = "412", description = "Project name already exists")
     })
-    @PostMapping(value = PROJECT, produces = {"application/hal+json"})
+    @PostMapping(value = PROJECT, consumes = { MediaType.MULTIPART_FORM_DATA_VALUE }, produces = {"application/hal+json"})
     public ResponseEntity<EntityModel<ProjectResource>> copyProject(
         @Parameter(description = "Project identifier") @PathVariable String project,
-        @Parameter(description = "Raw data of screeningsheet") @RequestPart("datei") MultipartFile screeningSheet) throws IOException {
+        @Parameter(description = "Raw data of screeningsheet") MultipartFile file) throws IOException {
         log.traceEntry();
 
-        ResponseEntity<EntityModel<ProjectResource>> result = projectService.copyProject(project, screeningSheet.getBytes())
+        ResponseEntity<EntityModel<ProjectResource>> result = projectService.copyProject(project, file.getBytes())
             .map(copiedProject -> ResponseEntity
                 .created(mapper.createLink(ResourceMapper.REL_SELF, PROJECT, Map.of("project", copiedProject.getIdentifier())).toUri())
                 .body(of(mapper.toResource(PathContext.builder(), copiedProject))))

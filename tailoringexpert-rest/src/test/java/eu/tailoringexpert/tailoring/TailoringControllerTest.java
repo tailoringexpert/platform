@@ -419,7 +419,7 @@ class TailoringControllerTest {
             data = is.readAllBytes();
         }
 
-        MockMultipartFile dokument = new MockMultipartFile("datei", "DUMMY_CM.pdf",
+        MockMultipartFile dokument = new MockMultipartFile("file", "DUMMY_CM.pdf",
             "text/plain", data);
 
         Tailoring tailoring = Tailoring.builder()
@@ -458,7 +458,7 @@ class TailoringControllerTest {
             data = is.readAllBytes();
         }
 
-        MockMultipartFile dokument = new MockMultipartFile("datei", "DUMMY_CM.pdf",
+        MockMultipartFile dokument = new MockMultipartFile("file", "DUMMY_CM.pdf",
             "text/plain", data);
 
         File toSave = File.builder().name("DUMMY_CM.pdf").data(data).build();
@@ -909,7 +909,7 @@ class TailoringControllerTest {
     @Test
     void postRequirements_FileEmpty_StateAccepted() throws Exception {
         // arrange
-        MockMultipartFile dokument = new MockMultipartFile("datei", "DUMMY_CM.pdf",
+        MockMultipartFile dokument = new MockMultipartFile("file", "DUMMY_CM.pdf",
             "text/plain", (byte[]) null);
         // act
         ResultActions actual = mockMvc.perform(multipart("/project/{project}/tailoring/{tailoring}/requirement/import", "SAMPLE", "master")
@@ -926,7 +926,7 @@ class TailoringControllerTest {
     @Test
     void postRequirements_FileNotEmpty_StateAccepted() throws Exception {
         // arrange
-        MockMultipartFile dokument = new MockMultipartFile("datei", "DUMMY_CM.pdf",
+        MockMultipartFile dokument = new MockMultipartFile("file", "DUMMY_CM.pdf",
             "text/plain", "Excel Import File".getBytes(UTF_8));
         // act
         ResultActions actual = mockMvc.perform(multipart("/project/{project}/tailoring/{tailoring}/requirement/import", "SAMPLE", "master")

@@ -211,7 +211,7 @@ public class RequirementController {
         @Parameter(description = "Tailoring name") @PathVariable String tailoring,
         @Parameter(description = "Chapter number") @PathVariable String chapter,
         @Parameter(description = "Position of requirements after that the new requirement shall be inserted") @PathVariable String requirement,
-        @Parameter(description = "Text of new requirement") @RequestBody String text) {
+        @Parameter(description = "Text of new requirement") @RequestParam String text) {
         log.traceEntry();
 
         PathContextBuilder pathContext = PathContext.builder()
