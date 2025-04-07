@@ -27,12 +27,33 @@
             background-color: rgb(210, 233, 255)
         }
 
+        .notapplicable {
+            background-color: LightBlue;
+        }
+
         .kapitelEbene1 {
             background-color: LightBlue;
         }
         .kapitelEbene2 {
             background-color: LightGreen;
         }
+
+        .kapitelEbene3 {
+            background-color: LightGreen;
+        }
+
+        .kapitelEbene4 {
+            background-color: LightGreen;
+        }
+
+        .kapitelEbene5 {
+            background-color: LightGreen;
+        }
+
+        .kapitelEbene6 {
+            background-color: LightGreen;
+        }
+
     </style>
     <bookmarks>
         <bookmark name="Introduction" href="#introduction"/>
@@ -203,12 +224,12 @@
         </tr>
         </thead>
         <tbody>
-        <tr th:each="chapter : ${chapters}" th:if="${not chapter.requirement}" th:classappend="${chapter.level<3}?'kapitelEbene' + ${chapter.level}">
+        <tr th:each="chapter : ${chapters}" th:if="${not chapter.requirement}"  th:classappend="${not chapter.applicable ? 'notapplicable': ''}">
             <td th:utext="${chapter.number}">Referenz</td>
-            <td th:utext="${chapter.name}" th:attrappend="colspan=${chapter.level<3}?4">Position</td>
-            <td th:if="${chapter.level}>2"></td>
-            <td th:if="${chapter.level}>2"></td>
-            <td th:if="${chapter.level}>2"></td>
+            <td th:utext="${chapter.name}" th:attrappend="colspan=${not chapter.applicable}?4">Position</td>
+            <td th:if="${chapter.applicable}"></td>
+            <td th:if="${chapter.applicable}"></td>
+            <td th:if="${chapter.applicable}"></td>
         </tr>
         </tbody>
     </table>
