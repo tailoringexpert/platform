@@ -83,7 +83,7 @@
         <maven.compiler.target>${java.version}</maven.compiler.target>
         <maven.javadoc.skip>true</maven.javadoc.skip>
         <license.licenseName>gpl_v3</license.licenseName>
-        <platform.version>0.1.5-SNAPSHOT</platform.version>
+        <platform.version>0.1.5</platform.version>
 
         <jacoco.version>0.8.7</jacoco.version>
         <junit-jupiter.version>5.12.1</junit-jupiter.version>
