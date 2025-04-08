@@ -44,7 +44,7 @@ class TenantRequirementModifiablePredicateTest {
         this.defaultPredicate = mock(RequirementModifiablePredicate.class);
         this.tenantPredicate = mock(RequirementModifiablePredicate.class);
         this.predicate = new TenantRequirementModifiablePredicate(
-            Map.of("PLATTFORM", tenantPredicate),
+            Map.of("PLATFORM", tenantPredicate),
             this.defaultPredicate
         );
     }
@@ -65,7 +65,7 @@ class TenantRequirementModifiablePredicateTest {
     @Test
     void test_TenantExists_TenantPredicateCalled() {
         // arrange
-        TenantContext.setCurrentTenant("PLATTFORM");
+        TenantContext.setCurrentTenant("PLATFORM");
 
         // act
         predicate.test("SAMPLE", "master");

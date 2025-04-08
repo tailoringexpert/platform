@@ -122,6 +122,7 @@ public class TailoringCatalogPDFDocumentCreator implements DocumentCreator {
             .text(templateEngine.toXHTML(chapter.getNumber() + " " + chapter.getName(), emptyMap()))
             .chapter(chapter.getNumber())
             .applicable(true)
+            .level(level)
             .build());
         chapter.getRequirements()
             .forEach(requirement -> addRequirement(requirement, rows, placeholders));

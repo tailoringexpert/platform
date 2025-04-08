@@ -41,13 +41,15 @@ import java.util.Collections;
 import java.util.Map;
 
 import static eu.tailoringexpert.domain.ResourceMapper.BASECATALOG;
+import static eu.tailoringexpert.domain.ResourceMapper.BASECATALOG_CONVERT_EXCEL;
+import static eu.tailoringexpert.domain.ResourceMapper.BASECATALOG_PREVIEW_PDF;
 import static eu.tailoringexpert.domain.ResourceMapper.PROJECTS;
 import static eu.tailoringexpert.domain.ResourceMapper.SCREENINGSHEET;
 import static eu.tailoringexpert.domain.ResourceMapper.SELECTIONVECTOR_PROFILE;
 import static org.springframework.hateoas.CollectionModel.empty;
 
 /**
- * REST-Controller for providing main rels of plattform.
+ * REST-Controller for providing main rels of platform.
  *
  * @author Michael Bädorf
  */
@@ -75,7 +77,9 @@ public class AppController {
                     mapper.createLink("catalog", BASECATALOG, parameter),
                     mapper.createLink("project", PROJECTS, parameter),
                     mapper.createLink("screeningsheet", SCREENINGSHEET, parameter),
-                    mapper.createLink("selectionvector", SELECTIONVECTOR_PROFILE, parameter)
+                    mapper.createLink("selectionvector", SELECTIONVECTOR_PROFILE, parameter),
+                    mapper.createLink("catalogconversion", BASECATALOG_CONVERT_EXCEL, parameter),
+                    mapper.createLink("catalogpreview", BASECATALOG_PREVIEW_PDF, parameter)
                 )
             );
 

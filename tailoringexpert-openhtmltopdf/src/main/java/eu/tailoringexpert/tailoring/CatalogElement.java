@@ -62,4 +62,9 @@ public class CatalogElement {
      * State if element shall be shown.
      */
     private boolean applicable;
+
+    /**
+     * Level of element in chapter tree.
+     */
+    private int level;
 }

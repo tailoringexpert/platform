@@ -28,7 +28,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.junit.jupiter.SpringJUnitConfig;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.io.IOException;
 import java.util.Arrays;
 import java.util.Collection;
 
@@ -45,7 +44,7 @@ class ParameterRepositoryTest {
     ParameterRepository repository;
 
     @Test
-    void findByNameIn_2ParameterInListExists_ListWithParameterReturned() throws IOException {
+    void findByNameIn_2ParameterInListExists_ListWithParameterReturned() {
         // arrange
         repository.save(ParameterEntity.builder()
             .label("Produkttyp")

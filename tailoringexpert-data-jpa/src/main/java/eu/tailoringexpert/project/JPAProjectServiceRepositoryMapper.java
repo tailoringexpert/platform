@@ -105,7 +105,7 @@ public abstract class JPAProjectServiceRepositoryMapper {
     abstract ScreeningSheet getScreeningSheet(ScreeningSheetEntity entity);
 
     BaseCatalogEntity resolve(Catalog<BaseRequirement> domain) {
-        return nonNull(domain) ? baseCatalogRepository.findByVersion(domain.getVersion()) : null;
+        return nonNull(domain) ? baseCatalogRepository.findByVersion(domain.getVersion(), BaseCatalogEntity.class) : null;
     }
 
     LogoEntity resolve(Logo domain) {

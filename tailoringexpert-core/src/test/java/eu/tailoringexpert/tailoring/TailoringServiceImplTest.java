@@ -942,7 +942,7 @@ class TailoringServiceImplTest {
     }
 
     @Test
-    void updateImportedRequirements_TailoringNull_NullPointerExceptionThrown() throws IOException {
+    void updateImportedRequirements_TailoringNull_NullPointerExceptionThrown() {
         // arrange
         String project = "DUMMY";
         String tailoring = null;
@@ -1077,7 +1077,7 @@ class TailoringServiceImplTest {
 
 
     @Test
-    void deleteTailoring_ProjectNull_NullPointerExceptionThrown() throws IOException {
+    void deleteTailoring_ProjectNull_NullPointerExceptionThrown() {
         // arrange
         String project = null;
         String tailoring = null;
@@ -1090,7 +1090,7 @@ class TailoringServiceImplTest {
     }
 
     @Test
-    void deleteTailoring_TailoringNull_NullPointerExceptionThrown() throws IOException {
+    void deleteTailoring_TailoringNull_NullPointerExceptionThrown() {
         // arrange
         String project = "DUMMY";
         String tailoring = null;
@@ -1103,7 +1103,7 @@ class TailoringServiceImplTest {
     }
 
     @Test
-    void deleteTailoring_TailoringNotExist_NoProcessingEmptyReturned() throws IOException {
+    void deleteTailoring_TailoringNotExist_NoProcessingEmptyReturned() {
         // arrange
         String project = "DUMMY";
         String tailoring = "master";
@@ -1120,7 +1120,7 @@ class TailoringServiceImplTest {
     }
 
     @Test
-    void deleteTailoring_TailoringExistsTailoringDeletable_TrueReturned() throws IOException {
+    void deleteTailoring_TailoringExistsTailoringDeletable_TrueReturned() {
         // arrange
         String project = "DUMMY";
         String tailoring = "master";
@@ -1144,7 +1144,7 @@ class TailoringServiceImplTest {
     }
 
     @Test
-    void deleteTailoring_TailoringExistsTailoringNotDeletable_FalseReturned() throws IOException {
+    void deleteTailoring_TailoringExistsTailoringNotDeletable_FalseReturned() {
         // arrange
         String project = "DUMMY";
         String tailoring = "master";
@@ -1166,7 +1166,7 @@ class TailoringServiceImplTest {
     }
 
     @Test
-    void deleteTailoring_TailoringExistsStateAgreed_FalseReturned() throws IOException {
+    void deleteTailoring_TailoringExistsStateAgreed_FalseReturned() {
         // arrange
         String project = "DUMMY";
         String tailoring = "master";

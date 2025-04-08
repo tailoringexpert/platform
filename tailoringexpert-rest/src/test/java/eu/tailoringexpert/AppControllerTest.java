@@ -40,7 +40,6 @@ import org.springframework.http.converter.json.Jackson2ObjectMapperBuilder;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.test.web.servlet.MockMvc;
 
-import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Collections;
 import java.util.Map;
@@ -67,7 +66,7 @@ class AppControllerTest {
     MockMvc mockMvc;
 
     @BeforeEach
-    void setup() throws IOException {
+    void setup() {
         this.mapperMock = mock(ResourceMapper.class);
 
         this.objectMapper = Jackson2ObjectMapperBuilder.json()

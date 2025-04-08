@@ -100,6 +100,7 @@ public abstract class ResourceMapper {
     public static final String BASECATALOG_VERSION_JSON = "catalog/{version}/json";
     public static final String BASECATALOG_VERSION_EXCEL = "catalog/{version}/excel";
     public static final String BASECATALOG_CONVERT_EXCEL = "catalog/convert/excel";
+    public static final String BASECATALOG_PREVIEW_PDF = "catalog/preview";
     public static final String BASECATALOG_VALIDUNTIL = "catalog/{version}/validuntil/{validuntil}";
     public static final String BASECATALOG_VERSION_DOCUMENT = "catalog/{version}/document";
 
@@ -247,7 +248,7 @@ public abstract class ResourceMapper {
         Map<String, String> parameter = context.parameter();
         resource.links(asList(
             createLink(REL_SELF, self, parameter),
-            createLink("datei", file, parameter))
+            createLink("file", file, parameter))
         );
     }
 

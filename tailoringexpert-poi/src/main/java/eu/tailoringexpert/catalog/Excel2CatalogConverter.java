@@ -21,11 +21,13 @@
  */
 package eu.tailoringexpert.catalog;
 
+import eu.tailoringexpert.TailoringexpertException;
 import eu.tailoringexpert.domain.BaseRequirement;
 import eu.tailoringexpert.domain.Catalog;
 import eu.tailoringexpert.domain.Chapter;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
+import lombok.SneakyThrows;
 import lombok.extern.log4j.Log4j2;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
@@ -50,6 +52,7 @@ public class Excel2CatalogConverter implements Function<byte[], Catalog<BaseRequ
      * {@inheritDoc}
      */
     @Override
+    @SneakyThrows
     public Catalog<BaseRequirement> apply(byte[] data) {
         log.traceEntry();
 
@@ -65,11 +68,12 @@ public class Excel2CatalogConverter implements Function<byte[], Catalog<BaseRequ
             log.traceExit();
 
             return result.build();
+
         } catch (Exception e) {
-            log.catching(e);
+            throw log.throwing(e);
+        } finally {
+            log.traceExit();
         }
-        log.traceExit();
-        return null;
     }
 
 }

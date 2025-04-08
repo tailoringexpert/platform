@@ -22,6 +22,7 @@
 package eu.tailoringexpert.tailoring;
 
 
+@SuppressWarnings({"java:S115"})
 public enum ScreeningSheetDataProviderSupplier {
 
     Produkttyp("produkttyp"),

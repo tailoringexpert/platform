@@ -1,6 +1,6 @@
 # tailoringexpert-rest
 
-Module for providing REST Service of tailoringexpert plattform.
+Module for providing REST Service of tailoringexpert platform.
 
 ## Unittest
 

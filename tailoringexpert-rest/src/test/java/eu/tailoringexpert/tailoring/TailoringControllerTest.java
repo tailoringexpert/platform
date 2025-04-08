@@ -71,7 +71,6 @@ import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 
-import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Paths;
 import java.text.SimpleDateFormat;
@@ -106,13 +105,7 @@ import static org.springframework.hateoas.MediaTypes.HAL_JSON_VALUE;
 import static org.springframework.http.HttpHeaders.ACCESS_CONTROL_EXPOSE_HEADERS;
 import static org.springframework.http.HttpHeaders.CONTENT_DISPOSITION;
 import static org.springframework.http.HttpHeaders.CONTENT_TYPE;
-import static org.springframework.http.MediaType.APPLICATION_JSON;
-import static org.springframework.http.MediaType.APPLICATION_OCTET_STREAM;
-import static org.springframework.http.MediaType.APPLICATION_PDF;
-import static org.springframework.http.MediaType.IMAGE_JPEG;
-import static org.springframework.http.MediaType.IMAGE_PNG;
-import static org.springframework.http.MediaType.MULTIPART_FORM_DATA;
-import static org.springframework.http.MediaType.TEXT_PLAIN_VALUE;
+import static org.springframework.http.MediaType.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.multipart;
@@ -137,7 +130,7 @@ class TailoringControllerTest {
     MockMvc mockMvc;
 
     @BeforeEach
-    void setup() throws IOException {
+    void setup() {
         this.serviceMock = mock(TailoringService.class);
         this.repositoryMock = mock(TailoringServiceRepository.class);
         this.attachmentServiceMock = mock(AttachmentService.class);
@@ -225,7 +218,7 @@ class TailoringControllerTest {
         given(serviceMock.getChapter("SAMPLE", "master", "1.1")).willReturn(empty());
 
         // act
-        ResultActions actual = mockMvc.perform(get("/project/{project}/tailoring/{tailoring}/catalog/{chapter}/", "SAMPLE", "master", "1.1"));
+        ResultActions actual = mockMvc.perform(get("/project/{project}/tailoring/{tailoring}/catalog/{chapter}", "SAMPLE", "master", "1.1"));
 
         // assert
         actual.andExpect(status().isNotFound());
@@ -248,7 +241,7 @@ class TailoringControllerTest {
             .willReturn(TailoringCatalogChapterResource.builder().build());
 
         // act
-        ResultActions actual = mockMvc.perform(get("/project/{project}/tailoring/{tailoring}/catalog/{chapter}/", "SAMPLE", "master", "1.1")
+        ResultActions actual = mockMvc.perform(get("/project/{project}/tailoring/{tailoring}/catalog/{chapter}", "SAMPLE", "master", "1.1")
             .accept(HAL_JSON_VALUE)
         );
 
@@ -426,7 +419,7 @@ class TailoringControllerTest {
             data = is.readAllBytes();
         }
 
-        MockMultipartFile dokument = new MockMultipartFile("datei", "DUMMY_CM.pdf",
+        MockMultipartFile dokument = new MockMultipartFile("file", "DUMMY_CM.pdf",
             "text/plain", data);
 
         Tailoring tailoring = Tailoring.builder()
@@ -465,7 +458,7 @@ class TailoringControllerTest {
             data = is.readAllBytes();
         }
 
-        MockMultipartFile dokument = new MockMultipartFile("datei", "DUMMY_CM.pdf",
+        MockMultipartFile dokument = new MockMultipartFile("file", "DUMMY_CM.pdf",
             "text/plain", data);
 
         File toSave = File.builder().name("DUMMY_CM.pdf").data(data).build();
@@ -676,8 +669,8 @@ class TailoringControllerTest {
         // act
         ResultActions actual = mockMvc.perform(put("/project/{project}/tailoring/{tailoring}/name", "SAMPLE", "master")
             .accept(HAL_JSON_VALUE)
-            .content(objectMapper.writeValueAsString("test"))
-            .contentType(APPLICATION_JSON)
+            .param("name", "test")
+            .contentType(APPLICATION_FORM_URLENCODED_VALUE)
             .characterEncoding(UTF_8.displayName())
         );
 
@@ -698,8 +691,8 @@ class TailoringControllerTest {
         // act
         ResultActions actual = mockMvc.perform(put("/project/{project}/tailoring/{tailoring}/name", "SAMPLE", "master")
             .accept(HAL_JSON_VALUE)
-            .content(objectMapper.writeValueAsString("test"))
-            .contentType(APPLICATION_JSON)
+            .param("name", "test")
+            .contentType(APPLICATION_FORM_URLENCODED_VALUE)
             .characterEncoding(UTF_8.displayName()));
 
         // assert
@@ -916,7 +909,7 @@ class TailoringControllerTest {
     @Test
     void postRequirements_FileEmpty_StateAccepted() throws Exception {
         // arrange
-        MockMultipartFile dokument = new MockMultipartFile("datei", "DUMMY_CM.pdf",
+        MockMultipartFile dokument = new MockMultipartFile("file", "DUMMY_CM.pdf",
             "text/plain", (byte[]) null);
         // act
         ResultActions actual = mockMvc.perform(multipart("/project/{project}/tailoring/{tailoring}/requirement/import", "SAMPLE", "master")
@@ -933,7 +926,7 @@ class TailoringControllerTest {
     @Test
     void postRequirements_FileNotEmpty_StateAccepted() throws Exception {
         // arrange
-        MockMultipartFile dokument = new MockMultipartFile("datei", "DUMMY_CM.pdf",
+        MockMultipartFile dokument = new MockMultipartFile("file", "DUMMY_CM.pdf",
             "text/plain", "Excel Import File".getBytes(UTF_8));
         // act
         ResultActions actual = mockMvc.perform(multipart("/project/{project}/tailoring/{tailoring}/requirement/import", "SAMPLE", "master")
@@ -1108,8 +1101,9 @@ class TailoringControllerTest {
 
         // act
         ResultActions actual = mockMvc.perform(post("/project/{project}/tailoring/{tailoring}/note", "SAMPLE", "master")
-            .content("Hello")
-            .contentType(TEXT_PLAIN_VALUE)
+            .param("note", "Hello")
+            .contentType(APPLICATION_FORM_URLENCODED_VALUE)
+            .characterEncoding(UTF_8.displayName())
         );
 
         // assert
@@ -1125,8 +1119,9 @@ class TailoringControllerTest {
 
         // act
         ResultActions actual = mockMvc.perform(post("/project/{project}/tailoring/{tailoring}/note", "SAMPLE", "master")
-            .contentType("text/plain")
-            .content("Hello")
+            .param("note", "Hello")
+            .contentType(APPLICATION_FORM_URLENCODED)
+            .characterEncoding(UTF_8.displayName())
         );
 
         // assert

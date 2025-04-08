@@ -41,7 +41,6 @@ import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.net.URISyntaxException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -68,7 +67,7 @@ class BaseCatalogExcelDocumentCreatorTest {
     private BaseCatalogExcelDocumentCreator creator;
 
     @BeforeEach
-    void setup() throws URISyntaxException {
+    void setup() {
         this.objectMapper = new ObjectMapper();
         this.objectMapper.registerModules(new ParameterNamesModule(), new JavaTimeModule(), new Jdk8Module());
         this.objectMapper.disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES);
@@ -147,7 +146,7 @@ class BaseCatalogExcelDocumentCreatorTest {
             catalog = objectMapper.readValue(is, new TypeReference<Catalog<BaseRequirement>>() {
             });
         }
-        BaseCatalogExcelDocumentCreator creator = new BaseCatalogExcelDocumentCreator(
+        BaseCatalogExcelDocumentCreator noMocksCreator = new BaseCatalogExcelDocumentCreator(
             new RequirementSheetCreator(),
             new DRDSheetCreator(),
             new LogoSheetCreator()
@@ -156,7 +155,7 @@ class BaseCatalogExcelDocumentCreatorTest {
         Map<String, Object> parameter = new HashMap<>();
 
         // act
-        File actual = creator.createDocument("4711", catalog, parameter);
+        File actual = noMocksCreator.createDocument("4711", catalog, parameter);
 
         // assert
         assertThat(actual).isNotNull();

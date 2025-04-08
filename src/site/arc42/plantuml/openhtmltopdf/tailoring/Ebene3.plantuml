@@ -29,9 +29,11 @@ package tailoring {
 
 
     class CMElement {
-        -levek : int
-        -nummbr : String
+        -level : int
+        -number : String
         -name : String
+        -requirement : boolean
+        -applicable : boolean
     }
 
 
@@ -57,6 +59,7 @@ package tailoring {
         -chapter : String
         -text : String
         -applicable : boolean
+        -level : int
     }
 
 

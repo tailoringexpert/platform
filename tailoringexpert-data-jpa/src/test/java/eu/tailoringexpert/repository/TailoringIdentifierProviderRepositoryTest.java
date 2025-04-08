@@ -30,7 +30,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.junit.jupiter.SpringJUnitConfig;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.io.IOException;
 import java.util.Arrays;
 
 import static eu.tailoringexpert.domain.ProjectState.ONGOING;
@@ -52,7 +51,7 @@ class TailoringIdentifierProviderRepositoryTest {
 
 
     @Test
-    void findTailoringIdentifier_TailoringExists_StateReturned() throws IOException {
+    void findTailoringIdentifier_TailoringExists_StateReturned() {
         // arrange
         ProjectEntity project = ProjectEntity.builder()
             .identifier("SAMPLE")
@@ -80,7 +79,7 @@ class TailoringIdentifierProviderRepositoryTest {
     }
 
     @Test
-    void findTailoringIdentifier_TailoringNotExists_NullReturned() throws IOException {
+    void findTailoringIdentifier_TailoringNotExists_NullReturned() {
         // arrange
         ProjectEntity project = ProjectEntity.builder()
             .identifier("SAMPLE")

@@ -29,7 +29,6 @@ import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.fasterxml.jackson.module.paramnames.ParameterNamesModule;
 import com.openhtmltopdf.extend.FSDOMMutator;
 import eu.tailoringexpert.FileSaver;
-import eu.tailoringexpert.KatalogWebServerPortConsumer;
 import eu.tailoringexpert.domain.File;
 import eu.tailoringexpert.domain.DocumentSignature;
 import eu.tailoringexpert.domain.DocumentSignatureState;
@@ -82,7 +81,6 @@ class TailoringCatalogPDFDocumentCreatorTest {
 
     static int mockServerPort = 1080;
     static MockServerClient mockServer;
-    KatalogWebServerPortConsumer webServerPortConsumer;
     String templateHome;
     String assetHome;
     DRDProvider drdProviderMock;
@@ -109,8 +107,6 @@ class TailoringCatalogPDFDocumentCreatorTest {
         this.objectMapper = new ObjectMapper();
         this.objectMapper.registerModules(new ParameterNamesModule(), new JavaTimeModule(), new Jdk8Module());
         this.objectMapper.disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES);
-
-        this.webServerPortConsumer = new KatalogWebServerPortConsumer(mockServerPort);
 
         this.fileSaver = new FileSaver("target");
 
@@ -159,7 +155,6 @@ class TailoringCatalogPDFDocumentCreatorTest {
             catalog = objectMapper.readValue(is, new TypeReference<Catalog<TailoringRequirement>>() {
             });
         }
-        webServerPortConsumer.accept(catalog);
 
         Collection<DocumentSignature> zeichnungen = of(
             DocumentSignature.builder()

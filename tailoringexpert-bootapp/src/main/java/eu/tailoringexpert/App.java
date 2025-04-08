@@ -85,7 +85,6 @@ public class App {
         final PropertySourcesPlaceholderConfigurer result = new PropertySourcesPlaceholderConfigurer();
         result.setOrder(0);
         result.setIgnoreUnresolvablePlaceholders(false);
-        result.setNullValue("@null");
         return result;
     }
 

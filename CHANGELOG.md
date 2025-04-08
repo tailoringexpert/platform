@@ -1,14 +1,50 @@
 # Changelog
 
-## [v0.1.4](https://github.com/tailoringexpert/platform/tree/v0.1.4) (03.06.2024)
+## [v0.1.5](https://github.com/tailoringexpert/platform/tree/v0.1.5) (04.08.2025)
+
+[Full Changelog](https://github.com/tailoringexpert/platform/compare/v0.1.4...v0.1.5)
+
+**Implemented enhancements:**
+
+- Add state to CM dataelement to mark as applicable [\#384](https://github.com/tailoringexpert/platform/issues/384)
+- Change parameter names of file uploads to "file" [\#379](https://github.com/tailoringexpert/platform/issues/379)
+- Parametertypes for updating tailoringname, notes and requirement text [\#376](https://github.com/tailoringexpert/platform/issues/376)
+- Add \(chapter\) level information for document generation [\#375](https://github.com/tailoringexpert/platform/issues/375)
+- BaseCatalog.findByVersion shall be more generic [\#374](https://github.com/tailoringexpert/platform/issues/374)
+- Provide primevue optimized mixin for TailoringCatalogChapterResource [\#370](https://github.com/tailoringexpert/platform/issues/370)
+- Provide row number of failed excel chapter row to be converted to json [\#364](https://github.com/tailoringexpert/platform/issues/364)
+- Sonar [\#360](https://github.com/tailoringexpert/platform/issues/360)
+- Mark chapters with a applicable as header in Excel CM [\#387](https://github.com/tailoringexpert/platform/issues/387)
+
+**Fixed bugs:**
+
+- spring boot maven plugin upgrade issue [\#354](https://github.com/tailoringexpert/platform/issues/354)
+
+**Closed issues:**
+
+- Cleanup: plattform -\> platform [\#371](https://github.com/tailoringexpert/platform/issues/371)
+- JDK23 [\#359](https://github.com/tailoringexpert/platform/issues/359)
+- Add maven container image name to Jenkinsfile [\#358](https://github.com/tailoringexpert/platform/issues/358)
+- jacoco configuration [\#357](https://github.com/tailoringexpert/platform/issues/357)
+- Add tailoringexpert repository [\#335](https://github.com/tailoringexpert/platform/issues/335)
+- Rollback version number to 0.1.5 [\#319](https://github.com/tailoringexpert/platform/issues/319)
+- Interface for deletion of unused basecatalogs [\#309](https://github.com/tailoringexpert/platform/issues/309)
+- Provide interface for preview of json basecatalogs [\#303](https://github.com/tailoringexpert/platform/issues/303)
+- \(Possible\) Adaptions of REST Service interfaces to optimize/simplify web representation [\#295](https://github.com/tailoringexpert/platform/issues/295)
+
+## [v0.1.4](https://github.com/tailoringexpert/platform/tree/v0.1.4) (03.07.2024)
 
 [Full Changelog](https://github.com/tailoringexpert/platform/compare/v0.1.3...v0.1.4)
 
 **Implemented enhancements:**
 
+- Storage of tailoring attachments [\#286](https://github.com/tailoringexpert/platform/issues/286)
 - Implement basecatalog Excel to JSON interface [\#283](https://github.com/tailoringexpert/platform/issues/283)
 - Create basecatalog Excel export [\#282](https://github.com/tailoringexpert/platform/issues/282)
-- Storage of tailoring attachments [\#286](https://github.com/tailoringexpert/platform/issues/286)
+
+**Closed issues:**
+
+- v0.1.4 release preparation [\#287](https://github.com/tailoringexpert/platform/issues/287)
 
 ## [v0.1.3](https://github.com/tailoringexpert/platform/tree/v0.1.3) (01.29.2024)
 

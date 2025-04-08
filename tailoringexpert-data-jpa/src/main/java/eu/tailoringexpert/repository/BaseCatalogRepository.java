@@ -48,10 +48,11 @@ public interface BaseCatalogRepository extends JpaRepository<BaseCatalogEntity, 
      * Load a dedicated base catalog.
      *
      * @param version version of base catalog to load
+     * @param <T> clz type of query result ot return
      * @return loaded base catalog
      */
     @Cacheable(CACHE_BASECATALOG)
-    BaseCatalogEntity findByVersion(String version);
+    <T> T findByVersion(String version, Class<T> clz);
 
     /**
      * Loads "pure" version and validities of all defined base catalogs.
@@ -99,6 +100,13 @@ public interface BaseCatalogRepository extends JpaRepository<BaseCatalogEntity, 
     @Query("update #{#entityName} c set c.validUntil=:validUntil where c.version=:version")
     @CacheEvict(value = {CACHE_BASECATALOGLIST, CACHE_BASECATALOG}, allEntries = true)
     int setValidUntilForVersion(@Param("version") String version, @Param("validUntil") ZonedDateTime pointOfTime);
+
+    /**
+     * Deletes the requested base catalog version.
+     *
+     * @param version version of base catalog to delete
+     */
+    void deleteByVersion(String version);
 
 
 }

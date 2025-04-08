@@ -100,6 +100,7 @@ import static org.springframework.http.MediaType.APPLICATION_PDF;
 import static org.springframework.http.MediaType.IMAGE_JPEG;
 import static org.springframework.http.MediaType.IMAGE_PNG;
 import static org.springframework.http.MediaType.MULTIPART_FORM_DATA;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.multipart;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -535,6 +536,66 @@ class CatalogControllerTest {
         actual.andExpect(status().isOk());
 
         verify(serviceMock, times(1)).doConvert(data);
+    }
+
+    @Test
+    void postBaseCatalogPreview_FileNotEmpty_StateOk() throws Exception {
+
+        Catalog<BaseRequirement> catalog = Catalog.<BaseRequirement>builder().version("8.3.0").build();
+        given(serviceMock.createDocuments(catalog))
+            .willReturn(of(File.builder()
+                .name("preview.zip")
+                .data("dummy".getBytes(UTF_8))
+                .build()));
+
+        given(mediaTypeProviderMock.apply("zip"))
+            .willReturn(APPLICATION_OCTET_STREAM);
+
+        // act
+        ResultActions actual = mockMvc.perform(post("/catalog/preview")
+            .content(objectMapper.writeValueAsString(catalog))
+            .contentType(APPLICATION_JSON)
+            .characterEncoding(StandardCharsets.UTF_8.displayName())
+        );
+
+        // assert
+        actual.andExpect(status().isOk())
+            .andExpect(header().string(CONTENT_DISPOSITION, ContentDisposition.builder(FORM_DATA).name(ATTACHMENT).filename("preview.zip").build().toString()))
+            .andExpect(header().string(ACCESS_CONTROL_EXPOSE_HEADERS, CONTENT_DISPOSITION))
+            .andExpect(content().contentType(APPLICATION_OCTET_STREAM))
+            .andExpect(content().bytes("dummy".getBytes(UTF_8)));
+
+        verify(serviceMock, times(1)).createDocuments(catalog);
+    }
+
+    @Test
+    void deleteCatalog_NonExistingCatalog_StateNotFound() throws Exception {
+        // arrange
+        given(serviceMock.deleteCatalog("8.3")).willReturn(empty());
+
+        // act
+
+        ResultActions actual = mockMvc.perform(delete("/catalog/{version}", "8.3"));
+
+        // assert
+        actual.andExpect(status().isNotFound());
+
+        verify(serviceMock, times(1)).deleteCatalog("8.3");
+    }
+
+    @Test
+    void deleteCatalog_ExistingCatalog_StateOk() throws Exception {
+        // arrange
+        given(serviceMock.deleteCatalog("8.3")).willReturn(of(Boolean.TRUE));
+
+        // act
+
+        ResultActions actual = mockMvc.perform(delete("/catalog/{version}", "8.3"));
+
+        // assert
+        actual.andExpect(status().isOk());
+
+        verify(serviceMock, times(1)).deleteCatalog("8.3");
     }
 }
 

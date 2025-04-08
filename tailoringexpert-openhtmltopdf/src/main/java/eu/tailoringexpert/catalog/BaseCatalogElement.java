@@ -45,6 +45,10 @@ public class BaseCatalogElement {
      */
 
     private String position;
+
+    /**
+     *
+     */
     private String chapter;
 
     /**
@@ -61,4 +65,9 @@ public class BaseCatalogElement {
      * Phases the requirement belongs to.
      */
     private Collection<String> phases;
+
+    /**
+     * Level of element in chapter tree.
+     */
+    private int level;
 }

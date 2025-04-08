@@ -25,6 +25,7 @@ package catalog {
         +getBaseCatalogExcel(version : String) : ResponseEntity<byte[]>
         +getBaseCatalogJson(version : String) : ResponseEntity<byte[]>
         +getDocuments(version : String) : ResponseEntity<byte[]>
+        +postBaseCatalogPreview(catalog : Catalog<BaseRequirement) : ResponseEntity<byte[]>
     }
 
 

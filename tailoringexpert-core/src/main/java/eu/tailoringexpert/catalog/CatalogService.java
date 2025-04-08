@@ -73,6 +73,14 @@ public interface CatalogService {
     /**
      * Creates printable version of base catalog.
      *
+     * @param catalog base catalog data to create document of
+     * @return If base catalog availabe, a printable document, else empty
+     */
+    Optional<File> createDocuments(Catalog<BaseRequirement> catalog);
+
+    /**
+     * Creates printable version of base catalog.
+     *
      * @param version Version of base catalog to create document
      * @return If base catalog availabe, a printable document, else empty
      */
@@ -102,4 +110,12 @@ public interface CatalogService {
      * @return Base Information of limited catalog
      */
     Optional<CatalogVersion> limitValidity(String version, ZonedDateTime validUntil);
+
+    /**
+     * Deletes a catalog if not used in any project
+     *
+     * @param version version to delete
+     * @return true, if deleted, in all other cases, even non-existing, false
+     */
+    Optional<Boolean> deleteCatalog(String version);
 }

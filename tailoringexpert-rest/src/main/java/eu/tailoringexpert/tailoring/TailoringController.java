@@ -57,15 +57,7 @@ import org.springframework.http.ContentDisposition;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestPart;
-import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
@@ -226,7 +218,6 @@ public class TailoringController {
             content = @Content)
     })
     @GetMapping(TAILORING_SCREENINGSHEET_PDF)
-    @ResponseBody
     public ResponseEntity<byte[]> getScreeningSheetFile(
         @Parameter(description = "Project identifier") @PathVariable String project,
         @Parameter(description = "Tailoring name") @PathVariable String tailoring) {
@@ -310,11 +301,11 @@ public class TailoringController {
             responseCode = "404", description = "Tailoring does not exist",
             content = @Content)
     })
-    @PostMapping(value = TAILORING_ATTACHMENTS, produces = {"application/hal+json"})
+    @PostMapping(value = TAILORING_ATTACHMENTS, consumes = { MediaType.MULTIPART_FORM_DATA_VALUE }, produces = {"application/hal+json"})
     public ResponseEntity<EntityModel<Void>> postFile(
         @Parameter(description = "Project identifier") @PathVariable String project,
         @Parameter(description = "Tailoring name") @PathVariable String tailoring,
-        @Parameter(description = "File to add") @RequestPart("datei") MultipartFile file) throws IOException {
+        @Parameter(description = "File to add") MultipartFile file) throws IOException {
         log.traceEntry();
 
         File toSave = File.builder().name(file.getOriginalFilename()).data(file.getBytes()).build();
@@ -348,7 +339,6 @@ public class TailoringController {
             content = @Content)
     })
     @GetMapping(TAILORING_DOCUMENT)
-    @ResponseBody
     public ResponseEntity<byte[]> getDocuments(
         @Parameter(description = "Project identifier") @PathVariable String project,
         @Parameter(description = "Tailoring name") @PathVariable String tailoring) {
@@ -377,7 +367,6 @@ public class TailoringController {
             content = @Content)
     })
     @GetMapping(TAILORING_DOCUMENT_CATALOG)
-    @ResponseBody
     public ResponseEntity<byte[]> getRequirementFile(
         @Parameter(description = "Project identifier") @PathVariable String project,
         @Parameter(description = "Tailoring name") @PathVariable String tailoring) {
@@ -406,7 +395,6 @@ public class TailoringController {
             content = @Content)
     })
     @GetMapping(TAILORING_CATALOG_CHAPTER_REQUIREMENT)
-    @ResponseBody
     public ResponseEntity<CollectionModel<EntityModel<TailoringRequirementResource>>> getRequirements(
         @Parameter(description = "Project identifier") @PathVariable String project,
         @Parameter(description = "Tailoring name") @PathVariable String tailoring,
@@ -504,7 +492,7 @@ public class TailoringController {
     public ResponseEntity<EntityModel<TailoringResource>> putName(
         @Parameter(description = "Project identifier") @PathVariable String project,
         @Parameter(description = "Tailoring name") @PathVariable String tailoring,
-        @Parameter(description = "New tailoring name") @RequestBody String name) {
+        @Parameter(description = "New tailoring name") @RequestParam String name) {
         log.traceEntry();
 
         PathContextBuilder pathContext = PathContext.builder()
@@ -551,7 +539,6 @@ public class TailoringController {
     }
 
     @GetMapping(TAILORING_ATTACHMENT)
-    @ResponseBody
     public ResponseEntity<byte[]> getAttachment(
         @Parameter(description = "Project identifier") @PathVariable String project,
         @Parameter(description = "Tailoring name") @PathVariable String tailoring,
@@ -605,7 +592,6 @@ public class TailoringController {
             content = @Content)
     })
     @GetMapping(TAILORING_COMPARE)
-    @ResponseBody
     public ResponseEntity<byte[]> getComparisonDocument(
         @Parameter(description = "Project identifier") @PathVariable String project,
         @Parameter(description = "Tailoring name") @PathVariable String tailoring) {
@@ -656,10 +642,10 @@ public class TailoringController {
     public ResponseEntity<EntityModel<Void>> postRequirements(
         @Parameter(description = "Project identifier") @PathVariable String project,
         @Parameter(description = "Tailoring name") @PathVariable String tailoring,
-        @RequestPart("datei") MultipartFile datei) throws IOException {
+        MultipartFile file) throws IOException {
         log.traceEntry();
 
-        tailoringService.updateImportedRequirements(project, tailoring, datei.getBytes());
+        tailoringService.updateImportedRequirements(project, tailoring, file.getBytes());
         ResponseEntity<EntityModel<Void>> result = ResponseEntity.accepted().build();
 
         log.traceExit();
@@ -764,11 +750,11 @@ public class TailoringController {
             responseCode = "404", description = "Tailoring does not exist",
             content = @Content)
     })
-    @PostMapping(TAILORING_NOTES)
+    @PostMapping(value = TAILORING_NOTES, consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE)
     public ResponseEntity<EntityModel<Void>> postNote(
         @Parameter(description = "Project identifier") @PathVariable String project,
         @Parameter(description = "Tailoring name") @PathVariable String tailoring,
-        @Parameter(description = "Text of note to add") @RequestBody String note) {
+        @Parameter(description = "Text of note to add") @RequestParam String note) {
         log.traceEntry();
 
         Optional<Note> addedNote = tailoringService.addNote(project, tailoring, note);

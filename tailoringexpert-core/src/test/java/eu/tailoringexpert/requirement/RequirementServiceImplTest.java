@@ -319,15 +319,15 @@ class RequirementServiceImplTest {
             .selected(FALSE)
             .build());
 
-        Chapter<TailoringRequirement> chapter1_1_1 = Chapter.<TailoringRequirement>builder()
+        Chapter<TailoringRequirement> chapter = Chapter.<TailoringRequirement>builder()
             .number("1.1.1")
             .requirements(anforderungen)
             .build();
 
         given(predicateMock.test("SAMPLE", "master")).willReturn(true);
         given(repositoryMock.getChapter("SAMPLE", "master", "1.1.1"))
-            .willReturn(of(chapter1_1_1));
-        given(repositoryMock.updateChapter("SAMPLE", "master", chapter1_1_1))
+            .willReturn(of(chapter));
+        given(repositoryMock.updateChapter("SAMPLE", "master", chapter))
             .willAnswer(invocation -> of(invocation.getArgument(2)));
 
         // act
@@ -374,15 +374,15 @@ class RequirementServiceImplTest {
             .selected(FALSE)
             .build());
 
-        Chapter<TailoringRequirement> chapter1_1_1 = Chapter.<TailoringRequirement>builder()
+        Chapter<TailoringRequirement> chapter = Chapter.<TailoringRequirement>builder()
             .number("1.1.1")
             .requirements(requirements)
             .build();
 
         given(predicateMock.test("SAMPLE", "master")).willReturn(true);
         given(repositoryMock.getChapter("SAMPLE", "master", "1.1.1"))
-            .willReturn(of(chapter1_1_1));
-        given(repositoryMock.updateChapter("SAMPLE", "master", chapter1_1_1))
+            .willReturn(of(chapter));
+        given(repositoryMock.updateChapter("SAMPLE", "master", chapter))
             .willAnswer(invocation -> of(invocation.getArgument(2)));
 
         // act
@@ -428,15 +428,15 @@ class RequirementServiceImplTest {
             .selected(FALSE)
             .build());
 
-        Chapter<TailoringRequirement> chapter1_1_1 = Chapter.<TailoringRequirement>builder()
+        Chapter<TailoringRequirement> chapter = Chapter.<TailoringRequirement>builder()
             .number("1.1.1")
             .requirements(requirements)
             .build();
 
         given(predicateMock.test("SAMPLE", "master")).willReturn(true);
         given(repositoryMock.getChapter("SAMPLE", "master", "1.1.1"))
-            .willReturn(of(chapter1_1_1));
-        given(repositoryMock.updateChapter("SAMPLE", "master", chapter1_1_1))
+            .willReturn(of(chapter));
+        given(repositoryMock.updateChapter("SAMPLE", "master", chapter))
             .willAnswer(invocation -> of(invocation.getArgument(2)));
 
         // act
@@ -477,15 +477,15 @@ class RequirementServiceImplTest {
                 .build()
         );
 
-        Chapter<TailoringRequirement> chapter1_1_1 = Chapter.<TailoringRequirement>builder()
+        Chapter<TailoringRequirement> chapter = Chapter.<TailoringRequirement>builder()
             .number("1.1.1")
             .requirements(requirements)
             .build();
 
         given(predicateMock.test("SAMPLE", "master")).willReturn(true);
         given(repositoryMock.getChapter("SAMPLE", "master", "1.1.1"))
-            .willReturn(of(chapter1_1_1));
-        given(repositoryMock.updateChapter("SAMPLE", "master", chapter1_1_1))
+            .willReturn(of(chapter));
+        given(repositoryMock.updateChapter("SAMPLE", "master", chapter))
             .willAnswer(invocation -> of(invocation.getArgument(2)));
 
         // act
@@ -580,15 +580,15 @@ class RequirementServiceImplTest {
             .selected(FALSE)
             .build());
 
-        Chapter<TailoringRequirement> chapter1_1_1 = Chapter.<TailoringRequirement>builder()
+        Chapter<TailoringRequirement> chapter = Chapter.<TailoringRequirement>builder()
             .number("1.1.1")
             .requirements(requirements)
             .build();
 
         given(predicateMock.test("SAMPLE", "master")).willReturn(true);
         given(repositoryMock.getChapter("SAMPLE", "master", "1.1.1"))
-            .willReturn(of(chapter1_1_1));
-        given(repositoryMock.updateChapter("SAMPLE", "master", chapter1_1_1))
+            .willReturn(of(chapter));
+        given(repositoryMock.updateChapter("SAMPLE", "master", chapter))
             .willAnswer(invocation -> of(invocation.getArgument(2)));
 
         // act
@@ -629,15 +629,15 @@ class RequirementServiceImplTest {
             .selected(FALSE)
             .build());
 
-        Chapter<TailoringRequirement> chapter1_1_1 = Chapter.<TailoringRequirement>builder()
+        Chapter<TailoringRequirement> chapter = Chapter.<TailoringRequirement>builder()
             .number("1.1.1")
             .requirements(requirements)
             .build();
 
         given(predicateMock.test("SAMPLE", "master")).willReturn(true);
         given(repositoryMock.getChapter("SAMPLE", "master", "1.1.1"))
-            .willReturn(of(chapter1_1_1));
-        given(repositoryMock.updateChapter("SAMPLE", "master", chapter1_1_1))
+            .willReturn(of(chapter));
+        given(repositoryMock.updateChapter("SAMPLE", "master", chapter))
             .willReturn(empty());
 
         // act

@@ -2,7 +2,7 @@
  * #%L
  * TailoringExpert
  * %%
- * Copyright (C) 2022 Michael Bädorf and others
+ * Copyright (C) 2022 - 2024 Michael Bädorf and others
  * %%
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as
@@ -19,22 +19,33 @@
  * <http://www.gnu.org/licenses/gpl-3.0.html>.
  * #L%
  */
-package eu.tailoringexpert.screeningsheet;
+package eu.tailoringexpert.domain;
 
-import lombok.Builder;
-import lombok.Value;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
-/**
- * Data object for screeningsheet parameters to pass to platform.
- *
- * @author Michael Bädorf
- */
-@Builder
-@Value
-public class ScreeningSheetParameterField {
+import java.util.List;
 
-    private String category;
-    private String name;
-    private String label;
+public abstract class TailoringCatalogChapterResourcePrimevueMixIn {
 
+    @JsonProperty("key")
+    private String number;
+
+    /**
+     * Concatenated number and name of chapter.
+     */
+    @JsonProperty("label")
+    private String chapterName;
+
+
+    /**
+     * List of subchapters.
+     */
+    @JsonProperty("children")
+    private List<TailoringCatalogChapterResource> chapters;
+
+    /**
+     * List of requirements.
+     */
+    @JsonProperty("data")
+    private List<TailoringRequirementResource> requirements;
 }

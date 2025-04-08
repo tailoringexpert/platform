@@ -2,7 +2,7 @@
  * #%L
  * TailoringExpert
  * %%
- * Copyright (C) 2022 Michael Bädorf and others
+ * Copyright (C) 2022 - 2024 Michael Bädorf and others
  * %%
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as
@@ -19,22 +19,23 @@
  * <http://www.gnu.org/licenses/gpl-3.0.html>.
  * #L%
  */
-package eu.tailoringexpert.screeningsheet;
+package eu.tailoringexpert.repository;
 
-import lombok.Builder;
-import lombok.Value;
+import eu.tailoringexpert.domain.TailoringCatalogEntity;
+import org.springframework.data.jpa.repository.JpaRepository;
 
 /**
- * Data object for screeningsheet parameters to pass to platform.
+ * Spring Data access layer of {@link TailoringCatalogEntity}.
  *
  * @author Michael Bädorf
  */
-@Builder
-@Value
-public class ScreeningSheetParameterField {
+public interface TailoringCatalogRepository extends JpaRepository<TailoringCatalogEntity, Long> {
 
-    private String category;
-    private String name;
-    private String label;
-
+    /**
+     * Checks if base catalog of requested version already used in any tailoring catalog.
+     *
+     * @param version version of base catalog to check usage of
+     * @return true, of base catalog is used
+     */
+    boolean existsByVersion(String version);
 }

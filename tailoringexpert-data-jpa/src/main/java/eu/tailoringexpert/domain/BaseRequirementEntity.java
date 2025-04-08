@@ -47,6 +47,10 @@ import java.util.List;
 import java.util.Set;
 
 import static jakarta.persistence.CascadeType.ALL;
+import static jakarta.persistence.CascadeType.DETACH;
+import static jakarta.persistence.CascadeType.MERGE;
+import static jakarta.persistence.CascadeType.PERSIST;
+import static jakarta.persistence.CascadeType.REFRESH;
 import static jakarta.persistence.EnumType.STRING;
 import static jakarta.persistence.FetchType.LAZY;
 import static jakarta.persistence.GenerationType.TABLE;
@@ -113,7 +117,7 @@ public class BaseRequirementEntity implements Serializable {
     /**
      * List of drd requirement shall be part of.
      */
-    @OneToMany(cascade = ALL, orphanRemoval = true, fetch = LAZY)
+    @OneToMany(cascade = {DETACH, MERGE, PERSIST, REFRESH}, orphanRemoval = false, fetch = LAZY)
     @JoinTable(
         name = "BASEREQUIREMENT_DRD",
         joinColumns = {@JoinColumn(name = "REQUIREMENT_ID", referencedColumnName = "REQUIREMENT_ID")},

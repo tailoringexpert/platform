@@ -57,6 +57,7 @@ import static com.fasterxml.jackson.databind.DeserializationFeature.FAIL_ON_UNKN
 import static com.fasterxml.jackson.databind.SerializationFeature.FAIL_ON_EMPTY_BEANS;
 import static java.lang.Boolean.FALSE;
 import static java.lang.Boolean.TRUE;
+import static java.nio.charset.StandardCharsets.UTF_8;
 import static java.util.Arrays.asList;
 import static java.util.Locale.GERMANY;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -68,6 +69,8 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.springframework.hateoas.MediaTypes.HAL_JSON_VALUE;
+import static org.springframework.http.MediaType.APPLICATION_FORM_URLENCODED;
+import static org.springframework.http.MediaType.APPLICATION_FORM_URLENCODED_VALUE;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
@@ -233,8 +236,8 @@ class RequirementControllerTest {
         // act
         ResultActions actual = mockMvc.perform(put("/project/{project}/tailoring/{tailoring}/catalog/{chapter}/{requirement}/text", "SAMPLE", "master", "1.1", "a")
             .accept(HAL_JSON_VALUE)
-            .content(objectMapper.writeValueAsString("Dies ist ein neuer Text"))
-            .contentType(MediaType.APPLICATION_JSON)
+            .param("text", "Dies ist ein neuer Text")
+            .contentType(APPLICATION_FORM_URLENCODED)
             .characterEncoding(StandardCharsets.UTF_8.displayName())
         );
 
@@ -254,8 +257,8 @@ class RequirementControllerTest {
         // act
         ResultActions actual = mockMvc.perform(put("/project/{project}/tailoring/{tailoring}/catalog/{chapter}/{requirement}/text", "SAMPLE", "master", "1.1", "a")
             .accept(HAL_JSON_VALUE)
-            .content(objectMapper.writeValueAsString("Dies ist ein neuer Text"))
-            .contentType(MediaType.APPLICATION_JSON)
+            .param("text","Dies ist ein neuer Text")
+            .contentType(APPLICATION_FORM_URLENCODED)
             .characterEncoding(StandardCharsets.UTF_8.displayName())
         );
 
@@ -342,13 +345,12 @@ class RequirementControllerTest {
 
         ArgumentCaptor<PathContextBuilder> pathContextCaptor = ArgumentCaptor.forClass(PathContextBuilder.class);
         given(mapperMock.toResource(pathContextCaptor.capture(), eq(anforderung))).willReturn(TailoringRequirementResource.builder().build());
+
         // act
         ResultActions actual = mockMvc.perform(post("/project/{project}/tailoring/{tailoring}/catalog/{chapter}/{requirement}", "SAMPLE", "master", "1.1", "a1")
-            .accept(HAL_JSON_VALUE)
-            .content(objectMapper.writeValueAsString("Dies ist eine neue Requirement"))
-            .contentType(MediaType.APPLICATION_JSON)
-            .characterEncoding(StandardCharsets.UTF_8.displayName())
-
+            .param("text", "Dies ist eine neue Requirement")
+            .contentType(APPLICATION_FORM_URLENCODED_VALUE)
+            .characterEncoding(UTF_8.displayName())
         );
 
         // assert
@@ -365,12 +367,10 @@ class RequirementControllerTest {
         given(serviceMock.createRequirement("SAMPLE", "master", "1.1", "a1", "Dies ist eine neue Requirement")).willReturn(Optional.empty());
 
         // act
-        ResultActions actual = mockMvc.perform(post("/project/{project}/tailoring/{tailoring}/catalog/{kapitel}/{anforderung}", "SAMPLE", "master", "1.1", "a1")
-            .accept(HAL_JSON_VALUE)
-            .content(objectMapper.writeValueAsString("Dies ist eine neue Requirement"))
-            .contentType(MediaType.APPLICATION_JSON)
-            .characterEncoding(StandardCharsets.UTF_8.displayName())
-
+        ResultActions actual =  mockMvc.perform(post("/project/{project}/tailoring/{tailoring}/catalog/{kapitel}/{anforderung}", "SAMPLE", "master", "1.1", "a1")
+            .param("text", "Dies ist eine neue Requirement")
+            .contentType(APPLICATION_FORM_URLENCODED_VALUE)
+            .characterEncoding(UTF_8.displayName())
         );
 
         // assert

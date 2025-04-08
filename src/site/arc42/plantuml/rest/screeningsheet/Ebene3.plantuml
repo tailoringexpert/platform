@@ -13,7 +13,7 @@ package screeningsheet {
     }
 
     class ScreeningSheetController {
-        +postScreeningSheet(datei : MultipartFile) : ResponseEntity<EntityModel<ScreeningSheetResource>>
+        +postScreeningSheet(file : MultipartFile) : ResponseEntity<EntityModel<ScreeningSheetResource>>
     }
     ScreeningSheetController --> "1" ResourceMapper : mapper
     ScreeningSheetController --> "1" ScreeningSheetService : screeningSheetService
