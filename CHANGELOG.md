@@ -1,11 +1,12 @@
 # Changelog
 
-## [v0.1.5](https://github.com/tailoringexpert/platform/tree/v0.1.5) (04.07.2025)
+## [v0.1.5](https://github.com/tailoringexpert/platform/tree/v0.1.5) (04.08.2025)
 
 [Full Changelog](https://github.com/tailoringexpert/platform/compare/v0.1.4...v0.1.5)
 
 **Implemented enhancements:**
 
+- Add state to CM dataelement to mark as applicable [\#384](https://github.com/tailoringexpert/platform/issues/384)
 - Change parameter names of file uploads to "file" [\#379](https://github.com/tailoringexpert/platform/issues/379)
 - Parametertypes for updating tailoringname, notes and requirement text [\#376](https://github.com/tailoringexpert/platform/issues/376)
 - Add \(chapter\) level information for document generation [\#375](https://github.com/tailoringexpert/platform/issues/375)
@@ -13,6 +14,7 @@
 - Provide primevue optimized mixin for TailoringCatalogChapterResource [\#370](https://github.com/tailoringexpert/platform/issues/370)
 - Provide row number of failed excel chapter row to be converted to json [\#364](https://github.com/tailoringexpert/platform/issues/364)
 - Sonar [\#360](https://github.com/tailoringexpert/platform/issues/360)
+- Mark chapters with a applicable as header in Excel CM [\#387](https://github.com/tailoringexpert/platform/issues/387)
 
 **Fixed bugs:**
 
