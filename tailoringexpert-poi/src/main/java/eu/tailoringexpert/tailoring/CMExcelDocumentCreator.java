@@ -224,7 +224,9 @@ public class CMExcelDocumentCreator implements DocumentCreator {
                             int level,
                             Sheet sheet,
                             Map<String, Object> placeholders) {
-        addRow(sheet, level, chapter.getNumber(), chapter.getName(), placeholders);
+
+        boolean applicable = chapter.getRequirements().stream().anyMatch(TailoringRequirement::getSelected);
+        addRow(sheet, level, chapter.getNumber(), chapter.getName(), applicable, placeholders);
         AtomicInteger nextLevel = new AtomicInteger(level + 1);
         chapter.getChapters()
             .forEach(subChapter -> addChapter(subChapter, nextLevel.get(), sheet, placeholders));
@@ -284,18 +286,19 @@ public class CMExcelDocumentCreator implements DocumentCreator {
      * @param level   chapter hierarchy
      * @param chapter number of chapter
      * @param title   title of chapter
+     * @param applicable state if statement is required
+     * @param placeholders placeholders to use
      */
     protected void addRow(Sheet sheet,
                           int level,
                           String chapter,
                           String title,
+                          boolean applicable,
                           Map<String, Object> placeholders) {
         Row row = sheet.createRow((short) sheet.getLastRowNum() + 1);
 
         CellStyle cellStyle;
-        if (MAIN_CHAPTER == level) {
-            cellStyle = createCellStyle(sheet, IndexedColors.LIGHT_BLUE);
-        } else if (SUB_CHAPTER == level) {
+        if (!applicable) {
             cellStyle = createCellStyle(sheet, IndexedColors.LIGHT_GREEN);
         } else {
             cellStyle = sheet.getWorkbook().createCellStyle();
@@ -310,6 +313,10 @@ public class CMExcelDocumentCreator implements DocumentCreator {
         row.createCell(2).setCellStyle(cellStyle);
         row.createCell(3).setCellStyle(cellStyle);
         row.createCell(4).setCellStyle(cellStyle);
+
+        if (!applicable) {
+            sheet.addMergedRegion(new CellRangeAddress(row.getRowNum(), row.getRowNum(), 2, 4));
+        }
 
     }
 

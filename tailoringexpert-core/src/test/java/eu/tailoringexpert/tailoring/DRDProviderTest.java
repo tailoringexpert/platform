@@ -30,7 +30,6 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 
-import java.io.IOException;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
@@ -60,7 +59,7 @@ class DRDProviderTest {
 
 
     @Test
-    void apply_DRDNotInPhases_EmptyMapReturned() throws IOException {
+    void apply_DRDNotInPhases_EmptyMapReturned() {
         // arrange
         // arrange
         DRD drd0101 = createDRD("01.01", "CDR");
@@ -119,7 +118,7 @@ class DRDProviderTest {
     }
 
     @Test
-    void apply_AllSelectedRequiremensInPhases_MapWithDRDsReturned() throws IOException {
+    void apply_AllSelectedRequiremensInPhases_MapWithDRDsReturned() {
         // arrange
         DRD drd0101 = createDRD("01.01", "CDR");
         DRD drd0102 = createDRD("01.02", "PDR");
@@ -191,7 +190,7 @@ class DRDProviderTest {
     }
 
     @Test
-    void apply_NotAllSelectedRequiremensInPhases_MapWithDRDsReturned() throws IOException {
+    void apply_NotAllSelectedRequiremensInPhases_MapWithDRDsReturned() {
         // arrange
         DRD drd0101 = createDRD("01.01", "CDR");
         DRD drd0102 = createDRD("01.02", "PDR");
@@ -263,7 +262,7 @@ class DRDProviderTest {
     }
 
     @Test
-    void apply_OneDRDTwice_MapWithOneDRDEntryReturned() throws IOException {
+    void apply_OneDRDTwice_MapWithOneDRDEntryReturned() {
         // arrange
         DRD drd0101 = createDRD("01.01", "CDR");
         TailoringRequirement requirement0101 = TailoringRequirement.builder()

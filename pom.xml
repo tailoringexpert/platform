@@ -7,7 +7,7 @@
     <artifactId>tailoringexpert-platform</artifactId>
     <packaging>pom</packaging>
     <name>${project.groupId}:${project.artifactId}</name>
-    <version>0.1.4</version>
+    <version>0.1.5</version>
 
     <inceptionYear>2022</inceptionYear>
 
@@ -42,6 +42,10 @@
         <repository>
             <id>ossrh</id>
             <url>https://s01.oss.sonatype.org/content/repositories/snapshots</url>
+        </repository>
+        <repository>
+            <id>tailoringexpert</id>
+            <url>${tailoringexpert.repository}</url>
         </repository>
     </repositories>
 
@@ -79,39 +83,39 @@
         <maven.compiler.target>${java.version}</maven.compiler.target>
         <maven.javadoc.skip>true</maven.javadoc.skip>
         <license.licenseName>gpl_v3</license.licenseName>
-        <plattform.version>0.1.4</plattform.version>
+        <platform.version>0.1.5</platform.version>
 
         <jacoco.version>0.8.7</jacoco.version>
-        <junit-jupiter.version>5.10.2</junit-jupiter.version>
+        <junit-jupiter.version>5.12.1</junit-jupiter.version>
 
-        <lombok.version>1.18.30</lombok.version>
+        <lombok.version>1.18.38</lombok.version>
         <lombok-mapstruct-binding.version>0.2.0</lombok-mapstruct-binding.version>
-        <mapstruct.version>1.5.5.Final</mapstruct.version>
+        <mapstruct.version>1.6.3</mapstruct.version>
 
         <sonar.projectKey>${project.groupId}:${project.artifactId}</sonar.projectKey>
         <sonar.projectName>${sonar.projectKey}</sonar.projectName>
-        <sonar.exclusions>**/*Configuration.java, **/App.java</sonar.exclusions>
+        <sonar.exclusions>**/*MixIn.java, **/*Configuration.java, **/App.java</sonar.exclusions>
 
         <!-- plugins -->
-        <jacoco-maven-plugin.version>0.8.11</jacoco-maven-plugin.version>
-        <liquibase-maven-plugin.version>4.26.0</liquibase-maven-plugin.version>
-        <spring-boot-maven-plugin.version>3.2.3</spring-boot-maven-plugin.version>
+        <jacoco-maven-plugin.version>0.8.13</jacoco-maven-plugin.version>
+        <liquibase-maven-plugin.version>4.31.1</liquibase-maven-plugin.version>
+        <spring-boot-maven-plugin.version>3.4.4</spring-boot-maven-plugin.version>
         <springdoc-openapi-maven-plugin.version>1.4</springdoc-openapi-maven-plugin.version>
 
         <gitflow-maven-plugin.version>1.21.0</gitflow-maven-plugin.version>
         <lombok-maven-plugin.version>1.18.20.0</lombok-maven-plugin.version>
-        <maven-exec-plugin.version>3.2.0</maven-exec-plugin.version>
-        <maven-compiler-plugin.version>3.12.1</maven-compiler-plugin.version>
-        <dependency-check-maven.version>9.0.9</dependency-check-maven.version>
+        <maven-exec-plugin.version>3.5.0</maven-exec-plugin.version>
+        <maven-compiler-plugin.version>3.14.0</maven-compiler-plugin.version>
+        <dependency-check-maven.version>12.1.1</dependency-check-maven.version>
         <dependency-check-maven.phase>install</dependency-check-maven.phase>
         <maven-gpg-plugin.version>3.0.1</maven-gpg-plugin.version>
-        <maven-assembly-plugin.version>3.6.0</maven-assembly-plugin.version>
-        <maven-javadoc-plugin.version>3.6.3</maven-javadoc-plugin.version>
-        <maven-licence-plugin.verision>2.4.0</maven-licence-plugin.verision>
+        <maven-assembly-plugin.version>3.7.1</maven-assembly-plugin.version>
+        <maven-javadoc-plugin.version>3.11.2</maven-javadoc-plugin.version>
+        <maven-licence-plugin.verision>2.5.0</maven-licence-plugin.verision>
         <maven-resources-plugin.version>3.3.1</maven-resources-plugin.version>
-        <maven-source-plugin.version>3.3.0</maven-source-plugin.version>
-        <maven-surefire-plugin.version>3.2.5</maven-surefire-plugin.version>
-        <sonar-maven-plugin.version>3.10.0.2594</sonar-maven-plugin.version>
+        <maven-source-plugin.version>3.3.1</maven-source-plugin.version>
+        <maven-surefire-plugin.version>3.5.2</maven-surefire-plugin.version>
+        <sonar-maven-plugin.version>5.1.0.4751</sonar-maven-plugin.version>
     </properties>
 
 
@@ -167,7 +171,7 @@
             <dependency>
                 <groupId>eu.tailoringexpert</groupId>
                 <artifactId>tailoringexpert-dependencies</artifactId>
-                <version>${plattform.version}</version>
+                <version>${platform.version}</version>
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
@@ -243,6 +247,9 @@
                     <version>${jacoco-maven-plugin.version}</version>
                     <configuration>
                         <excludes>
+                            <exclude>**/*MixIn.class</exclude>
+                            <exclude>**/*Configuration.class</exclude>
+                            <exclude>**/App.class</exclude>
                             <exclude>**/*MapperGenerated.class</exclude>
                         </excludes>
                     </configuration>
@@ -470,7 +477,7 @@
                         <version>${maven-javadoc-plugin.version}</version>
                         <extensions>true</extensions>
                         <configuration>
-                            <finalName>tailoringexpert-plattform</finalName>
+                            <finalName>tailoringexpert-platform</finalName>
                             <sourcepath>
                                 ${project.build.directory}/generated-sources/delombok:${project.build.directory}/generated-sources/annotations
                             </sourcepath>

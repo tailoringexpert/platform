@@ -23,6 +23,7 @@ package eu.tailoringexpert.catalog;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+
 import eu.tailoringexpert.domain.BaseCatalogVersionResource;
 import eu.tailoringexpert.domain.BaseRequirement;
 import eu.tailoringexpert.domain.Catalog;
@@ -46,13 +47,13 @@ import org.springframework.hateoas.EntityModel;
 import org.springframework.http.ContentDisposition;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestPart;
-import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -65,6 +66,7 @@ import java.util.function.Function;
 
 import static eu.tailoringexpert.domain.ResourceMapper.BASECATALOG;
 import static eu.tailoringexpert.domain.ResourceMapper.BASECATALOG_CONVERT_EXCEL;
+import static eu.tailoringexpert.domain.ResourceMapper.BASECATALOG_PREVIEW_PDF;
 import static eu.tailoringexpert.domain.ResourceMapper.BASECATALOG_VALIDUNTIL;
 import static eu.tailoringexpert.domain.ResourceMapper.BASECATALOG_VERSION;
 import static eu.tailoringexpert.domain.ResourceMapper.BASECATALOG_VERSION_DOCUMENT;
@@ -78,10 +80,14 @@ import static java.util.Collections.emptyMap;
 import static org.springframework.format.annotation.DateTimeFormat.ISO.DATE;
 import static org.springframework.http.HttpHeaders.ACCESS_CONTROL_EXPOSE_HEADERS;
 import static org.springframework.http.HttpHeaders.CONTENT_DISPOSITION;
+import static org.springframework.http.HttpStatus.ACCEPTED;
 import static org.springframework.http.HttpStatus.CREATED;
+import static org.springframework.http.HttpStatus.NOT_FOUND;
+import static org.springframework.http.HttpStatus.OK;
 import static org.springframework.http.HttpStatus.PRECONDITION_FAILED;
 import static org.springframework.http.ResponseEntity.notFound;
 import static org.springframework.http.ResponseEntity.ok;
+
 
 /**
  * REST-Controller for management of base catalogs.
@@ -178,7 +184,6 @@ public class CatalogController {
             responseCode = "404", description = "Base catalog does not exist")
     })
     @GetMapping(value = BASECATALOG_VERSION_PDF, produces = "application/octet-stream")
-    @ResponseBody
     public ResponseEntity<byte[]> getBaseCatalogPrint(
         @Parameter(description = "Requested base catalog version") @PathVariable String version) {
         log.traceEntry();
@@ -201,7 +206,6 @@ public class CatalogController {
             responseCode = "200", description = "Base catalog converted")
     })
     @PostMapping(value = BASECATALOG_CONVERT_EXCEL, produces = "application/json")
-    @ResponseBody
     public ResponseEntity<byte[]> postBaseCatalogFile(
         @RequestPart("file") MultipartFile file) throws IOException {
         log.traceEntry();
@@ -228,7 +232,6 @@ public class CatalogController {
             responseCode = "404", description = "Base catalog does not exist")
     })
     @GetMapping(value = BASECATALOG_VERSION_JSON, produces = "application/json")
-    @ResponseBody
     public ResponseEntity<byte[]> getBaseCatalogJson(
         @Parameter(description = "Requested base catalog version") @PathVariable String version) throws JsonProcessingException {
         log.traceEntry();
@@ -259,7 +262,6 @@ public class CatalogController {
             responseCode = "404", description = "Base catalog does not exist")
     })
     @GetMapping(value = BASECATALOG_VERSION_EXCEL, produces = "application/octet-stream")
-    @ResponseBody
     public ResponseEntity<byte[]> getBaseCatalogExcel(
         @Parameter(description = "Requested base catalog version") @PathVariable String version) {
         log.traceEntry();
@@ -287,7 +289,6 @@ public class CatalogController {
             responseCode = "404", description = "Base catalog does not exist")
     })
     @GetMapping(value = BASECATALOG_VERSION_DOCUMENT, produces = "application/octet-stream")
-    @ResponseBody
     public ResponseEntity<byte[]> getDocuments(
         @Parameter(description = "Requested all base catalog related documents") @PathVariable String version) {
         log.traceEntry();
@@ -325,6 +326,51 @@ public class CatalogController {
             .map(catalogVersion -> ok()
                 .body(EntityModel.of(mapper.toResource(pathContext, catalogVersion))))
             .orElseGet(() -> notFound().build());
+
+        log.traceExit();
+        return result;
+    }
+
+    @Operation(summary = "Converts JSON base catalog")
+    @ApiResponses(value = {
+        @ApiResponse(
+            responseCode = "200", description = "Base catalog converted")
+    })
+    @PostMapping(value = BASECATALOG_PREVIEW_PDF, produces = "application/octet-stream")
+    public ResponseEntity<byte[]> postBaseCatalogPreview(
+        @Parameter(description = "Base catalog to preview") @RequestBody Catalog<BaseRequirement> catalog) {
+        log.traceEntry();
+
+        ResponseEntity<byte[]> result = catalogService.createDocuments(catalog)
+            .map(dokument -> ok()
+                .header(CONTENT_DISPOSITION, ContentDisposition.builder(MediaTypeProvider.FORM_DATA).name(MediaTypeProvider.ATTACHMENT).filename(dokument.getName()).build().toString())
+                .header(ACCESS_CONTROL_EXPOSE_HEADERS, CONTENT_DISPOSITION)
+                .contentType(mediaTypeProvider.apply(dokument.getType()))
+                .contentLength(dokument.getLength())
+                .body(dokument.getData()))
+            .orElseGet(() -> notFound().build());
+
+        log.traceExit();
+        return result;
+
+    }
+
+    @Operation(summary = "Deletes an existing but not used base catalog")
+    @ApiResponses(value = {
+        @ApiResponse(
+            responseCode = "200", description = "Catalog deleted"),
+        @ApiResponse(
+            responseCode = "404", description = "Catalog does not exists")
+    })
+    @DeleteMapping(value = BASECATALOG_VERSION)
+    public ResponseEntity<Void> deleteCatalog(
+        @Parameter(description = "base catalog version to delete") @PathVariable String version
+    ) {
+        log.traceEntry();
+
+        ResponseEntity<Void> result = ResponseEntity
+            .status(catalogService.deleteCatalog(version).isEmpty() ? NOT_FOUND : OK)
+            .build();
 
         log.traceExit();
         return result;

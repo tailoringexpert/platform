@@ -47,7 +47,6 @@ import org.mockito.Mockito;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
-import java.net.URISyntaxException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.time.LocalDateTime;
@@ -83,7 +82,7 @@ class CMRequirementsExcelDocumentCreatorTest {
 
 
     @BeforeEach
-    void setup() throws URISyntaxException {
+    void setup() {
         this.objectMapper = new ObjectMapper();
         this.objectMapper.registerModules(new ParameterNamesModule(), new JavaTimeModule(), new Jdk8Module());
         this.objectMapper.disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES);

@@ -62,7 +62,7 @@ class TenantFactoryTest {
     @AfterEach
     void afterEach() throws Exception {
         Field field = TenantContext.class.getDeclaredField("registeredTenants");
-        field.setAccessible(true); //NOPMD - suppressed AvoidAccessibilityAlteration - TODO need to unset tenants
+        field.setAccessible(true); //NOPMD - suppressed AvoidAccessibilityAlteration
         field.set(null, new HashMap<>());
         field.setAccessible(false);
     }
@@ -141,7 +141,7 @@ class TenantFactoryTest {
     }
 
     @Test
-    void buildDataSource_PropertiesGiven_DriverManagerDataSourceReturned() throws Exception {
+    void buildDataSource_PropertiesGiven_DriverManagerDataSourceReturned() {
         // arrange
         Properties properties = createProperties();
 

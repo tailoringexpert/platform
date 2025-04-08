@@ -21,6 +21,7 @@
  */
 package eu.tailoringexpert.catalog;
 
+import eu.tailoringexpert.TailoringexpertException;
 import eu.tailoringexpert.domain.BaseRequirement;
 import eu.tailoringexpert.domain.Catalog;
 import eu.tailoringexpert.domain.CatalogVersion;
@@ -33,7 +34,6 @@ import org.mockito.Mockito;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
-import java.nio.charset.StandardCharsets;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
@@ -334,7 +334,7 @@ class CatalogServiceImplTest {
     }
 
     @Test
-    void createDocuments_CloseZipOutputStreamException_ExceptionThrown() throws Exception {
+    void createDocuments_CloseZipOutputStreamException_ExceptionThrown() {
         // arrange
         Catalog<BaseRequirement> catalog = Catalog.<BaseRequirement>builder().version("8.2.1").build();
         given(repositoryMock.getCatalog("8.2.1"))
@@ -470,4 +470,113 @@ class CatalogServiceImplTest {
         assertThat(actual).isNotNull();
         verify(file2CatalogConverterMock, times(1)).apply(dummyContent.getBytes(UTF_8));
     }
+
+    @Test
+    void createDocuments_NullInput_MockCalled() {
+        // arrange
+        Catalog<BaseRequirement> catalog = null;
+
+        LocalDateTime now =
+            LocalDateTime.of(2020, 12, 1, 8, 0, 0);
+
+        // act
+        Optional<File> actual = null;
+        try (MockedStatic<LocalDateTime> dateTimeMock = mockStatic(LocalDateTime.class)) {
+            dateTimeMock.when(LocalDateTime::now).thenReturn(now);
+            actual = service.createDocuments(catalog);
+        }
+
+        // assert
+        assertThat(actual).isEmpty();
+        verify(documentServiceMock, times(0)).createAll(catalog, now);
+    }
+
+    @Test
+    void createDocuments_ValidInput_MockCalled() {
+        // arrange
+        Catalog<BaseRequirement> catalog = Catalog.<BaseRequirement>builder().build();
+
+        LocalDateTime now =
+            LocalDateTime.of(2020, 12, 1, 8, 0, 0);
+
+        given(documentServiceMock.createAll(eq(catalog), any()))
+            .willReturn(List.of(File.builder().name("preview.pdf").data("dummy".getBytes(UTF_8)).build()));
+
+        // act
+        Optional<File> actual = null;
+        try (MockedStatic<LocalDateTime> dateTimeMock = mockStatic(LocalDateTime.class)) {
+            dateTimeMock.when(LocalDateTime::now).thenReturn(now);
+            dateTimeMock.when(() -> LocalDateTime.ofInstant(any(), any())).thenReturn(now);
+            actual = service.createDocuments(catalog);
+        }
+
+        // assert
+        assertThat(actual).isPresent();
+        verify(documentServiceMock, times(1)).createAll(catalog, now);
+    }
+
+    @Test
+    void deleteCatalog_NonExistingCatalog_EmptyReturned() {
+        // arrange
+        given(repositoryMock.existsCatalog("8.3.0"))
+            .willReturn(false);
+
+        // act
+        Optional<Boolean> actual = service.deleteCatalog("8.3.0");
+
+        // assert
+        assertThat(actual).isEmpty();
+        verify(repositoryMock, times(0)).deleteCatalog("8.3.0");
+    }
+
+    @Test
+    void deleteCatalog_ExistingCatalogUsedInProjects_ExceptiomThrown() {
+        // arrange
+        given(repositoryMock.existsCatalog("8.3.0"))
+            .willReturn(true);
+        given(repositoryMock.isCatalogUsed("8.3.0"))
+            .willReturn(true);
+
+        // act
+        Throwable actual = catchThrowable(() -> service.deleteCatalog("8.3.0"));
+
+        // assert
+        assertThat(actual).isInstanceOf(TailoringexpertException.class);
+        verify(repositoryMock, times(0)).deleteCatalog("8.3.0");
+    }
+
+    @Test
+    void deleteCatalog_ExistingCatalogNotDeleted_FalseReturned() {
+        // arrange
+        given(repositoryMock.existsCatalog("8.3.0"))
+            .willReturn(true);
+        given(repositoryMock.deleteCatalog("8.3.0"))
+            .willReturn(false);
+
+        // act
+        Optional<Boolean> actual = service.deleteCatalog("8.3.0");
+
+        // assert
+        assertThat(actual).isPresent();
+        assertThat(actual.get()).isFalse();
+        verify(repositoryMock, times(1)).deleteCatalog("8.3.0");
+    }
+
+    @Test
+    void deleteCatalog_ExistingCatalogDeletable_TrueReturned() {
+        // arrange
+        given(repositoryMock.existsCatalog("8.3.0"))
+            .willReturn(true);
+        given(repositoryMock.deleteCatalog("8.3.0"))
+            .willReturn(true);
+
+        // act
+        Optional<Boolean> actual = service.deleteCatalog("8.3.0");
+
+        // assert
+        assertThat(actual).isPresent();
+        assertThat(actual.get()).isTrue();
+        verify(repositoryMock, times(1)).deleteCatalog("8.3.0");
+    }
+
 }

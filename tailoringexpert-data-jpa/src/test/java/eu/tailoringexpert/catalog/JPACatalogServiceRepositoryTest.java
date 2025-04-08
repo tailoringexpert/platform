@@ -21,6 +21,7 @@
  */
 package eu.tailoringexpert.catalog;
 
+import eu.tailoringexpert.TailoringexpertException;
 import eu.tailoringexpert.domain.BaseCatalogEntity;
 import eu.tailoringexpert.domain.BaseCatalogVersionProjection;
 import eu.tailoringexpert.domain.BaseRequirement;
@@ -31,6 +32,7 @@ import eu.tailoringexpert.domain.DRDEntity;
 import eu.tailoringexpert.repository.BaseCatalogRepository;
 import eu.tailoringexpert.domain.DRD;
 import eu.tailoringexpert.repository.DRDRepository;
+import eu.tailoringexpert.repository.TailoringCatalogRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -41,8 +43,10 @@ import java.util.Optional;
 
 import static java.util.Arrays.asList;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.catchThrowable;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -52,6 +56,7 @@ class JPACatalogServiceRepositoryTest {
     JPACatalogServiceRepositoryMapper mapperMock;
     BaseCatalogRepository baseCatalogRepositoryMock;
     DRDRepository drdRepositoryMock;
+    TailoringCatalogRepository tailoringCatalogRepositoryMock;
     JPACatalogServiceRepository repository;
 
     @BeforeEach
@@ -59,10 +64,12 @@ class JPACatalogServiceRepositoryTest {
         this.baseCatalogRepositoryMock = mock(BaseCatalogRepository.class);
         this.drdRepositoryMock = mock(DRDRepository.class);
         this.mapperMock = mock(JPACatalogServiceRepositoryMapper.class);
+        this.tailoringCatalogRepositoryMock = mock(TailoringCatalogRepository.class);
         this.repository = new JPACatalogServiceRepository(
             this.mapperMock,
             this.baseCatalogRepositoryMock,
-            this.drdRepositoryMock
+            this.drdRepositoryMock,
+            this.tailoringCatalogRepositoryMock
         );
     }
 
@@ -215,7 +222,7 @@ class JPACatalogServiceRepositoryTest {
     @Test
     void getCatalog_NonExistingVersion_EmptyReturned() {
         // arrange
-        given(baseCatalogRepositoryMock.findByVersion("4711")).willReturn(null);
+        given(baseCatalogRepositoryMock.findByVersion("4711", BaseCatalogEntity.class)).willReturn(null);
 
         // act
         Optional<Catalog<BaseRequirement>> actual = repository.getCatalog("4711");
@@ -228,7 +235,7 @@ class JPACatalogServiceRepositoryTest {
     void getCatalog_ExisitingVersion_OptionalReturned() {
         // arrange
         BaseCatalogEntity baseCatalogEntity = BaseCatalogEntity.builder().build();
-        given(baseCatalogRepositoryMock.findByVersion("4711")).willReturn(baseCatalogEntity);
+        given(baseCatalogRepositoryMock.findByVersion("4711", BaseCatalogEntity.class)).willReturn(baseCatalogEntity);
 
         given(mapperMock.getCatalog(baseCatalogEntity)).willReturn(Catalog.<BaseRequirement>builder().build());
 
@@ -348,5 +355,78 @@ class JPACatalogServiceRepositoryTest {
         assertThat(actual).hasSize(1);
         verify(baseCatalogRepositoryMock, times(1)).findCatalogVersionBy();
         verify(mapperMock, times(1)).getCatalogVersions(catalog);
+    }
+
+    @Test
+    void deleteCatalog_CatalogNotDeletable_ExceptionThrown() {
+        // arrange
+
+        doThrow(new RuntimeException("spring repository exception mock"))
+            .when(baseCatalogRepositoryMock).deleteByVersion("8.3");
+
+
+        // act
+        Throwable actual = catchThrowable(() -> repository.deleteCatalog("8.3"));
+
+        // assert
+        assertThat(actual).isInstanceOf(TailoringexpertException.class);
+        assertThat(actual.getMessage()).isEqualTo("spring repository exception mock");
+        verify(baseCatalogRepositoryMock, times(1)).deleteByVersion("8.3");
+    }
+
+    @Test
+    void deleteCatalog_CatalogStillExistsAfterDeletionAttempt_FalseReturned() {
+        // arrange
+
+        given(baseCatalogRepositoryMock.existsByVersion("8.3"))
+            .willReturn(true);
+        // act
+        boolean actual = repository.deleteCatalog("8.3");
+
+        // assert
+        assertThat(actual).isFalse();
+        verify(baseCatalogRepositoryMock, times(1)).deleteByVersion("8.3");
+        verify(baseCatalogRepositoryMock, times(1)).existsByVersion("8.3");
+    }
+
+    @Test
+    void deleteCatalog_CatalogDeletable_TrueReturned() {
+        // arrange
+
+        given(baseCatalogRepositoryMock.existsByVersion("8.3"))
+            .willReturn(false);
+        // act
+        boolean actual = repository.deleteCatalog("8.3");
+
+        // assert
+        assertThat(actual).isTrue();
+        verify(baseCatalogRepositoryMock, times(1)).deleteByVersion("8.3");
+        verify(baseCatalogRepositoryMock, times(1)).existsByVersion("8.3");
+    }
+
+    @Test
+    void isCatalogUsed_CatalogNotUsed_FalseReturned() {
+        // arrange
+        given(tailoringCatalogRepositoryMock.existsByVersion("8.3"))
+            .willReturn(false);
+
+        // act
+        boolean actual = repository.isCatalogUsed("8.2.1");
+
+        // assert
+        assertThat(actual).isFalse();
+    }
+
+    @Test
+    void isCatalogUsed_CatalogUsed_TrueReturned() {
+        // arrange
+        given(tailoringCatalogRepositoryMock.existsByVersion("8.2.1"))
+            .willReturn(true);
+
+        // act
+        boolean actual = repository.isCatalogUsed("8.2.1");
+
+        // assert
+        assertThat(actual).isTrue();
     }
 }

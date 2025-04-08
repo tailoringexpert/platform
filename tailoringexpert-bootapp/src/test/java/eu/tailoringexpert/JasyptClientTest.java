@@ -134,7 +134,7 @@ class JasyptClientTest {
     }
 
     @Test
-    void main_ParametersAvailable_AllParametersEncrypted() throws Exception {
+    void main_ParametersAvailable_AllParametersEncrypted() {
         // arrange
         String[] args = new String[]{"--parameter", "test1234", "--parameter", "1234test", "--password", "DasIstDasHausVomNikolaus"};
         JasyptClient clientMock = mock(JasyptClient.class);
@@ -152,7 +152,7 @@ class JasyptClientTest {
     }
 
     @Test
-    void main_ParameteNotAvailable_ExceptionThrown() throws Exception {
+    void main_ParameteNotAvailable_ExceptionThrown() {
         // arrange
         String[] args = new String[]{"--password", "DasIstDasHausVomNikolaus"};
 

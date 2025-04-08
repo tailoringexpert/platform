@@ -30,7 +30,6 @@ import org.junit.jupiter.api.Test;
 
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.stream.Collectors;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
@@ -66,7 +65,7 @@ class JPAScreeningSheetServiceRepositoryTest {
                 ((Collection<String>) invocation.getArgument(0))
                     .stream()
                     .map(name -> ParameterEntity.builder().name(name).build())
-                    .collect(Collectors.toList())
+                    .toList()
             );
 
         // act

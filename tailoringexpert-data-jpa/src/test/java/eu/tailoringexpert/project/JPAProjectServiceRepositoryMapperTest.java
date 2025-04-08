@@ -266,7 +266,7 @@ class JPAProjectServiceRepositoryMapperTest {
 
         // assert
         assertThat(actual).isNull();
-        verify(baseCatalogRepositoryMock, times(0)).findByVersion(any());
+        verify(baseCatalogRepositoryMock, times(0)).findByVersion(any(), any());
     }
 
     @Test
@@ -275,7 +275,7 @@ class JPAProjectServiceRepositoryMapperTest {
         Catalog<BaseRequirement> catalog = Catalog.<BaseRequirement>builder().version("8.2.1").build();
 
         BaseCatalogEntity baseCatalogEntity = BaseCatalogEntity.builder().version("8.2.1").build();
-        given(baseCatalogRepositoryMock.findByVersion("8.2.1")).willReturn(baseCatalogEntity);
+        given(baseCatalogRepositoryMock.findByVersion("8.2.1", BaseCatalogEntity.class)).willReturn(baseCatalogEntity);
 
         // act
         BaseCatalogEntity actual = mapper.resolve(catalog);
@@ -283,7 +283,7 @@ class JPAProjectServiceRepositoryMapperTest {
         // assert
         assertThat(actual).isNotNull();
         assertThat(actual.getVersion()).isEqualTo("8.2.1");
-        verify(baseCatalogRepositoryMock, times(1)).findByVersion("8.2.1");
+        verify(baseCatalogRepositoryMock, times(1)).findByVersion("8.2.1", BaseCatalogEntity.class);
     }
 
     @Test

@@ -32,6 +32,7 @@ import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.List;
 
 import static eu.tailoringexpert.domain.Phase.A;
 import static eu.tailoringexpert.domain.Phase.C;
@@ -389,7 +390,7 @@ class ResourceMapperTest {
 
         assertThat(actual.getLinks()).containsExactlyInAnyOrder(
             Link.of(this.host + "/project/SAMPLE/screeningsheet", "self"),
-            Link.of(this.host + "/project/SAMPLE/screeningsheet/pdf", "datei")
+            Link.of(this.host + "/project/SAMPLE/screeningsheet/pdf", "file")
 
         );
     }
@@ -416,7 +417,7 @@ class ResourceMapperTest {
 
         assertThat(actual.getLinks()).containsExactlyInAnyOrder(
             Link.of(this.host + "/project/SAMPLE/screeningsheet", "self"),
-            Link.of(this.host + "/project/SAMPLE/screeningsheet/pdf", "datei")
+            Link.of(this.host + "/project/SAMPLE/screeningsheet/pdf", "file")
 
         );
     }
@@ -454,7 +455,7 @@ class ResourceMapperTest {
 
         assertThat(actual.getLinks()).containsExactlyInAnyOrder(
             Link.of(this.host + "/project/SAMPLE/tailoring/master/screeningsheet", "self"),
-            Link.of(this.host + "/project/SAMPLE/tailoring/master/screeningsheet/pdf", "datei")
+            Link.of(this.host + "/project/SAMPLE/tailoring/master/screeningsheet/pdf", "file")
 
         );
     }
@@ -500,45 +501,7 @@ class ResourceMapperTest {
 
         assertThat(actual.getLinks()).containsExactlyInAnyOrder(
             Link.of(this.host + "/project/SAMPLE/screeningsheet", "self"),
-            Link.of(this.host + "/project/SAMPLE/screeningsheet/pdf", "datei")
-
-        );
-    }
-
-    @Test
-    void toResource_ProjektPhaseScreeningSheet_ProjektPhaseScreeningDatenUndLinksOk() {
-        // arrange
-        PathContextBuilder pathContext = PathContext.builder()
-            .project("SAMPLE")
-            .tailoring("master");
-
-        ScreeningSheetParameter parameter = ScreeningSheetParameter.builder()
-            .category("Identifier")
-            .value("SAMPLE")
-            .build();
-
-        ScreeningSheet screeningSheet = ScreeningSheet.builder()
-            .selectionVector(SelectionVector.builder().build())
-            .parameters(asList(parameter))
-            .build();
-
-        // act
-        ScreeningSheetResource actual = mapper.toResource(pathContext, screeningSheet);
-
-        // assert
-        assertThat(actual).isNotNull();
-        assertThat(actual.getData()).isNull();
-        assertThat(actual.getSelectionVector()).isNotNull();
-        assertThat(actual.getParameters()).isNotNull();
-        assertThat(actual.getParameters()).hasSize(1);
-        assertThat(actual.getParameters()).containsOnly(ScreeningSheetParameterResource.builder()
-            .label(parameter.getCategory())
-            .value(parameter.getValue())
-            .build());
-
-        assertThat(actual.getLinks()).containsExactlyInAnyOrder(
-            Link.of(this.host + "/project/SAMPLE/tailoring/master/screeningsheet", "self"),
-            Link.of(this.host + "/project/SAMPLE/tailoring/master/screeningsheet/pdf", "datei")
+            Link.of(this.host + "/project/SAMPLE/screeningsheet/pdf", "file")
 
         );
     }
@@ -798,6 +761,9 @@ class ResourceMapperTest {
 
         Chapter<TailoringRequirement> chapter = Chapter.<TailoringRequirement>builder()
             .number("1.1")
+            .chapters(List.of(
+               Chapter.<TailoringRequirement>builder().name("1.2").build()
+            ))
             .build();
 
         // act

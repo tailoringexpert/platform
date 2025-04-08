@@ -706,7 +706,7 @@ class ProjectServiceImplTest {
     }
 
     @Test
-    void updateProjectState_ProjectNotExisting_EmptyReturned() throws IOException {
+    void updateProjectState_ProjectNotExisting_EmptyReturned() {
         // arrange
 
         given(repositoryMock.getProject("SAMPLE")).willReturn(empty());

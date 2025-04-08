@@ -61,6 +61,6 @@ public class CMRequirementsExcelDocumentCreator extends CMExcelDocumentCreator {
                                    Sheet sheet,
                                    Map<String, Object> placeholders) {
         requirements.forEach(requirement ->
-            addRow(sheet, 10000, requirement.getPosition(), requirement.getText(), placeholders));
+            addRow(sheet, 10000, requirement.getPosition(), requirement.getText(), requirement.getSelected(), placeholders));
     }
 }

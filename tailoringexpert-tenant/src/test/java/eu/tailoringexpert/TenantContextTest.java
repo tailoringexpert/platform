@@ -71,7 +71,8 @@ class TenantContextTest {
 
     @ParameterizedTest
     @MethodSource
-    void registerTenant(String id, String name, String expected) {
+    @SuppressWarnings({"java:S1144"})
+    void registerTenant(String id, String name, String expected) { // NOPMD - suppressed UnusedPrivateMethod - ParameterizedTest
         // arrange
 
         // act
@@ -82,11 +83,12 @@ class TenantContextTest {
         assertThat(TenantContext.getRegisteredTenants()).containsEntry(id, expected);
     }
 
+    @SuppressWarnings({"java:S1144"})
     private static Stream<Arguments> registerTenant() { // NOPMD - suppressed UnusedPrivateMethod - Used by parameterized test registerTenant
         return Stream.of(
             Arguments.of("TENANT", null, "TENANT"),
             Arguments.of("TENANT", " ", "TENANT"),
-            Arguments.of("TENANT ", "Plattform", "Plattform")
+            Arguments.of("TENANT ", "Platform", "Platform")
         );
     }
 

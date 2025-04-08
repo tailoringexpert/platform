@@ -46,7 +46,7 @@ class TenantCacheManagerTest {
         // act
         Cache actual;
         try (MockedStatic<TenantContext> tc = mockStatic(TenantContext.class)) {
-            tc.when(() -> TenantContext.getCurrentTenant()).thenReturn("anyTenant");
+            tc.when(TenantContext::getCurrentTenant).thenReturn("anyTenant");
             actual = cacheManager.getCache("anyTenant");
         }
 
@@ -75,7 +75,7 @@ class TenantCacheManagerTest {
         Cache actual;
         try (
             MockedStatic<TenantContext> tc = mockStatic(TenantContext.class)) {
-            tc.when(() -> TenantContext.getCurrentTenant()).thenReturn("anyTenant");
+            tc.when(TenantContext::getCurrentTenant).thenReturn("anyTenant");
             actual = cacheManager.getCache("anyTenant");
         }
 
@@ -90,7 +90,7 @@ class TenantCacheManagerTest {
         // act
         Collection<String> actual;
         try (MockedStatic<TenantContext> tc = mockStatic(TenantContext.class)) {
-            tc.when(() -> TenantContext.getCurrentTenant()).thenReturn("anyTenant");
+            tc.when(TenantContext::getCurrentTenant).thenReturn("anyTenant");
             actual = cacheManager.getCacheNames();
         }
 
@@ -119,7 +119,7 @@ class TenantCacheManagerTest {
         Collection<String> actual;
         try (
             MockedStatic<TenantContext> tc = mockStatic(TenantContext.class)) {
-            tc.when(() -> TenantContext.getCurrentTenant()).thenReturn("anyTenant");
+            tc.when(TenantContext::getCurrentTenant).thenReturn("anyTenant");
             actual = cacheManager.getCacheNames();
         }
 

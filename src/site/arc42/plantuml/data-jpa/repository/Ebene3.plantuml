@@ -18,12 +18,13 @@ package repository {
     interface BaseCatalogRepository<BaseCatalogEntity, Long> {
         CACHE_BASECATALOG : String = "BaseCatalogRepository#BaseCatalog"
         CACHE_BASECATALOGLIST : String = "BaseCatalogRepository#BaseCatalogList"
-        findByVersion( version : String ) : BaseCatalogEntity
+        findByVersion( version : String, clz: Class<T> ) : T
         findCatalogVersionBy() : Collection<BaseCatalogVersionProjection>
         findCatalogByVersion( version : String ) : BaseCatalogVersionProjection
         save( entity : S) : <S extends BaseCatalogEntity>
         existsByVersion( version : String ) : boolean
         setValidUntilForVersion( version : String, pointOfTime : ZonedDateTime) : int
+        deleteCatalogByVersion( version : String ) : void
     }
     JpaRepository <|-- BaseCatalogRepository
 
@@ -55,5 +56,9 @@ package repository {
     }
     JpaRepository <|-- SelectionVectorProfileRepository
 
+    interface TailoringCatalogRepository<TailoringCatalogEntity, Long> {
+        existsByVersion( version : String ) : boolean
+    }
+    JpaRepository <|-- TailoringCatalogRepository
 }
 @enduml
