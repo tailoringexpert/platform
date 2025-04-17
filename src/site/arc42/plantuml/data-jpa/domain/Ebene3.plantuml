@@ -29,6 +29,13 @@ package domain {
         ACTIVE
     }
 
+    class ReferencedDocumentEntity {
+        number : String
+        title : String
+        issue : String
+        description : String
+    }
+
     class DRDEntity {
         id : Long <<PK>>
         number : String

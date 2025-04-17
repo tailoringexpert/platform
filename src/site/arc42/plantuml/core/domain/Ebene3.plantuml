@@ -25,9 +25,17 @@ package domain {
     }
     Requirement --> "0..1" Reference : reference
     Requirement --> "0..*" DRD : drds
+    Requirement --> "0..*" ReferencedDocument : applicableDocuments
+
+    class ReferencedDocument {
+        number : String
+        title : String
+        issue : String
+        description : String
+    }
 
     class DRD {
-        numer : String
+        number : String
         title : String
         subtitle : String
         deliveryDate : String

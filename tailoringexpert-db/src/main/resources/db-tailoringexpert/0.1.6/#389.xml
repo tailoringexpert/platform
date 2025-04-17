@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
+
+    <changeSet id="1" author="tailoringexpert">
+        <comment>github issue #389</comment>
+        <createTable tableName="BASEREQUIREMENT_APPLICABLEDOC">
+            <column name="REQUIREMENT_ID" type="BIGINT">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="DOCUMENT_ID" type="BIGINT">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+        </createTable>
+
+        <rollback>
+            <delete tableName="BASEREQUIREMENT_APPLICABLEDOC"/>
+        </rollback>
+    </changeSet>
+
+    <changeSet id="2" author="tailoringexpert">
+        <comment>github issue #389</comment>
+        <createTable tableName="TAILORINGEQUIREMENT_APPLICABLEDOC">
+            <column name="REQUIREMENT_ID" type="BIGINT">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="DOCUMENT_ID" type="BIGINT">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+        </createTable>
+
+        <rollback>
+            <delete tableName="TAILORINGREQUIREMENT_APPLICABLEDOC"/>
+        </rollback>
+    </changeSet>
+
+    <changeSet id="3" author="tailoringexpert">
+        <createTable tableName="DOCUMENT">
+            <column name="DOCUMENT_ID" type="BIGINT">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="NUMBER" type="VARCHAR(128)"/>
+            <column name="TITLE" type="VARCHAR(256)"/>
+            <column name="ISSUE" type="VARCHAR(64)"/>
+            <column name="DESCRIPTION" type="VARCHAR(256)"/>
+        </createTable>
+        <rollback>
+            <delete tableName="DOCUMENT"/>
+        </rollback>
+    </changeSet>
+
+</databaseChangeLog>

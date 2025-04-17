@@ -4311,6 +4311,13 @@
         "position" : "a",
         "reference" : null,
         "drds" : null,
+        "applicableDocuments" : [ {
+          "number" : "a",
+          "title" : "ECSS-Q-ST-80",
+          "issue" : "C",
+          "revision" : "Rev.1",
+          "description" : "Software product assurance (15 February 2017)"
+        } ],
         "identifiers" : [ {
           "type" : "W",
           "level" : 1,
@@ -4322,6 +4329,13 @@
         "position" : "b",
         "reference" : null,
         "drds" : null,
+        "applicableDocuments" : [ {
+          "number" : "a",
+          "title" : "ECSS-Q-ST-80",
+          "issue" : "C",
+          "revision" : "Rev.1",
+          "description" : "Software product assurance (15 February 2017)"
+        } ],
         "identifiers" : [ {
           "type" : "W",
           "level" : 1,

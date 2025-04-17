@@ -94,6 +94,10 @@ public abstract class TailoringServiceMapper {
 
         Collection<Phase> phases = screeningSheet.getPhases();
         boolean isRelevantPhase = containsPhases(phases, baseRequirement.getPhases());
+
+        // unterscheidung "echte" anforderung oder "dokument" anforderng
+
+
         boolean applicable = baseRequirement.getIdentifiers()
             .stream()
             .filter(identifier -> isRelevantPhase)

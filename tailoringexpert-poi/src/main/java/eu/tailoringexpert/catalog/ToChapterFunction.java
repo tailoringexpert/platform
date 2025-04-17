@@ -22,13 +22,7 @@
 package eu.tailoringexpert.catalog;
 
 import eu.tailoringexpert.TailoringexpertException;
-import eu.tailoringexpert.domain.BaseRequirement;
-import eu.tailoringexpert.domain.Chapter;
-import eu.tailoringexpert.domain.DRD;
-import eu.tailoringexpert.domain.Identifier;
-import eu.tailoringexpert.domain.Logo;
-import eu.tailoringexpert.domain.Phase;
-import eu.tailoringexpert.domain.Reference;
+import eu.tailoringexpert.domain.*;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
@@ -64,7 +58,8 @@ public class ToChapterFunction implements Function<Sheet, Chapter<BaseRequiremen
     Function<Sheet, Map<String, DRD>> toDRDMapping;
     @NonNull
     Function<Sheet, Map<String, Logo>> toLogoMapping;
-
+    @NonNull
+    Function<Sheet, Map<String, Document>> toDocumentMapping;
     @NonNull
     Function<String, Identifier> toIdentifier;
     @NonNull
@@ -85,6 +80,7 @@ public class ToChapterFunction implements Function<Sheet, Chapter<BaseRequiremen
     public Chapter<BaseRequirement> apply(Sheet sheet) {
         Map<String, Logo> logos = toLogoMapping.apply(sheet.getWorkbook().getSheet("LOGO"));
         Map<String, DRD> drds = toDRDMapping.apply(sheet.getWorkbook().getSheet("DRD"));
+        Map<String, Document> documents = toDocumentMapping.apply(sheet.getWorkbook().getSheet("DOCUMENT"));
 
         Map<String, Chapter<BaseRequirement>> chapters = new TreeMap<>();
         Chapter<BaseRequirement> current = new Chapter<>();
@@ -100,7 +96,7 @@ public class ToChapterFunction implements Function<Sheet, Chapter<BaseRequiremen
                 row = rowIterator.next();
             }
 
-            current.getRequirements().add(createRequirement(row, logos, drds));
+            current.getRequirements().add(createRequirement(row, logos, documents, drds));
         }
 
         Chapter<BaseRequirement> result = new Chapter<>();
@@ -141,7 +137,7 @@ public class ToChapterFunction implements Function<Sheet, Chapter<BaseRequiremen
         }
     }
 
-    private BaseRequirement createRequirement(Row row, Map<String, Logo> logos, Map<String, DRD> drds) {
+    private BaseRequirement createRequirement(Row row, Map<String, Logo> logos, Map<String, Document> documents, Map<String, DRD> drds) {
         Logo logo = toLogo.apply(row.getCell(5, CREATE_NULL_AS_BLANK).getStringCellValue(), logos);
         Reference reference = toReference.apply(row.getCell(4, CREATE_NULL_AS_BLANK).getStringCellValue(), logo);
 
@@ -160,6 +156,11 @@ public class ToChapterFunction implements Function<Sheet, Chapter<BaseRequiremen
                 .stream()
                 .map(String.class::cast)
                 .map(drds::get)
+                .collect(collectingAndThen(toCollection(LinkedList::new), d -> !d.isEmpty() ? d : null)))
+            .applicableDocuments(list(new StringTokenizer(row.getCell(7, CREATE_NULL_AS_BLANK).getStringCellValue().trim(), "\n"))
+                .stream()
+                .map(String.class::cast)
+                .map(documents::get)
                 .collect(collectingAndThen(toCollection(LinkedList::new), d -> !d.isEmpty() ? d : null)))
             .reference(reference)
             .build();

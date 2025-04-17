@@ -23,21 +23,10 @@ package eu.tailoringexpert.catalog;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import eu.tailoringexpert.Tenants;
-import eu.tailoringexpert.domain.BaseRequirement;
-import eu.tailoringexpert.domain.Catalog;
-import eu.tailoringexpert.domain.Chapter;
-import eu.tailoringexpert.domain.DRD;
-import eu.tailoringexpert.domain.Identifier;
-import eu.tailoringexpert.domain.Logo;
-import eu.tailoringexpert.domain.Reference;
-import eu.tailoringexpert.domain.ResourceMapper;
+import eu.tailoringexpert.domain.*;
 import eu.tailoringexpert.renderer.HTMLTemplateEngine;
 import eu.tailoringexpert.renderer.PDFEngine;
-import eu.tailoringexpert.repository.BaseCatalogRepository;
-import eu.tailoringexpert.repository.DRDRepository;
-import eu.tailoringexpert.repository.LogoRepository;
-import eu.tailoringexpert.repository.SelectionVectorProfileRepository;
-import eu.tailoringexpert.repository.TailoringCatalogRepository;
+import eu.tailoringexpert.repository.*;
 import lombok.NonNull;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.springframework.beans.factory.ListableBeanFactory;
@@ -58,9 +47,11 @@ public class CatalogConfiguration {
     @Bean
     JPACatalogServiceRepositoryMapper catalogServiceRepositoryMapper(
         @NonNull LogoRepository logoRepository,
+        @NonNull DocumentRepository documentRepository,
         @NonNull DRDRepository drdRepository) {
         JPACatalogServiceRepositoryMapperGenerated result = new JPACatalogServiceRepositoryMapperGenerated();
         result.setLogoRepository(logoRepository);
+        result.setDocumentRepository(documentRepository);
         result.setDrdRepository(drdRepository);
         return result;
     }
@@ -70,9 +61,16 @@ public class CatalogConfiguration {
     CatalogServiceRepository catalogServiceRepository(
         @NonNull JPACatalogServiceRepositoryMapper mapper,
         @NonNull BaseCatalogRepository baseCatalogRepository,
+        @NonNull DocumentRepository documentRepository,
         @NonNull DRDRepository drdRepository,
         @NonNull TailoringCatalogRepository tailoringCatalogRepository) {
-        return new JPACatalogServiceRepository(mapper, baseCatalogRepository, drdRepository, tailoringCatalogRepository);
+        return new JPACatalogServiceRepository(
+            mapper,
+            baseCatalogRepository,
+            documentRepository,
+            drdRepository,
+            tailoringCatalogRepository
+        );
     }
 
 
@@ -180,6 +178,11 @@ public class CatalogConfiguration {
     }
 
     @Bean
+    Function<Sheet, Map<String, Document>> toDocumentFunction() {
+        return new ToDocumentMappingFunction();
+    }
+
+    @Bean
     BiFunction<String, Logo, Reference> toReferenceFunction() {
         return new ToReferenceFunction();
     }
@@ -193,6 +196,7 @@ public class CatalogConfiguration {
     Function<Sheet, Chapter<BaseRequirement>> toChapterFunction(
         @NonNull @Qualifier("toDRDMappingFunction") Function<Sheet, Map<String, DRD>> toDRDMappingFunction,
         @NonNull @Qualifier("toLogoMappingFunction") Function<Sheet, Map<String, Logo>> toLogoMappingFunction,
+        @NonNull @Qualifier("toDocumentFunction") Function<Sheet, Map<String, Document>> toDocumentFunction,
         @NonNull @Qualifier("toIdentifierFunction") Function<String, Identifier> toIdentifierFunction,
         @NonNull @Qualifier("toLogoFunction") BiFunction<String, Map<String, Logo>, Logo> toLogoFunction,
         @NonNull @Qualifier("toReferenceFunction") BiFunction<String, Logo, Reference> toReferenceFunction,
@@ -201,6 +205,7 @@ public class CatalogConfiguration {
         return new ToChapterFunction(
             toDRDMappingFunction,
             toLogoMappingFunction,
+            toDocumentFunction,
             toIdentifierFunction,
             toLogoFunction,
             toReferenceFunction,

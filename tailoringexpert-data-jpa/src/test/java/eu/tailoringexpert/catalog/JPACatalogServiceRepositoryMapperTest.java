@@ -21,19 +21,10 @@
  */
 package eu.tailoringexpert.catalog;
 
-import eu.tailoringexpert.domain.BaseCatalogChapterEntity;
+import eu.tailoringexpert.domain.*;
 import eu.tailoringexpert.domain.BaseCatalogChapterEntity.BaseCatalogChapterEntityBuilder;
-import eu.tailoringexpert.domain.BaseCatalogEntity;
-import eu.tailoringexpert.domain.BaseRequirement;
-import eu.tailoringexpert.domain.BaseRequirementEntity;
-import eu.tailoringexpert.domain.Catalog;
-import eu.tailoringexpert.domain.Chapter;
-import eu.tailoringexpert.domain.DRD;
-import eu.tailoringexpert.domain.DRDEntity;
-import eu.tailoringexpert.domain.Logo;
-import eu.tailoringexpert.domain.LogoEntity;
-import eu.tailoringexpert.domain.Phase;
 import eu.tailoringexpert.repository.DRDRepository;
+import eu.tailoringexpert.repository.DocumentRepository;
 import eu.tailoringexpert.repository.LogoRepository;
 import lombok.extern.log4j.Log4j2;
 import org.junit.jupiter.api.BeforeEach;
@@ -54,15 +45,18 @@ class JPACatalogServiceRepositoryMapperTest {
 
     private LogoRepository logoRepositoryMock;
     private DRDRepository drdRepositoryMock;
+    private DocumentRepository documentRepositoryMock;
     private JPACatalogServiceRepositoryMapper mapper;
 
     @BeforeEach
     void setup() {
         this.logoRepositoryMock = Mockito.mock(LogoRepository.class);
         this.drdRepositoryMock = Mockito.mock(DRDRepository.class);
+        this.documentRepositoryMock = Mockito.mock(DocumentRepository.class);
         this.mapper = new JPACatalogServiceRepositoryMapperGenerated();
         this.mapper.setLogoRepository(logoRepositoryMock);
         this.mapper.setDrdRepository(drdRepositoryMock);
+        this.mapper.setDocumentRepository(documentRepositoryMock);
     }
 
     @Test
@@ -120,6 +114,7 @@ class JPACatalogServiceRepositoryMapperTest {
         assertThat(actual.getValidFrom()).isNotNull();
         assertThat(actual.getToc()).isNotNull();
         assertThat(actual.getToc().getRequirements()).hasSize(1);
+
     }
 
     @Test
@@ -225,6 +220,40 @@ class JPACatalogServiceRepositoryMapperTest {
         assertThat(actual).isNotNull();
         assertThat(actual.getId()).isNotNull();
         verify(drdRepositoryMock, times(1)).findByNumber("drd-47.11");
+    }
+
+    @Test
+    void resolve_DocumentNull_NullReturned() {
+        // arrange
+        Document document = null;
+
+        // act
+        DocumentEntity actual = mapper.resolve(document);
+
+        // assert
+        assertThat(actual).isNull();
+        verify(documentRepositoryMock, times(0)).findByTitle(any());
+    }
+
+    @Test
+    void resolve_DocumentValid_ExistingDcoumentReturned() {
+        // arrange
+        Document document  = Document.builder()
+                .title("ECSS-Q-ST-80")
+                .issue("C")
+                .revision("Rev.1")
+                .build();
+
+        DocumentEntity documentEntity = DocumentEntity.builder().id(12l).build();
+        given(documentRepositoryMock.findByTitle("ECSS-Q-ST-80")).willReturn(documentEntity);
+
+        // act
+        DocumentEntity actual = mapper.resolve(document);
+
+        // assert
+        assertThat(actual).isNotNull();
+        assertThat(actual.getId()).isNotNull();
+        verify(documentRepositoryMock, times(1)).findByTitle("ECSS-Q-ST-80");
     }
 
 

@@ -123,6 +123,7 @@ class Excel2CatalogConverterTest {
         ToChapterFunction toChapter = new ToChapterFunction(
             new ToDRDMappingFunction(),
             new ToLogoMappingFunction(),
+            new ToDocumentMappingFunction(),
             new ToIdentifierFunction(),
             new ToLogoFunction(),
             new ToReferenceFunction(),
@@ -159,6 +160,7 @@ class Excel2CatalogConverterTest {
         ToChapterFunction toChapter = new ToChapterFunction(
             new ToDRDMappingFunction(),
             new ToLogoMappingFunction(),
+            new ToDocumentMappingFunction(),
             new ToIdentifierFunction(),
             new ToLogoFunction(),
             new ToReferenceFunction(),
