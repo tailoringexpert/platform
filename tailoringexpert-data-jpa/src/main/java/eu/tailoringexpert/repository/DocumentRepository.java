@@ -32,7 +32,6 @@ import org.springframework.transaction.annotation.Transactional;
  * @author Michael Bädorf
  */
 public interface DocumentRepository extends JpaRepository<DocumentEntity, Long> {
-    String CACHE_DOCUMENT = "DocumentRepository#Title";
 
     /**
      * Load a document.
@@ -40,7 +39,5 @@ public interface DocumentRepository extends JpaRepository<DocumentEntity, Long> 
      * @param title of document to load
      * @return loaded document
      */
-    @Cacheable(CACHE_DOCUMENT)
-    @Transactional(readOnly = true)
     DocumentEntity findByTitle(String title);
 }

@@ -15,13 +15,14 @@
         </createTable>
 
         <rollback>
+            <dropAllForeignKeyConstraints baseTableName="BASEREQUIREMENT_APPLICABLEDOC"/>
             <delete tableName="BASEREQUIREMENT_APPLICABLEDOC"/>
         </rollback>
     </changeSet>
 
     <changeSet id="2" author="tailoringexpert">
         <comment>github issue #389</comment>
-        <createTable tableName="TAILORINGEQUIREMENT_APPLICABLEDOC">
+        <createTable tableName="TAILORINGREQUIREMENT_APPLICABLEDOC">
             <column name="REQUIREMENT_ID" type="BIGINT">
                 <constraints primaryKey="true" nullable="false"/>
             </column>
@@ -31,6 +32,7 @@
         </createTable>
 
         <rollback>
+            <dropAllForeignKeyConstraints baseTableName="TAILORINGREQUIREMENT_APPLICABLEDOC"/>
             <delete tableName="TAILORINGREQUIREMENT_APPLICABLEDOC"/>
         </rollback>
     </changeSet>
@@ -40,14 +42,29 @@
             <column name="DOCUMENT_ID" type="BIGINT">
                 <constraints primaryKey="true" nullable="false"/>
             </column>
-            <column name="NUMBER" type="VARCHAR(128)"/>
+            <column name="NUMBER" type="VARCHAR(4)"/>
             <column name="TITLE" type="VARCHAR(256)"/>
-            <column name="ISSUE" type="VARCHAR(64)"/>
-            <column name="DESCRIPTION" type="VARCHAR(256)"/>
+            <column name="ISSUE" type="VARCHAR(16)"/>
+            <column name="REVISION" type="VARCHAR(32)"/>
+            <column name="DESCRIPTION" type="VARCHAR(512)"/>
         </createTable>
         <rollback>
             <delete tableName="DOCUMENT"/>
         </rollback>
+    </changeSet>
+
+    <changeSet id="4" author="tailoringexpert">
+        <addForeignKeyConstraint constraintName="FK_BASWAPPLICABLEOC_DOCUMENT"
+                                 baseTableName="BASEREQUIREMENT_APPLICABLEDOC" baseColumnNames="DOCUMENT_ID"
+                                 referencedTableName="DOCUMENT"
+                                 referencedColumnNames="DOCUMENT_ID"/>
+    </changeSet>
+
+    <changeSet id="5" author="tailoringexpert">
+        <addForeignKeyConstraint constraintName="FK_TAILORINGAPPLICABLEOC_DOCUMENT"
+                                 baseTableName="TAILORINGREQUIREMENT_APPLICABLEDOC" baseColumnNames="DOCUMENT_ID"
+                                 referencedTableName="DOCUMENT"
+                                 referencedColumnNames="DOCUMENT_ID"/>
     </changeSet>
 
 </databaseChangeLog>

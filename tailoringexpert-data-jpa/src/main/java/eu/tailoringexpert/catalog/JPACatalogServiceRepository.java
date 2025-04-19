@@ -90,7 +90,6 @@ public class JPACatalogServiceRepository implements CatalogServiceRepository {
             }
         });
 
-        // TODO ReferenceDocument
         Collection<Document> documents = applyDocuments(catalog.getToc());
         documents.forEach(domain -> {
             DocumentEntity entity = documentRepository.findByTitle(domain.getTitle());
