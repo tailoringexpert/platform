@@ -74,4 +74,6 @@ public abstract class Requirement implements Serializable {
     public boolean hasDRD() {
         return nonNull(getDrds()) && !getDrds().isEmpty();
     }
+
+    public boolean hasApplicableDocument() { return  nonNull(getApplicableDocuments()) && !getApplicableDocuments().isEmpty();}
 }
