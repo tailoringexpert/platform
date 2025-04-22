@@ -78,7 +78,7 @@ public abstract class JPACatalogServiceRepositoryMapper {
     }
 
     DocumentEntity resolve(Document domain)  {
-        return nonNull(domain) ? documentRepository.findByTitle(domain.getTitle()) : null;
+        return nonNull(domain) ? documentRepository.findByTitleAndIssueAndRevision(domain.getTitle(), domain.getIssue(), domain.getRevision()) : null;
     }
 
     public abstract Catalog<BaseRequirement> getCatalog(BaseCatalogEntity entity);

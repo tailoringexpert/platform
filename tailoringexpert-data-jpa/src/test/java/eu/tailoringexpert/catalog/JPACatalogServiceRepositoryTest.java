@@ -448,7 +448,7 @@ class JPACatalogServiceRepositoryTest {
                 .build())
             .build();
 
-        given(documentRepositoryMock.findByTitle("ECSS-Q-ST-80")).willReturn(null);
+        given(documentRepositoryMock.findByTitleAndIssueAndRevision("ECSS-Q-ST-80", "C", "Rev.1")).willReturn(null);
 
         BaseCatalogEntity toSave = BaseCatalogEntity.builder().build();
         given(mapperMock.createCatalog(catalog)).willReturn(toSave);
@@ -480,6 +480,8 @@ class JPACatalogServiceRepositoryTest {
                         .applicableDocuments(asList(
                             Document.builder()
                                 .title("ECSS-Q-ST-80")
+                                .issue("C")
+                                .revision("Rev.1")
                                 .build()
                         ))
                         .build())
@@ -488,7 +490,7 @@ class JPACatalogServiceRepositoryTest {
             .build();
         BaseCatalogEntity toSave = BaseCatalogEntity.builder().build();
 
-        given(documentRepositoryMock.findByTitle("ECSS-Q-ST-80")).willReturn(DocumentEntity.builder().build());
+        given(documentRepositoryMock.findByTitleAndIssueAndRevision("ECSS-Q-ST-80", "C", "Rev.1")).willReturn(DocumentEntity.builder().build());
 
         given(mapperMock.createCatalog(catalog)).willReturn(toSave);
 

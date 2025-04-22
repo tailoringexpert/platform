@@ -92,7 +92,11 @@ public class JPACatalogServiceRepository implements CatalogServiceRepository {
 
         Collection<Document> documents = applyDocuments(catalog.getToc());
         documents.forEach(domain -> {
-            DocumentEntity entity = documentRepository.findByTitle(domain.getTitle());
+            DocumentEntity entity = documentRepository.findByTitleAndIssueAndRevision(
+                domain.getTitle(),
+                domain.getIssue(),
+                domain.getRevision()
+            );
             if (isNull(entity)) {
                 documentRepository.save(mapper.createCatalog(domain));
             }

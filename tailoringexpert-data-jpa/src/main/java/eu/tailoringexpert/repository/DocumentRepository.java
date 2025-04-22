@@ -37,5 +37,5 @@ public interface DocumentRepository extends JpaRepository<DocumentEntity, Long> 
      * @param title of document to load
      * @return loaded document
      */
-    DocumentEntity findByTitle(String title);
+    DocumentEntity findByTitleAndIssueAndRevision(String title, String issue, String revision);
 }

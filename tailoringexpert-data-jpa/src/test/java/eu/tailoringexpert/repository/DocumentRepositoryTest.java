@@ -39,7 +39,7 @@ class DocumentRepositoryTest {
     DocumentRepository repository;
 
     @Test
-    void findByTitle_DocumentExist_DocumentEntityReturned() {
+    void findByTitleAndIssueAndRevision_DocumentExist_DocumentEntityReturned() {
         // arrange
         repository.save(DocumentEntity.builder()
             .title("ECSS-Q-ST-80C")
@@ -49,9 +49,26 @@ class DocumentRepositoryTest {
 
 
         // act
-        DocumentEntity actual = repository.findByTitle("ECSS-Q-ST-80C");
+        DocumentEntity actual = repository.findByTitleAndIssueAndRevision("ECSS-Q-ST-80C","C", "Rev.1");
 
         // assert
         assertThat(actual).isNotNull();
+    }
+
+    @Test
+    void findByTitleAndIssueAndRevision_DocumentNotExist_NullReturned() {
+        // arrange
+        repository.save(DocumentEntity.builder()
+            .title("ECSS-Q-ST-80C")
+            .issue("C")
+            .revision("Rev.1")
+            .build());
+
+
+        // act
+        DocumentEntity actual = repository.findByTitleAndIssueAndRevision("ECSS-Q-ST-80C","C", "Rev.2");
+
+        // assert
+        assertThat(actual).isNull();
     }
 }

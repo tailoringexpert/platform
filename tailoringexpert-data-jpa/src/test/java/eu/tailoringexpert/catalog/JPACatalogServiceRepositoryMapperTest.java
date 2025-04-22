@@ -232,7 +232,7 @@ class JPACatalogServiceRepositoryMapperTest {
 
         // assert
         assertThat(actual).isNull();
-        verify(documentRepositoryMock, times(0)).findByTitle(any());
+        verify(documentRepositoryMock, times(0)).findByTitleAndIssueAndRevision(any(), any(), any());
     }
 
     @Test
@@ -245,7 +245,7 @@ class JPACatalogServiceRepositoryMapperTest {
                 .build();
 
         DocumentEntity documentEntity = DocumentEntity.builder().id(12l).build();
-        given(documentRepositoryMock.findByTitle("ECSS-Q-ST-80")).willReturn(documentEntity);
+        given(documentRepositoryMock.findByTitleAndIssueAndRevision("ECSS-Q-ST-80", "C", "Rev.1")).willReturn(documentEntity);
 
         // act
         DocumentEntity actual = mapper.resolve(document);
@@ -253,7 +253,7 @@ class JPACatalogServiceRepositoryMapperTest {
         // assert
         assertThat(actual).isNotNull();
         assertThat(actual.getId()).isNotNull();
-        verify(documentRepositoryMock, times(1)).findByTitle("ECSS-Q-ST-80");
+        verify(documentRepositoryMock, times(1)).findByTitleAndIssueAndRevision("ECSS-Q-ST-80", "C", "Rev.1");
     }
 
 
