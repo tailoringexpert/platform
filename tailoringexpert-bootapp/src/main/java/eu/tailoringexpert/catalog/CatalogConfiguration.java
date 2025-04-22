@@ -23,10 +23,23 @@ package eu.tailoringexpert.catalog;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import eu.tailoringexpert.Tenants;
-import eu.tailoringexpert.domain.*;
+import eu.tailoringexpert.domain.BaseRequirement;
+import eu.tailoringexpert.domain.Catalog;
+import eu.tailoringexpert.domain.Chapter;
+import eu.tailoringexpert.domain.DRD;
+import eu.tailoringexpert.domain.Document;
+import eu.tailoringexpert.domain.Identifier;
+import eu.tailoringexpert.domain.Logo;
+import eu.tailoringexpert.domain.Reference;
+import eu.tailoringexpert.domain.ResourceMapper;
 import eu.tailoringexpert.renderer.HTMLTemplateEngine;
 import eu.tailoringexpert.renderer.PDFEngine;
-import eu.tailoringexpert.repository.*;
+import eu.tailoringexpert.repository.BaseCatalogRepository;
+import eu.tailoringexpert.repository.DRDRepository;
+import eu.tailoringexpert.repository.DocumentRepository;
+import eu.tailoringexpert.repository.LogoRepository;
+import eu.tailoringexpert.repository.SelectionVectorProfileRepository;
+import eu.tailoringexpert.repository.TailoringCatalogRepository;
 import lombok.NonNull;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.springframework.beans.factory.ListableBeanFactory;
@@ -36,6 +49,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
 import org.springframework.http.MediaType;
 
+import java.util.Comparator;
 import java.util.Map;
 import java.util.function.BiConsumer;
 import java.util.function.BiFunction;
@@ -218,5 +232,12 @@ public class CatalogConfiguration {
         @NonNull @Qualifier("toChapterFunction") Function<Sheet, Chapter<BaseRequirement>> toChapterFunction
     ) {
         return new Excel2CatalogConverter(toChapterFunction);
+    }
+
+    @Bean
+    ApplicableDocumentProvider applicableDocumentProvider(
+        @NonNull @Qualifier("documentNumberComparator") Comparator<Document> documentNumberComparator
+        ) {
+        return new ApplicableDocumentProvider(documentNumberComparator);
     }
 }

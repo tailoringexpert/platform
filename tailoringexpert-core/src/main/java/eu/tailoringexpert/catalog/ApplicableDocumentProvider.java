@@ -19,8 +19,9 @@
  * <http://www.gnu.org/licenses/gpl-3.0.html>.
  * #L%
  */
-package eu.tailoringexpert.tailoring;
+package eu.tailoringexpert.catalog;
 
+import eu.tailoringexpert.domain.BaseRequirement;
 import eu.tailoringexpert.domain.Catalog;
 import eu.tailoringexpert.domain.Document;
 import eu.tailoringexpert.domain.TailoringRequirement;
@@ -41,7 +42,7 @@ import java.util.function.Function;
  */
 @Log4j2
 @RequiredArgsConstructor
-public class ApplicableDocumentProvider implements Function<Catalog<TailoringRequirement>, Collection<Document>> {
+public class ApplicableDocumentProvider implements Function<Catalog<BaseRequirement>, Collection<Document>> {
 
     @NonNull
     private Comparator<Document> numberComparator;
@@ -50,15 +51,14 @@ public class ApplicableDocumentProvider implements Function<Catalog<TailoringReq
      * {@inheritDoc}
      */
     @Override
-    public Collection<Document> apply(Catalog<TailoringRequirement> catalog) {
+    public Collection<Document> apply(Catalog<BaseRequirement> catalog) {
         log.traceEntry(catalog::getVersion);
 
         Collection<Document> result = new TreeSet<>(numberComparator);
 
         catalog.getToc().allRequirements()
-            .filter(TailoringRequirement::getSelected)
-            .filter(TailoringRequirement::hasApplicableDocument)
-            .map(TailoringRequirement::getApplicableDocuments)
+            .filter(BaseRequirement::hasApplicableDocument)
+            .map(BaseRequirement::getApplicableDocuments)
             .flatMap(Collection::stream)
             .forEachOrdered(result::add);
 

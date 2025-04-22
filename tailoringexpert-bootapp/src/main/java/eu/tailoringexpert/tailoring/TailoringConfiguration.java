@@ -24,12 +24,8 @@ package eu.tailoringexpert.tailoring;
 
 import eu.tailoringexpert.Tenant;
 import eu.tailoringexpert.Tenants;
-import eu.tailoringexpert.domain.MediaTypeProvider;
-import eu.tailoringexpert.domain.ResourceMapper;
-import eu.tailoringexpert.domain.DRD;
-import eu.tailoringexpert.domain.Chapter;
-import eu.tailoringexpert.domain.Phase;
-import eu.tailoringexpert.domain.TailoringRequirement;
+import eu.tailoringexpert.catalog.ApplicableDocumentProvider;
+import eu.tailoringexpert.domain.*;
 import eu.tailoringexpert.renderer.HTMLTemplateEngine;
 import eu.tailoringexpert.renderer.PDFEngine;
 import eu.tailoringexpert.renderer.RendererRequestConfigurationSupplier;
@@ -53,6 +49,7 @@ import java.nio.file.Path;
 import java.security.MessageDigest;
 import java.util.AbstractMap.SimpleEntry;
 import java.util.Collection;
+import java.util.Comparator;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
@@ -265,6 +262,12 @@ public class TailoringConfiguration {
         return new TenantAttachmentService(tailoringPathProvider, MessageDigest.getInstance("SHA-256"));
     }
 
+    @Bean
+    ApplicableDocumentProvider applicableDocumentProvider(
+        @NonNull @Qualifier("documentNumberComparator") Comparator<Document> documentNumberComparator
+    ) {
+        return new ApplicableDocumentProvider(documentNumberComparator);
+    }
     private <T> Map<String, T> getTenantImplementations(ListableBeanFactory beanFactory, Class<T> clz) {
         return beanFactory.getBeansOfType(clz)
             .values()
