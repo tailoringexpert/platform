@@ -21,7 +21,6 @@
  */
 package eu.tailoringexpert.catalog;
 
-import eu.tailoringexpert.domain.DRD;
 import eu.tailoringexpert.domain.Document;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
