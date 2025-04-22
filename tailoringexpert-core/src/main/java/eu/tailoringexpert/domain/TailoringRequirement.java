@@ -52,6 +52,7 @@ public class TailoringRequirement extends Requirement implements Serializable {
     private ZonedDateTime textChanged;
 
     @Builder
+    @SuppressWarnings("java:S107")
     public TailoringRequirement(
         String text,
         String position,
