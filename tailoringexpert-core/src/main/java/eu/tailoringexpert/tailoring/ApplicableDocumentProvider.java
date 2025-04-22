@@ -27,15 +27,9 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 
 import java.util.*;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.function.BiFunction;
-import java.util.function.BiPredicate;
 import java.util.function.Function;
+import java.util.function.Supplier;
 import java.util.stream.Collectors;
-
-import static java.util.Objects.isNull;
-import static java.util.stream.Collectors.toCollection;
-import static java.util.stream.Collectors.toSet;
 
 /**
  * Function for determinating all relevant DRDs of a tailoring.<p>
@@ -48,7 +42,7 @@ import static java.util.stream.Collectors.toSet;
 public class ApplicableDocumentProvider implements Function<Catalog<TailoringRequirement>, Collection<Document>> {
 
     @NonNull
-    private BiPredicate<String, Collection<Phase>> predicate;
+    private Comparator<Document> numberComparator;
 
     /**
      * {@inheritDoc}
@@ -57,19 +51,16 @@ public class ApplicableDocumentProvider implements Function<Catalog<TailoringReq
     public Collection<Document> apply(Catalog<TailoringRequirement> catalog) {
         log.traceEntry(catalog::getVersion);
 
-        Collection<Document> result =new LinkedHashSet<>();
-//            catalog.getToc().allChapters()
-//            .forEach(subChapter -> subChapter.getRequirements()
-//                .stream()
-//                .filter(TailoringRequirement::getSelected)
-//                .filter(TailoringRequirement::hasApplicableDocument)
-//                .map(TailoringRequirement::getApplicableDocuments)
-//                .flatMap(Collection::stream)
-//                .collect(toCollection(toSet()))
-//            );
-//        result.values()
-//            .stream()
-//            .forEach(a -> a.stream().sorted());
+
+        Collection<Document> result = new TreeSet<>(numberComparator);
+
+        catalog.getToc().allRequirements()
+            .filter(TailoringRequirement::getSelected)
+            .filter(TailoringRequirement::hasApplicableDocument)
+            .map(TailoringRequirement::getApplicableDocuments)
+            .flatMap(Collection::stream)
+            .forEachOrdered(result::add);
+
 
         return log.traceExit(result);
     }

@@ -13,13 +13,13 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.catchThrowable;
 
 @Log4j2
-class PositionComparatorTest {
+class DocumentNumberComparatorTest {
 
-    private Comparator<String> comparator;
+    private Comparator<Document> comparator;
 
     @BeforeEach
     void setup() {
-        this.comparator = new PositionComparator();
+        this.comparator = new DocumentNumberComparator();
     }
 
     @Test
@@ -27,7 +27,7 @@ class PositionComparatorTest {
         // arrange
 
         // act
-        Throwable actual = catchThrowable(() -> comparator.compare(null, "a"));
+        Throwable actual = catchThrowable(() -> comparator.compare(null, Document.builder().number("a").build()));
 
         // assert
         assertThat(actual).isInstanceOf(NullPointerException.class);
@@ -38,7 +38,7 @@ class PositionComparatorTest {
         // arrange
 
         // act
-        Throwable actual = catchThrowable(() -> comparator.compare("a", null));
+        Throwable actual = catchThrowable(() -> comparator.compare(Document.builder().number("a").build(), null));
 
         // assert
         assertThat(actual).isInstanceOf(NullPointerException.class);
@@ -49,7 +49,10 @@ class PositionComparatorTest {
         // arrange
 
         // act
-        int actual = comparator.compare("a", "a");
+        int actual = comparator.compare(
+            Document.builder().number("a").build(),
+            Document.builder().number("a").build()
+        );
 
         // assert
         assertThat(actual).isZero();
@@ -62,7 +65,10 @@ class PositionComparatorTest {
         // arrange
 
         // act
-        int actual = comparator.compare("a", "b");
+        int actual = comparator.compare(
+            Document.builder().number("a").build(),
+            Document.builder().number("b").build()
+        );
 
         // assert
         log.debug(actual);
@@ -75,7 +81,10 @@ class PositionComparatorTest {
         // arrange
 
         // act
-        int actual = comparator.compare("b", "a");
+        int actual = comparator.compare(
+            Document.builder().number("b").build(),
+            Document.builder().number("a").build()
+        );
 
         // assert
         log.debug(actual);
@@ -88,7 +97,10 @@ class PositionComparatorTest {
         // arrange
 
         // act
-        int actual = comparator.compare("aa", "aa");
+        int actual = comparator.compare(
+            Document.builder().number("aa").build(),
+            Document.builder().number("aa").build()
+        );
 
         // assert
         log.debug(actual);
@@ -101,7 +113,10 @@ class PositionComparatorTest {
         // arrange
 
         // act
-        int actual = comparator.compare("ab", "aa");
+        int actual = comparator.compare(
+            Document.builder().number("ab").build(),
+            Document.builder().number("aa").build()
+        );
 
         // assert
         log.debug(actual);
@@ -114,7 +129,10 @@ class PositionComparatorTest {
         // arrange
 
         // act
-        int actual = comparator.compare("aa", "ab");
+        int actual = comparator.compare(
+            Document.builder().number("aa").build(),
+            Document.builder().number("ab").build()
+        );
 
         // assert
         log.debug(actual);
@@ -125,34 +143,37 @@ class PositionComparatorTest {
     @Test
     void sort_UnorderedListElementDifferentLengthNonNulls_ListCorrectSorted() {
         // arrange
-        List<String> positions = new ArrayList<>();
-        positions.add("a");
-        positions.add("b");
-        positions.add("aa");
-        positions.add("e");
+        List<Document> positions = new ArrayList<>();
+        positions.add(Document.builder().number("a").build());
+        positions.add(Document.builder().number("b").build());
+        positions.add(Document.builder().number("aa").build());
+        positions.add(Document.builder().number("e").build());
 
         // act
         positions.sort(comparator);
 
         // assert
-        for (String str : positions) System.out.print(" " + str);
-        assertThat(positions).containsExactlyElementsOf(of("a", "b", "e", "aa"));
+        assertThat(positions).containsExactlyElementsOf(of(
+            Document.builder().number("a").build(),
+            Document.builder().number("b").build(),
+            Document.builder().number("e").build(),
+            Document.builder().number("aa").build()
+        ));
     }
 
     @Test
     void sort_UnorderedListElementDifferentLengthWithNulls_ListCorrectSorted() {
         // arrange
-        List<String> positions = new ArrayList<>();
-        positions.add("a");
+        List<Document> positions = new ArrayList<>();
+        positions.add(Document.builder().number("a").build());
         positions.add(null);
-        positions.add("aa");
-        positions.add("e");
+        positions.add(Document.builder().number("aa").build());
+        positions.add(Document.builder().number("e").build());
 
         // act
         Throwable actual = catchThrowable(() -> positions.sort(comparator));
 
         // assert
-        for (String str : positions) System.out.print(" " + str);
         assertThat(actual).isInstanceOf(NullPointerException.class);
     }
 }
