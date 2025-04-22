@@ -37,12 +37,10 @@ import java.io.InputStream;
 import java.util.Map;
 
 import static java.util.Objects.nonNull;
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.catchThrowable;
 
 
 @Log4j2
-public class ToDocumentMappingFunctionTest {
+class ToDocumentMappingFunctionTest {
     ObjectMapper objectMapper;
 
     ToDocumentMappingFunction toFunction;
@@ -63,9 +61,7 @@ public class ToDocumentMappingFunctionTest {
 
 
         // act
-        Workbook finalWb = wb;
         Map<String, Document> actual = toFunction.apply(wb.getSheet("DOCUMENT"));
-
 
         // assert
         log.debug(actual);
