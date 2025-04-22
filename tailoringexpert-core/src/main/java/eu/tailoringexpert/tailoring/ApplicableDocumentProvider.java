@@ -58,9 +58,20 @@ public class ApplicableDocumentProvider implements Function<Catalog<TailoringReq
         catalog.getToc().allRequirements()
             .filter(TailoringRequirement::getSelected)
             .filter(TailoringRequirement::hasApplicableDocument)
+            .forEachOrdered(requirement -> {
+                requirement.getApplicableDocuments()
+                    .forEach(document -> {
+                        document.setSelected(requirement.getSelected());
+                        result.add(document);
+                    });
+            });
+
+        /*catalog.getToc().allRequirements()
+            .filter(TailoringRequirement::getSelected)
+            .filter(TailoringRequirement::hasApplicableDocument)
             .map(TailoringRequirement::getApplicableDocuments)
             .flatMap(Collection::stream)
-            .forEachOrdered(result::add);
+            .forEachOrdered(result::add);*/
 
         return log.traceExit(result);
     }

@@ -25,6 +25,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.EqualsAndHashCode.Exclude;
 import lombok.NoArgsConstructor;
 
 import java.io.Serializable;
@@ -33,9 +34,15 @@ import java.io.Serializable;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@EqualsAndHashCode(of = "number")
+@EqualsAndHashCode
 public class Document implements Serializable {
     private static final long serialVersionUID = 259056135676816215L;
+
+    /**
+     * State if requirement is selected.
+     */
+    @Exclude
+    private Boolean selected;
 
     /**
      * Number of the drd.
@@ -60,6 +67,7 @@ public class Document implements Serializable {
     /**
      * Description of the document
      */
+    @Exclude
     private String description;
 }
 
