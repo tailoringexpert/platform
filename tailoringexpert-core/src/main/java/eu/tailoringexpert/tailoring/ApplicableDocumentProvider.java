@@ -28,10 +28,9 @@ import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 
-import java.util.Collection;
-import java.util.Comparator;
-import java.util.TreeSet;
+import java.util.*;
 import java.util.function.Function;
+import java.util.stream.Collectors;
 
 /**
  * Function for determinating all relevant DRDs of a tailoring.<p>
@@ -53,25 +52,30 @@ public class ApplicableDocumentProvider implements Function<Catalog<TailoringReq
     public Collection<Document> apply(Catalog<TailoringRequirement> catalog) {
         log.traceEntry(catalog::getVersion);
 
-        Collection<Document> result = new TreeSet<>(numberComparator);
-
+        Collection<Document> allDocumentsReferences = new ArrayList<>();
         catalog.getToc().allRequirements()
-            .filter(TailoringRequirement::getSelected)
             .filter(TailoringRequirement::hasApplicableDocument)
             .forEachOrdered(requirement -> {
                 requirement.getApplicableDocuments()
                     .forEach(document -> {
                         document.setSelected(requirement.getSelected());
-                        result.add(document);
+                        allDocumentsReferences.add(document);
                     });
             });
 
-        /*catalog.getToc().allRequirements()
-            .filter(TailoringRequirement::getSelected)
-            .filter(TailoringRequirement::hasApplicableDocument)
-            .map(TailoringRequirement::getApplicableDocuments)
-            .flatMap(Collection::stream)
-            .forEachOrdered(result::add);*/
+        Collection<Document> result = new TreeSet<>(numberComparator);
+        allDocumentsReferences.stream()
+            .collect(Collectors.groupingBy(Document::getTitle))
+            .values()
+            .forEach(documents ->
+                // perfered selected
+                result.add(
+                    documents.stream()
+                        .filter(Document::getSelected)
+                        .findAny()
+                        .orElseGet(() -> documents.get(0))
+                )
+            );
 
         return log.traceExit(result);
     }

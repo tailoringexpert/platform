@@ -84,6 +84,7 @@ class TailoringCatalogPDFDocumentCreatorTest {
     String templateHome;
     String assetHome;
     DRDProvider drdProviderMock;
+    ApplicableDocumentProvider applicableDocumentProviderMock;
     ObjectMapper objectMapper;
     FileSaver fileSaver;
     TailoringCatalogPDFDocumentCreator creator;
@@ -138,11 +139,14 @@ class TailoringCatalogPDFDocumentCreatorTest {
             new SimpleEntry<>(F, unmodifiableCollection(asList("EOM")))
         )));
 
+        this.applicableDocumentProviderMock = new ApplicableDocumentProvider(new DocumentNumberComparator());
+
         FSDOMMutator domMutator = new TailoringexpertDOMMutator();
         this.creator = new TailoringCatalogPDFDocumentCreator(
             templateEngine,
             new PDFEngine(domMutator, supplier),
-            drdProviderMock
+            drdProviderMock,
+            applicableDocumentProviderMock
         );
     }
 
@@ -178,6 +182,7 @@ class TailoringCatalogPDFDocumentCreatorTest {
         platzhalter.put("DOKUMENT", "SAMPLE-XY-Z-1940/DV7");
         platzhalter.put("${DRD_DOCID}", "SAMPLE_DOC");
         platzhalter.put("SHOW_ALL", Boolean.FALSE);
+        //platzhalter.put("APPLICABLE_DOCUMENTS")
 
         mockServer
             .when(request()

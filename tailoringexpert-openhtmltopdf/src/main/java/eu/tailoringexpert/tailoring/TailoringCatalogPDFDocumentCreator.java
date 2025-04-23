@@ -21,13 +21,7 @@
  */
 package eu.tailoringexpert.tailoring;
 
-import eu.tailoringexpert.domain.Chapter;
-import eu.tailoringexpert.domain.DRD;
-import eu.tailoringexpert.domain.File;
-import eu.tailoringexpert.domain.DocumentSignature;
-import eu.tailoringexpert.domain.Phase;
-import eu.tailoringexpert.domain.Tailoring;
-import eu.tailoringexpert.domain.TailoringRequirement;
+import eu.tailoringexpert.domain.*;
 import eu.tailoringexpert.renderer.HTMLTemplateEngine;
 import eu.tailoringexpert.renderer.PDFEngine;
 import eu.tailoringexpert.tailoring.CatalogElement.CatalogElementBuilder;
@@ -67,6 +61,9 @@ public class TailoringCatalogPDFDocumentCreator implements DocumentCreator {
     @NonNull
     private BiFunction<Chapter<TailoringRequirement>, Collection<Phase>, Map<DRD, Set<String>>> drdProvider;
 
+    @NonNull
+    private ApplicableDocumentProvider applicableDocumentProvider;
+
     private static final String REFERENZ_LOGO_LINK = "<img src=\"%s\" alt=\"%s\"></img><br/>";
 
     /**
@@ -97,6 +94,8 @@ public class TailoringCatalogPDFDocumentCreator implements DocumentCreator {
                 }
             );
         addDRD(tailoring.getCatalog().getToc(), drds, tailoring.getPhases());
+
+        parameter.put("applicableDocuments", applicableDocumentProvider.apply(tailoring.getCatalog()));
 
         parameter.put("signatures", tailoring.getSignatures().stream()
             .sorted(comparingInt(DocumentSignature::getPosition))
@@ -182,4 +181,6 @@ public class TailoringCatalogPDFDocumentCreator implements DocumentCreator {
                 .subtitle(entry.getKey().getSubtitle())
                 .build()));
     }
+
+
 }
