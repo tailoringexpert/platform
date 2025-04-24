@@ -24,8 +24,14 @@ package eu.tailoringexpert.tailoring;
 
 import eu.tailoringexpert.Tenant;
 import eu.tailoringexpert.Tenants;
-import eu.tailoringexpert.catalog.ApplicableDocumentProvider;
-import eu.tailoringexpert.domain.*;
+import eu.tailoringexpert.domain.Catalog;
+import eu.tailoringexpert.domain.Chapter;
+import eu.tailoringexpert.domain.DRD;
+import eu.tailoringexpert.domain.Document;
+import eu.tailoringexpert.domain.MediaTypeProvider;
+import eu.tailoringexpert.domain.Phase;
+import eu.tailoringexpert.domain.ResourceMapper;
+import eu.tailoringexpert.domain.TailoringRequirement;
 import eu.tailoringexpert.renderer.HTMLTemplateEngine;
 import eu.tailoringexpert.renderer.PDFEngine;
 import eu.tailoringexpert.renderer.RendererRequestConfigurationSupplier;
@@ -199,8 +205,9 @@ public class TailoringConfiguration {
     DocumentCreator tailoringCatalogPDFDocumentCreator(
         @NonNull HTMLTemplateEngine templateEngine,
         @NonNull PDFEngine pdfEngine,
-        @NonNull BiFunction<Chapter<TailoringRequirement>, Collection<Phase>, Map<DRD, Set<String>>> drdProvider) {
-        return new TailoringCatalogPDFDocumentCreator(templateEngine, pdfEngine, drdProvider);
+        @NonNull BiFunction<Chapter<TailoringRequirement>, Collection<Phase>, Map<DRD, Set<String>>> drdProvider,
+        @NonNull Function<Catalog<TailoringRequirement>, Collection<Document>> tailoringApplicableDocumentProvider) {
+        return new TailoringCatalogPDFDocumentCreator(templateEngine, pdfEngine, drdProvider, tailoringApplicableDocumentProvider);
     }
 
     @Bean
@@ -263,7 +270,7 @@ public class TailoringConfiguration {
     }
 
     @Bean
-    ApplicableDocumentProvider applicableDocumentProvider(
+    Function<Catalog<TailoringRequirement>, Collection<Document>> tailoringApplicableDocumentProvider(
         @NonNull @Qualifier("documentNumberComparator") Comparator<Document> documentNumberComparator
     ) {
         return new ApplicableDocumentProvider(documentNumberComparator);

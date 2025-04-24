@@ -27,6 +27,7 @@ import eu.tailoringexpert.repository.BaseCatalogRepository;
 import eu.tailoringexpert.repository.DRDRepository;
 import eu.tailoringexpert.repository.DocumentRepository;
 import eu.tailoringexpert.repository.TailoringCatalogRepository;
+import eu.tailoringexpert.tailoring.DocumentNumberComparator;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
@@ -207,6 +208,7 @@ public class JPACatalogServiceRepository implements CatalogServiceRepository {
             .map(BaseRequirement::getApplicableDocuments)
             .filter(Objects::nonNull)
             .flatMap(Collection::stream)
+            .filter(Objects::nonNull)
             .collect(Collectors.toSet());
     }
 }

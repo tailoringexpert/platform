@@ -37,6 +37,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.BiFunction;
+import java.util.function.Function;
 
 import static java.lang.String.format;
 import static java.util.Collections.emptyMap;
@@ -62,7 +63,7 @@ public class TailoringCatalogPDFDocumentCreator implements DocumentCreator {
     private BiFunction<Chapter<TailoringRequirement>, Collection<Phase>, Map<DRD, Set<String>>> drdProvider;
 
     @NonNull
-    private ApplicableDocumentProvider applicableDocumentProvider;
+    private Function<Catalog<TailoringRequirement>, Collection<Document>> applicableDocumentProvider;
 
     private static final String REFERENZ_LOGO_LINK = "<img src=\"%s\" alt=\"%s\"></img><br/>";
 
