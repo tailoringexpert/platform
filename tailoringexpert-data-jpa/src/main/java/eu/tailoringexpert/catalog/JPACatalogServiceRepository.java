@@ -208,7 +208,6 @@ public class JPACatalogServiceRepository implements CatalogServiceRepository {
             .map(BaseRequirement::getApplicableDocuments)
             .filter(Objects::nonNull)
             .flatMap(Collection::stream)
-            .filter(Objects::nonNull)
             .collect(Collectors.toSet());
     }
 }

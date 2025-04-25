@@ -35,13 +35,14 @@ import eu.tailoringexpert.domain.TailoringRequirement;
 import eu.tailoringexpert.renderer.HTMLTemplateEngine;
 import eu.tailoringexpert.renderer.PDFEngine;
 import eu.tailoringexpert.renderer.RendererRequestConfigurationSupplier;
-import eu.tailoringexpert.repository.TailoringIdentifierProviderRepository;
-import eu.tailoringexpert.requirement.RequirementService;
+import eu.tailoringexpert.repository.DocumentRepository;
 import eu.tailoringexpert.repository.DokumentSigneeRepository;
 import eu.tailoringexpert.repository.LogoRepository;
 import eu.tailoringexpert.repository.ProjectRepository;
 import eu.tailoringexpert.repository.SelectionVectorProfileRepository;
+import eu.tailoringexpert.repository.TailoringIdentifierProviderRepository;
 import eu.tailoringexpert.repository.TailoringRepository;
+import eu.tailoringexpert.requirement.RequirementService;
 import lombok.NonNull;
 import org.springframework.beans.factory.ListableBeanFactory;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -79,9 +80,11 @@ public class TailoringConfiguration {
 
     @Bean
     JPATailoringServiceRepositoryMapper jpaTailoringServiceRepositoryMapper(
-        @NonNull LogoRepository logoRepository) {
+        @NonNull LogoRepository logoRepository,
+        @NonNull DocumentRepository documentRepository) {
         JPATailoringServiceRepositoryMapperGenerated result = new JPATailoringServiceRepositoryMapperGenerated();
         result.setLogoRepository(logoRepository);
+        result.setDocumentRepository(documentRepository);
         return result;
     }
 

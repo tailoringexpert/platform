@@ -21,11 +21,8 @@
  */
 package eu.tailoringexpert.project;
 
-import eu.tailoringexpert.repository.BaseCatalogRepository;
+import eu.tailoringexpert.repository.*;
 import eu.tailoringexpert.domain.ResourceMapper;
-import eu.tailoringexpert.repository.DRDRepository;
-import eu.tailoringexpert.repository.LogoRepository;
-import eu.tailoringexpert.repository.ProjectRepository;
 import eu.tailoringexpert.screeningsheet.ScreeningSheetService;
 import eu.tailoringexpert.tailoring.TailoringService;
 import lombok.NonNull;
@@ -39,11 +36,13 @@ public class ProjectConfiguration {
     JPAProjectServiceRepositoryMapper jpaProjektServiceRepositoryMapper(
         @NonNull BaseCatalogRepository baseCatalogRepository,
         @NonNull LogoRepository logoRepository,
-        @NonNull DRDRepository drdRepository) {
+        @NonNull DRDRepository drdRepository,
+        @NonNull DocumentRepository documentRepository) {
         JPAProjectServiceRepositoryMapperGenerated result = new JPAProjectServiceRepositoryMapperGenerated();
         result.setBaseCatalogRepository(baseCatalogRepository);
         result.setLogoRepository(logoRepository);
         result.setDrdRepository(drdRepository);
+        result.setDocumentRepository(documentRepository);
         return result;
     }
 
