@@ -55,13 +55,13 @@ public class ApplicableDocumentProvider implements Function<Catalog<TailoringReq
         Collection<Document> allDocumentsReferences = new ArrayList<>();
         catalog.getToc().allRequirements()
             .filter(TailoringRequirement::hasApplicableDocument)
-            .forEachOrdered(requirement -> {
+            .forEachOrdered(requirement ->
                 requirement.getApplicableDocuments()
                     .forEach(document -> {
                         document.setSelected(requirement.getSelected());
                         allDocumentsReferences.add(document);
-                    });
-            });
+                    })
+            );
 
         Collection<Document> result = new TreeSet<>(numberComparator);
         allDocumentsReferences.stream()
