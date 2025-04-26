@@ -21,8 +21,12 @@
  */
 package eu.tailoringexpert.project;
 
-import eu.tailoringexpert.repository.*;
 import eu.tailoringexpert.domain.ResourceMapper;
+import eu.tailoringexpert.repository.BaseCatalogRepository;
+import eu.tailoringexpert.repository.DRDRepository;
+import eu.tailoringexpert.repository.DocumentRepository;
+import eu.tailoringexpert.repository.LogoRepository;
+import eu.tailoringexpert.repository.ProjectRepository;
 import eu.tailoringexpert.screeningsheet.ScreeningSheetService;
 import eu.tailoringexpert.tailoring.TailoringService;
 import lombok.NonNull;

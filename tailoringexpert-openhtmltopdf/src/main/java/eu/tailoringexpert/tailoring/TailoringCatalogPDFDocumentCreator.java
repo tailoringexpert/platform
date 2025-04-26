@@ -21,7 +21,15 @@
  */
 package eu.tailoringexpert.tailoring;
 
-import eu.tailoringexpert.domain.*;
+import eu.tailoringexpert.domain.Catalog;
+import eu.tailoringexpert.domain.Chapter;
+import eu.tailoringexpert.domain.DRD;
+import eu.tailoringexpert.domain.Document;
+import eu.tailoringexpert.domain.DocumentSignature;
+import eu.tailoringexpert.domain.File;
+import eu.tailoringexpert.domain.Phase;
+import eu.tailoringexpert.domain.Tailoring;
+import eu.tailoringexpert.domain.TailoringRequirement;
 import eu.tailoringexpert.renderer.HTMLTemplateEngine;
 import eu.tailoringexpert.renderer.PDFEngine;
 import eu.tailoringexpert.tailoring.CatalogElement.CatalogElementBuilder;
@@ -182,6 +190,4 @@ public class TailoringCatalogPDFDocumentCreator implements DocumentCreator {
                 .subtitle(entry.getKey().getSubtitle())
                 .build()));
     }
-
-
 }

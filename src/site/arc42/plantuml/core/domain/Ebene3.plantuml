@@ -18,21 +18,31 @@ package domain {
     }
     changed --> "0..1" Logo : logo
 
+    class Document {
+        number : String
+        title : String
+        issue : String
+        revision : String
+        description : String
+        applicable : Boolean
+
+    }
+
+    interface "Comparator<Document>"  as documentComparator
+    class DocumentNumberComparator {
+    }
+    documentComparator <|-- DocumentNumberComparator
+
     abstract class Requirement{
       text: String
       position : String
       hasDRD() : boolean
+      hasApplicableDocument () : boolean
     }
     Requirement --> "0..1" Reference : reference
     Requirement --> "0..*" DRD : drds
-    Requirement --> "0..*" ReferencedDocument : applicableDocuments
+    Requirement --> "0..*" Document : applicableDocuments
 
-    class ReferencedDocument {
-        number : String
-        title : String
-        issue : String
-        description : String
-    }
 
     class DRD {
         number : String
@@ -200,6 +210,8 @@ package domain {
         name : String
         value : Object
     }
+
+
 }
 hide empty members
 @enduml

@@ -22,12 +22,20 @@
 package eu.tailoringexpert.catalog;
 
 import eu.tailoringexpert.TailoringexpertException;
-import eu.tailoringexpert.domain.*;
+import eu.tailoringexpert.domain.BaseCatalogEntity;
+import eu.tailoringexpert.domain.BaseCatalogVersionProjection;
+import eu.tailoringexpert.domain.BaseRequirement;
+import eu.tailoringexpert.domain.Catalog;
+import eu.tailoringexpert.domain.CatalogVersion;
+import eu.tailoringexpert.domain.Chapter;
+import eu.tailoringexpert.domain.DRD;
+import eu.tailoringexpert.domain.DRDEntity;
+import eu.tailoringexpert.domain.Document;
+import eu.tailoringexpert.domain.DocumentEntity;
 import eu.tailoringexpert.repository.BaseCatalogRepository;
 import eu.tailoringexpert.repository.DRDRepository;
 import eu.tailoringexpert.repository.DocumentRepository;
 import eu.tailoringexpert.repository.TailoringCatalogRepository;
-import eu.tailoringexpert.tailoring.DocumentNumberComparator;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;

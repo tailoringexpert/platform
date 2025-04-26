@@ -22,7 +22,14 @@
 package eu.tailoringexpert.catalog;
 
 import eu.tailoringexpert.TailoringexpertException;
-import eu.tailoringexpert.domain.*;
+import eu.tailoringexpert.domain.BaseRequirement;
+import eu.tailoringexpert.domain.Chapter;
+import eu.tailoringexpert.domain.DRD;
+import eu.tailoringexpert.domain.Document;
+import eu.tailoringexpert.domain.Identifier;
+import eu.tailoringexpert.domain.Logo;
+import eu.tailoringexpert.domain.Phase;
+import eu.tailoringexpert.domain.Reference;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;

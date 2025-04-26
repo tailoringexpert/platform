@@ -24,7 +24,6 @@ package eu.tailoringexpert.catalog;
 import eu.tailoringexpert.domain.BaseRequirement;
 import eu.tailoringexpert.domain.Catalog;
 import eu.tailoringexpert.domain.Document;
-import eu.tailoringexpert.domain.TailoringRequirement;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;

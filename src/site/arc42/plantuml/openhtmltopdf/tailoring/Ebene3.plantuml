@@ -19,6 +19,7 @@ package tailoring {
     TailoringCatalogPDFDocumentCreator --> "1" HTMLTemplateEngine : templateEngine
     TailoringCatalogPDFDocumentCreator --> "1" PDFEngine : pdfEngine
     TailoringCatalogPDFDocumentCreator --> "1" "BiFunction<Chapter<TailoringRequirement>, Collection<Phase>, Map<DRD, Set<String>>>" : drdProvider
+    TailoringCatalogPDFDocumentCreator --> "1" "Function<Catalog<TailoringRequirement>, Collection<Document>>" : applicableDocumentProvider
 
     class CMPDFDocumentCreator {
     }

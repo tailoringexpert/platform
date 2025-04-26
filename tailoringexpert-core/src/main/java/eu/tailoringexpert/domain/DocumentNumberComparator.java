@@ -19,9 +19,8 @@
  * <http://www.gnu.org/licenses/gpl-3.0.html>.
  * #L%
  */
-package eu.tailoringexpert.tailoring;
+package eu.tailoringexpert.domain;
 
-import eu.tailoringexpert.domain.Document;
 import lombok.NonNull;
 
 import java.util.Comparator;

@@ -39,12 +39,6 @@ public class Document implements Serializable {
     private static final long serialVersionUID = 259056135676816215L;
 
     /**
-     * State if requirement is selected.
-     */
-    @Exclude
-    private Boolean selected;
-
-    /**
      * Number of the drd.
      */
     private String number;
@@ -69,6 +63,12 @@ public class Document implements Serializable {
      */
     @Exclude
     private String description;
+
+    /**
+     * State if requirement is applicable.
+     */
+    @Exclude
+    private Boolean applicable;
 }
 
 

@@ -57,6 +57,7 @@ package tailoring {
     function <|-- chapterFunction
     chapterFunction --> "1" drdMappingFunction : toDRDMapping
     chapterFunction --> "1" logoMappingFunction : toLogoMapping
+    chapterFunction --> "1" documentMappingFunction : toDocumentMapping
     chapterFunction --> "1" identifierFunction : toIdentifier
     chapterFunction --> "1" logoFunction : toLogo
     chapterFunction --> "1" referenceFunction: toReference
@@ -64,6 +65,10 @@ package tailoring {
     class "ToDRDMappingFunction<Sheet, Map<String, DRD>>" as drdMappingFunction {
     }
     function <|-- drdMappingFunction
+
+    class "ToDocumentMappingFunction<Sheet, Map<String, DRD>>" as documentMappingFunction {
+    }
+    function <|-- documentMappingFunction
 
     class "ToIdentifierFunction<String, Identifier>" as identifierFunction{
     }

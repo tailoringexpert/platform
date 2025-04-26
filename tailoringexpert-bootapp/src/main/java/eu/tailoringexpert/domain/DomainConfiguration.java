@@ -21,7 +21,6 @@
  */
 package eu.tailoringexpert.domain;
 
-import eu.tailoringexpert.tailoring.DocumentNumberComparator;
 import lombok.NonNull;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;

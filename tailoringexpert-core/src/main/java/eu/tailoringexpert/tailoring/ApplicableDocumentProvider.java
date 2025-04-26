@@ -58,7 +58,7 @@ public class ApplicableDocumentProvider implements Function<Catalog<TailoringReq
             .forEachOrdered(requirement ->
                 requirement.getApplicableDocuments()
                     .forEach(document -> {
-                        document.setSelected(requirement.getSelected());
+                        document.setApplicable(requirement.getSelected());
                         allDocumentsReferences.add(document);
                     })
             );
@@ -71,7 +71,7 @@ public class ApplicableDocumentProvider implements Function<Catalog<TailoringReq
                 // perfered selected
                 result.add(
                     documents.stream()
-                        .filter(Document::getSelected)
+                        .filter(Document::getApplicable)
                         .findAny()
                         .orElseGet(() -> documents.get(0))
                 )

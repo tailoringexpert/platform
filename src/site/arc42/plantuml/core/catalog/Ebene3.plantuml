@@ -50,6 +50,17 @@ package catalog {
     interface "Function<byte[], Catalog<BaseRequirement>>" as file2Catalog {
     }
 
+
+
+    interface "Function<Catalog<BaseRequirement>, Collection<Document>>" as applicableDocumentProvider {
+    }
+    class ApplicableDocumentProvider {
+    }
+    applicableDocumentProvider <|-- ApplicableDocumentProvider
+    ApplicableDocumentProvider --> "1" documentComparator : numberComparator
+
+
+
 }
 
 

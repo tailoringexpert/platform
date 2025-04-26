@@ -43,6 +43,14 @@ package tailoring {
     TailoringDeletablePredicate <|.. DefaultTailoringDeletablePredicate
     DefaultTailoringDeletablePredicate --> "1" TailoringDeletablePredicateRepository : repository
 
+    interface "Function<Catalog<TailoringRequirement>, Collection<Document>>" as applicableDocumentProvider {
+    }
+
+    class ApplicableDocumentProvider {
+    }
+    applicableDocumentProvider <|-- ApplicableDocumentProvider
+    ApplicableDocumentProvider --> "1" documentComparator : numberComparator
+
 
     interface TailoringService {
         createTailoring(name : String, identifier : String, screeningSheetData : byte[], applicableSelectionVectore : SelectionVector, catalog : Catalog<BaseRequirement>) : Tailoring

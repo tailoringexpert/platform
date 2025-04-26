@@ -75,5 +75,10 @@ public abstract class Requirement implements Serializable {
         return nonNull(getDrds()) && !getDrds().isEmpty();
     }
 
+    /**
+     * Checks if requirement has references to any applicable document.
+     *
+     * @return true if requirement has references to applicable document otherwise false
+     */
     public boolean hasApplicableDocument() { return  nonNull(getApplicableDocuments()) && !getApplicableDocuments().isEmpty();}
 }

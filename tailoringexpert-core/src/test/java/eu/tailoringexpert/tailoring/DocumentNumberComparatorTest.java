@@ -22,6 +22,7 @@
 package eu.tailoringexpert.tailoring;
 
 import eu.tailoringexpert.domain.Document;
+import eu.tailoringexpert.domain.DocumentNumberComparator;
 import lombok.extern.log4j.Log4j2;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
