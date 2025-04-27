@@ -27,6 +27,7 @@ import eu.tailoringexpert.domain.BaseRequirement;
 import eu.tailoringexpert.domain.Catalog;
 import eu.tailoringexpert.domain.Chapter;
 import eu.tailoringexpert.domain.DRD;
+import eu.tailoringexpert.domain.DRDProvider;
 import eu.tailoringexpert.domain.Document;
 import eu.tailoringexpert.domain.Identifier;
 import eu.tailoringexpert.domain.Logo;
@@ -49,6 +50,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
 import org.springframework.http.MediaType;
 
+import java.util.Collection;
 import java.util.Comparator;
 import java.util.Map;
 import java.util.function.BiConsumer;
@@ -128,9 +130,10 @@ public class CatalogConfiguration {
 
     @Bean
     BaseCatalogPDFDocumentCreator baseCatalogPDFDocumentCreator(
+        @NonNull Function<Catalog<BaseRequirement>, Collection<Document>> baseApplicableDocumentProvider,
         @NonNull HTMLTemplateEngine templateEngine,
         @NonNull PDFEngine pdfEngine) {
-        return new BaseCatalogPDFDocumentCreator(templateEngine, pdfEngine);
+        return new BaseCatalogPDFDocumentCreator(baseApplicableDocumentProvider, templateEngine, pdfEngine);
     }
 
     @Bean
@@ -138,6 +141,12 @@ public class CatalogConfiguration {
         return new DRDProvider();
     }
 
+    @Bean
+    Function<Catalog<BaseRequirement>, Collection<Document>> baseApplicableDocumentProvider(
+        @NonNull @Qualifier("documentNumberComparator") Comparator<Document> documentNumberComparator
+    ) {
+        return new ApplicableDocumentProvider(documentNumberComparator);
+    }
     @Bean
     BaseDRDPDFDocumentCreator baseDRDPDFDocumentCreator(@NonNull HTMLTemplateEngine templateEngine,
                                                         @NonNull PDFEngine pdfEngine,

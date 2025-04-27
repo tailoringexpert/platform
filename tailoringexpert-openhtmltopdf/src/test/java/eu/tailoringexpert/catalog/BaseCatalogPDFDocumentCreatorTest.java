@@ -31,6 +31,7 @@ import com.openhtmltopdf.extend.FSDOMMutator;
 import eu.tailoringexpert.FileSaver;
 import eu.tailoringexpert.domain.BaseRequirement;
 import eu.tailoringexpert.domain.Catalog;
+import eu.tailoringexpert.domain.DocumentNumberComparator;
 import eu.tailoringexpert.domain.File;
 import eu.tailoringexpert.renderer.HTMLTemplateEngine;
 import eu.tailoringexpert.renderer.PDFEngine;
@@ -48,8 +49,10 @@ import org.thymeleaf.templateresolver.FileTemplateResolver;
 import java.io.InputStream;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.function.Function;
 
 import static java.util.Objects.nonNull;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -96,7 +99,10 @@ class BaseCatalogPDFDocumentCreatorTest {
         );
 
         FSDOMMutator domMutator = new TailoringexpertDOMMutator();
+
+
         this.creator = new BaseCatalogPDFDocumentCreator(
+            new ApplicableDocumentProvider(new DocumentNumberComparator()),
             templateEngine,
             new PDFEngine(domMutator, supplier)
         );

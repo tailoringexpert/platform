@@ -1,6 +1,10 @@
 @startuml Ebene3.png
 hide empty members
 
+package domain {
+    class DRDElement
+}
+
 package renderer {
     interface HTMLTemplateEngine
     class PDFEngine

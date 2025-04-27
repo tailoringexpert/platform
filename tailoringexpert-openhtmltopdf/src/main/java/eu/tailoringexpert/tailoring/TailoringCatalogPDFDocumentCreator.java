@@ -24,6 +24,7 @@ package eu.tailoringexpert.tailoring;
 import eu.tailoringexpert.domain.Catalog;
 import eu.tailoringexpert.domain.Chapter;
 import eu.tailoringexpert.domain.DRD;
+import eu.tailoringexpert.domain.DRDElement;
 import eu.tailoringexpert.domain.Document;
 import eu.tailoringexpert.domain.DocumentSignature;
 import eu.tailoringexpert.domain.File;

@@ -19,11 +19,8 @@
  * <http://www.gnu.org/licenses/gpl-3.0.html>.
  * #L%
  */
-package eu.tailoringexpert.catalog;
+package eu.tailoringexpert.domain;
 
-import eu.tailoringexpert.domain.BaseRequirement;
-import eu.tailoringexpert.domain.Chapter;
-import eu.tailoringexpert.domain.DRD;
 import lombok.RequiredArgsConstructor;
 
 import java.util.Set;
@@ -39,21 +36,19 @@ import static java.util.Comparator.comparing;
  * @author Michael Bädorf
  */
 @RequiredArgsConstructor
-public class DRDProvider implements Function<Chapter<BaseRequirement>, Set<DRD>> {
+public class DRDProvider  <T extends Requirement>  implements Function<Chapter<T>, Set<DRD>> {
 
     /**
      * {@inheritDoc}
      */
     @Override
-    public Set<DRD> apply(Chapter<BaseRequirement> chapter) {
+    public Set<DRD> apply(Chapter<T> chapter) {
         Set<DRD> result = new TreeSet<>(comparing(DRD::getNumber));
         chapter.allChapters()
             .forEach(subChapter -> subChapter.getRequirements()
                 .stream()
-                .filter(BaseRequirement::hasDRD)
-                .forEach(requirement -> requirement.getDrds()
-                    .stream()
-                    .forEachOrdered(result::add))
+                .filter(Requirement::hasDRD)
+                .forEach(requirement -> result.addAll(requirement.getDrds()))
             );
         return result;
     }

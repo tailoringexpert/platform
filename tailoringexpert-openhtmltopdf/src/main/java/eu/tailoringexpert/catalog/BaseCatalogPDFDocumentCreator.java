@@ -22,13 +22,13 @@
 package eu.tailoringexpert.catalog;
 
 import eu.tailoringexpert.domain.BaseRequirement;
+import eu.tailoringexpert.domain.Catalog;
+import eu.tailoringexpert.domain.Chapter;
+import eu.tailoringexpert.domain.Document;
 import eu.tailoringexpert.domain.File;
 import eu.tailoringexpert.domain.Identifier;
-import eu.tailoringexpert.domain.Chapter;
-import eu.tailoringexpert.domain.Catalog;
 import eu.tailoringexpert.domain.Phase;
 import eu.tailoringexpert.renderer.PDFEngine;
-import eu.tailoringexpert.tailoring.DRDElement;
 import eu.tailoringexpert.renderer.HTMLTemplateEngine;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
@@ -43,6 +43,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.function.Function;
 
 import static eu.tailoringexpert.domain.Phase.A;
 import static eu.tailoringexpert.domain.Phase.B;
@@ -67,6 +68,9 @@ import static java.util.stream.Collectors.toCollection;
 public class BaseCatalogPDFDocumentCreator implements DocumentCreator {
 
     @NonNull
+    private Function<Catalog<BaseRequirement>, Collection<Document>> applicableDocumentProvider;
+
+    @NonNull
     private HTMLTemplateEngine templateEngine;
 
     @NonNull
@@ -87,11 +91,10 @@ public class BaseCatalogPDFDocumentCreator implements DocumentCreator {
             Map<String, Object> parameter = new HashMap<>(placeholders);
             parameter.put("catalogVersion", catalog.getVersion());
 
+            parameter.put("applicableDocuments", applicableDocumentProvider.apply(catalog));
+
             Collection<BaseCatalogElement> requirements = new LinkedList<>();
             parameter.put("requirements", requirements);
-
-            Collection<DRDElement> drds = new LinkedList<>();
-            parameter.put("drds", drds);
 
             Map<String, String> bookmarks = new LinkedHashMap<>();
             parameter.put("bookmarks", bookmarks);
