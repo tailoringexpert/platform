@@ -27,6 +27,7 @@ import eu.tailoringexpert.Tenants;
 import eu.tailoringexpert.domain.Catalog;
 import eu.tailoringexpert.domain.Chapter;
 import eu.tailoringexpert.domain.DRD;
+import eu.tailoringexpert.domain.DRDProvider;
 import eu.tailoringexpert.domain.Document;
 import eu.tailoringexpert.domain.MediaTypeProvider;
 import eu.tailoringexpert.domain.Phase;
@@ -63,6 +64,7 @@ import java.util.Set;
 import java.util.function.BiFunction;
 import java.util.function.BiPredicate;
 import java.util.function.Function;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 import static eu.tailoringexpert.domain.Phase.A;
@@ -163,9 +165,15 @@ public class TailoringConfiguration {
     }
 
     @Bean
+    Predicate<TailoringRequirement> tailoringRequirementSelectedPredicate() {
+        return new RequirementSelectedPredicate();
+    }
+
+    @Bean
     BiFunction<Chapter<TailoringRequirement>, Collection<Phase>, Map<DRD, Set<String>>> drdProvider(
-        @NonNull BiPredicate<String, Collection<Phase>> drdAnwendbarPraedikat) {
-        return new DRDProvider(drdAnwendbarPraedikat);
+        @NonNull BiPredicate<String, Collection<Phase>> drdAnwendbarPraedikat,
+        @NonNull Predicate<TailoringRequirement> tailoringRequirementSelectedPredicate) {
+        return new DRDProvider(tailoringRequirementSelectedPredicate, drdAnwendbarPraedikat);
     }
 
     @Bean
@@ -278,6 +286,7 @@ public class TailoringConfiguration {
     ) {
         return new ApplicableDocumentProvider(documentNumberComparator);
     }
+
     private <T> Map<String, T> getTenantImplementations(ListableBeanFactory beanFactory, Class<T> clz) {
         return beanFactory.getBeansOfType(clz)
             .values()

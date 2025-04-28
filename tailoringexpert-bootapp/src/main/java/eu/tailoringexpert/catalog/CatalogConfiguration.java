@@ -23,16 +23,7 @@ package eu.tailoringexpert.catalog;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import eu.tailoringexpert.Tenants;
-import eu.tailoringexpert.domain.BaseRequirement;
-import eu.tailoringexpert.domain.Catalog;
-import eu.tailoringexpert.domain.Chapter;
-import eu.tailoringexpert.domain.DRD;
-import eu.tailoringexpert.domain.DRDProvider;
-import eu.tailoringexpert.domain.Document;
-import eu.tailoringexpert.domain.Identifier;
-import eu.tailoringexpert.domain.Logo;
-import eu.tailoringexpert.domain.Reference;
-import eu.tailoringexpert.domain.ResourceMapper;
+import eu.tailoringexpert.domain.*;
 import eu.tailoringexpert.renderer.HTMLTemplateEngine;
 import eu.tailoringexpert.renderer.PDFEngine;
 import eu.tailoringexpert.repository.BaseCatalogRepository;
@@ -53,9 +44,7 @@ import org.springframework.http.MediaType;
 import java.util.Collection;
 import java.util.Comparator;
 import java.util.Map;
-import java.util.function.BiConsumer;
-import java.util.function.BiFunction;
-import java.util.function.Function;
+import java.util.function.*;
 
 @Configuration
 public class CatalogConfiguration {
@@ -131,11 +120,21 @@ public class CatalogConfiguration {
     @Bean
     BaseCatalogPDFDocumentCreator baseCatalogPDFDocumentCreator(
         @NonNull Function<Catalog<BaseRequirement>, Collection<Document>> baseApplicableDocumentProvider,
+        @NonNull Predicate<BaseRequirement> baseRequirementSelectedPredicate,
+        @NonNull BiPredicate<String, Collection<Phase>> drdAnwendbarPraedikat,
         @NonNull HTMLTemplateEngine templateEngine,
         @NonNull PDFEngine pdfEngine) {
-        return new BaseCatalogPDFDocumentCreator(baseApplicableDocumentProvider, templateEngine, pdfEngine);
+        return new BaseCatalogPDFDocumentCreator(
+            baseApplicableDocumentProvider,
+            new DRDProvider<>(baseRequirementSelectedPredicate, drdAnwendbarPraedikat),
+            templateEngine,
+            pdfEngine);
     }
 
+    @Bean
+    Predicate<BaseRequirement> baseRequirementSelectedPredicate() {
+        return new RequirementSelectedPredicate();
+    }
     @Bean
     DRDProvider baseDRDdProvider() {
         return new DRDProvider();

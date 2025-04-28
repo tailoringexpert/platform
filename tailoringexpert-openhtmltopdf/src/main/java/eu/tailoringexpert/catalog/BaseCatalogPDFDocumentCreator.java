@@ -24,6 +24,8 @@ package eu.tailoringexpert.catalog;
 import eu.tailoringexpert.domain.BaseRequirement;
 import eu.tailoringexpert.domain.Catalog;
 import eu.tailoringexpert.domain.Chapter;
+import eu.tailoringexpert.domain.DRD;
+import eu.tailoringexpert.domain.DRDElement;
 import eu.tailoringexpert.domain.Document;
 import eu.tailoringexpert.domain.File;
 import eu.tailoringexpert.domain.Identifier;
@@ -42,7 +44,9 @@ import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.function.BiFunction;
 import java.util.function.Function;
 
 import static eu.tailoringexpert.domain.Phase.A;
@@ -71,6 +75,9 @@ public class BaseCatalogPDFDocumentCreator implements DocumentCreator {
     private Function<Catalog<BaseRequirement>, Collection<Document>> applicableDocumentProvider;
 
     @NonNull
+    private BiFunction<Chapter<BaseRequirement>, Collection<Phase>, Map<DRD, Set<String>>> drdProvider;
+
+    @NonNull
     private HTMLTemplateEngine templateEngine;
 
     @NonNull
@@ -96,16 +103,21 @@ public class BaseCatalogPDFDocumentCreator implements DocumentCreator {
             Collection<BaseCatalogElement> requirements = new LinkedList<>();
             parameter.put("requirements", requirements);
 
+            Collection<DRDElement> drds = new LinkedList<>();
+            parameter.put("drds", drds);
+
             Map<String, String> bookmarks = new LinkedHashMap<>();
             parameter.put("bookmarks", bookmarks);
 
-            parameter.put("phases", of(ZERO, A, B, C, D, E, F));
+            List<Phase> phases = of(ZERO, A, B, C, D, E, F);
+            parameter.put("phases", phases);
 
             catalog.getToc().getChapters()
                 .forEach(chapter -> {
                     bookmarks.put(chapter.getNumber(), chapter.getName());
                     addChapter(chapter, 1, requirements);
                 });
+            addDRD(catalog.getToc(), drds, phases);
 
             String html = templateEngine.process(catalog.getVersion() + "/basecatalog", parameter);
             File result = pdfEngine.process(docId, html, catalog.getVersion() + "/catalog");
@@ -213,5 +225,25 @@ public class BaseCatalogPDFDocumentCreator implements DocumentCreator {
             .text(templateEngine.toXHTML(requirement.getText(), emptyMap()))
             .chapter(null)
             .build());
+    }
+
+    /**
+     * Evaluate all applicable DRD in chapter for given phases and add them to row object.
+     *
+     * @param chapter chapter to retrieve requirements DRDs of
+     * @param rows    object to add DRDs to
+     * @param phases  phase of tailoring to use of applicabilty check
+     */
+    void addDRD(Chapter<BaseRequirement> chapter, Collection<DRDElement> rows, Collection<Phase> phases) {
+        drdProvider.apply(chapter, phases)
+            .entrySet()
+            .forEach(entry -> rows.add(DRDElement.builder()
+                .title(entry.getKey().getTitle())
+                .deliveryDate(entry.getKey().getDeliveryDate())
+                .requirements(entry.getValue())
+                .number(entry.getKey().getNumber())
+                .action(entry.getKey().getAction())
+                .subtitle(entry.getKey().getSubtitle())
+                .build()));
     }
 }

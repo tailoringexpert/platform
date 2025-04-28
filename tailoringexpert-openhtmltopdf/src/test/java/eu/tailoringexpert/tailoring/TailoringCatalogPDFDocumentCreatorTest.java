@@ -53,6 +53,7 @@ import java.util.AbstractMap.SimpleEntry;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.function.Predicate;
 
 import static eu.tailoringexpert.domain.Phase.A;
 import static eu.tailoringexpert.domain.Phase.B;
@@ -124,7 +125,8 @@ class TailoringCatalogPDFDocumentCreatorTest {
 
         HTMLTemplateEngine templateEngine = new ThymeleafTemplateEngine(springTemplateEngine, supplier);
 
-        this.drdProviderMock = new DRDProvider(new DRDApplicablePredicate(Map.ofEntries(
+        this.drdProviderMock = new DRDProvider(
+            (Predicate<TailoringRequirement>) requirement -> ((TailoringRequirement) requirement).getSelected(),new DRDApplicablePredicate(Map.ofEntries(
             new SimpleEntry<>(ZERO, unmodifiableCollection(asList("MDR"))),
             new SimpleEntry<>(A, unmodifiableCollection(asList("SRR"))),
             new SimpleEntry<>(B, unmodifiableCollection(asList("PDR"))),

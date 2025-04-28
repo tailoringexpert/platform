@@ -31,6 +31,7 @@ import eu.tailoringexpert.FileSaver;
 import eu.tailoringexpert.domain.Catalog;
 import eu.tailoringexpert.domain.Chapter;
 import eu.tailoringexpert.domain.DRD;
+import eu.tailoringexpert.domain.DRDProvider;
 import eu.tailoringexpert.domain.DocumentSignature;
 import eu.tailoringexpert.domain.DocumentSignatureState;
 import eu.tailoringexpert.domain.File;
@@ -56,6 +57,7 @@ import java.util.Collection;
 import java.util.Map;
 import java.util.Set;
 import java.util.function.BiFunction;
+import java.util.function.Predicate;
 
 import static eu.tailoringexpert.domain.Phase.A;
 import static eu.tailoringexpert.domain.Phase.B;
@@ -90,15 +92,17 @@ class CMRequirementsExcelDocumentCreatorTest {
         this.fileSaver = new FileSaver("target");
 
         this.drdProviderMock =
-            new DRDProvider(new DRDApplicablePredicate(ofEntries(
-                new SimpleEntry<>(ZERO, unmodifiableCollection(asList("MDR"))),
-                new SimpleEntry<>(A, unmodifiableCollection(asList("SRR"))),
-                new SimpleEntry<>(B, unmodifiableCollection(asList("PDR"))),
-                new SimpleEntry<>(C, unmodifiableCollection(asList("CDR"))),
-                new SimpleEntry<>(D, unmodifiableCollection(asList("AR", "DRB", "FRR", "LRR"))),
-                new SimpleEntry<>(E, unmodifiableCollection(asList("ORR"))),
-                new SimpleEntry<>(F, unmodifiableCollection(asList("EOM")))
-            )));
+            new DRDProvider(
+                (Predicate<TailoringRequirement>) requirement -> ((TailoringRequirement) requirement).getSelected(),
+                new DRDApplicablePredicate(ofEntries(
+                    new SimpleEntry<>(ZERO, unmodifiableCollection(asList("MDR"))),
+                    new SimpleEntry<>(A, unmodifiableCollection(asList("SRR"))),
+                    new SimpleEntry<>(B, unmodifiableCollection(asList("PDR"))),
+                    new SimpleEntry<>(C, unmodifiableCollection(asList("CDR"))),
+                    new SimpleEntry<>(D, unmodifiableCollection(asList("AR", "DRB", "FRR", "LRR"))),
+                    new SimpleEntry<>(E, unmodifiableCollection(asList("ORR"))),
+                    new SimpleEntry<>(F, unmodifiableCollection(asList("EOM")))
+                )));
         this.creator = new CMRequirementsExcelDocumentCreator(
             () -> RendererRequestConfiguration.builder()
                 .id("unittest")
