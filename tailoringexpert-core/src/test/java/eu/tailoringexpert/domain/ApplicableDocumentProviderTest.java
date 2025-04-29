@@ -19,9 +19,9 @@
  * <http://www.gnu.org/licenses/gpl-3.0.html>.
  * #L%
  */
-package eu.tailoringexpert.tailoring;
+package eu.tailoringexpert.domain;
 
-import eu.tailoringexpert.domain.*;
+import eu.tailoringexpert.tailoring.RequirementSelectedPredicate;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -32,12 +32,14 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 class ApplicableDocumentProviderTest {
 
-    ApplicableDocumentProvider provider;
+    ApplicableDocumentProvider<TailoringRequirement> provider;
 
 
     @BeforeEach
     void beforeEach() {
-        this.provider = new ApplicableDocumentProvider(new DocumentNumberComparator());
+        this.provider = new ApplicableDocumentProvider<>(
+            new RequirementSelectedPredicate(),
+            new DocumentNumberComparator());
     }
 
 

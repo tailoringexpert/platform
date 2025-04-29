@@ -19,17 +19,15 @@
  * <http://www.gnu.org/licenses/gpl-3.0.html>.
  * #L%
  */
-package eu.tailoringexpert.tailoring;
+package eu.tailoringexpert.domain;
 
-import eu.tailoringexpert.domain.Catalog;
-import eu.tailoringexpert.domain.Document;
-import eu.tailoringexpert.domain.TailoringRequirement;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 
 import java.util.*;
 import java.util.function.Function;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 /**
@@ -40,8 +38,10 @@ import java.util.stream.Collectors;
  */
 @Log4j2
 @RequiredArgsConstructor
-public class ApplicableDocumentProvider implements Function<Catalog<TailoringRequirement>, Collection<Document>> {
+public class ApplicableDocumentProvider<T extends Requirement> implements Function<Catalog<T>, Collection<Document>> {
 
+    @NonNull
+    private Predicate<T> selectionPredicate;
     @NonNull
     private Comparator<Document> numberComparator;
 
@@ -49,19 +49,20 @@ public class ApplicableDocumentProvider implements Function<Catalog<TailoringReq
      * {@inheritDoc}
      */
     @Override
-    public Collection<Document> apply(Catalog<TailoringRequirement> catalog) {
+    public Collection<Document> apply(Catalog<T> catalog) {
         log.traceEntry(catalog::getVersion);
 
         Collection<Document> allDocumentsReferences = new ArrayList<>();
         catalog.getToc().allRequirements()
-            .filter(TailoringRequirement::hasApplicableDocument)
+            .filter(Requirement::hasApplicableDocument)
             .forEachOrdered(requirement ->
                 requirement.getApplicableDocuments()
                     .forEach(document -> {
-                        document.setApplicable(requirement.getSelected());
+                        document.setApplicable(selectionPredicate.test(requirement));
                         allDocumentsReferences.add(document);
                     })
             );
+
 
         Collection<Document> result = new TreeSet<>(numberComparator);
         allDocumentsReferences.stream()

@@ -33,7 +33,6 @@ import eu.tailoringexpert.domain.Identifier;
 import eu.tailoringexpert.domain.Logo;
 import eu.tailoringexpert.domain.Phase;
 import eu.tailoringexpert.domain.Reference;
-import eu.tailoringexpert.domain.Requirement;
 import eu.tailoringexpert.domain.ResourceMapper;
 import eu.tailoringexpert.renderer.HTMLTemplateEngine;
 import eu.tailoringexpert.renderer.PDFEngine;
@@ -131,46 +130,24 @@ public class CatalogConfiguration {
 
     @Bean
     BaseCatalogPDFDocumentCreator baseCatalogPDFDocumentCreator(
-        @NonNull Function<Catalog<BaseRequirement>, Collection<Document>> baseApplicableDocumentProvider,
+        @NonNull Function<Catalog<BaseRequirement>, Collection<Document>> baseCatalogApplicableDocumentProvider,
         @NonNull Predicate<BaseRequirement> baseRequirementSelectedPredicate,
         @NonNull BiPredicate<String, Collection<Phase>> drdAnwendbarPraedikat,
         @NonNull HTMLTemplateEngine templateEngine,
         @NonNull PDFEngine pdfEngine) {
         return new BaseCatalogPDFDocumentCreator(
-            baseApplicableDocumentProvider,
+            baseCatalogApplicableDocumentProvider,
             new DRDProvider<>(baseRequirementSelectedPredicate, drdAnwendbarPraedikat),
             templateEngine,
             pdfEngine);
     }
 
     @Bean
-    Predicate<BaseRequirement> requirementAlwaysSelectedPredicate() {
-        return new RequirementAlwaysSelectedPredicate<>();
-    }
-//    @Bean
-//    DRDProvider baseDRDdProvider() {
-//        return new DRDProvider();
-//    }
-@Bean
-BiFunction<Chapter<BaseRequirement>, Collection<Phase>, Map<DRD, Set<String>>> baseDRFProvider(
-    @NonNull BiPredicate<String, Collection<Phase>> drdApplicable,
-    @NonNull Predicate<BaseRequirement> baseRequirementSelectedPredicate) {
-    return new DRDProvider<BaseRequirement>(baseRequirementSelectedPredicate, drdApplicable);
-}
-
-    @Bean
-    Function<Catalog<BaseRequirement>, Collection<Document>> baseApplicableDocumentProvider(
-        @NonNull @Qualifier("documentNumberComparator") Comparator<Document> documentNumberComparator
-    ) {
-        return new ApplicableDocumentProvider(documentNumberComparator);
-    }
-    @Bean
     BaseDRDPDFDocumentCreator baseDRDPDFDocumentCreator(@NonNull HTMLTemplateEngine templateEngine,
                                                         @NonNull PDFEngine pdfEngine,
                                                         @NonNull BiFunction<Chapter<BaseRequirement>, Collection<Phase>, Map<DRD, Set<String>>> drdProvider) {
         return new BaseDRDPDFDocumentCreator(templateEngine, pdfEngine, drdProvider);
     }
-
 
     @Bean
     BiConsumer<Catalog<BaseRequirement>, Sheet> drdSheetCreator() {

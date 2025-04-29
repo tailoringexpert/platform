@@ -79,8 +79,8 @@ class TailoringCatalogPDFDocumentCreatorTest {
     static MockServerClient mockServer;
     String templateHome;
     String assetHome;
-    DRDProvider drdProviderMock;
-    ApplicableDocumentProvider applicableDocumentProviderMock;
+    DRDProvider<TailoringRequirement> drdProviderMock;
+    ApplicableDocumentProvider<TailoringRequirement> applicableDocumentProviderMock;
     ObjectMapper objectMapper;
     FileSaver fileSaver;
     TailoringCatalogPDFDocumentCreator creator;
@@ -136,7 +136,10 @@ class TailoringCatalogPDFDocumentCreatorTest {
             new SimpleEntry<>(F, unmodifiableCollection(asList("EOM")))
         )));
 
-        this.applicableDocumentProviderMock = new ApplicableDocumentProvider(new DocumentNumberComparator());
+        this.applicableDocumentProviderMock = new ApplicableDocumentProvider(
+            new RequirementSelectedPredicate(),
+            new DocumentNumberComparator())
+        ;
 
         FSDOMMutator domMutator = new TailoringexpertDOMMutator();
         this.creator = new TailoringCatalogPDFDocumentCreator(

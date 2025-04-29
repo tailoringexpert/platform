@@ -49,6 +49,7 @@ public class DRDProvider<T extends Requirement> implements BiFunction<Chapter<T>
 
     @NonNull
     private Predicate<T> selectionPredicate;
+
     @NonNull
     private BiPredicate<String, Collection<Phase>> predicate;
 

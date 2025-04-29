@@ -27,7 +27,6 @@ import eu.tailoringexpert.Tenants;
 import eu.tailoringexpert.domain.Catalog;
 import eu.tailoringexpert.domain.Chapter;
 import eu.tailoringexpert.domain.DRD;
-import eu.tailoringexpert.domain.DRDProvider;
 import eu.tailoringexpert.domain.Document;
 import eu.tailoringexpert.domain.MediaTypeProvider;
 import eu.tailoringexpert.domain.Phase;
@@ -57,14 +56,12 @@ import java.nio.file.Path;
 import java.security.MessageDigest;
 import java.util.AbstractMap.SimpleEntry;
 import java.util.Collection;
-import java.util.Comparator;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 import java.util.function.BiFunction;
 import java.util.function.BiPredicate;
 import java.util.function.Function;
-import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 import static eu.tailoringexpert.domain.Phase.A;
@@ -165,18 +162,6 @@ public class TailoringConfiguration {
     }
 
     @Bean
-    Predicate<TailoringRequirement> tailoringRequirementSelectedPredicate() {
-        return new RequirementSelectedPredicate();
-    }
-
-    @Bean
-    BiFunction<Chapter<TailoringRequirement>, Collection<Phase>, Map<DRD, Set<String>>> drdProvider(
-        @NonNull BiPredicate<String, Collection<Phase>> drdApplicable,
-        @NonNull Predicate<TailoringRequirement> tailoringRequirementSelectedPredicate) {
-        return new DRDProvider<>(tailoringRequirementSelectedPredicate, drdApplicable);
-    }
-
-    @Bean
     Function<String, MediaType> mediaTypeProvider() {
         return new MediaTypeProvider();
     }
@@ -217,8 +202,8 @@ public class TailoringConfiguration {
         @NonNull HTMLTemplateEngine templateEngine,
         @NonNull PDFEngine pdfEngine,
         @NonNull BiFunction<Chapter<TailoringRequirement>, Collection<Phase>, Map<DRD, Set<String>>> drdProvider,
-        @NonNull Function<Catalog<TailoringRequirement>, Collection<Document>> tailoringApplicableDocumentProvider) {
-        return new TailoringCatalogPDFDocumentCreator(templateEngine, pdfEngine, drdProvider, tailoringApplicableDocumentProvider);
+        @NonNull Function<Catalog<TailoringRequirement>, Collection<Document>> tailoringCatalogApplicableDocumentProvider) {
+        return new TailoringCatalogPDFDocumentCreator(templateEngine, pdfEngine, drdProvider, tailoringCatalogApplicableDocumentProvider);
     }
 
     @Bean
@@ -278,13 +263,6 @@ public class TailoringConfiguration {
         @NonNull @Qualifier("tailoringPathProvider") BiFunction<String, String, Path> tailoringPathProvider
     ) throws Exception {
         return new TenantAttachmentService(tailoringPathProvider, MessageDigest.getInstance("SHA-256"));
-    }
-
-    @Bean
-    Function<Catalog<TailoringRequirement>, Collection<Document>> tailoringApplicableDocumentProvider(
-        @NonNull @Qualifier("documentNumberComparator") Comparator<Document> documentNumberComparator
-    ) {
-        return new ApplicableDocumentProvider(documentNumberComparator);
     }
 
     private <T> Map<String, T> getTenantImplementations(ListableBeanFactory beanFactory, Class<T> clz) {
