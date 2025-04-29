@@ -29,6 +29,7 @@ import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.fasterxml.jackson.module.paramnames.ParameterNamesModule;
 import com.openhtmltopdf.extend.FSDOMMutator;
 import eu.tailoringexpert.FileSaver;
+import eu.tailoringexpert.domain.ApplicableDocumentProvider;
 import eu.tailoringexpert.domain.BaseRequirement;
 import eu.tailoringexpert.domain.Catalog;
 import eu.tailoringexpert.domain.DRDProvider;
@@ -113,7 +114,7 @@ class BaseCatalogPDFDocumentCreatorTest {
 
 
         this.creator = new BaseCatalogPDFDocumentCreator(
-            new ApplicableDocumentProvider(new DocumentNumberComparator()),
+            new ApplicableDocumentProvider<BaseRequirement>(new RequirementAlwaysSelectedPredicate<BaseRequirement>(), new DocumentNumberComparator()),
             new DRDProvider<>(
                 (Predicate<BaseRequirement>) requirement -> true,
                 new DRDApplicablePredicate(Map.ofEntries(
