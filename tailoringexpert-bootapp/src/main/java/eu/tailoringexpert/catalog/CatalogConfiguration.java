@@ -33,6 +33,7 @@ import eu.tailoringexpert.domain.Identifier;
 import eu.tailoringexpert.domain.Logo;
 import eu.tailoringexpert.domain.Phase;
 import eu.tailoringexpert.domain.Reference;
+import eu.tailoringexpert.domain.Requirement;
 import eu.tailoringexpert.domain.ResourceMapper;
 import eu.tailoringexpert.renderer.HTMLTemplateEngine;
 import eu.tailoringexpert.renderer.PDFEngine;
@@ -143,8 +144,8 @@ public class CatalogConfiguration {
     }
 
     @Bean
-    Predicate<BaseRequirement> baseRequirementSelectedPredicate() {
-        return new RequirementAlwaysSelectedPredicate();
+    Predicate<BaseRequirement> requirementAlwaysSelectedPredicate() {
+        return new RequirementAlwaysSelectedPredicate<>();
     }
 //    @Bean
 //    DRDProvider baseDRDdProvider() {

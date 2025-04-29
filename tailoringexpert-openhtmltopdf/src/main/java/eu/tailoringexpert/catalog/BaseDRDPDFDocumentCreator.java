@@ -68,7 +68,6 @@ public class BaseDRDPDFDocumentCreator implements DocumentCreator {
 
     @NonNull
     private BiFunction<Chapter<BaseRequirement>, Collection<Phase>, Map<DRD, Set<String>>> drdProvider;
-    //private Function<Chapter<BaseRequirement>, Set<DRD>> drdProvider;
 
     /**
      * {@inheritDoc}

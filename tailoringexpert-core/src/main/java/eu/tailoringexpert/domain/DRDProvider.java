@@ -80,23 +80,7 @@ public class DRDProvider<T extends Requirement> implements BiFunction<Chapter<T>
                         )
                     )
             );
-//        chapter.allChapters()
-//            .forEach(subChapter -> subChapter.getRequirements()
-//                .stream()
-//                .filter(selectionPredicate)
-//                .filter(Requirement::hasDRD)
-//                .forEach(requirement -> requirement.getDrds()
-//                    .forEach(drd -> {
-//                        if (predicate.test(drd.getDeliveryDate(), phases)) {
-//                            Set<String> chapters = result.get(drd);
-//                            if (isNull(chapters)) {
-//                                chapters = new LinkedHashSet<>();
-//                                result.put(drd, chapters);
-//                            }
-//                            chapters.add(subChapter.getNumber());
-//                        }
-//                    }))
-//            );
+
         result.values()
             .forEach(a -> a.stream().sorted());
 

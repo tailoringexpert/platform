@@ -25,7 +25,7 @@ import eu.tailoringexpert.domain.Requirement;
 
 import java.util.function.Predicate;
 
-public class RequirementAlwaysSelectedPredicate implements Predicate<Requirement> {
+public class RequirementAlwaysSelectedPredicate<T extends Requirement> implements Predicate<T> {
     @Override
     public boolean test(Requirement tailoringRequirement) {
         return true;
