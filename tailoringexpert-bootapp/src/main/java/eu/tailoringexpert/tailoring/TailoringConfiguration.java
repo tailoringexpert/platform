@@ -171,9 +171,9 @@ public class TailoringConfiguration {
 
     @Bean
     BiFunction<Chapter<TailoringRequirement>, Collection<Phase>, Map<DRD, Set<String>>> drdProvider(
-        @NonNull BiPredicate<String, Collection<Phase>> drdAnwendbarPraedikat,
+        @NonNull BiPredicate<String, Collection<Phase>> drdApplicable,
         @NonNull Predicate<TailoringRequirement> tailoringRequirementSelectedPredicate) {
-        return new DRDProvider(tailoringRequirementSelectedPredicate, drdAnwendbarPraedikat);
+        return new DRDProvider<>(tailoringRequirementSelectedPredicate, drdApplicable);
     }
 
     @Bean

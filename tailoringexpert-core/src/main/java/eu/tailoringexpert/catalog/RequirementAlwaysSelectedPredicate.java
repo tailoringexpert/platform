@@ -21,13 +21,13 @@
  */
 package eu.tailoringexpert.catalog;
 
-import eu.tailoringexpert.domain.BaseRequirement;
+import eu.tailoringexpert.domain.Requirement;
 
 import java.util.function.Predicate;
 
-public class RequirementSelectedPredicate implements Predicate<BaseRequirement> {
+public class RequirementAlwaysSelectedPredicate implements Predicate<Requirement> {
     @Override
-    public boolean test(BaseRequirement tailoringRequirement) {
+    public boolean test(Requirement tailoringRequirement) {
         return true;
     }
 }

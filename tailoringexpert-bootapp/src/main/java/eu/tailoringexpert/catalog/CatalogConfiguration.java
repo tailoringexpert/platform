@@ -23,7 +23,17 @@ package eu.tailoringexpert.catalog;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import eu.tailoringexpert.Tenants;
-import eu.tailoringexpert.domain.*;
+import eu.tailoringexpert.domain.BaseRequirement;
+import eu.tailoringexpert.domain.Catalog;
+import eu.tailoringexpert.domain.Chapter;
+import eu.tailoringexpert.domain.DRD;
+import eu.tailoringexpert.domain.DRDProvider;
+import eu.tailoringexpert.domain.Document;
+import eu.tailoringexpert.domain.Identifier;
+import eu.tailoringexpert.domain.Logo;
+import eu.tailoringexpert.domain.Phase;
+import eu.tailoringexpert.domain.Reference;
+import eu.tailoringexpert.domain.ResourceMapper;
 import eu.tailoringexpert.renderer.HTMLTemplateEngine;
 import eu.tailoringexpert.renderer.PDFEngine;
 import eu.tailoringexpert.repository.BaseCatalogRepository;
@@ -44,6 +54,7 @@ import org.springframework.http.MediaType;
 import java.util.Collection;
 import java.util.Comparator;
 import java.util.Map;
+import java.util.Set;
 import java.util.function.*;
 
 @Configuration
@@ -133,12 +144,18 @@ public class CatalogConfiguration {
 
     @Bean
     Predicate<BaseRequirement> baseRequirementSelectedPredicate() {
-        return new RequirementSelectedPredicate();
+        return new RequirementAlwaysSelectedPredicate();
     }
-    @Bean
-    DRDProvider baseDRDdProvider() {
-        return new DRDProvider();
-    }
+//    @Bean
+//    DRDProvider baseDRDdProvider() {
+//        return new DRDProvider();
+//    }
+@Bean
+BiFunction<Chapter<BaseRequirement>, Collection<Phase>, Map<DRD, Set<String>>> baseDRFProvider(
+    @NonNull BiPredicate<String, Collection<Phase>> drdApplicable,
+    @NonNull Predicate<BaseRequirement> baseRequirementSelectedPredicate) {
+    return new DRDProvider<BaseRequirement>(baseRequirementSelectedPredicate, drdApplicable);
+}
 
     @Bean
     Function<Catalog<BaseRequirement>, Collection<Document>> baseApplicableDocumentProvider(
@@ -149,7 +166,7 @@ public class CatalogConfiguration {
     @Bean
     BaseDRDPDFDocumentCreator baseDRDPDFDocumentCreator(@NonNull HTMLTemplateEngine templateEngine,
                                                         @NonNull PDFEngine pdfEngine,
-                                                        @NonNull DRDProvider drdProvider) {
+                                                        @NonNull BiFunction<Chapter<BaseRequirement>, Collection<Phase>, Map<DRD, Set<String>>> drdProvider) {
         return new BaseDRDPDFDocumentCreator(templateEngine, pdfEngine, drdProvider);
     }
 
