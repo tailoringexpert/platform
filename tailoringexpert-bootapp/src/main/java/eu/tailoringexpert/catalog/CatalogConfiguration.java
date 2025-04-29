@@ -236,11 +236,4 @@ public class CatalogConfiguration {
     ) {
         return new Excel2CatalogConverter(toChapterFunction);
     }
-
-    @Bean
-    ApplicableDocumentProvider applicableDocumentProvider(
-        @NonNull @Qualifier("documentNumberComparator") Comparator<Document> documentNumberComparator
-        ) {
-        return new ApplicableDocumentProvider(documentNumberComparator);
-    }
 }
