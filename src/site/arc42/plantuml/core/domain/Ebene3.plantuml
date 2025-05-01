@@ -212,6 +212,37 @@ package domain {
     }
 
 
+    interface "Predicate<T>" as RequirementSelectionPredicate {
+        test(t: T) : boolean
+    }
+
+
+    interface "BiPredicate<T, U>" as AnwendbarBiFunction {
+        test(t: T, u : U) : boolean
+    }
+    class DRDApplicablePredicate<String, Collection<Phase>> {
+    }
+    AnwendbarBiFunction <|.. DRDApplicablePredicate
+
+
+    interface "BiFunction<T, U, R>" as DRDProviderBiFunction {
+        apply(var1 : T, var2 : U) : R
+    }
+    class "DRDProvider<Chapter<T exends Requirement>, Map<DRD, Set<String>>" as DRDProvider{
+    }
+    DRDProviderBiFunction <|.. DRDProvider
+    DRDProvider --> "1" RequirementSelectionPredicate : selectionPredicate
+    DRDProvider --> "1" AnwendbarBiFunction : predicate
+
+    interface "Function<Catalog<TailoringRequirement>, Collection<Document>>" as applicableDocumentProvider {
+    }
+
+    class ApplicableDocumentProvider {
+    }
+    applicableDocumentProvider <|-- ApplicableDocumentProvider
+    ApplicableDocumentProvider --> "1" documentComparator : numberComparator
+
+
 }
 hide empty members
 @enduml

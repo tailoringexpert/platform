@@ -25,7 +25,7 @@ package tailoring {
     }
     DocumentCreator <|-- CMExcelDocumentCreator
     CMExcelDocumentCreator --> "1" RendererRequestConfigurationSupplier : requestConfigurationSupplier
-    CMExcelDocumentCreator --> "1" drdSupplier : drdProvider
+    CMExcelDocumentCreator --> "1" "BiFunction<Chapter<TailoringRequirement>, Collection<Phase>, Map<DRD, Set<String>>>" : drdProvider;
 
     class CMRequirementBasedExcelDocumentCreator {
     }
