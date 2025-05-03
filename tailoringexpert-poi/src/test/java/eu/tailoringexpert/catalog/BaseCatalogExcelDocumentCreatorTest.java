@@ -30,9 +30,7 @@ import com.fasterxml.jackson.databind.cfg.MutableConfigOverride;
 import com.fasterxml.jackson.datatype.jdk8.Jdk8Module;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.fasterxml.jackson.module.paramnames.ParameterNamesModule;
-import eu.tailoringexpert.domain.BaseRequirement;
-import eu.tailoringexpert.domain.Catalog;
-import eu.tailoringexpert.domain.File;
+import eu.tailoringexpert.domain.*;
 
 import eu.tailoringexpert.FileSaver;
 import org.apache.poi.ss.usermodel.Sheet;
@@ -63,6 +61,7 @@ class BaseCatalogExcelDocumentCreatorTest {
 
     private BiConsumer<Catalog<BaseRequirement>, Sheet> requirementSheetCreatorMock;
     private BiConsumer<Catalog<BaseRequirement>, Sheet> drdSheetCreator;
+    private BiConsumer<Catalog<BaseRequirement>, Sheet> documentSheetCreator;
     private BiConsumer<Catalog<BaseRequirement>, Sheet> logoSheetCreator;
     private BaseCatalogExcelDocumentCreator creator;
 
@@ -81,11 +80,13 @@ class BaseCatalogExcelDocumentCreatorTest {
 
         this.requirementSheetCreatorMock = mock(BiConsumer.class);
         this.drdSheetCreator = mock(BiConsumer.class);
+        this.documentSheetCreator = mock(BiConsumer.class);
         this.logoSheetCreator = mock(BiConsumer.class);
 
         this.creator = new BaseCatalogExcelDocumentCreator(
             this.requirementSheetCreatorMock,
             this.drdSheetCreator,
+            this.documentSheetCreator,
             this.logoSheetCreator
         );
     }
@@ -112,6 +113,7 @@ class BaseCatalogExcelDocumentCreatorTest {
         assertThat(actual).isNull();
         verify(requirementSheetCreatorMock, times(1)).accept(eq(catalog), any(Sheet.class));
         verify(drdSheetCreator, times(0)).accept(eq(catalog), any(Sheet.class));
+        verify(documentSheetCreator, times(0)).accept(eq(catalog), any(Sheet.class));
         verify(logoSheetCreator, times(0)).accept(eq(catalog), any(Sheet.class));
     }
 
@@ -134,6 +136,7 @@ class BaseCatalogExcelDocumentCreatorTest {
         assertThat(actual).isNotNull();
         verify(requirementSheetCreatorMock, times(1)).accept(eq(catalog), any(Sheet.class));
         verify(drdSheetCreator, times(1)).accept(eq(catalog), any(Sheet.class));
+        verify(documentSheetCreator, times(1)).accept(eq(catalog), any(Sheet.class));
         verify(logoSheetCreator, times(1)).accept(eq(catalog), any(Sheet.class));
     }
 
@@ -149,6 +152,8 @@ class BaseCatalogExcelDocumentCreatorTest {
         BaseCatalogExcelDocumentCreator noMocksCreator = new BaseCatalogExcelDocumentCreator(
             new RequirementSheetCreator(),
             new DRDSheetCreator(),
+            new DocumentSheetCreator(new ApplicableDocumentProvider<BaseRequirement>(
+                new RequirementAlwaysSelectedPredicate<BaseRequirement>(), new DocumentNumberComparator())),
             new LogoSheetCreator()
         );
 

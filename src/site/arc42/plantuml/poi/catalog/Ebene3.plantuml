@@ -32,6 +32,12 @@ package tailoring {
     AbstractRequirementsBasedSheetCreator <|-- DRDSheetCreator
     DRDSheetCreator -[dotted]-> Styles : <use>
 
+    class DocumentSheetCreator {
+    }
+    AbstractRequirementsBasedSheetCreator <|-- DocumentSheetCreator
+    DocumentSheetCreator --> "1" "Function<Catalog<BaseRequirement>, Collection<Document>>" :  applicableDocumentProvider
+    DocumentSheetCreator -[dotted]-> Styles : <use>
+
     class LogoSheetCreator {
     }
     AbstractRequirementsBasedSheetCreator <|-- LogoSheetCreator

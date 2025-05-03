@@ -106,9 +106,9 @@ class BaseDRDPDFDocumentCreatorTest {
 
         FSDOMMutator domMutator = new TailoringexpertDOMMutator();
         this.creator = new BaseDRDPDFDocumentCreator(
+            drdProviderMock,
             templateEngine,
-            new PDFEngine(domMutator, supplier),
-            drdProviderMock
+        new PDFEngine(domMutator, supplier)
         );
     }
 

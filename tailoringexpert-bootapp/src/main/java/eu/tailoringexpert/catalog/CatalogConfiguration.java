@@ -146,12 +146,18 @@ public class CatalogConfiguration {
     BaseDRDPDFDocumentCreator baseDRDPDFDocumentCreator(@NonNull HTMLTemplateEngine templateEngine,
                                                         @NonNull PDFEngine pdfEngine,
                                                         @NonNull BiFunction<Chapter<BaseRequirement>, Collection<Phase>, Map<DRD, Set<String>>> drdProvider) {
-        return new BaseDRDPDFDocumentCreator(templateEngine, pdfEngine, drdProvider);
+        return new BaseDRDPDFDocumentCreator(drdProvider, templateEngine, pdfEngine);
     }
 
     @Bean
     BiConsumer<Catalog<BaseRequirement>, Sheet> drdSheetCreator() {
         return new DRDSheetCreator();
+    }
+
+    @Bean
+    BiConsumer<Catalog<BaseRequirement>, Sheet> documentSheetCreator(
+        @NonNull Function<Catalog<BaseRequirement>, Collection<Document>> baseCatalogApplicableDocumentProvider ) {
+        return new DocumentSheetCreator(baseCatalogApplicableDocumentProvider);
     }
 
     @Bean
@@ -168,9 +174,15 @@ public class CatalogConfiguration {
     BaseCatalogExcelDocumentCreator baseCatalogExportExcelDocumentCreator(
         @NonNull @Qualifier("requirementSheetCreator") BiConsumer<Catalog<BaseRequirement>, Sheet> requirementSheetCreator,
         @NonNull @Qualifier("drdSheetCreator") BiConsumer<Catalog<BaseRequirement>, Sheet> drdSheetCreator,
+        @NonNull @Qualifier("documentSheetCreator") BiConsumer<Catalog<BaseRequirement>, Sheet> documentSheetCreator,
         @NonNull @Qualifier("logoSheetCreator") BiConsumer<Catalog<BaseRequirement>, Sheet> logoSheetCreator
     ) {
-        return new BaseCatalogExcelDocumentCreator(requirementSheetCreator, drdSheetCreator, logoSheetCreator);
+        return new BaseCatalogExcelDocumentCreator(
+            requirementSheetCreator,
+            drdSheetCreator,
+            documentSheetCreator,
+            logoSheetCreator
+        );
     }
 
 

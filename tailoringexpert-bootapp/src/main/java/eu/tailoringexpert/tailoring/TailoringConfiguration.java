@@ -203,7 +203,12 @@ public class TailoringConfiguration {
         @NonNull PDFEngine pdfEngine,
         @NonNull BiFunction<Chapter<TailoringRequirement>, Collection<Phase>, Map<DRD, Set<String>>> drdProvider,
         @NonNull Function<Catalog<TailoringRequirement>, Collection<Document>> tailoringCatalogApplicableDocumentProvider) {
-        return new TailoringCatalogPDFDocumentCreator(templateEngine, pdfEngine, drdProvider, tailoringCatalogApplicableDocumentProvider);
+        return new TailoringCatalogPDFDocumentCreator(
+            drdProvider,
+            tailoringCatalogApplicableDocumentProvider,
+            templateEngine,
+            pdfEngine
+        );
     }
 
     @Bean
@@ -219,7 +224,7 @@ public class TailoringConfiguration {
         @NonNull HTMLTemplateEngine templateEngine,
         @NonNull PDFEngine pdfEngine,
         @NonNull BiFunction<Chapter<TailoringRequirement>, Collection<Phase>, Map<DRD, Set<String>>> drdProvider) {
-        return new DRDPDFDocumentCreator(templateEngine, pdfEngine, drdProvider);
+        return new DRDPDFDocumentCreator(drdProvider, templateEngine, pdfEngine);
     }
 
     @Bean
@@ -246,7 +251,7 @@ public class TailoringConfiguration {
         @NonNull HTMLTemplateEngine templateEngine,
         @NonNull PDFEngine pdfEngine,
         @NonNull BiFunction<Chapter<TailoringRequirement>, Collection<Phase>, Map<DRD, Set<String>>> drdProvider) {
-        return new CMPDFDocumentCreator(templateEngine, pdfEngine, drdProvider);
+        return new CMPDFDocumentCreator(drdProvider, templateEngine, pdfEngine);
     }
 
 

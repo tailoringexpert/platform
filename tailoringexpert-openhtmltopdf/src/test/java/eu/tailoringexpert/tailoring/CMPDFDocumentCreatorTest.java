@@ -130,9 +130,9 @@ class CMPDFDocumentCreatorTest {
 
         FSDOMMutator domMutator = new TailoringexpertDOMMutator();
         this.creator = new CMPDFDocumentCreator(
+            drdProviderMock,
             templateEngine,
-            new PDFEngine(domMutator, supplier),
-            drdProviderMock
+        new PDFEngine(domMutator, supplier)
         );
     }
 

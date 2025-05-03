@@ -143,10 +143,10 @@ class TailoringCatalogPDFDocumentCreatorTest {
 
         FSDOMMutator domMutator = new TailoringexpertDOMMutator();
         this.creator = new TailoringCatalogPDFDocumentCreator(
-            templateEngine,
-            new PDFEngine(domMutator, supplier),
             drdProviderMock,
-            applicableDocumentProviderMock
+            applicableDocumentProviderMock,
+            templateEngine,
+        new PDFEngine(domMutator, supplier)
         );
     }
 
