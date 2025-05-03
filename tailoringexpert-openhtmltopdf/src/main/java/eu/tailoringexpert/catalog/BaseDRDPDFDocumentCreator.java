@@ -61,13 +61,14 @@ import static java.util.List.of;
 public class BaseDRDPDFDocumentCreator implements DocumentCreator {
 
     @NonNull
+    private BiFunction<Chapter<BaseRequirement>, Collection<Phase>, Map<DRD, Set<String>>> drdProvider;
+
+    @NonNull
     private HTMLTemplateEngine templateEngine;
 
     @NonNull
     private PDFEngine pdfEngine;
 
-    @NonNull
-    private BiFunction<Chapter<BaseRequirement>, Collection<Phase>, Map<DRD, Set<String>>> drdProvider;
 
     /**
      * {@inheritDoc}

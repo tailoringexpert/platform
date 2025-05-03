@@ -63,16 +63,17 @@ import static java.util.Objects.nonNull;
 public class TailoringCatalogPDFDocumentCreator implements DocumentCreator {
 
     @NonNull
+    private BiFunction<Chapter<TailoringRequirement>, Collection<Phase>, Map<DRD, Set<String>>> drdProvider;
+
+    @NonNull
+    private Function<Catalog<TailoringRequirement>, Collection<Document>> applicableDocumentProvider;
+
+    @NonNull
     private HTMLTemplateEngine templateEngine;
 
     @NonNull
     private PDFEngine pdfEngine;
 
-    @NonNull
-    private BiFunction<Chapter<TailoringRequirement>, Collection<Phase>, Map<DRD, Set<String>>> drdProvider;
-
-    @NonNull
-    private Function<Catalog<TailoringRequirement>, Collection<Document>> applicableDocumentProvider;
 
     private static final String REFERENZ_LOGO_LINK = "<img src=\"%s\" alt=\"%s\"></img><br/>";
 

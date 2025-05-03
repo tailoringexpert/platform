@@ -217,12 +217,12 @@ package domain {
     }
 
 
-    interface "BiPredicate<T, U>" as AnwendbarBiFunction {
+    interface "BiPredicate<T, U>" as Applicl+ableBiPredicate {
         test(t: T, u : U) : boolean
     }
     class DRDApplicablePredicate<String, Collection<Phase>> {
     }
-    AnwendbarBiFunction <|.. DRDApplicablePredicate
+    Applicl+ableBiPredicate <|.. DRDApplicablePredicate
 
 
     interface "BiFunction<T, U, R>" as DRDProviderBiFunction {
@@ -232,7 +232,7 @@ package domain {
     }
     DRDProviderBiFunction <|.. DRDProvider
     DRDProvider --> "1" RequirementSelectionPredicate : selectionPredicate
-    DRDProvider --> "1" AnwendbarBiFunction : predicate
+    DRDProvider --> "1" Applicl+ableBiPredicate : predicate
 
     interface "Function<Catalog<TailoringRequirement>, Collection<Document>>" as applicableDocumentProvider {
     }
