@@ -26,6 +26,7 @@ import eu.tailoringexpert.domain.Catalog;
 import eu.tailoringexpert.domain.Chapter;
 import lombok.extern.log4j.Log4j2;
 import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.ss.util.CellRangeAddress;
 
 import java.util.function.BiConsumer;
 
@@ -36,13 +37,15 @@ public abstract class AbstractRequirementsBasedSheetCreator implements BiConsume
 
     @Override
     public void accept(Catalog<BaseRequirement> catalog, Sheet sheet) {
-        log.traceEntry(() -> catalog, () -> catalog.getVersion());
+        log.traceEntry(() -> catalog, catalog::getVersion);
 
         Styles styles = new Styles(sheet.getWorkbook());
         addHeader(sheet, styles);
         addChapter(catalog.getToc(), sheet, styles);
 
-        range(0, sheet.getRow(0).getPhysicalNumberOfCells())
+        sheet.setAutoFilter(new CellRangeAddress(0, 0, 0, sheet.getRow(0).getPhysicalNumberOfCells()-1));
+
+        range(0, sheet.getRow(0).getPhysicalNumberOfCells()-1)
             .forEach(sheet::autoSizeColumn);
 
         log.traceExit();
