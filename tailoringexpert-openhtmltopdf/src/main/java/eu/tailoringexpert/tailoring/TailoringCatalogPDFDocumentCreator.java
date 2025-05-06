@@ -66,9 +66,6 @@ public class TailoringCatalogPDFDocumentCreator implements DocumentCreator {
     private BiFunction<Chapter<TailoringRequirement>, Collection<Phase>, Map<DRD, Set<String>>> drdProvider;
 
     @NonNull
-    private Function<Catalog<TailoringRequirement>, Collection<Document>> applicableDocumentProvider;
-
-    @NonNull
     private HTMLTemplateEngine templateEngine;
 
     @NonNull
@@ -105,8 +102,6 @@ public class TailoringCatalogPDFDocumentCreator implements DocumentCreator {
                 }
             );
         addDRD(tailoring.getCatalog().getToc(), drds, tailoring.getPhases());
-
-        parameter.put("applicableDocuments", applicableDocumentProvider.apply(tailoring.getCatalog()));
 
         parameter.put("signatures", tailoring.getSignatures().stream()
             .sorted(comparingInt(DocumentSignature::getPosition))

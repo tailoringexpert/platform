@@ -201,11 +201,9 @@ public class TailoringConfiguration {
     DocumentCreator tailoringCatalogPDFDocumentCreator(
         @NonNull HTMLTemplateEngine templateEngine,
         @NonNull PDFEngine pdfEngine,
-        @NonNull BiFunction<Chapter<TailoringRequirement>, Collection<Phase>, Map<DRD, Set<String>>> drdProvider,
-        @NonNull Function<Catalog<TailoringRequirement>, Collection<Document>> tailoringCatalogApplicableDocumentProvider) {
+        @NonNull BiFunction<Chapter<TailoringRequirement>, Collection<Phase>, Map<DRD, Set<String>>> drdProvider) {
         return new TailoringCatalogPDFDocumentCreator(
             drdProvider,
-            tailoringCatalogApplicableDocumentProvider,
             templateEngine,
             pdfEngine
         );

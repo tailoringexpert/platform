@@ -87,7 +87,7 @@ public class ToChapterFunction implements Function<Sheet, Chapter<BaseRequiremen
     public Chapter<BaseRequirement> apply(Sheet sheet) {
         Map<String, Logo> logos = toLogoMapping.apply(sheet.getWorkbook().getSheet("LOGO"));
         Map<String, DRD> drds = toDRDMapping.apply(sheet.getWorkbook().getSheet("DRD"));
-        Map<String, Document> documents = toDocumentMapping.apply(sheet.getWorkbook().getSheet("DOCUMENT"));
+        Map<String, Document> documents = toDocumentMapping.apply(sheet.getWorkbook().getSheet("AD"));
 
         Map<String, Chapter<BaseRequirement>> chapters = new TreeMap<>();
         Chapter<BaseRequirement> current = new Chapter<>();

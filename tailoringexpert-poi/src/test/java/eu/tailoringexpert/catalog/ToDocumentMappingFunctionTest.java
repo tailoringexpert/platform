@@ -61,7 +61,7 @@ class ToDocumentMappingFunctionTest {
 
 
         // act
-        Map<String, Document> actual = toFunction.apply(wb.getSheet("DOCUMENT"));
+        Map<String, Document> actual = toFunction.apply(wb.getSheet("AD"));
 
         // assert
         log.debug(actual);

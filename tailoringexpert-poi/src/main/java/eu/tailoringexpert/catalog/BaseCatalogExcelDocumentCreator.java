@@ -62,7 +62,7 @@ public class BaseCatalogExcelDocumentCreator implements DocumentCreator {
 
             requirementSheetCreator.accept(catalog, wb.createSheet(catalog.getVersion()));
             drdSheetCreator.accept(catalog, wb.createSheet("DRD"));
-            documentSheetCreator.accept(catalog, wb.createSheet("DOCUMENT"));
+            documentSheetCreator.accept(catalog, wb.createSheet("AD"));
             logoSheetCreator.accept(catalog, wb.createSheet("LOGO"));
 
             try (ByteArrayOutputStream os = new ByteArrayOutputStream()) {
