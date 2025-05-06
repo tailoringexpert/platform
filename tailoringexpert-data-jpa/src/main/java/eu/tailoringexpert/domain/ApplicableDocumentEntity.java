@@ -32,9 +32,9 @@ import static jakarta.persistence.GenerationType.TABLE;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-@Entity(name = "Document")
-@Table(name = "DOCUMENT")
-public class DocumentEntity implements Serializable {
+@Entity(name = "ApplicableDocument")
+@Table(name = "APPLICABLEDOCUMENT")
+public class ApplicableDocumentEntity implements Serializable {
     private static final long serialVersionUID = 2277522795120520358L;
 
     /**
@@ -44,7 +44,7 @@ public class DocumentEntity implements Serializable {
     @TableGenerator(name = "SEQ_DOCUMENT", table = "SEQUENCE", pkColumnName = "SEQ_NAME",
         valueColumnName = "SEQ_COUNT", pkColumnValue = "SEQ_DOCUMENT", initialValue = 1)
     @GeneratedValue(strategy = TABLE, generator = "SEQ_DOCUMENT")
-    @Column(name = "DOCUMENT_ID")
+    @Column(name = "APPLICABLEDOCUMENT_ID")
     private Long id;
 
     /**

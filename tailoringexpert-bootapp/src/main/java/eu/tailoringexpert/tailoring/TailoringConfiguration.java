@@ -35,7 +35,7 @@ import eu.tailoringexpert.domain.TailoringRequirement;
 import eu.tailoringexpert.renderer.HTMLTemplateEngine;
 import eu.tailoringexpert.renderer.PDFEngine;
 import eu.tailoringexpert.renderer.RendererRequestConfigurationSupplier;
-import eu.tailoringexpert.repository.DocumentRepository;
+import eu.tailoringexpert.repository.ApplicableDocumentRepository;
 import eu.tailoringexpert.repository.DokumentSigneeRepository;
 import eu.tailoringexpert.repository.LogoRepository;
 import eu.tailoringexpert.repository.ProjectRepository;
@@ -80,10 +80,10 @@ public class TailoringConfiguration {
     @Bean
     JPATailoringServiceRepositoryMapper jpaTailoringServiceRepositoryMapper(
         @NonNull LogoRepository logoRepository,
-        @NonNull DocumentRepository documentRepository) {
+        @NonNull ApplicableDocumentRepository applicableDocumentRepository) {
         JPATailoringServiceRepositoryMapperGenerated result = new JPATailoringServiceRepositoryMapperGenerated();
         result.setLogoRepository(logoRepository);
-        result.setDocumentRepository(documentRepository);
+        result.setApplicableDocumentRepository(applicableDocumentRepository);
         return result;
     }
 

@@ -22,27 +22,10 @@
 package eu.tailoringexpert.tailoring;
 
 import eu.tailoringexpert.TailoringexpertMapperConfig;
-import eu.tailoringexpert.domain.Document;
-import eu.tailoringexpert.domain.DocumentEntity;
-import eu.tailoringexpert.domain.DocumentSignature;
-import eu.tailoringexpert.domain.DocumentSignatureEntity;
-import eu.tailoringexpert.domain.DocumentSigneeEntity;
-import eu.tailoringexpert.domain.Logo;
-import eu.tailoringexpert.domain.LogoEntity;
-import eu.tailoringexpert.domain.Note;
-import eu.tailoringexpert.domain.NoteEntity;
-import eu.tailoringexpert.domain.Phase;
-import eu.tailoringexpert.domain.Project;
-import eu.tailoringexpert.domain.ProjectEntity;
-import eu.tailoringexpert.domain.ScreeningSheet;
+import eu.tailoringexpert.domain.*;
+import eu.tailoringexpert.domain.ApplicableDocumentEntity;
 import eu.tailoringexpert.domain.ScreeningSheet.ScreeningSheetBuilder;
-import eu.tailoringexpert.domain.ScreeningSheetEntity;
-import eu.tailoringexpert.domain.ScreeningSheetParameterEntity;
-import eu.tailoringexpert.domain.SelectionVectorProfile;
-import eu.tailoringexpert.domain.SelectionVectorProfileEntity;
-import eu.tailoringexpert.domain.Tailoring;
-import eu.tailoringexpert.domain.TailoringEntity;
-import eu.tailoringexpert.repository.DocumentRepository;
+import eu.tailoringexpert.repository.ApplicableDocumentRepository;
 import eu.tailoringexpert.repository.LogoRepository;
 import lombok.Setter;
 import org.mapstruct.AfterMapping;
@@ -68,7 +51,7 @@ public abstract class JPATailoringServiceRepositoryMapper {
     private LogoRepository logoRepository;
 
     @Setter
-    private DocumentRepository documentRepository;
+    private ApplicableDocumentRepository applicableDocumentRepository;
 
     abstract Project toDomain(ProjectEntity entity);
 
@@ -118,7 +101,7 @@ public abstract class JPATailoringServiceRepositoryMapper {
         return nonNull(domain) ? logoRepository.findByName(domain.getName()) : null;
     }
 
-    DocumentEntity resolve(Document domain)  {
-        return nonNull(domain) ? documentRepository.findByTitleAndIssueAndRevision(domain.getTitle(), domain.getIssue(), domain.getRevision()) : null;
+    ApplicableDocumentEntity resolve(Document domain)  {
+        return nonNull(domain) ? applicableDocumentRepository.findByTitleAndIssueAndRevision(domain.getTitle(), domain.getIssue(), domain.getRevision()) : null;
     }
 }

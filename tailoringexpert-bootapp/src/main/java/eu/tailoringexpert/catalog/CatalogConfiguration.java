@@ -38,7 +38,7 @@ import eu.tailoringexpert.renderer.HTMLTemplateEngine;
 import eu.tailoringexpert.renderer.PDFEngine;
 import eu.tailoringexpert.repository.BaseCatalogRepository;
 import eu.tailoringexpert.repository.DRDRepository;
-import eu.tailoringexpert.repository.DocumentRepository;
+import eu.tailoringexpert.repository.ApplicableDocumentRepository;
 import eu.tailoringexpert.repository.LogoRepository;
 import eu.tailoringexpert.repository.SelectionVectorProfileRepository;
 import eu.tailoringexpert.repository.TailoringCatalogRepository;
@@ -52,7 +52,6 @@ import org.springframework.context.annotation.Primary;
 import org.springframework.http.MediaType;
 
 import java.util.Collection;
-import java.util.Comparator;
 import java.util.Map;
 import java.util.Set;
 import java.util.function.*;
@@ -63,11 +62,11 @@ public class CatalogConfiguration {
     @Bean
     JPACatalogServiceRepositoryMapper catalogServiceRepositoryMapper(
         @NonNull LogoRepository logoRepository,
-        @NonNull DocumentRepository documentRepository,
+        @NonNull ApplicableDocumentRepository applicableDocumentRepository,
         @NonNull DRDRepository drdRepository) {
         JPACatalogServiceRepositoryMapperGenerated result = new JPACatalogServiceRepositoryMapperGenerated();
         result.setLogoRepository(logoRepository);
-        result.setDocumentRepository(documentRepository);
+        result.setApplicableDocumentRepository(applicableDocumentRepository);
         result.setDrdRepository(drdRepository);
         return result;
     }
@@ -77,13 +76,13 @@ public class CatalogConfiguration {
     CatalogServiceRepository catalogServiceRepository(
         @NonNull JPACatalogServiceRepositoryMapper mapper,
         @NonNull BaseCatalogRepository baseCatalogRepository,
-        @NonNull DocumentRepository documentRepository,
+        @NonNull ApplicableDocumentRepository applicableDocumentRepository,
         @NonNull DRDRepository drdRepository,
         @NonNull TailoringCatalogRepository tailoringCatalogRepository) {
         return new JPACatalogServiceRepository(
             mapper,
             baseCatalogRepository,
-            documentRepository,
+                applicableDocumentRepository,
             drdRepository,
             tailoringCatalogRepository
         );

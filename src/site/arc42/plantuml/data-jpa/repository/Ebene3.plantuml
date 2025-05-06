@@ -15,10 +15,10 @@ package repository {
     }
     JpaRepository <|-- DRDRepository
 
-    interface DocumentRepository<DocumentEntity, Long> {
-        findByTitleAndIssueAndRevision(title : String, issue : String, revision : String) : DocumentEntity
+    interface ApplicableDocumentRepository<ApplicableDocumentEntity, Long> {
+        findByTitleAndIssueAndRevision(title : String, issue : String, revision : String) : ApplicableDocumentEntity
     }
-    JpaRepository <|-- DocumentRepository
+    JpaRepository <|-- ApplicableDocumentRepository
 
     interface BaseCatalogRepository<BaseCatalogEntity, Long> {
         CACHE_BASECATALOG : String = "BaseCatalogRepository#BaseCatalog"

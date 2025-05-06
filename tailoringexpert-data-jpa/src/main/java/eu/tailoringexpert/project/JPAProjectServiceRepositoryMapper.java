@@ -28,7 +28,7 @@ import eu.tailoringexpert.domain.Catalog;
 import eu.tailoringexpert.domain.DRD;
 import eu.tailoringexpert.domain.DRDEntity;
 import eu.tailoringexpert.domain.Document;
-import eu.tailoringexpert.domain.DocumentEntity;
+import eu.tailoringexpert.domain.ApplicableDocumentEntity;
 import eu.tailoringexpert.domain.Logo;
 import eu.tailoringexpert.domain.LogoEntity;
 import eu.tailoringexpert.domain.Project;
@@ -42,7 +42,7 @@ import eu.tailoringexpert.domain.TailoringEntity;
 import eu.tailoringexpert.domain.TailoringInformation;
 import eu.tailoringexpert.repository.BaseCatalogRepository;
 import eu.tailoringexpert.repository.DRDRepository;
-import eu.tailoringexpert.repository.DocumentRepository;
+import eu.tailoringexpert.repository.ApplicableDocumentRepository;
 import eu.tailoringexpert.repository.LogoRepository;
 import lombok.Setter;
 import org.mapstruct.AfterMapping;
@@ -71,7 +71,7 @@ public abstract class JPAProjectServiceRepositoryMapper {
     private DRDRepository drdRepository;
 
     @Setter
-    private DocumentRepository documentRepository;
+    private ApplicableDocumentRepository applicableDocumentRepository;
 
     @Mapping(target = "screeningSheet.data", source = "entity.screeningSheet.data")
     abstract Project toDomain(ProjectEntity entity);
@@ -122,8 +122,8 @@ public abstract class JPAProjectServiceRepositoryMapper {
         return nonNull(domain) ? drdRepository.findByNumber(domain.getNumber()) : null;
     }
 
-    DocumentEntity resolve(Document domain)  {
-        return nonNull(domain) ? documentRepository.findByTitleAndIssueAndRevision(domain.getTitle(), domain.getIssue(), domain.getRevision()) : null;
+    ApplicableDocumentEntity resolve(Document domain)  {
+        return nonNull(domain) ? applicableDocumentRepository.findByTitleAndIssueAndRevision(domain.getTitle(), domain.getIssue(), domain.getRevision()) : null;
     }
 
     @AfterMapping

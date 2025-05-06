@@ -25,7 +25,7 @@ import eu.tailoringexpert.TailoringexpertException;
 import eu.tailoringexpert.domain.*;
 import eu.tailoringexpert.repository.BaseCatalogRepository;
 import eu.tailoringexpert.repository.DRDRepository;
-import eu.tailoringexpert.repository.DocumentRepository;
+import eu.tailoringexpert.repository.ApplicableDocumentRepository;
 import eu.tailoringexpert.repository.TailoringCatalogRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -50,7 +50,7 @@ class JPACatalogServiceRepositoryTest {
     JPACatalogServiceRepositoryMapper mapperMock;
     BaseCatalogRepository baseCatalogRepositoryMock;
     DRDRepository drdRepositoryMock;
-    DocumentRepository documentRepositoryMock;
+    ApplicableDocumentRepository applicableDocumentRepositoryMock;
     TailoringCatalogRepository tailoringCatalogRepositoryMock;
     JPACatalogServiceRepository repository;
 
@@ -58,13 +58,13 @@ class JPACatalogServiceRepositoryTest {
     void setup() {
         this.baseCatalogRepositoryMock = mock(BaseCatalogRepository.class);
         this.drdRepositoryMock = mock(DRDRepository.class);
-        this.documentRepositoryMock = mock(DocumentRepository.class);
+        this.applicableDocumentRepositoryMock = mock(ApplicableDocumentRepository.class);
         this.mapperMock = mock(JPACatalogServiceRepositoryMapper.class);
         this.tailoringCatalogRepositoryMock = mock(TailoringCatalogRepository.class);
         this.repository = new JPACatalogServiceRepository(
             this.mapperMock,
             this.baseCatalogRepositoryMock,
-            this.documentRepositoryMock,
+            this.applicableDocumentRepositoryMock,
             this.drdRepositoryMock,
             this.tailoringCatalogRepositoryMock
         );
@@ -448,7 +448,7 @@ class JPACatalogServiceRepositoryTest {
                 .build())
             .build();
 
-        given(documentRepositoryMock.findByTitleAndIssueAndRevision("ECSS-Q-ST-80", "C", "Rev.1")).willReturn(null);
+        given(applicableDocumentRepositoryMock.findByTitleAndIssueAndRevision("ECSS-Q-ST-80", "C", "Rev.1")).willReturn(null);
 
         BaseCatalogEntity toSave = BaseCatalogEntity.builder().build();
         given(mapperMock.createCatalog(catalog)).willReturn(toSave);
@@ -464,7 +464,7 @@ class JPACatalogServiceRepositoryTest {
 
         // assert
         assertThat(actual).isEmpty();
-        verify(documentRepositoryMock, times(1)).save(any());
+        verify(applicableDocumentRepositoryMock, times(1)).save(any());
         verify(mapperMock, times(1)).createCatalog(catalog);
         verify(mapperMock, times(1)).createCatalog(savedKatalog);
         verify(baseCatalogRepositoryMock, times(1)).save(toSave);
@@ -490,7 +490,7 @@ class JPACatalogServiceRepositoryTest {
             .build();
         BaseCatalogEntity toSave = BaseCatalogEntity.builder().build();
 
-        given(documentRepositoryMock.findByTitleAndIssueAndRevision("ECSS-Q-ST-80", "C", "Rev.1")).willReturn(DocumentEntity.builder().build());
+        given(applicableDocumentRepositoryMock.findByTitleAndIssueAndRevision("ECSS-Q-ST-80", "C", "Rev.1")).willReturn(ApplicableDocumentEntity.builder().build());
 
         given(mapperMock.createCatalog(catalog)).willReturn(toSave);
 
@@ -505,7 +505,7 @@ class JPACatalogServiceRepositoryTest {
 
         // assert
         assertThat(actual).isEmpty();
-        verify(documentRepositoryMock, times(0)).save(any());
+        verify(applicableDocumentRepositoryMock, times(0)).save(any());
         verify(mapperMock, times(1)).createCatalog(catalog);
         verify(mapperMock, times(1)).createCatalog(savedKatalog);
         verify(baseCatalogRepositoryMock, times(1)).save(toSave);

@@ -18,6 +18,7 @@
         <liquibase.promptOnNonLocalDatabase>false</liquibase.promptOnNonLocalDatabase>
         <liquibase.outputFileEncoding>UTF-8</liquibase.outputFileEncoding>
         <liquibase.logging>debug</liquibase.logging>
+        <DB_TAG>0.1.4</DB_TAG>
     </properties>
 
 
@@ -114,6 +115,20 @@
                                 <argument>
                                     -Dliquibase.diffTypes=tables,views,columns,indexes,foreignkeys,primarykeys,uniqueconstraints,data
                                 </argument>
+                                <argument>-P ${db}</argument>
+                            </arguments>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>rollback</id>
+                        <goals>
+                            <goal>exec</goal>
+                        </goals>
+                        <configuration>
+                            <arguments>
+                                <argument>liquibase:rollback</argument>
+                                <argument>-Dliquibase.rollbackTag=0.1.4</argument>
+                                <argument>-Dliquibase.changeLogFile=db-tailoringexpert/db.changelog-root.xml</argument>
                                 <argument>-P ${db}</argument>
                             </arguments>
                         </configuration>

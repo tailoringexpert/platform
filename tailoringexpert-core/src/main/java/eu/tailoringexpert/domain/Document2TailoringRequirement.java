@@ -19,23 +19,21 @@
  * <http://www.gnu.org/licenses/gpl-3.0.html>.
  * #L%
  */
-package eu.tailoringexpert.repository;
+package eu.tailoringexpert.domain;
 
-import eu.tailoringexpert.domain.DocumentEntity;
-import org.springframework.data.jpa.repository.JpaRepository;
+import java.util.function.Function;
 
-/**
- * Spring Data access layer of {@link DocumentEntity}.
- *
- * @author Michael Bädorf
- */
-public interface DocumentRepository extends JpaRepository<DocumentEntity, Long> {
+import static java.util.Objects.nonNull;
 
-    /**
-     * Load a document.
-     *
-     * @param title of document to load
-     * @return loaded document
-     */
-    DocumentEntity findByTitleAndIssueAndRevision(String title, String issue, String revision);
+public class Document2TailoringRequirement implements Function<Document, TailoringRequirement> {
+    @Override
+    public TailoringRequirement apply(Document document) {
+        return TailoringRequirement.builder()
+            .position(document.getNumber())
+            .text(document.getTitle() +
+                (nonNull(document.getIssue()) ? document.getIssue() : null) +
+                (nonNull(document.getRevision()) ? document.getRevision() : null)
+            )
+            .build();
+    }
 }

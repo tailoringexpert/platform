@@ -31,10 +31,10 @@ import eu.tailoringexpert.domain.Chapter;
 import eu.tailoringexpert.domain.DRD;
 import eu.tailoringexpert.domain.DRDEntity;
 import eu.tailoringexpert.domain.Document;
-import eu.tailoringexpert.domain.DocumentEntity;
+import eu.tailoringexpert.domain.ApplicableDocumentEntity;
 import eu.tailoringexpert.repository.BaseCatalogRepository;
 import eu.tailoringexpert.repository.DRDRepository;
-import eu.tailoringexpert.repository.DocumentRepository;
+import eu.tailoringexpert.repository.ApplicableDocumentRepository;
 import eu.tailoringexpert.repository.TailoringCatalogRepository;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
@@ -70,7 +70,7 @@ public class JPACatalogServiceRepository implements CatalogServiceRepository {
     private BaseCatalogRepository baseCatalogRepository;
 
     @NonNull
-    private DocumentRepository documentRepository;
+    private ApplicableDocumentRepository applicableDocumentRepository;
 
     @NonNull
     private DRDRepository drdRepository;
@@ -101,13 +101,13 @@ public class JPACatalogServiceRepository implements CatalogServiceRepository {
 
         Collection<Document> documents = applyDocuments(catalog.getToc());
         documents.forEach(domain -> {
-            DocumentEntity entity = documentRepository.findByTitleAndIssueAndRevision(
+            ApplicableDocumentEntity entity = applicableDocumentRepository.findByTitleAndIssueAndRevision(
                 domain.getTitle(),
                 domain.getIssue(),
                 domain.getRevision()
             );
             if (isNull(entity)) {
-                documentRepository.save(mapper.createCatalog(domain));
+                applicableDocumentRepository.save(mapper.createCatalog(domain));
             }
         });
 

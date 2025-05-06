@@ -21,29 +21,11 @@
  */
 package eu.tailoringexpert.project;
 
-import eu.tailoringexpert.domain.BaseCatalogEntity;
-import eu.tailoringexpert.domain.BaseRequirement;
-import eu.tailoringexpert.domain.Catalog;
-import eu.tailoringexpert.domain.DRD;
-import eu.tailoringexpert.domain.DRDEntity;
-import eu.tailoringexpert.domain.Document;
-import eu.tailoringexpert.domain.DocumentEntity;
-import eu.tailoringexpert.domain.Logo;
-import eu.tailoringexpert.domain.LogoEntity;
-import eu.tailoringexpert.domain.Phase;
-import eu.tailoringexpert.domain.Project;
-import eu.tailoringexpert.domain.ProjectEntity;
-import eu.tailoringexpert.domain.ScreeningSheet;
-import eu.tailoringexpert.domain.ScreeningSheetEntity;
-import eu.tailoringexpert.domain.SelectionVectorEntity;
-import eu.tailoringexpert.domain.Tailoring;
-import eu.tailoringexpert.domain.TailoringCatalogChapterEntity;
-import eu.tailoringexpert.domain.TailoringEntity;
-import eu.tailoringexpert.domain.TailoringInformation;
-import eu.tailoringexpert.domain.TailoringRequirementEntity;
+import eu.tailoringexpert.domain.*;
+import eu.tailoringexpert.domain.ApplicableDocumentEntity;
 import eu.tailoringexpert.repository.BaseCatalogRepository;
 import eu.tailoringexpert.repository.DRDRepository;
-import eu.tailoringexpert.repository.DocumentRepository;
+import eu.tailoringexpert.repository.ApplicableDocumentRepository;
 import eu.tailoringexpert.repository.LogoRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -61,7 +43,7 @@ class JPAProjectServiceRepositoryMapperTest {
     private LogoRepository logoRepositoryMock;
     private BaseCatalogRepository baseCatalogRepositoryMock;
     private DRDRepository drdRepositoryMock;
-    private DocumentRepository documentRepositoryMock;
+    private ApplicableDocumentRepository applicableDocumentRepositoryMock;
     private JPAProjectServiceRepositoryMapper mapper;
 
     @BeforeEach
@@ -74,8 +56,8 @@ class JPAProjectServiceRepositoryMapperTest {
         this.drdRepositoryMock = mock(DRDRepository.class);
         this.mapper.setDrdRepository(drdRepositoryMock);
 
-        this.documentRepositoryMock = mock(DocumentRepository.class);
-        this.mapper.setDocumentRepository(documentRepositoryMock);
+        this.applicableDocumentRepositoryMock = mock(ApplicableDocumentRepository.class);
+        this.mapper.setApplicableDocumentRepository(applicableDocumentRepositoryMock);
 
         baseCatalogRepositoryMock = mock(BaseCatalogRepository.class);
         this.mapper.setBaseCatalogRepository(baseCatalogRepositoryMock);
@@ -376,11 +358,11 @@ class JPAProjectServiceRepositoryMapperTest {
         Document document = null;
 
         // act
-        DocumentEntity actual = mapper.resolve(document);
+        ApplicableDocumentEntity actual = mapper.resolve(document);
 
         // assert
         assertThat(actual).isNull();
-        verify(documentRepositoryMock, times(0)).findByTitleAndIssueAndRevision(any(), any(), any());
+        verify(applicableDocumentRepositoryMock, times(0)).findByTitleAndIssueAndRevision(any(), any(), any());
     }
 
     @Test
@@ -391,20 +373,20 @@ class JPAProjectServiceRepositoryMapperTest {
             .issue("C")
             .build();
 
-        DocumentEntity documentEntity = DocumentEntity.builder()
+        ApplicableDocumentEntity documentEntity = ApplicableDocumentEntity.builder()
             .title("Q-ST-80")
             .issue("C")
             .build();
-        given(documentRepositoryMock.findByTitleAndIssueAndRevision("Q-ST-80", "C", null)).willReturn(documentEntity);
+        given(applicableDocumentRepositoryMock.findByTitleAndIssueAndRevision("Q-ST-80", "C", null)).willReturn(documentEntity);
 
         // act
-        DocumentEntity actual = mapper.resolve(document);
+        ApplicableDocumentEntity actual = mapper.resolve(document);
 
         // assert
         assertThat(actual).isNotNull();
         assertThat(actual.getTitle()).isEqualTo("Q-ST-80");
         assertThat(actual.getIssue()).isEqualTo("C");
         assertThat(actual.getRevision()).isNull();
-        verify(documentRepositoryMock, times(1)).findByTitleAndIssueAndRevision("Q-ST-80", "C", null);
+        verify(applicableDocumentRepositoryMock, times(1)).findByTitleAndIssueAndRevision("Q-ST-80", "C", null);
     }
 }

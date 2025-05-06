@@ -121,9 +121,9 @@ public class BaseRequirementEntity implements Serializable {
     @JoinTable(
         name = "BASEREQUIREMENT_APPLICABLEDOC",
         joinColumns = {@JoinColumn(name = "REQUIREMENT_ID", referencedColumnName = "REQUIREMENT_ID")},
-        inverseJoinColumns = {@JoinColumn(name = "DOCUMENT_ID", referencedColumnName = "DOCUMENT_ID")}
+        inverseJoinColumns = {@JoinColumn(name = "DOCUMENT_ID", referencedColumnName = "APPLICABLEDOCUMENT_ID")}
     )
-    private List<DocumentEntity> applicableDocuments;
+    private List<ApplicableDocumentEntity> applicableDocuments;
 
     /**
      * List of drd requirement shall be part of.
