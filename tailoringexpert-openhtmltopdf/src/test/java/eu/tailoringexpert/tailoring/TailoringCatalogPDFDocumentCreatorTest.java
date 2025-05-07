@@ -82,6 +82,7 @@ class TailoringCatalogPDFDocumentCreatorTest {
     String templateHome;
     String assetHome;
     DRDProvider<TailoringRequirement> drdProviderMock;
+    ApplicableDocumentProvider<TailoringRequirement> applicableDocumentProviderMock;
     ObjectMapper objectMapper;
     FileSaver fileSaver;
     TailoringCatalogPDFDocumentCreator creator;
@@ -137,9 +138,14 @@ class TailoringCatalogPDFDocumentCreatorTest {
             new SimpleEntry<>(F, unmodifiableCollection(asList("EOM")))
         )));
 
+        this.applicableDocumentProviderMock = new ApplicableDocumentProvider(
+            new RequirementSelectedPredicate(),
+            new DocumentNumberComparator());
+
         FSDOMMutator domMutator = new TailoringexpertDOMMutator();
         this.creator = new TailoringCatalogPDFDocumentCreator(
             drdProviderMock,
+            applicableDocumentProviderMock,
             templateEngine,
         new PDFEngine(domMutator, supplier)
         );
@@ -172,19 +178,12 @@ class TailoringCatalogPDFDocumentCreatorTest {
 
         LocalDateTime now = LocalDateTime.now();
 
-        ApplicableDocumentProvider<TailoringRequirement> applicableDocumentProvider = new ApplicableDocumentProvider<>(
-            new RequirementSelectedPredicate(),
-            new DocumentNumberComparator()
-        );
-
         Map<String, Object> ctx = new HashMap<>();
         ctx.put("PROJEKT", "SAMPLE");
         ctx.put("DATUM", now.format(DateTimeFormatter.ofPattern("dd.MM.YYYY")));
         ctx.put("DOKUMENT", "SAMPLE-XY-Z-1940/DV7");
         ctx.put("${DRD_DOCID}", "SAMPLE_DOC");
         ctx.put("SHOW_ALL", Boolean.FALSE);
-        ctx.put("applicableDocuments", applicableDocumentProvider.apply(catalog));
-
 
         mockServer
             .when(request()

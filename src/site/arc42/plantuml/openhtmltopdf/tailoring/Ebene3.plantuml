@@ -20,6 +20,7 @@ package tailoring {
     }
     DocumentCreator <|.. TailoringCatalogPDFDocumentCreator
     TailoringCatalogPDFDocumentCreator --> "1" "BiFunction<Chapter<Requirement>, Collection<Phase>, Map<DRD, Set<String>>>" : drdProvider
+    TailoringCatalogPDFDocumentCreator --> "1" "Function<Catalog<TailoringRequirement>, Collection<Document>>" : applicableDocumentProvider
     TailoringCatalogPDFDocumentCreator --> "1" HTMLTemplateEngine : templateEngine
     TailoringCatalogPDFDocumentCreator --> "1" PDFEngine : pdfEngine
 
@@ -61,7 +62,7 @@ package tailoring {
 
     class ComparisonPDFDocumentCreator {
     }
-    DckumentCreator <|.. ComparisonPDFDocumentCreator
+    DocumentCreator <|.. ComparisonPDFDocumentCreator
     ComparisonPDFDocumentCreator --> "1" HTMLTemplateEngine : templateEngine
     ComparisonPDFDocumentCreator --> "1" PDFEngine : pdfEngine
 

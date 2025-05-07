@@ -129,11 +129,13 @@ public class CatalogConfiguration {
 
     @Bean
     BaseCatalogPDFDocumentCreator baseCatalogPDFDocumentCreator(
+        @NonNull Function<Catalog<BaseRequirement>, Collection<Document>> baseCatalogApplicableDocumentProvider,
         @NonNull Predicate<BaseRequirement> baseRequirementSelectedPredicate,
         @NonNull BiPredicate<String, Collection<Phase>> drdAnwendbarPraedikat,
         @NonNull HTMLTemplateEngine templateEngine,
         @NonNull PDFEngine pdfEngine) {
         return new BaseCatalogPDFDocumentCreator(
+            baseCatalogApplicableDocumentProvider,
             new DRDProvider<>(baseRequirementSelectedPredicate, drdAnwendbarPraedikat),
             templateEngine,
             pdfEngine);

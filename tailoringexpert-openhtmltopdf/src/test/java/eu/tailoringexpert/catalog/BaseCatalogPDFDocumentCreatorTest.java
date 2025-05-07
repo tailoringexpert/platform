@@ -29,7 +29,12 @@ import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.fasterxml.jackson.module.paramnames.ParameterNamesModule;
 import com.openhtmltopdf.extend.FSDOMMutator;
 import eu.tailoringexpert.FileSaver;
-import eu.tailoringexpert.domain.*;
+import eu.tailoringexpert.domain.ApplicableDocumentProvider;
+import eu.tailoringexpert.domain.BaseRequirement;
+import eu.tailoringexpert.domain.Catalog;
+import eu.tailoringexpert.domain.DRDProvider;
+import eu.tailoringexpert.domain.DocumentNumberComparator;
+import eu.tailoringexpert.domain.File;
 import eu.tailoringexpert.renderer.HTMLTemplateEngine;
 import eu.tailoringexpert.renderer.PDFEngine;
 import eu.tailoringexpert.renderer.RendererRequestConfiguration;
@@ -48,12 +53,8 @@ import java.io.InputStream;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.AbstractMap.SimpleEntry;
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Set;
-import java.util.function.BiFunction;
-import java.util.function.Function;
 import java.util.function.Predicate;
 
 import static eu.tailoringexpert.domain.Phase.A;
@@ -113,6 +114,7 @@ class BaseCatalogPDFDocumentCreatorTest {
 
 
         this.creator = new BaseCatalogPDFDocumentCreator(
+            new ApplicableDocumentProvider<BaseRequirement>(new RequirementAlwaysSelectedPredicate<BaseRequirement>(), new DocumentNumberComparator()),
             new DRDProvider<>(
                 (Predicate<BaseRequirement>) requirement -> true,
                 new DRDApplicablePredicate(Map.ofEntries(
@@ -140,18 +142,12 @@ class BaseCatalogPDFDocumentCreatorTest {
             });
         }
 
-        ApplicableDocumentProvider<BaseRequirement> applicableDocumentProvider = new ApplicableDocumentProvider<>(
-            new RequirementAlwaysSelectedPredicate<BaseRequirement>(),
-            new DocumentNumberComparator()
-        );
-
         LocalDateTime now = LocalDateTime.now();
         Map<String, Object> ctx = new HashMap<>();
         ctx.put("PROJEKT", "SAMPLE");
         ctx.put("DATUM", now.format(DateTimeFormatter.ofPattern("dd.MM.YYYY")));
         ctx.put("DOKUMENT", "DUMMY-XY-Z-1940/DV7");
         ctx.put("${DRD_DOCID}", "DUMMY_DOC");
-        ctx.put("applicableDocuments", applicableDocumentProvider.apply(catalog));
 
 
         // act

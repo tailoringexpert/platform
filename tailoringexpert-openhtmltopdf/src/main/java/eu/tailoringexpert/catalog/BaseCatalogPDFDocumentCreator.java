@@ -72,6 +72,9 @@ import static java.util.stream.Collectors.toCollection;
 public class BaseCatalogPDFDocumentCreator implements DocumentCreator {
 
     @NonNull
+    private Function<Catalog<BaseRequirement>, Collection<Document>> applicableDocumentProvider;
+
+    @NonNull
     private BiFunction<Chapter<BaseRequirement>, Collection<Phase>, Map<DRD, Set<String>>> drdProvider;
 
     @NonNull
@@ -94,6 +97,8 @@ public class BaseCatalogPDFDocumentCreator implements DocumentCreator {
         try {
             Map<String, Object> parameter = new HashMap<>(placeholders);
             parameter.put("catalogVersion", catalog.getVersion());
+
+            parameter.put("applicableDocuments", applicableDocumentProvider.apply(catalog));
 
             Collection<BaseCatalogElement> requirements = new LinkedList<>();
             parameter.put("requirements", requirements);
