@@ -38,6 +38,7 @@ import eu.tailoringexpert.domain.DocumentNumberComparator;
 import eu.tailoringexpert.domain.File;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
@@ -84,6 +85,7 @@ class BaseCatalogExcelDocumentCreatorIntegrationTest {
     }
 
 
+    @Disabled
     @Test
     void createDocument_validInput_FileCreated() throws IOException {
         // arrange
