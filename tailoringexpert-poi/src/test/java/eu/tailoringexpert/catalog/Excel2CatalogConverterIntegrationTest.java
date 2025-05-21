@@ -21,67 +21,72 @@
  */
 package eu.tailoringexpert.catalog;
 
-import com.fasterxml.jackson.annotation.JsonSetter;
-import com.fasterxml.jackson.annotation.Nulls;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.cfg.MutableConfigOverride;
 import com.fasterxml.jackson.datatype.jdk8.Jdk8Module;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.fasterxml.jackson.module.paramnames.ParameterNamesModule;
 import eu.tailoringexpert.FileSaver;
-import eu.tailoringexpert.domain.ApplicableDocumentProvider;
+import eu.tailoringexpert.TailoringexpertException;
 import eu.tailoringexpert.domain.BaseRequirement;
 import eu.tailoringexpert.domain.Catalog;
-import eu.tailoringexpert.domain.DocumentNumberComparator;
-import eu.tailoringexpert.domain.File;
+import lombok.extern.log4j.Log4j2;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import java.io.IOException;
 import java.io.InputStream;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 import static java.util.Objects.nonNull;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.catchThrowable;
 
 
-class BaseCatalogExcelDocumentCreatorIntegrationTest {
+@Log4j2
+class Excel2CatalogConverterIntegrationTest {
 
     private ObjectMapper objectMapper;
     private FileSaver fileSaver;
 
-    private BaseCatalogExcelDocumentCreator creator;
+    Excel2CatalogConverter toFunction;
 
     @BeforeEach
     void setup() {
         this.objectMapper = new ObjectMapper();
         this.objectMapper.registerModules(new ParameterNamesModule(), new JavaTimeModule(), new Jdk8Module());
-        this.objectMapper.disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES);
-
-        MutableConfigOverride override = this.objectMapper.configOverride(List.class);
-        override.setSetterInfo(JsonSetter.Value.forValueNulls(Nulls.AS_EMPTY));
-
         this.objectMapper.disable(DeserializationFeature.ACCEPT_EMPTY_ARRAY_AS_NULL_OBJECT);
 
         this.fileSaver = new FileSaver("target");
 
-        this.creator  = new BaseCatalogExcelDocumentCreator(
-            new RequirementSheetCreator(),
-            new DRDSheetCreator(),
-            new DocumentSheetCreator(new ApplicableDocumentProvider<BaseRequirement>(
-                new RequirementAlwaysSelectedPredicate<BaseRequirement>(), new DocumentNumberComparator())),
-            new LogoSheetCreator()
+        ToChapterFunction toChapterFunction =  new ToChapterFunction(
+            new ToDRDMappingFunction(),
+            new ToLogoMappingFunction(),
+            new ToDocumentMappingFunction(),
+            new ToIdentifierFunction(),
+            new ToLogoFunction(),
+            new ToReferenceFunction(),
+            new BuildingChapterConsumer()
         );
+
+        this.toFunction = new Excel2CatalogConverter(
+            toChapterFunction
+        );
+
+
     }
 
-
     @Test
-    void createDocument_validInput_FileCreated() throws IOException {
+    void apply_validInput_FileCreated() throws Exception {
         // arrange
+        byte[] data;
+        try (InputStream is = this.getClass().getResourceAsStream("/basecatalog.xlsx")) {
+            assert nonNull(is);
+            data = is.readAllBytes();
+        }
+
+        // act
+        Catalog<BaseRequirement> actual = toFunction.apply(data);
+
         Catalog<BaseRequirement> catalog;
         try (InputStream is = this.getClass().getResourceAsStream("/basecatalog.json")) {
             assert nonNull(is);
@@ -89,13 +94,26 @@ class BaseCatalogExcelDocumentCreatorIntegrationTest {
             });
         }
 
-        Map<String, Object> parameter = new HashMap<>();
+        // assert
+        fileSaver.accept("export.json", objectMapper.writerWithDefaultPrettyPrinter().writeValueAsBytes(actual));
+        assertThat(actual).isEqualTo(catalog);
+    }
+
+    @Test
+    void apply_chapterWithoutPhases_TailoringExceptionThrown() throws Exception {
+        // arrange
+        byte[] data;
+        try (InputStream is = this.getClass().getResourceAsStream("/basecatalog_requirement_without_phase.xlsx")) {
+            assert nonNull(is);
+            data = is.readAllBytes();
+        }
 
         // act
-        File actual = creator.createDocument("4711", catalog, parameter);
+        Throwable actual = catchThrowable(() -> toFunction.apply(data));
 
         // assert
-        assertThat(actual).isNotNull();
-        fileSaver.accept("basecatalog.xlsx", actual.getData());
+        assertThat(actual)
+            .isInstanceOf(TailoringexpertException.class)
+            .hasMessage("Could not convert worksheet chapter row 3");
     }
 }

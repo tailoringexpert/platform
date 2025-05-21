@@ -4679,7 +4679,14 @@
       "requirements" : [ {
         "text" : "<p>Absolute asset <img src=\"/assets/demo/8.2.1/catalog/bang.png\"></p>",
         "position" : "a",
-        "applicableDocuments" : null,
+        "applicableDocuments" : [ {
+          "number" : "es",
+          "title" : "ECSS-Q-ST-80",
+          "issue" : "C",
+          "revision" : "Rev.1",
+          "description" : "Software product assurance (15 February 2017)",
+          "applicable" : null
+        } ],
         "drds" : null,
         "phases" : [ "ZERO", "A", "B", "C", "D", "E", "F" ],
         "identifiers" : [ {
@@ -4691,7 +4698,14 @@
       }, {
         "text" : "<p>Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.</p><p>Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.</p>",
         "position" : "b",
-        "applicableDocuments" : null,
+        "applicableDocuments" : [ {
+          "number" : "es",
+          "title" : "ECSS-Q-ST-80",
+          "issue" : "C",
+          "revision" : "Rev.1",
+          "description" : "Software product assurance (15 February 2017)",
+          "applicable" : null
+        } ],
         "drds" : null,
         "phases" : [ "ZERO", "A", "B", "C", "D", "E", "F" ],
         "identifiers" : [ {
