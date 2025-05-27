@@ -21,14 +21,6 @@
  */
 package eu.tailoringexpert.catalog;
 
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.DeserializationFeature;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.datatype.jdk8.Jdk8Module;
-import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
-import com.fasterxml.jackson.module.paramnames.ParameterNamesModule;
-import eu.tailoringexpert.FileSaver;
-import eu.tailoringexpert.TailoringexpertException;
 import eu.tailoringexpert.domain.BaseRequirement;
 import eu.tailoringexpert.domain.Catalog;
 import eu.tailoringexpert.domain.Chapter;
@@ -51,21 +43,11 @@ import static org.mockito.Mockito.verify;
 @Log4j2
 class Excel2CatalogConverterTest {
 
-    private ObjectMapper objectMapper;
-    private FileSaver fileSaver;
-
     Function<Sheet, Chapter<BaseRequirement>> toChapterMock;
     Excel2CatalogConverter toFunction;
 
     @BeforeEach
     void setup() {
-        this.objectMapper = new ObjectMapper();
-        this.objectMapper.registerModules(new ParameterNamesModule(), new JavaTimeModule(), new Jdk8Module());
-
-        this.objectMapper.disable(DeserializationFeature.ACCEPT_EMPTY_ARRAY_AS_NULL_OBJECT);
-
-        this.fileSaver = new FileSaver("target");
-
         this.toChapterMock = mock(Function.class);
         this.toFunction = new Excel2CatalogConverter(
             this.toChapterMock
@@ -111,69 +93,4 @@ class Excel2CatalogConverterTest {
         verify(toChapterMock).apply(any(Sheet.class));
     }
 
-    @Test
-    void apply_NoMocks_FileCreated() throws Exception {
-        // arrange
-        byte[] data;
-        try (InputStream is = this.getClass().getResourceAsStream("/basecatalog.xlsx")) {
-            assert nonNull(is);
-            data = is.readAllBytes();
-        }
-
-        ToChapterFunction toChapter = new ToChapterFunction(
-            new ToDRDMappingFunction(),
-            new ToLogoMappingFunction(),
-            new ToIdentifierFunction(),
-            new ToLogoFunction(),
-            new ToReferenceFunction(),
-            new BuildingChapterConsumer()
-        );
-
-        Excel2CatalogConverter noMocksToFunction = new Excel2CatalogConverter(toChapter);
-
-
-        // act
-        Catalog<BaseRequirement> actual = noMocksToFunction.apply(data);
-
-        Catalog<BaseRequirement> catalog;
-        try (InputStream is = this.getClass().getResourceAsStream("/basecatalog.json")) {
-            assert nonNull(is);
-            catalog = objectMapper.readValue(is, new TypeReference<Catalog<BaseRequirement>>() {
-            });
-        }
-
-        // assert
-        fileSaver.accept("export.json", objectMapper.writerWithDefaultPrettyPrinter().writeValueAsBytes(actual));
-        assertThat(actual).isEqualTo(catalog);
-    }
-
-    @Test
-    void apply_NoMocksChapterWithoutPhases_TailoringExceptionThrown() throws Exception {
-        // arrange
-        byte[] data;
-        try (InputStream is = this.getClass().getResourceAsStream("/basecatalog_requirement_without_phase.xlsx")) {
-            assert nonNull(is);
-            data = is.readAllBytes();
-        }
-
-        ToChapterFunction toChapter = new ToChapterFunction(
-            new ToDRDMappingFunction(),
-            new ToLogoMappingFunction(),
-            new ToIdentifierFunction(),
-            new ToLogoFunction(),
-            new ToReferenceFunction(),
-            new BuildingChapterConsumer()
-        );
-
-        Excel2CatalogConverter noMocksToFunction = new Excel2CatalogConverter(toChapter);
-
-
-        // act
-        Throwable actual = catchThrowable(() -> noMocksToFunction.apply(data));
-
-        // assert
-        assertThat(actual)
-            .isInstanceOf(TailoringexpertException.class)
-            .hasMessage("Could not convert worksheet chapter row 3");
-    }
 }

@@ -83,7 +83,7 @@
         <maven.compiler.target>${java.version}</maven.compiler.target>
         <maven.javadoc.skip>true</maven.javadoc.skip>
         <license.licenseName>gpl_v3</license.licenseName>
-        <platform.version>0.1.5</platform.version>
+        <platform.version>0.1.6-SNAPSHOT</platform.version>
 
         <jacoco.version>0.8.7</jacoco.version>
         <junit-jupiter.version>5.12.1</junit-jupiter.version>
@@ -106,6 +106,7 @@
         <lombok-maven-plugin.version>1.18.20.0</lombok-maven-plugin.version>
         <maven-exec-plugin.version>3.5.0</maven-exec-plugin.version>
         <maven-compiler-plugin.version>3.14.0</maven-compiler-plugin.version>
+        <maven-dependency-plugin.version>3.8.1</maven-dependency-plugin.version>
         <dependency-check-maven.version>12.1.1</dependency-check-maven.version>
         <dependency-check-maven.phase>install</dependency-check-maven.phase>
         <maven-gpg-plugin.version>3.0.1</maven-gpg-plugin.version>
@@ -358,8 +359,18 @@
             </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-dependency-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>properties</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-surefire-plugin</artifactId>
-                <version>${maven-surefire-plugin.version}</version>
                 <dependencies>
                     <dependency>
                         <groupId>org.junit.jupiter</groupId>
@@ -367,6 +378,9 @@
                         <version>${junit-jupiter.version}</version>
                     </dependency>
                 </dependencies>
+				<configuration>
+					<argLine>@{argLine} -javaagent:${org.mockito:mockito-core:jar}</argLine>
+				</configuration>
             </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>

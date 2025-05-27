@@ -1,6 +1,10 @@
 @startuml Ebene3.png
 hide empty members
 
+package domain {
+    class DRDElement
+}
+
 package renderer {
     interface HTMLTemplateEngine
     class PDFEngine
@@ -26,8 +30,17 @@ package catalog {
     class BaseCatalogPDFDocumentCreator {
     }
     DocumentCreator <|.. BaseCatalogPDFDocumentCreator
+    BaseCatalogPDFDocumentCreator --> "1" "Function<Catalog<BaseRequirement>, Collection<Document>>" :  applicableDocumentProvider
+    BaseCatalogPDFDocumentCreator --> "1" "BiFunction<Chapter<BaseRequirement>, Collection<Phase>, Map<DRD, Set<String>>>" : drdProvider
     BaseCatalogPDFDocumentCreator --> "1" HTMLTemplateEngine : templateEngine
     BaseCatalogPDFDocumentCreator --> "1" PDFEngine : pdfEngine
+
+     class BaseDRDPDFDocumentCreator {
+     }
+     DocumentCreator <|.. BaseDRDPDFDocumentCreator
+     BaseDRDPDFDocumentCreator --> "1" "BiFunction<Chapter<BaseRequirement>, Collection<Phase>, Map<DRD, Set<String>>>" : drdProvider
+     BaseDRDPDFDocumentCreator --> "1" HTMLTemplateEngine : templateEngine
+     BaseDRDPDFDocumentCreator --> "1" PDFEngine : pdfEngine
 
 }
 @enduml

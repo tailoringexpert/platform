@@ -26,6 +26,7 @@ import eu.tailoringexpert.domain.Catalog;
 import eu.tailoringexpert.domain.Chapter;
 import eu.tailoringexpert.domain.DRD;
 import eu.tailoringexpert.domain.File;
+import eu.tailoringexpert.domain.Phase;
 import eu.tailoringexpert.renderer.DRDFragment;
 import eu.tailoringexpert.renderer.HTMLTemplateEngine;
 import eu.tailoringexpert.renderer.PDFEngine;
@@ -38,9 +39,17 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.Map;
 import java.util.Set;
-import java.util.function.Function;
+import java.util.function.BiFunction;
 
+import static eu.tailoringexpert.domain.Phase.A;
+import static eu.tailoringexpert.domain.Phase.B;
+import static eu.tailoringexpert.domain.Phase.C;
+import static eu.tailoringexpert.domain.Phase.D;
+import static eu.tailoringexpert.domain.Phase.E;
+import static eu.tailoringexpert.domain.Phase.F;
+import static eu.tailoringexpert.domain.Phase.ZERO;
 import static java.util.Comparator.comparing;
+import static java.util.List.of;
 
 /**
  * Create a base PDF with all in base catalog defined catalog.
@@ -52,13 +61,14 @@ import static java.util.Comparator.comparing;
 public class BaseDRDPDFDocumentCreator implements DocumentCreator {
 
     @NonNull
+    private BiFunction<Chapter<BaseRequirement>, Collection<Phase>, Map<DRD, Set<String>>> drdProvider;
+
+    @NonNull
     private HTMLTemplateEngine templateEngine;
 
     @NonNull
     private PDFEngine pdfEngine;
 
-    @NonNull
-    private Function<Chapter<BaseRequirement>, Set<DRD>> drdProvider;
 
     /**
      * {@inheritDoc}
@@ -88,7 +98,7 @@ public class BaseDRDPDFDocumentCreator implements DocumentCreator {
      * @param rows           collection to add drd fragments to
      */
     void addDRD(Chapter<BaseRequirement> chapter, String catalogVersion, Collection<DRDFragment> rows) {
-        drdProvider.apply(chapter)
+        drdProvider.apply(chapter, of(ZERO, A, B, C, D, E, F)).keySet()
             .stream()
             .sorted(comparing(DRD::getNumber))
             .map(drd -> DRDFragment.builder()

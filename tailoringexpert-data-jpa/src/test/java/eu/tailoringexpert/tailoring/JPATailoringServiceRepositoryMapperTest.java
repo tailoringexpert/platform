@@ -21,21 +21,9 @@
  */
 package eu.tailoringexpert.tailoring;
 
-import eu.tailoringexpert.domain.Chapter;
-import eu.tailoringexpert.domain.Catalog;
-import eu.tailoringexpert.domain.Logo;
-import eu.tailoringexpert.domain.LogoEntity;
-import eu.tailoringexpert.domain.Project;
-import eu.tailoringexpert.domain.ProjectEntity;
-import eu.tailoringexpert.domain.ScreeningSheet;
-import eu.tailoringexpert.domain.ScreeningSheetEntity;
-import eu.tailoringexpert.domain.ScreeningSheetParameterEntity;
-import eu.tailoringexpert.domain.SelectionVector;
-import eu.tailoringexpert.domain.Tailoring;
-import eu.tailoringexpert.domain.TailoringRequirement;
-import eu.tailoringexpert.domain.TailoringEntity;
-import eu.tailoringexpert.domain.TailoringCatalogEntity;
-import eu.tailoringexpert.domain.TailoringState;
+import eu.tailoringexpert.domain.*;
+import eu.tailoringexpert.domain.ApplicableDocumentEntity;
+import eu.tailoringexpert.repository.ApplicableDocumentRepository;
 import eu.tailoringexpert.repository.LogoRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -53,13 +41,19 @@ import static org.mockito.Mockito.verify;
 class JPATailoringServiceRepositoryMapperTest {
 
     private LogoRepository logoRepositoryMock;
+    private ApplicableDocumentRepository applicableDocumentRepositoryMock;
     private JPATailoringServiceRepositoryMapper mapper;
 
     @BeforeEach
     void setup() {
-        this.logoRepositoryMock = mock(LogoRepository.class);
         this.mapper = new JPATailoringServiceRepositoryMapperGenerated();
+
+        this.logoRepositoryMock = mock(LogoRepository.class);
         this.mapper.setLogoRepository(logoRepositoryMock);
+
+        this.applicableDocumentRepositoryMock = mock(ApplicableDocumentRepository.class);
+        this.mapper.setApplicableDocumentRepository(applicableDocumentRepositoryMock);
+
     }
 
 
@@ -274,4 +268,41 @@ class JPATailoringServiceRepositoryMapperTest {
         assertThat(actual.getPhases()).containsExactly(ZERO, F);
     }
 
+    @Test
+    void resolve_DocumentNull_NullReturned() {
+        // arrange
+        Document document = null;
+
+        // act
+        ApplicableDocumentEntity actual = mapper.resolve(document);
+
+        // assert
+        assertThat(actual).isNull();
+        verify(applicableDocumentRepositoryMock, times(0)).findByTitleAndIssueAndRevision(any(), any(), any());
+    }
+
+    @Test
+    void resolve_DocumentExist_DocumentEntityReturned() {
+        // arrange
+        Document document = Document.builder()
+            .title("Q-ST-80")
+            .issue("C")
+            .build();
+
+        ApplicableDocumentEntity documentEntity = ApplicableDocumentEntity.builder()
+            .title("Q-ST-80")
+            .issue("C")
+            .build();
+        given(applicableDocumentRepositoryMock.findByTitleAndIssueAndRevision("Q-ST-80", "C", null)).willReturn(documentEntity);
+
+        // act
+        ApplicableDocumentEntity actual = mapper.resolve(document);
+
+        // assert
+        assertThat(actual).isNotNull();
+        assertThat(actual.getTitle()).isEqualTo("Q-ST-80");
+        assertThat(actual.getIssue()).isEqualTo("C");
+        assertThat(actual.getRevision()).isNull();
+        verify(applicableDocumentRepositoryMock, times(1)).findByTitleAndIssueAndRevision("Q-ST-80", "C", null);
+    }
 }

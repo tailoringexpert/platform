@@ -48,18 +48,21 @@ public class BaseCatalogExcelDocumentCreator implements DocumentCreator {
     @NonNull
     BiConsumer<Catalog<BaseRequirement>, Sheet> drdSheetCreator;
     @NonNull
+    BiConsumer<Catalog<BaseRequirement>, Sheet> documentSheetCreator;
+    @NonNull
     BiConsumer<Catalog<BaseRequirement>, Sheet> logoSheetCreator;
 
 
     @Override
     public File createDocument(String docId, Catalog<BaseRequirement> catalog, Map<String, Object> placeholders) {
-        log.traceEntry(() -> docId, () -> catalog.getVersion(), () -> placeholders);
+        log.traceEntry(() -> docId, catalog::getVersion, () -> placeholders);
 
         FileBuilder builder = builder().name(docId + ".xlsx");
         try (Workbook wb = new XSSFWorkbook()) {
 
             requirementSheetCreator.accept(catalog, wb.createSheet(catalog.getVersion()));
             drdSheetCreator.accept(catalog, wb.createSheet("DRD"));
+            documentSheetCreator.accept(catalog, wb.createSheet("AD"));
             logoSheetCreator.accept(catalog, wb.createSheet("LOGO"));
 
             try (ByteArrayOutputStream os = new ByteArrayOutputStream()) {

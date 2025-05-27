@@ -142,7 +142,7 @@
             <tbody>
             <tr>
                 <td>8.3</td>
-                <td style="text-align:left">Rework </td>
+                <td style="text-align:left">Rework</td>
                 <td>$11</td>
             </tr>
             </tbody>
@@ -151,12 +151,11 @@
 </page-after>
 
 
-
 <page-after id="toc">
     <h2>Table of Content</h2>
     <ul class="toc">
         <li th:each="requirement: ${requirements.?[!#strings.isEmpty(chapter) AND level &lt; 4]}">
-            <a th:href="'#' + ${requirement.chapter}" th:text="${requirement.text}"></a>
+            <a th:href="'#' + ${requirement.chapter}" th:utext="${requirement.text}"></a>
         </li>
     </ul>
 </page-after>
@@ -235,44 +234,160 @@
 
 <table width="100%">
     <tbody>
-    <tr th:each="requirement : ${requirements}">
-        <td style="width:3%;font-size:x-small;" th:utext="${#strings.listJoin(requirement.phases, '<br/>')}"></td>
-        <td style="width:7%;font-size:x-small;"
-            th:utext="${#strings.listJoin(requirement.identifiers, '<br/>')}"></td>
-        <td style="width:15%;font-size:x-small;"
-            th:utext="${#strings.concat(requirement.position, '<br/><br/>', requirement.reference)}">Position
-        </td>
-        <td style="width:85%"
-            th:classappend="${requirement.chapter!=null}?box"
-            th:attrappend="id=${requirement.chapter!=null}?${requirement.chapter}">
-	   <span th:if="${#strings.equalsIgnoreCase(requirement.text, 'QME_INSERT_DRD_LIST')}">
-	        <table class="drd-tabelle">
-                    <thead>
-                        <tr class="drd">
-                            <th style="width:21%">Title</th>
-                            <th style="width:21%">Due Date</th>
-                            <th style="width:21%">PA-Req't.</th>
-                            <th style="width:15%">DRD No</th>
-                            <th style="width:21%">Action</th>
+    <th:block th:each="requirement : ${requirements}">
+        <tr>
+            <td style="width:15%;font-size:x-small;"
+                th:utext="${#strings.concat(requirement.position, '<br/><br/>', requirement.reference)}">Position
+            </td>
+            <td style="width:85%" colspan="2"
+                th:classappend="${requirement.chapter!=null}?box"
+                th:attrappend="id=${requirement.chapter!=null}?${requirement.chapter}"
+                th:utext="${requirement.text}">
+            </td>
+            <td style="width:7%;font-size:x-small;"
+                th:utext="${#strings.listJoin(requirement.identifiers, '<br/>')}"></td>
+            <td style="width:3%;font-size:x-small;"
+                th:utext="${#strings.listJoin(requirement.phases, '<br/>')}"></td>
+        </tr>
+
+        <th:block th:if="${#strings.equalsIgnoreCase(requirement.chapter, '1.6.1')}">
+            <tr>
+                <td style="width:15%;font-size:x-small;">a</td>
+                <td style="width:85%" colspan="2">
+                    The following documents shall be used by suppliers and subsuppliers as applicable in the context
+                    of the requirements they are referred from. For undated references the latest edition of the
+                    publication referred to applies.
+                </td>
+            </tr>
+            <tr>
+                <td style="width:15%;font-size:x-small;">b</td>
+                <td style="width:85%">${DRD_DOCID}</td>
+                <td>Document Requirement Definition (DRDs)</td>
+            </tr>
+
+            <tr th:each="document : ${applicableDocuments}">
+                <td style="width:15%;font-size:x-small;" th:utext="${document.number}"></td>
+                <td style="width:85%" th:utext="|${document.title}${document.issue}|"></td>
+                <td style="width:65%" th:utext="${document.description}"></td>
+                <td></td>
+                <td></td>
+            </tr>
+        </th:block>
+
+        <th:block th:if="${#strings.equalsIgnoreCase(requirement.chapter, '16')}">
+            <tr>
+                <td style="width:15%;font-size:x-small;">a</td>
+                <td style="width:85%" colspan="2">
+                    Deliverable documents listed in this chapter might be combined to one joint document as long as
+                    the DRD content is covered.
+                    <blockquote dir="ltr" style="margin-right: 0px">
+                        <strong>NOTE:</strong><br/>
+                        Doing so should be agreed ahead of data package deliveries. Preferably; the statement of
+                        compliance to PA &amp; Safety requirements, chapter 13, or a common document delivery list
+                        (DDL)
+                        with compliance statement for full project documentation already addresses documents to be
+                        combined.
+                    </blockquote>
+                </td>
+
+            </tr>
+            <tr>
+                <td style="width:5%;font-size:x-small;">b</td>
+                <td style="width:85%" colspan="2">
+                    Explanation of entries:
+                    <table cellpadding="1px" style="width: 95%">
+                        <tbody>
+                        <tr>
+                            <td vertical-align="top" style="width:25%;"><strong>Title:</strong></td>
+                            <td vertical-align="top">Self-explanatory.</td>
                         </tr>
-                    </thead>
-                <tbody>
-                    <tr th:each="drd : ${drds}">
-                        <td th:text="${drd.titel}"></td>
-                        <td th:text="${drd.datum}"></td>
-                        <td th:utext="${#strings.listJoin(drd.anforderung, ',<br/>')}"></td>
-                        <td th:text="${drd.number}"></td>
-                        <td th:text="${drd.action}"></td>
-                    </tr>
-                </tbody>
-            </table>
-	   </span>
-            <span th:if="${!#strings.equalsIgnoreCase(requirement.text, 'QME_INSERT_DRD_LIST')}"
-                  th:class="${#strings.startsWith(requirement.text, '<ul>') OR #strings.startsWith(requirement.text, '<blockquote>')}? 'no-margin'">
-                <span th:utext="${requirement.text}">Anforderungstext</span>
-            </span>
-        </td>
-    </tr>
+                        <tr>
+                            <td vertical-align="top" style="width:25%;"><strong>Due Date:</strong></td>
+                            <td vertical-align="top">Each document shall be submitted in tbd copies at the indicated
+                                deadline.
+                            </td>
+                        </tr>
+                        <tr>
+                            <td vertical-align="top" style="width:25%;"><strong>PA-Requirement Reference:</strong>
+                            </td>
+                            <td vertical-align="top">Cross reference to the section/para. of this specification.
+                            </td>
+                        </tr>
+                        <tr>
+                            <td vertical-align="top" style="width:25%;"><strong>DRD-No.:</strong></td>
+                            <td vertical-align="top">Cross reference to the DRD number in the Document Requirement
+                                Definition DLR-RF-PS-002,
+                                containing additional information for the preparation of the required document.
+                            </td>
+                        </tr>
+                        <tr>
+                            <td vertical-align="top" style="width:25%;"><strong>DLR Action:</strong></td>
+                            <td vertical-align="top">Indicates customer action categories:<br/>
+                                A = Approval<br/>
+                                AC = Acceptance<br/>
+                                R = Review<br/>
+                                I = Information
+                            </td>
+                        </tr>
+                        <tr>
+                            <td vertical-align="top" style="width:25%;"></td>
+                            <td vertical-align="top"></td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </td>
+                <td></td>
+                <td></td>
+            </tr>
+
+            <tr>
+                <td style="width:10%;font-size:x-small"></td>
+                <td style="width:5%;font-size:x-small;">c</td>
+                <td style="width:85%" colspan="2">
+                    <blockquote><strong>NOTE:</strong><br/>
+                        Due dates are further clarified by agreements:
+                        <ul>
+                            <li>
+                                With respect to milestones (e.g. due events listed in an agreement) the DLR-RFM
+                                provides review procedures including specific document delivery lists which might
+                                be amended by mission specific needs, as agreed between all parties,&#160;and time
+                                line for review data package provision, distribution of review item discrepancies
+                                (RID), RID answering as well as colloquium.
+                            </li>
+                            <li>
+                                With respect to reviews which are required by management, engineering and PA
+                                requirements but are no agreed milestones, the supplier is responsible for issuing
+                                a review procedure and running the review process. Information on such reviews and
+                                participation of DLR-RFM has to be agreed between the parties.
+                                <blockquote>
+                                    <strong>NOTE:</strong><br/>
+                                    Conduct of reviews is a project management task.
+                                </blockquote>
+                            </li>
+                        </ul>
+                    </blockquote>
+                </td>
+            </tr>
+
+            <tr>
+                <td style="width:10%;font-size:x-small"></td>
+                <td style="width:5%;font-size:x-small;">d</td>
+                <td style="width:85%" colspan="2">
+                    <blockquote><strong>NOTE:</strong><br/>
+                        In phase E documents marked with delivery for AR are only relevant in case of major design
+                        modifications or adaptations will occure.<br/>
+                        Details and, in case of major design modifications or new developments, additional
+                        development
+                        documentation need to be agreed with customer on a case by case basis.
+                    </blockquote>
+                </td>
+                <td></td>
+                <td></td>
+            </tr>
+        </th:block>
+
+
+    </th:block>
     </tbody>
 </table>
 </body>

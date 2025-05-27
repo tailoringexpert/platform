@@ -83,6 +83,6 @@ class RequirementsSheetCreatorTest {
 
         assertThat(sheet.getSheetName()).isEqualTo("8.2.1");
         assertThat(sheet.getLastRowNum()).isPositive();
-        assertThat(sheet.getRow(0).getPhysicalNumberOfCells()).isEqualTo(7);
+        assertThat(sheet.getRow(0).getPhysicalNumberOfCells()).isEqualTo(8);
     }
 }

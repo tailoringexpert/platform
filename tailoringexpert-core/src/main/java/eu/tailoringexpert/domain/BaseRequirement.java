@@ -48,11 +48,12 @@ public class BaseRequirement extends Requirement implements Serializable {
     public BaseRequirement(
         String text,
         String position,
+        Collection<Document> applicableDocuments,
         Collection<DRD> drds,
         Collection<Phase> phases,
         Collection<Identifier> identifiers,
         Reference reference) {
-        super(text, position, reference, drds);
+        super(text, position, reference, applicableDocuments, drds);
         this.phases = phases;
         this.identifiers = identifiers;
     }

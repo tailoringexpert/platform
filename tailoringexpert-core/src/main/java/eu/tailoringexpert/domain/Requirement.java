@@ -48,14 +48,21 @@ public abstract class Requirement implements Serializable {
     private Reference reference;
 
     /**
+     * List of all referenced applicable documents.
+     */
+    private Collection<Document> applicableDocuments;
+
+    /**
      * List of DRDs requirement shall be part of.
      */
     private Collection<DRD> drds;
 
-    protected Requirement(String text, String position, Reference reference, Collection<DRD> drds) {
+
+    protected Requirement(String text, String position, Reference reference, Collection<Document> applicableDocuments, Collection<DRD> drds) {
         this.text = text;
         this.position = position;
         this.reference = reference;
+        this.applicableDocuments = applicableDocuments;
         this.drds = drds;
     }
 
@@ -67,4 +74,11 @@ public abstract class Requirement implements Serializable {
     public boolean hasDRD() {
         return nonNull(getDrds()) && !getDrds().isEmpty();
     }
+
+    /**
+     * Checks if requirement has references to any applicable document.
+     *
+     * @return true if requirement has references to applicable document otherwise false
+     */
+    public boolean hasApplicableDocument() { return  nonNull(getApplicableDocuments()) && !getApplicableDocuments().isEmpty();}
 }

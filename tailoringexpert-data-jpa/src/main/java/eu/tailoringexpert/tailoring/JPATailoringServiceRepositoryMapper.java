@@ -22,24 +22,10 @@
 package eu.tailoringexpert.tailoring;
 
 import eu.tailoringexpert.TailoringexpertMapperConfig;
-import eu.tailoringexpert.domain.DocumentSignature;
-import eu.tailoringexpert.domain.DocumentSigneeEntity;
-import eu.tailoringexpert.domain.DocumentSignatureEntity;
-import eu.tailoringexpert.domain.Logo;
-import eu.tailoringexpert.domain.LogoEntity;
-import eu.tailoringexpert.domain.Note;
-import eu.tailoringexpert.domain.NoteEntity;
-import eu.tailoringexpert.domain.Phase;
-import eu.tailoringexpert.domain.Project;
-import eu.tailoringexpert.domain.ProjectEntity;
-import eu.tailoringexpert.domain.ScreeningSheet;
+import eu.tailoringexpert.domain.*;
+import eu.tailoringexpert.domain.ApplicableDocumentEntity;
 import eu.tailoringexpert.domain.ScreeningSheet.ScreeningSheetBuilder;
-import eu.tailoringexpert.domain.ScreeningSheetEntity;
-import eu.tailoringexpert.domain.ScreeningSheetParameterEntity;
-import eu.tailoringexpert.domain.SelectionVectorProfile;
-import eu.tailoringexpert.domain.SelectionVectorProfileEntity;
-import eu.tailoringexpert.domain.Tailoring;
-import eu.tailoringexpert.domain.TailoringEntity;
+import eu.tailoringexpert.repository.ApplicableDocumentRepository;
 import eu.tailoringexpert.repository.LogoRepository;
 import lombok.Setter;
 import org.mapstruct.AfterMapping;
@@ -63,6 +49,9 @@ public abstract class JPATailoringServiceRepositoryMapper {
 
     @Setter
     private LogoRepository logoRepository;
+
+    @Setter
+    private ApplicableDocumentRepository applicableDocumentRepository;
 
     abstract Project toDomain(ProjectEntity entity);
 
@@ -110,5 +99,9 @@ public abstract class JPATailoringServiceRepositoryMapper {
 
     LogoEntity resolve(Logo domain) {
         return nonNull(domain) ? logoRepository.findByName(domain.getName()) : null;
+    }
+
+    ApplicableDocumentEntity resolve(Document domain)  {
+        return nonNull(domain) ? applicableDocumentRepository.findByTitleAndIssueAndRevision(domain.getTitle(), domain.getIssue(), domain.getRevision()) : null;
     }
 }
