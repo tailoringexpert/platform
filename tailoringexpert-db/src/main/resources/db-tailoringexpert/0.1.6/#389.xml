@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
+
+    <changeSet id="1" author="tailoringexpert">
+        <comment>github issue #389</comment>
+        <createTable tableName="BASEREQUIREMENT_APPLICABLEDOC">
+            <column name="REQUIREMENT_ID" type="BIGINT">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="DOCUMENT_ID" type="BIGINT">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+        </createTable>
+
+    </changeSet>
+
+    <changeSet id="2" author="tailoringexpert">
+        <comment>github issue #389</comment>
+        <createTable tableName="TAILORINGREQUIREMENT_APPLICABLEDOC">
+            <column name="REQUIREMENT_ID" type="BIGINT">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="DOCUMENT_ID" type="BIGINT">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+        </createTable>
+
+
+    </changeSet>
+
+    <changeSet id="3" author="tailoringexpert">
+        <createTable tableName="APPLICABLEDOCUMENT">
+            <column name="APPLICABLEDOCUMENT_ID" type="BIGINT">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="NUMBER" type="VARCHAR(4)"/>
+            <column name="TITLE" type="VARCHAR(256)"/>
+            <column name="ISSUE" type="VARCHAR(16)"/>
+            <column name="REVISION" type="VARCHAR(32)"/>
+            <column name="DESCRIPTION" type="VARCHAR(512)"/>
+        </createTable>
+
+    </changeSet>
+
+    <changeSet id="4" author="tailoringexpert">
+        <addForeignKeyConstraint constraintName="FK_BASWAPPLICABLEOC_DOCUMENT"
+                                 baseTableName="BASEREQUIREMENT_APPLICABLEDOC" baseColumnNames="DOCUMENT_ID"
+                                 referencedTableName="APPLICABLEDOCUMENT"
+                                 referencedColumnNames="APPLICABLEDOCUMENT_ID"/>
+    </changeSet>
+
+    <changeSet id="5" author="tailoringexpert">
+        <addForeignKeyConstraint constraintName="FK_TAILORINGAPPLICABLEOC_DOCUMENT"
+                                 baseTableName="TAILORINGREQUIREMENT_APPLICABLEDOC" baseColumnNames="DOCUMENT_ID"
+                                 referencedTableName="APPLICABLEDOCUMENT"
+                                 referencedColumnNames="APPLICABLEDOCUMENT_ID"/>
+    </changeSet>
+
+</databaseChangeLog>

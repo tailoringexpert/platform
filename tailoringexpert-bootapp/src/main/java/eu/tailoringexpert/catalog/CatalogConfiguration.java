@@ -27,14 +27,18 @@ import eu.tailoringexpert.domain.BaseRequirement;
 import eu.tailoringexpert.domain.Catalog;
 import eu.tailoringexpert.domain.Chapter;
 import eu.tailoringexpert.domain.DRD;
+import eu.tailoringexpert.domain.DRDProvider;
+import eu.tailoringexpert.domain.Document;
 import eu.tailoringexpert.domain.Identifier;
 import eu.tailoringexpert.domain.Logo;
+import eu.tailoringexpert.domain.Phase;
 import eu.tailoringexpert.domain.Reference;
 import eu.tailoringexpert.domain.ResourceMapper;
 import eu.tailoringexpert.renderer.HTMLTemplateEngine;
 import eu.tailoringexpert.renderer.PDFEngine;
 import eu.tailoringexpert.repository.BaseCatalogRepository;
 import eu.tailoringexpert.repository.DRDRepository;
+import eu.tailoringexpert.repository.ApplicableDocumentRepository;
 import eu.tailoringexpert.repository.LogoRepository;
 import eu.tailoringexpert.repository.SelectionVectorProfileRepository;
 import eu.tailoringexpert.repository.TailoringCatalogRepository;
@@ -47,10 +51,10 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
 import org.springframework.http.MediaType;
 
+import java.util.Collection;
 import java.util.Map;
-import java.util.function.BiConsumer;
-import java.util.function.BiFunction;
-import java.util.function.Function;
+import java.util.Set;
+import java.util.function.*;
 
 @Configuration
 public class CatalogConfiguration {
@@ -58,9 +62,11 @@ public class CatalogConfiguration {
     @Bean
     JPACatalogServiceRepositoryMapper catalogServiceRepositoryMapper(
         @NonNull LogoRepository logoRepository,
+        @NonNull ApplicableDocumentRepository applicableDocumentRepository,
         @NonNull DRDRepository drdRepository) {
         JPACatalogServiceRepositoryMapperGenerated result = new JPACatalogServiceRepositoryMapperGenerated();
         result.setLogoRepository(logoRepository);
+        result.setApplicableDocumentRepository(applicableDocumentRepository);
         result.setDrdRepository(drdRepository);
         return result;
     }
@@ -70,9 +76,16 @@ public class CatalogConfiguration {
     CatalogServiceRepository catalogServiceRepository(
         @NonNull JPACatalogServiceRepositoryMapper mapper,
         @NonNull BaseCatalogRepository baseCatalogRepository,
+        @NonNull ApplicableDocumentRepository applicableDocumentRepository,
         @NonNull DRDRepository drdRepository,
         @NonNull TailoringCatalogRepository tailoringCatalogRepository) {
-        return new JPACatalogServiceRepository(mapper, baseCatalogRepository, drdRepository, tailoringCatalogRepository);
+        return new JPACatalogServiceRepository(
+            mapper,
+            baseCatalogRepository,
+                applicableDocumentRepository,
+            drdRepository,
+            tailoringCatalogRepository
+        );
     }
 
 
@@ -116,27 +129,34 @@ public class CatalogConfiguration {
 
     @Bean
     BaseCatalogPDFDocumentCreator baseCatalogPDFDocumentCreator(
+        @NonNull Function<Catalog<BaseRequirement>, Collection<Document>> baseCatalogApplicableDocumentProvider,
+        @NonNull Predicate<BaseRequirement> baseRequirementSelectedPredicate,
+        @NonNull BiPredicate<String, Collection<Phase>> drdAnwendbarPraedikat,
         @NonNull HTMLTemplateEngine templateEngine,
         @NonNull PDFEngine pdfEngine) {
-        return new BaseCatalogPDFDocumentCreator(templateEngine, pdfEngine);
-    }
-
-    @Bean
-    DRDProvider baseDRDdProvider() {
-        return new DRDProvider();
+        return new BaseCatalogPDFDocumentCreator(
+            baseCatalogApplicableDocumentProvider,
+            new DRDProvider<>(baseRequirementSelectedPredicate, drdAnwendbarPraedikat),
+            templateEngine,
+            pdfEngine);
     }
 
     @Bean
     BaseDRDPDFDocumentCreator baseDRDPDFDocumentCreator(@NonNull HTMLTemplateEngine templateEngine,
                                                         @NonNull PDFEngine pdfEngine,
-                                                        @NonNull DRDProvider drdProvider) {
-        return new BaseDRDPDFDocumentCreator(templateEngine, pdfEngine, drdProvider);
+                                                        @NonNull BiFunction<Chapter<BaseRequirement>, Collection<Phase>, Map<DRD, Set<String>>> drdProvider) {
+        return new BaseDRDPDFDocumentCreator(drdProvider, templateEngine, pdfEngine);
     }
-
 
     @Bean
     BiConsumer<Catalog<BaseRequirement>, Sheet> drdSheetCreator() {
         return new DRDSheetCreator();
+    }
+
+    @Bean
+    BiConsumer<Catalog<BaseRequirement>, Sheet> documentSheetCreator(
+        @NonNull Function<Catalog<BaseRequirement>, Collection<Document>> baseCatalogApplicableDocumentProvider ) {
+        return new DocumentSheetCreator(baseCatalogApplicableDocumentProvider);
     }
 
     @Bean
@@ -153,9 +173,15 @@ public class CatalogConfiguration {
     BaseCatalogExcelDocumentCreator baseCatalogExportExcelDocumentCreator(
         @NonNull @Qualifier("requirementSheetCreator") BiConsumer<Catalog<BaseRequirement>, Sheet> requirementSheetCreator,
         @NonNull @Qualifier("drdSheetCreator") BiConsumer<Catalog<BaseRequirement>, Sheet> drdSheetCreator,
+        @NonNull @Qualifier("documentSheetCreator") BiConsumer<Catalog<BaseRequirement>, Sheet> documentSheetCreator,
         @NonNull @Qualifier("logoSheetCreator") BiConsumer<Catalog<BaseRequirement>, Sheet> logoSheetCreator
     ) {
-        return new BaseCatalogExcelDocumentCreator(requirementSheetCreator, drdSheetCreator, logoSheetCreator);
+        return new BaseCatalogExcelDocumentCreator(
+            requirementSheetCreator,
+            drdSheetCreator,
+            documentSheetCreator,
+            logoSheetCreator
+        );
     }
 
 
@@ -180,6 +206,11 @@ public class CatalogConfiguration {
     }
 
     @Bean
+    Function<Sheet, Map<String, Document>> toDocumentFunction() {
+        return new ToDocumentMappingFunction();
+    }
+
+    @Bean
     BiFunction<String, Logo, Reference> toReferenceFunction() {
         return new ToReferenceFunction();
     }
@@ -193,6 +224,7 @@ public class CatalogConfiguration {
     Function<Sheet, Chapter<BaseRequirement>> toChapterFunction(
         @NonNull @Qualifier("toDRDMappingFunction") Function<Sheet, Map<String, DRD>> toDRDMappingFunction,
         @NonNull @Qualifier("toLogoMappingFunction") Function<Sheet, Map<String, Logo>> toLogoMappingFunction,
+        @NonNull @Qualifier("toDocumentFunction") Function<Sheet, Map<String, Document>> toDocumentFunction,
         @NonNull @Qualifier("toIdentifierFunction") Function<String, Identifier> toIdentifierFunction,
         @NonNull @Qualifier("toLogoFunction") BiFunction<String, Map<String, Logo>, Logo> toLogoFunction,
         @NonNull @Qualifier("toReferenceFunction") BiFunction<String, Logo, Reference> toReferenceFunction,
@@ -201,6 +233,7 @@ public class CatalogConfiguration {
         return new ToChapterFunction(
             toDRDMappingFunction,
             toLogoMappingFunction,
+            toDocumentFunction,
             toIdentifierFunction,
             toLogoFunction,
             toReferenceFunction,

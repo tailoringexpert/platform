@@ -24,22 +24,25 @@ package eu.tailoringexpert.tailoring;
 
 import eu.tailoringexpert.Tenant;
 import eu.tailoringexpert.Tenants;
-import eu.tailoringexpert.domain.MediaTypeProvider;
-import eu.tailoringexpert.domain.ResourceMapper;
-import eu.tailoringexpert.domain.DRD;
+import eu.tailoringexpert.domain.Catalog;
 import eu.tailoringexpert.domain.Chapter;
+import eu.tailoringexpert.domain.DRD;
+import eu.tailoringexpert.domain.Document;
+import eu.tailoringexpert.domain.MediaTypeProvider;
 import eu.tailoringexpert.domain.Phase;
+import eu.tailoringexpert.domain.ResourceMapper;
 import eu.tailoringexpert.domain.TailoringRequirement;
 import eu.tailoringexpert.renderer.HTMLTemplateEngine;
 import eu.tailoringexpert.renderer.PDFEngine;
 import eu.tailoringexpert.renderer.RendererRequestConfigurationSupplier;
-import eu.tailoringexpert.repository.TailoringIdentifierProviderRepository;
-import eu.tailoringexpert.requirement.RequirementService;
+import eu.tailoringexpert.repository.ApplicableDocumentRepository;
 import eu.tailoringexpert.repository.DokumentSigneeRepository;
 import eu.tailoringexpert.repository.LogoRepository;
 import eu.tailoringexpert.repository.ProjectRepository;
 import eu.tailoringexpert.repository.SelectionVectorProfileRepository;
+import eu.tailoringexpert.repository.TailoringIdentifierProviderRepository;
 import eu.tailoringexpert.repository.TailoringRepository;
+import eu.tailoringexpert.requirement.RequirementService;
 import lombok.NonNull;
 import org.springframework.beans.factory.ListableBeanFactory;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -76,9 +79,11 @@ public class TailoringConfiguration {
 
     @Bean
     JPATailoringServiceRepositoryMapper jpaTailoringServiceRepositoryMapper(
-        @NonNull LogoRepository logoRepository) {
+        @NonNull LogoRepository logoRepository,
+        @NonNull ApplicableDocumentRepository applicableDocumentRepository) {
         JPATailoringServiceRepositoryMapperGenerated result = new JPATailoringServiceRepositoryMapperGenerated();
         result.setLogoRepository(logoRepository);
+        result.setApplicableDocumentRepository(applicableDocumentRepository);
         return result;
     }
 
@@ -157,12 +162,6 @@ public class TailoringConfiguration {
     }
 
     @Bean
-    BiFunction<Chapter<TailoringRequirement>, Collection<Phase>, Map<DRD, Set<String>>> drdProvider(
-        @NonNull BiPredicate<String, Collection<Phase>> drdAnwendbarPraedikat) {
-        return new DRDProvider(drdAnwendbarPraedikat);
-    }
-
-    @Bean
     Function<String, MediaType> mediaTypeProvider() {
         return new MediaTypeProvider();
     }
@@ -202,8 +201,14 @@ public class TailoringConfiguration {
     DocumentCreator tailoringCatalogPDFDocumentCreator(
         @NonNull HTMLTemplateEngine templateEngine,
         @NonNull PDFEngine pdfEngine,
-        @NonNull BiFunction<Chapter<TailoringRequirement>, Collection<Phase>, Map<DRD, Set<String>>> drdProvider) {
-        return new TailoringCatalogPDFDocumentCreator(templateEngine, pdfEngine, drdProvider);
+        @NonNull BiFunction<Chapter<TailoringRequirement>, Collection<Phase>, Map<DRD, Set<String>>> drdProvider,
+        @NonNull Function<Catalog<TailoringRequirement>, Collection<Document>> tailoringCatalogApplicableDocumentProvider) {
+        return new TailoringCatalogPDFDocumentCreator(
+            drdProvider,
+            tailoringCatalogApplicableDocumentProvider,
+            templateEngine,
+            pdfEngine
+        );
     }
 
     @Bean
@@ -219,7 +224,7 @@ public class TailoringConfiguration {
         @NonNull HTMLTemplateEngine templateEngine,
         @NonNull PDFEngine pdfEngine,
         @NonNull BiFunction<Chapter<TailoringRequirement>, Collection<Phase>, Map<DRD, Set<String>>> drdProvider) {
-        return new DRDPDFDocumentCreator(templateEngine, pdfEngine, drdProvider);
+        return new DRDPDFDocumentCreator(drdProvider, templateEngine, pdfEngine);
     }
 
     @Bean
@@ -246,7 +251,7 @@ public class TailoringConfiguration {
         @NonNull HTMLTemplateEngine templateEngine,
         @NonNull PDFEngine pdfEngine,
         @NonNull BiFunction<Chapter<TailoringRequirement>, Collection<Phase>, Map<DRD, Set<String>>> drdProvider) {
-        return new CMPDFDocumentCreator(templateEngine, pdfEngine, drdProvider);
+        return new CMPDFDocumentCreator(drdProvider, templateEngine, pdfEngine);
     }
 
 

@@ -6,6 +6,7 @@ package repository {
     interface LogoRepository
     interface ProjectRepository
     interface DRDRepository
+    interface ApplicableDocumentRepository
 }
 package project {
 
@@ -35,10 +36,12 @@ package project {
         resolve(domain : Catalog<BaseCatalogRequirement>) : BaseCatalogEntity
         resolve(domain : Logo) : LogoEntity
         resolve(domain : DRD) : DRDEntity
+        resolve(domain : Document) : DcoumentEntity
     }
     JPAProjectServiceRepositoryMapper --> "1" LogoRepository : logoRepository
     JPAProjectServiceRepositoryMapper --> "1" BaseCatalogRepository : baseCatalogRepository
     JPAProjectServiceRepositoryMapper --> "1" DRDRepository : drdRepository
+    JPAProjectServiceRepositoryMapper --> "1" ApplicableDocumentRepository : applicableDocumentRepository
 
     class JPAProjectServiceRepository {
     }

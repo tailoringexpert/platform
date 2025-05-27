@@ -34,6 +34,7 @@ import eu.tailoringexpert.domain.Catalog;
 import eu.tailoringexpert.domain.Chapter;
 import eu.tailoringexpert.domain.DRD;
 import eu.tailoringexpert.domain.File;
+import eu.tailoringexpert.domain.Phase;
 import eu.tailoringexpert.renderer.HTMLTemplateEngine;
 import eu.tailoringexpert.renderer.PDFEngine;
 import eu.tailoringexpert.renderer.RendererRequestConfiguration;
@@ -51,10 +52,12 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.Collection;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
-import java.util.function.Function;
+import java.util.function.BiFunction;
 
 import static java.util.Objects.nonNull;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -67,7 +70,7 @@ class BaseDRDPDFDocumentCreatorTest {
     String templateHome;
     ObjectMapper objectMapper;
     FileSaver fileSaver;
-    Function<Chapter<BaseRequirement>, Set<DRD>> drdProviderMock;
+    BiFunction<Chapter<BaseRequirement>, Collection<Phase>, Map<DRD, Set<String>>> drdProviderMock;
     BaseDRDPDFDocumentCreator creator;
 
     @BeforeEach
@@ -99,13 +102,13 @@ class BaseDRDPDFDocumentCreatorTest {
 
         HTMLTemplateEngine templateEngine = new ThymeleafTemplateEngine(springTemplateEngine, supplier);
 
-        this.drdProviderMock = mock(Function.class);
+        this.drdProviderMock = mock(BiFunction.class);
 
         FSDOMMutator domMutator = new TailoringexpertDOMMutator();
         this.creator = new BaseDRDPDFDocumentCreator(
+            drdProviderMock,
             templateEngine,
-            new PDFEngine(domMutator, supplier),
-            drdProviderMock
+        new PDFEngine(domMutator, supplier)
         );
     }
 
@@ -126,12 +129,15 @@ class BaseDRDPDFDocumentCreatorTest {
         platzhalter.put("DOKUMENT", "SAMPLE-XY-Z-1940/DV7");
         platzhalter.put("${DRD_DOCID}", "SAMPLE_DOC");
 
-        given(drdProviderMock.apply(any()))
-            .willReturn(Set.of(
-                DRD.builder()
-                    .title("Non-Conformance Report (NCR)")
-                    .number("03.01")
-                    .build())
+
+        given(drdProviderMock.apply(any(), any()))
+            .willReturn(Map.of(
+                    DRD.builder()
+                        .title("Non-Conformance Report (NCR)")
+                        .number("03.01")
+                        .build(),
+                    new HashSet<>()
+                )
             );
 
         // act

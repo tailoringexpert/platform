@@ -19,13 +19,8 @@
  * <http://www.gnu.org/licenses/gpl-3.0.html>.
  * #L%
  */
-package eu.tailoringexpert.tailoring;
+package eu.tailoringexpert.domain;
 
-import eu.tailoringexpert.domain.Catalog;
-import eu.tailoringexpert.domain.Chapter;
-import eu.tailoringexpert.domain.DRD;
-import eu.tailoringexpert.domain.Phase;
-import eu.tailoringexpert.domain.TailoringRequirement;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
@@ -36,6 +31,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.function.BiPredicate;
+import java.util.function.Predicate;
 
 import static java.util.List.of;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -54,7 +50,10 @@ class DRDProviderTest {
     @BeforeEach
     void beforeEach() {
         this.predicateMock = Mockito.mock(BiPredicate.class);
-        this.provider = new DRDProvider(this.predicateMock);
+        this.provider = new DRDProvider(
+            (Predicate<TailoringRequirement>) requirement -> ((TailoringRequirement) requirement).getSelected(),
+            predicateMock
+        );
     }
 
 

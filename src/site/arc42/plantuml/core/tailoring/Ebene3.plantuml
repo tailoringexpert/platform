@@ -9,21 +9,6 @@ package eu.tailoringexpert {
 
 package tailoring {
 
-    interface "BiPredicate<T, U>" as AnwendbarBiFunction {
-        test(t: T, u : U) : boolean
-    }
-    class DRDApplicablePredicate<String, Collection<Phase>> {
-    }
-    AnwendbarBiFunction <|.. DRDApplicablePredicate
-
-    interface "BiFunction<T, U, R>" as DRDProviderBiFunction {
-        apply(var1 : T, var2 : U) : R
-    }
-    class "DRDProvider<Chapter<TailoringRequirement>, Map<DRD, Set<String>>" as DRDProvider{
-    }
-    DRDProviderBiFunction <|.. DRDProvider
-    DRDProvider --> "1" DRDApplicablePredicate : predicate
-
     interface DocumentCreator {
         createDocument(docId : String, tailoring : Tailoring, placeholders : Map<String, Object>) : File
     }
@@ -42,6 +27,7 @@ package tailoring {
     }
     TailoringDeletablePredicate <|.. DefaultTailoringDeletablePredicate
     DefaultTailoringDeletablePredicate --> "1" TailoringDeletablePredicateRepository : repository
+
 
 
     interface TailoringService {

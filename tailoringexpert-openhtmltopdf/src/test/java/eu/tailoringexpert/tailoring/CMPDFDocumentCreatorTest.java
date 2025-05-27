@@ -29,9 +29,15 @@ import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.fasterxml.jackson.module.paramnames.ParameterNamesModule;
 import com.openhtmltopdf.extend.FSDOMMutator;
 import eu.tailoringexpert.FileSaver;
+import eu.tailoringexpert.domain.Catalog;
 import eu.tailoringexpert.domain.Chapter;
+import eu.tailoringexpert.domain.DRD;
+import eu.tailoringexpert.domain.DRDProvider;
 import eu.tailoringexpert.domain.DocumentSignature;
+import eu.tailoringexpert.domain.DocumentSignatureState;
 import eu.tailoringexpert.domain.File;
+import eu.tailoringexpert.domain.Phase;
+import eu.tailoringexpert.domain.Tailoring;
 import eu.tailoringexpert.domain.TailoringRequirement;
 import eu.tailoringexpert.renderer.HTMLTemplateEngine;
 import eu.tailoringexpert.renderer.PDFEngine;
@@ -39,11 +45,6 @@ import eu.tailoringexpert.renderer.RendererRequestConfiguration;
 import eu.tailoringexpert.renderer.RendererRequestConfigurationSupplier;
 import eu.tailoringexpert.renderer.TailoringexpertDOMMutator;
 import eu.tailoringexpert.renderer.ThymeleafTemplateEngine;
-import eu.tailoringexpert.domain.DRD;
-import eu.tailoringexpert.domain.DocumentSignatureState;
-import eu.tailoringexpert.domain.Catalog;
-import eu.tailoringexpert.domain.Phase;
-import eu.tailoringexpert.domain.Tailoring;
 import io.github.cdimascio.dotenv.Dotenv;
 import lombok.extern.log4j.Log4j2;
 import org.junit.jupiter.api.BeforeEach;
@@ -61,6 +62,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 import java.util.function.BiFunction;
+import java.util.function.Predicate;
 
 import static eu.tailoringexpert.domain.Phase.A;
 import static eu.tailoringexpert.domain.Phase.B;
@@ -114,21 +116,23 @@ class CMPDFDocumentCreatorTest {
 
         HTMLTemplateEngine templateEngine = new ThymeleafTemplateEngine(springTemplateEngine, supplier);
 
-        this.drdProviderMock = new DRDProvider(new DRDApplicablePredicate(Map.ofEntries(
-            new AbstractMap.SimpleEntry<>(ZERO, unmodifiableCollection(asList("MDR"))),
-            new AbstractMap.SimpleEntry<>(A, unmodifiableCollection(asList("SRR"))),
-            new AbstractMap.SimpleEntry<>(B, unmodifiableCollection(asList("PDR"))),
-            new AbstractMap.SimpleEntry<>(C, unmodifiableCollection(asList("CDR"))),
-            new AbstractMap.SimpleEntry<>(D, unmodifiableCollection(asList("AR", "DRB", "FRR", "LRR"))),
-            new AbstractMap.SimpleEntry<>(E, unmodifiableCollection(asList("ORR"))),
-            new AbstractMap.SimpleEntry<>(F, unmodifiableCollection(asList("EOM")))
+        this.drdProviderMock = new DRDProvider(
+            (Predicate<TailoringRequirement>) requirement -> ((TailoringRequirement) requirement).getSelected(),
+            new DRDApplicablePredicate(Map.ofEntries(
+                new AbstractMap.SimpleEntry<>(ZERO, unmodifiableCollection(asList("MDR"))),
+                new AbstractMap.SimpleEntry<>(A, unmodifiableCollection(asList("SRR"))),
+                new AbstractMap.SimpleEntry<>(B, unmodifiableCollection(asList("PDR"))),
+                new AbstractMap.SimpleEntry<>(C, unmodifiableCollection(asList("CDR"))),
+                new AbstractMap.SimpleEntry<>(D, unmodifiableCollection(asList("AR", "DRB", "FRR", "LRR"))),
+                new AbstractMap.SimpleEntry<>(E, unmodifiableCollection(asList("ORR"))),
+                new AbstractMap.SimpleEntry<>(F, unmodifiableCollection(asList("EOM")))
         )));
 
         FSDOMMutator domMutator = new TailoringexpertDOMMutator();
         this.creator = new CMPDFDocumentCreator(
+            drdProviderMock,
             templateEngine,
-            new PDFEngine(domMutator, supplier),
-            drdProviderMock
+        new PDFEngine(domMutator, supplier)
         );
     }
 

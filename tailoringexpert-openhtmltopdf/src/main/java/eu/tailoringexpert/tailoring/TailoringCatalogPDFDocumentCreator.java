@@ -21,10 +21,13 @@
  */
 package eu.tailoringexpert.tailoring;
 
+import eu.tailoringexpert.domain.Catalog;
 import eu.tailoringexpert.domain.Chapter;
 import eu.tailoringexpert.domain.DRD;
-import eu.tailoringexpert.domain.File;
+import eu.tailoringexpert.domain.DRDElement;
+import eu.tailoringexpert.domain.Document;
 import eu.tailoringexpert.domain.DocumentSignature;
+import eu.tailoringexpert.domain.File;
 import eu.tailoringexpert.domain.Phase;
 import eu.tailoringexpert.domain.Tailoring;
 import eu.tailoringexpert.domain.TailoringRequirement;
@@ -43,6 +46,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.BiFunction;
+import java.util.function.Function;
 
 import static java.lang.String.format;
 import static java.util.Collections.emptyMap;
@@ -59,13 +63,17 @@ import static java.util.Objects.nonNull;
 public class TailoringCatalogPDFDocumentCreator implements DocumentCreator {
 
     @NonNull
+    private BiFunction<Chapter<TailoringRequirement>, Collection<Phase>, Map<DRD, Set<String>>> drdProvider;
+
+    @NonNull
+    private Function<Catalog<TailoringRequirement>, Collection<Document>> applicableDocumentProvider;
+
+    @NonNull
     private HTMLTemplateEngine templateEngine;
 
     @NonNull
     private PDFEngine pdfEngine;
 
-    @NonNull
-    private BiFunction<Chapter<TailoringRequirement>, Collection<Phase>, Map<DRD, Set<String>>> drdProvider;
 
     private static final String REFERENZ_LOGO_LINK = "<img src=\"%s\" alt=\"%s\"></img><br/>";
 
@@ -97,6 +105,8 @@ public class TailoringCatalogPDFDocumentCreator implements DocumentCreator {
                 }
             );
         addDRD(tailoring.getCatalog().getToc(), drds, tailoring.getPhases());
+
+        parameter.put("applicableDocuments", applicableDocumentProvider.apply(tailoring.getCatalog()));
 
         parameter.put("signatures", tailoring.getSignatures().stream()
             .sorted(comparingInt(DocumentSignature::getPosition))

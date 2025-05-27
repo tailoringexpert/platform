@@ -32,6 +32,12 @@ package tailoring {
     AbstractRequirementsBasedSheetCreator <|-- DRDSheetCreator
     DRDSheetCreator -[dotted]-> Styles : <use>
 
+    class DocumentSheetCreator {
+    }
+    AbstractRequirementsBasedSheetCreator <|-- DocumentSheetCreator
+    DocumentSheetCreator --> "1" "Function<Catalog<BaseRequirement>, Collection<Document>>" :  applicableDocumentProvider
+    DocumentSheetCreator -[dotted]-> Styles : <use>
+
     class LogoSheetCreator {
     }
     AbstractRequirementsBasedSheetCreator <|-- LogoSheetCreator
@@ -57,6 +63,7 @@ package tailoring {
     function <|-- chapterFunction
     chapterFunction --> "1" drdMappingFunction : toDRDMapping
     chapterFunction --> "1" logoMappingFunction : toLogoMapping
+    chapterFunction --> "1" documentMappingFunction : toDocumentMapping
     chapterFunction --> "1" identifierFunction : toIdentifier
     chapterFunction --> "1" logoFunction : toLogo
     chapterFunction --> "1" referenceFunction: toReference
@@ -64,6 +71,10 @@ package tailoring {
     class "ToDRDMappingFunction<Sheet, Map<String, DRD>>" as drdMappingFunction {
     }
     function <|-- drdMappingFunction
+
+    class "ToDocumentMappingFunction<Sheet, Map<String, DRD>>" as documentMappingFunction {
+    }
+    function <|-- documentMappingFunction
 
     class "ToIdentifierFunction<String, Identifier>" as identifierFunction{
     }

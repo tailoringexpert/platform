@@ -29,6 +29,13 @@ package domain {
         ACTIVE
     }
 
+    class ReferencedDocumentEntity {
+        number : String
+        title : String
+        issue : String
+        description : String
+    }
+
     class DRDEntity {
         id : Long <<PK>>
         number : String
@@ -59,6 +66,14 @@ package domain {
         limitations : Set<String>
     }
 
+    class ApplicableDocumentEntity {
+        id : Long <<PK>>
+        number : String
+        title : String
+        issue : String
+        description : String
+    }
+
     class BaseRequirementEntity {
         id : Long <<PK>>
         text : String
@@ -69,6 +84,7 @@ package domain {
     BaseRequirementEntity --> "0..*" Phase : phases <<ordered>>
     BaseRequirementEntity --> "0..*" IdentifierEntity : identifiers <<unordered>>
     BaseRequirementEntity --> "0..*" DRDEntity : drds <<unordered>>
+    BaseRequirementEntity --> "0..*" ApplicableDocumentEntity : applicableDocuments <<ordered>>
 
     class BaseCatalogChapterEntity {
         id : Long <<PK>>
@@ -133,6 +149,8 @@ package domain {
     }
     TailoringRequirementEntity --> "0..1" ReferenceEntity : reference
     TailoringRequirementEntity --> "0..*" DRDEntity : drds <<unordered>>
+    TailoringRequirementEntity --> "0..*" ApplicableDocumentEntity : applicableDocuments <<ordered>>
+
 
     class TailoringCatalogChapterEntity {
         id : Long <<PK>>

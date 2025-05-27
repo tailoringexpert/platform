@@ -7,6 +7,7 @@ package repository {
     interface DRDRepository
     interface SelectionVectorProfileRepository
     interface TailoringCatalogRepository
+    interface ApplicableDocumentRepository
 
 }
 package catalog {
@@ -27,11 +28,13 @@ package catalog {
         {abstract} toEntity(domain : Chapter<BaseRequirement>) : BaseCatalogChapterEntity
         resolve(domain : Logo) : LogoEntity
         resolve(domain : DRD) : DRDEntity
+        resolve(domain : Document) : ApplicableDocumentEntity
         addNumber(builder : BaseCatalogChapterEntityBuilder) : void
 
     }
     JPACatalogServiceRepositoryMapper --> "1" LogoRepository : logoRepository
     JPACatalogServiceRepositoryMapper --> "1" DRDRepository : drdRepository
+    JPACatalogServiceRepositoryMapper --> "1" ApplicableDocumentRepository : applicableDocumentRepository
 
     class JPACatalogServiceRepository {
     }
@@ -39,7 +42,10 @@ package catalog {
     CatalogServiceRepository <|.. JPACatalogServiceRepository
     JPACatalogServiceRepository --> "1" JPACatalogServiceRepositoryMapper : mapper
     JPACatalogServiceRepository --> "1" BaseCatalogRepository : baseCatalogRepository
+    JPACatalogServiceRepository --> "1" ApplicableDocumentRepository : applicableDocumentRepository
+    JPACatalogServiceRepository --> "1" DRDRepository : drdRepository
     JPACatalogServiceRepository --> "1" TailoringCatalogRepository : tailoringCatalogRepository
+    CatalogServiceRepository <|.. JPACatalogServiceRepository
 
     abstract JPADocumentServiceRepositoryMapper {
         {abstract} getSelectionVectorProfiles(entity : Catalog<SelectionVectorProfileEntity>) : SelectionVectorProfile

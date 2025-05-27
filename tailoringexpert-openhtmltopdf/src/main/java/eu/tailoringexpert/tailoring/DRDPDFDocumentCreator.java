@@ -54,13 +54,14 @@ import static java.util.Comparator.comparing;
 public class DRDPDFDocumentCreator implements DocumentCreator {
 
     @NonNull
+    private BiFunction<Chapter<TailoringRequirement>, Collection<Phase>, Map<DRD, Set<String>>> drdProvider;
+
+    @NonNull
     private HTMLTemplateEngine templateEngine;
 
     @NonNull
     private PDFEngine pdfEngine;
 
-    @NonNull
-    private BiFunction<Chapter<TailoringRequirement>, Collection<Phase>, Map<DRD, Set<String>>> drdProvider;
 
     /**
      * {@inheritDoc}

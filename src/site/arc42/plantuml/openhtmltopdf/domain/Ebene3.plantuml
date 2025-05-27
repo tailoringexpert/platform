@@ -1,0 +1,15 @@
+@startuml Ebene3.png
+hide empty members
+
+package domain {
+
+    class DRDElement {
+        -title : String
+        -deliveryDate : String
+        -requirements : Collection<String>
+        -number : String
+        -action : String
+    }
+
+}
+@enduml

@@ -16,7 +16,7 @@ package requirement {
         updateChapter(project : String, tailoring : String, chapter : Chapter<TailoringRequirement>) : Optional<Chapter<TailoringRequirement>>
     }
 
-    abstract class JPARequirmentServiceRepositoryMapper {
+    abstract class JPARequirementServiceRepositoryMapper {
         {abstract} toDomain(entity : TailoringRequirementEntity) : TailoringRequirement
         {abstract} updateAnforderung(domain : TailoringRequirement, entity : TailoringRequirementEntity) : void
         {abstract} toDomain(entity : TailoringCatalogChapterEntity) : Chapter<TailoringRequirement>
@@ -24,8 +24,8 @@ package requirement {
         resolve(domain : Logo) : LogoEntity
         resolve(domain : DRD) : DRDEntity
     }
-    JPARequirmentServiceRepositoryMapper --> "1" LogoRepository : repository
-    JPARequirmentServiceRepositoryMapper --> "1" DRDRepository : drdRepository
+    JPARequirementServiceRepositoryMapper --> "1" LogoRepository : repository
+    JPARequirementServiceRepositoryMapper --> "1" DRDRepository : drdRepository
 
     class JPARequirementServiceRepository {
     }
