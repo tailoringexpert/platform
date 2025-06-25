@@ -8,12 +8,12 @@
  * it under the terms of the GNU General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/gpl-3.0.html>.
@@ -23,22 +23,32 @@ package eu.tailoringexpert.auth;
 
 import lombok.NonNull;
 import lombok.extern.log4j.Log4j2;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.ldap.core.ContextSource;
 import org.springframework.ldap.core.support.BaseLdapPathContextSource;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.config.Customizer;
+import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.ldap.LdapBindAuthenticationManagerFactory;
 import org.springframework.security.ldap.search.FilterBasedLdapUserSearch;
 import org.springframework.security.ldap.search.LdapUserSearch;
 import org.springframework.security.ldap.userdetails.DefaultLdapAuthoritiesPopulator;
 import org.springframework.security.ldap.userdetails.LdapAuthoritiesPopulator;
+import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 import java.util.Collection;
+import java.util.Map;
+import static org.springframework.security.config.http.SessionCreationPolicy.STATELESS;
 
 @Log4j2
 @Configuration
+@EnableWebSecurity
 public class LDAPConfiguration {
 
     @Bean
@@ -113,4 +123,39 @@ public class LDAPConfiguration {
         return new JWTService(secret, expiresToken, expiresRefresh);
     }
 
+    @Bean
+    @SuppressWarnings("PMD.SignatureDeclareThrowsException")
+    SecurityFilterChain securityFilterChain(
+        @NonNull HttpSecurity http,
+        @NonNull JWTRequestFilter jwtRequestFilter,
+        @Value("${auth.permit-all}") String[] allPermissions,
+        @Value("${auth.authenticated}") String[] authenticatedPath,
+        @Qualifier("rolePermissions") Map<String, String[]> rolePermissions
+    ) throws Exception {
+        log.debug(rolePermissions);
+        http
+            .csrf(AbstractHttpConfigurer::disable)
+            .cors(Customizer.withDefaults())
+            .headers(headers ->
+                headers
+                    .contentSecurityPolicy(policy -> policy.policyDirectives("script-src 'self'"))
+            )
+            .authorizeHttpRequests(auth -> {
+                    rolePermissions.forEach((role, paths) ->
+                        auth.requestMatchers(paths).hasRole(role)
+                    );
+                    auth.requestMatchers(allPermissions).permitAll();
+                    auth.requestMatchers(authenticatedPath).authenticated();
+                }
+            )
+            .sessionManagement((Customizer.withDefaults()))
+            .logout(AbstractHttpConfigurer::disable)
+            .sessionManagement(sessionManagementCustomizer ->
+                sessionManagementCustomizer.sessionCreationPolicy(STATELESS)
+            );
+
+
+        http.addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class);
+        return http.build();
+    }
 }
