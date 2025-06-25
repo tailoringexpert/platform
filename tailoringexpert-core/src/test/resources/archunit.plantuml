@@ -10,6 +10,9 @@ skinparam componentStyle uml2
 [Renderer] <<..renderer..>>
 [Repository] <<..repository..>>
 
+[Auth] <<..auth..>>
+[Domain] <-- [Auth]
+
 [Requirement] <<..requirement..>>
 [Domain] <-- [Requirement]
 [Repository] <-- [Requirement]

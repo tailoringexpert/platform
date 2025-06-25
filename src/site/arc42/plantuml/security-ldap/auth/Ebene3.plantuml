@@ -1,0 +1,28 @@
+@startuml Ebene3.png
+hide empty members
+
+
+component [spring-security-ldap] {
+    class "LdapUserDetailsService" as springLdapUserDetailsService
+}
+
+package auth {
+
+    interface AuthenticationService
+
+    class LDAPUserDetailsService {
+    }
+    AuthenticationService <|.. LDAPUserDetailsService
+    springLdapUserDetailsService <|-- LDAPUserDetailsService
+    class JwtRequestFilter {
+    }
+
+    class JWTService {
+    }
+
+    class LDAPConfiguration {
+    }
+
+
+}
+@enduml

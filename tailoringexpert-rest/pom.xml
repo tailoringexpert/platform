@@ -53,6 +53,11 @@
             <groupId>org.springframework.security</groupId>
             <artifactId>spring-security-core</artifactId>
         </dependency>
+        <dependency>
+            <groupId>eu.tailoringexpert</groupId>
+            <artifactId>tailoringexpert-security-ldap</artifactId>
+            <scope>test</scope>
+        </dependency>
     </dependencies>
 
     <build>

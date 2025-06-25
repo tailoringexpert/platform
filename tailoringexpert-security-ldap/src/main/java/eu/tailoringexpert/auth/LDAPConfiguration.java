@@ -1,0 +1,116 @@
+/*-
+ * #%L
+ * TailoringExpert
+ * %%
+ * Copyright (C) 2022 - 2025 Michael Bädorf and others
+ * %%
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public
+ * License along with this program.  If not, see
+ * <http://www.gnu.org/licenses/gpl-3.0.html>.
+ * #L%
+ */
+package eu.tailoringexpert.auth;
+
+import lombok.NonNull;
+import lombok.extern.log4j.Log4j2;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.ldap.core.ContextSource;
+import org.springframework.ldap.core.support.BaseLdapPathContextSource;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.config.ldap.LdapBindAuthenticationManagerFactory;
+import org.springframework.security.ldap.search.FilterBasedLdapUserSearch;
+import org.springframework.security.ldap.search.LdapUserSearch;
+import org.springframework.security.ldap.userdetails.DefaultLdapAuthoritiesPopulator;
+import org.springframework.security.ldap.userdetails.LdapAuthoritiesPopulator;
+
+import java.util.Collection;
+
+@Log4j2
+@Configuration
+public class LDAPConfiguration {
+
+    @Bean
+    LdapUserSearch ldapUserSearch(
+        @Value("${ldap.user.base}") String userSearchBase,
+        @Value("${ldap.user.filter}") String userSearchFilter,
+        @NonNull BaseLdapPathContextSource contextSource
+    ) {
+        return new FilterBasedLdapUserSearch(userSearchBase, userSearchFilter, contextSource);
+    }
+
+    @Bean
+    LdapAuthoritiesPopulator ldapAuthoritiesPopulator(
+        @Value("${ldap.group.base}") String groupBase,
+        @NonNull ContextSource contextSource) {
+        return new DefaultLdapAuthoritiesPopulator(contextSource, groupBase);
+    }
+
+    @Bean
+    AuthenticationManager authenticationManager(
+        @Value("${ldap.user.base}") String userSearchBase,
+        @Value("${ldap.user.filter}") String userSearchFilter,
+        BaseLdapPathContextSource contextSource) {
+        LdapBindAuthenticationManagerFactory factory = new LdapBindAuthenticationManagerFactory(contextSource);
+        factory.setUserSearchFilter(userSearchFilter);
+        factory.setUserSearchBase(userSearchBase);
+        return factory.createAuthenticationManager();
+    }
+
+    @Bean
+    org.springframework.security.core.userdetails.UserDetailsService userDetailsService(
+        @Value("${ldap.group.defined}") Collection<String> definedRoles,
+        @NonNull AuthenticationManager authenticationManager,
+        @NonNull LdapUserSearch userSearch,
+        @NonNull LdapAuthoritiesPopulator authoritiesPopulator,
+        @NonNull JWTService jwtService
+
+    ) {
+        return new LDAPUserDetailsService(
+            authenticationManager,
+            userSearch,
+            definedRoles,
+            authoritiesPopulator,
+            jwtService
+        );
+    }
+
+    @Bean
+    AuthenticationService authenticationService(
+        @Value("${ldap.group.defined}") Collection<String> definedRoles,
+        @NonNull AuthenticationManager authenticationManager,
+        @NonNull LdapUserSearch userSearch,
+        @NonNull LdapAuthoritiesPopulator authoritiesPopulator,
+        @NonNull JWTService jwtService
+
+    ) {
+        return new LDAPUserDetailsService(
+            authenticationManager,
+            userSearch,
+            definedRoles,
+            authoritiesPopulator,
+            jwtService
+        );
+    }
+
+    @Bean
+    JWTService jwtService(
+        @Value("${jwt.secret}") String secret,
+        @Value("${jwt.expires.token}") long expiresToken,
+        @Value("${jwt.expires.refresh}") long expiresRefresh
+    ) {
+        return new JWTService(secret, expiresToken, expiresRefresh);
+    }
+
+}

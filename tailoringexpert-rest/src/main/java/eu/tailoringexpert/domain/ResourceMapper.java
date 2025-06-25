@@ -22,6 +22,7 @@
 package eu.tailoringexpert.domain;
 
 import eu.tailoringexpert.TailoringexpertMapperConfig;
+import eu.tailoringexpert.domain.AuthenticationResource.AuthenticationResourceBuilder;
 import eu.tailoringexpert.domain.BaseCatalogVersionResource.BaseCatalogVersionResourceBuilder;
 import eu.tailoringexpert.domain.DocumentSignatureResource.DocumentSignatureResourceBuilder;
 import eu.tailoringexpert.domain.FileResource.FileResourceBuilder;
@@ -44,12 +45,14 @@ import org.mapstruct.MappingTarget;
 import org.springframework.hateoas.Link;
 import org.springframework.hateoas.UriTemplate;
 
+import java.util.Collections;
 import java.util.LinkedHashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
 import static java.util.Arrays.asList;
+import static java.util.List.of;
 import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
 import static java.util.stream.Collectors.groupingBy;
@@ -62,6 +65,9 @@ import static java.util.stream.Collectors.toCollection;
 public abstract class ResourceMapper {
 
     // Resource URLs
+    public static final String AUTH_LOGIN = "auth/login";
+    public static final String AUTH_REFRESH = "auth/refresh";
+
     public static final String PROJECTS = "project";
     public static final String PROJECT_NEW = "catalog/{version}/project";
     public static final String PROJECT = "project/{project}";
@@ -109,6 +115,8 @@ public abstract class ResourceMapper {
 
     // RELs
     public static final String REL_SELF = "self";
+    public static final String REL_LOGIN = "login";
+    public static final String REL_REFRESH = "refresh";
     public static final String REL_SCREENINGSHEET = "screeningsheet";
     public static final String REL_SELECTIONVECTOR = "selectionvector";
     public static final String REL_TAILORING = "tailoring";
@@ -135,7 +143,18 @@ public abstract class ResourceMapper {
     @Setter
     private String contextPath;
 
-    // CatalogVersion
+    // AuthResponse
+    public abstract AuthenticationResource toResource(Authentication domain);
+
+    @AfterMapping
+    protected void addLinks(@MappingTarget AuthenticationResourceBuilder resource) {
+        resource.links(of(
+            createLink(REL_REFRESH, AUTH_REFRESH, Map.of())
+        ));
+    }
+
+
+        // CatalogVersion
     @BeforeMapping
     protected void updatePathContext(@Context PathContextBuilder pathContext, CatalogVersion domain) {
         pathContext.catalog(nonNull(domain) ? domain.getVersion() : null);
@@ -256,7 +275,7 @@ public abstract class ResourceMapper {
     public List<ScreeningSheetParameterResource> toResource(@Context PathContextBuilder builder,
                                                             List<ScreeningSheetParameter> parameters) {
         if (isNull(parameters)) {
-            return List.of();
+            return of();
         }
 
         // "persist" order of original provided categories
