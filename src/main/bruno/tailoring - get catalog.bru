@@ -1,0 +1,15 @@
+meta {
+  name: tailoring - get catalog
+  type: http
+  seq: 9
+}
+
+get {
+  url: {{project.self.href}}
+  body: none
+  auth: inherit
+}
+
+headers {
+  Authorization: Bearer {{accessToken}}
+}

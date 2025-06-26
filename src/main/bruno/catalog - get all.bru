@@ -1,0 +1,31 @@
+meta {
+  name: catalog - get all
+  type: http
+  seq: 6
+}
+
+get {
+  url: {{HOST}}{{links.catalog}}
+  body: none
+  auth: inherit
+}
+
+headers {
+  Authorization: Bearer {{accessToken}}
+}
+
+script:post-response {
+  let links = res.body._embedded.baseCatalogVersions[0]._links;
+  
+  const basecatalog = {};
+  basecatalog.convert = res.body._links.convert.href;
+  basecatalog.version =  res.body._embedded.baseCatalogVersions[0].version;
+  basecatalog.self = links.self.href;
+  basecatalog.project = links.project.href;
+  basecatalog.pdf = links.pdf.href;
+  basecatalog.excel = links.excel.href;
+  basecatalog.json = links.json.href;
+  basecatalog.document = links.document.href;
+  
+  bru.setEnvVar("basecatalog", basecatalog )
+}

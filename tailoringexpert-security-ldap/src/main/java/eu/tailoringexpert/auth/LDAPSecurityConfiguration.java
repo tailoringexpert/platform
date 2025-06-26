@@ -27,6 +27,8 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Primary;
+import org.springframework.context.annotation.Profile;
 import org.springframework.ldap.core.ContextSource;
 import org.springframework.ldap.core.support.BaseLdapPathContextSource;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -44,12 +46,13 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 
 import java.util.Collection;
 import java.util.Map;
+
 import static org.springframework.security.config.http.SessionCreationPolicy.STATELESS;
 
 @Log4j2
 @Configuration
 @EnableWebSecurity
-public class LDAPConfiguration {
+public class LDAPSecurityConfiguration {
 
     @Bean
     LdapUserSearch ldapUserSearch(
@@ -96,6 +99,7 @@ public class LDAPConfiguration {
         );
     }
 
+    @Primary
     @Bean
     AuthenticationService authenticationService(
         @Value("${ldap.group.defined}") Collection<String> definedRoles,
@@ -124,6 +128,13 @@ public class LDAPConfiguration {
     }
 
     @Bean
+    JWTRequestFilter jwtRequestFilter(
+        @NonNull JWTService jwtService
+    ) {
+        return new JWTRequestFilter(jwtService);
+    }
+
+    @Bean
     @SuppressWarnings("PMD.SignatureDeclareThrowsException")
     SecurityFilterChain securityFilterChain(
         @NonNull HttpSecurity http,
@@ -132,7 +143,6 @@ public class LDAPConfiguration {
         @Value("${auth.authenticated}") String[] authenticatedPath,
         @Qualifier("rolePermissions") Map<String, String[]> rolePermissions
     ) throws Exception {
-        log.debug(rolePermissions);
         http
             .csrf(AbstractHttpConfigurer::disable)
             .cors(Customizer.withDefaults())

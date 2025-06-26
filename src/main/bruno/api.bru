@@ -1,0 +1,31 @@
+meta {
+  name: api
+  type: http
+  seq: 3
+}
+
+get {
+  url: {{HOST}}/api
+  body: none
+  auth: inherit
+}
+
+headers {
+  Authorization: Bearer {{accessToken}}
+}
+
+script:post-response {
+  let data = res.body;
+  
+  const links = {};
+  links.login = data._links.login.href;
+  links.refresh = data._links.refresh.href;
+  links.catalog = data._links.catalog.href;
+  links.project = data._links.project.href;
+  links.screeningsheet = data._links.screeningsheet.href;
+  links.selectionvector = data._links.selectionvector.href;
+  links.catalogconversion = data._links.catalogconversion.href;
+  links.catalogpreview = data._links.catalogpreview.href;
+  
+  bru.setEnvVar("links", links )
+}

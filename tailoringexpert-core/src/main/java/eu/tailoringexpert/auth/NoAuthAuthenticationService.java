@@ -19,20 +19,20 @@
  * <http://www.gnu.org/licenses/gpl-3.0.html>.
  * #L%
  */
-package eu.tailoringexpert.domain;
+package eu.tailoringexpert.auth;
 
-import lombok.Builder;
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import lombok.Value;
+import eu.tailoringexpert.domain.Authentication;
 
-import java.io.Serializable;
+public class NoAuthAuthenticationService implements AuthenticationService {
+    @Override
+    public Authentication authenticate(String userId, String password) {
+        return Authentication.builder()
+            .userId(userId)
+            .build();
+    }
 
-@Value
-@Getter
-@Builder
-@EqualsAndHashCode(callSuper = false)
-public class AuthenticationRefreshRequest implements Serializable {
-	String userId;
-	String refreshToken;
+    @Override
+    public Authentication refresh(String userId, String token) {
+        return null;
+    }
 }

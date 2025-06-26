@@ -17,6 +17,11 @@
 
     <dependencies>
         <dependency>
+            <groupId>com.unboundid</groupId>
+            <artifactId>unboundid-ldapsdk</artifactId>
+            <scope>runtime</scope>
+        </dependency>
+        <dependency>
             <groupId>eu.tailoringexpert</groupId>
             <artifactId>tailoringexpert-core</artifactId>
         </dependency>
@@ -106,6 +111,10 @@
             <groupId>com.h2database</groupId>
             <artifactId>h2</artifactId>
             <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.security</groupId>
+            <artifactId>spring-security-ldap</artifactId>
         </dependency>
     </dependencies>
 

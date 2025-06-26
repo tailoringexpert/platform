@@ -1,0 +1,18 @@
+meta {
+  name: authenticate - refresh
+  type: http
+  seq: 5
+}
+
+post {
+  url: {{HOST}}{{links.refresh}}
+  body: json
+  auth: inherit
+}
+
+body:json {
+  {
+    "userId": "f_tx",
+    "refreshToken": "{{refreshToken}}"
+  }
+}

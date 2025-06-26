@@ -1,0 +1,9 @@
+{
+  "version": "1",
+  "name": "tailoringexpert-arsu-integrationtest",
+  "type": "collection",
+  "ignore": [
+    "node_modules",
+    ".git"
+  ]
+}

@@ -1,0 +1,29 @@
+meta {
+  name: project - get all
+  type: http
+  seq: 8
+}
+
+get {
+  url: {{HOST}}{{links.project}}
+  body: none
+  auth: inherit
+}
+
+headers {
+  Authorization: Bearer {{accessToken}}
+}
+
+script:post-response {
+  let links = res.body._embedded.projects[0]._links;
+  
+  const project = {};
+  project.self = links.self.href;
+  project.screeningsheet = links.screeningsheet.href;
+  project.selectionvector = links.selectionvector.href;
+  project.screeningsheet = links.screeningsheet.href;
+  project.tailoring = links.tailoring.href;
+  project.state = links.state.href;
+  
+  bru.setEnvVar("project", project )
+}

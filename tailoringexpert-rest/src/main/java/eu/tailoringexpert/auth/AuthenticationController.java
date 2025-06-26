@@ -70,7 +70,7 @@ public class AuthenticationController {
     public ResponseEntity<AuthenticationResource> refresh(@RequestBody AuthenticationRefreshRequest authRefreshRequest) {
         log.info("Authentication refresh request for user {} received!", authRefreshRequest.getUserId());
 
-        Authentication authenticate = authenticationService.refresh(authRefreshRequest.getUserId(), authRefreshRequest.getAccessToken());
+        Authentication authenticate = authenticationService.refresh(authRefreshRequest.getUserId(), authRefreshRequest.getRefreshToken());
         return ok()
             .body(mapper.toResource(authenticate));
     }

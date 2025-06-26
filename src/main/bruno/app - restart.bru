@@ -1,0 +1,11 @@
+meta {
+  name: app - restart
+  type: http
+  seq: 2
+}
+
+post {
+  url: {{HOST}}/api/actuator/restart
+  body: none
+  auth: inherit
+}

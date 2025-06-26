@@ -1,0 +1,25 @@
+meta {
+  name: authenticate - embedded
+  type: http
+  seq: 4
+}
+
+post {
+  url: {{HOST}}{{links.login}}
+  body: json
+  auth: inherit
+}
+
+body:json {
+  {
+    "userId": "f_tx",
+    "password": "test1234!"
+  }
+}
+
+script:post-response {
+  let data = res.body;
+  bru.setEnvVar("accessToken", data.accessToken);
+  bru.setEnvVar("refreshToken", data.refreshToken);
+  
+}
