@@ -107,7 +107,7 @@ class AuthenticationControllerTest {
         String refreshToken = "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJleUpoYkdjaU9pSklVekkxTmlKOS5leUp6ZFdJaU9pSm1YMlJsYlc4aUxDSnBZWFFpT2pFM05UQTROakl6TVRrc0ltVjRjQ0k2TVRjMU1EZzJNak0zT1N3aVozSmhiblJsWkVGMWRHaHZjbWwwYVdWeklqcGJJbEpQVEVWZlVrOU1SVEVpTENKU1QweEZYMUpQVEVVeUlsMTkuUFJoc18wMmc3QVZUbHUzaTJYMVE0QkktTHJSa0o3eTl5QldHOFhwV0NiSSIsImlhdCI6MTc1MDg2MjMyMCwiZXhwIjoxNzUwODYyOTIwLCJncmFudGVkQXV0aG9yaXRpZXMiOlsiUk9MRV9ST0xFMSIsIlJPTEVfUk9MRTIiXX0.C7YBvhFdICqO1r97QNpMEabJZImIgRKQygxFl_xC2gY";
         AuthenticationRefreshRequest authRequest = AuthenticationRefreshRequest.builder()
             .userId("f_tailor")
-            .accessToken(refreshToken)
+            .refreshToken(refreshToken)
             .build();
 
         Authentication authResponse = Authentication.builder()
@@ -115,7 +115,7 @@ class AuthenticationControllerTest {
             .userId("f_tailor")
             .build();
 
-        given(serviceMock.refresh(authRequest.getUserId(), authRequest.getAccessToken()))
+        given(serviceMock.refresh(authRequest.getUserId(), authRequest.getRefreshToken()))
             .willReturn(authResponse);
 
         // act
