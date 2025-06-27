@@ -45,7 +45,6 @@ import org.mapstruct.MappingTarget;
 import org.springframework.hateoas.Link;
 import org.springframework.hateoas.UriTemplate;
 
-import java.util.Collections;
 import java.util.LinkedHashSet;
 import java.util.LinkedList;
 import java.util.List;
@@ -143,11 +142,11 @@ public abstract class ResourceMapper {
     @Setter
     private String contextPath;
 
-    // AuthResponse
-    public abstract AuthenticationResource toResource(Authentication domain);
+    // AuthenticationResource
+    public abstract AuthenticationResource toResource(@Context PathContextBuilder pathContext, Authentication domain);
 
     @AfterMapping
-    protected void addLinks(@MappingTarget AuthenticationResourceBuilder resource) {
+    protected void addLinks(@Context PathContextBuilder pathContext, @MappingTarget AuthenticationResourceBuilder resource) {
         resource.links(of(
             createLink(REL_REFRESH, AUTH_REFRESH, Map.of())
         ));

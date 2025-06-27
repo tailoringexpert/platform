@@ -14,6 +14,8 @@ package domain {
 
     abstract class ResourceMapper {
         ..URL..
+        +{static} AUTH_LOGIN = "auth/login" : String
+        +{static} AUTH_REFRESH = "auth/refresh" : String
         +{static} PROJECTS = "projects" : String
         +{static} PROJECT_NEW =  "catalog/{version}/project": String
         +{static} PROJECT = "project/{project}" : String
@@ -55,6 +57,8 @@ package domain {
             
         ..Rel..
         +{static} REL_SELF = "self" : String
+        +{static} REL_LOGIN = "login" : String
+        +{static} REL_REFRESH = "refresh" : String
         +{static} REL_SCREENINGSHEET = "screeningsheet" : String
         +{static} REL_SELECTIONVECTOR = "selectionvector" : String
         +{static} REL_TAILORING = "tailoring" : String
@@ -77,6 +81,9 @@ package domain {
         -{static} REL_NOTE = "note" : String
         -{static} REL_VALIDUNTIL = "validuntil" : String
 
+        .. Authentication ..
+         +{abstract} toResource(pathContext :  PathContextBuilder, domain : Authentication) : AuthenticationResource
+        #addLinks(pathContext : PathContextBuilder, resource : AuthenticationResourceBuilder) : void
         .. CatalogVersion ..
         updatePathContext(pathContext : PathContextBuilder, domain : CatalogVersion): void
         +{abstract} toResource(pathContext :  PathContextBuilder, domain : CatalogVersion) : ProjectInformationResource
@@ -260,6 +267,25 @@ package domain {
         ATTACHMENT : String = "attachment"
     }
     mediaTypeFunction <|-- MediaTypeProvider
+
+    class AuthenticationRequest {
+        userId : String
+        password : String
+    }
+
+    class AuthenticationRefreshRequest {
+        userId : String
+        refreshToken : String
+    }
+
+    class AuthenticationResource {
+        userId : String
+        accessToken : String
+        refreshToken : String
+    }
+    RepresentationModel <|-- AuthenticationResource
+
+
 
 }
 hide empty members

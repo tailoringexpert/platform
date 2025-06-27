@@ -33,6 +33,8 @@ public class NoAuthAuthenticationService implements AuthenticationService {
 
     @Override
     public Authentication refresh(String userId, String token) {
-        return null;
+        return Authentication.builder()
+            .userId(userId)
+            .build();
     }
 }

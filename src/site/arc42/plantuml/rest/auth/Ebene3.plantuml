@@ -1,0 +1,25 @@
+@startuml
+hide empty members
+
+package eu.tailoringexpert {
+    package domain {
+        abstract class ResourceMapper
+    }
+}
+
+package auth {
+
+    interface AuthenticationService {
+    }
+
+
+    class AuthenticationController {
+        +postAuthenticate(authenticationRequest : AuthenticationRequest) : ResponseEntity<AuthenticationResource>
+        +postRefreshAccessToken(authenticationRefreshRequest : AuthenticationRefreshRequest) : ResponseEntity<AuthenticationResource>
+    }
+
+
+    AuthenticationController --> "1" ResourceMapper : mapper
+    AuthenticationController --> "1" AuthenticationService : authenticationService
+}
+@enduml

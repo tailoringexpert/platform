@@ -1,0 +1,14 @@
+@startuml Ebene3.png
+hide empty members
+
+package auth {
+    interface AuthenticationService {
+        authenticate(userId : String, password : String ) : Authentication
+        refresh(userId : String, token : String ) : Authentication
+    }
+
+    class NoAuthAuthenticationService {
+    }
+    AuthenticationService <|.. NoAuthAuthenticationService
+}
+@enduml

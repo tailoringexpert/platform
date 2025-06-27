@@ -67,7 +67,7 @@ class AuthenticationControllerTest {
 
     @SneakyThrows
     @Test
-    void testAuthenticateWhenProperRequestShouldReturnProperAuthentication() {
+    void testPostAuthenticateWhenProperRequestShouldReturnProperAuthentication() {
         // arrange
         String accessToken = "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJmX2RlbW8iLCJpYXQiOjE3NTA4NjIzMTksImV4cCI6MTc1MDg2MjM3OSwiZ3JhbnRlZEF1dGhvcml0aWVzIjpbIlJPTEVfUk9MRTEiLCJST0xFX1JPTEUyIl19.PRhs_02g7AVTlu3i2X1Q4BI-LrRkJ7y9yBWG8XpWCbI";
         String refreshToken = "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJleUpoYkdjaU9pSklVekkxTmlKOS5leUp6ZFdJaU9pSm1YMlJsYlc4aUxDSnBZWFFpT2pFM05UQTROakl6TVRrc0ltVjRjQ0k2TVRjMU1EZzJNak0zT1N3aVozSmhiblJsWkVGMWRHaHZjbWwwYVdWeklqcGJJbEpQVEVWZlVrOU1SVEVpTENKU1QweEZYMUpQVEVVeUlsMTkuUFJoc18wMmc3QVZUbHUzaTJYMVE0QkktTHJSa0o3eTl5QldHOFhwV0NiSSIsImlhdCI6MTc1MDg2MjMyMCwiZXhwIjoxNzUwODYyOTIwLCJncmFudGVkQXV0aG9yaXRpZXMiOlsiUk9MRV9ST0xFMSIsIlJPTEVfUk9MRTIiXX0.C7YBvhFdICqO1r97QNpMEabJZImIgRKQygxFl_xC2gY";
@@ -101,7 +101,7 @@ class AuthenticationControllerTest {
 
     @SneakyThrows
     @Test
-    void refresh() {
+    void postRefreshAccessToken() {
         // arrange
         String token = "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJmX2RlbW8iLCJpYXQiOjE3NTA4NjIzMTksImV4cCI6MTc1MDg2MjM3OSwiZ3JhbnRlZEF1dGhvcml0aWVzIjpbIlJPTEVfUk9MRTEiLCJST0xFX1JPTEUyIl19.PRhs_02g7AVTlu3i2X1Q4BI-LrRkJ7y9yBWG8XpWCbI";
         String refreshToken = "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJleUpoYkdjaU9pSklVekkxTmlKOS5leUp6ZFdJaU9pSm1YMlJsYlc4aUxDSnBZWFFpT2pFM05UQTROakl6TVRrc0ltVjRjQ0k2TVRjMU1EZzJNak0zT1N3aVozSmhiblJsWkVGMWRHaHZjbWwwYVdWeklqcGJJbEpQVEVWZlVrOU1SVEVpTENKU1QweEZYMUpQVEVVeUlsMTkuUFJoc18wMmc3QVZUbHUzaTJYMVE0QkktTHJSa0o3eTl5QldHOFhwV0NiSSIsImlhdCI6MTc1MDg2MjMyMCwiZXhwIjoxNzUwODYyOTIwLCJncmFudGVkQXV0aG9yaXRpZXMiOlsiUk9MRV9ST0xFMSIsIlJPTEVfUk9MRTIiXX0.C7YBvhFdICqO1r97QNpMEabJZImIgRKQygxFl_xC2gY";
