@@ -154,8 +154,8 @@ public class LDAPSecurityConfiguration {
                     rolePermissions.forEach((role, paths) ->
                         auth.requestMatchers(paths).hasRole(role)
                     );
-                    auth.requestMatchers(allPermissions).permitAll();
-                    auth.requestMatchers(authenticatedPath).authenticated();
+                auth.requestMatchers(allPermissions).permitAll();
+                auth.requestMatchers(authenticatedPath).authenticated();
                 }
             )
             .sessionManagement((Customizer.withDefaults()))

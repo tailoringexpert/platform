@@ -46,12 +46,6 @@
             <artifactId>tailoringexpert-tenant</artifactId>
         </dependency>
 
-        <dependency>
-            <groupId>eu.tailoringexpert</groupId>
-            <artifactId>tailoringexpert-security</artifactId>
-            <scope>provided</scope>
-        </dependency>
-
         <!-- spring -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
