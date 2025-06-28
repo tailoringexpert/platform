@@ -242,12 +242,6 @@ package domain {
     applicableDocumentProvider <|-- ApplicableDocumentProvider
     ApplicableDocumentProvider --> "1" documentComparator : numberComparator
 
-   class Authentication{
-        userId : String
-        accessToken : String
-        refreshToken : String
-   }
-
 }
 hide empty members
 @enduml

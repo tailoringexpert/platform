@@ -8,12 +8,12 @@
  * it under the terms of the GNU General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/gpl-3.0.html>.
@@ -39,7 +39,7 @@ import java.util.Collection;
 import java.util.List;
 
 @Log4j2
-public class LDAPUserDetailsService extends LdapUserDetailsService implements AuthenticationService {
+public class LDAPUserDetailsService extends LdapUserDetailsService {
 
     Collection<String> definedRoles;
     JWTService tokenProvider;
@@ -66,7 +66,6 @@ public class LDAPUserDetailsService extends LdapUserDetailsService implements Au
      * @param password
      * @return An {@link Authentication} object populated with user detail information and a JWT token to be used in following calls.
      */
-    @Override
     public Authentication authenticate(@NonNull String userId, @NonNull String password) {
         UserDetails userDetails = loadUserByUsername(userId);
         Collection<? extends GrantedAuthority> grantedAuthorities = userDetails.getAuthorities();
@@ -89,11 +88,10 @@ public class LDAPUserDetailsService extends LdapUserDetailsService implements Au
             .build();
     }
 
-    @Override
     public Authentication refresh(String userId, String refreshToken) {
         Claims claims = tokenProvider.getClaimsOf(refreshToken);
 
-        if ( !userId.equals(tokenProvider.getUserNameOf(claims))) {
+        if (!userId.equals(tokenProvider.getUserNameOf(claims))) {
             throw log.throwing(new AuthenticationServiceException("User not owner of token"));
         }
 

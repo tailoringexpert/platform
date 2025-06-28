@@ -70,7 +70,6 @@ public class AppController {
             .ok()
             .body(empty(
                     mapper.createLink("login", AUTH_LOGIN, parameter),
-                    mapper.createLink("refresh", AUTH_REFRESH, parameter),
                     mapper.createLink("catalog", BASECATALOG, parameter),
                     mapper.createLink("project", PROJECTS, parameter),
                     mapper.createLink("screeningsheet", SCREENINGSHEET, parameter),

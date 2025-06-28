@@ -27,8 +27,6 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Primary;
-import org.springframework.context.annotation.Profile;
 import org.springframework.ldap.core.ContextSource;
 import org.springframework.ldap.core.support.BaseLdapPathContextSource;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -37,6 +35,7 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.ldap.LdapBindAuthenticationManagerFactory;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.ldap.search.FilterBasedLdapUserSearch;
 import org.springframework.security.ldap.search.LdapUserSearch;
 import org.springframework.security.ldap.userdetails.DefaultLdapAuthoritiesPopulator;
@@ -99,25 +98,6 @@ public class LDAPSecurityConfiguration {
         );
     }
 
-    @Primary
-    @Bean
-    AuthenticationService authenticationService(
-        @Value("${ldap.group.defined}") Collection<String> definedRoles,
-        @NonNull AuthenticationManager authenticationManager,
-        @NonNull LdapUserSearch userSearch,
-        @NonNull LdapAuthoritiesPopulator authoritiesPopulator,
-        @NonNull JWTService jwtService
-
-    ) {
-        return new LDAPUserDetailsService(
-            authenticationManager,
-            userSearch,
-            definedRoles,
-            authoritiesPopulator,
-            jwtService
-        );
-    }
-
     @Bean
     JWTService jwtService(
         @Value("${jwt.secret}") String secret,
@@ -132,6 +112,17 @@ public class LDAPSecurityConfiguration {
         @NonNull JWTService jwtService
     ) {
         return new JWTRequestFilter(jwtService);
+    }
+
+    @Bean
+    AuthenticationController authenticationController(
+        @NonNull @Value("${server.servlet.context-path}") String contextPath,
+        @NonNull LDAPUserDetailsService userDetailsService
+    ) {
+        return new AuthenticationController(
+            contextPath,
+            userDetailsService
+        );
     }
 
     @Bean
@@ -154,8 +145,8 @@ public class LDAPSecurityConfiguration {
                     rolePermissions.forEach((role, paths) ->
                         auth.requestMatchers(paths).hasRole(role)
                     );
-                auth.requestMatchers(allPermissions).permitAll();
-                auth.requestMatchers(authenticatedPath).authenticated();
+                    auth.requestMatchers(allPermissions).permitAll();
+                    auth.requestMatchers(authenticatedPath).authenticated();
                 }
             )
             .sessionManagement((Customizer.withDefaults()))

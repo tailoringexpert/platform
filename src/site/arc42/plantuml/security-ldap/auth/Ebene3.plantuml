@@ -1,9 +1,6 @@
 @startuml Ebene3.png
 hide empty members
 
-component [tailoringexpert-core] {
-        interface AuthenticationService
-}
 component [spring-web] {
     abstract class OncePerRequestFilter
 }
@@ -15,8 +12,9 @@ component [spring-security-ldap] {
 package auth {
 
     class LDAPUserDetailsService {
+        authenticate(userId : String, password : String ) : Authentication
+        refresh(userId : String, token : String ) : Authentication
     }
-    AuthenticationService <|.. LDAPUserDetailsService
     springLdapUserDetailsService <|-- LDAPUserDetailsService
 
     class JWTRequestFilter {
@@ -39,6 +37,14 @@ package auth {
         -getSignInKey() : SecretKey
 
     }
+
+    class AuthenticationController {
+        -contextPath : String
+        +postAuthenticate(authenticationRequest : AuthenticationRequest) : ResponseEntity<AuthenticationResource>
+        +postRefreshAccessToken(authenticationRefreshRequest : AuthenticationRefreshRequest) : ResponseEntity<AuthenticationResource>
+    }
+    AuthenticationController --> "1" LDAPUserDetailsService : service
+}
 
     class LDAPConfiguration {
     }

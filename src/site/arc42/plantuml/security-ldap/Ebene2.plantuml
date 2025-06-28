@@ -1,16 +1,12 @@
 @startuml Ebene2.png
-hide empty members
-allow_mixing
+skinparam componentStyle uml2
 
-'skinparam componentStyle uml2
-'skinparam component {
-'  BorderColor #grey
-'  BackgroundColor #white
-'}
-'
 component security-ldap {
 
-    component auth
+    [Domain]
+
+    [Auth]
+    [Domain] <-- [Auth]
 
 }
 

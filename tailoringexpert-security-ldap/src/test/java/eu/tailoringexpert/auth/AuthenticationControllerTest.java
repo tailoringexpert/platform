@@ -22,7 +22,9 @@
 package eu.tailoringexpert.auth;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import eu.tailoringexpert.domain.*;
+import eu.tailoringexpert.domain.Authentication;
+import eu.tailoringexpert.domain.AuthenticationRefreshRequest;
+import eu.tailoringexpert.domain.AuthenticationRequest;
 import lombok.SneakyThrows;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -48,20 +50,18 @@ class AuthenticationControllerTest {
     private static final String RESPONSE_FIELD_PATH_USERNAME = "$.userId";
 
     ObjectMapper objectMapper;
-    ResourceMapper resourceMapper;
 
-    AuthenticationService serviceMock;
+    LDAPUserDetailsService serviceMock;
     AuthenticationController controller;
     MockMvc mockMvc;
 
 
     @BeforeEach
     void setUp() {
-        this.resourceMapper = new ResourceMapperGenerated();
         this.objectMapper = new ObjectMapper();
 
-        this.serviceMock = mock(AuthenticationService.class);
-        this.controller = new AuthenticationController(resourceMapper, serviceMock);
+        this.serviceMock = mock(LDAPUserDetailsService.class);
+        this.controller = new AuthenticationController("/api", serviceMock);
         this.mockMvc = standaloneSetup(controller).build();
     }
 

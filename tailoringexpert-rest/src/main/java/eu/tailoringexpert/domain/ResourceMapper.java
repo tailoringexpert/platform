@@ -22,7 +22,6 @@
 package eu.tailoringexpert.domain;
 
 import eu.tailoringexpert.TailoringexpertMapperConfig;
-import eu.tailoringexpert.domain.AuthenticationResource.AuthenticationResourceBuilder;
 import eu.tailoringexpert.domain.BaseCatalogVersionResource.BaseCatalogVersionResourceBuilder;
 import eu.tailoringexpert.domain.DocumentSignatureResource.DocumentSignatureResourceBuilder;
 import eu.tailoringexpert.domain.FileResource.FileResourceBuilder;
@@ -65,7 +64,6 @@ public abstract class ResourceMapper {
 
     // Resource URLs
     public static final String AUTH_LOGIN = "auth/login";
-    public static final String AUTH_REFRESH = "auth/refresh";
 
     public static final String PROJECTS = "project";
     public static final String PROJECT_NEW = "catalog/{version}/project";
@@ -115,7 +113,6 @@ public abstract class ResourceMapper {
     // RELs
     public static final String REL_SELF = "self";
     public static final String REL_LOGIN = "login";
-    public static final String REL_REFRESH = "refresh";
     public static final String REL_SCREENINGSHEET = "screeningsheet";
     public static final String REL_SELECTIONVECTOR = "selectionvector";
     public static final String REL_TAILORING = "tailoring";
@@ -142,18 +139,8 @@ public abstract class ResourceMapper {
     @Setter
     private String contextPath;
 
-    // AuthenticationResource
-    public abstract AuthenticationResource toResource(@Context PathContextBuilder pathContext, Authentication domain);
 
-    @AfterMapping
-    protected void addLinks(@Context PathContextBuilder pathContext, @MappingTarget AuthenticationResourceBuilder resource) {
-        resource.links(of(
-            createLink(REL_REFRESH, AUTH_REFRESH, Map.of())
-        ));
-    }
-
-
-        // CatalogVersion
+    // CatalogVersion
     @BeforeMapping
     protected void updatePathContext(@Context PathContextBuilder pathContext, CatalogVersion domain) {
         pathContext.catalog(nonNull(domain) ? domain.getVersion() : null);
