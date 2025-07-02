@@ -40,12 +40,7 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.Collections;
 import java.util.Map;
 
-import static eu.tailoringexpert.domain.ResourceMapper.BASECATALOG;
-import static eu.tailoringexpert.domain.ResourceMapper.BASECATALOG_CONVERT_EXCEL;
-import static eu.tailoringexpert.domain.ResourceMapper.BASECATALOG_PREVIEW_PDF;
-import static eu.tailoringexpert.domain.ResourceMapper.PROJECTS;
-import static eu.tailoringexpert.domain.ResourceMapper.SCREENINGSHEET;
-import static eu.tailoringexpert.domain.ResourceMapper.SELECTIONVECTOR_PROFILE;
+import static eu.tailoringexpert.domain.ResourceMapper.*;
 import static org.springframework.hateoas.CollectionModel.empty;
 
 /**
@@ -74,6 +69,7 @@ public class AppController {
         ResponseEntity<CollectionModel<T>> result = ResponseEntity
             .ok()
             .body(empty(
+                    mapper.createLink("login", AUTH_LOGIN, parameter),
                     mapper.createLink("catalog", BASECATALOG, parameter),
                     mapper.createLink("project", PROJECTS, parameter),
                     mapper.createLink("screeningsheet", SCREENINGSHEET, parameter),

@@ -222,7 +222,7 @@ package domain {
     }
     class DRDApplicablePredicate<String, Collection<Phase>> {
     }
-    Applicl+ableBiPredicate <|.. DRDApplicablePredicate
+    AppliclableBiPredicate <|.. DRDApplicablePredicate
 
 
     interface "BiFunction<T, U, R>" as DRDProviderBiFunction {
@@ -232,7 +232,7 @@ package domain {
     }
     DRDProviderBiFunction <|.. DRDProvider
     DRDProvider --> "1" RequirementSelectionPredicate : selectionPredicate
-    DRDProvider --> "1" Applicl+ableBiPredicate : predicate
+    DRDProvider --> "1" AppliclableBiPredicate : predicate
 
     interface "Function<Catalog<TailoringRequirement>, Collection<Document>>" as applicableDocumentProvider {
     }
@@ -241,7 +241,6 @@ package domain {
     }
     applicableDocumentProvider <|-- ApplicableDocumentProvider
     ApplicableDocumentProvider --> "1" documentComparator : numberComparator
-
 
 }
 hide empty members

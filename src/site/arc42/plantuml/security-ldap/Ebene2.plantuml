@@ -1,0 +1,14 @@
+@startuml Ebene2.png
+skinparam componentStyle uml2
+
+component security-ldap {
+
+    [Domain]
+
+    [Auth]
+    [Domain] <-- [Auth]
+
+}
+
+
+@enduml
