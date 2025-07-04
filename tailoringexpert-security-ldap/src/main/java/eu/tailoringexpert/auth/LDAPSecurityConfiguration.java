@@ -42,11 +42,16 @@ import org.springframework.security.ldap.userdetails.DefaultLdapAuthoritiesPopul
 import org.springframework.security.ldap.userdetails.LdapAuthoritiesPopulator;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.CorsConfigurationSource;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 import java.util.Collection;
 import java.util.Map;
 import java.util.Objects;
 
+import static java.util.Collections.singletonList;
+import static java.util.List.of;
 import static java.util.Objects.nonNull;
 import static org.springframework.security.config.http.SessionCreationPolicy.STATELESS;
 
@@ -125,6 +130,18 @@ public class LDAPSecurityConfiguration {
             contextPath,
             userDetailsService
         );
+    }
+
+    @Bean
+    CorsConfigurationSource corsConfigurationSource() {
+        CorsConfiguration configuration = new CorsConfiguration();
+        configuration.setAllowedHeaders(of("*"));
+        configuration.setAllowedOrigins(singletonList("*"));
+        configuration.setAllowedMethods(of("*"));
+        configuration.setExposedHeaders(of("*"));
+        UrlBasedCorsConfigurationSource result = new UrlBasedCorsConfigurationSource();
+        result.registerCorsConfiguration("/**", configuration);
+        return result;
     }
 
     @Bean
