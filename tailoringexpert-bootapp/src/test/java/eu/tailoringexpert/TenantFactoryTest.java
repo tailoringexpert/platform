@@ -21,6 +21,7 @@
  */
 package eu.tailoringexpert;
 
+import lombok.extern.log4j.Log4j2;
 import org.jasypt.encryption.pbe.StandardPBEStringEncryptor;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -41,22 +42,29 @@ import java.util.Map;
 import java.util.Properties;
 import java.util.stream.Stream;
 
+import static java.nio.file.Files.newInputStream;
+import static java.nio.file.Files.walk;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.catchThrowable;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.mockStatic;
+import static org.mockito.Mockito.*;
 
+@Log4j2
 class TenantFactoryTest {
 
     StandardPBEStringEncryptor encryptor;
+    DataSource defaultDataSourceMock;
+    TenantFactory factory;
 
     @BeforeEach
     void beforeEach() {
+        this.defaultDataSourceMock = mock(DataSource.class);
+        String tenantConfigRoot = Paths.get("tenants").toAbsolutePath().toString();
         this.encryptor = new StandardPBEStringEncryptor();
         this.encryptor.setPassword("TailoringForDemo!");
         this.encryptor.setAlgorithm("PBEWithMD5AndTripleDES");
+
+        this.factory = spy(new TenantFactory(this.defaultDataSourceMock, tenantConfigRoot, this.encryptor));
     }
 
     @AfterEach
@@ -72,15 +80,11 @@ class TenantFactoryTest {
         // arrange
         String tenantConfigRoot = Paths.get("tenants").toAbsolutePath().toString();
 
-        // act
-        Map<String, String> actual;
-        try (MockedStatic<TenantFactory> tf = mockStatic(TenantFactory.class)) {
-            tf.when(() -> TenantFactory.findByFileExtension(eq(Paths.get(tenantConfigRoot)), eq(".properties")))
-                .thenReturn(Stream.<Path>empty());
+        doReturn(Stream.<Path>empty())
+            .when(factory).findByFileExtension(Paths.get(tenantConfigRoot), ".properties");
 
-            tf.when(() -> TenantFactory.tenants(any(), any())).thenCallRealMethod();
-            actual = TenantFactory.tenants(tenantConfigRoot, this.encryptor);
-        }
+        // act
+        Map<String, String> actual = factory.tenants();
 
         // assert
         assertThat(actual).isEmpty();
@@ -93,17 +97,13 @@ class TenantFactoryTest {
         File file = createFile();
         Properties properties = createProperties();
 
-        // act
-        Map<String, String> actual;
-        try (MockedStatic<TenantFactory> tf = mockStatic(TenantFactory.class)) {
-            tf.when(() -> TenantFactory.findByFileExtension(eq(Paths.get(tenantConfigRoot)), eq(".properties")))
-                .thenReturn(Stream.of(file.toPath()));
-            tf.when(() -> TenantFactory.loadProperties(eq(file), eq(this.encryptor)))
-                .thenReturn(properties);
+        doReturn(Stream.of(file.toPath()))
+            .when(factory).findByFileExtension(Paths.get(tenantConfigRoot), ".properties");
+        doReturn(properties)
+            .when(factory).loadProperties(file);
 
-            tf.when(() -> TenantFactory.tenants(any(), any())).thenCallRealMethod();
-            actual = TenantFactory.tenants(tenantConfigRoot, this.encryptor);
-        }
+        // act
+        Map<String, String> actual = factory.tenants();
 
         // assert
         assertThat(actual).hasSize(1);
@@ -117,19 +117,15 @@ class TenantFactoryTest {
         File file = createFile();
         Properties properties = createProperties();
 
-        // act
-        DataSource actual;
-        try (MockedStatic<TenantFactory> tf = mockStatic(TenantFactory.class)) {
-            tf.when(() -> TenantFactory.findByFileExtension(eq(Paths.get(tenantConfigRoot)), eq(".properties")))
-                .thenReturn(Stream.of(file.toPath()));
-            tf.when(() -> TenantFactory.loadProperties(eq(file), eq(this.encryptor)))
-                .thenReturn(properties);
-            tf.when(() -> TenantFactory.buildDataSource(eq(properties)))
-                .thenReturn(createDefaultDataSource());
+        doReturn(Stream.of(file.toPath()))
+            .when(factory).findByFileExtension(Paths.get(tenantConfigRoot), ".properties");
+        doReturn(properties)
+            .when(factory).loadProperties(file);
+        doReturn(createDefaultDataSource())
+            .when(factory).buildDataSource(properties);
 
-            tf.when(() -> TenantFactory.dataSource(any(), any(), any())).thenCallRealMethod();
-            actual = TenantFactory.dataSource(createDefaultDataSource(), tenantConfigRoot, this.encryptor);
-        }
+        // act
+        DataSource actual = factory.dataSource();
 
         // assert
         assertThat(actual)
@@ -146,7 +142,7 @@ class TenantFactoryTest {
         Properties properties = createProperties();
 
         // act
-        DataSource actual = TenantFactory.buildDataSource(properties);
+        DataSource actual = factory.buildDataSource(properties);
 
         // assert
         assertThat(actual)
@@ -164,16 +160,44 @@ class TenantFactoryTest {
         }
 
         // act
-        Properties actual;
-        try (MockedStatic<TenantFactory> tf = mockStatic(TenantFactory.class)) {
-            tf.when(() -> TenantFactory.loadProperties(any(), any())).thenCallRealMethod();
-            actual = TenantFactory.loadProperties(propertiesFile, this.encryptor);
-        }
+        Properties actual = factory.loadProperties(propertiesFile);
 
         // assert
         assertThat(actual).isNotNull();
-        assertThat(actual.getProperty("id")).isEqualTo("demo");
     }
+
+    @Test
+    void loadProperties_FileWithEnvVarExits_PropertiesWithResolvedEnvVarReturned() throws Exception {
+        // arrange
+        File propertiesFile = createFile();
+
+        // act
+        Properties actual = factory.loadProperties(propertiesFile);
+
+        // assert
+        assertThat(actual).isNotNull();
+        assertThat(actual.getProperty("ENV"))
+            .isNotBlank()
+            .isNotEqualTo("${PATH}");
+    }
+
+    @Test
+    void loadProperties_FileWithSystemPropertyExits_PropertiesWithResolvedSystemPropertyReturned() throws Exception {
+        // arrange
+        System.setProperty("MY_PROP", "ENC(4qBa1ScLN/2lSdLpjRcdqnBtlN5zQrVW54n04C3f90U=");
+
+        File propertiesFile = createFile();
+
+        // act
+        Properties actual = factory.loadProperties(propertiesFile);
+
+        // assert
+        assertThat(actual).isNotNull();
+        assertThat(actual.getProperty("SYSTEM"))
+            .isNotBlank()
+            .isEqualTo("ENC(4qBa1ScLN/2lSdLpjRcdqnBtlN5zQrVW54n04C3f90U=");
+    }
+
 
     @Test
     void findByFileExtension_FileExceptionMocked_ExceptionThrown() {
@@ -183,8 +207,8 @@ class TenantFactoryTest {
         // act
         Throwable actual;
         try (MockedStatic<Files> files = mockStatic(Files.class)) {
-            files.when(() -> Files.walk(path, 1)).thenThrow(new IOException());
-            actual = catchThrowable(() -> TenantFactory.findByFileExtension(path, ".properties"));
+            files.when(() -> walk(path, 1)).thenThrow(new IOException());
+            actual = catchThrowable(() -> factory.findByFileExtension(path, ".properties"));
         }
 
         // assert
@@ -195,13 +219,12 @@ class TenantFactoryTest {
     void loadProperties_FileExceptionMocked_ExceptionThrown() {
         // arrange
         File file = Paths.get("tenants", "test.properties").toFile();
-        StandardPBEStringEncryptor encryptorMock = mock(StandardPBEStringEncryptor.class);
 
         // act
         Throwable actual;
         try (MockedStatic<Files> files = mockStatic(Files.class)) {
-            files.when(() -> Files.newInputStream(any())).thenThrow(new IOException());
-            actual = catchThrowable(() -> TenantFactory.loadProperties(file, encryptorMock));
+            files.when(() -> newInputStream(any())).thenThrow(new IOException());
+            actual = catchThrowable(() -> factory.loadProperties(file));
         }
 
         // assert
@@ -212,16 +235,9 @@ class TenantFactoryTest {
         File result = File.createTempFile("demo", ".properties");
         result.deleteOnExit();
 
-        Properties properties = new Properties();
-        properties.put("id", "demo");
-        properties.put("name", "demo");
-        properties.put("type", "org.springframework.jdbc.datasource.DriverManagerDataSource");
-        properties.put("spring.datasource.driver-class-name", "org.h2.Driver");
-        properties.put("spring.datasource.url", "jdbc:h2:mem:tailoringexpert-demo;DB_CLOSE_DELAY=-1");
-        properties.put("spring.datasource.username", "tailoringexpert_demo");
-        properties.put("spring.datasource.password", "ENC(4qBa1ScLN/2lSdLpjRcdqnBtlN5zQrVW54n04C3f90U=)");
-
+        Properties properties = createProperties();
         properties.store(Files.newOutputStream(result.toPath()), "unittest");
+
         return result;
     }
 
@@ -234,6 +250,9 @@ class TenantFactoryTest {
         result.put("spring.datasource.url", "jdbc:h2:mem:tailoringexpert-demo;DB_CLOSE_DELAY=-1");
         result.put("spring.datasource.username", "tailoringexpert_demo");
         result.put("spring.datasource.password", "ENC(4qBa1ScLN/2lSdLpjRcdqnBtlN5zQrVW54n04C3f90U=)");
+        result.put("ENV", "${PATH}");
+        result.put("SYSTEM", "${MY_PROP}");
+
         return result;
     }
 

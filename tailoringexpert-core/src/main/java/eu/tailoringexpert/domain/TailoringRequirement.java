@@ -52,15 +52,17 @@ public class TailoringRequirement extends Requirement implements Serializable {
     private ZonedDateTime textChanged;
 
     @Builder
+    @SuppressWarnings("java:S107")
     public TailoringRequirement(
         String text,
         String position,
         Collection<DRD> drds,
+        Collection<Document> applicableDocuments,
         Boolean selected,
         ZonedDateTime selectionChanged,
         ZonedDateTime textChanged,
         Reference reference) {
-        super(text, position, reference, drds);
+        super(text, position, reference, applicableDocuments, drds);
         this.selected = selected;
         this.selectionChanged = selectionChanged;
         this.textChanged = textChanged;

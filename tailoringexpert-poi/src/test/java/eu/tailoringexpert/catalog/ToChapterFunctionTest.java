@@ -24,12 +24,7 @@ package eu.tailoringexpert.catalog;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import eu.tailoringexpert.FileSaver;
 import eu.tailoringexpert.TailoringexpertException;
-import eu.tailoringexpert.domain.BaseRequirement;
-import eu.tailoringexpert.domain.Chapter;
-import eu.tailoringexpert.domain.DRD;
-import eu.tailoringexpert.domain.Identifier;
-import eu.tailoringexpert.domain.Logo;
-import eu.tailoringexpert.domain.Reference;
+import eu.tailoringexpert.domain.*;
 import lombok.extern.log4j.Log4j2;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
@@ -56,6 +51,7 @@ class ToChapterFunctionTest {
 
     Function<Sheet, Map<String, DRD>> toDRDMappingMock;
     Function<Sheet, Map<String, Logo>> toLogoMappingMock;
+    Function<Sheet, Map<String, Document>> toDocumentFunctionMock;
 
 
     Function<String, Identifier> toIdentifierFunctionMock;
@@ -73,12 +69,14 @@ class ToChapterFunctionTest {
         this.toLogoMappingMock = mock(Function.class);
         this.toIdentifierFunctionMock = mock(Function.class);
         this.toLogoFunctionMock = mock(BiFunction.class);
+        this.toDocumentFunctionMock = mock(Function.class);
         this.toReferenceFunctionMock = mock(BiFunction.class);
         this.chapterConsumerMock = mock(BiConsumer.class);
 
         this.toFunction = new ToChapterFunction(
             this.toDRDMappingMock,
             this.toLogoMappingMock,
+            this.toDocumentFunctionMock,
             this.toIdentifierFunctionMock,
             this.toLogoFunctionMock,
             this.toReferenceFunctionMock,
@@ -98,6 +96,7 @@ class ToChapterFunctionTest {
         ToChapterFunction noMocksToFunction = new ToChapterFunction(
             new ToDRDMappingFunction(),
             new ToLogoMappingFunction(),
+            new ToDocumentMappingFunction(),
             new ToIdentifierFunction(),
             new ToLogoFunction(),
             new ToReferenceFunction(),
@@ -125,6 +124,7 @@ class ToChapterFunctionTest {
         ToChapterFunction noMocksToFunction = new ToChapterFunction(
             new ToDRDMappingFunction(),
             new ToLogoMappingFunction(),
+            new ToDocumentMappingFunction(),
             new ToIdentifierFunction(),
             new ToLogoFunction(),
             new ToReferenceFunction(),

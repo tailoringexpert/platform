@@ -25,6 +25,7 @@ import eu.tailoringexpert.domain.BaseRequirement;
 import eu.tailoringexpert.domain.Catalog;
 import eu.tailoringexpert.domain.Chapter;
 import eu.tailoringexpert.domain.DRD;
+import eu.tailoringexpert.domain.Document;
 import eu.tailoringexpert.domain.Phase;
 import lombok.extern.log4j.Log4j2;
 import org.apache.poi.ss.usermodel.Row;
@@ -47,14 +48,14 @@ public class RequirementSheetCreator implements BiConsumer<Catalog<BaseRequireme
 
     @Override
     public void accept(Catalog<BaseRequirement> catalog, Sheet sheet) {
-        log.traceEntry(() -> catalog, () -> catalog.getVersion());
+        log.traceEntry(() -> catalog, catalog::getVersion);
 
         Styles styles = new Styles(sheet.getWorkbook());
 
         catalog.getToc().getChapters()
             .forEach(chapter -> addChapter(chapter, sheet, styles));
 
-        sheet.setAutoFilter(new CellRangeAddress(0, 0, 0, 6));
+        sheet.setAutoFilter(new CellRangeAddress(0, 0, 0, 7));
         range(0, sheet.getRow(0).getPhysicalNumberOfCells())
             .forEach(sheet::autoSizeColumn);
 
@@ -91,8 +92,9 @@ public class RequirementSheetCreator implements BiConsumer<Catalog<BaseRequireme
         row.createCell(4).setCellValue("");
         row.createCell(5).setCellValue("");
         row.createCell(6).setCellValue("");
+        row.createCell(7).setCellValue("");
 
-        range(0, 7).forEach(i -> row.getCell(i).setCellStyle(styles.getHeaderStyle()));
+        range(0, 8).forEach(i -> row.getCell(i).setCellStyle(styles.getHeaderStyle()));
     }
 
     private void addRow(BaseRequirement requirement, Sheet sheet, Styles styles) {
@@ -141,6 +143,15 @@ public class RequirementSheetCreator implements BiConsumer<Catalog<BaseRequireme
                 ""
         );
 
-        range(0, 6).forEach(i -> row.getCell(i).setCellStyle(styles.getDefaultStyle()));
+        row.createCell(7).setCellValue(
+            nonNull(requirement.getApplicableDocuments()) ?
+                requirement.getApplicableDocuments()
+                    .stream()
+                    .map(Document::getTitle)
+                    .collect(joining("\n")) :
+                ""
+        );
+
+        range(0, 8).forEach(i -> row.getCell(i).setCellStyle(styles.getDefaultStyle()));
     }
 }

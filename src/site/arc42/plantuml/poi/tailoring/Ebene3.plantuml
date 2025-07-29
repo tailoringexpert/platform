@@ -24,8 +24,8 @@ package tailoring {
         #addRequirements(requirements : Collection<TailoringRequirement>, level : int, sheet : Sheet, placeholders : Map<String, Object>) : void
     }
     DocumentCreator <|-- CMExcelDocumentCreator
+    CMExcelDocumentCreator --> "1" "BiFunction<Chapter<TailoringRequirement>, Collection<Phase>, Map<DRD, Set<String>>>" : drdProvider;
     CMExcelDocumentCreator --> "1" RendererRequestConfigurationSupplier : requestConfigurationSupplier
-    CMExcelDocumentCreator --> "1" drdSupplier : drdProvider
 
     class CMRequirementBasedExcelDocumentCreator {
     }

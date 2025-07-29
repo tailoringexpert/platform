@@ -7,6 +7,7 @@ package repository {
     interface TailoringRepository
     interface SelectionVektorProfileRepository
     interface DocumentSigneeRepository
+    interface ApplicableDocumentRepository
 }
 
 package tailoring {
@@ -41,8 +42,10 @@ package tailoring {
         {abstract} toEntity(domain : Chapter<TailoringRequirement>) : TailoringCatalogChapterEntity
         addNumber(builder : TailoringCatalogChapterEntityBuilder) : void
         resolve(domain: Logo) : LogoEntity
+        resolve(domain: Document) : DocumentEntity
     }
     JPAProjektServiceRepositoryMapper -->  "1" LogoRepository : logoRepository
+    JPAProjektServiceRepositoryMapper -->  "1" ApplicableDocumentRepository : applicableDocumentRepository
 
     class JPATailoringServiceRepository {
     }
@@ -50,7 +53,7 @@ package tailoring {
     JPATailoringServiceRepository --> "1" JPATailoringServiceRepositoryMapper : mapper
     JPATailoringServiceRepository --> "1" ProjectRepository : projectRepository
     JPATailoringServiceRepository --> "1" TailoringRepository : tailoringRepository
-    JPATailoringServiceRepository --> "1" SelektionVectorProfileRepository : selectionVectorProfileRepository
+    JPATailoringServiceRepository --> "1" SelectionVektorProfileRepository : selectionVectorProfileRepository
     JPATailoringServiceRepository --> "1" DocumentSigneeRepository : documentSigneeRepository
 
     interface TailoringDeletablePredicateRepository {

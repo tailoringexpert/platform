@@ -23,6 +23,7 @@ package eu.tailoringexpert;
 
 import com.beust.jcommander.JCommander;
 import com.beust.jcommander.Parameter;
+import com.beust.jcommander.converters.IParameterSplitter;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -31,7 +32,9 @@ import lombok.NoArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.jasypt.encryption.pbe.StandardPBEStringEncryptor;
 
+import java.util.Arrays;
 import java.util.List;
+import java.util.regex.Pattern;
 
 /**
  * Client to use to encrypt value with jasypt to be used by boot-app.
@@ -94,7 +97,16 @@ public class JasyptClient {
     @AllArgsConstructor
     public static class JasyptParameter {
         @Getter
-        @Parameter(names = {"-parameter", "--parameter"}, description = "Parameter to be encrypted", required = true)
+        @Parameter(names = {"-parameter", "--parameter"}, description = "Parameter to be encrypted", required = true, splitter = PipeParameterSplitter.class)
         private List<String> parameters;
     }
+
+
+    public static class PipeParameterSplitter implements IParameterSplitter {
+        public List<String> split(String value) {
+            return Arrays.asList(value.split(Pattern.quote("|")));
+
+        }
+    }
+
 }

@@ -21,7 +21,8 @@
  */
 package eu.tailoringexpert;
 
-import lombok.NoArgsConstructor;
+import lombok.AllArgsConstructor;
+import lombok.NonNull;
 import lombok.SneakyThrows;
 import lombok.extern.log4j.Log4j2;
 import org.jasypt.encryption.StringEncryptor;
@@ -30,32 +31,40 @@ import org.springframework.jdbc.datasource.DriverManagerDataSource;
 
 import javax.sql.DataSource;
 import java.io.File;
-import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Properties;
+import java.util.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import java.util.stream.Stream;
 
 import static java.nio.file.Files.newInputStream;
-import static lombok.AccessLevel.PRIVATE;
+import static java.util.Objects.isNull;
+import static java.util.Optional.ofNullable;
 
 @Log4j2
-@NoArgsConstructor(access = PRIVATE)
+@AllArgsConstructor
 public class TenantFactory {
 
-    public static Map<String, String> tenants(
-        final String tenantConfigRoot,
-        final StringEncryptor encryptor) {
+    @NonNull
+    private DataSource defaultDataSource;
+
+    @NonNull
+    private String tenantConfigRoot;
+
+    @NonNull
+    private StringEncryptor encryptor;
+
+
+    public Map<String, String> tenants() {
         log.debug("Search tenant configuration in " + Paths.get(tenantConfigRoot).toFile());
 
         try (Stream<Path> files = findByFileExtension(Paths.get(tenantConfigRoot), ".properties")) {
             files.map(Path::toFile)
                 .forEach(propertyFile -> {
-                    final Properties tenantProperties = loadProperties(propertyFile, encryptor);
+                    final Properties tenantProperties = loadProperties(propertyFile);
                     final String tenantId = tenantProperties.getProperty("id");
                     final String tenantName = tenantProperties.getProperty("name");
                     TenantContext.registerTenant(tenantId, tenantName);
@@ -67,15 +76,9 @@ public class TenantFactory {
     /**
      * Creates and register tenants and corresponding datasources.
      *
-     * @param defaultDataSource System default datasource
-     * @param tenantConfigRoot  root dir below tenant configuration will be loaded
-     * @return
-     * @throws IOException
+     * @return TenantDataSource
      */
-    public static DataSource dataSource(
-        final DataSource defaultDataSource,
-        final String tenantConfigRoot,
-        final StringEncryptor encryptor) {
+    public DataSource dataSource() {
         log.debug("Search tenant db configuration in " + Paths.get(tenantConfigRoot).toFile());
 
         final Map<Object, Object> resolvedDataSources = new HashMap<>();
@@ -83,7 +86,7 @@ public class TenantFactory {
             files.map(Path::toFile)
                 .forEach(propertyFile -> {
                     log.debug(propertyFile.getAbsolutePath());
-                    final Properties tenantProperties = loadProperties(propertyFile, encryptor);
+                    final Properties tenantProperties = loadProperties(propertyFile);
                     final String tenantId = tenantProperties.getProperty("id");
                     final DataSource tenantDataSource = buildDataSource(tenantProperties);
                     resolvedDataSources.put(tenantId, tenantDataSource);
@@ -107,7 +110,7 @@ public class TenantFactory {
         return result;
     }
 
-    static DataSource buildDataSource(final Properties properties) {
+    DataSource buildDataSource(final Properties properties) {
         final DriverManagerDataSource result = new DriverManagerDataSource();
         result.setDriverClassName(properties.getProperty("spring.datasource.driver-class-name"));
         result.setUrl(properties.getProperty("spring.datasource.url"));
@@ -116,6 +119,7 @@ public class TenantFactory {
         return result;
     }
 
+
     /**
      * Load propertyfile and replaces placeholder.
      *
@@ -123,17 +127,33 @@ public class TenantFactory {
      * @return loaded encrypted properties
      */
     @SneakyThrows
-    static Properties loadProperties(final File file, final StringEncryptor encryptor) {
+    Properties loadProperties(final File file) {
         final Properties properties = new Properties();
         try (InputStream fis = newInputStream(file.toPath())) {
             properties.load(fis);
         }
+
+        properties.forEach((key, value) -> properties.replace(key, resolveEnvVar((String) value)));
+
         return new EncryptableProperties(properties, encryptor);
     }
 
     @SneakyThrows
-    static Stream<Path> findByFileExtension(Path path, String fileExtension) {
+    Stream<Path> findByFileExtension(Path path, String fileExtension) {
         return Files.walk(path, 1)
             .filter(p -> p.getFileName().toString().endsWith(fileExtension));
+    }
+
+    String resolveEnvVar(String key) {
+        Pattern p = Pattern.compile("\\$\\{(\\w+)}|\\$(\\w+)");
+        Matcher m = p.matcher(key);
+        StringBuilder sb = new StringBuilder();
+        while (m.find()) {
+            String name = null == m.group(1) ? m.group(2) : m.group(1);
+            String value = ofNullable(System.getProperty(name)).orElse(System.getenv(name));
+            m.appendReplacement(sb, isNull(value) ? "" : Matcher.quoteReplacement(value));
+        }
+        m.appendTail(sb);
+        return sb.toString();
     }
 }

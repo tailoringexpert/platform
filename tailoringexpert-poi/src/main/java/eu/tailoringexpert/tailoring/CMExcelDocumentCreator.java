@@ -220,7 +220,7 @@ public class CMExcelDocumentCreator implements DocumentCreator {
      * @param level   chapter level
      * @param sheet   sheet to add elements to
      */
-    private void addChapter(Chapter<TailoringRequirement> chapter,
+    protected void addChapter(Chapter<TailoringRequirement> chapter,
                             int level,
                             Sheet sheet,
                             Map<String, Object> placeholders) {

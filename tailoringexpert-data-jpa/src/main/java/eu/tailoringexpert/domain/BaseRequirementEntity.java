@@ -115,6 +115,17 @@ public class BaseRequirementEntity implements Serializable {
     private List<Phase> phases;
 
     /**
+     * List of applicable documents of the requirement.
+     */
+    @OneToMany(cascade = {DETACH, MERGE, PERSIST, REFRESH}, orphanRemoval = false, fetch = LAZY)
+    @JoinTable(
+        name = "BASEREQUIREMENT_APPLICABLEDOC",
+        joinColumns = {@JoinColumn(name = "REQUIREMENT_ID", referencedColumnName = "REQUIREMENT_ID")},
+        inverseJoinColumns = {@JoinColumn(name = "DOCUMENT_ID", referencedColumnName = "APPLICABLEDOCUMENT_ID")}
+    )
+    private List<ApplicableDocumentEntity> applicableDocuments;
+
+    /**
      * List of drd requirement shall be part of.
      */
     @OneToMany(cascade = {DETACH, MERGE, PERSIST, REFRESH}, orphanRemoval = false, fetch = LAZY)

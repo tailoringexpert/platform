@@ -1,6 +1,9 @@
 @startuml Ebene3.png
 hide empty members
 
+package domain {
+    class DRDElement
+}
 package renderer {
     interface HTMLTemplateEngine
     class PDFEngine
@@ -16,19 +19,21 @@ package tailoring {
     class TailoringCatalogPDFDocumentCreator {
     }
     DocumentCreator <|.. TailoringCatalogPDFDocumentCreator
+    TailoringCatalogPDFDocumentCreator --> "1" "BiFunction<Chapter<Requirement>, Collection<Phase>, Map<DRD, Set<String>>>" : drdProvider
+    TailoringCatalogPDFDocumentCreator --> "1" "Function<Catalog<TailoringRequirement>, Collection<Document>>" : applicableDocumentProvider
     TailoringCatalogPDFDocumentCreator --> "1" HTMLTemplateEngine : templateEngine
     TailoringCatalogPDFDocumentCreator --> "1" PDFEngine : pdfEngine
-    TailoringCatalogPDFDocumentCreator --> "1" "BiFunction<Chapter<TailoringRequirement>, Collection<Phase>, Map<DRD, Set<String>>>" : drdProvider
 
     class CMPDFDocumentCreator {
     }
     DocumentCreator <|.. CMPDFDocumentCreator
+    CMPDFDocumentCreator --> "1" "BiFunction<Chapter<TailoringRequirement>, Collection<Phase>, Map<DRD, Set<String>>>" : drdProvider
     CMPDFDocumentCreator --> "1" HTMLTemplateEngine : templateEngine
     CMPDFDocumentCreator --> "1" PDFEngine : pdfEngine
-    CMPDFDocumentCreator --> "1" "BiFunction<Chapter<TailoringRequirement>, Collection<Phase>, Map<DRD, Set<String>>>" : drdProvider
 
 
     class CMElement {
+        -level : int
         -level : int
         -number : String
         -name : String
@@ -40,17 +45,9 @@ package tailoring {
     class DRDPDFDocumentCreator {
     }
     DocumentCreator <|.. DRDPDFDocumentCreator
+    DRDPDFDocumentCreator --> "1" "BiFunction<Chapter<TailoringRequirement>, Collection<Phase>, Map<DRD, Set<String>>>" : drdProvider
     DRDPDFDocumentCreator --> "1" HTMLTemplateEngine : templateEngine
     DRDPDFDocumentCreator --> "1" PDFEngine : pdfEngine
-    DRDPDFDocumentCreator --> "1" "BiFunction<Chapter<TailoringRequirement>, Collection<Phase>, Map<DRD, Set<String>>>" : drdProvider
-
-    class DRDElement {
-        -title : String
-        -deliveryDate : String
-        -requirements : Collection<String>
-        -number : String
-        -action : String
-    }
 
 
     class CatalogElement {
@@ -65,7 +62,7 @@ package tailoring {
 
     class ComparisonPDFDocumentCreator {
     }
-    DckumentCreator <|.. ComparisonPDFDocumentCreator
+    DocumentCreator <|.. ComparisonPDFDocumentCreator
     ComparisonPDFDocumentCreator --> "1" HTMLTemplateEngine : templateEngine
     ComparisonPDFDocumentCreator --> "1" PDFEngine : pdfEngine
 

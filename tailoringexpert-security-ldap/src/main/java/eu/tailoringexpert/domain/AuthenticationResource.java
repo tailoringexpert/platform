@@ -2,7 +2,7 @@
  * #%L
  * TailoringExpert
  * %%
- * Copyright (C) 2022 Michael Bädorf and others
+ * Copyright (C) 2022 - 2025 Michael Bädorf and others
  * %%
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as
@@ -19,46 +19,33 @@
  * <http://www.gnu.org/licenses/gpl-3.0.html>.
  * #L%
  */
-package eu.tailoringexpert.tailoring;
+package eu.tailoringexpert.domain;
 
 import lombok.Builder;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
 import lombok.Value;
+import org.springframework.hateoas.Link;
+import org.springframework.hateoas.RepresentationModel;
 
-import java.util.Collection;
+import java.util.List;
 
-/**
- * Data element to be used for generating DRD document.
- *
- * @author Michael Bädorf
- */
 @Value
-@Builder
-public class DRDElement {
+@Getter
+@EqualsAndHashCode(callSuper = false)
+public class AuthenticationResource extends RepresentationModel<AuthenticationResource> {
 
-    /**
-     * Number of the DRD.
-     */
-    private String number;
+    String userId;
+    String accessToken;
+    String refreshToken;
 
-    /**
-     * Title of the DRD.
-     */
-    private String title;
+    @Builder
+    public AuthenticationResource(String userId, String accessToken, String refreshToken, List<Link> links) {
+        super();
+        this.userId = userId;
+        this.accessToken = accessToken;
+        this.refreshToken = refreshToken;
+        add(links);
 
-    private String subtitle;
-
-    /**
-     * Definition when to deliver the document.
-     */
-    private String deliveryDate;
-
-    /**
-     * What to do.
-     */
-    private String action;
-
-    /**
-     * Requirements the DRD in referenced in.
-     */
-    private Collection<String> requirements;
+    }
 }

@@ -12,10 +12,15 @@
     <parent>
         <groupId>eu.tailoringexpert</groupId>
         <artifactId>tailoringexpert-platform</artifactId>
-        <version>0.1.5</version>
+        <version>0.1.6</version>
     </parent>
 
     <dependencies>
+        <dependency>
+            <groupId>com.unboundid</groupId>
+            <artifactId>unboundid-ldapsdk</artifactId>
+            <scope>runtime</scope>
+        </dependency>
         <dependency>
             <groupId>eu.tailoringexpert</groupId>
             <artifactId>tailoringexpert-core</artifactId>
@@ -39,12 +44,6 @@
         <dependency>
             <groupId>eu.tailoringexpert</groupId>
             <artifactId>tailoringexpert-tenant</artifactId>
-        </dependency>
-
-        <dependency>
-            <groupId>eu.tailoringexpert</groupId>
-            <artifactId>tailoringexpert-security</artifactId>
-            <scope>provided</scope>
         </dependency>
 
         <!-- spring -->
@@ -106,6 +105,10 @@
             <groupId>com.h2database</groupId>
             <artifactId>h2</artifactId>
             <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.security</groupId>
+            <artifactId>spring-security-ldap</artifactId>
         </dependency>
     </dependencies>
 
