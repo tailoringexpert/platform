@@ -109,9 +109,9 @@ class DRDPDFDocumentCreatorTest {
         this.drdProviderMock = mock(BiFunction.class);
         FSDOMMutator domMutator = new TailoringexpertDOMMutator();
         this.creator = new DRDPDFDocumentCreator(
+            drdProviderMock,
             templateEngine,
-            new PDFEngine(domMutator, supplier),
-            drdProviderMock
+            new PDFEngine(domMutator, supplier)
         );
     }
 

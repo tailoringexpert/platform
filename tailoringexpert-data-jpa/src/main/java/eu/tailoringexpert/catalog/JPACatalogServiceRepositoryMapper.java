@@ -22,19 +22,12 @@
 package eu.tailoringexpert.catalog;
 
 import eu.tailoringexpert.TailoringexpertMapperConfig;
-import eu.tailoringexpert.domain.BaseCatalogChapterEntity;
+import eu.tailoringexpert.domain.*;
 import eu.tailoringexpert.domain.BaseCatalogChapterEntity.BaseCatalogChapterEntityBuilder;
-import eu.tailoringexpert.domain.BaseCatalogEntity;
-import eu.tailoringexpert.domain.BaseCatalogVersionProjection;
-import eu.tailoringexpert.domain.BaseRequirement;
-import eu.tailoringexpert.domain.Catalog;
-import eu.tailoringexpert.domain.CatalogVersion;
-import eu.tailoringexpert.domain.DRDEntity;
-import eu.tailoringexpert.domain.LogoEntity;
+import eu.tailoringexpert.domain.ApplicableDocumentEntity;
 import eu.tailoringexpert.repository.DRDRepository;
+import eu.tailoringexpert.repository.ApplicableDocumentRepository;
 import eu.tailoringexpert.repository.LogoRepository;
-import eu.tailoringexpert.domain.DRD;
-import eu.tailoringexpert.domain.Logo;
 import lombok.Setter;
 import org.mapstruct.AfterMapping;
 import org.mapstruct.Mapper;
@@ -63,6 +56,9 @@ public abstract class JPACatalogServiceRepositoryMapper {
     @Setter
     private DRDRepository drdRepository;
 
+    @Setter
+    private ApplicableDocumentRepository applicableDocumentRepository;
+
     @Mapping(target = "validFrom", expression = "java( java.time.ZonedDateTime.now())")
     public abstract BaseCatalogEntity createCatalog(Catalog<BaseRequirement> domain);
 
@@ -75,8 +71,15 @@ public abstract class JPACatalogServiceRepositoryMapper {
     @DoNotSelectForMapping
     public abstract DRDEntity createCatalog(DRD domain);
 
+    @DoNotSelectForMapping
+    public abstract ApplicableDocumentEntity createCatalog(Document domain);
+
     DRDEntity resolve(DRD domain) {
         return nonNull(domain) ? drdRepository.findByNumber(domain.getNumber()) : null;
+    }
+
+    ApplicableDocumentEntity resolve(Document domain)  {
+        return nonNull(domain) ? applicableDocumentRepository.findByTitleAndIssueAndRevision(domain.getTitle(), domain.getIssue(), domain.getRevision()) : null;
     }
 
     public abstract Catalog<BaseRequirement> getCatalog(BaseCatalogEntity entity);

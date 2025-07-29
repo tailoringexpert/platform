@@ -25,13 +25,16 @@ import eu.tailoringexpert.TailoringexpertException;
 import eu.tailoringexpert.domain.BaseCatalogEntity;
 import eu.tailoringexpert.domain.BaseCatalogVersionProjection;
 import eu.tailoringexpert.domain.BaseRequirement;
+import eu.tailoringexpert.domain.Catalog;
 import eu.tailoringexpert.domain.CatalogVersion;
+import eu.tailoringexpert.domain.Chapter;
 import eu.tailoringexpert.domain.DRD;
 import eu.tailoringexpert.domain.DRDEntity;
-import eu.tailoringexpert.domain.Chapter;
-import eu.tailoringexpert.domain.Catalog;
+import eu.tailoringexpert.domain.Document;
+import eu.tailoringexpert.domain.ApplicableDocumentEntity;
 import eu.tailoringexpert.repository.BaseCatalogRepository;
 import eu.tailoringexpert.repository.DRDRepository;
+import eu.tailoringexpert.repository.ApplicableDocumentRepository;
 import eu.tailoringexpert.repository.TailoringCatalogRepository;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
@@ -67,6 +70,9 @@ public class JPACatalogServiceRepository implements CatalogServiceRepository {
     private BaseCatalogRepository baseCatalogRepository;
 
     @NonNull
+    private ApplicableDocumentRepository applicableDocumentRepository;
+
+    @NonNull
     private DRDRepository drdRepository;
 
     @NonNull
@@ -85,11 +91,23 @@ public class JPACatalogServiceRepository implements CatalogServiceRepository {
             return empty();
         }
 
-        Collection<DRD> drds = apply(catalog.getToc());
+        Collection<DRD> drds = applyDRDs(catalog.getToc());
         drds.forEach(domain -> {
             DRDEntity entity = drdRepository.findByNumber(domain.getNumber());
             if (isNull(entity)) {
                 drdRepository.save(mapper.createCatalog(domain));
+            }
+        });
+
+        Collection<Document> documents = applyDocuments(catalog.getToc());
+        documents.forEach(domain -> {
+            ApplicableDocumentEntity entity = applicableDocumentRepository.findByTitleAndIssueAndRevision(
+                domain.getTitle(),
+                domain.getIssue(),
+                domain.getRevision()
+            );
+            if (isNull(entity)) {
+                applicableDocumentRepository.save(mapper.createCatalog(domain));
             }
         });
 
@@ -185,9 +203,17 @@ public class JPACatalogServiceRepository implements CatalogServiceRepository {
      * @param chapter root chapter to start selecting
      * @return Collection of referenced DRDs
      */
-    private Collection<DRD> apply(Chapter<BaseRequirement> chapter) {
+    private Collection<DRD> applyDRDs(Chapter<BaseRequirement> chapter) {
         return chapter.allRequirements()
             .map(BaseRequirement::getDrds)
+            .filter(Objects::nonNull)
+            .flatMap(Collection::stream)
+            .collect(Collectors.toSet());
+    }
+
+    private Collection<Document> applyDocuments(Chapter<BaseRequirement> chapter) {
+        return chapter.allRequirements()
+            .map(BaseRequirement::getApplicableDocuments)
             .filter(Objects::nonNull)
             .flatMap(Collection::stream)
             .collect(Collectors.toSet());

@@ -49,7 +49,7 @@ public class DatabaseConfiguration {
     }
 
     @Bean
-    DataSource tenantDataSource(
+    TenantFactory tenantFactory(
         @NonNull @Value("${spring.datasource.driver-class-name}") String driverClassName,
         @NonNull @Value("${spring.datasource.url}") String url,
         @NonNull @Value("${spring.datasource.username}") String username,
@@ -57,8 +57,16 @@ public class DatabaseConfiguration {
         @NonNull @Qualifier("tenantConfigHome") String tenantConfigHome,
         @NonNull @Qualifier("encryptorBean") StringEncryptor encryptor) {
         DataSource defaultDataSource = dataSource(driverClassName, url, username, password);
-        return TenantFactory.dataSource(defaultDataSource, tenantConfigHome, encryptor);
+
+        return new TenantFactory(defaultDataSource, tenantConfigHome, encryptor);
     }
+
+    @Bean
+    DataSource tenantDataSource(
+        @NonNull TenantFactory factory) {
+        return factory.dataSource();
+    }
+
 
     private DataSource dataSource(String driverClassName, String url, String username, String password) {
         final DriverManagerDataSource result = new DriverManagerDataSource(url, username, password);

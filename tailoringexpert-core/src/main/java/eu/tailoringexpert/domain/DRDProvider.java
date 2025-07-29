@@ -19,12 +19,8 @@
  * <http://www.gnu.org/licenses/gpl-3.0.html>.
  * #L%
  */
-package eu.tailoringexpert.tailoring;
+package eu.tailoringexpert.domain;
 
-import eu.tailoringexpert.domain.Chapter;
-import eu.tailoringexpert.domain.DRD;
-import eu.tailoringexpert.domain.Phase;
-import eu.tailoringexpert.domain.TailoringRequirement;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
@@ -36,8 +32,10 @@ import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.BiFunction;
 import java.util.function.BiPredicate;
+import java.util.function.Predicate;
 
 import static java.util.Objects.isNull;
+import static java.util.Optional.ofNullable;
 
 /**
  * Function for determinating all relevant DRDs of a tailoring.<p>
@@ -47,7 +45,10 @@ import static java.util.Objects.isNull;
  */
 @Log4j2
 @RequiredArgsConstructor
-public class DRDProvider implements BiFunction<Chapter<TailoringRequirement>, Collection<Phase>, Map<DRD, Set<String>>> {
+public class DRDProvider<T extends Requirement> implements BiFunction<Chapter<T>, Collection<Phase>, Map<DRD, Set<String>>> {
+
+    @NonNull
+    private Predicate<T> selectionPredicate;
 
     @NonNull
     private BiPredicate<String, Collection<Phase>> predicate;
@@ -56,29 +57,32 @@ public class DRDProvider implements BiFunction<Chapter<TailoringRequirement>, Co
      * {@inheritDoc}
      */
     @Override
-    public Map<DRD, Set<String>> apply(Chapter<TailoringRequirement> chapter, Collection<Phase> phases) {
+    public Map<DRD, Set<String>> apply(Chapter<T> chapter, Collection<Phase> phases) {
         log.traceEntry(chapter::getNumber, () -> phases);
 
         Map<DRD, Set<String>> result = new ConcurrentHashMap<>();
         chapter.allChapters()
-            .forEach(subChapter -> subChapter.getRequirements()
-                .stream()
-                .filter(TailoringRequirement::getSelected)
-                .filter(TailoringRequirement::hasDRD)
-                .forEach(requirement -> requirement.getDrds()
-                    .forEach(drd -> {
-                        if (predicate.test(drd.getDeliveryDate(), phases)) {
-                            Set<String> chapters = result.get(drd);
-                            if (isNull(chapters)) {
-                                chapters = new LinkedHashSet<>();
-                                result.put(drd, chapters);
-                            }
-                            chapters.add(subChapter.getNumber());
-                        }
-                    }))
+            .forEach(subChapter ->
+                ofNullable(subChapter.getRequirements())
+                    .ifPresent(requirements -> requirements.stream()
+                        .filter(selectionPredicate)
+                        .filter(Requirement::hasDRD)
+                        .forEach(requirement -> requirement.getDrds()
+                            .forEach(drd -> {
+                                if (predicate.test(drd.getDeliveryDate(), phases)) {
+                                    Set<String> chapters = result.get(drd);
+                                    if (isNull(chapters)) {
+                                        chapters = new LinkedHashSet<>();
+                                        result.put(drd, chapters);
+                                    }
+                                    chapters.add(subChapter.getNumber());
+                                }
+                            })
+                        )
+                    )
             );
+
         result.values()
-            .stream()
             .forEach(a -> a.stream().sorted());
 
         return log.traceExit(result);

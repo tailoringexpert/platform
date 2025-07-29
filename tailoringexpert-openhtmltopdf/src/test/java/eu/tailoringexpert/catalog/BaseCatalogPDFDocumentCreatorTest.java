@@ -29,8 +29,11 @@ import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.fasterxml.jackson.module.paramnames.ParameterNamesModule;
 import com.openhtmltopdf.extend.FSDOMMutator;
 import eu.tailoringexpert.FileSaver;
+import eu.tailoringexpert.domain.ApplicableDocumentProvider;
 import eu.tailoringexpert.domain.BaseRequirement;
 import eu.tailoringexpert.domain.Catalog;
+import eu.tailoringexpert.domain.DRDProvider;
+import eu.tailoringexpert.domain.DocumentNumberComparator;
 import eu.tailoringexpert.domain.File;
 import eu.tailoringexpert.renderer.HTMLTemplateEngine;
 import eu.tailoringexpert.renderer.PDFEngine;
@@ -38,6 +41,7 @@ import eu.tailoringexpert.renderer.RendererRequestConfiguration;
 import eu.tailoringexpert.renderer.RendererRequestConfigurationSupplier;
 import eu.tailoringexpert.renderer.TailoringexpertDOMMutator;
 import eu.tailoringexpert.renderer.ThymeleafTemplateEngine;
+import eu.tailoringexpert.tailoring.DRDApplicablePredicate;
 import io.github.cdimascio.dotenv.Dotenv;
 import lombok.extern.log4j.Log4j2;
 import org.junit.jupiter.api.BeforeEach;
@@ -48,9 +52,20 @@ import org.thymeleaf.templateresolver.FileTemplateResolver;
 import java.io.InputStream;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.AbstractMap.SimpleEntry;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.function.Predicate;
 
+import static eu.tailoringexpert.domain.Phase.A;
+import static eu.tailoringexpert.domain.Phase.B;
+import static eu.tailoringexpert.domain.Phase.C;
+import static eu.tailoringexpert.domain.Phase.D;
+import static eu.tailoringexpert.domain.Phase.E;
+import static eu.tailoringexpert.domain.Phase.F;
+import static eu.tailoringexpert.domain.Phase.ZERO;
+import static java.util.Arrays.asList;
+import static java.util.Collections.unmodifiableCollection;
 import static java.util.Objects.nonNull;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.catchThrowable;
@@ -96,7 +111,22 @@ class BaseCatalogPDFDocumentCreatorTest {
         );
 
         FSDOMMutator domMutator = new TailoringexpertDOMMutator();
+
+
         this.creator = new BaseCatalogPDFDocumentCreator(
+            new ApplicableDocumentProvider<BaseRequirement>(new RequirementAlwaysSelectedPredicate<BaseRequirement>(), new DocumentNumberComparator()),
+            new DRDProvider<>(
+                (Predicate<BaseRequirement>) requirement -> true,
+                new DRDApplicablePredicate(Map.ofEntries(
+                    new SimpleEntry<>(ZERO, unmodifiableCollection(asList("MDR"))),
+                    new SimpleEntry<>(A, unmodifiableCollection(asList("PRR", "SRR"))),
+                    new SimpleEntry<>(B, unmodifiableCollection(asList("PDR"))),
+                    new SimpleEntry<>(C, unmodifiableCollection(asList("CDR"))),
+                    new SimpleEntry<>(D, unmodifiableCollection(asList("MRR", "TRR", "QR", "CCB", "MPCB", "AR", "DRB", "DAR", "FRR", "LRR"))),
+                    new SimpleEntry<>(E, unmodifiableCollection(asList("AR", "ORR", "GS upgrades", "SW upgrades", "CRR", "ELR"))),
+                    new SimpleEntry<>(F, unmodifiableCollection(asList("EOM", "MCR")))
+                ))
+            ),
             templateEngine,
             new PDFEngine(domMutator, supplier)
         );
@@ -106,21 +136,22 @@ class BaseCatalogPDFDocumentCreatorTest {
     void createDocument_ValidInput_FileCreated() throws Exception {
         // arrange
         Catalog<BaseRequirement> catalog;
-        try (InputStream is = this.getClass().getResourceAsStream("/basecatalog.json")) {
+        try (InputStream is = this.getClass().getResourceAsStream("/catalog_8.2.2.json")) {
             assert nonNull(is);
             catalog = objectMapper.readValue(is, new TypeReference<Catalog<BaseRequirement>>() {
             });
         }
 
         LocalDateTime now = LocalDateTime.now();
-        Map<String, Object> platzhalter = new HashMap<>();
-        platzhalter.put("PROJEKT", "SAMPLE");
-        platzhalter.put("DATUM", now.format(DateTimeFormatter.ofPattern("dd.MM.YYYY")));
-        platzhalter.put("DOKUMENT", "DUMMY-XY-Z-1940/DV7");
-        platzhalter.put("${DRD_DOCID}", "DUMMY_DOC");
+        Map<String, Object> ctx = new HashMap<>();
+        ctx.put("PROJEKT", "SAMPLE");
+        ctx.put("DATUM", now.format(DateTimeFormatter.ofPattern("dd.MM.YYYY")));
+        ctx.put("DOKUMENT", "DUMMY-XY-Z-1940/DV7");
+        ctx.put("${DRD_DOCID}", "DUMMY_DOC");
+
 
         // act
-        File actual = creator.createDocument("4711", catalog, platzhalter);
+        File actual = creator.createDocument("4711", catalog, ctx);
 
         // assert
         assertThat(actual).isNotNull();
@@ -133,15 +164,15 @@ class BaseCatalogPDFDocumentCreatorTest {
         Catalog<BaseRequirement> catalog = Catalog.<BaseRequirement>builder().build();
 
         LocalDateTime now = LocalDateTime.now();
-        Map<String, Object> platzhalter = new HashMap<>();
-        platzhalter.put("PROJEKT", "SAMPLE");
-        platzhalter.put("DATUM", now.format(DateTimeFormatter.ofPattern("dd.MM.YYYY")));
-        platzhalter.put("DOKUMENT", "DUMMY-XY-Z-1940/DV7");
-        platzhalter.put("${DRD_DOCID}", "DUMMY_DOC");
+        Map<String, Object> ctx = new HashMap<>();
+        ctx.put("PROJEKT", "SAMPLE");
+        ctx.put("DATUM", now.format(DateTimeFormatter.ofPattern("dd.MM.YYYY")));
+        ctx.put("DOKUMENT", "DUMMY-XY-Z-1940/DV7");
+        ctx.put("${DRD_DOCID}", "DUMMY_DOC");
 
 
         // act
-        File actual = creator.createDocument("4711", catalog, platzhalter);
+        File actual = creator.createDocument("4711", catalog, ctx);
 
         // assert
         assertThat(actual).isNull();

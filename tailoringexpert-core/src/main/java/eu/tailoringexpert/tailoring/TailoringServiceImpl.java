@@ -41,8 +41,6 @@ import lombok.SneakyThrows;
 import lombok.extern.log4j.Log4j2;
 
 import java.io.ByteArrayOutputStream;
-import java.math.BigInteger;
-import java.security.MessageDigest;
 import java.time.LocalDateTime;
 import java.time.ZonedDateTime;
 import java.util.Collection;
@@ -50,7 +48,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.function.Function;
-import java.util.function.Predicate;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
@@ -87,7 +84,7 @@ public class TailoringServiceImpl implements TailoringService {
     private RequirementService requirementService;
 
     @NonNull
-    private Function<byte[], Map<String, Collection<ImportRequirement>>> tailoringAnforderungFileReader;
+    private Function<byte[], Map<String, Collection<ImportRequirement>>> tailoringRequirementFileReader;
 
     @NonNull
     private AttachmentService attachmentService;
@@ -319,19 +316,16 @@ public class TailoringServiceImpl implements TailoringService {
             return;
         }
 
-        Map<String, Collection<ImportRequirement>> importRequirements = tailoringAnforderungFileReader.apply(data);
-        importRequirements.entrySet().forEach(entry -> {
-            String chapter = entry.getKey();
-            entry.getValue().forEach(requirement -> {
-                if (YES.equalsIgnoreCase(requirement.getApplicable()) || NO.equalsIgnoreCase(requirement.getApplicable())) {
-                    boolean selected = YES.equalsIgnoreCase(requirement.getApplicable());
-                    requirementService.handleSelected(project, tailoring, chapter, requirement.getPosition(), selected);
-                    ofNullable(requirement.getText())
-                        .filter(not(String::isBlank))
-                        .ifPresent(text -> requirementService.handleText(project, tailoring, chapter, requirement.getPosition(), text));
-                }
-            });
-        });
+        Map<String, Collection<ImportRequirement>> importRequirements = tailoringRequirementFileReader.apply(data);
+        importRequirements.forEach((chapter, value) -> value.forEach(requirement -> {
+            if (YES.equalsIgnoreCase(requirement.getApplicable()) || NO.equalsIgnoreCase(requirement.getApplicable())) {
+                boolean selected = YES.equalsIgnoreCase(requirement.getApplicable());
+                requirementService.handleSelected(project, tailoring, chapter, requirement.getPosition(), selected);
+                ofNullable(requirement.getText())
+                    .filter(not(String::isBlank))
+                    .ifPresent(text -> requirementService.handleText(project, tailoring, chapter, requirement.getPosition(), text));
+            }
+        }));
 
         log.traceExit();
     }

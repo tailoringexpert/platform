@@ -22,10 +22,10 @@
 package eu.tailoringexpert;
 
 import com.ulisesbocchio.jasyptspringboot.annotation.EnableEncryptableProperties;
+import lombok.NonNull;
 import lombok.extern.log4j.Log4j2;
 import org.jasypt.encryption.StringEncryptor;
 import org.jasypt.encryption.pbe.StandardPBEStringEncryptor;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -90,9 +90,8 @@ public class App {
 
     @Bean
     Map<String, String> registerTenants(
-        @Value("${tenantConfigHome}") String tenantConfigHome,
-        @Qualifier("encryptorBean") StringEncryptor encryptor) {
-        return TenantFactory.tenants(tenantConfigHome, encryptor);
+        @NonNull TenantFactory factory) {
+        return factory.tenants();
     }
 
     @EventListener

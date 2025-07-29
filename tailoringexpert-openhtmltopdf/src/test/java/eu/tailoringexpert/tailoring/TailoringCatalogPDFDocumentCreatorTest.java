@@ -29,12 +29,8 @@ import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.fasterxml.jackson.module.paramnames.ParameterNamesModule;
 import com.openhtmltopdf.extend.FSDOMMutator;
 import eu.tailoringexpert.FileSaver;
-import eu.tailoringexpert.domain.File;
-import eu.tailoringexpert.domain.DocumentSignature;
-import eu.tailoringexpert.domain.DocumentSignatureState;
-import eu.tailoringexpert.domain.Catalog;
-import eu.tailoringexpert.domain.Tailoring;
-import eu.tailoringexpert.domain.TailoringRequirement;
+import eu.tailoringexpert.catalog.RequirementAlwaysSelectedPredicate;
+import eu.tailoringexpert.domain.*;
 import eu.tailoringexpert.renderer.HTMLTemplateEngine;
 import eu.tailoringexpert.renderer.PDFEngine;
 import eu.tailoringexpert.renderer.RendererRequestConfiguration;
@@ -48,6 +44,7 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockserver.client.MockServerClient;
+import org.mozilla.javascript.commonjs.module.Require;
 import org.thymeleaf.spring6.SpringTemplateEngine;
 import org.thymeleaf.templateresolver.FileTemplateResolver;
 
@@ -58,6 +55,7 @@ import java.util.AbstractMap.SimpleEntry;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.function.Predicate;
 
 import static eu.tailoringexpert.domain.Phase.A;
 import static eu.tailoringexpert.domain.Phase.B;
@@ -83,7 +81,8 @@ class TailoringCatalogPDFDocumentCreatorTest {
     static MockServerClient mockServer;
     String templateHome;
     String assetHome;
-    DRDProvider drdProviderMock;
+    DRDProvider<TailoringRequirement> drdProviderMock;
+    ApplicableDocumentProvider<TailoringRequirement> applicableDocumentProviderMock;
     ObjectMapper objectMapper;
     FileSaver fileSaver;
     TailoringCatalogPDFDocumentCreator creator;
@@ -128,7 +127,8 @@ class TailoringCatalogPDFDocumentCreatorTest {
 
         HTMLTemplateEngine templateEngine = new ThymeleafTemplateEngine(springTemplateEngine, supplier);
 
-        this.drdProviderMock = new DRDProvider(new DRDApplicablePredicate(Map.ofEntries(
+        this.drdProviderMock = new DRDProvider(
+            (Predicate<TailoringRequirement>) requirement -> ((TailoringRequirement) requirement).getSelected(),new DRDApplicablePredicate(Map.ofEntries(
             new SimpleEntry<>(ZERO, unmodifiableCollection(asList("MDR"))),
             new SimpleEntry<>(A, unmodifiableCollection(asList("SRR"))),
             new SimpleEntry<>(B, unmodifiableCollection(asList("PDR"))),
@@ -138,11 +138,16 @@ class TailoringCatalogPDFDocumentCreatorTest {
             new SimpleEntry<>(F, unmodifiableCollection(asList("EOM")))
         )));
 
+        this.applicableDocumentProviderMock = new ApplicableDocumentProvider(
+            new RequirementSelectedPredicate(),
+            new DocumentNumberComparator());
+
         FSDOMMutator domMutator = new TailoringexpertDOMMutator();
         this.creator = new TailoringCatalogPDFDocumentCreator(
+            drdProviderMock,
+            applicableDocumentProviderMock,
             templateEngine,
-            new PDFEngine(domMutator, supplier),
-            drdProviderMock
+        new PDFEngine(domMutator, supplier)
         );
     }
 
@@ -172,12 +177,13 @@ class TailoringCatalogPDFDocumentCreatorTest {
             .build();
 
         LocalDateTime now = LocalDateTime.now();
-        Map<String, Object> platzhalter = new HashMap<>();
-        platzhalter.put("PROJEKT", "SAMPLE");
-        platzhalter.put("DATUM", now.format(DateTimeFormatter.ofPattern("dd.MM.YYYY")));
-        platzhalter.put("DOKUMENT", "SAMPLE-XY-Z-1940/DV7");
-        platzhalter.put("${DRD_DOCID}", "SAMPLE_DOC");
-        platzhalter.put("SHOW_ALL", Boolean.FALSE);
+
+        Map<String, Object> ctx = new HashMap<>();
+        ctx.put("PROJEKT", "SAMPLE");
+        ctx.put("DATUM", now.format(DateTimeFormatter.ofPattern("dd.MM.YYYY")));
+        ctx.put("DOKUMENT", "SAMPLE-XY-Z-1940/DV7");
+        ctx.put("${DRD_DOCID}", "SAMPLE_DOC");
+        ctx.put("SHOW_ALL", Boolean.FALSE);
 
         mockServer
             .when(request()
@@ -193,7 +199,7 @@ class TailoringCatalogPDFDocumentCreatorTest {
             });
 
         // act
-        File actual = creator.createDocument("4711", tailoring, platzhalter);
+        File actual = creator.createDocument("4711", tailoring, ctx);
 
         // assert
         assertThat(actual).isNotNull();

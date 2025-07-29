@@ -1,0 +1,29 @@
+@startuml Ebene3.png
+hide empty members
+
+package domain {
+
+   class Authentication{
+        userId : String
+        accessToken : String
+        refreshToken : String
+   }
+
+    class AuthenticationRequest {
+        userId : String
+        password : String
+    }
+
+    class AuthenticationRefreshRequest {
+        userId : String
+        refreshToken : String
+    }
+
+   class AuthenticationResource {
+       userId : String
+       accessToken : String
+       refreshToken : String
+   }
+   RepresentationModel <|-- AuthenticationResource
+}
+@enduml

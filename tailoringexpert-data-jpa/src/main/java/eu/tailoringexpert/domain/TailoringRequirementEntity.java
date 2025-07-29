@@ -39,8 +39,11 @@ import jakarta.persistence.Table;
 import jakarta.persistence.TableGenerator;
 import java.io.Serializable;
 import java.time.ZonedDateTime;
+import java.util.List;
 import java.util.Set;
 
+import static jakarta.persistence.CascadeType.*;
+import static jakarta.persistence.CascadeType.REFRESH;
 import static jakarta.persistence.FetchType.LAZY;
 import static jakarta.persistence.GenerationType.TABLE;
 
@@ -82,6 +85,17 @@ public class TailoringRequirementEntity implements Serializable {
      */
     @Column(name = "POSITION")
     private String position;
+
+    /**
+     * List of applicable documents of the requirement.
+     */
+    @OneToMany(cascade = {DETACH, MERGE, PERSIST, REFRESH}, orphanRemoval = false, fetch = LAZY)
+    @JoinTable(
+        name = "TAILORINGREQUIREMENT_APPLICABLEDOC",
+        joinColumns = {@JoinColumn(name = "REQUIREMENT_ID", referencedColumnName = "REQUIREMENT_ID")},
+        inverseJoinColumns = {@JoinColumn(name = "DOCUMENT_ID", referencedColumnName = "APPLICABLEDOCUMENT_ID")}
+    )
+    private List<ApplicableDocumentEntity> applicableDocuments;
 
     /**
      * List of DRDs requirement shall be part of.

@@ -21,26 +21,11 @@
  */
 package eu.tailoringexpert.project;
 
-import eu.tailoringexpert.domain.BaseCatalogEntity;
-import eu.tailoringexpert.domain.BaseRequirement;
-import eu.tailoringexpert.domain.Catalog;
-import eu.tailoringexpert.domain.DRD;
-import eu.tailoringexpert.domain.DRDEntity;
-import eu.tailoringexpert.domain.Logo;
-import eu.tailoringexpert.domain.LogoEntity;
-import eu.tailoringexpert.domain.Phase;
-import eu.tailoringexpert.domain.Project;
-import eu.tailoringexpert.domain.ProjectEntity;
-import eu.tailoringexpert.domain.ScreeningSheet;
-import eu.tailoringexpert.domain.ScreeningSheetEntity;
-import eu.tailoringexpert.domain.SelectionVectorEntity;
-import eu.tailoringexpert.domain.Tailoring;
-import eu.tailoringexpert.domain.TailoringCatalogChapterEntity;
-import eu.tailoringexpert.domain.TailoringEntity;
-import eu.tailoringexpert.domain.TailoringInformation;
-import eu.tailoringexpert.domain.TailoringRequirementEntity;
+import eu.tailoringexpert.domain.*;
+import eu.tailoringexpert.domain.ApplicableDocumentEntity;
 import eu.tailoringexpert.repository.BaseCatalogRepository;
 import eu.tailoringexpert.repository.DRDRepository;
+import eu.tailoringexpert.repository.ApplicableDocumentRepository;
 import eu.tailoringexpert.repository.LogoRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -58,6 +43,7 @@ class JPAProjectServiceRepositoryMapperTest {
     private LogoRepository logoRepositoryMock;
     private BaseCatalogRepository baseCatalogRepositoryMock;
     private DRDRepository drdRepositoryMock;
+    private ApplicableDocumentRepository applicableDocumentRepositoryMock;
     private JPAProjectServiceRepositoryMapper mapper;
 
     @BeforeEach
@@ -69,6 +55,9 @@ class JPAProjectServiceRepositoryMapperTest {
 
         this.drdRepositoryMock = mock(DRDRepository.class);
         this.mapper.setDrdRepository(drdRepositoryMock);
+
+        this.applicableDocumentRepositoryMock = mock(ApplicableDocumentRepository.class);
+        this.mapper.setApplicableDocumentRepository(applicableDocumentRepositoryMock);
 
         baseCatalogRepositoryMock = mock(BaseCatalogRepository.class);
         this.mapper.setBaseCatalogRepository(baseCatalogRepositoryMock);
@@ -361,5 +350,43 @@ class JPAProjectServiceRepositoryMapperTest {
         TailoringCatalogChapterEntity actual = builder.build();
         assertThat(actual.getRequirements())
             .isNull();
+    }
+
+    @Test
+    void resolve_DocumentNull_NullReturned() {
+        // arrange
+        Document document = null;
+
+        // act
+        ApplicableDocumentEntity actual = mapper.resolve(document);
+
+        // assert
+        assertThat(actual).isNull();
+        verify(applicableDocumentRepositoryMock, times(0)).findByTitleAndIssueAndRevision(any(), any(), any());
+    }
+
+    @Test
+    void resolve_DocumentExist_DocumentEntityReturned() {
+        // arrange
+        Document document = Document.builder()
+            .title("Q-ST-80")
+            .issue("C")
+            .build();
+
+        ApplicableDocumentEntity documentEntity = ApplicableDocumentEntity.builder()
+            .title("Q-ST-80")
+            .issue("C")
+            .build();
+        given(applicableDocumentRepositoryMock.findByTitleAndIssueAndRevision("Q-ST-80", "C", null)).willReturn(documentEntity);
+
+        // act
+        ApplicableDocumentEntity actual = mapper.resolve(document);
+
+        // assert
+        assertThat(actual).isNotNull();
+        assertThat(actual.getTitle()).isEqualTo("Q-ST-80");
+        assertThat(actual.getIssue()).isEqualTo("C");
+        assertThat(actual.getRevision()).isNull();
+        verify(applicableDocumentRepositoryMock, times(1)).findByTitleAndIssueAndRevision("Q-ST-80", "C", null);
     }
 }

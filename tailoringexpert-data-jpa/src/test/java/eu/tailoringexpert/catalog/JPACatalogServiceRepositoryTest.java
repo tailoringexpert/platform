@@ -22,16 +22,10 @@
 package eu.tailoringexpert.catalog;
 
 import eu.tailoringexpert.TailoringexpertException;
-import eu.tailoringexpert.domain.BaseCatalogEntity;
-import eu.tailoringexpert.domain.BaseCatalogVersionProjection;
-import eu.tailoringexpert.domain.BaseRequirement;
-import eu.tailoringexpert.domain.Catalog;
-import eu.tailoringexpert.domain.CatalogVersion;
-import eu.tailoringexpert.domain.Chapter;
-import eu.tailoringexpert.domain.DRDEntity;
+import eu.tailoringexpert.domain.*;
 import eu.tailoringexpert.repository.BaseCatalogRepository;
-import eu.tailoringexpert.domain.DRD;
 import eu.tailoringexpert.repository.DRDRepository;
+import eu.tailoringexpert.repository.ApplicableDocumentRepository;
 import eu.tailoringexpert.repository.TailoringCatalogRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -56,6 +50,7 @@ class JPACatalogServiceRepositoryTest {
     JPACatalogServiceRepositoryMapper mapperMock;
     BaseCatalogRepository baseCatalogRepositoryMock;
     DRDRepository drdRepositoryMock;
+    ApplicableDocumentRepository applicableDocumentRepositoryMock;
     TailoringCatalogRepository tailoringCatalogRepositoryMock;
     JPACatalogServiceRepository repository;
 
@@ -63,11 +58,13 @@ class JPACatalogServiceRepositoryTest {
     void setup() {
         this.baseCatalogRepositoryMock = mock(BaseCatalogRepository.class);
         this.drdRepositoryMock = mock(DRDRepository.class);
+        this.applicableDocumentRepositoryMock = mock(ApplicableDocumentRepository.class);
         this.mapperMock = mock(JPACatalogServiceRepositoryMapper.class);
         this.tailoringCatalogRepositoryMock = mock(TailoringCatalogRepository.class);
         this.repository = new JPACatalogServiceRepository(
             this.mapperMock,
             this.baseCatalogRepositoryMock,
+            this.applicableDocumentRepositoryMock,
             this.drdRepositoryMock,
             this.tailoringCatalogRepositoryMock
         );
@@ -429,4 +426,89 @@ class JPACatalogServiceRepositoryTest {
         // assert
         assertThat(actual).isTrue();
     }
+
+    @Test
+    void createCatalog_CatalogNewDocument_NewDocumentCreated() {
+        // arrange
+        Document document  = Document.builder()
+            .title("ECSS-Q-ST-80")
+            .issue("C")
+            .revision("Rev.1")
+            .build();
+
+        Catalog<BaseRequirement> catalog = Catalog.<BaseRequirement>builder()
+            .toc(Chapter.<BaseRequirement>builder()
+                .requirements(asList(
+                    BaseRequirement.builder()
+                        .applicableDocuments(asList(
+                            document
+                        ))
+                        .build())
+                )
+                .build())
+            .build();
+
+        given(applicableDocumentRepositoryMock.findByTitleAndIssueAndRevision("ECSS-Q-ST-80", "C", "Rev.1")).willReturn(null);
+
+        BaseCatalogEntity toSave = BaseCatalogEntity.builder().build();
+        given(mapperMock.createCatalog(catalog)).willReturn(toSave);
+
+        BaseCatalogEntity savedKatalog = null;
+        given(baseCatalogRepositoryMock.save(toSave)).willReturn(savedKatalog);
+
+        Catalog<BaseRequirement> savedMappedCatalog = null;
+        given(mapperMock.createCatalog(savedKatalog)).willReturn(savedMappedCatalog);
+
+        // act
+        Optional<Catalog<BaseRequirement>> actual = repository.createCatalog(catalog, ZonedDateTime.now());
+
+        // assert
+        assertThat(actual).isEmpty();
+        verify(applicableDocumentRepositoryMock, times(1)).save(any());
+        verify(mapperMock, times(1)).createCatalog(catalog);
+        verify(mapperMock, times(1)).createCatalog(savedKatalog);
+        verify(baseCatalogRepositoryMock, times(1)).save(toSave);
+    }
+
+    @Test
+    void createCatalog_CatalogExistingDocument_ExistingDocumentNotCreated() {
+        // arrange
+        Catalog<BaseRequirement> catalog = Catalog.<BaseRequirement>builder()
+            .toc(Chapter.<BaseRequirement>builder()
+                .requirements(asList(
+                    BaseRequirement.builder()
+                        .applicableDocuments(asList(
+                            Document.builder()
+                                .title("ECSS-Q-ST-80")
+                                .issue("C")
+                                .revision("Rev.1")
+                                .build()
+                        ))
+                        .build())
+                )
+                .build())
+            .build();
+        BaseCatalogEntity toSave = BaseCatalogEntity.builder().build();
+
+        given(applicableDocumentRepositoryMock.findByTitleAndIssueAndRevision("ECSS-Q-ST-80", "C", "Rev.1")).willReturn(ApplicableDocumentEntity.builder().build());
+
+        given(mapperMock.createCatalog(catalog)).willReturn(toSave);
+
+        BaseCatalogEntity savedKatalog = null;
+        given(baseCatalogRepositoryMock.save(toSave)).willReturn(savedKatalog);
+
+        Catalog<BaseRequirement> savedMappedCatalog = null;
+        given(mapperMock.createCatalog(savedKatalog)).willReturn(savedMappedCatalog);
+
+        // act
+        Optional<Catalog<BaseRequirement>> actual = repository.createCatalog(catalog, ZonedDateTime.now());
+
+        // assert
+        assertThat(actual).isEmpty();
+        verify(applicableDocumentRepositoryMock, times(0)).save(any());
+        verify(mapperMock, times(1)).createCatalog(catalog);
+        verify(mapperMock, times(1)).createCatalog(savedKatalog);
+        verify(baseCatalogRepositoryMock, times(1)).save(toSave);
+    }
+
 }

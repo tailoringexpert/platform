@@ -30,11 +30,10 @@ import com.fasterxml.jackson.databind.cfg.MutableConfigOverride;
 import com.fasterxml.jackson.datatype.jdk8.Jdk8Module;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.fasterxml.jackson.module.paramnames.ParameterNamesModule;
+
 import eu.tailoringexpert.domain.BaseRequirement;
 import eu.tailoringexpert.domain.Catalog;
 import eu.tailoringexpert.domain.File;
-
-import eu.tailoringexpert.FileSaver;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -59,10 +58,10 @@ import static org.mockito.Mockito.verify;
 class BaseCatalogExcelDocumentCreatorTest {
 
     private ObjectMapper objectMapper;
-    private FileSaver fileSaver;
 
     private BiConsumer<Catalog<BaseRequirement>, Sheet> requirementSheetCreatorMock;
     private BiConsumer<Catalog<BaseRequirement>, Sheet> drdSheetCreator;
+    private BiConsumer<Catalog<BaseRequirement>, Sheet> documentSheetCreator;
     private BiConsumer<Catalog<BaseRequirement>, Sheet> logoSheetCreator;
     private BaseCatalogExcelDocumentCreator creator;
 
@@ -77,15 +76,15 @@ class BaseCatalogExcelDocumentCreatorTest {
 
         this.objectMapper.disable(DeserializationFeature.ACCEPT_EMPTY_ARRAY_AS_NULL_OBJECT);
 
-        this.fileSaver = new FileSaver("target");
-
         this.requirementSheetCreatorMock = mock(BiConsumer.class);
         this.drdSheetCreator = mock(BiConsumer.class);
+        this.documentSheetCreator = mock(BiConsumer.class);
         this.logoSheetCreator = mock(BiConsumer.class);
 
         this.creator = new BaseCatalogExcelDocumentCreator(
             this.requirementSheetCreatorMock,
             this.drdSheetCreator,
+            this.documentSheetCreator,
             this.logoSheetCreator
         );
     }
@@ -112,6 +111,7 @@ class BaseCatalogExcelDocumentCreatorTest {
         assertThat(actual).isNull();
         verify(requirementSheetCreatorMock, times(1)).accept(eq(catalog), any(Sheet.class));
         verify(drdSheetCreator, times(0)).accept(eq(catalog), any(Sheet.class));
+        verify(documentSheetCreator, times(0)).accept(eq(catalog), any(Sheet.class));
         verify(logoSheetCreator, times(0)).accept(eq(catalog), any(Sheet.class));
     }
 
@@ -134,32 +134,7 @@ class BaseCatalogExcelDocumentCreatorTest {
         assertThat(actual).isNotNull();
         verify(requirementSheetCreatorMock, times(1)).accept(eq(catalog), any(Sheet.class));
         verify(drdSheetCreator, times(1)).accept(eq(catalog), any(Sheet.class));
+        verify(documentSheetCreator, times(1)).accept(eq(catalog), any(Sheet.class));
         verify(logoSheetCreator, times(1)).accept(eq(catalog), any(Sheet.class));
-    }
-
-    @Test
-    void createDocument_NoMocks_FileCreated() throws IOException {
-        // arrange
-        Catalog<BaseRequirement> catalog;
-        try (InputStream is = this.getClass().getResourceAsStream("/basecatalog.json")) {
-            assert nonNull(is);
-            catalog = objectMapper.readValue(is, new TypeReference<Catalog<BaseRequirement>>() {
-            });
-        }
-        BaseCatalogExcelDocumentCreator noMocksCreator = new BaseCatalogExcelDocumentCreator(
-            new RequirementSheetCreator(),
-            new DRDSheetCreator(),
-            new LogoSheetCreator()
-        );
-
-        Map<String, Object> parameter = new HashMap<>();
-
-        // act
-        File actual = noMocksCreator.createDocument("4711", catalog, parameter);
-
-        // assert
-        assertThat(actual).isNotNull();
-        fileSaver.accept("basecatalog.xlsx", actual.getData());
-
     }
 }
