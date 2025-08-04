@@ -16,6 +16,7 @@ package auth {
         refresh(userId : String, token : String ) : Authentication
     }
     springLdapUserDetailsService <|-- LDAPUserDetailsService
+    LDAPUserDetailsService --> "1" userTenantProvider : userTenant
 
     class JWTRequestFilter {
         verifyAndAuthenticate(request : HttpServletRequest, bearer : String) : void
@@ -44,7 +45,14 @@ package auth {
         +postRefreshAccessToken(authenticationRefreshRequest : AuthenticationRefreshRequest) : ResponseEntity<AuthenticationResource>
     }
     AuthenticationController --> "1" LDAPUserDetailsService : service
-}
+
+    interface "Function<UserDetails, String>" as userGroupTenantProvider {
+    }
+
+    class UserGroupTenantProvider {
+    }
+    userGroupTenantProvider <|-- UserGroupTenantProvider
+
 
     class LDAPConfiguration {
     }

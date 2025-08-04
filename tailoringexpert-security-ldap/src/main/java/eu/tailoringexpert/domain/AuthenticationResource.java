@@ -36,13 +36,15 @@ import java.util.List;
 public class AuthenticationResource extends RepresentationModel<AuthenticationResource> {
 
     String userId;
+    String tenant;
     String accessToken;
     String refreshToken;
 
     @Builder
-    public AuthenticationResource(String userId, String accessToken, String refreshToken, List<Link> links) {
+    public AuthenticationResource(String userId, String tenant, String accessToken, String refreshToken, List<Link> links) {
         super();
         this.userId = userId;
+        this.tenant = tenant;
         this.accessToken = accessToken;
         this.refreshToken = refreshToken;
         add(links);
