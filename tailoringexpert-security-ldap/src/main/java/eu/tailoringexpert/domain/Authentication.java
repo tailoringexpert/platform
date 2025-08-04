@@ -40,6 +40,11 @@ public class Authentication {
     private String userId;
 
     /**
+     * Tenant user belongs to.
+     */
+    private String tenant;
+
+    /**
      * Access token of user.
      */
     private String accessToken;

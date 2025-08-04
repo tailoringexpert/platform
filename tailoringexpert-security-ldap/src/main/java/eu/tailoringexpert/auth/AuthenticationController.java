@@ -109,6 +109,7 @@ public class AuthenticationController {
     private AuthenticationResource toResource(Authentication domain) {
         return AuthenticationResource.builder()
             .userId(domain.getUserId())
+            .tenant(domain.getTenant())
             .accessToken(domain.getAccessToken())
             .refreshToken(domain.getRefreshToken())
             .links(List.of(
