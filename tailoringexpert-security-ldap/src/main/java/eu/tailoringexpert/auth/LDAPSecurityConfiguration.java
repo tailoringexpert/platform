@@ -35,7 +35,7 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.ldap.LdapBindAuthenticationManagerFactory;
-import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.ldap.search.FilterBasedLdapUserSearch;
 import org.springframework.security.ldap.search.LdapUserSearch;
 import org.springframework.security.ldap.userdetails.DefaultLdapAuthoritiesPopulator;
@@ -48,7 +48,7 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 import java.util.Collection;
 import java.util.Map;
-import java.util.Objects;
+import java.util.function.Function;
 
 import static java.util.Collections.singletonList;
 import static java.util.List.of;
@@ -93,16 +93,22 @@ public class LDAPSecurityConfiguration {
         @NonNull AuthenticationManager authenticationManager,
         @NonNull LdapUserSearch userSearch,
         @NonNull LdapAuthoritiesPopulator authoritiesPopulator,
+        @NonNull Function<UserDetails, String> userTenantProvider,
         @NonNull JWTService jwtService
-
     ) {
         return new LDAPUserDetailsService(
             authenticationManager,
             userSearch,
             definedRoles,
             authoritiesPopulator,
+            userTenantProvider,
             jwtService
         );
+    }
+
+    @Bean
+    UserGroupTenantProvider userGroupTenantProvider(@Value("#{${tenantUserMapping}}") Map<String, String> group2Tenant) {
+        return new UserGroupTenantProvider(group2Tenant);
     }
 
     @Bean

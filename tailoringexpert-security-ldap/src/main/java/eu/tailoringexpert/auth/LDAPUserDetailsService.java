@@ -37,11 +37,13 @@ import org.springframework.security.ldap.userdetails.LdapUserDetailsService;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.function.Function;
 
 @Log4j2
 public class LDAPUserDetailsService extends LdapUserDetailsService {
 
     Collection<String> definedRoles;
+    Function<UserDetails, String> userTenant;
     JWTService tokenProvider;
     AuthenticationManager authenticationManager;
 
@@ -50,9 +52,11 @@ public class LDAPUserDetailsService extends LdapUserDetailsService {
         LdapUserSearch userSearch,
         Collection<String> definedRoles,
         LdapAuthoritiesPopulator authoritiesPopulator,
+        Function<UserDetails, String> userTenant,
         JWTService tokenProvider) {
         super(userSearch, authoritiesPopulator);
         this.definedRoles = definedRoles;
+        this.userTenant = userTenant;
         this.authenticationManager = authenticationManager;
         this.tokenProvider = tokenProvider;
     }
@@ -68,14 +72,13 @@ public class LDAPUserDetailsService extends LdapUserDetailsService {
      */
     public Authentication authenticate(@NonNull String userId, @NonNull String password) {
         UserDetails userDetails = loadUserByUsername(userId);
-        Collection<? extends GrantedAuthority> grantedAuthorities = userDetails.getAuthorities();
 
         List<String> userRoles = userDetails.getAuthorities().stream()
             .map(GrantedAuthority::getAuthority)
             .filter(definedRoles::contains)
             .toList();
 
-        log.info("Authentication of {} successfull! Users groups are: {}", userId, grantedAuthorities);
+        log.info("Authentication of {} successfull! Users groups are: {}", userId, userDetails.getAuthorities());
 
         UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(userDetails.getUsername(), password, userDetails.getAuthorities());
         authenticationManager.authenticate(authentication);
@@ -83,6 +86,7 @@ public class LDAPUserDetailsService extends LdapUserDetailsService {
 
         return Authentication.builder()
             .userId(userId)
+            .tenant(userTenant.apply(userDetails))
             .accessToken(tokenProvider.generateToken(userId, userRoles))
             .refreshToken(tokenProvider.generateRefreshToken(userId, userRoles))
             .build();
@@ -104,8 +108,5 @@ public class LDAPUserDetailsService extends LdapUserDetailsService {
             .accessToken(tokenProvider.generateToken(userId, tokenProvider.extractGrantedAuthorities(claims)))
             .refreshToken(tokenProvider.generateRefreshToken(userId, tokenProvider.extractGrantedAuthorities(claims)))
             .build();
-
     }
-
-
 }
