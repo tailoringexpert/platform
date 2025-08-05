@@ -7,7 +7,7 @@
     <artifactId>tailoringexpert-platform</artifactId>
     <packaging>pom</packaging>
     <name>${project.groupId}:${project.artifactId}</name>
-    <version>0.1.8-SNAPSHOT</version>
+    <version>0.2.0-SNAPSHOT</version>
 
     <inceptionYear>2022</inceptionYear>
 
@@ -79,7 +79,7 @@
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <java.version>17</java.version>
+        <java.version>23</java.version>
         <maven.compiler.source>${java.version}</maven.compiler.source>
         <maven.compiler.target>${java.version}</maven.compiler.target>
         <maven.javadoc.skip>true</maven.javadoc.skip>
