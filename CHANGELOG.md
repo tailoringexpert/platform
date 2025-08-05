@@ -1,11 +1,39 @@
 # Changelog
 
+## [vv0.1.7](https://github.com/tailoringexpert/platform/tree/vv0.1.7) (08.05.2025)
+
+[Full Changelog](https://github.com/tailoringexpert/platform/compare/v0.1.6...vv0.1.7)
+
+**Implemented enhancements:**
+
+- Getting available selectionvector profiles shall be cached [\#410](https://github.com/tailoringexpert/platform/issues/410)
+- Get tenant of authentication data [\#409](https://github.com/tailoringexpert/platform/issues/409)
+- Add different token separator for jasypt client [\#407](https://github.com/tailoringexpert/platform/issues/407)
+- Add referenced documents to requirement [\#389](https://github.com/tailoringexpert/platform/issues/389)
+
+## [v0.1.6](https://github.com/tailoringexpert/platform/tree/v0.1.6) (07.29.2025)
+
+[Full Changelog](https://github.com/tailoringexpert/platform/compare/v0.1.5...v0.1.6)
+
+**Implemented enhancements:**
+
+- Handle env vars in tenant database properties [\#406](https://github.com/tailoringexpert/platform/issues/406)
+- Provide run configuration for jasypt secret encryption [\#403](https://github.com/tailoringexpert/platform/issues/403)
+- Add different token separator for jasypt client [\#407](https://github.com/tailoringexpert/platform/issues/407)
+- Add referenced documents to requirement [\#389](https://github.com/tailoringexpert/platform/issues/389)
+
+**Closed issues:**
+
+- Provide cors bean [\#404](https://github.com/tailoringexpert/platform/issues/404)
+- Provide LDAP security module [\#401](https://github.com/tailoringexpert/platform/issues/401)
+
 ## [v0.1.5](https://github.com/tailoringexpert/platform/tree/v0.1.5) (04.08.2025)
 
 [Full Changelog](https://github.com/tailoringexpert/platform/compare/v0.1.4...v0.1.5)
 
 **Implemented enhancements:**
 
+- Mark chapters with a applicable as header in Excel CM [\#387](https://github.com/tailoringexpert/platform/issues/387)
 - Add state to CM dataelement to mark as applicable [\#384](https://github.com/tailoringexpert/platform/issues/384)
 - Change parameter names of file uploads to "file" [\#379](https://github.com/tailoringexpert/platform/issues/379)
 - Parametertypes for updating tailoringname, notes and requirement text [\#376](https://github.com/tailoringexpert/platform/issues/376)
@@ -14,7 +42,6 @@
 - Provide primevue optimized mixin for TailoringCatalogChapterResource [\#370](https://github.com/tailoringexpert/platform/issues/370)
 - Provide row number of failed excel chapter row to be converted to json [\#364](https://github.com/tailoringexpert/platform/issues/364)
 - Sonar [\#360](https://github.com/tailoringexpert/platform/issues/360)
-- Mark chapters with a applicable as header in Excel CM [\#387](https://github.com/tailoringexpert/platform/issues/387)
 
 **Fixed bugs:**
 
