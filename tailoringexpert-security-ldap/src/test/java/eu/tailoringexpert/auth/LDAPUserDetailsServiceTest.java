@@ -8,12 +8,12 @@
  * it under the terms of the GNU General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/gpl-3.0.html>.
@@ -30,9 +30,12 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.AuthenticationServiceException;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.User;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.ldap.search.LdapUserSearch;
 import org.springframework.security.ldap.userdetails.LdapAuthoritiesPopulator;
+
+import java.util.function.Function;
 
 import static java.util.List.of;
 import static org.assertj.core.api.Assertions.*;
@@ -44,6 +47,7 @@ class LDAPUserDetailsServiceTest {
     AuthenticationManager authenticationManagerMock;
     LdapUserSearch userSearchMock;
     LdapAuthoritiesPopulator authoritiesPopulatorMock;
+    Function<UserDetails, String> tenantProviderMock;
     JWTService jwtServiceMock;
 
     JWTService tokenProvider;
@@ -56,6 +60,7 @@ class LDAPUserDetailsServiceTest {
         this.authenticationManagerMock = mock(AuthenticationManager.class);
         this.userSearchMock = mock(LdapUserSearch.class);
         this.authoritiesPopulatorMock = mock(LdapAuthoritiesPopulator.class);
+        this.tenantProviderMock = mock(Function.class);
         this.jwtServiceMock = mock(JWTService.class);
 
         this.service = spy(new LDAPUserDetailsService(
@@ -63,6 +68,7 @@ class LDAPUserDetailsServiceTest {
                 userSearchMock,
                 of("ROLE1"),
                 authoritiesPopulatorMock,
+            tenantProviderMock,
                 jwtServiceMock
             )
         );
@@ -119,6 +125,7 @@ class LDAPUserDetailsServiceTest {
         User user = new User("f_demo", "test1234!", of(new SimpleGrantedAuthority("ROLE1")));
 
         doReturn(user).when(service).loadUserByUsername("f_demo");
+        given(tenantProviderMock.apply(user)).willReturn("demo");
         given(jwtServiceMock.generateToken("f_demo", of("ROLE1")))
             .willReturn(accessToken);
         given(jwtServiceMock.generateRefreshToken("f_demo", of("ROLE1")))
@@ -130,6 +137,7 @@ class LDAPUserDetailsServiceTest {
         // assert
         assertThat(actual).isNotNull();
         assertThat(actual.getUserId()).isEqualTo("f_demo");
+        assertThat(actual.getTenant()).isEqualTo("demo");
         assertThat(actual.getAccessToken()).isEqualTo(accessToken);
         assertThat(actual.getRefreshToken()).isEqualTo(refreshToken);
     }
@@ -218,5 +226,27 @@ class LDAPUserDetailsServiceTest {
         assertThat(actual.getAccessToken())
             .isNotNull()
             .isNotEqualTo(refreshToken);
+    }
+
+    @Test
+    void authenticate_UserWithNoTenant_ExceptionThrown() {
+        // arrange
+        User user = new User("f_demo", "test1234!", of(new SimpleGrantedAuthority("ROLE1")));
+
+        doReturn(user).when(service).loadUserByUsername("f_demo");
+        doThrow(new AuthenticationServiceException("User f_demo does not belong to any tenant"))
+            .when(tenantProviderMock).apply(user);
+
+        // act
+        Throwable actual = catchThrowable(() -> service.authenticate("f_demo", "test1234!"));
+
+        // assert
+        assertThat(actual)
+            .isNotNull()
+            .isInstanceOf(AuthenticationServiceException.class)
+            .hasMessage("User f_demo does not belong to any tenant");
+
+        verify(jwtServiceMock, times(0)).generateToken(any(), any());
+        verify(jwtServiceMock, times(0)).generateRefreshToken(any(), any());
     }
 }

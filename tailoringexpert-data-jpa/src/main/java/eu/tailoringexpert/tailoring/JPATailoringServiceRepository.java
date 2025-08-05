@@ -37,6 +37,7 @@ import eu.tailoringexpert.repository.TailoringRepository;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Collection;
@@ -58,6 +59,8 @@ import static java.util.Optional.ofNullable;
 @Transactional
 @RequiredArgsConstructor
 public class JPATailoringServiceRepository implements TailoringServiceRepository {
+
+    public static final String CACHE_PROFILES = "JPATailoringServiceRepository#Profiles";
 
     @NonNull
     private JPATailoringServiceRepositoryMapper mapper;
@@ -210,6 +213,7 @@ public class JPATailoringServiceRepository implements TailoringServiceRepository
      * {@inheritDoc}
      */
     @Override
+    @Cacheable(CACHE_PROFILES)
     public Collection<SelectionVectorProfile> getSelectionVectorProfile() {
         log.traceEntry();
 
