@@ -6,7 +6,7 @@
     <parent>
         <groupId>eu.tailoringexpert</groupId>
         <artifactId>tailoringexpert-platform</artifactId>
-        <version>0.1.7</version>
+        <version>0.1.8-SNAPSHOT</version>
     </parent>
 
     <artifactId>tailoringexpert-security-ldap</artifactId>
