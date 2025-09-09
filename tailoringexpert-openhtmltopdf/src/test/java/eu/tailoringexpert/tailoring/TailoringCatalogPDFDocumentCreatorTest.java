@@ -43,8 +43,6 @@ import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockserver.client.MockServerClient;
-import org.mozilla.javascript.commonjs.module.Require;
 import org.thymeleaf.spring6.SpringTemplateEngine;
 import org.thymeleaf.templateresolver.FileTemplateResolver;
 
@@ -70,15 +68,10 @@ import static java.util.Collections.unmodifiableCollection;
 import static java.util.List.of;
 import static java.util.Objects.nonNull;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockserver.integration.ClientAndServer.startClientAndServer;
-import static org.mockserver.model.HttpRequest.request;
-import static org.mockserver.model.HttpResponse.response;
 
 @Log4j2
 class TailoringCatalogPDFDocumentCreatorTest {
 
-    static int mockServerPort = 1080;
-    static MockServerClient mockServer;
     String templateHome;
     String assetHome;
     DRDProvider<TailoringRequirement> drdProviderMock;
@@ -86,16 +79,6 @@ class TailoringCatalogPDFDocumentCreatorTest {
     ObjectMapper objectMapper;
     FileSaver fileSaver;
     TailoringCatalogPDFDocumentCreator creator;
-
-    @BeforeAll
-    static void beforeAll() {
-        mockServer = startClientAndServer(mockServerPort);
-    }
-
-    @AfterAll
-    static void afterAll() {
-        mockServer.close();
-    }
 
     @BeforeEach
     void setup() {
@@ -184,19 +167,6 @@ class TailoringCatalogPDFDocumentCreatorTest {
         ctx.put("DOKUMENT", "SAMPLE-XY-Z-1940/DV7");
         ctx.put("${DRD_DOCID}", "SAMPLE_DOC");
         ctx.put("SHOW_ALL", Boolean.FALSE);
-
-        mockServer
-            .when(request()
-                .withMethod("GET")
-                .withPath("/assets/.*"))
-            .respond(httpRequest -> {
-                String asset = httpRequest.getPath().getValue().substring("/assets".length());
-                java.io.File file = new java.io.File(this.assetHome + asset);
-
-                return response()
-                    .withStatusCode(200)
-                    .withBody(readAllBytes(file.toPath()));
-            });
 
         // act
         File actual = creator.createDocument("4711", tailoring, ctx);
