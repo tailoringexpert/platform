@@ -29,11 +29,13 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
-import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.oauth2.jwt.JwtDecoder;
 import org.springframework.security.oauth2.jwt.NimbusJwtDecoder;
 import org.springframework.security.oauth2.server.resource.authentication.JwtGrantedAuthoritiesConverter;
 import org.springframework.security.web.SecurityFilterChain;
+
+import static java.util.Objects.nonNull;
+import static org.springframework.security.config.http.SessionCreationPolicy.STATELESS;
 
 @Log4j2
 @Configuration
@@ -59,19 +61,27 @@ public class KeycloakSecurityConfiguration {
     }
 
     @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity http, @NonNull JWTConverter jwtConverter) throws Exception {
-
+    public SecurityFilterChain securityFilterChain(
+        @NonNull HttpSecurity http,
+        @NonNull JWTConverter jwtConverter,
+        @Value("${auth.permit-all}") String[] allPermissions,
+        @Value("${auth.authenticated}") String[] authenticatedPath
+    ) throws Exception {
         http
             .csrf(AbstractHttpConfigurer::disable)
-            .authorizeHttpRequests(authorize -> authorize.anyRequest().authenticated())
-            .oauth2ResourceServer(oauth2 -> oauth2.jwt(
-                jwt -> jwt.jwtAuthenticationConverter(jwtConverter)
-            ))
-            .sessionManagement(
-                session -> session.sessionCreationPolicy(
-                    SessionCreationPolicy.STATELESS)
+            .authorizeHttpRequests(authorize -> {
+                    authorize.requestMatchers(allPermissions).permitAll();
+                    if (nonNull(authenticatedPath) && authenticatedPath.length > 0) {
+                        authorize.requestMatchers(authenticatedPath).authenticated();
+                    }
+                }
+            )
+            .oauth2ResourceServer(oauth2 ->
+                oauth2.jwt(jwt -> jwt.jwtAuthenticationConverter(jwtConverter))
+            )
+            .sessionManagement(session ->
+                session.sessionCreationPolicy(STATELESS)
             );
-
         return http.build();
     }
 }
