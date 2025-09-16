@@ -1,0 +1,38 @@
+<assembly xmlns="http://maven.apache.org/ASSEMBLY/2.1.1"
+          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+          xsi:schemaLocation="http://maven.apache.org/ASSEMBLY/2.1.1 http://maven.apache.org/xsd/assembly-2.1.1.xsd">
+
+    <id>lib</id>
+    <formats>
+        <format>jar</format>
+    </formats>
+
+    <includeBaseDirectory>false</includeBaseDirectory>
+
+    <dependencySets>
+        <dependencySet>
+            <unpack>true</unpack>
+            <scope>runtime</scope>
+            <useTransitiveDependencies>true</useTransitiveDependencies>
+            <excludes>
+                <exclude>org.springframework.boot:spring-boot-starter</exclude>
+                <exclude>org.springframework.boot:spring-boot</exclude>
+                <exclude>org.springframework.boot:spring-boot-autoconfigure</exclude>
+                <exclude>org.springframework:spring-aop</exclude>
+                <exclude>org.springframework:spring-beans</exclude>
+                <exclude>org.springframework:spring-context</exclude>
+                <exclude>org.springframework:spring-core</exclude>
+                <exclude>org.springframework:spring-expression</exclude>
+                <exclude>org.springframework:spring-web</exclude>
+
+                <exclude>jakarta.annotation:jakarta.annotation-api</exclude>
+                <exclude>org.yaml:snakeyaml</exclude>
+
+                <exclude>org.apache.logging.*</exclude>
+                <exclude>org.slf4j:slf4j-api</exclude>
+                <exclude>org.springframework:spring-jcl</exclude>
+                <exclude>com.beust:jcommander</exclude>
+            </excludes>
+        </dependencySet>
+    </dependencySets>
+</assembly>
