@@ -71,11 +71,7 @@
         <module>tailoringexpert-openhtmltopdf</module>
         <module>tailoringexpert-poi</module>        
         <module>tailoringexpert-coverage</module>
-        <module>tailoringexpert-security</module>
-        <module>tailoringexpert-security-ldap</module>
-        <module>tailoringexpert-security-keycloak</module>
         <module>tailoringexpert-bootapp</module>
-        <module>tailoringexpert-distribution</module>
     </modules>
 
     <properties>
@@ -156,21 +152,6 @@
             <dependency>
                 <groupId>eu.tailoringexpert</groupId>
                 <artifactId>tailoringexpert-tenant</artifactId>
-                <version>${project.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>eu.tailoringexpert</groupId>
-                <artifactId>tailoringexpert-security</artifactId>
-                <version>${project.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>eu.tailoringexpert</groupId>
-                <artifactId>tailoringexpert-security-ldap</artifactId>
-                <version>${project.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>eu.tailoringexpert</groupId>
-                <artifactId>tailoringexpert-security-keycloak</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
