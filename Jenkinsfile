@@ -26,7 +26,6 @@ pipeline {
         NEXUS_CREDENTIALS = credentials('NEXUS_CREDENTIALS')
         SONAR_TOKEN = credentials('TAILORINGEXPERT_SONAR_TOKEN')
         GIT_REPOSITORY = 'tailoringexpert/platform.git' 
-        MVN_SKIP_MODULES = '--projects !tailoringexpert-distribution'
         
         // other (external) defined env vars
         // M2_VOLUME maven      repoository volume
@@ -80,13 +79,13 @@ pipeline {
 
         stage('build') {
             steps {
-                sh "mvn --settings .jenkins/settings.xml -Dmaven.repo.local=${M2_VOLUME}/repository -DskipTests ${MVN_SKIP_MODULES} clean compile"
+                sh "mvn --settings .jenkins/settings.xml -Dmaven.repo.local=${M2_VOLUME}/repository -DskipTests clean compile"
             }
         }
 
         stage('verify') {
             steps {
-                sh "mvn --settings .jenkins/settings.xml -Dmaven.repo.local=${M2_VOLUME}/repository ${MVN_SKIP_MODULES} verify"
+                sh "mvn --settings .jenkins/settings.xml -Dmaven.repo.local=${M2_VOLUME}/repository verify"
             }
 
             post {
@@ -131,7 +130,7 @@ pipeline {
         stage("quality gate") {
             steps {
                 withSonarQubeEnv('default') {
-                    sh "mvn --settings .jenkins/settings.xml -Dmaven.repo.local=${M2_VOLUME}/repository ${MVN_SKIP_MODULES} sonar:sonar"
+                    sh "mvn --settings .jenkins/settings.xml -Dmaven.repo.local=${M2_VOLUME}/repository sonar:sonar"
                 }
               timeout(time: 1, unit: 'HOURS') {
                 waitForQualityGate abortPipeline: true, credentialsId: '${SONAR_TOKEN}'
