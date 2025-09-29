@@ -70,11 +70,12 @@ public class AppController {
             .ok()
             .body(empty(
                     mapper.createLink("catalog", BASECATALOG, parameter),
-                    mapper.createLink("project", PROJECTS, parameter),
+                    mapper.createLink("projects", PROJECTS, parameter),
                     mapper.createLink("screeningsheet", SCREENINGSHEET, parameter),
                     mapper.createLink("selectionvector", SELECTIONVECTOR_PROFILE, parameter),
                     mapper.createLink("catalogconversion", BASECATALOG_CONVERT_EXCEL, parameter),
-                    mapper.createLink("catalogpreview", BASECATALOG_PREVIEW_PDF, parameter)
+                    mapper.createLink("catalogpreview", BASECATALOG_PREVIEW_PDF, parameter),
+                    mapper.createLink("project", PROJECT, parameter)
                 )
             );
 

@@ -77,7 +77,7 @@ class AppControllerTest {
             .dateFormat(new SimpleDateFormat("yyyy-MM-dd", GERMANY))
             .handlerInstantiator(
                 new Jackson2HalModule.HalHandlerInstantiator(new EvoInflectorLinkRelationProvider(),
-                    CurieProvider.NONE.NONE, MessageResolver.DEFAULTS_ONLY))
+                    CurieProvider.NONE, MessageResolver.DEFAULTS_ONLY))
             .build();
 
         ByteArrayHttpMessageConverter byteArrayHttpMessageConverter = new ByteArrayHttpMessageConverter();
@@ -95,7 +95,7 @@ class AppControllerTest {
     }
 
     @Test
-    void getLinks_KeineParameter_AnwendungslinksWerdenErmittelt() throws Exception {
+    void getLinks_NoParameterRequired_LinksReturned() throws Exception {
         // arrange
         Map<String, String> parameter = Collections.emptyMap();
 
@@ -107,9 +107,10 @@ class AppControllerTest {
 
         // verify
         verify(mapperMock, times(1)).createLink("catalog", ResourceMapper.BASECATALOG, parameter);
-        verify(mapperMock, times(1)).createLink("project", ResourceMapper.PROJECTS, parameter);
+        verify(mapperMock, times(1)).createLink("projects", ResourceMapper.PROJECTS, parameter);
         verify(mapperMock, times(1)).createLink("screeningsheet", ResourceMapper.SCREENINGSHEET, parameter);
         verify(mapperMock, times(1)).createLink("selectionvector", ResourceMapper.SELECTIONVECTOR_PROFILE, parameter);
+        verify(mapperMock, times(1)).createLink("project", ResourceMapper.PROJECT, parameter);
     }
 
 }
