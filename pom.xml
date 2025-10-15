@@ -94,7 +94,7 @@
         <sonar.exclusions>**/*MixIn.java, **/*Configuration.java, **/App.java</sonar.exclusions>
 
         <!-- plugins -->
-        <jacoco-maven-plugin.version>0.8.13</jacoco-maven-plugin.version>
+        <jacoco-maven-plugin.version>0.8.14</jacoco-maven-plugin.version>
         <liquibase-maven-plugin.version>4.33.0</liquibase-maven-plugin.version>
         <spring-boot-maven-plugin.version>3.5.6</spring-boot-maven-plugin.version>
         <springdoc-openapi-maven-plugin.version>1.4</springdoc-openapi-maven-plugin.version>
