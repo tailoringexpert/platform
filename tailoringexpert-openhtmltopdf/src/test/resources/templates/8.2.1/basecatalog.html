@@ -236,8 +236,10 @@
     <tbody>
     <th:block th:each="requirement : ${requirements}">
         <tr>
-            <td style="width:15%;font-size:x-small;"
-                th:utext="${#strings.concat(requirement.position, '<br/><br/>', requirement.reference)}">Position
+            <td style="width:15%;font-size:x-small;">
+                <span style="display: block;" th:utext="${requirement.position}">Position</span><br/>
+                <img style="display: block;" th:if="${requirement.logo!=null}" th:src="${requirement.logo}" th:alt="${requirement.logo}"/>
+                <span th:utext="${requirement.reference}">Reference</span>
             </td>
             <td style="width:85%" colspan="2"
                 th:classappend="${requirement.chapter!=null}?box"

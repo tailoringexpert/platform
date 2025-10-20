@@ -199,7 +199,14 @@ public class BaseCatalogPDFDocumentCreator implements DocumentCreator {
      * @param rows        collection to add to
      */
     void addRequirement(BaseRequirement requirement, Collection<BaseCatalogElement> rows) {
-        String referenzText = buildReferenceText(requirement);
+        BaseCatalogElement.BaseCatalogElementBuilder builder = BaseCatalogElement.builder();
+
+        if (nonNull(requirement.getReference())) {
+            builder.reference(templateEngine.toXHTML(requirement.getReference().getText() + (requirement.getReference().getChanged().booleanValue() ? "(mod)" : ""), emptyMap()));
+            if (nonNull(requirement.getReference().getLogo())) {
+                builder.logo(requirement.getReference().getLogo().getUrl());
+            }
+        }
 
         List<String> identifiers = new ArrayList<>();
         if (!requirement.getIdentifiers().isEmpty()) {
@@ -217,10 +224,9 @@ public class BaseCatalogPDFDocumentCreator implements DocumentCreator {
                 .collect(toCollection(() -> phases));
         }
 
-        rows.add(BaseCatalogElement.builder()
+        rows.add(builder
             .phases(phases)
             .identifiers(identifiers)
-            .reference(templateEngine.toXHTML(referenzText, emptyMap()))
             .position(templateEngine.toXHTML(requirement.getPosition(), emptyMap()))
             .text(templateEngine.toXHTML(requirement.getText(), emptyMap()))
             .chapter(null)

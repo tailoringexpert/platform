@@ -34,7 +34,6 @@ package tailoring {
 
     class CMElement {
         -level : int
-        -level : int
         -number : String
         -name : String
         -requirement : boolean
@@ -52,6 +51,7 @@ package tailoring {
 
     class CatalogElement {
         -reference : String
+        -logo : String
         -position : String
         -chapter : String
         -text : String

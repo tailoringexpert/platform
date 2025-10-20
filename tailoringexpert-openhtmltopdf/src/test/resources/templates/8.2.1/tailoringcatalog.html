@@ -122,7 +122,10 @@
     <tbody>
     <th:block th:each="requirement, iterStat : ${requirements}">
         <tr>
-                <td style="width:10%;font-size:x-small" th:utext="${requirement.reference}">Referenz</td>
+                <td style="width:10%;font-size:x-small;">
+                    <img style="display: block;" th:if="${requirement.logo!=null}" th:src="${requirement.logo}" th:alt="${requirement.logo}"/>
+                    <span th:utext="${requirement.reference}">Reference</span>
+                </td>
                 <td style="width:5%;font-size:x-small;" th:utext="${requirement.position}">Position</td>
                 <td style="width:85%" colspan="2"
                     th:classappend="${requirement.chapter!=null}?box"
