@@ -154,24 +154,6 @@ public class BaseCatalogPDFDocumentCreator implements DocumentCreator {
     }
 
     /**
-     * Builds text of refernce origin.
-     *
-     * @param requirement requirment to create refernence of
-     * @return created reference text
-     */
-    private String buildReferenceText(BaseRequirement requirement) {
-        StringBuilder referenceText = new StringBuilder();
-        if (nonNull(requirement.getReference())) {
-            if (nonNull(requirement.getReference().getLogo())) {
-                String url = requirement.getReference().getLogo().getUrl();
-                referenceText.append(format(REFERENZ_LOGO_LINK, url, requirement.getReference().getLogo().getName()));
-            }
-            referenceText.append(requirement.getReference().getText() + (requirement.getReference().getChanged().booleanValue() ? "(mod)" : ""));
-        }
-        return referenceText.toString();
-    }
-
-    /**
      * Builds List of limitations.
      *
      * @param identifier identifier to create limitation strings of
