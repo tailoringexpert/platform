@@ -41,6 +41,11 @@ public class BaseCatalogElement {
     private String reference;
 
     /**
+     * Logo of requirement originator.
+     */
+    private String logo;
+
+    /**
      * Position (in chapter) of requirement.
      */
 
