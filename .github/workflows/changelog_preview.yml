@@ -62,7 +62,7 @@ jobs:
           output: "CHANGELOG.md"
 
       - name: Upload changelog
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v5
         with:
           path: CHANGELOG.md
 
