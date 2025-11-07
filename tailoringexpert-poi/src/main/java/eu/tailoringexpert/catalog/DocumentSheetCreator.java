@@ -30,11 +30,8 @@ import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.util.CellRangeAddress;
 
 import java.util.Collection;
-import java.util.LinkedHashSet;
 import java.util.function.Function;
-import java.util.stream.Collectors;
 
-import static java.util.Comparator.comparing;
 import static java.util.stream.IntStream.range;
 
 /**

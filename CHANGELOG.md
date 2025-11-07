@@ -1,5 +1,22 @@
 # Changelog
 
+## [v2.0.0](https://github.com/tailoringexpert/platform/tree/v2.0.0) (11.07.2025)
+
+[Full Changelog](https://github.com/tailoringexpert/platform/compare/v0.1.7...v2.0.0)
+
+**Implemented enhancements:**
+
+- Provide project as templated api link [\#432](https://github.com/tailoringexpert/platform/issues/432)
+- Parameterize authorized paths [\#422](https://github.com/tailoringexpert/platform/issues/422)
+- Provide IDM security module [\#417](https://github.com/tailoringexpert/platform/issues/417)
+
+**Closed issues:**
+
+- sonar: Remove this unused private "buildReferenceText" method. [\#441](https://github.com/tailoringexpert/platform/issues/441)
+- Rendering refernce logo [\#440](https://github.com/tailoringexpert/platform/issues/440)
+- Extract security modules to standalone repositories [\#426](https://github.com/tailoringexpert/platform/issues/426)
+- Provide keycloak maven assembly [\#423](https://github.com/tailoringexpert/platform/issues/423)
+
 ## [v0.1.7](https://github.com/tailoringexpert/platform/tree/v0.1.7) (08.05.2025)
 
 [Full Changelog](https://github.com/tailoringexpert/platform/compare/v0.1.6...v0.1.7)

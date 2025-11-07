@@ -38,9 +38,10 @@ public class CatalogElement {
      */
     private String reference;
 
-    private String referenceIssue;
-
-    private String referenceReleaseDate;
+    /**
+     * Logo of element origin.
+     */
+    private String logo;
 
     /**
      * Position to render element at.

@@ -52,9 +52,11 @@ public class RequirementSheetCreator implements BiConsumer<Catalog<BaseRequireme
 
         Styles styles = new Styles(sheet.getWorkbook());
 
+        addHeader(sheet, styles);
         catalog.getToc().getChapters()
             .forEach(chapter -> addChapter(chapter, sheet, styles));
 
+        sheet.createFreezePane(0, 1);
         sheet.setAutoFilter(new CellRangeAddress(0, 0, 0, 7));
         range(0, sheet.getRow(0).getPhysicalNumberOfCells())
             .forEach(sheet::autoSizeColumn);
@@ -74,6 +76,26 @@ public class RequirementSheetCreator implements BiConsumer<Catalog<BaseRequireme
         chapter.getRequirements().forEach(requirement -> addRow(requirement, sheet, styles));
         chapter.getChapters().forEach(subChapter -> addChapter(subChapter, sheet, styles));
 
+    }
+
+    /**
+     * Add a row to provided sheet with provided parameters.
+     *
+     * @param sheet  sheet to add row to
+
+     */
+    private void addHeader(Sheet sheet, Styles styles) {
+        Row row = sheet.createRow((short) sheet.getLastRowNum() + 1);
+        row.createCell(0).setCellValue("#");
+        row.createCell(1).setCellValue("Text");
+        row.createCell(2).setCellValue("Phases");
+        row.createCell(3).setCellValue("Identifiers");
+        row.createCell(4).setCellValue("Reference");
+        row.createCell(5).setCellValue("Logo");
+        row.createCell(6).setCellValue("DRD");
+        row.createCell(7).setCellValue("Applicable documents");
+
+        range(0, 8).forEach(i -> row.getCell(i).setCellStyle(styles.getHeaderStyle()));
     }
 
     /**
