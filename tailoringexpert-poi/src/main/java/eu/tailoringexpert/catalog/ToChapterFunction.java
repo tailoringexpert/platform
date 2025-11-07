@@ -93,10 +93,14 @@ public class ToChapterFunction implements Function<Sheet, Chapter<BaseRequiremen
         Chapter<BaseRequirement> current = new Chapter<>();
 
         Iterator<Row> rowIterator = sheet.iterator();
+        if(isHeader(sheet.getRow(0))) {
+            rowIterator.next();
+        }
+
         while (rowIterator.hasNext()) {
             Row row = rowIterator.next();
 
-            while (isHeader(row)) {
+            while (isChapter(row)) {
                 String number = row.getCell(0, CREATE_NULL_AS_BLANK).getStringCellValue();
                 current = createChapter(row);
                 chapters.put(number, current);
@@ -117,8 +121,13 @@ public class ToChapterFunction implements Function<Sheet, Chapter<BaseRequiremen
     }
 
     private boolean isHeader(Row row) {
+        return "#".equals(row.getCell(0, CREATE_NULL_AS_BLANK).getStringCellValue());
+    }
+
+    private boolean isChapter(Row row) {
         return row.getCell(2, CREATE_NULL_AS_BLANK).getStringCellValue().isBlank();
     }
+
 
     private int getPosition(String number) {
         int index = number.lastIndexOf('.');
@@ -138,7 +147,7 @@ public class ToChapterFunction implements Function<Sheet, Chapter<BaseRequiremen
             result.setRequirements(new LinkedList<>());
             result.setChapters(new LinkedList<>());
             return result;
-        } catch (Exception nfe) {
+        } catch (Exception _) {
             throw new TailoringexpertException("Could not convert worksheet chapter row " + (row.getRowNum() + 1));
 
         }

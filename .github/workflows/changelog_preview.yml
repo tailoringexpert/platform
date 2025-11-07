@@ -35,7 +35,7 @@ jobs:
           echo "Version: ${{ github.event.inputs.version }}"
 
       - name: Create tag
-        uses: actions/github-script@v7
+        uses: actions/github-script@v8
         with:
           script: |
             github.rest.git.createRef({
@@ -46,7 +46,7 @@ jobs:
             })
 
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
 
       - name: Generate changelog
         id: generate_changelog
@@ -62,12 +62,12 @@ jobs:
           output: "CHANGELOG.md"
 
       - name: Upload changelog
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v5
         with:
           path: CHANGELOG.md
 
       - name: Delete tag
-        uses: actions/github-script@v7
+        uses: actions/github-script@v8
         with:
           script: |
             github.rest.git.deleteRef({

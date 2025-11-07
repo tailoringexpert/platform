@@ -18,6 +18,7 @@ package catalog {
 
     class BaseCatalogElement {
         -reference : String
+        -logo : String
         -position : String
         -chapter : String
         -text : String

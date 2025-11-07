@@ -76,10 +76,34 @@ class Excel2CatalogConverterIntegrationTest {
     }
 
     @Test
-    void apply_validInput_FileCreated() throws Exception {
+    void apply_validInputHeaderRow_FileCreated() throws Exception {
         // arrange
         byte[] data;
         try (InputStream is = this.getClass().getResourceAsStream("/basecatalog.xlsx")) {
+            assert nonNull(is);
+            data = is.readAllBytes();
+        }
+
+        // act
+        Catalog<BaseRequirement> actual = toFunction.apply(data);
+
+        Catalog<BaseRequirement> catalog;
+        try (InputStream is = this.getClass().getResourceAsStream("/basecatalog.json")) {
+            assert nonNull(is);
+            catalog = objectMapper.readValue(is, new TypeReference<Catalog<BaseRequirement>>() {
+            });
+        }
+
+        // assert
+        fileSaver.accept("export.json", objectMapper.writerWithDefaultPrettyPrinter().writeValueAsBytes(actual));
+        assertThat(actual).isEqualTo(catalog);
+    }
+
+    @Test
+    void apply_validInputWithoutHeaderRow_FileCreated() throws Exception {
+        // arrange
+        byte[] data;
+        try (InputStream is = this.getClass().getResourceAsStream("/basecatalog_without_header.xlsx")) {
             assert nonNull(is);
             data = is.readAllBytes();
         }

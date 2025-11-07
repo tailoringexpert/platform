@@ -141,7 +141,7 @@ class JasyptClientTest {
 
         // act
         try (MockedStatic<JasyptClient> client = mockStatic(JasyptClient.class)) {
-            client.when(() -> JasyptClient.createInstance()).thenReturn(clientMock);
+            client.when(JasyptClient::createInstance).thenReturn(clientMock);
             client.when(() -> JasyptClient.main(any())).thenCallRealMethod();
             JasyptClient.main(args);
         }
