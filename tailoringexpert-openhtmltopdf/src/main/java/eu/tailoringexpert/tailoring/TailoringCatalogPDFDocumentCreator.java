@@ -157,15 +157,12 @@ public class TailoringCatalogPDFDocumentCreator implements DocumentCreator {
             }
         }
 
-        builder
+        rows.add(builder
             .applicable(requirement.getSelected().booleanValue())
             .position(templateEngine.toXHTML(requirement.getPosition(), emptyMap()))
             .text(templateEngine.toXHTML(requirement.getText(), placeholders))
             .chapter(null)
-            .reference("")
-            .logo(null);
-
-        rows.add(builder.build());
+            .build());
     }
 
     /**

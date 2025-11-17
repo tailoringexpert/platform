@@ -47,8 +47,10 @@ import java.io.InputStream;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.AbstractMap.SimpleEntry;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.function.Predicate;
 
@@ -107,7 +109,7 @@ class TailoringCatalogPDFDocumentCreatorTest {
         HTMLTemplateEngine templateEngine = new ThymeleafTemplateEngine(springTemplateEngine, supplier);
 
         this.drdProviderMock = new DRDProvider(
-            (Predicate<TailoringRequirement>) requirement -> ((TailoringRequirement) requirement).getSelected(),new DRDApplicablePredicate(Map.ofEntries(
+            (Predicate<TailoringRequirement>) requirement -> ((TailoringRequirement) requirement).getSelected(), new DRDApplicablePredicate(Map.ofEntries(
             new SimpleEntry<>(ZERO, unmodifiableCollection(asList("MDR"))),
             new SimpleEntry<>(A, unmodifiableCollection(asList("SRR"))),
             new SimpleEntry<>(B, unmodifiableCollection(asList("PDR"))),
@@ -126,7 +128,7 @@ class TailoringCatalogPDFDocumentCreatorTest {
             drdProviderMock,
             applicableDocumentProviderMock,
             templateEngine,
-        new PDFEngine(domMutator, supplier)
+            new PDFEngine(domMutator, supplier)
         );
     }
 
@@ -172,4 +174,35 @@ class TailoringCatalogPDFDocumentCreatorTest {
         fileSaver.accept("tailoringcatalog.pdf", actual.getData());
     }
 
+    /**
+     * #458
+     */
+    @Test
+    void addRequirement_458_RowWithReferenceDataAdded() {
+        // arrange
+        TailoringRequirement requirement = TailoringRequirement.builder()
+            .position("a")
+            .text("Sample Text")
+            .selected(true)
+            .reference(Reference.builder()
+                .changed(false)
+                .text("Referencetext")
+                .logo(Logo.builder()
+                    .name("demo")
+                    .url("demo_logo.png")
+                    .build())
+                .build())
+            .build();
+
+        Map<String, Object> ctx = new HashMap<>();
+        List<CatalogElement> rows = new ArrayList<>();
+
+        // act
+        creator.addRequirement(requirement, rows, ctx);
+
+        // assert
+        assertThat(rows).hasSize(1);
+        assertThat(rows.getFirst().getReference()).isEqualTo("Referencetext");
+        assertThat(rows.getFirst().getLogo()).isEqualTo("demo_logo.png");
+    }
 }
