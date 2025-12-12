@@ -75,6 +75,8 @@ public class AppController {
                     mapper.createLink("selectionvector", SELECTIONVECTOR_PROFILE, parameter),
                     mapper.createLink("catalogconversion", BASECATALOG_CONVERT_EXCEL, parameter),
                     mapper.createLink("catalogpreview", BASECATALOG_PREVIEW_PDF, parameter),
+                    mapper.createLink("catalogcompare", BASECATALOG_COMPARE, parameter),
+                    mapper.createLink("catalogcomparepreview", BASECATALOG_COMPARE_PREVIEW, parameter),
                     mapper.createLink("project", PROJECT, parameter)
                 )
             );

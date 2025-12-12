@@ -26,6 +26,7 @@ package catalog {
         +getBaseCatalogJson(version : String) : ResponseEntity<byte[]>
         +getDocuments(version : String) : ResponseEntity<byte[]>
         +postBaseCatalogPreview(catalog : Catalog<BaseRequirement) : ResponseEntity<byte[]>
+        +getBaseCatalogComparePrint(base : String, compare : String) : ResponseEntity<byte[]>
     }
 
 

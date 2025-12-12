@@ -63,6 +63,7 @@ public class CatalogServiceImpl implements CatalogService {
     private Function<byte[], Catalog<BaseRequirement>> file2Catalog;
 
     private static final String MSG_CATALOGDOCUMENT_NOT_CREATED = "catalog document NOT created due to non existing catalog version.";
+    private static final String MSG_DIFFCATALOGDOCUMENT_NOT_CREATED = "catalog document NOT created due to non existing catalog version {}.";
 
     /**
      * {@inheritDoc}
@@ -104,11 +105,11 @@ public class CatalogServiceImpl implements CatalogService {
      * {@inheritDoc}
      */
     @Override
-    public Optional<File> createCatalog(String version) {
-        log.traceEntry(() -> version);
+    public Optional<File> createCatalog(String original) {
+        log.traceEntry(() -> original);
         @SuppressWarnings("PMD.PrematureDeclaration") final LocalDateTime creationTimestamp = LocalDateTime.now();
 
-        Optional<Catalog<BaseRequirement>> catalog = repository.getCatalog(version);
+        Optional<Catalog<BaseRequirement>> catalog = repository.getCatalog(original);
         if (catalog.isEmpty()) {
             log.error(MSG_CATALOGDOCUMENT_NOT_CREATED);
             log.traceExit();
@@ -212,6 +213,60 @@ public class CatalogServiceImpl implements CatalogService {
         }
         Optional<Boolean> result = of(repository.deleteCatalog(version));
         return log.traceExit(result);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public Optional<File> createCatalog(String base, String compare) {
+        log.traceEntry(() -> base, () -> compare);
+        @SuppressWarnings("PMD.PrematureDeclaration") final LocalDateTime creationTimestamp = LocalDateTime.now();
+
+        Optional<Catalog<BaseRequirement>> originalCatalog = repository.getCatalog(base);
+        if (originalCatalog.isEmpty()) {
+            log.error(MSG_DIFFCATALOGDOCUMENT_NOT_CREATED, base);
+            log.traceExit();
+            return empty();
+        }
+
+        Optional<Catalog<BaseRequirement>> revisedCatalog = repository.getCatalog(compare);
+        if (revisedCatalog.isEmpty()) {
+            log.error(MSG_DIFFCATALOGDOCUMENT_NOT_CREATED, compare);
+            log.traceExit();
+            return empty();
+        }
+
+        Optional<File> result = documentService.createCatalog(originalCatalog.get(), revisedCatalog.get(), creationTimestamp);
+        log.traceExit();
+        return result;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    //@Override
+    public Optional<File> createCatalog(String base, Catalog<BaseRequirement> compare) {
+        log.traceEntry(() -> base, () -> compare);
+        @SuppressWarnings("PMD.PrematureDeclaration") final LocalDateTime creationTimestamp = LocalDateTime.now();
+
+        Optional<Catalog<BaseRequirement>> revisedCatalog = ofNullable(compare);
+        if (revisedCatalog.isEmpty()) {
+            log.error(MSG_DIFFCATALOGDOCUMENT_NOT_CREATED, compare);
+            log.traceExit();
+            return empty();
+        }
+
+        Optional<Catalog<BaseRequirement>> originalCatalog = repository.getCatalog(base);
+        if (originalCatalog.isEmpty()) {
+            log.error(MSG_DIFFCATALOGDOCUMENT_NOT_CREATED, base);
+            log.traceExit();
+            return empty();
+        }
+
+        Optional<File> result = documentService.createCatalog(originalCatalog.get(), revisedCatalog.get(), creationTimestamp);
+        log.traceExit();
+        return result;
     }
 
 

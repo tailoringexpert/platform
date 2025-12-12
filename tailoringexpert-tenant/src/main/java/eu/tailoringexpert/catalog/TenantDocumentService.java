@@ -50,9 +50,19 @@ public class TenantDocumentService implements DocumentService {
      */
     @Override
     @SneakyThrows
-    public Optional<File> createCatalog(Catalog<BaseRequirement> catalog, LocalDateTime creationTimestamp) {
+    public Optional<File> createCatalog(Catalog<BaseRequirement> original, LocalDateTime creationTimestamp) {
         DocumentService service = getTenantImplementation();
-        return service.createCatalog(catalog, creationTimestamp);
+        return service.createCatalog(original, creationTimestamp);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    @SneakyThrows
+    public Optional<File> createCatalog(Catalog<BaseRequirement> base, Catalog<BaseRequirement> compare, LocalDateTime creationTimestamp) {
+        DocumentService service = getTenantImplementation();
+        return service.createCatalog(base, compare, creationTimestamp);
     }
 
     /**

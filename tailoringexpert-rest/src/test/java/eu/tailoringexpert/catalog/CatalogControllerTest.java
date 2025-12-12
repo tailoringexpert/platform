@@ -597,5 +597,107 @@ class CatalogControllerTest {
 
         verify(serviceMock, times(1)).deleteCatalog("8.3");
     }
+
+    @Test
+    void getBaseCatalogComparePrint_BaseCatalogsNotExists_StateNotFound() throws Exception {
+        // arrange
+        given(serviceMock.createCatalog("8.2.1", "9.0.0")).willReturn(empty());
+
+        // act
+        ResultActions actual = mockMvc.perform(get("/catalog/8.2.1/compare/9.0.0"));
+
+        // assert
+        actual.andExpect(status().isNotFound());
+        assertThatNoException();
+    }
+
+    @Test
+    void getBaseCatalogComparePrint_BaseCatalogsExists_StateOK() throws Exception {
+        // arrange
+        byte[] data;
+        // file content not important. only size of byte[]
+        try (InputStream is = newInputStream(Paths.get("src/test/resources/screeningsheet_0d.pdf"))) {
+            assert nonNull(is);
+            data = is.readAllBytes();
+        }
+        given(serviceMock.createCatalog("8.2.1", "9.0.0"))
+            .willReturn(of(File.builder()
+                .name("DOC-CAT-001.pdf")
+                .data(data)
+                .build()));
+
+        given(mediaTypeProviderMock.apply("pdf"))
+            .willReturn(APPLICATION_PDF);
+
+        // act
+        ResultActions actual = mockMvc.perform(get("/catalog/8.2.1/compare/9.0.0"));
+
+        // assert
+        actual.andExpect(status().isOk())
+            .andExpect(header().string(CONTENT_DISPOSITION, ContentDisposition.builder(FORM_DATA).name(ATTACHMENT).filename("DOC-CAT-001.pdf").build().toString()))
+            .andExpect(header().string(ACCESS_CONTROL_EXPOSE_HEADERS, CONTENT_DISPOSITION))
+            .andExpect(content().contentType(APPLICATION_PDF))
+            .andExpect(content().bytes(data));
+
+        verify(mediaTypeProviderMock, times(1)).apply("pdf");
+    }
+
+
+    @Test
+    void postBaseCatalogPreviewComparePrint_RevisedNull_StateNotFound() throws Exception {
+        // arrange
+        given(serviceMock.createCatalog("8.2.1", (Catalog<BaseRequirement>) null)).willReturn(empty());
+
+        // act
+        ResultActions actual = mockMvc.perform(post("/catalog/8.2.1/compare")
+            .accept(APPLICATION_OCTET_STREAM)
+            .content((byte[]) null)
+            .contentType(APPLICATION_JSON)
+            .characterEncoding(StandardCharsets.UTF_8.displayName())
+        );
+
+        // assert
+        actual.andExpect(status().is4xxClientError());
+    }
+
+    @Test
+    void postBaseCatalogPreviewComparePrint_BaseCatalogsExists_StateOK() throws Exception {
+        // arrange
+        Catalog<BaseRequirement> revised = Catalog.<BaseRequirement>builder().build();
+
+        byte[] data;
+        // file content not important. only size of byte[]
+        try (InputStream is = newInputStream(Paths.get("src/test/resources/screeningsheet_0d.pdf"))) {
+            assert nonNull(is);
+            data = is.readAllBytes();
+        }
+        given(serviceMock.createCatalog("8.2.1", revised))
+            .willReturn(of(File.builder()
+                .name("DOC-CAT-001.pdf")
+                .data(data)
+                .build()));
+
+        given(mediaTypeProviderMock.apply("pdf"))
+            .willReturn(APPLICATION_PDF);
+
+        // act
+        ResultActions actual = mockMvc.perform(post("/catalog/8.2.1/compare")
+            .accept(APPLICATION_OCTET_STREAM)
+            .content(objectMapper.writeValueAsString(revised))
+            .contentType(APPLICATION_JSON)
+            .characterEncoding(StandardCharsets.UTF_8.displayName())
+        );
+
+
+        // assert
+        actual.andExpect(status().isOk())
+            .andExpect(header().string(CONTENT_DISPOSITION, ContentDisposition.builder(FORM_DATA).name(ATTACHMENT).filename("DOC-CAT-001.pdf").build().toString()))
+            .andExpect(header().string(ACCESS_CONTROL_EXPOSE_HEADERS, CONTENT_DISPOSITION))
+            .andExpect(content().contentType(APPLICATION_PDF))
+            .andExpect(content().bytes(data));
+
+
+        verify(mediaTypeProviderMock, times(1)).apply("pdf");
+    }
 }
 
