@@ -64,8 +64,11 @@ import java.util.List;
 import java.util.Optional;
 import java.util.function.Function;
 
+import static eu.tailoringexpert.domain.MediaTypeProvider.FORM_DATA;
 import static eu.tailoringexpert.domain.ResourceMapper.BASECATALOG;
+import static eu.tailoringexpert.domain.ResourceMapper.BASECATALOG_COMPARE_PREVIEW;
 import static eu.tailoringexpert.domain.ResourceMapper.BASECATALOG_CONVERT_EXCEL;
+import static eu.tailoringexpert.domain.ResourceMapper.BASECATALOG_COMPARE;
 import static eu.tailoringexpert.domain.ResourceMapper.BASECATALOG_PREVIEW_PDF;
 import static eu.tailoringexpert.domain.ResourceMapper.BASECATALOG_VALIDUNTIL;
 import static eu.tailoringexpert.domain.ResourceMapper.BASECATALOG_VERSION;
@@ -80,7 +83,6 @@ import static java.util.Collections.emptyMap;
 import static org.springframework.format.annotation.DateTimeFormat.ISO.DATE;
 import static org.springframework.http.HttpHeaders.ACCESS_CONTROL_EXPOSE_HEADERS;
 import static org.springframework.http.HttpHeaders.CONTENT_DISPOSITION;
-import static org.springframework.http.HttpStatus.ACCEPTED;
 import static org.springframework.http.HttpStatus.CREATED;
 import static org.springframework.http.HttpStatus.NOT_FOUND;
 import static org.springframework.http.HttpStatus.OK;
@@ -190,7 +192,7 @@ public class CatalogController {
 
         ResponseEntity<byte[]> result = catalogService.createCatalog(version)
             .map(dokument -> ok()
-                .header(CONTENT_DISPOSITION, ContentDisposition.builder(MediaTypeProvider.FORM_DATA).name(MediaTypeProvider.ATTACHMENT).filename(dokument.getName()).build().toString())
+                .header(CONTENT_DISPOSITION, ContentDisposition.builder(FORM_DATA).name(MediaTypeProvider.ATTACHMENT).filename(dokument.getName()).build().toString())
                 .header(ACCESS_CONTROL_EXPOSE_HEADERS, CONTENT_DISPOSITION)
                 .contentType(mediaTypeProvider.apply(dokument.getType()))
                 .contentLength(dokument.getLength())
@@ -214,7 +216,7 @@ public class CatalogController {
 
         byte[] data = objectMapper.writeValueAsBytes(catalog);
         ResponseEntity<byte[]> result = ok()
-            .header(CONTENT_DISPOSITION, ContentDisposition.builder(MediaTypeProvider.FORM_DATA).name(MediaTypeProvider.ATTACHMENT).filename("catalog_" + catalog.getVersion() + ".json").build().toString())
+            .header(CONTENT_DISPOSITION, ContentDisposition.builder(FORM_DATA).name(MediaTypeProvider.ATTACHMENT).filename("catalog_" + catalog.getVersion() + ".json").build().toString())
             .header(ACCESS_CONTROL_EXPOSE_HEADERS, CONTENT_DISPOSITION)
             .contentType(mediaTypeProvider.apply("json"))
             .contentLength(data.length)
@@ -244,7 +246,7 @@ public class CatalogController {
 
         byte[] data = objectMapper.writeValueAsBytes(catalog.get());
         ResponseEntity<byte[]> result = ok()
-            .header(CONTENT_DISPOSITION, ContentDisposition.builder(MediaTypeProvider.FORM_DATA).name(MediaTypeProvider.ATTACHMENT).filename("catalog_v" + version + ".json").build().toString())
+            .header(CONTENT_DISPOSITION, ContentDisposition.builder(FORM_DATA).name(MediaTypeProvider.ATTACHMENT).filename("catalog_v" + version + ".json").build().toString())
             .header(ACCESS_CONTROL_EXPOSE_HEADERS, CONTENT_DISPOSITION)
             .contentType(mediaTypeProvider.apply("json"))
             .contentLength(data.length)
@@ -268,7 +270,7 @@ public class CatalogController {
 
         ResponseEntity<byte[]> result = catalogService.createCatalogExcel(version)
             .map(dokument -> ok()
-                .header(CONTENT_DISPOSITION, ContentDisposition.builder(MediaTypeProvider.FORM_DATA).name(MediaTypeProvider.ATTACHMENT).filename(dokument.getName()).build().toString())
+                .header(CONTENT_DISPOSITION, ContentDisposition.builder(FORM_DATA).name(MediaTypeProvider.ATTACHMENT).filename(dokument.getName()).build().toString())
                 .header(ACCESS_CONTROL_EXPOSE_HEADERS, CONTENT_DISPOSITION)
                 .contentType(mediaTypeProvider.apply(dokument.getType()))
                 .contentLength(dokument.getLength())
@@ -295,7 +297,7 @@ public class CatalogController {
 
         ResponseEntity<byte[]> result = catalogService.createDocuments(version)
             .map(dokument -> ok()
-                .header(CONTENT_DISPOSITION, ContentDisposition.builder(MediaTypeProvider.FORM_DATA).name(MediaTypeProvider.ATTACHMENT).filename(dokument.getName()).build().toString())
+                .header(CONTENT_DISPOSITION, ContentDisposition.builder(FORM_DATA).name(MediaTypeProvider.ATTACHMENT).filename(dokument.getName()).build().toString())
                 .header(ACCESS_CONTROL_EXPOSE_HEADERS, CONTENT_DISPOSITION)
                 .contentType(mediaTypeProvider.apply(dokument.getType()))
                 .contentLength(dokument.getLength())
@@ -343,7 +345,7 @@ public class CatalogController {
 
         ResponseEntity<byte[]> result = catalogService.createDocuments(catalog)
             .map(dokument -> ok()
-                .header(CONTENT_DISPOSITION, ContentDisposition.builder(MediaTypeProvider.FORM_DATA).name(MediaTypeProvider.ATTACHMENT).filename(dokument.getName()).build().toString())
+                .header(CONTENT_DISPOSITION, ContentDisposition.builder(FORM_DATA).name(MediaTypeProvider.ATTACHMENT).filename(dokument.getName()).build().toString())
                 .header(ACCESS_CONTROL_EXPOSE_HEADERS, CONTENT_DISPOSITION)
                 .contentType(mediaTypeProvider.apply(dokument.getType()))
                 .contentLength(dokument.getLength())
@@ -376,4 +378,56 @@ public class CatalogController {
         return result;
     }
 
+    @Operation(summary = "Create a printable revised base catalog")
+    @ApiResponses(value = {
+        @ApiResponse(
+            responseCode = "200", description = "Output document created",
+            content = @Content(mediaType = "application/octet-stream", schema = @Schema(implementation = byte[].class))),
+        @ApiResponse(
+            responseCode = "404", description = "Base catalogs do not exist")
+    })
+    @GetMapping(value = BASECATALOG_COMPARE, produces = "application/octet-stream")
+    public ResponseEntity<byte[]> getBaseCatalogComparePrint(
+        @Parameter(description = "Baseline requirements basecatalog version") @PathVariable String base,
+        @Parameter(description = "Revised requirements basecatalog version to add diffs to") @PathVariable String revised
+    ) {
+        log.traceEntry();
+
+        ResponseEntity<byte[]> result = catalogService.createCatalog(base, revised)
+            .map(dokument -> ok()
+                .header(CONTENT_DISPOSITION, ContentDisposition.builder(FORM_DATA).name(MediaTypeProvider.ATTACHMENT).filename(dokument.getName()).build().toString())
+                .header(ACCESS_CONTROL_EXPOSE_HEADERS, CONTENT_DISPOSITION)
+                .contentType(mediaTypeProvider.apply(dokument.getType()))
+                .contentLength(dokument.getLength())
+                .body(dokument.getData()))
+            .orElseGet(() -> notFound().build());
+        log.traceExit();
+        return result;
+    }
+
+    @Operation(summary = "Create a printable revised base catalog")
+    @ApiResponses(value = {
+        @ApiResponse(
+            responseCode = "200", description = "Output document created",
+            content = @Content(mediaType = "application/octet-stream", schema = @Schema(implementation = byte[].class))),
+        @ApiResponse(
+            responseCode = "404", description = "Base catalogs do not exist")
+    })
+    @PostMapping(value = BASECATALOG_COMPARE_PREVIEW, produces = "application/octet-stream")
+    public ResponseEntity<byte[]> postBaseCatalogPreviewComparePrint(
+        @Parameter(description = "Baseline requirements basecatalog version") @PathVariable String base,
+        @Parameter(description = "vised requirements basecatalog version to add diffs to") @RequestBody Catalog<BaseRequirement> revised) {
+        log.traceEntry();
+
+        ResponseEntity<byte[]> result = catalogService.createCatalog(base, revised)
+            .map(dokument -> ok()
+                .header(CONTENT_DISPOSITION, ContentDisposition.builder(FORM_DATA).name(MediaTypeProvider.ATTACHMENT).filename(dokument.getName()).build().toString())
+                .header(ACCESS_CONTROL_EXPOSE_HEADERS, CONTENT_DISPOSITION)
+                .contentType(mediaTypeProvider.apply(dokument.getType()))
+                .contentLength(dokument.getLength())
+                .body(dokument.getData()))
+            .orElseGet(() -> notFound().build());
+        log.traceExit();
+        return result;
+    }
 }

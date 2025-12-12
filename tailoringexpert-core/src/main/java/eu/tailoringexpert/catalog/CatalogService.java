@@ -118,4 +118,21 @@ public interface CatalogService {
      * @return true, if deleted, in all other cases, even non-existing, false
      */
     Optional<Boolean> deleteCatalog(String version);
-}
+
+    /**
+     * Creates printable diff base catalog
+     *
+     * @param original version of original base catalog
+     * @param revised version of revised base catalog
+     * @return If base catalog available, a printable document, else empty
+     */
+    Optional<File> createCatalog(String original, String revised);
+
+    /**
+     * Creates printable diff base catalog
+     *
+     * @param original version of original base catalog
+     * @param revised revised base catalog
+     * @return If base catalog available, a printable document, else empty
+     */
+    Optional<File> createCatalog(String original, Catalog<BaseRequirement> revised);}

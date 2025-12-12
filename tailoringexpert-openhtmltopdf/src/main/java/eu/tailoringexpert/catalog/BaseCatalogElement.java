@@ -75,4 +75,8 @@ public class BaseCatalogElement {
      * Level of element in chapter tree.
      */
     private int level;
+
+    private boolean added;
+
+    private boolean changed;
 }

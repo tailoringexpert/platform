@@ -21,14 +21,20 @@
  */
 package eu.tailoringexpert.domain;
 
+import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.io.Serializable;
 import java.util.Collection;
 
 import static java.util.Objects.nonNull;
+import static lombok.AccessLevel.PROTECTED;
 
 @Data
+@AllArgsConstructor(access = PROTECTED)
+@NoArgsConstructor
 public abstract class Requirement implements Serializable {
     private static final long serialVersionUID = 7854311335886291270L;
 
@@ -58,14 +64,6 @@ public abstract class Requirement implements Serializable {
     private Collection<DRD> drds;
 
 
-    protected Requirement(String text, String position, Reference reference, Collection<Document> applicableDocuments, Collection<DRD> drds) {
-        this.text = text;
-        this.position = position;
-        this.reference = reference;
-        this.applicableDocuments = applicableDocuments;
-        this.drds = drds;
-    }
-
     /**
      * Checks if requirement has references to any DRD.
      *
@@ -80,5 +78,7 @@ public abstract class Requirement implements Serializable {
      *
      * @return true if requirement has references to applicable document otherwise false
      */
-    public boolean hasApplicableDocument() { return  nonNull(getApplicableDocuments()) && !getApplicableDocuments().isEmpty();}
+    public boolean hasApplicableDocument() {
+        return nonNull(getApplicableDocuments()) && !getApplicableDocuments().isEmpty();
+    }
 }

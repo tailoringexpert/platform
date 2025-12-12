@@ -104,6 +104,8 @@ public abstract class ResourceMapper {
     public static final String BASECATALOG_PREVIEW_PDF = "catalog/preview";
     public static final String BASECATALOG_VALIDUNTIL = "catalog/{version}/validuntil/{validuntil}";
     public static final String BASECATALOG_VERSION_DOCUMENT = "catalog/{version}/document";
+    public static final String BASECATALOG_COMPARE = "catalog/{base}/compare/{revised}";
+    public static final String BASECATALOG_COMPARE_PREVIEW = "catalog/{base}/compare";
 
     public static final String SCREENINGSHEET = "screeningsheet";
     public static final String SELECTIONVECTOR_PROFILE = "selectionvector";

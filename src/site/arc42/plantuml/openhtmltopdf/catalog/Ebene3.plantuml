@@ -11,6 +11,11 @@ package renderer {
 }
 
 package catalog {
+    interface TextDiff
+
+    class DifflibTextDiff {
+    }
+    TextDiff <|.. DifflibTextDiff
 
     interface DocumentCreator {
         createDocument(docId : String, catalog : Catalog<BaseRequirement>, placeholders : Map<String, Object>) : File
@@ -42,6 +47,7 @@ package catalog {
      BaseDRDPDFDocumentCreator --> "1" "BiFunction<Chapter<BaseRequirement>, Collection<Phase>, Map<DRD, Set<String>>>" : drdProvider
      BaseDRDPDFDocumentCreator --> "1" HTMLTemplateEngine : templateEngine
      BaseDRDPDFDocumentCreator --> "1" PDFEngine : pdfEngine
+
 
 }
 @enduml

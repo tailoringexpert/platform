@@ -1,0 +1,443 @@
+{
+  "Platform Equiment" : [ {
+    "type" : "A",
+    "level" : 7,
+    "name" : "Product Assurance"
+  }, {
+    "type" : "B",
+    "level" : 7,
+    "name" : "Ground Segment"
+  }, {
+    "type" : "C",
+    "level" : 7,
+    "name" : "Cyber- and Datasecurity"
+  }, {
+    "type" : "E",
+    "level" : 7,
+    "name" : "EEE Components"
+  }, {
+    "type" : "F",
+    "level" : 0,
+    "name" : "Planetary Protection"
+  }, {
+    "type" : "J",
+    "level" : 7,
+    "name" : "Space Debris"
+  }, {
+    "type" : "M",
+    "level" : 1,
+    "name" : "Maintainability"
+  }, {
+    "type" : "P",
+    "level" : 7,
+    "name" : "PMMP"
+  }, {
+    "type" : "Q",
+    "level" : 10,
+    "name" : "Quality Assurance"
+  }, {
+    "type" : "R",
+    "level" : 7,
+    "name" : "Reliabilty"
+  }, {
+    "type" : "S",
+    "level" : 5,
+    "name" : "Safety"
+  }, {
+    "type" : "W",
+    "level" : 7,
+    "name" : "Software"
+  } ],
+  "Telecom" : [ {
+    "type" : "A",
+    "level" : 10,
+    "name" : "Product Assurance"
+  }, {
+    "type" : "B",
+    "level" : 10,
+    "name" : "Ground Segment"
+  }, {
+    "type" : "C",
+    "level" : 10,
+    "name" : "Cyber- and Datasecurity"
+  }, {
+    "type" : "E",
+    "level" : 10,
+    "name" : "EEE Components"
+  }, {
+    "type" : "F",
+    "level" : 0,
+    "name" : "Planetary Protection"
+  }, {
+    "type" : "J",
+    "level" : 10,
+    "name" : "Space Debris"
+  }, {
+    "type" : "M",
+    "level" : 5,
+    "name" : "Maintainability"
+  }, {
+    "type" : "P",
+    "level" : 10,
+    "name" : "PMMP"
+  }, {
+    "type" : "Q",
+    "level" : 10,
+    "name" : "Quality Assurance"
+  }, {
+    "type" : "R",
+    "level" : 10,
+    "name" : "Reliabilty"
+  }, {
+    "type" : "S",
+    "level" : 5,
+    "name" : "Safety"
+  }, {
+    "type" : "W",
+    "level" : 10,
+    "name" : "Software"
+  } ],
+  "Pragmatic LEO Mission" : [ {
+    "type" : "A",
+    "level" : 7,
+    "name" : "Product Assurance"
+  }, {
+    "type" : "B",
+    "level" : 7,
+    "name" : "Ground Segment"
+  }, {
+    "type" : "C",
+    "level" : 7,
+    "name" : "Cyber- and Datasecurity"
+  }, {
+    "type" : "E",
+    "level" : 4,
+    "name" : "EEE Components"
+  }, {
+    "type" : "F",
+    "level" : 0,
+    "name" : "Planetary Protection"
+  }, {
+    "type" : "J",
+    "level" : 7,
+    "name" : "Space Debris"
+  }, {
+    "type" : "M",
+    "level" : 1,
+    "name" : "Maintainability"
+  }, {
+    "type" : "P",
+    "level" : 4,
+    "name" : "PMMP"
+  }, {
+    "type" : "Q",
+    "level" : 7,
+    "name" : "Quality Assurance"
+  }, {
+    "type" : "R",
+    "level" : 7,
+    "name" : "Reliabilty"
+  }, {
+    "type" : "S",
+    "level" : 1,
+    "name" : "Safety"
+  }, {
+    "type" : "W",
+    "level" : 7,
+    "name" : "Software"
+  } ],
+  "Operational LEO Mission" : [ {
+    "type" : "A",
+    "level" : 10,
+    "name" : "Product Assurance"
+  }, {
+    "type" : "B",
+    "level" : 10,
+    "name" : "Ground Segment"
+  }, {
+    "type" : "C",
+    "level" : 10,
+    "name" : "Cyber- and Datasecurity"
+  }, {
+    "type" : "E",
+    "level" : 10,
+    "name" : "EEE Components"
+  }, {
+    "type" : "F",
+    "level" : 0,
+    "name" : "Planetary Protection"
+  }, {
+    "type" : "J",
+    "level" : 10,
+    "name" : "Space Debris"
+  }, {
+    "type" : "M",
+    "level" : 5,
+    "name" : "Maintainability"
+  }, {
+    "type" : "P",
+    "level" : 10,
+    "name" : "PMMP"
+  }, {
+    "type" : "Q",
+    "level" : 10,
+    "name" : "Quality Assurance"
+  }, {
+    "type" : "R",
+    "level" : 10,
+    "name" : "Reliabilty"
+  }, {
+    "type" : "S",
+    "level" : 3,
+    "name" : "Safety"
+  }, {
+    "type" : "W",
+    "level" : 10,
+    "name" : "Software"
+  } ],
+  "\"Studentenmission\" (Nano/Micro-Mission) & Technologiedemonstration" : [ {
+    "type" : "A",
+    "level" : 1,
+    "name" : "Product Assurance"
+  }, {
+    "type" : "B",
+    "level" : 1,
+    "name" : "Ground Segment"
+  }, {
+    "type" : "C",
+    "level" : 4,
+    "name" : "Cyber- and Datasecurity"
+  }, {
+    "type" : "E",
+    "level" : 1,
+    "name" : "EEE Components"
+  }, {
+    "type" : "F",
+    "level" : 0,
+    "name" : "Planetary Protection"
+  }, {
+    "type" : "J",
+    "level" : 7,
+    "name" : "Space Debris"
+  }, {
+    "type" : "M",
+    "level" : 1,
+    "name" : "Maintainability"
+  }, {
+    "type" : "P",
+    "level" : 1,
+    "name" : "PMMP"
+  }, {
+    "type" : "Q",
+    "level" : 1,
+    "name" : "Quality Assurance"
+  }, {
+    "type" : "R",
+    "level" : 1,
+    "name" : "Reliabilty"
+  }, {
+    "type" : "S",
+    "level" : 1,
+    "name" : "Safety"
+  }, {
+    "type" : "W",
+    "level" : 1,
+    "name" : "Software"
+  } ],
+  "ISS-Experiment außen" : [ {
+    "type" : "A",
+    "level" : 1,
+    "name" : "Product Assurance"
+  }, {
+    "type" : "B",
+    "level" : 4,
+    "name" : "Ground Segment"
+  }, {
+    "type" : "C",
+    "level" : 4,
+    "name" : "Cyber- and Datasecurity"
+  }, {
+    "type" : "E",
+    "level" : 1,
+    "name" : "EEE Components"
+  }, {
+    "type" : "F",
+    "level" : 0,
+    "name" : "Planetary Protection"
+  }, {
+    "type" : "J",
+    "level" : 10,
+    "name" : "Space Debris"
+  }, {
+    "type" : "M",
+    "level" : 5,
+    "name" : "Maintainability"
+  }, {
+    "type" : "P",
+    "level" : 1,
+    "name" : "PMMP"
+  }, {
+    "type" : "Q",
+    "level" : 4,
+    "name" : "Quality Assurance"
+  }, {
+    "type" : "R",
+    "level" : 1,
+    "name" : "Reliabilty"
+  }, {
+    "type" : "S",
+    "level" : 10,
+    "name" : "Safety"
+  }, {
+    "type" : "W",
+    "level" : 4,
+    "name" : "Software"
+  } ],
+  "ISS-Experiment intern" : [ {
+    "type" : "A",
+    "level" : 1,
+    "name" : "Product Assurance"
+  }, {
+    "type" : "B",
+    "level" : 4,
+    "name" : "Ground Segment"
+  }, {
+    "type" : "C",
+    "level" : 4,
+    "name" : "Cyber- and Datasecurity"
+  }, {
+    "type" : "E",
+    "level" : 1,
+    "name" : "EEE Components"
+  }, {
+    "type" : "F",
+    "level" : 0,
+    "name" : "Planetary Protection"
+  }, {
+    "type" : "J",
+    "level" : 0,
+    "name" : "Space Debris"
+  }, {
+    "type" : "M",
+    "level" : 5,
+    "name" : "Maintainability"
+  }, {
+    "type" : "P",
+    "level" : 1,
+    "name" : "PMMP"
+  }, {
+    "type" : "Q",
+    "level" : 4,
+    "name" : "Quality Assurance"
+  }, {
+    "type" : "R",
+    "level" : 1,
+    "name" : "Reliabilty"
+  }, {
+    "type" : "S",
+    "level" : 10,
+    "name" : "Safety"
+  }, {
+    "type" : "W",
+    "level" : 4,
+    "name" : "Software"
+  } ],
+  "Deep Space Science Mission / Instrument oder Lander" : [ {
+    "type" : "A",
+    "level" : 10,
+    "name" : "Product Assurance"
+  }, {
+    "type" : "B",
+    "level" : 10,
+    "name" : "Ground Segment"
+  }, {
+    "type" : "C",
+    "level" : 7,
+    "name" : "Cyber- and Datasecurity"
+  }, {
+    "type" : "E",
+    "level" : 10,
+    "name" : "EEE Components"
+  }, {
+    "type" : "F",
+    "level" : 10,
+    "name" : "Planetary Protection"
+  }, {
+    "type" : "J",
+    "level" : 10,
+    "name" : "Space Debris"
+  }, {
+    "type" : "M",
+    "level" : 1,
+    "name" : "Maintainability"
+  }, {
+    "type" : "P",
+    "level" : 10,
+    "name" : "PMMP"
+  }, {
+    "type" : "Q",
+    "level" : 10,
+    "name" : "Quality Assurance"
+  }, {
+    "type" : "R",
+    "level" : 10,
+    "name" : "Reliabilty"
+  }, {
+    "type" : "S",
+    "level" : 5,
+    "name" : "Safety"
+  }, {
+    "type" : "W",
+    "level" : 10,
+    "name" : "Software"
+  } ],
+  "Bodenaktivitäten" : [ {
+    "type" : "A",
+    "level" : 7,
+    "name" : "Product Assurance"
+  }, {
+    "type" : "B",
+    "level" : 10,
+    "name" : "Ground Segment"
+  }, {
+    "type" : "C",
+    "level" : 10,
+    "name" : "Cyber- and Datasecurity"
+  }, {
+    "type" : "E",
+    "level" : 4,
+    "name" : "EEE Components"
+  }, {
+    "type" : "F",
+    "level" : 0,
+    "name" : "Planetary Protection"
+  }, {
+    "type" : "J",
+    "level" : 0,
+    "name" : "Space Debris"
+  }, {
+    "type" : "M",
+    "level" : 10,
+    "name" : "Maintainability"
+  }, {
+    "type" : "P",
+    "level" : 4,
+    "name" : "PMMP"
+  }, {
+    "type" : "Q",
+    "level" : 7,
+    "name" : "Quality Assurance"
+  }, {
+    "type" : "R",
+    "level" : 10,
+    "name" : "Reliabilty"
+  }, {
+    "type" : "S",
+    "level" : 10,
+    "name" : "Safety"
+  }, {
+    "type" : "W",
+    "level" : 10,
+    "name" : "Software"
+  } ]
+}
