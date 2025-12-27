@@ -21,7 +21,6 @@
  */
 package eu.tailoringexpert.catalog;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.difflib.text.DiffRowGenerator;
 import eu.tailoringexpert.Tenants;
 import eu.tailoringexpert.domain.BaseRequirement;
@@ -51,6 +50,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
 import org.springframework.http.MediaType;
+import tools.jackson.databind.ObjectMapper;
 
 import java.util.Collection;
 import java.util.Map;

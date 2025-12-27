@@ -143,9 +143,9 @@
             },
             "drds" : [ {
               "number" : "Compliance Matrix acc. to requirement",
-              "titel" : "Compliance Matrix",
-              "lieferzeitpunkt" : "execution of the contract",
-              "aktion" : "AC"
+              "title" : "Compliance Matrix",
+              "deliveryDate" : "execution of the contract",
+              "action" : "AC"
             } ],
             "identifiers" : [ {
               "type" : "Q",
@@ -4699,9 +4699,9 @@
             },
             "drds" : [ {
               "number" : "02.01",
-              "titel" : "Product Assurance Plan",
-              "lieferzeitpunkt" : "PRR; SRR; PDR; CDR",
-              "aktion" : "AC"
+              "title" : "Product Assurance Plan",
+              "deliveryDate" : "PRR; SRR; PDR; CDR",
+              "action" : "AC"
             } ],
             "identifiers" : [ {
               "type" : "A",
@@ -4925,9 +4925,9 @@
             },
             "drds" : [ {
               "number" : "02.02",
-              "titel" : "Qualification Status List (QSL)",
-              "lieferzeitpunkt" : "PRR; SRR; PDR, CDR, QR, AR",
-              "aktion" : "R"
+              "title" : "Qualification Status List (QSL)",
+              "deliveryDate" : "PRR; SRR; PDR, CDR, QR, AR",
+              "action" : "R"
             } ],
             "identifiers" : [ {
               "type" : "A",
@@ -4984,9 +4984,9 @@
             },
             "drds" : [ {
               "number" : "02.05",
-              "titel" : "Qualification Certificate for Launch Segment",
-              "lieferzeitpunkt" : "AR\n",
-              "aktion" : "AC"
+              "title" : "Qualification Certificate for Launch Segment",
+              "deliveryDate" : "AR\n",
+              "action" : "AC"
             } ],
             "identifiers" : [ {
               "type" : "A",
@@ -5031,9 +5031,9 @@
             },
             "drds" : [ {
               "number" : "02.03",
-              "titel" : "Product Assurance Reporting",
-              "lieferzeitpunkt" : "on regular basis within project progress report",
-              "aktion" : "I"
+              "title" : "Product Assurance Reporting",
+              "deliveryDate" : "on regular basis within project progress report",
+              "action" : "I"
             } ],
             "identifiers" : [ {
               "type" : "A",
@@ -5189,9 +5189,9 @@
             },
             "drds" : [ {
               "number" : "02.04",
-              "titel" : "Critical Items List",
-              "lieferzeitpunkt" : "SRR; PDR; CDR; QR; AR; FRR; LRR\n",
-              "aktion" : "A"
+              "title" : "Critical Items List",
+              "deliveryDate" : "SRR; PDR; CDR; QR; AR; FRR; LRR\n",
+              "action" : "A"
             } ],
             "identifiers" : [ {
               "type" : "A",
@@ -5687,9 +5687,9 @@
           "reference" : null,
           "drds" : [ {
             "number" : "03.10",
-            "titel" : "End Item Data Package (EIDP)",
-            "lieferzeitpunkt" : "latest 15 days before Acceptance Review or in accordance to the contract",
-            "aktion" : "R"
+            "title" : "End Item Data Package (EIDP)",
+            "deliveryDate" : "latest 15 days before Acceptance Review or in accordance to the contract",
+            "action" : "R"
           } ],
           "identifiers" : [ {
             "type" : "A",
@@ -5703,9 +5703,9 @@
           "reference" : null,
           "drds" : [ {
             "number" : "03.11",
-            "titel" : "Acceptance Data Package (ADP) - NASA",
-            "lieferzeitpunkt" : "latest 15 days before Acceptance Review or in accordance to the contract",
-            "aktion" : "R"
+            "title" : "Acceptance Data Package (ADP) - NASA",
+            "deliveryDate" : "latest 15 days before Acceptance Review or in accordance to the contract",
+            "action" : "R"
           } ],
           "identifiers" : [ {
             "type" : "A",
@@ -5719,9 +5719,9 @@
           "reference" : null,
           "drds" : [ {
             "number" : "03.12",
-            "titel" : "Operational and Technical Documentation - (for Projects with RSA)",
-            "lieferzeitpunkt" : "latest 15 days before Acceptance Review or in accordance to the contract\n",
-            "aktion" : "R"
+            "title" : "Operational and Technical Documentation - (for Projects with RSA)",
+            "deliveryDate" : "latest 15 days before Acceptance Review or in accordance to the contract\n",
+            "action" : "R"
           } ],
           "identifiers" : [ {
             "type" : "A",
@@ -5752,9 +5752,9 @@
           "reference" : null,
           "drds" : [ {
             "number" : "07.01",
-            "titel" : "RFA",
-            "lieferzeitpunkt" : "immediately after contractor internal approval; MPCB; respectively summary lists for CDR; MRR; QR; AR",
-            "aktion" : "A"
+            "title" : "RFA",
+            "deliveryDate" : "immediately after contractor internal approval; MPCB; respectively summary lists for CDR; MRR; QR; AR",
+            "action" : "A"
           } ],
           "identifiers" : [ {
             "type" : "A",
@@ -5944,9 +5944,9 @@
             },
             "drds" : [ {
               "number" : "02.01",
-              "titel" : "Product Assurance Plan",
-              "lieferzeitpunkt" : "PRR; SRR; PDR; CDR",
-              "aktion" : "AC"
+              "title" : "Product Assurance Plan",
+              "deliveryDate" : "PRR; SRR; PDR; CDR",
+              "action" : "AC"
             } ],
             "identifiers" : [ {
               "type" : "Q",
@@ -6098,14 +6098,14 @@
             },
             "drds" : [ {
               "number" : "03.02",
-              "titel" : "NCR Status List",
-              "lieferzeitpunkt" : "on regular basis within project progress reporting; CCB; MPCB; PCB; CDR; TRR; AR",
-              "aktion" : "I"
+              "title" : "NCR Status List",
+              "deliveryDate" : "on regular basis within project progress reporting; CCB; MPCB; PCB; CDR; TRR; AR",
+              "action" : "I"
             }, {
               "number" : "03.01",
-              "titel" : "Nonconformance Report (NCR)",
-              "lieferzeitpunkt" : "initial written report, latest 3 working days after detection of non-conformance; to be provided for Control Boards as affected",
-              "aktion" : "AC"
+              "title" : "Nonconformance Report (NCR)",
+              "deliveryDate" : "initial written report, latest 3 working days after detection of non-conformance; to be provided for Control Boards as affected",
+              "action" : "AC"
             } ],
             "identifiers" : [ {
               "type" : "Q",
@@ -6639,9 +6639,9 @@
               "reference" : null,
               "drds" : [ {
                 "number" : "03.10",
-                "titel" : "End Item Data Package (EIDP)",
-                "lieferzeitpunkt" : "latest 15 days before Acceptance Review or in accordance to the contract",
-                "aktion" : "R"
+                "title" : "End Item Data Package (EIDP)",
+                "deliveryDate" : "latest 15 days before Acceptance Review or in accordance to the contract",
+                "action" : "R"
               } ],
               "identifiers" : [ {
                 "type" : "Q",
@@ -6746,9 +6746,9 @@
               },
               "drds" : [ {
                 "number" : "03.03",
-                "titel" : "Request For Deviation (RFD)",
-                "lieferzeitpunkt" : "immediately after contractor internal approval",
-                "aktion" : "AC"
+                "title" : "Request For Deviation (RFD)",
+                "deliveryDate" : "immediately after contractor internal approval",
+                "action" : "AC"
               } ],
               "identifiers" : [ {
                 "type" : "Q",
@@ -6775,9 +6775,9 @@
               },
               "drds" : [ {
                 "number" : "03.04",
-                "titel" : "Request For Waiver (RFW)",
-                "lieferzeitpunkt" : "immediately after contractor internal approval",
-                "aktion" : "AC"
+                "title" : "Request For Waiver (RFW)",
+                "deliveryDate" : "immediately after contractor internal approval",
+                "action" : "AC"
               } ],
               "identifiers" : [ {
                 "type" : "Q",
@@ -6804,9 +6804,9 @@
               },
               "drds" : [ {
                 "number" : "07.01",
-                "titel" : "RFA",
-                "lieferzeitpunkt" : "immediately after contractor internal approval; MPCB; respectively summary lists for CDR; MRR; QR; AR",
-                "aktion" : "A"
+                "title" : "RFA",
+                "deliveryDate" : "immediately after contractor internal approval; MPCB; respectively summary lists for CDR; MRR; QR; AR",
+                "action" : "A"
               } ],
               "identifiers" : [ {
                 "type" : "Q",
@@ -6822,19 +6822,19 @@
             "reference" : null,
             "drds" : [ {
               "number" : "03.03",
-              "titel" : "Request For Deviation (RFD)",
-              "lieferzeitpunkt" : "immediately after contractor internal approval",
-              "aktion" : "AC"
+              "title" : "Request For Deviation (RFD)",
+              "deliveryDate" : "immediately after contractor internal approval",
+              "action" : "AC"
             }, {
               "number" : "03.04",
-              "titel" : "Request For Waiver (RFW)",
-              "lieferzeitpunkt" : "immediately after contractor internal approval",
-              "aktion" : "AC"
+              "title" : "Request For Waiver (RFW)",
+              "deliveryDate" : "immediately after contractor internal approval",
+              "action" : "AC"
             }, {
               "number" : "RFD/RFW Status List acc. to requirements",
-              "titel" : "RFD/RFW Status List",
-              "lieferzeitpunkt" : "on regular basis within project progress report; PDR; CDR; MRR; TRR; QR; AR",
-              "aktion" : "I"
+              "title" : "RFD/RFW Status List",
+              "deliveryDate" : "on regular basis within project progress report; PDR; CDR; MRR; TRR; QR; AR",
+              "action" : "I"
             } ],
             "identifiers" : [ {
               "type" : "Q",
@@ -6848,14 +6848,14 @@
             "reference" : null,
             "drds" : [ {
               "number" : "03.03",
-              "titel" : "Request For Deviation (RFD)",
-              "lieferzeitpunkt" : "immediately after contractor internal approval",
-              "aktion" : "AC"
+              "title" : "Request For Deviation (RFD)",
+              "deliveryDate" : "immediately after contractor internal approval",
+              "action" : "AC"
             }, {
               "number" : "03.04",
-              "titel" : "Request For Waiver (RFW)",
-              "lieferzeitpunkt" : "immediately after contractor internal approval",
-              "aktion" : "AC"
+              "title" : "Request For Waiver (RFW)",
+              "deliveryDate" : "immediately after contractor internal approval",
+              "action" : "AC"
             } ],
             "identifiers" : [ {
               "type" : "Q",
@@ -6869,14 +6869,14 @@
             "reference" : null,
             "drds" : [ {
               "number" : "03.03",
-              "titel" : "Request For Deviation (RFD)",
-              "lieferzeitpunkt" : "immediately after contractor internal approval",
-              "aktion" : "AC"
+              "title" : "Request For Deviation (RFD)",
+              "deliveryDate" : "immediately after contractor internal approval",
+              "action" : "AC"
             }, {
               "number" : "03.04",
-              "titel" : "Request For Waiver (RFW)",
-              "lieferzeitpunkt" : "immediately after contractor internal approval",
-              "aktion" : "AC"
+              "title" : "Request For Waiver (RFW)",
+              "deliveryDate" : "immediately after contractor internal approval",
+              "action" : "AC"
             } ],
             "identifiers" : [ {
               "type" : "Q",
@@ -6890,9 +6890,9 @@
             "reference" : null,
             "drds" : [ {
               "number" : "05.10",
-              "titel" : "Safety Non-Compliance Report (ISS_CM_031)",
-              "lieferzeitpunkt" : "initial written report, latest 3 working days after identification\n",
-              "aktion" : "AC"
+              "title" : "Safety Non-Compliance Report (ISS_CM_031)",
+              "deliveryDate" : "initial written report, latest 3 working days after identification\n",
+              "action" : "AC"
             } ],
             "identifiers" : [ {
               "type" : "S",
@@ -7450,9 +7450,9 @@
                 },
                 "drds" : [ {
                   "number" : "02.02",
-                  "titel" : "Qualification Status List (QSL)",
-                  "lieferzeitpunkt" : "PRR; SRR; PDR, CDR, QR, AR",
-                  "aktion" : "R"
+                  "title" : "Qualification Status List (QSL)",
+                  "deliveryDate" : "PRR; SRR; PDR, CDR, QR, AR",
+                  "action" : "R"
                 } ],
                 "identifiers" : [ {
                   "type" : "Q",
@@ -8333,14 +8333,14 @@
               },
               "drds" : [ {
                 "number" : "03.14",
-                "titel" : "Cleanliness Requirement Specification",
-                "lieferzeitpunkt" : "PDR; CDR; AR",
-                "aktion" : "R"
+                "title" : "Cleanliness Requirement Specification",
+                "deliveryDate" : "PDR; CDR; AR",
+                "action" : "R"
               }, {
                 "number" : "03.05",
-                "titel" : "Cleanliness and Contamination Control Plan (C&CCP)",
-                "lieferzeitpunkt" : "PDR; CDR",
-                "aktion" : "R"
+                "title" : "Cleanliness and Contamination Control Plan (C&CCP)",
+                "deliveryDate" : "PDR; CDR",
+                "action" : "R"
               } ],
               "identifiers" : [ {
                 "type" : "S",
@@ -8466,9 +8466,9 @@
               "reference" : null,
               "drds" : [ {
                 "number" : "02.04",
-                "titel" : "Critical Items List",
-                "lieferzeitpunkt" : "SRR; PDR; CDR; QR; AR; FRR; LRR\n",
-                "aktion" : "A"
+                "title" : "Critical Items List",
+                "deliveryDate" : "SRR; PDR; CDR; QR; AR; FRR; LRR\n",
+                "action" : "A"
               } ],
               "identifiers" : [ {
                 "type" : "Q",
@@ -8525,9 +8525,9 @@
             },
             "drds" : [ {
               "number" : "03.06",
-              "titel" : "MIP Plan\n",
-              "lieferzeitpunkt" : "PDR; CDR; MRR",
-              "aktion" : "AC"
+              "title" : "MIP Plan\n",
+              "deliveryDate" : "PDR; CDR; MRR",
+              "action" : "AC"
             } ],
             "identifiers" : [ {
               "type" : "Q",
@@ -8559,9 +8559,9 @@
             "reference" : null,
             "drds" : [ {
               "number" : "03.06",
-              "titel" : "MIP Plan\n",
-              "lieferzeitpunkt" : "PDR; CDR; MRR",
-              "aktion" : "AC"
+              "title" : "MIP Plan\n",
+              "deliveryDate" : "PDR; CDR; MRR",
+              "action" : "AC"
             } ],
             "identifiers" : [ {
               "type" : "Q",
@@ -8575,9 +8575,9 @@
             "reference" : null,
             "drds" : [ {
               "number" : "03.07",
-              "titel" : "Reports of MIPs",
-              "lieferzeitpunkt" : "latest 15 days after MIP",
-              "aktion" : "I"
+              "title" : "Reports of MIPs",
+              "deliveryDate" : "latest 15 days after MIP",
+              "action" : "I"
             } ],
             "identifiers" : [ {
               "type" : "Q",
@@ -8654,9 +8654,9 @@
               },
               "drds" : [ {
                 "number" : "03.08",
-                "titel" : "Logbook / Historical Record Sheets",
-                "lieferzeitpunkt" : "AR",
-                "aktion" : "R"
+                "title" : "Logbook / Historical Record Sheets",
+                "deliveryDate" : "AR",
+                "action" : "R"
               } ],
               "identifiers" : [ {
                 "type" : "Q",
@@ -8727,9 +8727,9 @@
             },
             "drds" : [ {
               "number" : "ESD Control Plan acc. to requirements",
-              "titel" : "ESD Control Plan",
-              "lieferzeitpunkt" : "PDR; CDR",
-              "aktion" : "R"
+              "title" : "ESD Control Plan",
+              "deliveryDate" : "PDR; CDR",
+              "action" : "R"
             } ],
             "identifiers" : [ {
               "type" : "Q",
@@ -8855,9 +8855,9 @@
               },
               "drds" : [ {
                 "number" : "Test Procedures acc. to requirement",
-                "titel" : "Test Procedures",
-                "lieferzeitpunkt" : "latest 15 days before each event",
-                "aktion" : "R"
+                "title" : "Test Procedures",
+                "deliveryDate" : "latest 15 days before each event",
+                "action" : "R"
               } ],
               "identifiers" : [ {
                 "type" : "Q",
@@ -8871,9 +8871,9 @@
               "reference" : null,
               "drds" : [ {
                 "number" : "Test Procedures acc. to requirement",
-                "titel" : "Test Procedures",
-                "lieferzeitpunkt" : "latest 15 days before each event",
-                "aktion" : "R"
+                "title" : "Test Procedures",
+                "deliveryDate" : "latest 15 days before each event",
+                "action" : "R"
               } ],
               "identifiers" : [ {
                 "type" : "Q",
@@ -8904,9 +8904,9 @@
               },
               "drds" : [ {
                 "number" : "Test Reports acc. to requirement",
-                "titel" : "Test Reports",
-                "lieferzeitpunkt" : "latest 30 days after each event",
-                "aktion" : "R"
+                "title" : "Test Reports",
+                "deliveryDate" : "latest 30 days after each event",
+                "action" : "R"
               } ],
               "identifiers" : [ {
                 "type" : "Q",
@@ -8920,9 +8920,9 @@
               "reference" : null,
               "drds" : [ {
                 "number" : "Test Reports acc. to requirement",
-                "titel" : "Test Reports",
-                "lieferzeitpunkt" : "latest 30 days after each event",
-                "aktion" : "R"
+                "title" : "Test Reports",
+                "deliveryDate" : "latest 30 days after each event",
+                "action" : "R"
               } ],
               "identifiers" : [ {
                 "type" : "Q",
@@ -9019,24 +9019,24 @@
             "reference" : null,
             "drds" : [ {
               "number" : "Test Reports acc. to requirement",
-              "titel" : "Test Reports",
-              "lieferzeitpunkt" : "latest 30 days after each event",
-              "aktion" : "R"
+              "title" : "Test Reports",
+              "deliveryDate" : "latest 30 days after each event",
+              "action" : "R"
             }, {
               "number" : "03.04",
-              "titel" : "Request For Waiver (RFW)",
-              "lieferzeitpunkt" : "immediately after contractor internal approval",
-              "aktion" : "AC"
+              "title" : "Request For Waiver (RFW)",
+              "deliveryDate" : "immediately after contractor internal approval",
+              "action" : "AC"
             }, {
               "number" : "Test Procedures acc. to requirement",
-              "titel" : "Test Procedures",
-              "lieferzeitpunkt" : "latest 15 days before each event",
-              "aktion" : "R"
+              "title" : "Test Procedures",
+              "deliveryDate" : "latest 15 days before each event",
+              "action" : "R"
             }, {
               "number" : "03.01",
-              "titel" : "Nonconformance Report (NCR)",
-              "lieferzeitpunkt" : "initial written report, latest 3 working days after detection of non-conformance; to be provided for Control Boards as affected",
-              "aktion" : "AC"
+              "title" : "Nonconformance Report (NCR)",
+              "deliveryDate" : "initial written report, latest 3 working days after detection of non-conformance; to be provided for Control Boards as affected",
+              "action" : "AC"
             } ],
             "identifiers" : [ {
               "type" : "Q",
@@ -9050,14 +9050,14 @@
             "reference" : null,
             "drds" : [ {
               "number" : "Test Procedures acc. to requirement",
-              "titel" : "Test Procedures",
-              "lieferzeitpunkt" : "latest 15 days before each event",
-              "aktion" : "R"
+              "title" : "Test Procedures",
+              "deliveryDate" : "latest 15 days before each event",
+              "action" : "R"
             }, {
               "number" : "03.01",
-              "titel" : "Nonconformance Report (NCR)",
-              "lieferzeitpunkt" : "initial written report, latest 3 working days after detection of non-conformance; to be provided for Control Boards as affected",
-              "aktion" : "AC"
+              "title" : "Nonconformance Report (NCR)",
+              "deliveryDate" : "initial written report, latest 3 working days after detection of non-conformance; to be provided for Control Boards as affected",
+              "action" : "AC"
             } ],
             "identifiers" : [ {
               "type" : "Q",
@@ -9071,9 +9071,9 @@
             "reference" : null,
             "drds" : [ {
               "number" : "Test Reports acc. to requirement",
-              "titel" : "Test Reports",
-              "lieferzeitpunkt" : "latest 30 days after each event",
-              "aktion" : "R"
+              "title" : "Test Reports",
+              "deliveryDate" : "latest 30 days after each event",
+              "action" : "R"
             } ],
             "identifiers" : [ {
               "type" : "Q",
@@ -9146,9 +9146,9 @@
             "reference" : null,
             "drds" : [ {
               "number" : "03.09",
-              "titel" : "Übernahme/ Übergabe - Testprotokoll  (ÜÜT)",
-              "lieferzeitpunkt" : "AR",
-              "aktion" : "R"
+              "title" : "Übernahme/ Übergabe - Testprotokoll  (ÜÜT)",
+              "deliveryDate" : "AR",
+              "action" : "R"
             } ],
             "identifiers" : [ {
               "type" : "S",
@@ -9245,9 +9245,9 @@
             "reference" : null,
             "drds" : [ {
               "number" : "03.10",
-              "titel" : "End Item Data Package (EIDP)",
-              "lieferzeitpunkt" : "latest 15 days before Acceptance Review or in accordance to the contract",
-              "aktion" : "R"
+              "title" : "End Item Data Package (EIDP)",
+              "deliveryDate" : "latest 15 days before Acceptance Review or in accordance to the contract",
+              "action" : "R"
             } ],
             "identifiers" : [ {
               "type" : "Q",
@@ -9261,9 +9261,9 @@
             "reference" : null,
             "drds" : [ {
               "number" : "03.10",
-              "titel" : "End Item Data Package (EIDP)",
-              "lieferzeitpunkt" : "latest 15 days before Acceptance Review or in accordance to the contract",
-              "aktion" : "R"
+              "title" : "End Item Data Package (EIDP)",
+              "deliveryDate" : "latest 15 days before Acceptance Review or in accordance to the contract",
+              "action" : "R"
             } ],
             "identifiers" : [ {
               "type" : "Q",
@@ -9277,9 +9277,9 @@
             "reference" : null,
             "drds" : [ {
               "number" : "03.11",
-              "titel" : "Acceptance Data Package (ADP) - NASA",
-              "lieferzeitpunkt" : "latest 15 days before Acceptance Review or in accordance to the contract",
-              "aktion" : "R"
+              "title" : "Acceptance Data Package (ADP) - NASA",
+              "deliveryDate" : "latest 15 days before Acceptance Review or in accordance to the contract",
+              "action" : "R"
             } ],
             "identifiers" : [ {
               "type" : "Q",
@@ -9293,9 +9293,9 @@
             "reference" : null,
             "drds" : [ {
               "number" : "03.12",
-              "titel" : "Operational and Technical Documentation - (for Projects with RSA)",
-              "lieferzeitpunkt" : "latest 15 days before Acceptance Review or in accordance to the contract\n",
-              "aktion" : "R"
+              "title" : "Operational and Technical Documentation - (for Projects with RSA)",
+              "deliveryDate" : "latest 15 days before Acceptance Review or in accordance to the contract\n",
+              "action" : "R"
             } ],
             "identifiers" : [ {
               "type" : "Q",
@@ -9322,9 +9322,9 @@
             },
             "drds" : [ {
               "number" : "03.13",
-              "titel" : "Certificate of Conformity (CoC)",
-              "lieferzeitpunkt" : "AR",
-              "aktion" : "None"
+              "title" : "Certificate of Conformity (CoC)",
+              "deliveryDate" : "AR",
+              "action" : "None"
             } ],
             "identifiers" : [ {
               "type" : "Q",
@@ -9598,9 +9598,9 @@
           },
           "drds" : [ {
             "number" : "02.01",
-            "titel" : "Product Assurance Plan",
-            "lieferzeitpunkt" : "PRR; SRR; PDR; CDR",
-            "aktion" : "AC"
+            "title" : "Product Assurance Plan",
+            "deliveryDate" : "PRR; SRR; PDR; CDR",
+            "action" : "AC"
           } ],
           "identifiers" : [ {
             "type" : "R",
@@ -9778,9 +9778,9 @@
             "reference" : null,
             "drds" : [ {
               "number" : "02.04",
-              "titel" : "Critical Items List",
-              "lieferzeitpunkt" : "SRR; PDR; CDR; QR; AR; FRR; LRR\n",
-              "aktion" : "A"
+              "title" : "Critical Items List",
+              "deliveryDate" : "SRR; PDR; CDR; QR; AR; FRR; LRR\n",
+              "action" : "A"
             } ],
             "identifiers" : [ {
               "type" : "R",
@@ -9801,9 +9801,9 @@
             },
             "drds" : [ {
               "number" : "02.04",
-              "titel" : "Critical Items List",
-              "lieferzeitpunkt" : "SRR; PDR; CDR; QR; AR; FRR; LRR\n",
-              "aktion" : "A"
+              "title" : "Critical Items List",
+              "deliveryDate" : "SRR; PDR; CDR; QR; AR; FRR; LRR\n",
+              "action" : "A"
             } ],
             "identifiers" : [ {
               "type" : "R",
@@ -9836,9 +9836,9 @@
             },
             "drds" : [ {
               "number" : "02.04",
-              "titel" : "Critical Items List",
-              "lieferzeitpunkt" : "SRR; PDR; CDR; QR; AR; FRR; LRR\n",
-              "aktion" : "A"
+              "title" : "Critical Items List",
+              "deliveryDate" : "SRR; PDR; CDR; QR; AR; FRR; LRR\n",
+              "action" : "A"
             } ],
             "identifiers" : [ {
               "type" : "R",
@@ -9859,9 +9859,9 @@
             },
             "drds" : [ {
               "number" : "02.04",
-              "titel" : "Critical Items List",
-              "lieferzeitpunkt" : "SRR; PDR; CDR; QR; AR; FRR; LRR\n",
-              "aktion" : "A"
+              "title" : "Critical Items List",
+              "deliveryDate" : "SRR; PDR; CDR; QR; AR; FRR; LRR\n",
+              "action" : "A"
             } ],
             "identifiers" : [ {
               "type" : "S",
@@ -9886,9 +9886,9 @@
             },
             "drds" : [ {
               "number" : "02.04",
-              "titel" : "Critical Items List",
-              "lieferzeitpunkt" : "SRR; PDR; CDR; QR; AR; FRR; LRR\n",
-              "aktion" : "A"
+              "title" : "Critical Items List",
+              "deliveryDate" : "SRR; PDR; CDR; QR; AR; FRR; LRR\n",
+              "action" : "A"
             } ],
             "identifiers" : [ {
               "type" : "S",
@@ -9906,9 +9906,9 @@
             "reference" : null,
             "drds" : [ {
               "number" : "02.04",
-              "titel" : "Critical Items List",
-              "lieferzeitpunkt" : "SRR; PDR; CDR; QR; AR; FRR; LRR\n",
-              "aktion" : "A"
+              "title" : "Critical Items List",
+              "deliveryDate" : "SRR; PDR; CDR; QR; AR; FRR; LRR\n",
+              "action" : "A"
             } ],
             "identifiers" : [ {
               "type" : "R",
@@ -9957,9 +9957,9 @@
           },
           "drds" : [ {
             "number" : "02.04",
-            "titel" : "Critical Items List",
-            "lieferzeitpunkt" : "SRR; PDR; CDR; QR; AR; FRR; LRR\n",
-            "aktion" : "A"
+            "title" : "Critical Items List",
+            "deliveryDate" : "SRR; PDR; CDR; QR; AR; FRR; LRR\n",
+            "action" : "A"
           } ],
           "identifiers" : [ {
             "type" : "R",
@@ -10630,9 +10630,9 @@
               },
               "drds" : [ {
                 "number" : "02.04",
-                "titel" : "Critical Items List",
-                "lieferzeitpunkt" : "SRR; PDR; CDR; QR; AR; FRR; LRR\n",
-                "aktion" : "A"
+                "title" : "Critical Items List",
+                "deliveryDate" : "SRR; PDR; CDR; QR; AR; FRR; LRR\n",
+                "action" : "A"
               } ],
               "identifiers" : [ {
                 "type" : "R",
@@ -10737,9 +10737,9 @@
               "reference" : null,
               "drds" : [ {
                 "number" : "02.04",
-                "titel" : "Critical Items List",
-                "lieferzeitpunkt" : "SRR; PDR; CDR; QR; AR; FRR; LRR\n",
-                "aktion" : "A"
+                "title" : "Critical Items List",
+                "deliveryDate" : "SRR; PDR; CDR; QR; AR; FRR; LRR\n",
+                "action" : "A"
               } ],
               "identifiers" : [ {
                 "type" : "R",
@@ -10761,9 +10761,9 @@
               "reference" : null,
               "drds" : [ {
                 "number" : "02.04",
-                "titel" : "Critical Items List",
-                "lieferzeitpunkt" : "SRR; PDR; CDR; QR; AR; FRR; LRR\n",
-                "aktion" : "A"
+                "title" : "Critical Items List",
+                "deliveryDate" : "SRR; PDR; CDR; QR; AR; FRR; LRR\n",
+                "action" : "A"
               } ],
               "identifiers" : [ {
                 "type" : "R",
@@ -10791,14 +10791,14 @@
               "reference" : null,
               "drds" : [ {
                 "number" : "03.04",
-                "titel" : "Request For Waiver (RFW)",
-                "lieferzeitpunkt" : "immediately after contractor internal approval",
-                "aktion" : "AC"
+                "title" : "Request For Waiver (RFW)",
+                "deliveryDate" : "immediately after contractor internal approval",
+                "action" : "AC"
               }, {
                 "number" : "03.01",
-                "titel" : "Nonconformance Report (NCR)",
-                "lieferzeitpunkt" : "initial written report, latest 3 working days after detection of non-conformance; to be provided for Control Boards as affected",
-                "aktion" : "AC"
+                "title" : "Nonconformance Report (NCR)",
+                "deliveryDate" : "initial written report, latest 3 working days after detection of non-conformance; to be provided for Control Boards as affected",
+                "action" : "AC"
               } ],
               "identifiers" : [ {
                 "type" : "R",
@@ -11831,9 +11831,9 @@
                 "reference" : null,
                 "drds" : [ {
                   "number" : "04.01",
-                  "titel" : "Part Count Reliability Prediction",
-                  "lieferzeitpunkt" : "PRR; SRR; PDR; CDR; QR, AR",
-                  "aktion" : "R"
+                  "title" : "Part Count Reliability Prediction",
+                  "deliveryDate" : "PRR; SRR; PDR; CDR; QR, AR",
+                  "action" : "R"
                 } ],
                 "identifiers" : [ {
                   "type" : "R",
@@ -11857,9 +11857,9 @@
                 "reference" : null,
                 "drds" : [ {
                   "number" : "04.02",
-                  "titel" : "Part Stress Reliability Prediction",
-                  "lieferzeitpunkt" : "CDR; QR, AR",
-                  "aktion" : "R"
+                  "title" : "Part Stress Reliability Prediction",
+                  "deliveryDate" : "CDR; QR, AR",
+                  "action" : "R"
                 } ],
                 "identifiers" : [ {
                   "type" : "R",
@@ -11883,9 +11883,9 @@
                 "reference" : null,
                 "drds" : [ {
                   "number" : "04.03",
-                  "titel" : "Reliability Prediction Report",
-                  "lieferzeitpunkt" : "PRR; SRR; PDR; CDR; QR, AR",
-                  "aktion" : "R"
+                  "title" : "Reliability Prediction Report",
+                  "deliveryDate" : "PRR; SRR; PDR; CDR; QR, AR",
+                  "action" : "R"
                 } ],
                 "identifiers" : [ {
                   "type" : "R",
@@ -11974,14 +11974,14 @@
               "reference" : null,
               "drds" : [ {
                 "number" : "04.04",
-                "titel" : "Reliability Block Diagram",
-                "lieferzeitpunkt" : "PRR; SRR;PDR; CDR; QR; AR",
-                "aktion" : "R"
+                "title" : "Reliability Block Diagram",
+                "deliveryDate" : "PRR; SRR;PDR; CDR; QR; AR",
+                "action" : "R"
               }, {
                 "number" : "04.05",
-                "titel" : "Reliability Block Diagram Symbols",
-                "lieferzeitpunkt" : "PRR; SRR; PDR; CDR; QR; AR",
-                "aktion" : "None"
+                "title" : "Reliability Block Diagram Symbols",
+                "deliveryDate" : "PRR; SRR; PDR; CDR; QR; AR",
+                "action" : "None"
               } ],
               "identifiers" : [ {
                 "type" : "R",
@@ -12005,9 +12005,9 @@
               "reference" : null,
               "drds" : [ {
                 "number" : "04.06",
-                "titel" : "Functional Block Diagram",
-                "lieferzeitpunkt" : "PRR; SRR; PDR; CDR; QR, AR",
-                "aktion" : "R"
+                "title" : "Functional Block Diagram",
+                "deliveryDate" : "PRR; SRR; PDR; CDR; QR, AR",
+                "action" : "R"
               } ],
               "identifiers" : [ {
                 "type" : "R",
@@ -12035,9 +12035,9 @@
               "reference" : null,
               "drds" : [ {
                 "number" : "04.07",
-                "titel" : "Functional Tree",
-                "lieferzeitpunkt" : "PRR; SRR; PDR; CDR; QR, AR",
-                "aktion" : "R"
+                "title" : "Functional Tree",
+                "deliveryDate" : "PRR; SRR; PDR; CDR; QR, AR",
+                "action" : "R"
               } ],
               "identifiers" : [ {
                 "type" : "R",
@@ -12076,9 +12076,9 @@
                 },
                 "drds" : [ {
                   "number" : "04.08",
-                  "titel" : "FMECA",
-                  "lieferzeitpunkt" : "PRR; SRR; PDR; CDR; QR, AR",
-                  "aktion" : "R"
+                  "title" : "FMECA",
+                  "deliveryDate" : "PRR; SRR; PDR; CDR; QR, AR",
+                  "action" : "R"
                 } ],
                 "identifiers" : [ {
                   "type" : "R",
@@ -12289,9 +12289,9 @@
                 "reference" : null,
                 "drds" : [ {
                   "number" : "04.08",
-                  "titel" : "FMECA",
-                  "lieferzeitpunkt" : "PRR; SRR; PDR; CDR; QR, AR",
-                  "aktion" : "R"
+                  "title" : "FMECA",
+                  "deliveryDate" : "PRR; SRR; PDR; CDR; QR, AR",
+                  "action" : "R"
                 } ],
                 "identifiers" : [ {
                   "type" : "R",
@@ -12351,9 +12351,9 @@
                 "reference" : null,
                 "drds" : [ {
                   "number" : "04.06",
-                  "titel" : "Functional Block Diagram",
-                  "lieferzeitpunkt" : "PRR; SRR; PDR; CDR; QR, AR",
-                  "aktion" : "R"
+                  "title" : "Functional Block Diagram",
+                  "deliveryDate" : "PRR; SRR; PDR; CDR; QR, AR",
+                  "action" : "R"
                 } ],
                 "identifiers" : [ {
                   "type" : "R",
@@ -12375,9 +12375,9 @@
                 "reference" : null,
                 "drds" : [ {
                   "number" : "04.07",
-                  "titel" : "Functional Tree",
-                  "lieferzeitpunkt" : "PRR; SRR; PDR; CDR; QR, AR",
-                  "aktion" : "R"
+                  "title" : "Functional Tree",
+                  "deliveryDate" : "PRR; SRR; PDR; CDR; QR, AR",
+                  "action" : "R"
                 } ],
                 "identifiers" : [ {
                   "type" : "R",
@@ -12399,14 +12399,14 @@
                 "reference" : null,
                 "drds" : [ {
                   "number" : "04.04",
-                  "titel" : "Reliability Block Diagram",
-                  "lieferzeitpunkt" : "PRR; SRR;PDR; CDR; QR; AR",
-                  "aktion" : "R"
+                  "title" : "Reliability Block Diagram",
+                  "deliveryDate" : "PRR; SRR;PDR; CDR; QR; AR",
+                  "action" : "R"
                 }, {
                   "number" : "04.05",
-                  "titel" : "Reliability Block Diagram Symbols",
-                  "lieferzeitpunkt" : "PRR; SRR; PDR; CDR; QR; AR",
-                  "aktion" : "None"
+                  "title" : "Reliability Block Diagram Symbols",
+                  "deliveryDate" : "PRR; SRR; PDR; CDR; QR; AR",
+                  "action" : "None"
                 } ],
                 "identifiers" : [ {
                   "type" : "R",
@@ -12501,9 +12501,9 @@
                 },
                 "drds" : [ {
                   "number" : "04.08",
-                  "titel" : "FMECA",
-                  "lieferzeitpunkt" : "PRR; SRR; PDR; CDR; QR, AR",
-                  "aktion" : "R"
+                  "title" : "FMECA",
+                  "deliveryDate" : "PRR; SRR; PDR; CDR; QR, AR",
+                  "action" : "R"
                 } ],
                 "identifiers" : [ {
                   "type" : "R",
@@ -12532,9 +12532,9 @@
                 },
                 "drds" : [ {
                   "number" : "04.08",
-                  "titel" : "FMECA",
-                  "lieferzeitpunkt" : "PRR; SRR; PDR; CDR; QR, AR",
-                  "aktion" : "R"
+                  "title" : "FMECA",
+                  "deliveryDate" : "PRR; SRR; PDR; CDR; QR, AR",
+                  "action" : "R"
                 } ],
                 "identifiers" : [ {
                   "type" : "R",
@@ -12563,9 +12563,9 @@
                 },
                 "drds" : [ {
                   "number" : "04.08",
-                  "titel" : "FMECA",
-                  "lieferzeitpunkt" : "PRR; SRR; PDR; CDR; QR, AR",
-                  "aktion" : "R"
+                  "title" : "FMECA",
+                  "deliveryDate" : "PRR; SRR; PDR; CDR; QR, AR",
+                  "action" : "R"
                 } ],
                 "identifiers" : [ {
                   "type" : "R",
@@ -12587,9 +12587,9 @@
                 "reference" : null,
                 "drds" : [ {
                   "number" : "04.08",
-                  "titel" : "FMECA",
-                  "lieferzeitpunkt" : "PRR; SRR; PDR; CDR; QR, AR",
-                  "aktion" : "R"
+                  "title" : "FMECA",
+                  "deliveryDate" : "PRR; SRR; PDR; CDR; QR, AR",
+                  "action" : "R"
                 } ],
                 "identifiers" : [ {
                   "type" : "R",
@@ -12611,9 +12611,9 @@
                 "reference" : null,
                 "drds" : [ {
                   "number" : "04.08",
-                  "titel" : "FMECA",
-                  "lieferzeitpunkt" : "PRR; SRR; PDR; CDR; QR, AR",
-                  "aktion" : "R"
+                  "title" : "FMECA",
+                  "deliveryDate" : "PRR; SRR; PDR; CDR; QR, AR",
+                  "action" : "R"
                 } ],
                 "identifiers" : [ {
                   "type" : "R",
@@ -12635,9 +12635,9 @@
                 "reference" : null,
                 "drds" : [ {
                   "number" : "04.08",
-                  "titel" : "FMECA",
-                  "lieferzeitpunkt" : "PRR; SRR; PDR; CDR; QR, AR",
-                  "aktion" : "R"
+                  "title" : "FMECA",
+                  "deliveryDate" : "PRR; SRR; PDR; CDR; QR, AR",
+                  "action" : "R"
                 } ],
                 "identifiers" : [ {
                   "type" : "R",
@@ -12659,14 +12659,14 @@
                 "reference" : null,
                 "drds" : [ {
                   "number" : "04.08",
-                  "titel" : "FMECA",
-                  "lieferzeitpunkt" : "PRR; SRR; PDR; CDR; QR, AR",
-                  "aktion" : "R"
+                  "title" : "FMECA",
+                  "deliveryDate" : "PRR; SRR; PDR; CDR; QR, AR",
+                  "action" : "R"
                 }, {
                   "number" : "04.09",
-                  "titel" : "Hardware/Software Interaction Analysis\n(HSIA)",
-                  "lieferzeitpunkt" : "PDR; CDR; QR, AR",
-                  "aktion" : "R"
+                  "title" : "Hardware/Software Interaction Analysis\n(HSIA)",
+                  "deliveryDate" : "PDR; CDR; QR, AR",
+                  "action" : "R"
                 } ],
                 "identifiers" : [ {
                   "type" : "R",
@@ -12720,9 +12720,9 @@
                 "reference" : null,
                 "drds" : [ {
                   "number" : "04.08",
-                  "titel" : "FMECA",
-                  "lieferzeitpunkt" : "PRR; SRR; PDR; CDR; QR, AR",
-                  "aktion" : "R"
+                  "title" : "FMECA",
+                  "deliveryDate" : "PRR; SRR; PDR; CDR; QR, AR",
+                  "action" : "R"
                 } ],
                 "identifiers" : [ {
                   "type" : "R",
@@ -12782,9 +12782,9 @@
                 },
                 "drds" : [ {
                   "number" : "04.09",
-                  "titel" : "Hardware/Software Interaction Analysis\n(HSIA)",
-                  "lieferzeitpunkt" : "PDR; CDR; QR, AR",
-                  "aktion" : "R"
+                  "title" : "Hardware/Software Interaction Analysis\n(HSIA)",
+                  "deliveryDate" : "PDR; CDR; QR, AR",
+                  "action" : "R"
                 } ],
                 "identifiers" : [ {
                   "type" : "R",
@@ -12819,14 +12819,14 @@
                 },
                 "drds" : [ {
                   "number" : "04.08",
-                  "titel" : "FMECA",
-                  "lieferzeitpunkt" : "PRR; SRR; PDR; CDR; QR, AR",
-                  "aktion" : "R"
+                  "title" : "FMECA",
+                  "deliveryDate" : "PRR; SRR; PDR; CDR; QR, AR",
+                  "action" : "R"
                 }, {
                   "number" : "04.09",
-                  "titel" : "Hardware/Software Interaction Analysis\n(HSIA)",
-                  "lieferzeitpunkt" : "PDR; CDR; QR, AR",
-                  "aktion" : "R"
+                  "title" : "Hardware/Software Interaction Analysis\n(HSIA)",
+                  "deliveryDate" : "PDR; CDR; QR, AR",
+                  "action" : "R"
                 } ],
                 "identifiers" : [ {
                   "type" : "R",
@@ -12857,14 +12857,14 @@
               },
               "drds" : [ {
                 "number" : "04.08",
-                "titel" : "FMECA",
-                "lieferzeitpunkt" : "PRR; SRR; PDR; CDR; QR, AR",
-                "aktion" : "R"
+                "title" : "FMECA",
+                "deliveryDate" : "PRR; SRR; PDR; CDR; QR, AR",
+                "action" : "R"
               }, {
                 "number" : "04.09",
-                "titel" : "Hardware/Software Interaction Analysis\n(HSIA)",
-                "lieferzeitpunkt" : "PDR; CDR; QR, AR",
-                "aktion" : "R"
+                "title" : "Hardware/Software Interaction Analysis\n(HSIA)",
+                "deliveryDate" : "PDR; CDR; QR, AR",
+                "action" : "R"
               } ],
               "identifiers" : [ {
                 "type" : "R",
@@ -12899,14 +12899,14 @@
               },
               "drds" : [ {
                 "number" : "04.08",
-                "titel" : "FMECA",
-                "lieferzeitpunkt" : "PRR; SRR; PDR; CDR; QR, AR",
-                "aktion" : "R"
+                "title" : "FMECA",
+                "deliveryDate" : "PRR; SRR; PDR; CDR; QR, AR",
+                "action" : "R"
               }, {
                 "number" : "04.10",
-                "titel" : "Contingency Analysis",
-                "lieferzeitpunkt" : "CDR; QR, AR",
-                "aktion" : "R"
+                "title" : "Contingency Analysis",
+                "deliveryDate" : "CDR; QR, AR",
+                "action" : "R"
               } ],
               "identifiers" : [ {
                 "type" : "R",
@@ -12937,9 +12937,9 @@
               },
               "drds" : [ {
                 "number" : "05.16",
-                "titel" : "FTA",
-                "lieferzeitpunkt" : "PRR; SRR; PDR; CDR; QR; AR",
-                "aktion" : "R"
+                "title" : "FTA",
+                "deliveryDate" : "PRR; SRR; PDR; CDR; QR; AR",
+                "action" : "R"
               } ],
               "identifiers" : [ {
                 "type" : "S",
@@ -12968,9 +12968,9 @@
               },
               "drds" : [ {
                 "number" : "05.16",
-                "titel" : "FTA",
-                "lieferzeitpunkt" : "PRR; SRR; PDR; CDR; QR; AR",
-                "aktion" : "R"
+                "title" : "FTA",
+                "deliveryDate" : "PRR; SRR; PDR; CDR; QR; AR",
+                "action" : "R"
               } ],
               "identifiers" : [ {
                 "type" : "S",
@@ -12992,9 +12992,9 @@
               "reference" : null,
               "drds" : [ {
                 "number" : "05.16",
-                "titel" : "FTA",
-                "lieferzeitpunkt" : "PRR; SRR; PDR; CDR; QR; AR",
-                "aktion" : "R"
+                "title" : "FTA",
+                "deliveryDate" : "PRR; SRR; PDR; CDR; QR; AR",
+                "action" : "R"
               } ],
               "identifiers" : [ {
                 "type" : "S",
@@ -13029,19 +13029,19 @@
               },
               "drds" : [ {
                 "number" : "04.08",
-                "titel" : "FMECA",
-                "lieferzeitpunkt" : "PRR; SRR; PDR; CDR; QR, AR",
-                "aktion" : "R"
+                "title" : "FMECA",
+                "deliveryDate" : "PRR; SRR; PDR; CDR; QR, AR",
+                "action" : "R"
               }, {
                 "number" : "05.16",
-                "titel" : "FTA",
-                "lieferzeitpunkt" : "PRR; SRR; PDR; CDR; QR; AR",
-                "aktion" : "R"
+                "title" : "FTA",
+                "deliveryDate" : "PRR; SRR; PDR; CDR; QR; AR",
+                "action" : "R"
               }, {
                 "number" : "04.11",
-                "titel" : "Common Cause Analysis",
-                "lieferzeitpunkt" : "CDR; QR, AR",
-                "aktion" : "R"
+                "title" : "Common Cause Analysis",
+                "deliveryDate" : "CDR; QR, AR",
+                "action" : "R"
               } ],
               "identifiers" : [ {
                 "type" : "R",
@@ -13063,9 +13063,9 @@
               "reference" : null,
               "drds" : [ {
                 "number" : "04.11",
-                "titel" : "Common Cause Analysis",
-                "lieferzeitpunkt" : "CDR; QR, AR",
-                "aktion" : "R"
+                "title" : "Common Cause Analysis",
+                "deliveryDate" : "CDR; QR, AR",
+                "action" : "R"
               } ],
               "identifiers" : [ {
                 "type" : "R",
@@ -13087,9 +13087,9 @@
               "reference" : null,
               "drds" : [ {
                 "number" : "04.08",
-                "titel" : "FMECA",
-                "lieferzeitpunkt" : "PRR; SRR; PDR; CDR; QR, AR",
-                "aktion" : "R"
+                "title" : "FMECA",
+                "deliveryDate" : "PRR; SRR; PDR; CDR; QR, AR",
+                "action" : "R"
               } ],
               "identifiers" : [ {
                 "type" : "R",
@@ -13111,9 +13111,9 @@
               "reference" : null,
               "drds" : [ {
                 "number" : "05.16",
-                "titel" : "FTA",
-                "lieferzeitpunkt" : "PRR; SRR; PDR; CDR; QR; AR",
-                "aktion" : "R"
+                "title" : "FTA",
+                "deliveryDate" : "PRR; SRR; PDR; CDR; QR; AR",
+                "action" : "R"
               } ],
               "identifiers" : [ {
                 "type" : "R",
@@ -13142,9 +13142,9 @@
               },
               "drds" : [ {
                 "number" : "04.11",
-                "titel" : "Common Cause Analysis",
-                "lieferzeitpunkt" : "CDR; QR, AR",
-                "aktion" : "R"
+                "title" : "Common Cause Analysis",
+                "deliveryDate" : "CDR; QR, AR",
+                "action" : "R"
               } ],
               "identifiers" : [ {
                 "type" : "R",
@@ -13179,9 +13179,9 @@
               },
               "drds" : [ {
                 "number" : "04.12",
-                "titel" : "WCA",
-                "lieferzeitpunkt" : "CDR; QR, AR",
-                "aktion" : "R"
+                "title" : "WCA",
+                "deliveryDate" : "CDR; QR, AR",
+                "action" : "R"
               } ],
               "identifiers" : [ {
                 "type" : "R",
@@ -13203,9 +13203,9 @@
               "reference" : null,
               "drds" : [ {
                 "number" : "04.12",
-                "titel" : "WCA",
-                "lieferzeitpunkt" : "CDR; QR, AR",
-                "aktion" : "R"
+                "title" : "WCA",
+                "deliveryDate" : "CDR; QR, AR",
+                "action" : "R"
               } ],
               "identifiers" : [ {
                 "type" : "R",
@@ -13233,9 +13233,9 @@
               "reference" : null,
               "drds" : [ {
                 "number" : "04.13",
-                "titel" : "Derating Analysis",
-                "lieferzeitpunkt" : "PCB; CDR; QR; AR",
-                "aktion" : "R"
+                "title" : "Derating Analysis",
+                "deliveryDate" : "PCB; CDR; QR; AR",
+                "action" : "R"
               } ],
               "identifiers" : [ {
                 "type" : "R",
@@ -13257,9 +13257,9 @@
               "reference" : null,
               "drds" : [ {
                 "number" : "04.13",
-                "titel" : "Derating Analysis",
-                "lieferzeitpunkt" : "PCB; CDR; QR; AR",
-                "aktion" : "R"
+                "title" : "Derating Analysis",
+                "deliveryDate" : "PCB; CDR; QR; AR",
+                "action" : "R"
               } ],
               "identifiers" : [ {
                 "type" : "R",
@@ -13281,9 +13281,9 @@
               "reference" : null,
               "drds" : [ {
                 "number" : "04.13",
-                "titel" : "Derating Analysis",
-                "lieferzeitpunkt" : "PCB; CDR; QR; AR",
-                "aktion" : "R"
+                "title" : "Derating Analysis",
+                "deliveryDate" : "PCB; CDR; QR; AR",
+                "action" : "R"
               } ],
               "identifiers" : [ {
                 "type" : "R",
@@ -13297,9 +13297,9 @@
               "reference" : null,
               "drds" : [ {
                 "number" : "04.13",
-                "titel" : "Derating Analysis",
-                "lieferzeitpunkt" : "PCB; CDR; QR; AR",
-                "aktion" : "R"
+                "title" : "Derating Analysis",
+                "deliveryDate" : "PCB; CDR; QR; AR",
+                "action" : "R"
               } ],
               "identifiers" : [ {
                 "type" : "R",
@@ -13321,9 +13321,9 @@
               "reference" : null,
               "drds" : [ {
                 "number" : "03.03",
-                "titel" : "Request For Deviation (RFD)",
-                "lieferzeitpunkt" : "immediately after contractor internal approval",
-                "aktion" : "AC"
+                "title" : "Request For Deviation (RFD)",
+                "deliveryDate" : "immediately after contractor internal approval",
+                "action" : "AC"
               } ],
               "identifiers" : [ {
                 "type" : "R",
@@ -13345,9 +13345,9 @@
               "reference" : null,
               "drds" : [ {
                 "number" : "03.04",
-                "titel" : "Request For Waiver (RFW)",
-                "lieferzeitpunkt" : "immediately after contractor internal approval",
-                "aktion" : "AC"
+                "title" : "Request For Waiver (RFW)",
+                "deliveryDate" : "immediately after contractor internal approval",
+                "action" : "AC"
               } ],
               "identifiers" : [ {
                 "type" : "R",
@@ -13361,9 +13361,9 @@
               "reference" : null,
               "drds" : [ {
                 "number" : "03.04",
-                "titel" : "Request For Waiver (RFW)",
-                "lieferzeitpunkt" : "immediately after contractor internal approval",
-                "aktion" : "AC"
+                "title" : "Request For Waiver (RFW)",
+                "deliveryDate" : "immediately after contractor internal approval",
+                "action" : "AC"
               } ],
               "identifiers" : [ {
                 "type" : "R",
@@ -13398,9 +13398,9 @@
               },
               "drds" : [ {
                 "number" : "04.14",
-                "titel" : "Zonal Analysis (ZA)",
-                "lieferzeitpunkt" : "PDR; CDR; QR, AR",
-                "aktion" : "R"
+                "title" : "Zonal Analysis (ZA)",
+                "deliveryDate" : "PDR; CDR; QR, AR",
+                "action" : "R"
               } ],
               "identifiers" : [ {
                 "type" : "R",
@@ -13518,9 +13518,9 @@
                 "reference" : null,
                 "drds" : [ {
                   "number" : "04.15",
-                  "titel" : "Maintenance Plan",
-                  "lieferzeitpunkt" : "PDR; CDR; AR",
-                  "aktion" : "R"
+                  "title" : "Maintenance Plan",
+                  "deliveryDate" : "PDR; CDR; AR",
+                  "action" : "R"
                 } ],
                 "identifiers" : [ {
                   "type" : "M",
@@ -13565,9 +13565,9 @@
                 },
                 "drds" : [ {
                   "number" : "04.16",
-                  "titel" : "Maintainability Analysis",
-                  "lieferzeitpunkt" : "SRR; PDR; CDR; QR; AR",
-                  "aktion" : "R"
+                  "title" : "Maintainability Analysis",
+                  "deliveryDate" : "SRR; PDR; CDR; QR; AR",
+                  "action" : "R"
                 } ],
                 "identifiers" : [ {
                   "type" : "M",
@@ -13599,9 +13599,9 @@
                 },
                 "drds" : [ {
                   "number" : "04.16",
-                  "titel" : "Maintainability Analysis",
-                  "lieferzeitpunkt" : "SRR; PDR; CDR; QR; AR",
-                  "aktion" : "R"
+                  "title" : "Maintainability Analysis",
+                  "deliveryDate" : "SRR; PDR; CDR; QR; AR",
+                  "action" : "R"
                 } ],
                 "identifiers" : [ {
                   "type" : "M",
@@ -13622,9 +13622,9 @@
                 },
                 "drds" : [ {
                   "number" : "04.15",
-                  "titel" : "Maintenance Plan",
-                  "lieferzeitpunkt" : "PDR; CDR; AR",
-                  "aktion" : "R"
+                  "title" : "Maintenance Plan",
+                  "deliveryDate" : "PDR; CDR; AR",
+                  "action" : "R"
                 } ],
                 "identifiers" : [ {
                   "type" : "M",
@@ -13689,9 +13689,9 @@
                 "reference" : null,
                 "drds" : [ {
                   "number" : "04.08",
-                  "titel" : "FMECA",
-                  "lieferzeitpunkt" : "PRR; SRR; PDR; CDR; QR, AR",
-                  "aktion" : "R"
+                  "title" : "FMECA",
+                  "deliveryDate" : "PRR; SRR; PDR; CDR; QR, AR",
+                  "action" : "R"
                 } ],
                 "identifiers" : [ {
                   "type" : "M",
@@ -13711,9 +13711,9 @@
               "reference" : null,
               "drds" : [ {
                 "number" : "04.15",
-                "titel" : "Maintenance Plan",
-                "lieferzeitpunkt" : "PDR; CDR; AR",
-                "aktion" : "R"
+                "title" : "Maintenance Plan",
+                "deliveryDate" : "PDR; CDR; AR",
+                "action" : "R"
               } ],
               "identifiers" : [ {
                 "type" : "M",
@@ -13731,9 +13731,9 @@
               "reference" : null,
               "drds" : [ {
                 "number" : "04.15",
-                "titel" : "Maintenance Plan",
-                "lieferzeitpunkt" : "PDR; CDR; AR",
-                "aktion" : "R"
+                "title" : "Maintenance Plan",
+                "deliveryDate" : "PDR; CDR; AR",
+                "action" : "R"
               } ],
               "identifiers" : [ {
                 "type" : "M",
@@ -13751,9 +13751,9 @@
               "reference" : null,
               "drds" : [ {
                 "number" : "04.15",
-                "titel" : "Maintenance Plan",
-                "lieferzeitpunkt" : "PDR; CDR; AR",
-                "aktion" : "R"
+                "title" : "Maintenance Plan",
+                "deliveryDate" : "PDR; CDR; AR",
+                "action" : "R"
               } ],
               "identifiers" : [ {
                 "type" : "M",
@@ -13780,9 +13780,9 @@
               },
               "drds" : [ {
                 "number" : "04.17",
-                "titel" : "Availability Assessment Report",
-                "lieferzeitpunkt" : "PDR; CDR; AR\n",
-                "aktion" : "R"
+                "title" : "Availability Assessment Report",
+                "deliveryDate" : "PDR; CDR; AR\n",
+                "action" : "R"
               } ],
               "identifiers" : [ {
                 "type" : "R",
@@ -13814,9 +13814,9 @@
               },
               "drds" : [ {
                 "number" : "04.17",
-                "titel" : "Availability Assessment Report",
-                "lieferzeitpunkt" : "PDR; CDR; AR\n",
-                "aktion" : "R"
+                "title" : "Availability Assessment Report",
+                "deliveryDate" : "PDR; CDR; AR\n",
+                "action" : "R"
               } ],
               "identifiers" : [ {
                 "type" : "R",
@@ -13873,9 +13873,9 @@
               },
               "drds" : [ {
                 "number" : "04.17",
-                "titel" : "Availability Assessment Report",
-                "lieferzeitpunkt" : "PDR; CDR; AR\n",
-                "aktion" : "R"
+                "title" : "Availability Assessment Report",
+                "deliveryDate" : "PDR; CDR; AR\n",
+                "action" : "R"
               } ],
               "identifiers" : [ {
                 "type" : "R",
@@ -13896,9 +13896,9 @@
               },
               "drds" : [ {
                 "number" : "04.17",
-                "titel" : "Availability Assessment Report",
-                "lieferzeitpunkt" : "PDR; CDR; AR\n",
-                "aktion" : "R"
+                "title" : "Availability Assessment Report",
+                "deliveryDate" : "PDR; CDR; AR\n",
+                "action" : "R"
               } ],
               "identifiers" : [ {
                 "type" : "R",
@@ -13930,9 +13930,9 @@
               "reference" : null,
               "drds" : [ {
                 "number" : "04.17",
-                "titel" : "Availability Assessment Report",
-                "lieferzeitpunkt" : "PDR; CDR; AR\n",
-                "aktion" : "R"
+                "title" : "Availability Assessment Report",
+                "deliveryDate" : "PDR; CDR; AR\n",
+                "action" : "R"
               } ],
               "identifiers" : [ {
                 "type" : "R",
@@ -13946,9 +13946,9 @@
               "reference" : null,
               "drds" : [ {
                 "number" : "04.17",
-                "titel" : "Availability Assessment Report",
-                "lieferzeitpunkt" : "PDR; CDR; AR\n",
-                "aktion" : "R"
+                "title" : "Availability Assessment Report",
+                "deliveryDate" : "PDR; CDR; AR\n",
+                "action" : "R"
               } ],
               "identifiers" : [ {
                 "type" : "M",
@@ -14123,9 +14123,9 @@
             },
             "drds" : [ {
               "number" : "05.01",
-              "titel" : "Safety Programme Plan (SPP)",
-              "lieferzeitpunkt" : "SRR; PDR; CDR; QR; AR; ORR; FRR; LRR",
-              "aktion" : "AC"
+              "title" : "Safety Programme Plan (SPP)",
+              "deliveryDate" : "SRR; PDR; CDR; QR; AR; ORR; FRR; LRR",
+              "action" : "AC"
             } ],
             "identifiers" : [ {
               "type" : "S",
@@ -14392,9 +14392,9 @@
             },
             "drds" : [ {
               "number" : "02.04",
-              "titel" : "Critical Items List",
-              "lieferzeitpunkt" : "SRR; PDR; CDR; QR; AR; FRR; LRR\n",
-              "aktion" : "A"
+              "title" : "Critical Items List",
+              "deliveryDate" : "SRR; PDR; CDR; QR; AR; FRR; LRR\n",
+              "action" : "A"
             } ],
             "identifiers" : [ {
               "type" : "S",
@@ -14685,9 +14685,9 @@
               "reference" : null,
               "drds" : [ {
                 "number" : "05.25",
-                "titel" : "Safety Verification Tracking Log (ECSS-Q-40 Form)\n",
-                "lieferzeitpunkt" : "QR; AR",
-                "aktion" : "R"
+                "title" : "Safety Verification Tracking Log (ECSS-Q-40 Form)\n",
+                "deliveryDate" : "QR; AR",
+                "action" : "R"
               } ],
               "identifiers" : [ {
                 "type" : "S",
@@ -14949,9 +14949,9 @@
           },
           "drds" : [ {
             "number" : "05.24",
-            "titel" : "Safety Verification Tracking Log (ISS_OE_764)",
-            "lieferzeitpunkt" : "QR; AR",
-            "aktion" : "R"
+            "title" : "Safety Verification Tracking Log (ISS_OE_764)",
+            "deliveryDate" : "QR; AR",
+            "action" : "R"
           } ],
           "identifiers" : [ {
             "type" : "S",
@@ -14972,9 +14972,9 @@
           },
           "drds" : [ {
             "number" : "05.25",
-            "titel" : "Safety Verification Tracking Log (ECSS-Q-40 Form)\n",
-            "lieferzeitpunkt" : "QR; AR",
-            "aktion" : "R"
+            "title" : "Safety Verification Tracking Log (ECSS-Q-40 Form)\n",
+            "deliveryDate" : "QR; AR",
+            "action" : "R"
           } ],
           "identifiers" : [ {
             "type" : "S",
@@ -14999,14 +14999,14 @@
           "reference" : null,
           "drds" : [ {
             "number" : "05.04",
-            "titel" : "Flight Safety Certificate (ISS_OE_906)",
-            "lieferzeitpunkt" : "AR",
-            "aktion" : "AC"
+            "title" : "Flight Safety Certificate (ISS_OE_906)",
+            "deliveryDate" : "AR",
+            "action" : "AC"
           }, {
             "number" : "05.29",
-            "titel" : "Multilateral Category 1 Constraints (ISS_OE_907)",
-            "lieferzeitpunkt" : "AR",
-            "aktion" : "AC"
+            "title" : "Multilateral Category 1 Constraints (ISS_OE_907)",
+            "deliveryDate" : "AR",
+            "action" : "AC"
           } ],
           "identifiers" : [ {
             "type" : "S",
@@ -15020,9 +15020,9 @@
           "reference" : null,
           "drds" : [ {
             "number" : "05.02",
-            "titel" : "Instrument Safety Certification\n(Sicherheits-Zertifikat)",
-            "lieferzeitpunkt" : "AR",
-            "aktion" : "AC"
+            "title" : "Instrument Safety Certification\n(Sicherheits-Zertifikat)",
+            "deliveryDate" : "AR",
+            "action" : "AC"
           } ],
           "identifiers" : [ {
             "type" : "S",
@@ -15036,19 +15036,19 @@
           "reference" : null,
           "drds" : [ {
             "number" : "03.09",
-            "titel" : "Übernahme/ Übergabe - Testprotokoll  (ÜÜT)",
-            "lieferzeitpunkt" : "AR",
-            "aktion" : "R"
+            "title" : "Übernahme/ Übergabe - Testprotokoll  (ÜÜT)",
+            "deliveryDate" : "AR",
+            "action" : "R"
           }, {
             "number" : "05.05",
-            "titel" : "Geräte Pass",
-            "lieferzeitpunkt" : "AR",
-            "aktion" : "AC"
+            "title" : "Geräte Pass",
+            "deliveryDate" : "AR",
+            "action" : "AC"
           }, {
             "number" : "05.02",
-            "titel" : "Instrument Safety Certification\n(Sicherheits-Zertifikat)",
-            "lieferzeitpunkt" : "AR",
-            "aktion" : "AC"
+            "title" : "Instrument Safety Certification\n(Sicherheits-Zertifikat)",
+            "deliveryDate" : "AR",
+            "action" : "AC"
           } ],
           "identifiers" : [ {
             "type" : "S",
@@ -15062,14 +15062,14 @@
           "reference" : null,
           "drds" : [ {
             "number" : "05.04",
-            "titel" : "Flight Safety Certificate (ISS_OE_906)",
-            "lieferzeitpunkt" : "AR",
-            "aktion" : "AC"
+            "title" : "Flight Safety Certificate (ISS_OE_906)",
+            "deliveryDate" : "AR",
+            "action" : "AC"
           }, {
             "number" : "05.29",
-            "titel" : "Multilateral Category 1 Constraints (ISS_OE_907)",
-            "lieferzeitpunkt" : "AR",
-            "aktion" : "AC"
+            "title" : "Multilateral Category 1 Constraints (ISS_OE_907)",
+            "deliveryDate" : "AR",
+            "action" : "AC"
           } ],
           "identifiers" : [ {
             "type" : "S",
@@ -15083,14 +15083,14 @@
           "reference" : null,
           "drds" : [ {
             "number" : "05.04",
-            "titel" : "Flight Safety Certificate (ISS_OE_906)",
-            "lieferzeitpunkt" : "AR",
-            "aktion" : "AC"
+            "title" : "Flight Safety Certificate (ISS_OE_906)",
+            "deliveryDate" : "AR",
+            "action" : "AC"
           }, {
             "number" : "05.29",
-            "titel" : "Multilateral Category 1 Constraints (ISS_OE_907)",
-            "lieferzeitpunkt" : "AR",
-            "aktion" : "AC"
+            "title" : "Multilateral Category 1 Constraints (ISS_OE_907)",
+            "deliveryDate" : "AR",
+            "action" : "AC"
           } ],
           "identifiers" : [ {
             "type" : "S",
@@ -15180,9 +15180,9 @@
             "reference" : null,
             "drds" : [ {
               "number" : "05.07",
-              "titel" : "Safety Data Package (SDP)",
-              "lieferzeitpunkt" : "PDR; CDR; QR; AR; ORR; FRR; LRR\n",
-              "aktion" : "R"
+              "title" : "Safety Data Package (SDP)",
+              "deliveryDate" : "PDR; CDR; QR; AR; ORR; FRR; LRR\n",
+              "action" : "R"
             } ],
             "identifiers" : [ {
               "type" : "S",
@@ -15218,9 +15218,9 @@
             },
             "drds" : [ {
               "number" : "05.08",
-              "titel" : "NASA Safety Data Package",
-              "lieferzeitpunkt" : "PDR; CDR; AR",
-              "aktion" : "R"
+              "title" : "NASA Safety Data Package",
+              "deliveryDate" : "PDR; CDR; AR",
+              "action" : "R"
             } ],
             "identifiers" : [ {
               "type" : "S",
@@ -15245,9 +15245,9 @@
             },
             "drds" : [ {
               "number" : "05.09",
-              "titel" : "ESA Safety Data Package",
-              "lieferzeitpunkt" : "PDR; CDR; AR",
-              "aktion" : "R"
+              "title" : "ESA Safety Data Package",
+              "deliveryDate" : "PDR; CDR; AR",
+              "action" : "R"
             } ],
             "identifiers" : [ {
               "type" : "S",
@@ -15283,14 +15283,14 @@
             "reference" : null,
             "drds" : [ {
               "number" : "05.08",
-              "titel" : "NASA Safety Data Package",
-              "lieferzeitpunkt" : "PDR; CDR; AR",
-              "aktion" : "R"
+              "title" : "NASA Safety Data Package",
+              "deliveryDate" : "PDR; CDR; AR",
+              "action" : "R"
             }, {
               "number" : "05.28",
-              "titel" : "Integrated Safety Checklist for ISS Cargo at Launch or Processing Sites (ATV/HTV/KSC Form 100)",
-              "lieferzeitpunkt" : "CDR; AR; FRR",
-              "aktion" : "R"
+              "title" : "Integrated Safety Checklist for ISS Cargo at Launch or Processing Sites (ATV/HTV/KSC Form 100)",
+              "deliveryDate" : "CDR; AR; FRR",
+              "action" : "R"
             } ],
             "identifiers" : [ {
               "type" : "S",
@@ -15325,14 +15325,14 @@
               },
               "drds" : [ {
                 "number" : "03.03",
-                "titel" : "Request For Deviation (RFD)",
-                "lieferzeitpunkt" : "immediately after contractor internal approval",
-                "aktion" : "AC"
+                "title" : "Request For Deviation (RFD)",
+                "deliveryDate" : "immediately after contractor internal approval",
+                "action" : "AC"
               }, {
                 "number" : "03.04",
-                "titel" : "Request For Waiver (RFW)",
-                "lieferzeitpunkt" : "immediately after contractor internal approval",
-                "aktion" : "AC"
+                "title" : "Request For Waiver (RFW)",
+                "deliveryDate" : "immediately after contractor internal approval",
+                "action" : "AC"
               } ],
               "identifiers" : [ {
                 "type" : "S",
@@ -15352,9 +15352,9 @@
               "reference" : null,
               "drds" : [ {
                 "number" : "05.10",
-                "titel" : "Safety Non-Compliance Report (ISS_CM_031)",
-                "lieferzeitpunkt" : "initial written report, latest 3 working days after identification\n",
-                "aktion" : "AC"
+                "title" : "Safety Non-Compliance Report (ISS_CM_031)",
+                "deliveryDate" : "initial written report, latest 3 working days after identification\n",
+                "action" : "AC"
               } ],
               "identifiers" : [ {
                 "type" : "S",
@@ -16261,9 +16261,9 @@
                 },
                 "drds" : [ {
                   "number" : "07.02",
-                  "titel" : "Declared Material List (DML)",
-                  "lieferzeitpunkt" : "PDR; CDR; QR; AR; MPCB\n",
-                  "aktion" : "R (if there will be no MPCB for the project, AC)"
+                  "title" : "Declared Material List (DML)",
+                  "deliveryDate" : "PDR; CDR; QR; AR; MPCB\n",
+                  "action" : "R (if there will be no MPCB for the project, AC)"
                 } ],
                 "identifiers" : [ {
                   "type" : "S",
@@ -16498,9 +16498,9 @@
               "reference" : null,
               "drds" : [ {
                 "number" : "05.11",
-                "titel" : "Battery design approval EP-form-03 EP5",
-                "lieferzeitpunkt" : "PCB; CDR; AR",
-                "aktion" : "AC"
+                "title" : "Battery design approval EP-form-03 EP5",
+                "deliveryDate" : "PCB; CDR; AR",
+                "action" : "AC"
               } ],
               "identifiers" : [ {
                 "type" : "S",
@@ -17601,9 +17601,9 @@
               "reference" : null,
               "drds" : [ {
                 "number" : "05.13",
-                "titel" : "Series and Reflown Equipment Safety Assessment Reporting Sheet ((ISS_OE_622)",
-                "lieferzeitpunkt" : "CDR; QR; AR",
-                "aktion" : "R"
+                "title" : "Series and Reflown Equipment Safety Assessment Reporting Sheet ((ISS_OE_622)",
+                "deliveryDate" : "CDR; QR; AR",
+                "action" : "R"
               } ],
               "identifiers" : [ {
                 "type" : "S",
@@ -17654,9 +17654,9 @@
               },
               "drds" : [ {
                 "number" : "05.14",
-                "titel" : "Warning Time Analysis (WTA)",
-                "lieferzeitpunkt" : "PDR; CDR; QR; AR",
-                "aktion" : "R"
+                "title" : "Warning Time Analysis (WTA)",
+                "deliveryDate" : "PDR; CDR; QR; AR",
+                "action" : "R"
               } ],
               "identifiers" : [ {
                 "type" : "S",
@@ -17687,9 +17687,9 @@
               },
               "drds" : [ {
                 "number" : "05.15",
-                "titel" : "Caution & Warning Analysis (C&WA)",
-                "lieferzeitpunkt" : "PDR; CDR; QR; AR",
-                "aktion" : "R"
+                "title" : "Caution & Warning Analysis (C&WA)",
+                "deliveryDate" : "PDR; CDR; QR; AR",
+                "action" : "R"
               } ],
               "identifiers" : [ {
                 "type" : "S",
@@ -17742,24 +17742,24 @@
               },
               "drds" : [ {
                 "number" : "04.08",
-                "titel" : "FMECA",
-                "lieferzeitpunkt" : "PRR; SRR; PDR; CDR; QR, AR",
-                "aktion" : "R"
+                "title" : "FMECA",
+                "deliveryDate" : "PRR; SRR; PDR; CDR; QR, AR",
+                "action" : "R"
               }, {
                 "number" : "05.16",
-                "titel" : "FTA",
-                "lieferzeitpunkt" : "PRR; SRR; PDR; CDR; QR; AR",
-                "aktion" : "R"
+                "title" : "FTA",
+                "deliveryDate" : "PRR; SRR; PDR; CDR; QR; AR",
+                "action" : "R"
               }, {
                 "number" : "05.17",
-                "titel" : "Payload Hazard Reports (PHR)",
-                "lieferzeitpunkt" : "SRR; PDR; CDR; QR; AR; ORR; FRR; LRR",
-                "aktion" : "R"
+                "title" : "Payload Hazard Reports (PHR)",
+                "deliveryDate" : "SRR; PDR; CDR; QR; AR; ORR; FRR; LRR",
+                "action" : "R"
               }, {
                 "number" : "04.11",
-                "titel" : "Common Cause Analysis",
-                "lieferzeitpunkt" : "CDR; QR, AR",
-                "aktion" : "R"
+                "title" : "Common Cause Analysis",
+                "deliveryDate" : "CDR; QR, AR",
+                "action" : "R"
               } ],
               "identifiers" : [ {
                 "type" : "S",
@@ -17786,9 +17786,9 @@
               },
               "drds" : [ {
                 "number" : "05.16",
-                "titel" : "FTA",
-                "lieferzeitpunkt" : "PRR; SRR; PDR; CDR; QR; AR",
-                "aktion" : "R"
+                "title" : "FTA",
+                "deliveryDate" : "PRR; SRR; PDR; CDR; QR; AR",
+                "action" : "R"
               } ],
               "identifiers" : [ {
                 "type" : "S",
@@ -17839,9 +17839,9 @@
               },
               "drds" : [ {
                 "number" : "04.08",
-                "titel" : "FMECA",
-                "lieferzeitpunkt" : "PRR; SRR; PDR; CDR; QR, AR",
-                "aktion" : "R"
+                "title" : "FMECA",
+                "deliveryDate" : "PRR; SRR; PDR; CDR; QR, AR",
+                "action" : "R"
               } ],
               "identifiers" : [ {
                 "type" : "S",
@@ -17868,14 +17868,14 @@
               },
               "drds" : [ {
                 "number" : "04.08",
-                "titel" : "FMECA",
-                "lieferzeitpunkt" : "PRR; SRR; PDR; CDR; QR, AR",
-                "aktion" : "R"
+                "title" : "FMECA",
+                "deliveryDate" : "PRR; SRR; PDR; CDR; QR, AR",
+                "action" : "R"
               }, {
                 "number" : "04.14",
-                "titel" : "Zonal Analysis (ZA)",
-                "lieferzeitpunkt" : "PDR; CDR; QR, AR",
-                "aktion" : "R"
+                "title" : "Zonal Analysis (ZA)",
+                "deliveryDate" : "PDR; CDR; QR, AR",
+                "action" : "R"
               } ],
               "identifiers" : [ {
                 "type" : "S",
@@ -17982,19 +17982,19 @@
               "reference" : null,
               "drds" : [ {
                 "number" : "05.27",
-                "titel" : "Payload Hazard Report Form (ISS_OE_851)",
-                "lieferzeitpunkt" : "SRR; PDR; CDR; QR; AR; ORR; FRR; LRR",
-                "aktion" : "R"
+                "title" : "Payload Hazard Report Form (ISS_OE_851)",
+                "deliveryDate" : "SRR; PDR; CDR; QR; AR; ORR; FRR; LRR",
+                "action" : "R"
               }, {
                 "number" : "05.26",
-                "titel" : "ISS Flight HW Standard Hazard Control Sheet (ISS_OE_1298)",
-                "lieferzeitpunkt" : "SRR; PDR; CDR; QR; AR; ORR; FRR; LRR",
-                "aktion" : "R"
+                "title" : "ISS Flight HW Standard Hazard Control Sheet (ISS_OE_1298)",
+                "deliveryDate" : "SRR; PDR; CDR; QR; AR; ORR; FRR; LRR",
+                "action" : "R"
               }, {
                 "number" : "05.17",
-                "titel" : "Payload Hazard Reports (PHR)",
-                "lieferzeitpunkt" : "SRR; PDR; CDR; QR; AR; ORR; FRR; LRR",
-                "aktion" : "R"
+                "title" : "Payload Hazard Reports (PHR)",
+                "deliveryDate" : "SRR; PDR; CDR; QR; AR; ORR; FRR; LRR",
+                "action" : "R"
               } ],
               "identifiers" : [ {
                 "type" : "S",
@@ -18008,14 +18008,14 @@
               "reference" : null,
               "drds" : [ {
                 "number" : "05.19",
-                "titel" : "Payload Hazard Report (unmanned missions)",
-                "lieferzeitpunkt" : "SRR; PDR; CDR; QR; AR; ORR; FRR; LRR",
-                "aktion" : "R"
+                "title" : "Payload Hazard Report (unmanned missions)",
+                "deliveryDate" : "SRR; PDR; CDR; QR; AR; ORR; FRR; LRR",
+                "action" : "R"
               }, {
                 "number" : "05.17",
-                "titel" : "Payload Hazard Reports (PHR)",
-                "lieferzeitpunkt" : "SRR; PDR; CDR; QR; AR; ORR; FRR; LRR",
-                "aktion" : "R"
+                "title" : "Payload Hazard Reports (PHR)",
+                "deliveryDate" : "SRR; PDR; CDR; QR; AR; ORR; FRR; LRR",
+                "action" : "R"
               } ],
               "identifiers" : [ {
                 "type" : "S",
@@ -18035,9 +18035,9 @@
               "reference" : null,
               "drds" : [ {
                 "number" : "05.21",
-                "titel" : "Hazardous Materials Summary Table (JSC Form HMST)\n",
-                "lieferzeitpunkt" : "PDR; CDR; AR",
-                "aktion" : "R"
+                "title" : "Hazardous Materials Summary Table (JSC Form HMST)\n",
+                "deliveryDate" : "PDR; CDR; AR",
+                "action" : "R"
               } ],
               "identifiers" : [ {
                 "type" : "S",
@@ -18051,9 +18051,9 @@
               "reference" : null,
               "drds" : [ {
                 "number" : "05.23",
-                "titel" : "In-flight Biohazardous Materials Approval Form (JSC Form 713)",
-                "lieferzeitpunkt" : "AR",
-                "aktion" : "R"
+                "title" : "In-flight Biohazardous Materials Approval Form (JSC Form 713)",
+                "deliveryDate" : "AR",
+                "action" : "R"
               } ],
               "identifiers" : [ {
                 "type" : "S",
@@ -18457,9 +18457,9 @@
             },
             "drds" : [ {
               "number" : "07.01",
-              "titel" : "RFA",
-              "lieferzeitpunkt" : "immediately after contractor internal approval; MPCB; respectively summary lists for CDR; MRR; QR; AR",
-              "aktion" : "A"
+              "title" : "RFA",
+              "deliveryDate" : "immediately after contractor internal approval; MPCB; respectively summary lists for CDR; MRR; QR; AR",
+              "action" : "A"
             } ],
             "identifiers" : [ {
               "type" : "S",
@@ -18536,9 +18536,9 @@
           },
           "drds" : [ {
             "number" : "05.25",
-            "titel" : "Safety Verification Tracking Log (ECSS-Q-40 Form)\n",
-            "lieferzeitpunkt" : "QR; AR",
-            "aktion" : "R"
+            "title" : "Safety Verification Tracking Log (ECSS-Q-40 Form)\n",
+            "deliveryDate" : "QR; AR",
+            "action" : "R"
           } ],
           "identifiers" : [ {
             "type" : "S",
@@ -18559,9 +18559,9 @@
           },
           "drds" : [ {
             "number" : "05.25",
-            "titel" : "Safety Verification Tracking Log (ECSS-Q-40 Form)\n",
-            "lieferzeitpunkt" : "QR; AR",
-            "aktion" : "R"
+            "title" : "Safety Verification Tracking Log (ECSS-Q-40 Form)\n",
+            "deliveryDate" : "QR; AR",
+            "action" : "R"
           } ],
           "identifiers" : [ {
             "type" : "S",
@@ -18582,9 +18582,9 @@
           },
           "drds" : [ {
             "number" : "05.24",
-            "titel" : "Safety Verification Tracking Log (ISS_OE_764)",
-            "lieferzeitpunkt" : "QR; AR",
-            "aktion" : "R"
+            "title" : "Safety Verification Tracking Log (ISS_OE_764)",
+            "deliveryDate" : "QR; AR",
+            "action" : "R"
           } ],
           "identifiers" : [ {
             "type" : "S",
@@ -18774,9 +18774,9 @@
               },
               "drds" : [ {
                 "number" : "06.01",
-                "titel" : "EEE Component Control Plan (CCP)",
-                "lieferzeitpunkt" : "SRR; PDR; PCB",
-                "aktion" : "R"
+                "title" : "EEE Component Control Plan (CCP)",
+                "deliveryDate" : "SRR; PDR; PCB",
+                "action" : "R"
               } ],
               "identifiers" : [ {
                 "type" : "E",
@@ -18797,9 +18797,9 @@
               },
               "drds" : [ {
                 "number" : "06.01",
-                "titel" : "EEE Component Control Plan (CCP)",
-                "lieferzeitpunkt" : "SRR; PDR; PCB",
-                "aktion" : "R"
+                "title" : "EEE Component Control Plan (CCP)",
+                "deliveryDate" : "SRR; PDR; PCB",
+                "action" : "R"
               } ],
               "identifiers" : [ {
                 "type" : "E",
@@ -18820,9 +18820,9 @@
               },
               "drds" : [ {
                 "number" : "06.01",
-                "titel" : "EEE Component Control Plan (CCP)",
-                "lieferzeitpunkt" : "SRR; PDR; PCB",
-                "aktion" : "R"
+                "title" : "EEE Component Control Plan (CCP)",
+                "deliveryDate" : "SRR; PDR; PCB",
+                "action" : "R"
               } ],
               "identifiers" : [ {
                 "type" : "E",
@@ -18880,19 +18880,19 @@
             },
             "drds" : [ {
               "number" : "03.03",
-              "titel" : "Request For Deviation (RFD)",
-              "lieferzeitpunkt" : "immediately after contractor internal approval",
-              "aktion" : "AC"
+              "title" : "Request For Deviation (RFD)",
+              "deliveryDate" : "immediately after contractor internal approval",
+              "action" : "AC"
             }, {
               "number" : "03.04",
-              "titel" : "Request For Waiver (RFW)",
-              "lieferzeitpunkt" : "immediately after contractor internal approval",
-              "aktion" : "AC"
+              "title" : "Request For Waiver (RFW)",
+              "deliveryDate" : "immediately after contractor internal approval",
+              "action" : "AC"
             }, {
               "number" : "03.01",
-              "titel" : "Nonconformance Report (NCR)",
-              "lieferzeitpunkt" : "initial written report, latest 3 working days after detection of non-conformance; to be provided for Control Boards as affected",
-              "aktion" : "AC"
+              "title" : "Nonconformance Report (NCR)",
+              "deliveryDate" : "initial written report, latest 3 working days after detection of non-conformance; to be provided for Control Boards as affected",
+              "action" : "AC"
             } ],
             "identifiers" : [ {
               "type" : "E",
@@ -18930,9 +18930,9 @@
             },
             "drds" : [ {
               "number" : "06.02",
-              "titel" : "Declared Component List (DCL)",
-              "lieferzeitpunkt" : "PDR; CDR; QR; AR; PCB",
-              "aktion" : "R (if there will be no PADs for the project, AC)"
+              "title" : "Declared Component List (DCL)",
+              "deliveryDate" : "PDR; CDR; QR; AR; PCB",
+              "action" : "R (if there will be no PADs for the project, AC)"
             } ],
             "identifiers" : [ {
               "type" : "E",
@@ -18953,9 +18953,9 @@
             },
             "drds" : [ {
               "number" : "06.02",
-              "titel" : "Declared Component List (DCL)",
-              "lieferzeitpunkt" : "PDR; CDR; QR; AR; PCB",
-              "aktion" : "R (if there will be no PADs for the project, AC)"
+              "title" : "Declared Component List (DCL)",
+              "deliveryDate" : "PDR; CDR; QR; AR; PCB",
+              "action" : "R (if there will be no PADs for the project, AC)"
             } ],
             "identifiers" : [ {
               "type" : "E",
@@ -18976,9 +18976,9 @@
             },
             "drds" : [ {
               "number" : "03.04",
-              "titel" : "Request For Waiver (RFW)",
-              "lieferzeitpunkt" : "immediately after contractor internal approval",
-              "aktion" : "AC"
+              "title" : "Request For Waiver (RFW)",
+              "deliveryDate" : "immediately after contractor internal approval",
+              "action" : "AC"
             } ],
             "identifiers" : [ {
               "type" : "E",
@@ -18999,9 +18999,9 @@
             },
             "drds" : [ {
               "number" : "06.02",
-              "titel" : "Declared Component List (DCL)",
-              "lieferzeitpunkt" : "PDR; CDR; QR; AR; PCB",
-              "aktion" : "R (if there will be no PADs for the project, AC)"
+              "title" : "Declared Component List (DCL)",
+              "deliveryDate" : "PDR; CDR; QR; AR; PCB",
+              "action" : "R (if there will be no PADs for the project, AC)"
             } ],
             "identifiers" : [ {
               "type" : "E",
@@ -19022,9 +19022,9 @@
             },
             "drds" : [ {
               "number" : "06.02",
-              "titel" : "Declared Component List (DCL)",
-              "lieferzeitpunkt" : "PDR; CDR; QR; AR; PCB",
-              "aktion" : "R (if there will be no PADs for the project, AC)"
+              "title" : "Declared Component List (DCL)",
+              "deliveryDate" : "PDR; CDR; QR; AR; PCB",
+              "action" : "R (if there will be no PADs for the project, AC)"
             } ],
             "identifiers" : [ {
               "type" : "E",
@@ -19045,14 +19045,14 @@
             },
             "drds" : [ {
               "number" : "06.06",
-              "titel" : "PAD",
-              "lieferzeitpunkt" : "immediately after contractor internal approval; PCB;  respectively summary lists for CDR; MRR; QR; AR",
-              "aktion" : "A"
+              "title" : "PAD",
+              "deliveryDate" : "immediately after contractor internal approval; PCB;  respectively summary lists for CDR; MRR; QR; AR",
+              "action" : "A"
             }, {
               "number" : "06.02",
-              "titel" : "Declared Component List (DCL)",
-              "lieferzeitpunkt" : "PDR; CDR; QR; AR; PCB",
-              "aktion" : "R (if there will be no PADs for the project, AC)"
+              "title" : "Declared Component List (DCL)",
+              "deliveryDate" : "PDR; CDR; QR; AR; PCB",
+              "action" : "R (if there will be no PADs for the project, AC)"
             } ],
             "identifiers" : [ {
               "type" : "E",
@@ -19066,14 +19066,14 @@
             "reference" : null,
             "drds" : [ {
               "number" : "06.06",
-              "titel" : "PAD",
-              "lieferzeitpunkt" : "immediately after contractor internal approval; PCB;  respectively summary lists for CDR; MRR; QR; AR",
-              "aktion" : "A"
+              "title" : "PAD",
+              "deliveryDate" : "immediately after contractor internal approval; PCB;  respectively summary lists for CDR; MRR; QR; AR",
+              "action" : "A"
             }, {
               "number" : "06.02",
-              "titel" : "Declared Component List (DCL)",
-              "lieferzeitpunkt" : "PDR; CDR; QR; AR; PCB",
-              "aktion" : "R (if there will be no PADs for the project, AC)"
+              "title" : "Declared Component List (DCL)",
+              "deliveryDate" : "PDR; CDR; QR; AR; PCB",
+              "action" : "R (if there will be no PADs for the project, AC)"
             } ],
             "identifiers" : [ {
               "type" : "E",
@@ -19087,9 +19087,9 @@
             "reference" : null,
             "drds" : [ {
               "number" : "06.02",
-              "titel" : "Declared Component List (DCL)",
-              "lieferzeitpunkt" : "PDR; CDR; QR; AR; PCB",
-              "aktion" : "R (if there will be no PADs for the project, AC)"
+              "title" : "Declared Component List (DCL)",
+              "deliveryDate" : "PDR; CDR; QR; AR; PCB",
+              "action" : "R (if there will be no PADs for the project, AC)"
             } ],
             "identifiers" : [ {
               "type" : "R",
@@ -19327,9 +19327,9 @@
               "reference" : null,
               "drds" : [ {
                 "number" : "06.02",
-                "titel" : "Declared Component List (DCL)",
-                "lieferzeitpunkt" : "PDR; CDR; QR; AR; PCB",
-                "aktion" : "R (if there will be no PADs for the project, AC)"
+                "title" : "Declared Component List (DCL)",
+                "deliveryDate" : "PDR; CDR; QR; AR; PCB",
+                "action" : "R (if there will be no PADs for the project, AC)"
               } ],
               "identifiers" : [ {
                 "type" : "R",
@@ -19343,9 +19343,9 @@
               "reference" : null,
               "drds" : [ {
                 "number" : "06.02",
-                "titel" : "Declared Component List (DCL)",
-                "lieferzeitpunkt" : "PDR; CDR; QR; AR; PCB",
-                "aktion" : "R (if there will be no PADs for the project, AC)"
+                "title" : "Declared Component List (DCL)",
+                "deliveryDate" : "PDR; CDR; QR; AR; PCB",
+                "action" : "R (if there will be no PADs for the project, AC)"
               } ],
               "identifiers" : [ {
                 "type" : "R",
@@ -19486,9 +19486,9 @@
               },
               "drds" : [ {
                 "number" : "06.06",
-                "titel" : "PAD",
-                "lieferzeitpunkt" : "immediately after contractor internal approval; PCB;  respectively summary lists for CDR; MRR; QR; AR",
-                "aktion" : "A"
+                "title" : "PAD",
+                "deliveryDate" : "immediately after contractor internal approval; PCB;  respectively summary lists for CDR; MRR; QR; AR",
+                "action" : "A"
               } ],
               "identifiers" : [ {
                 "type" : "E",
@@ -19510,9 +19510,9 @@
               "reference" : null,
               "drds" : [ {
                 "number" : "03.03",
-                "titel" : "Request For Deviation (RFD)",
-                "lieferzeitpunkt" : "immediately after contractor internal approval",
-                "aktion" : "AC"
+                "title" : "Request For Deviation (RFD)",
+                "deliveryDate" : "immediately after contractor internal approval",
+                "action" : "AC"
               } ],
               "identifiers" : [ {
                 "type" : "E",
@@ -19526,9 +19526,9 @@
               "reference" : null,
               "drds" : [ {
                 "number" : "03.03",
-                "titel" : "Request For Deviation (RFD)",
-                "lieferzeitpunkt" : "immediately after contractor internal approval",
-                "aktion" : "AC"
+                "title" : "Request For Deviation (RFD)",
+                "deliveryDate" : "immediately after contractor internal approval",
+                "action" : "AC"
               } ],
               "identifiers" : [ {
                 "type" : "E",
@@ -19546,9 +19546,9 @@
               },
               "drds" : [ {
                 "number" : "03.03",
-                "titel" : "Request For Deviation (RFD)",
-                "lieferzeitpunkt" : "immediately after contractor internal approval",
-                "aktion" : "AC"
+                "title" : "Request For Deviation (RFD)",
+                "deliveryDate" : "immediately after contractor internal approval",
+                "action" : "AC"
               } ],
               "identifiers" : [ {
                 "type" : "E",
@@ -19566,9 +19566,9 @@
               },
               "drds" : [ {
                 "number" : "03.03",
-                "titel" : "Request For Deviation (RFD)",
-                "lieferzeitpunkt" : "immediately after contractor internal approval",
-                "aktion" : "AC"
+                "title" : "Request For Deviation (RFD)",
+                "deliveryDate" : "immediately after contractor internal approval",
+                "action" : "AC"
               } ],
               "identifiers" : [ {
                 "type" : "E",
@@ -19589,9 +19589,9 @@
               },
               "drds" : [ {
                 "number" : "03.03",
-                "titel" : "Request For Deviation (RFD)",
-                "lieferzeitpunkt" : "immediately after contractor internal approval",
-                "aktion" : "AC"
+                "title" : "Request For Deviation (RFD)",
+                "deliveryDate" : "immediately after contractor internal approval",
+                "action" : "AC"
               } ],
               "identifiers" : [ {
                 "type" : "E",
@@ -19639,9 +19639,9 @@
               "reference" : null,
               "drds" : [ {
                 "number" : "07.01",
-                "titel" : "RFA",
-                "lieferzeitpunkt" : "immediately after contractor internal approval; MPCB; respectively summary lists for CDR; MRR; QR; AR",
-                "aktion" : "A"
+                "title" : "RFA",
+                "deliveryDate" : "immediately after contractor internal approval; MPCB; respectively summary lists for CDR; MRR; QR; AR",
+                "action" : "A"
               } ],
               "identifiers" : [ {
                 "type" : "E",
@@ -19663,9 +19663,9 @@
               "reference" : null,
               "drds" : [ {
                 "number" : "Lead Free Control Plan acc. to requirement",
-                "titel" : "Lead Free Control Plan ",
-                "lieferzeitpunkt" : "PDR; CDR",
-                "aktion" : "R"
+                "title" : "Lead Free Control Plan ",
+                "deliveryDate" : "PDR; CDR",
+                "action" : "R"
               } ],
               "identifiers" : [ {
                 "type" : "R",
@@ -19683,9 +19683,9 @@
               "reference" : null,
               "drds" : [ {
                 "number" : "Lead Free Control Plan acc. to requirement",
-                "titel" : "Lead Free Control Plan ",
-                "lieferzeitpunkt" : "PDR; CDR",
-                "aktion" : "R"
+                "title" : "Lead Free Control Plan ",
+                "deliveryDate" : "PDR; CDR",
+                "action" : "R"
               } ],
               "identifiers" : [ {
                 "type" : "R",
@@ -19799,14 +19799,14 @@
               "reference" : null,
               "drds" : [ {
                 "number" : "06.06",
-                "titel" : "PAD",
-                "lieferzeitpunkt" : "immediately after contractor internal approval; PCB;  respectively summary lists for CDR; MRR; QR; AR",
-                "aktion" : "A"
+                "title" : "PAD",
+                "deliveryDate" : "immediately after contractor internal approval; PCB;  respectively summary lists for CDR; MRR; QR; AR",
+                "action" : "A"
               }, {
                 "number" : "07.01",
-                "titel" : "RFA",
-                "lieferzeitpunkt" : "immediately after contractor internal approval; MPCB; respectively summary lists for CDR; MRR; QR; AR",
-                "aktion" : "A"
+                "title" : "RFA",
+                "deliveryDate" : "immediately after contractor internal approval; MPCB; respectively summary lists for CDR; MRR; QR; AR",
+                "action" : "A"
               } ],
               "identifiers" : [ {
                 "type" : "E",
@@ -19831,14 +19831,14 @@
               "reference" : null,
               "drds" : [ {
                 "number" : "06.06",
-                "titel" : "PAD",
-                "lieferzeitpunkt" : "immediately after contractor internal approval; PCB;  respectively summary lists for CDR; MRR; QR; AR",
-                "aktion" : "A"
+                "title" : "PAD",
+                "deliveryDate" : "immediately after contractor internal approval; PCB;  respectively summary lists for CDR; MRR; QR; AR",
+                "action" : "A"
               }, {
                 "number" : "07.01",
-                "titel" : "RFA",
-                "lieferzeitpunkt" : "immediately after contractor internal approval; MPCB; respectively summary lists for CDR; MRR; QR; AR",
-                "aktion" : "A"
+                "title" : "RFA",
+                "deliveryDate" : "immediately after contractor internal approval; MPCB; respectively summary lists for CDR; MRR; QR; AR",
+                "action" : "A"
               } ],
               "identifiers" : [ {
                 "type" : "E",
@@ -19945,9 +19945,9 @@
                 },
                 "drds" : [ {
                   "number" : "06.05",
-                  "titel" : "EEE Radiation Control Plan",
-                  "lieferzeitpunkt" : "PDR; CDR; QR; PCB",
-                  "aktion" : "AC"
+                  "title" : "EEE Radiation Control Plan",
+                  "deliveryDate" : "PDR; CDR; QR; PCB",
+                  "action" : "AC"
                 } ],
                 "identifiers" : [ {
                   "type" : "E",
@@ -19976,9 +19976,9 @@
                 },
                 "drds" : [ {
                   "number" : "Equipment radiation analysis document acc. to requirement",
-                  "titel" : "Equipment radiation analysis document",
-                  "lieferzeitpunkt" : "PDR; CDR; PCB",
-                  "aktion" : "R"
+                  "title" : "Equipment radiation analysis document",
+                  "deliveryDate" : "PDR; CDR; PCB",
+                  "action" : "R"
                 } ],
                 "identifiers" : [ {
                   "type" : "E",
@@ -20000,9 +20000,9 @@
                 "reference" : null,
                 "drds" : [ {
                   "number" : "Equipment radiation analysis document acc. to requirement",
-                  "titel" : "Equipment radiation analysis document",
-                  "lieferzeitpunkt" : "PDR; CDR; PCB",
-                  "aktion" : "R"
+                  "title" : "Equipment radiation analysis document",
+                  "deliveryDate" : "PDR; CDR; PCB",
+                  "action" : "R"
                 } ],
                 "identifiers" : [ {
                   "type" : "R",
@@ -20075,9 +20075,9 @@
                 "reference" : null,
                 "drds" : [ {
                   "number" : "04.12",
-                  "titel" : "WCA",
-                  "lieferzeitpunkt" : "CDR; QR, AR",
-                  "aktion" : "R"
+                  "title" : "WCA",
+                  "deliveryDate" : "CDR; QR, AR",
+                  "action" : "R"
                 } ],
                 "identifiers" : [ {
                   "type" : "E",
@@ -20162,9 +20162,9 @@
                 },
                 "drds" : [ {
                   "number" : "06.06",
-                  "titel" : "PAD",
-                  "lieferzeitpunkt" : "immediately after contractor internal approval; PCB;  respectively summary lists for CDR; MRR; QR; AR",
-                  "aktion" : "A"
+                  "title" : "PAD",
+                  "deliveryDate" : "immediately after contractor internal approval; PCB;  respectively summary lists for CDR; MRR; QR; AR",
+                  "action" : "A"
                 } ],
                 "identifiers" : [ {
                   "type" : "R",
@@ -20226,9 +20226,9 @@
                 "reference" : null,
                 "drds" : [ {
                   "number" : "06.05",
-                  "titel" : "EEE Radiation Control Plan",
-                  "lieferzeitpunkt" : "PDR; CDR; QR; PCB",
-                  "aktion" : "AC"
+                  "title" : "EEE Radiation Control Plan",
+                  "deliveryDate" : "PDR; CDR; QR; PCB",
+                  "action" : "AC"
                 } ],
                 "identifiers" : [ {
                   "type" : "E",
@@ -20254,9 +20254,9 @@
                 "reference" : null,
                 "drds" : [ {
                   "number" : "Equipment radiation analysis document acc. to requirement",
-                  "titel" : "Equipment radiation analysis document",
-                  "lieferzeitpunkt" : "PDR; CDR; PCB",
-                  "aktion" : "R"
+                  "title" : "Equipment radiation analysis document",
+                  "deliveryDate" : "PDR; CDR; PCB",
+                  "action" : "R"
                 } ],
                 "identifiers" : [ {
                   "type" : "R",
@@ -20412,9 +20412,9 @@
               "reference" : null,
               "drds" : [ {
                 "number" : "02.04",
-                "titel" : "Critical Items List",
-                "lieferzeitpunkt" : "SRR; PDR; CDR; QR; AR; FRR; LRR\n",
-                "aktion" : "A"
+                "title" : "Critical Items List",
+                "deliveryDate" : "SRR; PDR; CDR; QR; AR; FRR; LRR\n",
+                "action" : "A"
               } ],
               "identifiers" : [ {
                 "type" : "R",
@@ -20544,9 +20544,9 @@
               },
               "drds" : [ {
                 "number" : "EEE Evaluation Plan acc. to requirement",
-                "titel" : "EEE Evaluation Plan",
-                "lieferzeitpunkt" : "SRR, PDR, CDR; PCB",
-                "aktion" : "AC"
+                "title" : "EEE Evaluation Plan",
+                "deliveryDate" : "SRR, PDR, CDR; PCB",
+                "action" : "AC"
               } ],
               "identifiers" : [ {
                 "type" : "E",
@@ -20809,9 +20809,9 @@
               },
               "drds" : [ {
                 "number" : "06.09",
-                "titel" : "EEE Internal Supplier's Specification",
-                "lieferzeitpunkt" : "PDR; CDR; PCB",
-                "aktion" : "AC"
+                "title" : "EEE Internal Supplier's Specification",
+                "deliveryDate" : "PDR; CDR; PCB",
+                "action" : "AC"
               } ],
               "identifiers" : [ {
                 "type" : "E",
@@ -20948,9 +20948,9 @@
               },
               "drds" : [ {
                 "number" : "DPA procedure acc. to requirement",
-                "titel" : "Destructive Physical Analysis procedure",
-                "lieferzeitpunkt" : "pending requirement",
-                "aktion" : "R"
+                "title" : "Destructive Physical Analysis procedure",
+                "deliveryDate" : "pending requirement",
+                "action" : "R"
               } ],
               "identifiers" : [ {
                 "type" : "E",
@@ -21047,24 +21047,24 @@
             },
             "drds" : [ {
               "number" : "06.06",
-              "titel" : "PAD",
-              "lieferzeitpunkt" : "immediately after contractor internal approval; PCB;  respectively summary lists for CDR; MRR; QR; AR",
-              "aktion" : "A"
+              "title" : "PAD",
+              "deliveryDate" : "immediately after contractor internal approval; PCB;  respectively summary lists for CDR; MRR; QR; AR",
+              "action" : "A"
             }, {
               "number" : "06.08",
-              "titel" : "EEE Justification Document",
-              "lieferzeitpunkt" : "PDR; CDR; PCB",
-              "aktion" : "A"
+              "title" : "EEE Justification Document",
+              "deliveryDate" : "PDR; CDR; PCB",
+              "action" : "A"
             }, {
               "number" : "06.02",
-              "titel" : "Declared Component List (DCL)",
-              "lieferzeitpunkt" : "PDR; CDR; QR; AR; PCB",
-              "aktion" : "R (if there will be no PADs for the project, AC)"
+              "title" : "Declared Component List (DCL)",
+              "deliveryDate" : "PDR; CDR; QR; AR; PCB",
+              "action" : "R (if there will be no PADs for the project, AC)"
             }, {
               "number" : "07.01",
-              "titel" : "RFA",
-              "lieferzeitpunkt" : "immediately after contractor internal approval; MPCB; respectively summary lists for CDR; MRR; QR; AR",
-              "aktion" : "A"
+              "title" : "RFA",
+              "deliveryDate" : "immediately after contractor internal approval; MPCB; respectively summary lists for CDR; MRR; QR; AR",
+              "action" : "A"
             } ],
             "identifiers" : [ {
               "type" : "E",
@@ -21499,14 +21499,14 @@
             "reference" : null,
             "drds" : [ {
               "number" : "06.06",
-              "titel" : "PAD",
-              "lieferzeitpunkt" : "immediately after contractor internal approval; PCB;  respectively summary lists for CDR; MRR; QR; AR",
-              "aktion" : "A"
+              "title" : "PAD",
+              "deliveryDate" : "immediately after contractor internal approval; PCB;  respectively summary lists for CDR; MRR; QR; AR",
+              "action" : "A"
             }, {
               "number" : "07.01",
-              "titel" : "RFA",
-              "lieferzeitpunkt" : "immediately after contractor internal approval; MPCB; respectively summary lists for CDR; MRR; QR; AR",
-              "aktion" : "A"
+              "title" : "RFA",
+              "deliveryDate" : "immediately after contractor internal approval; MPCB; respectively summary lists for CDR; MRR; QR; AR",
+              "action" : "A"
             } ],
             "identifiers" : [ {
               "type" : "E",
@@ -21621,9 +21621,9 @@
               },
               "drds" : [ {
                 "number" : "06.07",
-                "titel" : "EEE Procurement Specification (PS)",
-                "lieferzeitpunkt" : "PDR; CDR; PCB",
-                "aktion" : "R"
+                "title" : "EEE Procurement Specification (PS)",
+                "deliveryDate" : "PDR; CDR; PCB",
+                "action" : "R"
               } ],
               "identifiers" : [ {
                 "type" : "E",
@@ -21652,9 +21652,9 @@
               },
               "drds" : [ {
                 "number" : "06.06",
-                "titel" : "PAD",
-                "lieferzeitpunkt" : "immediately after contractor internal approval; PCB;  respectively summary lists for CDR; MRR; QR; AR",
-                "aktion" : "A"
+                "title" : "PAD",
+                "deliveryDate" : "immediately after contractor internal approval; PCB;  respectively summary lists for CDR; MRR; QR; AR",
+                "action" : "A"
               } ],
               "identifiers" : [ {
                 "type" : "E",
@@ -21951,9 +21951,9 @@
             },
             "drds" : [ {
               "number" : "Customer Precap Procedure acc. to requirement",
-              "titel" : "Customer Precap Procedure",
-              "lieferzeitpunkt" : "on request and PDR",
-              "aktion" : "R"
+              "title" : "Customer Precap Procedure",
+              "deliveryDate" : "on request and PDR",
+              "action" : "R"
             } ],
             "identifiers" : [ {
               "type" : "E",
@@ -21978,9 +21978,9 @@
             },
             "drds" : [ {
               "number" : "Customer Precap Procedure acc. to requirement",
-              "titel" : "Customer Precap Procedure",
-              "lieferzeitpunkt" : "on request and PDR",
-              "aktion" : "R"
+              "title" : "Customer Precap Procedure",
+              "deliveryDate" : "on request and PDR",
+              "action" : "R"
             } ],
             "identifiers" : [ {
               "type" : "E",
@@ -22121,9 +22121,9 @@
               },
               "drds" : [ {
                 "number" : "06.06",
-                "titel" : "PAD",
-                "lieferzeitpunkt" : "immediately after contractor internal approval; PCB;  respectively summary lists for CDR; MRR; QR; AR",
-                "aktion" : "A"
+                "title" : "PAD",
+                "deliveryDate" : "immediately after contractor internal approval; PCB;  respectively summary lists for CDR; MRR; QR; AR",
+                "action" : "A"
               } ],
               "identifiers" : [ {
                 "type" : "E",
@@ -22192,9 +22192,9 @@
               },
               "drds" : [ {
                 "number" : "06.06",
-                "titel" : "PAD",
-                "lieferzeitpunkt" : "immediately after contractor internal approval; PCB;  respectively summary lists for CDR; MRR; QR; AR",
-                "aktion" : "A"
+                "title" : "PAD",
+                "deliveryDate" : "immediately after contractor internal approval; PCB;  respectively summary lists for CDR; MRR; QR; AR",
+                "action" : "A"
               } ],
               "identifiers" : [ {
                 "type" : "E",
@@ -22215,14 +22215,14 @@
               },
               "drds" : [ {
                 "number" : "06.08",
-                "titel" : "EEE Justification Document",
-                "lieferzeitpunkt" : "PDR; CDR; PCB",
-                "aktion" : "A"
+                "title" : "EEE Justification Document",
+                "deliveryDate" : "PDR; CDR; PCB",
+                "action" : "A"
               }, {
                 "number" : "Lot Acceptance Report acc. to requirement",
-                "titel" : "Lot Acceptance Report",
-                "lieferzeitpunkt" : "on request; PCB",
-                "aktion" : "I"
+                "title" : "Lot Acceptance Report",
+                "deliveryDate" : "on request; PCB",
+                "action" : "I"
               } ],
               "identifiers" : [ {
                 "type" : "E",
@@ -22259,9 +22259,9 @@
             },
             "drds" : [ {
               "number" : "06.06",
-              "titel" : "PAD",
-              "lieferzeitpunkt" : "immediately after contractor internal approval; PCB;  respectively summary lists for CDR; MRR; QR; AR",
-              "aktion" : "A"
+              "title" : "PAD",
+              "deliveryDate" : "immediately after contractor internal approval; PCB;  respectively summary lists for CDR; MRR; QR; AR",
+              "action" : "A"
             } ],
             "identifiers" : [ {
               "type" : "E",
@@ -22309,9 +22309,9 @@
             },
             "drds" : [ {
               "number" : "06.08",
-              "titel" : "EEE Justification Document",
-              "lieferzeitpunkt" : "PDR; CDR; PCB",
-              "aktion" : "A"
+              "title" : "EEE Justification Document",
+              "deliveryDate" : "PDR; CDR; PCB",
+              "action" : "A"
             } ],
             "identifiers" : [ {
               "type" : "E",
@@ -22471,9 +22471,9 @@
             "reference" : null,
             "drds" : [ {
               "number" : "06.02",
-              "titel" : "Declared Component List (DCL)",
-              "lieferzeitpunkt" : "PDR; CDR; QR; AR; PCB",
-              "aktion" : "R (if there will be no PADs for the project, AC)"
+              "title" : "Declared Component List (DCL)",
+              "deliveryDate" : "PDR; CDR; QR; AR; PCB",
+              "action" : "R (if there will be no PADs for the project, AC)"
             } ],
             "identifiers" : [ {
               "type" : "R",
@@ -22600,14 +22600,14 @@
             },
             "drds" : [ {
               "number" : "06.06",
-              "titel" : "PAD",
-              "lieferzeitpunkt" : "immediately after contractor internal approval; PCB;  respectively summary lists for CDR; MRR; QR; AR",
-              "aktion" : "A"
+              "title" : "PAD",
+              "deliveryDate" : "immediately after contractor internal approval; PCB;  respectively summary lists for CDR; MRR; QR; AR",
+              "action" : "A"
             }, {
               "number" : "06.08",
-              "titel" : "EEE Justification Document",
-              "lieferzeitpunkt" : "PDR; CDR; PCB",
-              "aktion" : "A"
+              "title" : "EEE Justification Document",
+              "deliveryDate" : "PDR; CDR; PCB",
+              "action" : "A"
             } ],
             "identifiers" : [ {
               "type" : "E",
@@ -22636,14 +22636,14 @@
             },
             "drds" : [ {
               "number" : "06.06",
-              "titel" : "PAD",
-              "lieferzeitpunkt" : "immediately after contractor internal approval; PCB;  respectively summary lists for CDR; MRR; QR; AR",
-              "aktion" : "A"
+              "title" : "PAD",
+              "deliveryDate" : "immediately after contractor internal approval; PCB;  respectively summary lists for CDR; MRR; QR; AR",
+              "action" : "A"
             }, {
               "number" : "06.08",
-              "titel" : "EEE Justification Document",
-              "lieferzeitpunkt" : "PDR; CDR; PCB",
-              "aktion" : "A"
+              "title" : "EEE Justification Document",
+              "deliveryDate" : "PDR; CDR; PCB",
+              "action" : "A"
             } ],
             "identifiers" : [ {
               "type" : "E",
@@ -22691,9 +22691,9 @@
             "reference" : null,
             "drds" : [ {
               "number" : "06.06",
-              "titel" : "PAD",
-              "lieferzeitpunkt" : "immediately after contractor internal approval; PCB;  respectively summary lists for CDR; MRR; QR; AR",
-              "aktion" : "A"
+              "title" : "PAD",
+              "deliveryDate" : "immediately after contractor internal approval; PCB;  respectively summary lists for CDR; MRR; QR; AR",
+              "action" : "A"
             } ],
             "identifiers" : [ {
               "type" : "E",
@@ -22722,9 +22722,9 @@
             },
             "drds" : [ {
               "number" : "DPA procedure acc. to requirement",
-              "titel" : "Destructive Physical Analysis procedure",
-              "lieferzeitpunkt" : "pending requirement",
-              "aktion" : "R"
+              "title" : "Destructive Physical Analysis procedure",
+              "deliveryDate" : "pending requirement",
+              "action" : "R"
             } ],
             "identifiers" : [ {
               "type" : "E",
@@ -23053,9 +23053,9 @@
             "reference" : null,
             "drds" : [ {
               "number" : "06.06",
-              "titel" : "PAD",
-              "lieferzeitpunkt" : "immediately after contractor internal approval; PCB;  respectively summary lists for CDR; MRR; QR; AR",
-              "aktion" : "A"
+              "title" : "PAD",
+              "deliveryDate" : "immediately after contractor internal approval; PCB;  respectively summary lists for CDR; MRR; QR; AR",
+              "action" : "A"
             } ],
             "identifiers" : [ {
               "type" : "E",
@@ -23093,14 +23093,14 @@
             "reference" : null,
             "drds" : [ {
               "number" : "06.07",
-              "titel" : "EEE Procurement Specification (PS)",
-              "lieferzeitpunkt" : "PDR; CDR; PCB",
-              "aktion" : "R"
+              "title" : "EEE Procurement Specification (PS)",
+              "deliveryDate" : "PDR; CDR; PCB",
+              "action" : "R"
             }, {
               "number" : "Relifing Test Report acc. to requirement",
-              "titel" : "Relifing Test Report",
-              "lieferzeitpunkt" : "latest 15 days after each event",
-              "aktion" : "R"
+              "title" : "Relifing Test Report",
+              "deliveryDate" : "latest 15 days after each event",
+              "action" : "R"
             } ],
             "identifiers" : [ {
               "type" : "E",
@@ -23217,9 +23217,9 @@
             "reference" : null,
             "drds" : [ {
               "number" : "02.04",
-              "titel" : "Critical Items List",
-              "lieferzeitpunkt" : "SRR; PDR; CDR; QR; AR; FRR; LRR\n",
-              "aktion" : "A"
+              "title" : "Critical Items List",
+              "deliveryDate" : "SRR; PDR; CDR; QR; AR; FRR; LRR\n",
+              "action" : "A"
             } ],
             "identifiers" : [ {
               "type" : "E",
@@ -23492,14 +23492,14 @@
             "reference" : null,
             "drds" : [ {
               "number" : "06.06",
-              "titel" : "PAD",
-              "lieferzeitpunkt" : "immediately after contractor internal approval; PCB;  respectively summary lists for CDR; MRR; QR; AR",
-              "aktion" : "A"
+              "title" : "PAD",
+              "deliveryDate" : "immediately after contractor internal approval; PCB;  respectively summary lists for CDR; MRR; QR; AR",
+              "action" : "A"
             }, {
               "number" : "07.01",
-              "titel" : "RFA",
-              "lieferzeitpunkt" : "immediately after contractor internal approval; MPCB; respectively summary lists for CDR; MRR; QR; AR",
-              "aktion" : "A"
+              "title" : "RFA",
+              "deliveryDate" : "immediately after contractor internal approval; MPCB; respectively summary lists for CDR; MRR; QR; AR",
+              "action" : "A"
             } ],
             "identifiers" : [ {
               "type" : "E",
@@ -23540,14 +23540,14 @@
             "reference" : null,
             "drds" : [ {
               "number" : "06.06",
-              "titel" : "PAD",
-              "lieferzeitpunkt" : "immediately after contractor internal approval; PCB;  respectively summary lists for CDR; MRR; QR; AR",
-              "aktion" : "A"
+              "title" : "PAD",
+              "deliveryDate" : "immediately after contractor internal approval; PCB;  respectively summary lists for CDR; MRR; QR; AR",
+              "action" : "A"
             }, {
               "number" : "07.01",
-              "titel" : "RFA",
-              "lieferzeitpunkt" : "immediately after contractor internal approval; MPCB; respectively summary lists for CDR; MRR; QR; AR",
-              "aktion" : "A"
+              "title" : "RFA",
+              "deliveryDate" : "immediately after contractor internal approval; MPCB; respectively summary lists for CDR; MRR; QR; AR",
+              "action" : "A"
             } ],
             "identifiers" : [ {
               "type" : "E",
@@ -23685,9 +23685,9 @@
             },
             "drds" : [ {
               "number" : "06.06",
-              "titel" : "PAD",
-              "lieferzeitpunkt" : "immediately after contractor internal approval; PCB;  respectively summary lists for CDR; MRR; QR; AR",
-              "aktion" : "A"
+              "title" : "PAD",
+              "deliveryDate" : "immediately after contractor internal approval; PCB;  respectively summary lists for CDR; MRR; QR; AR",
+              "action" : "A"
             } ],
             "identifiers" : [ {
               "type" : "E",
@@ -24019,14 +24019,14 @@
             "reference" : null,
             "drds" : [ {
               "number" : "06.06",
-              "titel" : "PAD",
-              "lieferzeitpunkt" : "immediately after contractor internal approval; PCB;  respectively summary lists for CDR; MRR; QR; AR",
-              "aktion" : "A"
+              "title" : "PAD",
+              "deliveryDate" : "immediately after contractor internal approval; PCB;  respectively summary lists for CDR; MRR; QR; AR",
+              "action" : "A"
             }, {
               "number" : "07.01",
-              "titel" : "RFA",
-              "lieferzeitpunkt" : "immediately after contractor internal approval; MPCB; respectively summary lists for CDR; MRR; QR; AR",
-              "aktion" : "A"
+              "title" : "RFA",
+              "deliveryDate" : "immediately after contractor internal approval; MPCB; respectively summary lists for CDR; MRR; QR; AR",
+              "action" : "A"
             } ],
             "identifiers" : [ {
               "type" : "E",
@@ -24219,24 +24219,24 @@
           },
           "drds" : [ {
             "number" : "07.06",
-            "titel" : "Declared Mechanical Parts List (DMPL)",
-            "lieferzeitpunkt" : "PDR; CDR; QR; AR; MPCB",
-            "aktion" : "R (if there will be no MPBC for the project, AC)"
+            "title" : "Declared Mechanical Parts List (DMPL)",
+            "deliveryDate" : "PDR; CDR; QR; AR; MPCB",
+            "action" : "R (if there will be no MPBC for the project, AC)"
           }, {
             "number" : "07.07",
-            "titel" : "Declared Process List (DPL)",
-            "lieferzeitpunkt" : "PDR; CDR; QR; AR; MPCB",
-            "aktion" : "R (if there will be no MPCB for the project, AC)"
+            "title" : "Declared Process List (DPL)",
+            "deliveryDate" : "PDR; CDR; QR; AR; MPCB",
+            "action" : "R (if there will be no MPCB for the project, AC)"
           }, {
             "number" : "07.02",
-            "titel" : "Declared Material List (DML)",
-            "lieferzeitpunkt" : "PDR; CDR; QR; AR; MPCB\n",
-            "aktion" : "R (if there will be no MPCB for the project, AC)"
+            "title" : "Declared Material List (DML)",
+            "deliveryDate" : "PDR; CDR; QR; AR; MPCB\n",
+            "action" : "R (if there will be no MPCB for the project, AC)"
           }, {
             "number" : "07.01",
-            "titel" : "RFA",
-            "lieferzeitpunkt" : "immediately after contractor internal approval; MPCB; respectively summary lists for CDR; MRR; QR; AR",
-            "aktion" : "A"
+            "title" : "RFA",
+            "deliveryDate" : "immediately after contractor internal approval; MPCB; respectively summary lists for CDR; MRR; QR; AR",
+            "action" : "A"
           } ],
           "identifiers" : [ {
             "type" : "P",
@@ -24257,24 +24257,24 @@
           },
           "drds" : [ {
             "number" : "07.06",
-            "titel" : "Declared Mechanical Parts List (DMPL)",
-            "lieferzeitpunkt" : "PDR; CDR; QR; AR; MPCB",
-            "aktion" : "R (if there will be no MPBC for the project, AC)"
+            "title" : "Declared Mechanical Parts List (DMPL)",
+            "deliveryDate" : "PDR; CDR; QR; AR; MPCB",
+            "action" : "R (if there will be no MPBC for the project, AC)"
           }, {
             "number" : "07.07",
-            "titel" : "Declared Process List (DPL)",
-            "lieferzeitpunkt" : "PDR; CDR; QR; AR; MPCB",
-            "aktion" : "R (if there will be no MPCB for the project, AC)"
+            "title" : "Declared Process List (DPL)",
+            "deliveryDate" : "PDR; CDR; QR; AR; MPCB",
+            "action" : "R (if there will be no MPCB for the project, AC)"
           }, {
             "number" : "07.02",
-            "titel" : "Declared Material List (DML)",
-            "lieferzeitpunkt" : "PDR; CDR; QR; AR; MPCB\n",
-            "aktion" : "R (if there will be no MPCB for the project, AC)"
+            "title" : "Declared Material List (DML)",
+            "deliveryDate" : "PDR; CDR; QR; AR; MPCB\n",
+            "action" : "R (if there will be no MPCB for the project, AC)"
           }, {
             "number" : "07.01",
-            "titel" : "RFA",
-            "lieferzeitpunkt" : "immediately after contractor internal approval; MPCB; respectively summary lists for CDR; MRR; QR; AR",
-            "aktion" : "A"
+            "title" : "RFA",
+            "deliveryDate" : "immediately after contractor internal approval; MPCB; respectively summary lists for CDR; MRR; QR; AR",
+            "action" : "A"
           } ],
           "identifiers" : [ {
             "type" : "P",
@@ -24305,19 +24305,19 @@
             },
             "drds" : [ {
               "number" : "07.06",
-              "titel" : "Declared Mechanical Parts List (DMPL)",
-              "lieferzeitpunkt" : "PDR; CDR; QR; AR; MPCB",
-              "aktion" : "R (if there will be no MPBC for the project, AC)"
+              "title" : "Declared Mechanical Parts List (DMPL)",
+              "deliveryDate" : "PDR; CDR; QR; AR; MPCB",
+              "action" : "R (if there will be no MPBC for the project, AC)"
             }, {
               "number" : "07.07",
-              "titel" : "Declared Process List (DPL)",
-              "lieferzeitpunkt" : "PDR; CDR; QR; AR; MPCB",
-              "aktion" : "R (if there will be no MPCB for the project, AC)"
+              "title" : "Declared Process List (DPL)",
+              "deliveryDate" : "PDR; CDR; QR; AR; MPCB",
+              "action" : "R (if there will be no MPCB for the project, AC)"
             }, {
               "number" : "07.02",
-              "titel" : "Declared Material List (DML)",
-              "lieferzeitpunkt" : "PDR; CDR; QR; AR; MPCB\n",
-              "aktion" : "R (if there will be no MPCB for the project, AC)"
+              "title" : "Declared Material List (DML)",
+              "deliveryDate" : "PDR; CDR; QR; AR; MPCB\n",
+              "action" : "R (if there will be no MPCB for the project, AC)"
             } ],
             "identifiers" : [ {
               "type" : "P",
@@ -24356,14 +24356,14 @@
             },
             "drds" : [ {
               "number" : "03.03",
-              "titel" : "Request For Deviation (RFD)",
-              "lieferzeitpunkt" : "immediately after contractor internal approval",
-              "aktion" : "AC"
+              "title" : "Request For Deviation (RFD)",
+              "deliveryDate" : "immediately after contractor internal approval",
+              "action" : "AC"
             }, {
               "number" : "07.01",
-              "titel" : "RFA",
-              "lieferzeitpunkt" : "immediately after contractor internal approval; MPCB; respectively summary lists for CDR; MRR; QR; AR",
-              "aktion" : "A"
+              "title" : "RFA",
+              "deliveryDate" : "immediately after contractor internal approval; MPCB; respectively summary lists for CDR; MRR; QR; AR",
+              "action" : "A"
             } ],
             "identifiers" : [ {
               "type" : "P",
@@ -24384,24 +24384,24 @@
             },
             "drds" : [ {
               "number" : "07.06",
-              "titel" : "Declared Mechanical Parts List (DMPL)",
-              "lieferzeitpunkt" : "PDR; CDR; QR; AR; MPCB",
-              "aktion" : "R (if there will be no MPBC for the project, AC)"
+              "title" : "Declared Mechanical Parts List (DMPL)",
+              "deliveryDate" : "PDR; CDR; QR; AR; MPCB",
+              "action" : "R (if there will be no MPBC for the project, AC)"
             }, {
               "number" : "07.07",
-              "titel" : "Declared Process List (DPL)",
-              "lieferzeitpunkt" : "PDR; CDR; QR; AR; MPCB",
-              "aktion" : "R (if there will be no MPCB for the project, AC)"
+              "title" : "Declared Process List (DPL)",
+              "deliveryDate" : "PDR; CDR; QR; AR; MPCB",
+              "action" : "R (if there will be no MPCB for the project, AC)"
             }, {
               "number" : "07.02",
-              "titel" : "Declared Material List (DML)",
-              "lieferzeitpunkt" : "PDR; CDR; QR; AR; MPCB\n",
-              "aktion" : "R (if there will be no MPCB for the project, AC)"
+              "title" : "Declared Material List (DML)",
+              "deliveryDate" : "PDR; CDR; QR; AR; MPCB\n",
+              "action" : "R (if there will be no MPCB for the project, AC)"
             }, {
               "number" : "07.01",
-              "titel" : "RFA",
-              "lieferzeitpunkt" : "immediately after contractor internal approval; MPCB; respectively summary lists for CDR; MRR; QR; AR",
-              "aktion" : "A"
+              "title" : "RFA",
+              "deliveryDate" : "immediately after contractor internal approval; MPCB; respectively summary lists for CDR; MRR; QR; AR",
+              "action" : "A"
             } ],
             "identifiers" : [ {
               "type" : "P",
@@ -24428,19 +24428,19 @@
             },
             "drds" : [ {
               "number" : "07.06",
-              "titel" : "Declared Mechanical Parts List (DMPL)",
-              "lieferzeitpunkt" : "PDR; CDR; QR; AR; MPCB",
-              "aktion" : "R (if there will be no MPBC for the project, AC)"
+              "title" : "Declared Mechanical Parts List (DMPL)",
+              "deliveryDate" : "PDR; CDR; QR; AR; MPCB",
+              "action" : "R (if there will be no MPBC for the project, AC)"
             }, {
               "number" : "07.07",
-              "titel" : "Declared Process List (DPL)",
-              "lieferzeitpunkt" : "PDR; CDR; QR; AR; MPCB",
-              "aktion" : "R (if there will be no MPCB for the project, AC)"
+              "title" : "Declared Process List (DPL)",
+              "deliveryDate" : "PDR; CDR; QR; AR; MPCB",
+              "action" : "R (if there will be no MPCB for the project, AC)"
             }, {
               "number" : "07.02",
-              "titel" : "Declared Material List (DML)",
-              "lieferzeitpunkt" : "PDR; CDR; QR; AR; MPCB\n",
-              "aktion" : "R (if there will be no MPCB for the project, AC)"
+              "title" : "Declared Material List (DML)",
+              "deliveryDate" : "PDR; CDR; QR; AR; MPCB\n",
+              "action" : "R (if there will be no MPCB for the project, AC)"
             } ],
             "identifiers" : [ {
               "type" : "P",
@@ -24562,9 +24562,9 @@
             "reference" : null,
             "drds" : [ {
               "number" : "07.06",
-              "titel" : "Declared Mechanical Parts List (DMPL)",
-              "lieferzeitpunkt" : "PDR; CDR; QR; AR; MPCB",
-              "aktion" : "R (if there will be no MPBC for the project, AC)"
+              "title" : "Declared Mechanical Parts List (DMPL)",
+              "deliveryDate" : "PDR; CDR; QR; AR; MPCB",
+              "action" : "R (if there will be no MPBC for the project, AC)"
             } ],
             "identifiers" : [ {
               "type" : "P",
@@ -24578,9 +24578,9 @@
             "reference" : null,
             "drds" : [ {
               "number" : "07.02",
-              "titel" : "Declared Material List (DML)",
-              "lieferzeitpunkt" : "PDR; CDR; QR; AR; MPCB\n",
-              "aktion" : "R (if there will be no MPCB for the project, AC)"
+              "title" : "Declared Material List (DML)",
+              "deliveryDate" : "PDR; CDR; QR; AR; MPCB\n",
+              "action" : "R (if there will be no MPCB for the project, AC)"
             } ],
             "identifiers" : [ {
               "type" : "P",
@@ -24594,9 +24594,9 @@
             "reference" : null,
             "drds" : [ {
               "number" : "07.07",
-              "titel" : "Declared Process List (DPL)",
-              "lieferzeitpunkt" : "PDR; CDR; QR; AR; MPCB",
-              "aktion" : "R (if there will be no MPCB for the project, AC)"
+              "title" : "Declared Process List (DPL)",
+              "deliveryDate" : "PDR; CDR; QR; AR; MPCB",
+              "action" : "R (if there will be no MPCB for the project, AC)"
             } ],
             "identifiers" : [ {
               "type" : "P",
@@ -24770,14 +24770,14 @@
             },
             "drds" : [ {
               "number" : "03.14",
-              "titel" : "Cleanliness Requirement Specification",
-              "lieferzeitpunkt" : "PDR; CDR; AR",
-              "aktion" : "R"
+              "title" : "Cleanliness Requirement Specification",
+              "deliveryDate" : "PDR; CDR; AR",
+              "action" : "R"
             }, {
               "number" : "03.05",
-              "titel" : "Cleanliness and Contamination Control Plan (C&CCP)",
-              "lieferzeitpunkt" : "PDR; CDR",
-              "aktion" : "R"
+              "title" : "Cleanliness and Contamination Control Plan (C&CCP)",
+              "deliveryDate" : "PDR; CDR",
+              "action" : "R"
             } ],
             "identifiers" : [ {
               "type" : "Q",
@@ -25637,9 +25637,9 @@
             },
             "drds" : [ {
               "number" : "07.02",
-              "titel" : "Declared Material List (DML)",
-              "lieferzeitpunkt" : "PDR; CDR; QR; AR; MPCB\n",
-              "aktion" : "R (if there will be no MPCB for the project, AC)"
+              "title" : "Declared Material List (DML)",
+              "deliveryDate" : "PDR; CDR; QR; AR; MPCB\n",
+              "action" : "R (if there will be no MPCB for the project, AC)"
             } ],
             "identifiers" : [ {
               "type" : "P",
@@ -25661,9 +25661,9 @@
             "reference" : null,
             "drds" : [ {
               "number" : "07.03",
-              "titel" : "Material Identification Usage List (MIUL)",
-              "lieferzeitpunkt" : "PDR; CDR; prior to FRR; MPCB; As-Designed MIUL; As-Built MIUL updates",
-              "aktion" : "A"
+              "title" : "Material Identification Usage List (MIUL)",
+              "deliveryDate" : "PDR; CDR; prior to FRR; MPCB; As-Designed MIUL; As-Built MIUL updates",
+              "action" : "A"
             } ],
             "identifiers" : [ {
               "type" : "P",
@@ -25730,14 +25730,14 @@
             },
             "drds" : [ {
               "number" : "03.03",
-              "titel" : "Request For Deviation (RFD)",
-              "lieferzeitpunkt" : "immediately after contractor internal approval",
-              "aktion" : "AC"
+              "title" : "Request For Deviation (RFD)",
+              "deliveryDate" : "immediately after contractor internal approval",
+              "action" : "AC"
             }, {
               "number" : "07.01",
-              "titel" : "RFA",
-              "lieferzeitpunkt" : "immediately after contractor internal approval; MPCB; respectively summary lists for CDR; MRR; QR; AR",
-              "aktion" : "A"
+              "title" : "RFA",
+              "deliveryDate" : "immediately after contractor internal approval; MPCB; respectively summary lists for CDR; MRR; QR; AR",
+              "action" : "A"
             } ],
             "identifiers" : [ {
               "type" : "P",
@@ -25751,24 +25751,24 @@
             "reference" : null,
             "drds" : [ {
               "number" : "07.06",
-              "titel" : "Declared Mechanical Parts List (DMPL)",
-              "lieferzeitpunkt" : "PDR; CDR; QR; AR; MPCB",
-              "aktion" : "R (if there will be no MPBC for the project, AC)"
+              "title" : "Declared Mechanical Parts List (DMPL)",
+              "deliveryDate" : "PDR; CDR; QR; AR; MPCB",
+              "action" : "R (if there will be no MPBC for the project, AC)"
             }, {
               "number" : "07.07",
-              "titel" : "Declared Process List (DPL)",
-              "lieferzeitpunkt" : "PDR; CDR; QR; AR; MPCB",
-              "aktion" : "R (if there will be no MPCB for the project, AC)"
+              "title" : "Declared Process List (DPL)",
+              "deliveryDate" : "PDR; CDR; QR; AR; MPCB",
+              "action" : "R (if there will be no MPCB for the project, AC)"
             }, {
               "number" : "07.02",
-              "titel" : "Declared Material List (DML)",
-              "lieferzeitpunkt" : "PDR; CDR; QR; AR; MPCB\n",
-              "aktion" : "R (if there will be no MPCB for the project, AC)"
+              "title" : "Declared Material List (DML)",
+              "deliveryDate" : "PDR; CDR; QR; AR; MPCB\n",
+              "action" : "R (if there will be no MPCB for the project, AC)"
             }, {
               "number" : "07.01",
-              "titel" : "RFA",
-              "lieferzeitpunkt" : "immediately after contractor internal approval; MPCB; respectively summary lists for CDR; MRR; QR; AR",
-              "aktion" : "A"
+              "title" : "RFA",
+              "deliveryDate" : "immediately after contractor internal approval; MPCB; respectively summary lists for CDR; MRR; QR; AR",
+              "action" : "A"
             } ],
             "identifiers" : [ {
               "type" : "P",
@@ -25782,9 +25782,9 @@
             "reference" : null,
             "drds" : [ {
               "number" : "07.04",
-              "titel" : "Material Usage Agreement \n(MUA)",
-              "lieferzeitpunkt" : "CDR; MPCB",
-              "aktion" : "A"
+              "title" : "Material Usage Agreement \n(MUA)",
+              "deliveryDate" : "CDR; MPCB",
+              "action" : "A"
             } ],
             "identifiers" : [ {
               "type" : "P",
@@ -25802,9 +25802,9 @@
             "reference" : null,
             "drds" : [ {
               "number" : "07.05",
-              "titel" : "Ionizing Radiation Source Data Sheet (JSC Form 44)",
-              "lieferzeitpunkt" : "AR; MPCB",
-              "aktion" : "AC"
+              "title" : "Ionizing Radiation Source Data Sheet (JSC Form 44)",
+              "deliveryDate" : "AR; MPCB",
+              "action" : "AC"
             } ],
             "identifiers" : [ {
               "type" : "P",
@@ -25857,14 +25857,14 @@
               },
               "drds" : [ {
                 "number" : "Material Evaluation Report acc. to requirement",
-                "titel" : "Material Evaluation Report",
-                "lieferzeitpunkt" : "CDR and on request",
-                "aktion" : "R"
+                "title" : "Material Evaluation Report",
+                "deliveryDate" : "CDR and on request",
+                "action" : "R"
               }, {
                 "number" : "Material Evaluation Plan acc. to requirement",
-                "titel" : "Material Evaluation Plan",
-                "lieferzeitpunkt" : "PDR; CDR",
-                "aktion" : "R"
+                "title" : "Material Evaluation Plan",
+                "deliveryDate" : "PDR; CDR",
+                "action" : "R"
               } ],
               "identifiers" : [ {
                 "type" : "P",
@@ -25891,9 +25891,9 @@
               },
               "drds" : [ {
                 "number" : "EEE Evaluation Plan acc. to requirement",
-                "titel" : "EEE Evaluation Plan",
-                "lieferzeitpunkt" : "SRR, PDR, CDR; PCB",
-                "aktion" : "AC"
+                "title" : "EEE Evaluation Plan",
+                "deliveryDate" : "SRR, PDR, CDR; PCB",
+                "action" : "AC"
               } ],
               "identifiers" : [ {
                 "type" : "P",
@@ -26284,9 +26284,9 @@
             },
             "drds" : [ {
               "number" : "07.06",
-              "titel" : "Declared Mechanical Parts List (DMPL)",
-              "lieferzeitpunkt" : "PDR; CDR; QR; AR; MPCB",
-              "aktion" : "R (if there will be no MPBC for the project, AC)"
+              "title" : "Declared Mechanical Parts List (DMPL)",
+              "deliveryDate" : "PDR; CDR; QR; AR; MPCB",
+              "action" : "R (if there will be no MPBC for the project, AC)"
             } ],
             "identifiers" : [ {
               "type" : "P",
@@ -26307,14 +26307,14 @@
             },
             "drds" : [ {
               "number" : "07.06",
-              "titel" : "Declared Mechanical Parts List (DMPL)",
-              "lieferzeitpunkt" : "PDR; CDR; QR; AR; MPCB",
-              "aktion" : "R (if there will be no MPBC for the project, AC)"
+              "title" : "Declared Mechanical Parts List (DMPL)",
+              "deliveryDate" : "PDR; CDR; QR; AR; MPCB",
+              "action" : "R (if there will be no MPBC for the project, AC)"
             }, {
               "number" : "07.01",
-              "titel" : "RFA",
-              "lieferzeitpunkt" : "immediately after contractor internal approval; MPCB; respectively summary lists for CDR; MRR; QR; AR",
-              "aktion" : "A"
+              "title" : "RFA",
+              "deliveryDate" : "immediately after contractor internal approval; MPCB; respectively summary lists for CDR; MRR; QR; AR",
+              "action" : "A"
             } ],
             "identifiers" : [ {
               "type" : "P",
@@ -26387,14 +26387,14 @@
               },
               "drds" : [ {
                 "number" : "02.04",
-                "titel" : "Critical Items List",
-                "lieferzeitpunkt" : "SRR; PDR; CDR; QR; AR; FRR; LRR\n",
-                "aktion" : "A"
+                "title" : "Critical Items List",
+                "deliveryDate" : "SRR; PDR; CDR; QR; AR; FRR; LRR\n",
+                "action" : "A"
               }, {
                 "number" : "07.06",
-                "titel" : "Declared Mechanical Parts List (DMPL)",
-                "lieferzeitpunkt" : "PDR; CDR; QR; AR; MPCB",
-                "aktion" : "R (if there will be no MPBC for the project, AC)"
+                "title" : "Declared Mechanical Parts List (DMPL)",
+                "deliveryDate" : "PDR; CDR; QR; AR; MPCB",
+                "action" : "R (if there will be no MPBC for the project, AC)"
               } ],
               "identifiers" : [ {
                 "type" : "P",
@@ -26415,9 +26415,9 @@
               },
               "drds" : [ {
                 "number" : "07.01",
-                "titel" : "RFA",
-                "lieferzeitpunkt" : "immediately after contractor internal approval; MPCB; respectively summary lists for CDR; MRR; QR; AR",
-                "aktion" : "A"
+                "title" : "RFA",
+                "deliveryDate" : "immediately after contractor internal approval; MPCB; respectively summary lists for CDR; MRR; QR; AR",
+                "action" : "A"
               } ],
               "identifiers" : [ {
                 "type" : "P",
@@ -26431,19 +26431,19 @@
               "reference" : null,
               "drds" : [ {
                 "number" : "07.06",
-                "titel" : "Declared Mechanical Parts List (DMPL)",
-                "lieferzeitpunkt" : "PDR; CDR; QR; AR; MPCB",
-                "aktion" : "R (if there will be no MPBC for the project, AC)"
+                "title" : "Declared Mechanical Parts List (DMPL)",
+                "deliveryDate" : "PDR; CDR; QR; AR; MPCB",
+                "action" : "R (if there will be no MPBC for the project, AC)"
               }, {
                 "number" : "07.07",
-                "titel" : "Declared Process List (DPL)",
-                "lieferzeitpunkt" : "PDR; CDR; QR; AR; MPCB",
-                "aktion" : "R (if there will be no MPCB for the project, AC)"
+                "title" : "Declared Process List (DPL)",
+                "deliveryDate" : "PDR; CDR; QR; AR; MPCB",
+                "action" : "R (if there will be no MPCB for the project, AC)"
               }, {
                 "number" : "07.02",
-                "titel" : "Declared Material List (DML)",
-                "lieferzeitpunkt" : "PDR; CDR; QR; AR; MPCB\n",
-                "aktion" : "R (if there will be no MPCB for the project, AC)"
+                "title" : "Declared Material List (DML)",
+                "deliveryDate" : "PDR; CDR; QR; AR; MPCB\n",
+                "action" : "R (if there will be no MPCB for the project, AC)"
               } ],
               "identifiers" : [ {
                 "type" : "P",
@@ -26498,14 +26498,14 @@
               },
               "drds" : [ {
                 "number" : "Mechanical Part Evaluation Plan acc. to requirement",
-                "titel" : "Mechanical Part Evaluation Plan",
-                "lieferzeitpunkt" : "PDR; CDR",
-                "aktion" : "R"
+                "title" : "Mechanical Part Evaluation Plan",
+                "deliveryDate" : "PDR; CDR",
+                "action" : "R"
               }, {
                 "number" : "Mechanical Part Evaluation Report acc. to requirement",
-                "titel" : "Mechanical Part Evaluation Report",
-                "lieferzeitpunkt" : "CDR and on request",
-                "aktion" : "R"
+                "title" : "Mechanical Part Evaluation Report",
+                "deliveryDate" : "CDR and on request",
+                "action" : "R"
               } ],
               "identifiers" : [ {
                 "type" : "P",
@@ -26532,9 +26532,9 @@
               },
               "drds" : [ {
                 "number" : "07.01",
-                "titel" : "RFA",
-                "lieferzeitpunkt" : "immediately after contractor internal approval; MPCB; respectively summary lists for CDR; MRR; QR; AR",
-                "aktion" : "A"
+                "title" : "RFA",
+                "deliveryDate" : "immediately after contractor internal approval; MPCB; respectively summary lists for CDR; MRR; QR; AR",
+                "action" : "A"
               } ],
               "identifiers" : [ {
                 "type" : "P",
@@ -26561,9 +26561,9 @@
               },
               "drds" : [ {
                 "number" : "07.01",
-                "titel" : "RFA",
-                "lieferzeitpunkt" : "immediately after contractor internal approval; MPCB; respectively summary lists for CDR; MRR; QR; AR",
-                "aktion" : "A"
+                "title" : "RFA",
+                "deliveryDate" : "immediately after contractor internal approval; MPCB; respectively summary lists for CDR; MRR; QR; AR",
+                "action" : "A"
               } ],
               "identifiers" : [ {
                 "type" : "P",
@@ -27000,9 +27000,9 @@
             },
             "drds" : [ {
               "number" : "07.07",
-              "titel" : "Declared Process List (DPL)",
-              "lieferzeitpunkt" : "PDR; CDR; QR; AR; MPCB",
-              "aktion" : "R (if there will be no MPCB for the project, AC)"
+              "title" : "Declared Process List (DPL)",
+              "deliveryDate" : "PDR; CDR; QR; AR; MPCB",
+              "action" : "R (if there will be no MPCB for the project, AC)"
             } ],
             "identifiers" : [ {
               "type" : "P",
@@ -27083,14 +27083,14 @@
               },
               "drds" : [ {
                 "number" : "02.04",
-                "titel" : "Critical Items List",
-                "lieferzeitpunkt" : "SRR; PDR; CDR; QR; AR; FRR; LRR\n",
-                "aktion" : "A"
+                "title" : "Critical Items List",
+                "deliveryDate" : "SRR; PDR; CDR; QR; AR; FRR; LRR\n",
+                "action" : "A"
               }, {
                 "number" : "07.07",
-                "titel" : "Declared Process List (DPL)",
-                "lieferzeitpunkt" : "PDR; CDR; QR; AR; MPCB",
-                "aktion" : "R (if there will be no MPCB for the project, AC)"
+                "title" : "Declared Process List (DPL)",
+                "deliveryDate" : "PDR; CDR; QR; AR; MPCB",
+                "action" : "R (if there will be no MPCB for the project, AC)"
               } ],
               "identifiers" : [ {
                 "type" : "P",
@@ -27119,9 +27119,9 @@
               },
               "drds" : [ {
                 "number" : "07.01",
-                "titel" : "RFA",
-                "lieferzeitpunkt" : "immediately after contractor internal approval; MPCB; respectively summary lists for CDR; MRR; QR; AR",
-                "aktion" : "A"
+                "title" : "RFA",
+                "deliveryDate" : "immediately after contractor internal approval; MPCB; respectively summary lists for CDR; MRR; QR; AR",
+                "action" : "A"
               } ],
               "identifiers" : [ {
                 "type" : "P",
@@ -27135,24 +27135,24 @@
               "reference" : null,
               "drds" : [ {
                 "number" : "07.06",
-                "titel" : "Declared Mechanical Parts List (DMPL)",
-                "lieferzeitpunkt" : "PDR; CDR; QR; AR; MPCB",
-                "aktion" : "R (if there will be no MPBC for the project, AC)"
+                "title" : "Declared Mechanical Parts List (DMPL)",
+                "deliveryDate" : "PDR; CDR; QR; AR; MPCB",
+                "action" : "R (if there will be no MPBC for the project, AC)"
               }, {
                 "number" : "07.07",
-                "titel" : "Declared Process List (DPL)",
-                "lieferzeitpunkt" : "PDR; CDR; QR; AR; MPCB",
-                "aktion" : "R (if there will be no MPCB for the project, AC)"
+                "title" : "Declared Process List (DPL)",
+                "deliveryDate" : "PDR; CDR; QR; AR; MPCB",
+                "action" : "R (if there will be no MPCB for the project, AC)"
               }, {
                 "number" : "07.02",
-                "titel" : "Declared Material List (DML)",
-                "lieferzeitpunkt" : "PDR; CDR; QR; AR; MPCB\n",
-                "aktion" : "R (if there will be no MPCB for the project, AC)"
+                "title" : "Declared Material List (DML)",
+                "deliveryDate" : "PDR; CDR; QR; AR; MPCB\n",
+                "action" : "R (if there will be no MPCB for the project, AC)"
               }, {
                 "number" : "07.01",
-                "titel" : "RFA",
-                "lieferzeitpunkt" : "immediately after contractor internal approval; MPCB; respectively summary lists for CDR; MRR; QR; AR",
-                "aktion" : "A"
+                "title" : "RFA",
+                "deliveryDate" : "immediately after contractor internal approval; MPCB; respectively summary lists for CDR; MRR; QR; AR",
+                "action" : "A"
               } ],
               "identifiers" : [ {
                 "type" : "P",
@@ -27245,14 +27245,14 @@
               },
               "drds" : [ {
                 "number" : "Process Evaluation Report acc. to requirement",
-                "titel" : "Process Evaluation Report",
-                "lieferzeitpunkt" : "CDR and on request",
-                "aktion" : "R"
+                "title" : "Process Evaluation Report",
+                "deliveryDate" : "CDR and on request",
+                "action" : "R"
               }, {
                 "number" : "Process Evaluation Plan acc. to requirement",
-                "titel" : "Process Evaluation Plan",
-                "lieferzeitpunkt" : "PDR, CDR",
-                "aktion" : "R"
+                "title" : "Process Evaluation Plan",
+                "deliveryDate" : "PDR, CDR",
+                "action" : "R"
               } ],
               "identifiers" : [ {
                 "type" : "P",
@@ -27397,9 +27397,9 @@
               },
               "drds" : [ {
                 "number" : "07.01",
-                "titel" : "RFA",
-                "lieferzeitpunkt" : "immediately after contractor internal approval; MPCB; respectively summary lists for CDR; MRR; QR; AR",
-                "aktion" : "A"
+                "title" : "RFA",
+                "deliveryDate" : "immediately after contractor internal approval; MPCB; respectively summary lists for CDR; MRR; QR; AR",
+                "action" : "A"
               } ],
               "identifiers" : [ {
                 "type" : "P",
@@ -27516,9 +27516,9 @@
               "reference" : null,
               "drds" : [ {
                 "number" : "07.07",
-                "titel" : "Declared Process List (DPL)",
-                "lieferzeitpunkt" : "PDR; CDR; QR; AR; MPCB",
-                "aktion" : "R (if there will be no MPCB for the project, AC)"
+                "title" : "Declared Process List (DPL)",
+                "deliveryDate" : "PDR; CDR; QR; AR; MPCB",
+                "action" : "R (if there will be no MPCB for the project, AC)"
               } ],
               "identifiers" : [ {
                 "type" : "P",
@@ -27780,9 +27780,9 @@
             },
             "drds" : [ {
               "number" : "08.01",
-              "titel" : "Software PA Plan",
-              "lieferzeitpunkt" : "SRR; PDR; CDR; QR",
-              "aktion" : "AC"
+              "title" : "Software PA Plan",
+              "deliveryDate" : "SRR; PDR; CDR; QR",
+              "action" : "AC"
             } ],
             "identifiers" : [ {
               "type" : "W",
@@ -27803,9 +27803,9 @@
             },
             "drds" : [ {
               "number" : "08.01",
-              "titel" : "Software PA Plan",
-              "lieferzeitpunkt" : "SRR; PDR; CDR; QR",
-              "aktion" : "AC"
+              "title" : "Software PA Plan",
+              "deliveryDate" : "SRR; PDR; CDR; QR",
+              "action" : "AC"
             } ],
             "identifiers" : [ {
               "type" : "W",
@@ -27970,9 +27970,9 @@
             },
             "drds" : [ {
               "number" : "08.01",
-              "titel" : "Software PA Plan",
-              "lieferzeitpunkt" : "SRR; PDR; CDR; QR",
-              "aktion" : "AC"
+              "title" : "Software PA Plan",
+              "deliveryDate" : "SRR; PDR; CDR; QR",
+              "action" : "AC"
             } ],
             "identifiers" : [ {
               "type" : "W",
@@ -28122,9 +28122,9 @@
               },
               "drds" : [ {
                 "number" : "08.01",
-                "titel" : "Software PA Plan",
-                "lieferzeitpunkt" : "SRR; PDR; CDR; QR",
-                "aktion" : "AC"
+                "title" : "Software PA Plan",
+                "deliveryDate" : "SRR; PDR; CDR; QR",
+                "action" : "AC"
               } ],
               "identifiers" : [ {
                 "type" : "W",
@@ -28608,9 +28608,9 @@
               },
               "drds" : [ {
                 "number" : "Software dependability and safety analysis report acc. to req.",
-                "titel" : "Software dependability and safety analysis report",
-                "lieferzeitpunkt" : "PDR; CDR; QR; AR",
-                "aktion" : "R"
+                "title" : "Software dependability and safety analysis report",
+                "deliveryDate" : "PDR; CDR; QR; AR",
+                "action" : "R"
               } ],
               "identifiers" : [ {
                 "type" : "W",
@@ -29139,9 +29139,9 @@
             },
             "drds" : [ {
               "number" : "08.04",
-              "titel" : "Software Reuse File",
-              "lieferzeitpunkt" : "SRR; PDR; CDR; QR",
-              "aktion" : "AC"
+              "title" : "Software Reuse File",
+              "deliveryDate" : "SRR; PDR; CDR; QR",
+              "action" : "AC"
             } ],
             "identifiers" : [ {
               "type" : "W",
@@ -29216,9 +29216,9 @@
             },
             "drds" : [ {
               "number" : "08.04",
-              "titel" : "Software Reuse File",
-              "lieferzeitpunkt" : "SRR; PDR; CDR; QR",
-              "aktion" : "AC"
+              "title" : "Software Reuse File",
+              "deliveryDate" : "SRR; PDR; CDR; QR",
+              "action" : "AC"
             } ],
             "identifiers" : [ {
               "type" : "W",
@@ -29450,9 +29450,9 @@
             },
             "drds" : [ {
               "number" : "08.02",
-              "titel" : "Software Development Plan",
-              "lieferzeitpunkt" : "SRR; PDR; CDR",
-              "aktion" : "R"
+              "title" : "Software Development Plan",
+              "deliveryDate" : "SRR; PDR; CDR",
+              "action" : "R"
             } ],
             "identifiers" : [ {
               "type" : "W",
@@ -29473,9 +29473,9 @@
             },
             "drds" : [ {
               "number" : "08.02",
-              "titel" : "Software Development Plan",
-              "lieferzeitpunkt" : "SRR; PDR; CDR",
-              "aktion" : "R"
+              "title" : "Software Development Plan",
+              "deliveryDate" : "SRR; PDR; CDR",
+              "action" : "R"
             } ],
             "identifiers" : [ {
               "type" : "W",
@@ -29574,9 +29574,9 @@
             },
             "drds" : [ {
               "number" : "08.02",
-              "titel" : "Software Development Plan",
-              "lieferzeitpunkt" : "SRR; PDR; CDR",
-              "aktion" : "R"
+              "title" : "Software Development Plan",
+              "deliveryDate" : "SRR; PDR; CDR",
+              "action" : "R"
             } ],
             "identifiers" : [ {
               "type" : "W",
@@ -29597,9 +29597,9 @@
             },
             "drds" : [ {
               "number" : "08.01",
-              "titel" : "Software PA Plan",
-              "lieferzeitpunkt" : "SRR; PDR; CDR; QR",
-              "aktion" : "AC"
+              "title" : "Software PA Plan",
+              "deliveryDate" : "SRR; PDR; CDR; QR",
+              "action" : "AC"
             } ],
             "identifiers" : [ {
               "type" : "W",
@@ -29716,14 +29716,14 @@
             },
             "drds" : [ {
               "number" : "08.05",
-              "titel" : "Software (Unit / Integration) Test Plan",
-              "lieferzeitpunkt" : "PDR; CDR; QR",
-              "aktion" : "R"
+              "title" : "Software (Unit / Integration) Test Plan",
+              "deliveryDate" : "PDR; CDR; QR",
+              "action" : "R"
             }, {
               "number" : "08.03",
-              "titel" : "Software (Verification / Acceptance Test) Plan",
-              "lieferzeitpunkt" : "PDR; CDR; QR",
-              "aktion" : "AC"
+              "title" : "Software (Verification / Acceptance Test) Plan",
+              "deliveryDate" : "PDR; CDR; QR",
+              "action" : "AC"
             } ],
             "identifiers" : [ {
               "type" : "W",
@@ -30211,14 +30211,14 @@
             "reference" : null,
             "drds" : [ {
               "number" : "08.07",
-              "titel" : "Static Verification Reporting",
-              "lieferzeitpunkt" : "CDR; QR; AR",
-              "aktion" : "R"
+              "title" : "Static Verification Reporting",
+              "deliveryDate" : "CDR; QR; AR",
+              "action" : "R"
             }, {
               "number" : "08.06",
-              "titel" : "Static Verification Procedure",
-              "lieferzeitpunkt" : "PRD; CDR; QR",
-              "aktion" : "R"
+              "title" : "Static Verification Procedure",
+              "deliveryDate" : "PRD; CDR; QR",
+              "action" : "R"
             } ],
             "identifiers" : [ {
               "type" : "W",
@@ -30263,9 +30263,9 @@
             },
             "drds" : [ {
               "number" : "08.08",
-              "titel" : "Software Installation Plan",
-              "lieferzeitpunkt" : "CDR; QR; AR; ORR",
-              "aktion" : "R"
+              "title" : "Software Installation Plan",
+              "deliveryDate" : "CDR; QR; AR; ORR",
+              "action" : "R"
             } ],
             "identifiers" : [ {
               "type" : "W",
@@ -30304,9 +30304,9 @@
             },
             "drds" : [ {
               "number" : "08.03",
-              "titel" : "Software (Verification / Acceptance Test) Plan",
-              "lieferzeitpunkt" : "PDR; CDR; QR",
-              "aktion" : "AC"
+              "title" : "Software (Verification / Acceptance Test) Plan",
+              "deliveryDate" : "PDR; CDR; QR",
+              "action" : "AC"
             } ],
             "identifiers" : [ {
               "type" : "W",
@@ -30327,9 +30327,9 @@
             },
             "drds" : [ {
               "number" : "08.03",
-              "titel" : "Software (Verification / Acceptance Test) Plan",
-              "lieferzeitpunkt" : "PDR; CDR; QR",
-              "aktion" : "AC"
+              "title" : "Software (Verification / Acceptance Test) Plan",
+              "deliveryDate" : "PDR; CDR; QR",
+              "action" : "AC"
             } ],
             "identifiers" : [ {
               "type" : "W",
@@ -30386,9 +30386,9 @@
             },
             "drds" : [ {
               "number" : "03.01",
-              "titel" : "Nonconformance Report (NCR)",
-              "lieferzeitpunkt" : "initial written report, latest 3 working days after detection of non-conformance; to be provided for Control Boards as affected",
-              "aktion" : "AC"
+              "title" : "Nonconformance Report (NCR)",
+              "deliveryDate" : "initial written report, latest 3 working days after detection of non-conformance; to be provided for Control Boards as affected",
+              "action" : "AC"
             } ],
             "identifiers" : [ {
               "type" : "W",
@@ -30646,9 +30646,9 @@
             "reference" : null,
             "drds" : [ {
               "number" : "08.09",
-              "titel" : "Software User Manual\n(SUM)",
-              "lieferzeitpunkt" : "CDR; TRR; QR; AR",
-              "aktion" : "I"
+              "title" : "Software User Manual\n(SUM)",
+              "deliveryDate" : "CDR; TRR; QR; AR",
+              "action" : "I"
             } ],
             "identifiers" : [ {
               "type" : "W",
@@ -30991,9 +30991,9 @@
             "reference" : null,
             "drds" : [ {
               "number" : "08.02",
-              "titel" : "Software Development Plan",
-              "lieferzeitpunkt" : "SRR; PDR; CDR",
-              "aktion" : "R"
+              "title" : "Software Development Plan",
+              "deliveryDate" : "SRR; PDR; CDR",
+              "action" : "R"
             } ],
             "identifiers" : [ {
               "type" : "W",
@@ -31007,9 +31007,9 @@
             "reference" : null,
             "drds" : [ {
               "number" : "08.02",
-              "titel" : "Software Development Plan",
-              "lieferzeitpunkt" : "SRR; PDR; CDR",
-              "aktion" : "R"
+              "title" : "Software Development Plan",
+              "deliveryDate" : "SRR; PDR; CDR",
+              "action" : "R"
             } ],
             "identifiers" : [ {
               "type" : "W",
@@ -31683,9 +31683,9 @@
             },
             "drds" : [ {
               "number" : "10.01",
-              "titel" : "Off-the-shelf (OTS) Plan",
-              "lieferzeitpunkt" : "SRR; PDR; CDR; QR",
-              "aktion" : "R"
+              "title" : "Off-the-shelf (OTS) Plan",
+              "deliveryDate" : "SRR; PDR; CDR; QR",
+              "action" : "R"
             } ],
             "identifiers" : [ {
               "type" : "Q",
@@ -31766,9 +31766,9 @@
             },
             "drds" : [ {
               "number" : "Equipment Specification acc. to requirement",
-              "titel" : "Equipment Specification",
-              "lieferzeitpunkt" : "beginning of OTS equipment identification phase; SRR",
-              "aktion" : "R"
+              "title" : "Equipment Specification",
+              "deliveryDate" : "beginning of OTS equipment identification phase; SRR",
+              "action" : "R"
             } ],
             "identifiers" : [ {
               "type" : "Q",
@@ -31849,9 +31849,9 @@
             },
             "drds" : [ {
               "number" : "10.02",
-              "titel" : "OTS Item Evaluation Dossier",
-              "lieferzeitpunkt" : "PDR; CDR; QR; AR",
-              "aktion" : "R"
+              "title" : "OTS Item Evaluation Dossier",
+              "deliveryDate" : "PDR; CDR; QR; AR",
+              "action" : "R"
             } ],
             "identifiers" : [ {
               "type" : "Q",
@@ -32951,9 +32951,9 @@
                 "reference" : null,
                 "drds" : [ {
                   "number" : "07.04",
-                  "titel" : "Material Usage Agreement \n(MUA)",
-                  "lieferzeitpunkt" : "CDR; MPCB",
-                  "aktion" : "A"
+                  "title" : "Material Usage Agreement \n(MUA)",
+                  "deliveryDate" : "CDR; MPCB",
+                  "action" : "A"
                 } ],
                 "identifiers" : [ {
                   "type" : "Q",
@@ -34442,9 +34442,9 @@
               },
               "drds" : [ {
                 "number" : "10.02",
-                "titel" : "OTS Item Evaluation Dossier",
-                "lieferzeitpunkt" : "PDR; CDR; QR; AR",
-                "aktion" : "R"
+                "title" : "OTS Item Evaluation Dossier",
+                "deliveryDate" : "PDR; CDR; QR; AR",
+                "action" : "R"
               } ],
               "identifiers" : [ {
                 "type" : "Q",
@@ -34659,9 +34659,9 @@
             },
             "drds" : [ {
               "number" : "10.02",
-              "titel" : "OTS Item Evaluation Dossier",
-              "lieferzeitpunkt" : "PDR; CDR; QR; AR",
-              "aktion" : "R"
+              "title" : "OTS Item Evaluation Dossier",
+              "deliveryDate" : "PDR; CDR; QR; AR",
+              "action" : "R"
             } ],
             "identifiers" : [ {
               "type" : "Q",
@@ -35699,9 +35699,9 @@
           "reference" : null,
           "drds" : [ {
             "number" : "11.01",
-            "titel" : "Space Debris Mitigation Declaration",
-            "lieferzeitpunkt" : "CDR; AR",
-            "aktion" : "AC"
+            "title" : "Space Debris Mitigation Declaration",
+            "deliveryDate" : "CDR; AR",
+            "action" : "AC"
           } ],
           "identifiers" : [ {
             "type" : "J",
@@ -35719,9 +35719,9 @@
           "reference" : null,
           "drds" : [ {
             "number" : "11.02",
-            "titel" : "End of Mission Plan (EOMP)",
-            "lieferzeitpunkt" : "SRR; PDR; CDR; AR",
-            "aktion" : "R"
+            "title" : "End of Mission Plan (EOMP)",
+            "deliveryDate" : "SRR; PDR; CDR; AR",
+            "action" : "R"
           } ],
           "identifiers" : [ {
             "type" : "J",
@@ -35741,14 +35741,14 @@
           "reference" : null,
           "drds" : [ {
             "number" : "03.03",
-            "titel" : "Request For Deviation (RFD)",
-            "lieferzeitpunkt" : "immediately after contractor internal approval",
-            "aktion" : "AC"
+            "title" : "Request For Deviation (RFD)",
+            "deliveryDate" : "immediately after contractor internal approval",
+            "action" : "AC"
           }, {
             "number" : "03.04",
-            "titel" : "Request For Waiver (RFW)",
-            "lieferzeitpunkt" : "immediately after contractor internal approval",
-            "aktion" : "AC"
+            "title" : "Request For Waiver (RFW)",
+            "deliveryDate" : "immediately after contractor internal approval",
+            "action" : "AC"
           } ],
           "identifiers" : [ {
             "type" : "J",
@@ -35848,9 +35848,9 @@
           },
           "drds" : [ {
             "number" : "SDMAR-1 acc. to requirements",
-            "titel" : "SDMAR-1 ''Debris released during normal operations''",
-            "lieferzeitpunkt" : "SRR; PDR; CDR; AR",
-            "aktion" : "AC"
+            "title" : "SDMAR-1 ''Debris released during normal operations''",
+            "deliveryDate" : "SRR; PDR; CDR; AR",
+            "action" : "AC"
           } ],
           "identifiers" : [ {
             "type" : "J",
@@ -35876,9 +35876,9 @@
           },
           "drds" : [ {
             "number" : "SDMAR-2 acc. to requirements",
-            "titel" : "SDMAR-2  ''Accidental breakups and potential for explosions''",
-            "lieferzeitpunkt" : "SRR; PDR; CDR; AR",
-            "aktion" : "AC"
+            "title" : "SDMAR-2  ''Accidental breakups and potential for explosions''",
+            "deliveryDate" : "SRR; PDR; CDR; AR",
+            "action" : "AC"
           } ],
           "identifiers" : [ {
             "type" : "J",
@@ -35904,9 +35904,9 @@
           },
           "drds" : [ {
             "number" : "SDMAR-3 acc. to requirements",
-            "titel" : "SDMAR-3  ''Potential for On-Orbit-Collisions''",
-            "lieferzeitpunkt" : "SRR; PDR; CDR; AR",
-            "aktion" : "AC"
+            "title" : "SDMAR-3  ''Potential for On-Orbit-Collisions''",
+            "deliveryDate" : "SRR; PDR; CDR; AR",
+            "action" : "AC"
           } ],
           "identifiers" : [ {
             "type" : "J",
@@ -35924,9 +35924,9 @@
           },
           "drds" : [ {
             "number" : "SDMAR-4 acc. to requirements",
-            "titel" : "SDMAR-4  ''Postmission disposal plans and procedures''",
-            "lieferzeitpunkt" : "SRR; PDR; CDR; AR",
-            "aktion" : "AC"
+            "title" : "SDMAR-4  ''Postmission disposal plans and procedures''",
+            "deliveryDate" : "SRR; PDR; CDR; AR",
+            "action" : "AC"
           } ],
           "identifiers" : [ {
             "type" : "J",
@@ -35940,9 +35940,9 @@
           "reference" : null,
           "drds" : [ {
             "number" : "SDMAR-4 acc. to requirements",
-            "titel" : "SDMAR-4  ''Postmission disposal plans and procedures''",
-            "lieferzeitpunkt" : "SRR; PDR; CDR; AR",
-            "aktion" : "AC"
+            "title" : "SDMAR-4  ''Postmission disposal plans and procedures''",
+            "deliveryDate" : "SRR; PDR; CDR; AR",
+            "action" : "AC"
           } ],
           "identifiers" : [ {
             "type" : "J",
@@ -35960,9 +35960,9 @@
           },
           "drds" : [ {
             "number" : "SDMAR-5 acc. to requirements",
-            "titel" : "SDMAR-5  ''Reentry Hazards''",
-            "lieferzeitpunkt" : "SRR; PDR; CDR; AR",
-            "aktion" : "AC"
+            "title" : "SDMAR-5  ''Reentry Hazards''",
+            "deliveryDate" : "SRR; PDR; CDR; AR",
+            "action" : "AC"
           } ],
           "identifiers" : [ {
             "type" : "J",
@@ -35990,9 +35990,9 @@
             },
             "drds" : [ {
               "number" : "SDMAR-1 acc. to requirements",
-              "titel" : "SDMAR-1 ''Debris released during normal operations''",
-              "lieferzeitpunkt" : "SRR; PDR; CDR; AR",
-              "aktion" : "AC"
+              "title" : "SDMAR-1 ''Debris released during normal operations''",
+              "deliveryDate" : "SRR; PDR; CDR; AR",
+              "action" : "AC"
             } ],
             "identifiers" : [ {
               "type" : "J",
@@ -36024,9 +36024,9 @@
             },
             "drds" : [ {
               "number" : "SDMAR-2 acc. to requirements",
-              "titel" : "SDMAR-2  ''Accidental breakups and potential for explosions''",
-              "lieferzeitpunkt" : "SRR; PDR; CDR; AR",
-              "aktion" : "AC"
+              "title" : "SDMAR-2  ''Accidental breakups and potential for explosions''",
+              "deliveryDate" : "SRR; PDR; CDR; AR",
+              "action" : "AC"
             } ],
             "identifiers" : [ {
               "type" : "J",
@@ -36058,9 +36058,9 @@
             },
             "drds" : [ {
               "number" : "SDMAR-3 acc. to requirements",
-              "titel" : "SDMAR-3  ''Potential for On-Orbit-Collisions''",
-              "lieferzeitpunkt" : "SRR; PDR; CDR; AR",
-              "aktion" : "AC"
+              "title" : "SDMAR-3  ''Potential for On-Orbit-Collisions''",
+              "deliveryDate" : "SRR; PDR; CDR; AR",
+              "action" : "AC"
             } ],
             "identifiers" : [ {
               "type" : "J",
@@ -36084,9 +36084,9 @@
             },
             "drds" : [ {
               "number" : "SDMAR-4 acc. to requirements",
-              "titel" : "SDMAR-4  ''Postmission disposal plans and procedures''",
-              "lieferzeitpunkt" : "SRR; PDR; CDR; AR",
-              "aktion" : "AC"
+              "title" : "SDMAR-4  ''Postmission disposal plans and procedures''",
+              "deliveryDate" : "SRR; PDR; CDR; AR",
+              "action" : "AC"
             } ],
             "identifiers" : [ {
               "type" : "J",
@@ -36106,9 +36106,9 @@
             "reference" : null,
             "drds" : [ {
               "number" : "SDMAR-5 acc. to requirements",
-              "titel" : "SDMAR-5  ''Reentry Hazards''",
-              "lieferzeitpunkt" : "SRR; PDR; CDR; AR",
-              "aktion" : "AC"
+              "title" : "SDMAR-5  ''Reentry Hazards''",
+              "deliveryDate" : "SRR; PDR; CDR; AR",
+              "action" : "AC"
             } ],
             "identifiers" : [ {
               "type" : "J",
@@ -36191,9 +36191,9 @@
             },
             "drds" : [ {
               "number" : "SDMAR-5 acc. to requirements",
-              "titel" : "SDMAR-5  ''Reentry Hazards''",
-              "lieferzeitpunkt" : "SRR; PDR; CDR; AR",
-              "aktion" : "AC"
+              "title" : "SDMAR-5  ''Reentry Hazards''",
+              "deliveryDate" : "SRR; PDR; CDR; AR",
+              "action" : "AC"
             } ],
             "identifiers" : [ {
               "type" : "J",
@@ -36387,9 +36387,9 @@
             },
             "drds" : [ {
               "number" : "SDMAR-5 acc. to requirements",
-              "titel" : "SDMAR-5  ''Reentry Hazards''",
-              "lieferzeitpunkt" : "SRR; PDR; CDR; AR",
-              "aktion" : "AC"
+              "title" : "SDMAR-5  ''Reentry Hazards''",
+              "deliveryDate" : "SRR; PDR; CDR; AR",
+              "action" : "AC"
             } ],
             "identifiers" : [ {
               "type" : "J",
@@ -36686,9 +36686,9 @@
             },
             "drds" : [ {
               "number" : "SDMAR-2 acc. to requirements",
-              "titel" : "SDMAR-2  ''Accidental breakups and potential for explosions''",
-              "lieferzeitpunkt" : "SRR; PDR; CDR; AR",
-              "aktion" : "AC"
+              "title" : "SDMAR-2  ''Accidental breakups and potential for explosions''",
+              "deliveryDate" : "SRR; PDR; CDR; AR",
+              "action" : "AC"
             } ],
             "identifiers" : [ {
               "type" : "J",
@@ -37255,34 +37255,34 @@
           },
           "drds" : [ {
             "number" : "SDMAR-4 acc. to requirements",
-            "titel" : "SDMAR-4  ''Postmission disposal plans and procedures''",
-            "lieferzeitpunkt" : "SRR; PDR; CDR; AR",
-            "aktion" : "AC"
+            "title" : "SDMAR-4  ''Postmission disposal plans and procedures''",
+            "deliveryDate" : "SRR; PDR; CDR; AR",
+            "action" : "AC"
           }, {
             "number" : "11.01",
-            "titel" : "Space Debris Mitigation Declaration",
-            "lieferzeitpunkt" : "CDR; AR",
-            "aktion" : "AC"
+            "title" : "Space Debris Mitigation Declaration",
+            "deliveryDate" : "CDR; AR",
+            "action" : "AC"
           }, {
             "number" : "SDMAR-1 acc. to requirements",
-            "titel" : "SDMAR-1 ''Debris released during normal operations''",
-            "lieferzeitpunkt" : "SRR; PDR; CDR; AR",
-            "aktion" : "AC"
+            "title" : "SDMAR-1 ''Debris released during normal operations''",
+            "deliveryDate" : "SRR; PDR; CDR; AR",
+            "action" : "AC"
           }, {
             "number" : "SDMAR-5 acc. to requirements",
-            "titel" : "SDMAR-5  ''Reentry Hazards''",
-            "lieferzeitpunkt" : "SRR; PDR; CDR; AR",
-            "aktion" : "AC"
+            "title" : "SDMAR-5  ''Reentry Hazards''",
+            "deliveryDate" : "SRR; PDR; CDR; AR",
+            "action" : "AC"
           }, {
             "number" : "SDMAR-2 acc. to requirements",
-            "titel" : "SDMAR-2  ''Accidental breakups and potential for explosions''",
-            "lieferzeitpunkt" : "SRR; PDR; CDR; AR",
-            "aktion" : "AC"
+            "title" : "SDMAR-2  ''Accidental breakups and potential for explosions''",
+            "deliveryDate" : "SRR; PDR; CDR; AR",
+            "action" : "AC"
           }, {
             "number" : "SDMAR-3 acc. to requirements",
-            "titel" : "SDMAR-3  ''Potential for On-Orbit-Collisions''",
-            "lieferzeitpunkt" : "SRR; PDR; CDR; AR",
-            "aktion" : "AC"
+            "title" : "SDMAR-3  ''Potential for On-Orbit-Collisions''",
+            "deliveryDate" : "SRR; PDR; CDR; AR",
+            "action" : "AC"
           } ],
           "identifiers" : [ {
             "type" : "J",
@@ -38024,9 +38024,9 @@
           "reference" : null,
           "drds" : [ {
             "number" : "PPIP acc. to requirements",
-            "titel" : "Planetary Protection Implementation Plan (PPIP)",
-            "lieferzeitpunkt" : "SRR; PDR; CDR; AR",
-            "aktion" : "AC"
+            "title" : "Planetary Protection Implementation Plan (PPIP)",
+            "deliveryDate" : "SRR; PDR; CDR; AR",
+            "action" : "AC"
           } ],
           "identifiers" : [ {
             "type" : "F",
@@ -40410,9 +40410,9 @@
             },
             "drds" : [ {
               "number" : "13.01",
-              "titel" : "System Security Plan",
-              "lieferzeitpunkt" : "SRR; PDR; CDR; AR; ORR; FRR; LRR; GS Upgrades (if affected)",
-              "aktion" : "AC"
+              "title" : "System Security Plan",
+              "deliveryDate" : "SRR; PDR; CDR; AR; ORR; FRR; LRR; GS Upgrades (if affected)",
+              "action" : "AC"
             } ],
             "identifiers" : [ {
               "type" : "C",
@@ -44157,14 +44157,14 @@
           "reference" : null,
           "drds" : [ {
             "number" : "13.01",
-            "titel" : "System Security Plan",
-            "lieferzeitpunkt" : "SRR; PDR; CDR; AR; ORR; FRR; LRR; GS Upgrades (if affected)",
-            "aktion" : "AC"
+            "title" : "System Security Plan",
+            "deliveryDate" : "SRR; PDR; CDR; AR; ORR; FRR; LRR; GS Upgrades (if affected)",
+            "action" : "AC"
           }, {
             "number" : "Mission Concept",
-            "titel" : "Mission Concept",
-            "lieferzeitpunkt" : "SRR; PDR; CDR; AR; ORR; FRR; LRR; GS Upgrades (if affected)",
-            "aktion" : "AC"
+            "title" : "Mission Concept",
+            "deliveryDate" : "SRR; PDR; CDR; AR; ORR; FRR; LRR; GS Upgrades (if affected)",
+            "action" : "AC"
           } ],
           "identifiers" : [ {
             "type" : "B",
@@ -44178,9 +44178,9 @@
           "reference" : null,
           "drds" : [ {
             "number" : "GS Description Document",
-            "titel" : "GS Description Document (GSDD)",
-            "lieferzeitpunkt" : "PRR; SRR; PDR; CDR; AR; ORR; FRR; LRR; GS Upgrades (ifaffected)",
-            "aktion" : "R"
+            "title" : "GS Description Document (GSDD)",
+            "deliveryDate" : "PRR; SRR; PDR; CDR; AR; ORR; FRR; LRR; GS Upgrades (ifaffected)",
+            "action" : "R"
           } ],
           "identifiers" : [ {
             "type" : "B",
@@ -44194,9 +44194,9 @@
           "reference" : null,
           "drds" : [ {
             "number" : "Flight Operation Plan",
-            "titel" : "Flight Operation Plan (FOP)",
-            "lieferzeitpunkt" : "CDR; AR; ORR; FRR; LRR; GS Upgrades",
-            "aktion" : "AC"
+            "title" : "Flight Operation Plan (FOP)",
+            "deliveryDate" : "CDR; AR; ORR; FRR; LRR; GS Upgrades",
+            "action" : "AC"
           } ],
           "identifiers" : [ {
             "type" : "B",
@@ -44210,9 +44210,9 @@
           "reference" : null,
           "drds" : [ {
             "number" : "List od Restricted Commands",
-            "titel" : "List od Restricted Commands",
-            "lieferzeitpunkt" : "CDR; AR; ORR; FRR; LRR; GS Upgrades",
-            "aktion" : "I"
+            "title" : "List od Restricted Commands",
+            "deliveryDate" : "CDR; AR; ORR; FRR; LRR; GS Upgrades",
+            "action" : "I"
           } ],
           "identifiers" : [ {
             "type" : "B",
@@ -44226,9 +44226,9 @@
           "reference" : null,
           "drds" : [ {
             "number" : "GS SW Requiement Document",
-            "titel" : "GS SW Requiement Document (GSSRD)",
-            "lieferzeitpunkt" : "SRR; PDR; CDR; GS Upgrades (if affected)",
-            "aktion" : "AC"
+            "title" : "GS SW Requiement Document (GSSRD)",
+            "deliveryDate" : "SRR; PDR; CDR; GS Upgrades (if affected)",
+            "action" : "AC"
           } ],
           "identifiers" : [ {
             "type" : "B",
@@ -44242,19 +44242,19 @@
           "reference" : null,
           "drds" : [ {
             "number" : "GS Test, Simulation, Training and Validation Plan",
-            "titel" : "GS Test, Simulation, Training and Validation Plan (GSTSVP)",
-            "lieferzeitpunkt" : "SRR; PDR; CDR; ORR",
-            "aktion" : "R"
+            "title" : "GS Test, Simulation, Training and Validation Plan (GSTSVP)",
+            "deliveryDate" : "SRR; PDR; CDR; ORR",
+            "action" : "R"
           }, {
             "number" : "GS Test Report",
-            "titel" : "GS Test Report",
-            "lieferzeitpunkt" : "latest 30 days after each event",
-            "aktion" : "R"
+            "title" : "GS Test Report",
+            "deliveryDate" : "latest 30 days after each event",
+            "action" : "R"
           }, {
             "number" : "GS Validation Report",
-            "titel" : "GS Validation Report",
-            "lieferzeitpunkt" : "QR; AR; ORR; FRR; LRR; 15 days before GS Upgrades",
-            "aktion" : "R"
+            "title" : "GS Validation Report",
+            "deliveryDate" : "QR; AR; ORR; FRR; LRR; 15 days before GS Upgrades",
+            "action" : "R"
           } ],
           "identifiers" : [ {
             "type" : "B",
@@ -44268,9 +44268,9 @@
           "reference" : null,
           "drds" : [ {
             "number" : "GS Management Plan",
-            "titel" : "GS Management Plan (GSMP)",
-            "lieferzeitpunkt" : "PRR; SRR; PDR; CDR; AR; ORR ",
-            "aktion" : "AC"
+            "title" : "GS Management Plan (GSMP)",
+            "deliveryDate" : "PRR; SRR; PDR; CDR; AR; ORR ",
+            "action" : "AC"
           } ],
           "identifiers" : [ {
             "type" : "B",
@@ -44284,9 +44284,9 @@
           "reference" : null,
           "drds" : [ {
             "number" : "GS PA/QA Plan",
-            "titel" : "GS PA/QA Plan (GSPAQAP)",
-            "lieferzeitpunkt" : "SRR; PDR; CDR; ORR",
-            "aktion" : "AC"
+            "title" : "GS PA/QA Plan (GSPAQAP)",
+            "deliveryDate" : "SRR; PDR; CDR; ORR",
+            "action" : "AC"
           } ],
           "identifiers" : [ {
             "type" : "B",
@@ -44300,9 +44300,9 @@
           "reference" : null,
           "drds" : [ {
             "number" : "Anomaly Reports",
-            "titel" : "Anomaly Reports",
-            "lieferzeitpunkt" : "initial written report, latest 3 working days after detection of anomaly; to be provided for Control Boards as affected",
-            "aktion" : "AC"
+            "title" : "Anomaly Reports",
+            "deliveryDate" : "initial written report, latest 3 working days after detection of anomaly; to be provided for Control Boards as affected",
+            "action" : "AC"
           } ],
           "identifiers" : [ {
             "type" : "B",
@@ -44492,9 +44492,9 @@
         "reference" : null,
         "drds" : [ {
           "number" : "Compliance Matrix acc. to requirement",
-          "titel" : "Compliance Matrix",
-          "lieferzeitpunkt" : "execution of the contract",
-          "aktion" : "AC"
+          "title" : "Compliance Matrix",
+          "deliveryDate" : "execution of the contract",
+          "action" : "AC"
         } ],
         "identifiers" : [ {
           "type" : "Q",

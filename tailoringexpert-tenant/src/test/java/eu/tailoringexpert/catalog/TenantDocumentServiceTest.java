@@ -89,7 +89,7 @@ class TenantDocumentServiceTest {
     }
 
     @Test
-    void createeXCELCatalog_TenantNotExists_NoSuchMethodExceptionThrown() {
+    void createEXCELCatalog_TenantNotExists_NoSuchMethodExceptionThrown() {
         // arrange
         TenantContext.setCurrentTenant("INVALD");
         Catalog<BaseRequirement> catalog = Catalog.<BaseRequirement>builder().build();
@@ -151,5 +151,20 @@ class TenantDocumentServiceTest {
 
         // assert
         verify(tenentDocumentServiceMock, times(1)).createAll(catalog, erstellungsZeitpunt);
+    }
+
+    @Test
+    void createCatalog_TenantForCompareNotExists_NoSuchMethodExceptionThrown() {
+        // arrange
+        TenantContext.setCurrentTenant("INVALD");
+        Catalog<BaseRequirement> catalog = Catalog.<BaseRequirement>builder().build();
+        LocalDateTime erstellungsZeitpunt = LocalDateTime.now();
+
+        // act
+        Exception actual = catchException(() -> service.createCatalog(catalog, catalog, erstellungsZeitpunt));
+
+        // assert
+        assertThat(actual).isInstanceOf(NoSuchMethodException.class);
+        verify(tenentDocumentServiceMock, times(0)).createCatalog(catalog, catalog, erstellungsZeitpunt);
     }
 }

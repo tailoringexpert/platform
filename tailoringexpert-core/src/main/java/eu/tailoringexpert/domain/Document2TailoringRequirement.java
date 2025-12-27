@@ -31,8 +31,8 @@ public class Document2TailoringRequirement implements Function<Document, Tailori
         return TailoringRequirement.builder()
             .position(document.getNumber())
             .text(document.getTitle() +
-                (nonNull(document.getIssue()) ? document.getIssue() : null) +
-                (nonNull(document.getRevision()) ? document.getRevision() : null)
+                (nonNull(document.getIssue()) ? document.getIssue() : "") +
+                (nonNull(document.getRevision()) ? document.getRevision() : "")
             )
             .build();
     }
