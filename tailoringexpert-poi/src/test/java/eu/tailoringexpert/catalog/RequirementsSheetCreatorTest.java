@@ -21,40 +21,46 @@
  */
 package eu.tailoringexpert.catalog;
 
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.DeserializationFeature;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.datatype.jdk8.Jdk8Module;
-import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
-import com.fasterxml.jackson.module.paramnames.ParameterNamesModule;
+import com.fasterxml.jackson.annotation.JsonSetter;
+import com.fasterxml.jackson.annotation.Nulls;
+import eu.tailoringexpert.FileSaver;
 import eu.tailoringexpert.domain.BaseRequirement;
 import eu.tailoringexpert.domain.Catalog;
-import eu.tailoringexpert.FileSaver;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import tools.jackson.databind.json.JsonMapper;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.List;
 
 import static java.util.Objects.nonNull;
 import static org.assertj.core.api.Assertions.assertThat;
+import static tools.jackson.databind.DeserializationFeature.ACCEPT_EMPTY_ARRAY_AS_NULL_OBJECT;
+import static tools.jackson.databind.DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES;
 
 
 class RequirementsSheetCreatorTest {
 
-    private ObjectMapper objectMapper;
+    private JsonMapper objectMapper;
     private FileSaver fileSaver;
     private Sheet sheet;
     private RequirementSheetCreator creator;
 
     @BeforeEach
     void setup() {
-        this.objectMapper = new ObjectMapper();
-        this.objectMapper.registerModules(new ParameterNamesModule(), new JavaTimeModule(), new Jdk8Module());
-        this.objectMapper.disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES);
+        this.objectMapper = JsonMapper.builder()
+            .findAndAddModules()
+            .disable(FAIL_ON_UNKNOWN_PROPERTIES)
+            .disable(ACCEPT_EMPTY_ARRAY_AS_NULL_OBJECT)
+            .withConfigOverride(List.class, cfg ->
+                cfg.setNullHandling(JsonSetter.Value.forValueNulls(Nulls.AS_EMPTY))
+            )
+            .build();
+
         this.fileSaver = new FileSaver("target");
 
         this.sheet = new XSSFWorkbook().createSheet("8.2.1");
@@ -68,8 +74,11 @@ class RequirementsSheetCreatorTest {
         Catalog<BaseRequirement> catalog;
         try (InputStream is = this.getClass().getResourceAsStream("/basecatalog.json")) {
             assert nonNull(is);
-            catalog = objectMapper.readValue(is, new TypeReference<Catalog<BaseRequirement>>() {
-            });
+            catalog = objectMapper.readValue(
+                is,
+                objectMapper.getTypeFactory()
+                    .constructParametricType(Catalog.class, BaseRequirement.class)
+            );
         }
 
         // act

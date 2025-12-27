@@ -33,7 +33,7 @@
         </dependency>
 
         <dependency>
-            <groupId>com.fasterxml.jackson.core</groupId>
+            <groupId>tools.jackson.core</groupId>
             <artifactId>jackson-databind</artifactId>
         </dependency>
 
@@ -53,6 +53,12 @@
         <dependency>
             <groupId>eu.tailoringexpert</groupId>
             <artifactId>tailoringexpert-db</artifactId>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-liquibase</artifactId>
             <scope>test</scope>
         </dependency>
 

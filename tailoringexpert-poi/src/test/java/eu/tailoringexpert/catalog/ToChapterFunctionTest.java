@@ -21,7 +21,6 @@
  */
 package eu.tailoringexpert.catalog;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import eu.tailoringexpert.FileSaver;
 import eu.tailoringexpert.TailoringexpertException;
 import eu.tailoringexpert.domain.*;
@@ -46,7 +45,6 @@ import static org.mockito.Mockito.mock;
 @Log4j2
 class ToChapterFunctionTest {
 
-    ObjectMapper objectMapper;
     FileSaver fileSaver;
 
     Function<Sheet, Map<String, DRD>> toDRDMappingMock;

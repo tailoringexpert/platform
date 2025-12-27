@@ -21,8 +21,8 @@
  */
 package eu.tailoringexpert.catalog;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import tools.jackson.core.JacksonException;
+import tools.jackson.databind.ObjectMapper;
 
 import eu.tailoringexpert.domain.BaseCatalogVersionResource;
 import eu.tailoringexpert.domain.BaseRequirement;
@@ -235,7 +235,7 @@ public class CatalogController {
     })
     @GetMapping(value = BASECATALOG_VERSION_JSON, produces = "application/json")
     public ResponseEntity<byte[]> getBaseCatalogJson(
-        @Parameter(description = "Requested base catalog version") @PathVariable String version) throws JsonProcessingException {
+        @Parameter(description = "Requested base catalog version") @PathVariable String version) throws JacksonException {
         log.traceEntry();
 
         Optional<Catalog<BaseRequirement>> catalog = catalogService.getCatalog(version);
