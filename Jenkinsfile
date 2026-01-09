@@ -42,7 +42,6 @@ pipeline {
             args '''  
                 -u 501:1000
                 -v $GPG_VOLUME:/.gnupg \
-                -v $SONAR_USER_HOME:/.sonar \
                 -v $PWD:/data \
                 -v $M2_VOLUME:/home/maven \
                 -e GIT_CREDENTIALS=$GIT_CREDENTIALS \
