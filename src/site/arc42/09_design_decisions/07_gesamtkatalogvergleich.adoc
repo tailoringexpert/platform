@@ -1,0 +1,68 @@
+=== Erstellung eines Geamtkatalogs im Änderungmodus
+
+Status:: accepted
+Entscheider:: Bädorf, Michael
+Datum:: 11.12.2025
+
+Technische Story:: https://github.com/tailoringexpert/platform/issues/214[#124]
+
+==== Kontext und Problemstellung
+
+Es ist hilfreich zu sehen, welche Änderungen mit neuen Katalogversionen implementiert wurden. Die Darstellung wird die
+Aufgabe jedes Mandanten seins. Ziel der Plattform ist es die Möglichkeit der Erstellung eines Gesamtkatalogs aus zwei
+Katalogen im Änderungsmodus bereit zu stellen.
+Um Kataloge jedoch sinnvoll vergleichen zu können, wird von einer Abwärtskompatibilität der höheren Version ausgegangen,
+da sonst nicht klar ist, wie weggefallene Anforderungen noch _lesbar_ (in einem PDF) dargestellt werden können.
+
+==== Entscheidungstreiber
+
+* verfügbare offene Bibliotheken für Textvergleich mit Möglchkeit der Markierung der geänderten Teile
+
+==== Betrachtete Lösungsmöglichkeiten
+
+* https://github.com/red6/pdfcompare[pdfcompare]
+* https://github.com/java-diff-utils/java-diff-utils[java-diff-utils]
+
+
+==== Entscheidung
+
+Gewählte Alternative::
+Verwendung java-diff-utils, weil
+
+* Textbereiche eines beliebigen Strings markiert werden
+* Markierungsformat ist konfigurierbar
+
+==== Vergleich der Alternativen
+
+===== java-diff-utils
+
+Die Library bietet Schnittstellen um den Text entweder direkt in den _Änderungsmodus_ zu überführen oder Patches
+wie z.B. bei git zu erzeugen.
+
+====== Postiv
+
+* einfach ins System zu integrieren
+* beliebige Texte können verglichen werden
+* Markups für Änderungen können konfiguriert werden
+* Inline als auch Side-by-Side Vergeliche möglich
+
+====== Negativ
+
+* Die Tests haben leider einige nicht nachvollziehbare Markierungen gezeigt. Dies kann aber auch an der Datenqualität
+des verwendeten Vergleichskatalogs gelegen haben.
+
+===== pdfcompare
+
+Hier werden PDF Dokumente direkt verglichen und as Vergleichdokument grafisch _berechnet_.
+
+====== Postiv
+
+* Einfach zu implementieren und ins System zu integrieren
+
+
+====== Negativ
+
+* _Nur_ Gesamt- und nicht zur ausgewählte Texte können untersucht werden
+* Vergleich _nur_ grafisch und nicht textuell. Dadurch ist kein sinnvolles lesen/interpretieren möglich.
+
+==== Links

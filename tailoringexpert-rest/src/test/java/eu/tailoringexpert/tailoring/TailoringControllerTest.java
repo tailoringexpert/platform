@@ -21,10 +21,6 @@
  */
 package eu.tailoringexpert.tailoring;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.datatype.jdk8.Jdk8Module;
-import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
-import com.fasterxml.jackson.module.paramnames.ParameterNamesModule;
 import eu.tailoringexpert.ExceptionHandlerAdvice;
 import eu.tailoringexpert.domain.Catalog;
 import eu.tailoringexpert.domain.Chapter;
@@ -59,17 +55,18 @@ import org.mockito.ArgumentCaptor;
 import org.springframework.hateoas.Link;
 import org.springframework.hateoas.mediatype.MessageResolver;
 import org.springframework.hateoas.mediatype.hal.CurieProvider;
-import org.springframework.hateoas.mediatype.hal.Jackson2HalModule;
+import org.springframework.hateoas.mediatype.hal.HalJacksonModule;
 import org.springframework.hateoas.server.core.EvoInflectorLinkRelationProvider;
 import org.springframework.http.ContentDisposition;
 import org.springframework.http.MediaType;
 import org.springframework.http.converter.ByteArrayHttpMessageConverter;
-import org.springframework.http.converter.StringHttpMessageConverter;
-import org.springframework.http.converter.json.Jackson2ObjectMapperBuilder;
-import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
+import org.springframework.http.converter.json.JacksonJsonHttpMessageConverter;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
+import tools.jackson.databind.DeserializationFeature;
+import tools.jackson.databind.SerializationFeature;
+import tools.jackson.databind.json.JsonMapper;
 
 import java.io.InputStream;
 import java.nio.file.Paths;
@@ -77,10 +74,6 @@ import java.text.SimpleDateFormat;
 import java.util.Optional;
 import java.util.function.Function;
 
-import static com.fasterxml.jackson.annotation.JsonAutoDetect.Visibility.ANY;
-import static com.fasterxml.jackson.annotation.PropertyAccessor.FIELD;
-import static com.fasterxml.jackson.databind.DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES;
-import static com.fasterxml.jackson.databind.SerializationFeature.FAIL_ON_EMPTY_BEANS;
 import static eu.tailoringexpert.domain.MediaTypeProvider.ATTACHMENT;
 import static eu.tailoringexpert.domain.MediaTypeProvider.FORM_DATA;
 import static java.lang.Boolean.TRUE;
@@ -125,7 +118,7 @@ class TailoringControllerTest {
     AttachmentService attachmentServiceMock;
     Function<String, MediaType> mediaTypeProviderMock;
 
-    ObjectMapper objectMapper;
+    JsonMapper objectMapper;
     ResourceMapper mapperMock;
     MockMvc mockMvc;
 
@@ -137,15 +130,13 @@ class TailoringControllerTest {
         this.mediaTypeProviderMock = mock(Function.class);
         this.mapperMock = mock(ResourceMapper.class);
 
-        this.objectMapper = Jackson2ObjectMapperBuilder.json()
-            .modules(new Jackson2HalModule(), new JavaTimeModule(), new ParameterNamesModule(), new Jdk8Module())
-            .featuresToEnable(FAIL_ON_UNKNOWN_PROPERTIES)
-            .featuresToDisable(FAIL_ON_EMPTY_BEANS)
-            .visibility(FIELD, ANY)
-            .dateFormat(new SimpleDateFormat("yyyy-MM-dd", GERMANY))
-            .handlerInstantiator(
-                new Jackson2HalModule.HalHandlerInstantiator(new EvoInflectorLinkRelationProvider(),
-                    CurieProvider.NONE.NONE, MessageResolver.DEFAULTS_ONLY))
+        this.objectMapper = JsonMapper.builder()
+            .defaultDateFormat(new SimpleDateFormat("yyyy-MM-dd", GERMANY))
+            .addModule(new HalJacksonModule())
+            .enable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES)
+            .disable(SerializationFeature.FAIL_ON_EMPTY_BEANS)
+            .handlerInstantiator(new HalJacksonModule.HalHandlerInstantiator(new EvoInflectorLinkRelationProvider(),
+                CurieProvider.NONE, MessageResolver.DEFAULTS_ONLY))
             .build();
 
         ByteArrayHttpMessageConverter byteArrayHttpMessageConverter = new ByteArrayHttpMessageConverter();
@@ -164,7 +155,10 @@ class TailoringControllerTest {
             attachmentServiceMock,
             mediaTypeProviderMock))
             .setControllerAdvice(new ExceptionHandlerAdvice())
-            .setMessageConverters(new MappingJackson2HttpMessageConverter(objectMapper), byteArrayHttpMessageConverter, new StringHttpMessageConverter()).build()
+            .setMessageConverters(
+                new JacksonJsonHttpMessageConverter(objectMapper),
+                byteArrayHttpMessageConverter)
+            .build()
 
         ;
     }

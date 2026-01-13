@@ -579,4 +579,105 @@ class CatalogServiceImplTest {
         verify(repositoryMock, times(1)).deleteCatalog("8.3.0");
     }
 
+    @Test
+    void createCatalog_OriginalNotExists_EmptyReturned() {
+        // arrange
+        given(repositoryMock.getCatalog("8.3.0"))
+            .willReturn(empty());
+
+        // act
+        Optional<File> actual = service.createCatalog("8.3.0", "9.0.0");
+
+        // assert
+        assertThat(actual).isEmpty();
+        verify(repositoryMock, times(1)).getCatalog("8.3.0");
+        verify(repositoryMock, times(0)).getCatalog("9.0.0");
+    }
+
+    @Test
+    void createCatalog_RevisedNotExists_EmptyReturned() {
+        // arrange
+        given(repositoryMock.getCatalog("8.3.0"))
+            .willReturn(of(Catalog.<BaseRequirement>builder().build()));
+        given(repositoryMock.getCatalog("9.0.0"))
+            .willReturn(empty());
+
+        // act
+        Optional<File> actual = service.createCatalog("8.3.0", "9.0.0");
+
+        // assert
+        assertThat(actual).isEmpty();
+        verify(repositoryMock, times(1)).getCatalog("8.3.0");
+        verify(repositoryMock, times(1)).getCatalog("9.0.0");
+    }
+
+    @Test
+    void createCatalog_CatalogsExists_FileReturned() {
+        // arrange
+        given(repositoryMock.getCatalog("8.3.0"))
+            .willReturn(of(Catalog.<BaseRequirement>builder().build()));
+        given(repositoryMock.getCatalog("9.0.0"))
+            .willReturn(of(Catalog.<BaseRequirement>builder().build()));
+        given(documentServiceMock.createCatalog(any(), any(), any()))
+            .willReturn(of(File.builder().build()));
+
+
+        // act
+        Optional<File> actual = service.createCatalog("8.3.0", "9.0.0");
+
+        // assert
+        assertThat(actual).isNotEmpty();
+        verify(repositoryMock, times(1)).getCatalog("8.3.0");
+        verify(repositoryMock, times(1)).getCatalog("9.0.0");
+    }
+
+    @Test
+    void createCatalog_RevisedNotUploaded_EmptyReturned() {
+        // arrange
+        String base = "8.3.0";
+        Catalog<BaseRequirement> revised = null;
+
+        // act
+        Optional<File> actual = service.createCatalog(base, revised);
+
+        // assert
+        assertThat(actual).isEmpty();
+        verify(repositoryMock, times(0)).getCatalog("8.3.0");
+    }
+
+    @Test
+    void createCatalog_OriginalNotExistsRevisedUploaded_EmptyReturned() {
+        // arrange
+        String base = "8.3.0";
+
+        given(repositoryMock.getCatalog("8.3.0"))
+            .willReturn(empty());
+
+        // act
+        Optional<File> actual = service.createCatalog(base, "9.0.0");
+
+        // assert
+        assertThat(actual).isEmpty();
+        verify(repositoryMock, times(1)).getCatalog("8.3.0");
+    }
+
+    @Test
+    void createCatalog_BaseCatalogExistsRevisedUploaded_FileReturned() {
+        // arrange
+        String base = "8.3.0";
+        Catalog<BaseRequirement> revised = Catalog.<BaseRequirement>builder().build();
+
+        given(repositoryMock.getCatalog(base))
+            .willReturn(of(Catalog.<BaseRequirement>builder().build()));
+        given(documentServiceMock.createCatalog(any(), any(), any()))
+            .willReturn(of(File.builder().build()));
+
+
+        // act
+        Optional<File> actual = service.createCatalog(base, revised);
+
+        // assert
+        assertThat(actual).isNotEmpty();
+        verify(repositoryMock, times(1)).getCatalog("8.3.0");
+    }
 }

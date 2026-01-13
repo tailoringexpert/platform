@@ -21,12 +21,6 @@
  */
 package eu.tailoringexpert.tailoring;
 
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.DeserializationFeature;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.datatype.jdk8.Jdk8Module;
-import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
-import com.fasterxml.jackson.module.paramnames.ParameterNamesModule;
 import eu.tailoringexpert.domain.Catalog;
 import eu.tailoringexpert.domain.File;
 import eu.tailoringexpert.domain.Tailoring;
@@ -39,6 +33,7 @@ import org.apache.poi.ss.usermodel.WorkbookFactory;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import tools.jackson.databind.json.JsonMapper;
 
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
@@ -49,23 +44,19 @@ import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.function.BiConsumer;
 
-import static eu.tailoringexpert.domain.Phase.A;
-import static eu.tailoringexpert.domain.Phase.B;
-import static eu.tailoringexpert.domain.Phase.C;
-import static eu.tailoringexpert.domain.Phase.D;
-import static eu.tailoringexpert.domain.Phase.E;
-import static eu.tailoringexpert.domain.Phase.F;
-import static eu.tailoringexpert.domain.Phase.ZERO;
+import static eu.tailoringexpert.domain.Phase.*;
 import static java.util.Collections.emptyList;
 import static java.util.Collections.emptyMap;
 import static java.util.Objects.nonNull;
 import static org.assertj.core.api.Assertions.assertThat;
+import static tools.jackson.databind.DeserializationFeature.ACCEPT_EMPTY_ARRAY_AS_NULL_OBJECT;
+import static tools.jackson.databind.DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES;
 
 @Log4j2
 class TailoringCatalogExcelDocumentCreatorTest {
 
     TailoringCatalogExcelDocumentCreator creator;
-    ObjectMapper objectMapper;
+    JsonMapper objectMapper;
     BiConsumer<String, byte[]> fileSaver = (dateiName, data) -> {
         try {
             Path path = Paths.get("target", dateiName);
@@ -79,9 +70,11 @@ class TailoringCatalogExcelDocumentCreatorTest {
 
     @BeforeEach
     void beforeEach() {
-        this.objectMapper = new ObjectMapper();
-        this.objectMapper.registerModules(new ParameterNamesModule(), new JavaTimeModule(), new Jdk8Module());
-        this.objectMapper.disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES);
+        this.objectMapper = JsonMapper.builder()
+            .findAndAddModules()
+            .disable(FAIL_ON_UNKNOWN_PROPERTIES)
+            .disable(ACCEPT_EMPTY_ARRAY_AS_NULL_OBJECT)
+            .build();
 
         this.creator = new TailoringCatalogExcelDocumentCreator();
 
@@ -105,8 +98,11 @@ class TailoringCatalogExcelDocumentCreatorTest {
         Catalog<TailoringRequirement> catalog;
         try (InputStream is = this.getClass().getResourceAsStream("/tailoringkatalog.json")) {
             assert nonNull(is);
-            catalog = objectMapper.readValue(is, new TypeReference<Catalog<TailoringRequirement>>() {
-            });
+            catalog = objectMapper.readValue(
+                is,
+                objectMapper.getTypeFactory()
+                    .constructParametricType(Catalog.class, TailoringRequirement.class)
+            );
         }
 
         Tailoring tailoring = Tailoring.builder()
@@ -131,8 +127,11 @@ class TailoringCatalogExcelDocumentCreatorTest {
         Catalog<TailoringRequirement> catalog;
         try (InputStream is = this.getClass().getResourceAsStream("/tailoringkatalog.json")) {
             assert nonNull(is);
-            catalog = objectMapper.readValue(is, new TypeReference<Catalog<TailoringRequirement>>() {
-            });
+            catalog = objectMapper.readValue(
+                is,
+                objectMapper.getTypeFactory()
+                    .constructParametricType(Catalog.class, TailoringRequirement.class)
+            );
         }
 
         Tailoring tailoring = Tailoring.builder()

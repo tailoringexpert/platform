@@ -21,15 +21,16 @@
  */
 package eu.tailoringexpert.domain;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.SneakyThrows;
 
 import jakarta.persistence.AttributeConverter;
+import tools.jackson.databind.json.JsonMapper;
+
 import java.util.Collection;
 
 public class ScreeningSheetParameterValueAttributeConverter implements AttributeConverter<Object, String> {
 
-    private ObjectMapper mapper = new ObjectMapper();
+    private final JsonMapper mapper = JsonMapper.builder().build();
 
     @Override
     @SneakyThrows

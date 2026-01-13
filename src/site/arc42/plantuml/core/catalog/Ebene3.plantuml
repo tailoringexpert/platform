@@ -9,8 +9,9 @@ package catalog {
 
     interface DocumentService {
         createCatalog(catalog : Catalog<BaseRequirement>, creationTimestamp : LocalDateTime) : Optional<File>
-        createCatalogExcel(catalog : Catalog<BaseRequirement>, creationTimestamp : LocalDateTime) : Optional<File>
+        createCatalog(base : Catalog<BaseRequirement>, compare : Catalog<BaseRequirement>, creationTimestamp : LocalDateTime) : Optional<File>
         createAll(catalog : Catalog<BaseRequirement>,  creationTimestamp : LocalDateTime) : Collection<File>
+        createCatalogExcel(catalog : Catalog<BaseRequirement>, creationTimestamp : LocalDateTime) : Optional<File>
     }
 
     interface DocumentServiceRepository {
@@ -22,6 +23,7 @@ package catalog {
         doConvert(data : byte[]) : Catalog<BaseRequirement>
         getCatalog(version : String) : Optional<Catalog<BaseRequirement>>
         createCatalog(version : String) : Optional<File>
+        createCatalog(base : String, compare : String) : Optional<File>
         createCatalogExcel(version : String) : Optional<File>;
         createDocuments(version : String) : Optional<File>
         getCatalogVersions() : Collection<CatalogVersion>
@@ -50,8 +52,6 @@ package catalog {
     interface "Function<byte[], Catalog<BaseRequirement>>" as file2Catalog {
     }
 
-
-
     interface "Function<Catalog<BaseRequirement>, Collection<Document>>" as applicableDocumentProvider {
     }
     class ApplicableDocumentProvider {
@@ -59,8 +59,13 @@ package catalog {
     applicableDocumentProvider <|-- ApplicableDocumentProvider
     ApplicableDocumentProvider --> "1" documentComparator : numberComparator
 
-
-
+    interface TextDiff {
+        diff(base : String, compare : String, replacements : Map<String, String>) : Optional<String>
+    }
+    class ToRevisedBaseCatalogFunction {
+        apply(base : Catalog<BaseRequirement> base, compare : Catalog<BaseRequirement>, replacements : Map<String, String>) : Catalog<BaseRequirement>
+    }
+    ToRevisedBaseCatalogFunction --> "1" TextDiff : text
 }
 
 

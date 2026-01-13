@@ -21,7 +21,6 @@
  */
 package eu.tailoringexpert.screeningsheet;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import eu.tailoringexpert.Tenant;
 import eu.tailoringexpert.domain.ResourceMapper;
 import eu.tailoringexpert.repository.ParameterRepository;
@@ -31,6 +30,7 @@ import org.springframework.beans.factory.ListableBeanFactory;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
+import tools.jackson.databind.ObjectMapper;
 
 import java.util.Map;
 import java.util.function.Function;

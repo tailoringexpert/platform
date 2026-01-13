@@ -46,7 +46,7 @@ jobs:
             })
 
       - name: Checkout
-        uses: actions/checkout@v5
+        uses: actions/checkout@v6
 
       - name: Generate changelog
         id: generate_changelog
@@ -62,7 +62,7 @@ jobs:
           output: "CHANGELOG.md"
 
       - name: Upload changelog
-        uses: actions/upload-artifact@v5
+        uses: actions/upload-artifact@v6
         with:
           path: CHANGELOG.md
 

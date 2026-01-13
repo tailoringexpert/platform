@@ -48,9 +48,19 @@ public interface DocumentService {
     Optional<File> createCatalog(Catalog<BaseRequirement> catalog, LocalDateTime creationTimestamp);
 
     /**
+     * Create a diff base catalog pdf document.
+     *
+     * @param base              base catalog data for document creation
+     * @param compare           compare  base catalog data for document creation
+     * @param creationTimestamp timestanp of document creation
+     * @return created document file
+     */
+    Optional<File> createCatalog(Catalog<BaseRequirement> base, Catalog<BaseRequirement> compare, LocalDateTime creationTimestamp);
+
+    /**
      * Creates all documents belonging to a base catalof.
      *
-     * @param catalog           base catalog data for document creation
+     * @param catalog           catalog base catalog data for document creation
      * @param creationTimestamp timestamp of document creation
      * @return created document {@code zip-file}
      */

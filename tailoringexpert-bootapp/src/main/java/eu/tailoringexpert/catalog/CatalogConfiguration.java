@@ -21,7 +21,7 @@
  */
 package eu.tailoringexpert.catalog;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
+import com.github.difflib.text.DiffRowGenerator;
 import eu.tailoringexpert.Tenants;
 import eu.tailoringexpert.domain.BaseRequirement;
 import eu.tailoringexpert.domain.Catalog;
@@ -50,11 +50,15 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
 import org.springframework.http.MediaType;
+import tools.jackson.databind.ObjectMapper;
 
 import java.util.Collection;
 import java.util.Map;
 import java.util.Set;
 import java.util.function.*;
+
+import static java.util.List.of;
+import static java.util.function.Function.identity;
 
 @Configuration
 public class CatalogConfiguration {
@@ -82,7 +86,7 @@ public class CatalogConfiguration {
         return new JPACatalogServiceRepository(
             mapper,
             baseCatalogRepository,
-                applicableDocumentRepository,
+            applicableDocumentRepository,
             drdRepository,
             tailoringCatalogRepository
         );
@@ -155,7 +159,7 @@ public class CatalogConfiguration {
 
     @Bean
     BiConsumer<Catalog<BaseRequirement>, Sheet> documentSheetCreator(
-        @NonNull Function<Catalog<BaseRequirement>, Collection<Document>> baseCatalogApplicableDocumentProvider ) {
+        @NonNull Function<Catalog<BaseRequirement>, Collection<Document>> baseCatalogApplicableDocumentProvider) {
         return new DocumentSheetCreator(baseCatalogApplicableDocumentProvider);
     }
 
@@ -246,5 +250,30 @@ public class CatalogConfiguration {
         @NonNull @Qualifier("toChapterFunction") Function<Sheet, Chapter<BaseRequirement>> toChapterFunction
     ) {
         return new Excel2CatalogConverter(toChapterFunction);
+    }
+
+    @Bean
+    TextDiff textDiff(DiffRowGenerator diffRowGenerator) {
+        return new DifflibTextDiff(diffRowGenerator);
+    }
+
+    @Bean
+    DiffRowGenerator diffRowGenerator() {
+        return DiffRowGenerator.create()
+            .reportLinesUnchanged(false)
+            .showInlineDiffs(true)
+            .mergeOriginalRevised(true)
+            .inlineDiffByWord(true)
+            .ignoreWhiteSpaces(true)
+            .lineNormalizer(identity())
+            .oldTag((tag, f) -> f ? "<span class='requirement-old'>" : "</span>")
+            .newTag((tag, f) -> f ? "<span class='requirement-new'>" : "</span>")
+            .build();
+    }
+
+    @Bean
+    ToRevisedBaseCatalogFunction toRevisedBaseCatalogFunction(@NonNull TextDiff diffRowGenerator) {
+        return new ToRevisedBaseCatalogFunction(diffRowGenerator);
+
     }
 }

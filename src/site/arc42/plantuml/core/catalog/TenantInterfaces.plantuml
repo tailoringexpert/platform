@@ -10,7 +10,9 @@ skinparam componentStyle uml2
 package catalog {
     interface DocumentService {
         createCatalog(catalog : Catalog<BaseRequirement>, creationTimestamp : LocalDateTime) : Optional<File>
+        createCatalog(original : Catalog<BaseRequirement>, revised : Catalog<BaseRequirement>, creationTimestamp : LocalDateTime) : Optional<File>
         createAll(catalog : Catalog<BaseRequirement>,  creationTimestamp : LocalDateTime) : Collection<File>
+        createCatalogExcel(catalog : Catalog<BaseRequirement>, creationTimestamp : LocalDateTime) : Optional<File>
     }
 }
 

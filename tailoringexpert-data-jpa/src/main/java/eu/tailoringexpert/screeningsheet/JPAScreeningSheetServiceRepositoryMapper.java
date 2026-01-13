@@ -21,7 +21,6 @@
  */
 package eu.tailoringexpert.screeningsheet;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import eu.tailoringexpert.TailoringexpertMapperConfig;
 import eu.tailoringexpert.domain.Parameter;
 import eu.tailoringexpert.domain.Parameter.ParameterBuilder;
@@ -32,6 +31,7 @@ import org.mapstruct.AfterMapping;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;
+import tools.jackson.databind.ObjectMapper;
 
 import static eu.tailoringexpert.domain.DatenType.MATRIX;
 import static eu.tailoringexpert.domain.DatenType.SKALAR;

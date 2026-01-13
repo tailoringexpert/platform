@@ -21,14 +21,14 @@
  */
 package eu.tailoringexpert.screeningsheet;
 
-import com.fasterxml.jackson.databind.JsonMappingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import eu.tailoringexpert.domain.DatenType;
 import eu.tailoringexpert.domain.Parameter;
 import eu.tailoringexpert.domain.ParameterEntity;
 import lombok.extern.log4j.Log4j2;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import tools.jackson.core.JacksonException;
+import tools.jackson.databind.json.JsonMapper;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.catchThrowable;
@@ -41,7 +41,7 @@ class JPAScreeningSheetServiceRepositoryMapperTest {
     @BeforeEach
     void setup() {
         this.mapper = new JPAScreeningSheetServiceRepositoryMapperGenerated();
-        this.mapper.setMapper(new ObjectMapper());
+        this.mapper.setMapper(JsonMapper.builder().build());
     }
 
     @Test
@@ -96,7 +96,7 @@ class JPAScreeningSheetServiceRepositoryMapperTest {
         Throwable actual = catchThrowable(() -> mapper.toDomain(entity));
 
         // assert
-        assertThat(actual).isInstanceOf(JsonMappingException.class);
+        assertThat(actual).isInstanceOf(JacksonException.class);
     }
 
     @Test

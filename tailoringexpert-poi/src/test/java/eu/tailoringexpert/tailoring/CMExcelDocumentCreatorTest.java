@@ -21,29 +21,15 @@
  */
 package eu.tailoringexpert.tailoring;
 
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.DeserializationFeature;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.datatype.jdk8.Jdk8Module;
-import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
-import com.fasterxml.jackson.module.paramnames.ParameterNamesModule;
 import eu.tailoringexpert.FileSaver;
-import eu.tailoringexpert.domain.Catalog;
-import eu.tailoringexpert.domain.Chapter;
-import eu.tailoringexpert.domain.DRD;
-import eu.tailoringexpert.domain.DRDProvider;
-import eu.tailoringexpert.domain.DocumentSignature;
-import eu.tailoringexpert.domain.DocumentSignatureState;
-import eu.tailoringexpert.domain.File;
-import eu.tailoringexpert.domain.Phase;
-import eu.tailoringexpert.domain.Tailoring;
-import eu.tailoringexpert.domain.TailoringRequirement;
+import eu.tailoringexpert.domain.*;
 import eu.tailoringexpert.renderer.RendererRequestConfiguration;
 import lombok.extern.log4j.Log4j2;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.MockedStatic;
 import org.mockito.Mockito;
+import tools.jackson.databind.json.JsonMapper;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -60,13 +46,7 @@ import java.util.Set;
 import java.util.function.BiFunction;
 import java.util.function.Predicate;
 
-import static eu.tailoringexpert.domain.Phase.A;
-import static eu.tailoringexpert.domain.Phase.B;
-import static eu.tailoringexpert.domain.Phase.C;
-import static eu.tailoringexpert.domain.Phase.D;
-import static eu.tailoringexpert.domain.Phase.E;
-import static eu.tailoringexpert.domain.Phase.F;
-import static eu.tailoringexpert.domain.Phase.ZERO;
+import static eu.tailoringexpert.domain.Phase.*;
 import static java.util.Arrays.asList;
 import static java.util.Collections.unmodifiableCollection;
 import static java.util.List.of;
@@ -74,11 +54,13 @@ import static java.util.Map.ofEntries;
 import static java.util.Objects.nonNull;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
+import static tools.jackson.databind.DeserializationFeature.ACCEPT_EMPTY_ARRAY_AS_NULL_OBJECT;
+import static tools.jackson.databind.DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES;
 
 @Log4j2
 class CMExcelDocumentCreatorTest {
 
-    private ObjectMapper objectMapper;
+    private JsonMapper objectMapper;
     private FileSaver fileSaver;
     BiFunction<Chapter<TailoringRequirement>, Collection<Phase>, Map<DRD, Set<String>>> drdProviderMock;
     private CMExcelDocumentCreator creator;
@@ -86,9 +68,11 @@ class CMExcelDocumentCreatorTest {
 
     @BeforeEach
     void setup() {
-        this.objectMapper = new ObjectMapper();
-        this.objectMapper.registerModules(new ParameterNamesModule(), new JavaTimeModule(), new Jdk8Module());
-        this.objectMapper.disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES);
+        this.objectMapper = JsonMapper.builder()
+            .findAndAddModules()
+            .disable(FAIL_ON_UNKNOWN_PROPERTIES)
+            .disable(ACCEPT_EMPTY_ARRAY_AS_NULL_OBJECT)
+            .build();
 
         this.fileSaver = new FileSaver("target");
 
@@ -118,8 +102,11 @@ class CMExcelDocumentCreatorTest {
         Catalog<TailoringRequirement> catalog;
         try (InputStream is = this.getClass().getResourceAsStream("/tailoringkatalog.json")) {
             assert nonNull(is);
-            catalog = objectMapper.readValue(is, new TypeReference<Catalog<TailoringRequirement>>() {
-            });
+            catalog = objectMapper.readValue(
+                is,
+                objectMapper.getTypeFactory()
+                    .constructParametricType(Catalog.class, TailoringRequirement.class)
+            );
         }
 
         Collection<DocumentSignature> zeichnungen = of(
@@ -159,8 +146,11 @@ class CMExcelDocumentCreatorTest {
         Catalog<TailoringRequirement> catalog;
         try (InputStream is = this.getClass().getResourceAsStream("/tailoringkatalog.json")) {
             assert nonNull(is);
-            catalog = objectMapper.readValue(is, new TypeReference<Catalog<TailoringRequirement>>() {
-            });
+            catalog = objectMapper.readValue(
+                is,
+                objectMapper.getTypeFactory()
+                    .constructParametricType(Catalog.class, TailoringRequirement.class)
+            );
         }
 
         Collection<DocumentSignature> zeichnungen = of(

@@ -51,6 +51,8 @@ package domain {
         +{static} BASECATALOG_VERSION_EXCEL = "catalog/{version}/excel" : String
         +{static} BASECATALOG_CONVERT_EXCEL = "catalog/convert/excel" : String
         +{static} BASECATALOG_VERSION_JSON = "catalog/{version}/json" : String
+        +{static} BASECATALOG_VERSION_DOCUMENT = "catalog/{version}/document" : String
+        +{static} BASECATALOG_COMPARE_PDF = "catalog/{base}/compare/{compare}/pdf" : String
         +{static} SCREENINGSHEET = "screeningsheet" : String
         +{static} SELECTIONVECTOR_PROFILE = "selectionvector" : String
             

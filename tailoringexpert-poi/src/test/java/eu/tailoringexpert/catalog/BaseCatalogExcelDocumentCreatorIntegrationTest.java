@@ -21,23 +21,14 @@
  */
 package eu.tailoringexpert.catalog;
 
+
 import com.fasterxml.jackson.annotation.JsonSetter;
 import com.fasterxml.jackson.annotation.Nulls;
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.DeserializationFeature;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.cfg.MutableConfigOverride;
-import com.fasterxml.jackson.datatype.jdk8.Jdk8Module;
-import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
-import com.fasterxml.jackson.module.paramnames.ParameterNamesModule;
 import eu.tailoringexpert.FileSaver;
-import eu.tailoringexpert.domain.ApplicableDocumentProvider;
-import eu.tailoringexpert.domain.BaseRequirement;
-import eu.tailoringexpert.domain.Catalog;
-import eu.tailoringexpert.domain.DocumentNumberComparator;
-import eu.tailoringexpert.domain.File;
+import eu.tailoringexpert.domain.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import tools.jackson.databind.json.JsonMapper;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -47,29 +38,28 @@ import java.util.Map;
 
 import static java.util.Objects.nonNull;
 import static org.assertj.core.api.Assertions.assertThat;
+import static tools.jackson.databind.DeserializationFeature.ACCEPT_EMPTY_ARRAY_AS_NULL_OBJECT;
+import static tools.jackson.databind.DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES;
 
 
 class BaseCatalogExcelDocumentCreatorIntegrationTest {
 
-    private ObjectMapper objectMapper;
+    private JsonMapper objectMapper;
     private FileSaver fileSaver;
 
     private BaseCatalogExcelDocumentCreator creator;
 
     @BeforeEach
     void setup() {
-        this.objectMapper = new ObjectMapper();
-        this.objectMapper.registerModules(new ParameterNamesModule(), new JavaTimeModule(), new Jdk8Module());
-        this.objectMapper.disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES);
-
-        MutableConfigOverride override = this.objectMapper.configOverride(List.class);
-        override.setSetterInfo(JsonSetter.Value.forValueNulls(Nulls.AS_EMPTY));
-
-        this.objectMapper.disable(DeserializationFeature.ACCEPT_EMPTY_ARRAY_AS_NULL_OBJECT);
+        this.objectMapper = JsonMapper.builder()
+            .findAndAddModules()
+            .disable(FAIL_ON_UNKNOWN_PROPERTIES)
+            .disable(ACCEPT_EMPTY_ARRAY_AS_NULL_OBJECT)
+            .build();
 
         this.fileSaver = new FileSaver("target");
 
-        this.creator  = new BaseCatalogExcelDocumentCreator(
+        this.creator = new BaseCatalogExcelDocumentCreator(
             new RequirementSheetCreator(),
             new DRDSheetCreator(),
             new DocumentSheetCreator(new ApplicableDocumentProvider<BaseRequirement>(
@@ -85,8 +75,11 @@ class BaseCatalogExcelDocumentCreatorIntegrationTest {
         Catalog<BaseRequirement> catalog;
         try (InputStream is = this.getClass().getResourceAsStream("/basecatalog.json")) {
             assert nonNull(is);
-            catalog = objectMapper.readValue(is, new TypeReference<Catalog<BaseRequirement>>() {
-            });
+            catalog = objectMapper.readValue(
+                is,
+                objectMapper.getTypeFactory()
+                    .constructParametricType(Catalog.class, BaseRequirement.class)
+            );
         }
 
         Map<String, Object> parameter = new HashMap<>();

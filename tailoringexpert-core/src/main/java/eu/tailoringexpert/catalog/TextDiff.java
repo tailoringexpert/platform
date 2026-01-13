@@ -19,21 +19,13 @@
  * <http://www.gnu.org/licenses/gpl-3.0.html>.
  * #L%
  */
-package eu.tailoringexpert.domain;
+package eu.tailoringexpert.catalog;
 
-import java.util.function.Function;
+import java.util.Map;
+import java.util.Optional;
 
-import static java.util.Objects.nonNull;
+public interface TextDiff {
 
-public class Document2TailoringRequirement implements Function<Document, TailoringRequirement> {
-    @Override
-    public TailoringRequirement apply(Document document) {
-        return TailoringRequirement.builder()
-            .position(document.getNumber())
-            .text(document.getTitle() +
-                (nonNull(document.getIssue()) ? document.getIssue() : "") +
-                (nonNull(document.getRevision()) ? document.getRevision() : "")
-            )
-            .build();
-    }
+    Optional<String> diff(String base, String compare, Map<String, String> replacements);
+
 }

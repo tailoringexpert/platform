@@ -50,7 +50,42 @@ class Document2TailoringRequirementTest {
 
         // assert
         assertThat(actual.getPosition()).isEqualTo("z");
+        assertThat(actual.getText()).isEqualTo("ECSS-Q-ST-80");
+    }
 
+    @Test
+    void apply_NumberAndTitleAndIssue() {
+        // arrange
+        Document document = Document.builder()
+            .number("z")
+            .title("ECSS-Q-ST-80")
+            .issue("C")
+            .build();
+
+        // act
+        TailoringRequirement actual = converter.apply(document);
+
+        // assert
+        assertThat(actual.getPosition()).isEqualTo("z");
+        assertThat(actual.getText()).isEqualTo("ECSS-Q-ST-80C");
+    }
+
+    @Test
+    void apply_NumberAndTitleAndIssueAndRevision() {
+        // arrange
+        Document document = Document.builder()
+            .number("z")
+            .title("ECSS-Q-ST-80")
+            .issue("C")
+            .revision("Rev 1.0")
+            .build();
+
+        // act
+        TailoringRequirement actual = converter.apply(document);
+
+        // assert
+        assertThat(actual.getPosition()).isEqualTo("z");
+        assertThat(actual.getText()).isEqualTo("ECSS-Q-ST-80CRev 1.0");
     }
 
 }
