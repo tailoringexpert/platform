@@ -21,55 +21,46 @@
  */
 package eu.tailoringexpert.domain;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.datatype.jdk8.Jdk8Module;
-import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
-import com.fasterxml.jackson.module.paramnames.ParameterNamesModule;
 import lombok.extern.log4j.Log4j2;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.hateoas.mediatype.MessageResolver;
 import org.springframework.hateoas.mediatype.hal.CurieProvider;
-import org.springframework.hateoas.mediatype.hal.Jackson2HalModule;
+import org.springframework.hateoas.mediatype.hal.HalJacksonModule;
 import org.springframework.hateoas.server.core.EvoInflectorLinkRelationProvider;
-import org.springframework.http.converter.json.Jackson2ObjectMapperBuilder;
+import tools.jackson.core.JacksonException;
+import tools.jackson.databind.DeserializationFeature;
+import tools.jackson.databind.JsonNode;
+import tools.jackson.databind.SerializationFeature;
+import tools.jackson.databind.json.JsonMapper;
 
-import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.List;
 
-import static com.fasterxml.jackson.annotation.JsonAutoDetect.Visibility.ANY;
-import static com.fasterxml.jackson.annotation.PropertyAccessor.FIELD;
-import static com.fasterxml.jackson.databind.DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES;
-import static com.fasterxml.jackson.databind.SerializationFeature.FAIL_ON_EMPTY_BEANS;
 import static java.util.Locale.GERMANY;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @Log4j2
 class TailoringCatalogChapterResourcePrimevueMixInTest {
 
-    ObjectMapper objectMapper;
+    JsonMapper objectMapper;
 
     @BeforeEach
     void setup() {
 
-        this.objectMapper = Jackson2ObjectMapperBuilder.json()
-            .modules(new Jackson2HalModule(), new JavaTimeModule(), new ParameterNamesModule(), new Jdk8Module())
-            .featuresToEnable(FAIL_ON_UNKNOWN_PROPERTIES)
-            .featuresToDisable(FAIL_ON_EMPTY_BEANS)
-            .visibility(FIELD, ANY)
-            .dateFormat(new SimpleDateFormat("yyyy-MM-dd", GERMANY))
-            .handlerInstantiator(
-                new Jackson2HalModule.HalHandlerInstantiator(new EvoInflectorLinkRelationProvider(),
-                    CurieProvider.NONE, MessageResolver.DEFAULTS_ONLY))
-            .mixIn(TailoringCatalogChapterResource.class, TailoringCatalogChapterResourcePrimevueMixIn.class)
+        this.objectMapper = JsonMapper.builder()
+            .defaultDateFormat(new SimpleDateFormat("yyyy-MM-dd", GERMANY))
+            .addModule(new HalJacksonModule())
+            .enable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES)
+            .disable(SerializationFeature.FAIL_ON_EMPTY_BEANS)
+            .handlerInstantiator(new HalJacksonModule.HalHandlerInstantiator(new EvoInflectorLinkRelationProvider(),
+                CurieProvider.NONE, MessageResolver.DEFAULTS_ONLY))
+            .addMixIn(TailoringCatalogChapterResource.class, TailoringCatalogChapterResourcePrimevueMixIn.class)
             .build();
     }
 
     @Test
-    void serialize_MixInAvailable_JSONAccordingToMixInPropNames() throws JsonProcessingException {
+    void serialize_MixInAvailable_JSONAccordingToMixInPropNames() throws JacksonException {
         // arrange
         TailoringCatalogChapterResource resource = TailoringCatalogChapterResource.builder()
             .chapters(List.of(

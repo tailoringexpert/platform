@@ -72,13 +72,13 @@ jobs:
 
     steps:
     - name: Checkout
-      uses: actions/checkout@v5
+      uses: actions/checkout@v6
 
     - name: Branch name
       run: echo running on branch ${GITHUB_REF##*/}
 
     - name: Checkout badges branch dedicated to storing badges only
-      uses: actions/checkout@v5
+      uses: actions/checkout@v6
       with:
         ref: badges
         path: badges
@@ -118,7 +118,7 @@ jobs:
         fi
 
     - name: Upload Jacoco coverage report
-      uses: actions/upload-artifact@v5
+      uses: actions/upload-artifact@v6
       with:
         name: jacoco-report
         path: tailoringexpert-coverage/target/site/jacoco-aggregate-ut/

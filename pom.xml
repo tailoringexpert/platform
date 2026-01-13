@@ -7,7 +7,7 @@
     <artifactId>tailoringexpert-platform</artifactId>
     <packaging>pom</packaging>
     <name>${project.groupId}:${project.artifactId}</name>
-    <version>0.2.0</version>
+    <version>0.2.1</version>
 
     <inceptionYear>2022</inceptionYear>
 
@@ -81,10 +81,11 @@
         <maven.compiler.target>${java.version}</maven.compiler.target>
         <maven.javadoc.skip>true</maven.javadoc.skip>
         <license.licenseName>gpl_v3</license.licenseName>
-        <platform.version>0.2.0</platform.version>
+        <platform.version>0.2.1</platform.version>
 
         <jacoco.version>0.8.7</jacoco.version>
 
+        <java-diff-utils.version>4.16</java-diff-utils.version>
         <lombok.version>1.18.42</lombok.version>
         <lombok-mapstruct-binding.version>0.2.0</lombok-mapstruct-binding.version>
         <mapstruct.version>1.6.3</mapstruct.version>
@@ -96,24 +97,24 @@
         <!-- plugins -->
         <jacoco-maven-plugin.version>0.8.14</jacoco-maven-plugin.version>
         <liquibase-maven-plugin.version>5.0.1</liquibase-maven-plugin.version>
-        <spring-boot-maven-plugin.version>3.5.7</spring-boot-maven-plugin.version>
+        <spring-boot-maven-plugin.version>4.0.1</spring-boot-maven-plugin.version>
         <springdoc-openapi-maven-plugin.version>1.4</springdoc-openapi-maven-plugin.version>
 
         <gitflow-maven-plugin.version>1.21.0</gitflow-maven-plugin.version>
         <lombok-maven-plugin.version>1.18.20.0</lombok-maven-plugin.version>
-        <maven-exec-plugin.version>3.6.2</maven-exec-plugin.version>
+        <maven-exec-plugin.version>3.6.3</maven-exec-plugin.version>
         <maven-compiler-plugin.version>3.14.1</maven-compiler-plugin.version>
         <maven-dependency-plugin.version>3.9.0</maven-dependency-plugin.version>
-        <dependency-check-maven.version>12.1.8</dependency-check-maven.version>
+        <dependency-check-maven.version>12.2.0</dependency-check-maven.version>
         <dependency-check-maven.phase>install</dependency-check-maven.phase>
         <maven-gpg-plugin.version>3.0.1</maven-gpg-plugin.version>
-        <maven-assembly-plugin.version>3.7.1</maven-assembly-plugin.version>
+        <maven-assembly-plugin.version>3.8.0</maven-assembly-plugin.version>
         <maven-javadoc-plugin.version>3.12.0</maven-javadoc-plugin.version>
-        <maven-licence-plugin.verision>2.7.0</maven-licence-plugin.verision>
-        <maven-resources-plugin.version>3.3.1</maven-resources-plugin.version>
-        <maven-source-plugin.version>3.3.1</maven-source-plugin.version>
+        <maven-licence-plugin.verision>2.7.1</maven-licence-plugin.verision>
+        <maven-resources-plugin.version>3.4.0</maven-resources-plugin.version>
+        <maven-source-plugin.version>3.4.0</maven-source-plugin.version>
         <maven-surefire-plugin.version>3.5.2</maven-surefire-plugin.version>
-        <sonar-maven-plugin.version>5.2.0.4988</sonar-maven-plugin.version>
+        <sonar-maven-plugin.version>5.5.0.6356</sonar-maven-plugin.version>
     </properties>
 
 
@@ -167,6 +168,12 @@
                 <version>${platform.version}</version>
                 <type>pom</type>
                 <scope>import</scope>
+            </dependency>
+
+            <dependency>
+                <groupId>io.github.java-diff-utils</groupId>
+                <artifactId>java-diff-utils</artifactId>
+                <version>${java-diff-utils.version}</version>
             </dependency>
         </dependencies>
     </dependencyManagement>

@@ -21,10 +21,10 @@
  */
 package eu.tailoringexpert.domain;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
+import tools.jackson.databind.json.JsonMapper;
 
 import java.lang.reflect.Field;
 import java.util.Arrays;
@@ -81,7 +81,7 @@ class ScreeningSheetParameterValueAttributeConverterTest {
         // arrange
         String wert = "Ein Beispielwert";
 
-        ObjectMapper objectMapperMock = Mockito.mock(ObjectMapper.class);
+        JsonMapper objectMapperMock = Mockito.mock(JsonMapper.class);
         Field mapperField = converter.getClass().getDeclaredField("mapper");
         mapperField.setAccessible(true);
         mapperField.set(converter, objectMapperMock);
@@ -128,7 +128,7 @@ class ScreeningSheetParameterValueAttributeConverterTest {
         // arrange
         String wert = "[\"A\",\"B\"]";
 
-        ObjectMapper objectMapperMock = Mockito.mock(ObjectMapper.class);
+        JsonMapper objectMapperMock = Mockito.mock(JsonMapper.class);
         Field mapperField = converter.getClass().getDeclaredField("mapper");
         mapperField.setAccessible(true);
         mapperField.set(converter, objectMapperMock);

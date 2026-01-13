@@ -21,9 +21,8 @@
  */
 package eu.tailoringexpert.domain;
 
-import lombok.Builder;
-import lombok.Data;
-import lombok.Singular;
+import lombok.*;
+import lombok.experimental.SuperBuilder;
 
 import java.io.Serializable;
 import java.util.Collection;
