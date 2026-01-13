@@ -1,19 +1,32 @@
 # Changelog
 
-## [v2.0.0](https://github.com/tailoringexpert/platform/tree/v2.0.0) (11.07.2025)
+## [v0.2.1](https://github.com/tailoringexpert/platform/tree/v0.2.1) (01.13.2026)
 
-[Full Changelog](https://github.com/tailoringexpert/platform/compare/v0.1.7...v2.0.0)
+[Full Changelog](https://github.com/tailoringexpert/platform/compare/v0.2.0...v0.2.1)
 
 **Implemented enhancements:**
 
+- Compare two basecatalogue versions with change marks [\#456](https://github.com/tailoringexpert/platform/issues/456)
+
+**Fixed bugs:**
+
+- Reference empty in tailoring catalogue [\#448](https://github.com/tailoringexpert/platform/issues/448)
+
+## [v0.2.0](https://github.com/tailoringexpert/platform/tree/v0.2.0) (11.07.2025)
+
+[Full Changelog](https://github.com/tailoringexpert/platform/compare/v0.1.7...v0.2.0)
+
+**Implemented enhancements:**
+
+- Rendering refernce logo [\#440](https://github.com/tailoringexpert/platform/issues/440)
 - Provide project as templated api link [\#432](https://github.com/tailoringexpert/platform/issues/432)
 - Parameterize authorized paths [\#422](https://github.com/tailoringexpert/platform/issues/422)
 - Provide IDM security module [\#417](https://github.com/tailoringexpert/platform/issues/417)
 
 **Closed issues:**
 
+- Handle header of export/import Excel basecatalog [\#445](https://github.com/tailoringexpert/platform/issues/445)
 - sonar: Remove this unused private "buildReferenceText" method. [\#441](https://github.com/tailoringexpert/platform/issues/441)
-- Rendering refernce logo [\#440](https://github.com/tailoringexpert/platform/issues/440)
 - Extract security modules to standalone repositories [\#426](https://github.com/tailoringexpert/platform/issues/426)
 - Provide keycloak maven assembly [\#423](https://github.com/tailoringexpert/platform/issues/423)
 
