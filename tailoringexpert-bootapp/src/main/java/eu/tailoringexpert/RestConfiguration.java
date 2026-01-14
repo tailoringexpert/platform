@@ -37,6 +37,7 @@ import lombok.NonNull;
 import lombok.extern.log4j.Log4j2;
 import org.springdoc.core.customizers.OperationCustomizer;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.jackson.autoconfigure.JsonMapperBuilderCustomizer;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.Ordered;
@@ -49,51 +50,55 @@ import org.springframework.hateoas.server.core.EvoInflectorLinkRelationProvider;
 import org.springframework.http.MediaType;
 import org.springframework.http.converter.ByteArrayHttpMessageConverter;
 import org.springframework.web.filter.OncePerRequestFilter;
-import tools.jackson.databind.ObjectMapper;
 import tools.jackson.databind.SerializationFeature;
-import tools.jackson.databind.json.JsonMapper;
-import tools.jackson.databind.json.JsonMapper.Builder;
 
 import java.io.IOException;
 import java.text.SimpleDateFormat;
+import java.util.AbstractMap.SimpleEntry;
 import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Optional;
 
 import static java.util.Arrays.asList;
 import static java.util.Locale.GERMANY;
+import static java.util.stream.Collectors.toMap;
 import static tools.jackson.databind.DeserializationFeature.ACCEPT_EMPTY_ARRAY_AS_NULL_OBJECT;
 
 @Log4j2
 @Configuration
 public class RestConfiguration {
+    @Bean
+    JsonMapperBuilderCustomizer jacksonCustomizer(Map<Class<?>, Class<?>> mixIns) {
+        return builder ->
+            builder.defaultDateFormat(new SimpleDateFormat("yyyy-MM-dd", GERMANY))
+                .findAndAddModules()
+                .enable(SerializationFeature.INDENT_OUTPUT)
+                .disable(SerializationFeature.FAIL_ON_EMPTY_BEANS)
+                .disable(ACCEPT_EMPTY_ARRAY_AS_NULL_OBJECT)
+                .handlerInstantiator(new HalJacksonModule.HalHandlerInstantiator(new EvoInflectorLinkRelationProvider(),
+                    CurieProvider.NONE, MessageResolver.DEFAULTS_ONLY))
+                .withConfigOverride(List.class, cfg ->
+                    cfg.setNullHandling(JsonSetter.Value.forValueNulls(Nulls.AS_EMPTY))
+                )
+                .addMixIns(mixIns);
+    }
 
     @Bean
-    ObjectMapper objectMapper(@Value("#{${mixIns}}") List<String> mixIns) {
-        Builder result = JsonMapper.builder()
-            .defaultDateFormat(new SimpleDateFormat("yyyy-MM-dd", GERMANY))
-            .findAndAddModules()
-            .enable(SerializationFeature.INDENT_OUTPUT)
-            .disable(SerializationFeature.FAIL_ON_EMPTY_BEANS)
-            .disable(ACCEPT_EMPTY_ARRAY_AS_NULL_OBJECT)
-            .handlerInstantiator(new HalJacksonModule.HalHandlerInstantiator(new EvoInflectorLinkRelationProvider(),
-                CurieProvider.NONE, MessageResolver.DEFAULTS_ONLY))
-            .withConfigOverride(List.class, cfg ->
-                cfg.setNullHandling(JsonSetter.Value.forValueNulls(Nulls.AS_EMPTY))
-            );
-
-        Optional.ofNullable(mixIns)
-            .ifPresent(oMixIns ->
-                oMixIns.forEach(mixIn -> {
-                    String[] config = mixIn.split(":");
-                    try {
-                        log.info("Register MixIn {} for {}", config[1], config[0]);
-                        result.addMixIn(Class.forName(config[0]), Class.forName(config[1]));
-                    } catch (ClassNotFoundException e) {
-                        throw log.throwing(new RuntimeException(e));
-                    }
-                }));
-
-        return result.build();
+    Map<Class<?>, Class<?>> mixIns(@Value("#{${mixIns}}") List<String> mixIns) {
+        return Optional.ofNullable(mixIns)
+            .stream()
+            .flatMap(List::stream)
+            .map(mixIn -> {
+                String[] config = mixIn.split(":");
+                try {
+                    log.info("Create MixIn {} for {}", config[1], config[0]);
+                    return new SimpleEntry<Class<?>, Class<?>>(Class.forName(config[0]), Class.forName(config[1]));
+                } catch (ClassNotFoundException e) {
+                    throw log.throwing(new RuntimeException(e));
+                }
+            })
+            .collect(toMap(Entry::getKey, Entry::getValue));
     }
 
     @Bean
