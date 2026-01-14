@@ -1,5 +1,13 @@
 # Changelog
 
+## [v0.2.2](https://github.com/tailoringexpert/platform/tree/v0.2.2) (01.14.2026)
+
+[Full Changelog](https://github.com/tailoringexpert/platform/compare/v0.2.1...v0.2.2)
+
+**Fixed bugs:**
+
+- Jackson3 MixIn not working within app [\#464](https://github.com/tailoringexpert/platform/issues/464)
+
 ## [v0.2.1](https://github.com/tailoringexpert/platform/tree/v0.2.1) (01.13.2026)
 
 [Full Changelog](https://github.com/tailoringexpert/platform/compare/v0.2.0...v0.2.1)
@@ -38,8 +46,6 @@
 
 - Getting available selectionvector profiles shall be cached [\#410](https://github.com/tailoringexpert/platform/issues/410)
 - Get tenant of authentication data [\#409](https://github.com/tailoringexpert/platform/issues/409)
-- Add different token separator for jasypt client [\#407](https://github.com/tailoringexpert/platform/issues/407)
-- Add referenced documents to requirement [\#389](https://github.com/tailoringexpert/platform/issues/389)
 
 ## [v0.1.6](https://github.com/tailoringexpert/platform/tree/v0.1.6) (07.29.2025)
 
@@ -47,9 +53,9 @@
 
 **Implemented enhancements:**
 
+- Add different token separator for jasypt client [\#407](https://github.com/tailoringexpert/platform/issues/407)
 - Handle env vars in tenant database properties [\#406](https://github.com/tailoringexpert/platform/issues/406)
 - Provide run configuration for jasypt secret encryption [\#403](https://github.com/tailoringexpert/platform/issues/403)
-- Add different token separator for jasypt client [\#407](https://github.com/tailoringexpert/platform/issues/407)
 - Add referenced documents to requirement [\#389](https://github.com/tailoringexpert/platform/issues/389)
 
 **Closed issues:**
@@ -63,6 +69,7 @@
 
 **Implemented enhancements:**
 
+- Sonar [\#360](https://github.com/tailoringexpert/platform/issues/360)
 - Mark chapters with a applicable as header in Excel CM [\#387](https://github.com/tailoringexpert/platform/issues/387)
 - Add state to CM dataelement to mark as applicable [\#384](https://github.com/tailoringexpert/platform/issues/384)
 - Change parameter names of file uploads to "file" [\#379](https://github.com/tailoringexpert/platform/issues/379)
@@ -71,7 +78,6 @@
 - BaseCatalog.findByVersion shall be more generic [\#374](https://github.com/tailoringexpert/platform/issues/374)
 - Provide primevue optimized mixin for TailoringCatalogChapterResource [\#370](https://github.com/tailoringexpert/platform/issues/370)
 - Provide row number of failed excel chapter row to be converted to json [\#364](https://github.com/tailoringexpert/platform/issues/364)
-- Sonar [\#360](https://github.com/tailoringexpert/platform/issues/360)
 
 **Fixed bugs:**
 
@@ -79,9 +85,9 @@
 
 **Closed issues:**
 
-- Cleanup: plattform -\> platform [\#371](https://github.com/tailoringexpert/platform/issues/371)
 - JDK23 [\#359](https://github.com/tailoringexpert/platform/issues/359)
 - Add maven container image name to Jenkinsfile [\#358](https://github.com/tailoringexpert/platform/issues/358)
+- Cleanup: plattform -\> platform [\#371](https://github.com/tailoringexpert/platform/issues/371)
 - jacoco configuration [\#357](https://github.com/tailoringexpert/platform/issues/357)
 - Add tailoringexpert repository [\#335](https://github.com/tailoringexpert/platform/issues/335)
 - Rollback version number to 0.1.5 [\#319](https://github.com/tailoringexpert/platform/issues/319)
