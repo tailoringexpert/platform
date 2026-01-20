@@ -64,6 +64,7 @@
 
     <modules>
         <module>tailoringexpert-core</module>
+		<module>tailoringexpert-reqif</module>
         <module>tailoringexpert-tenant</module>
         <module>tailoringexpert-data-jpa</module>
         <module>tailoringexpert-db</module>
