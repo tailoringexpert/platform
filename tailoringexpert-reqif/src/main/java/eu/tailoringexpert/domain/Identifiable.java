@@ -10,12 +10,16 @@ import java.time.LocalDateTime;
 @Getter
 @SuperBuilder
 public abstract class Identifiable {
-    @JacksonXmlProperty(isAttribute = false)
+    @JacksonXmlProperty(isAttribute = true)
     String desc;
-    @JacksonXmlProperty(isAttribute = false)
+
+    @JacksonXmlProperty(isAttribute = true)
     String identifier;
+
+    @JacksonXmlProperty(isAttribute = true)
     LocalDateTime lastChange;
-    @JacksonXmlProperty(isAttribute = false)
+
+    @JacksonXmlProperty(isAttribute = true)
     String longName;
 
 }

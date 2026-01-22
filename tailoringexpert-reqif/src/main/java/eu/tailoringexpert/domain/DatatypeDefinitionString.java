@@ -15,10 +15,10 @@ import java.time.LocalDateTime;
 
 @Value
 @SuperBuilder
-//@JsonRootName("DATATYPE-DEFINITION-STRING")
-public class DatatypeDefinitionString extends DatatypeDefinition  {
+@JsonRootName("DATATYPE-DEFINITION-STRING")
+public class DatatypeDefinitionString extends DatatypeDefinition {
 
-    @JacksonXmlProperty(isAttribute = false)
+//    @JacksonXmlProperty(isAttribute = true)
     int maxLength;
 
 }
