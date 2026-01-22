@@ -8,7 +8,7 @@ import java.util.Collection;
 
 @SuperBuilder
 @Value
-public class AttributeValueString extends AttributeValueSimple{
+public class AttributeValueString extends AttributeValueSimple {
     String theValue;
-    Collection<AttributeDefinitionString> definitions;
+
 }

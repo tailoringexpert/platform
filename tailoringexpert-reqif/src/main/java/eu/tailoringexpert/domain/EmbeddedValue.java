@@ -5,6 +5,8 @@ import lombok.experimental.SuperBuilder;
 
 @Value
 @SuperBuilder
-public class SpecObject extends SpecElementsWithAttributes {
-    SpecObjectType type;
+public class EmbeddedValue extends Identifiable{
+
+    Integer key;
+    String otherContent;
 }

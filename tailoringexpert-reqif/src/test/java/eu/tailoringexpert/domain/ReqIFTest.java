@@ -1,10 +1,11 @@
 package eu.tailoringexpert.domain;
 
-import eu.tailoringexpert.reqif.DynamicRootNameBeanSerializerModifier;
+import eu.tailoringexpert.reqif.ReqIFContentSerializer;
 import lombok.extern.log4j.Log4j2;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import tools.jackson.databind.ObjectMapper;
+import tools.jackson.databind.PropertyNamingStrategies;
 import tools.jackson.databind.jsontype.BasicPolymorphicTypeValidator;
 import tools.jackson.databind.jsontype.PolymorphicTypeValidator;
 import tools.jackson.databind.module.SimpleModule;
@@ -23,18 +24,18 @@ public class ReqIFTest {
 
     @BeforeEach
     void setup() {
-        PolymorphicTypeValidator ptv = BasicPolymorphicTypeValidator.builder()
-            .allowIfSubType("eu.tailoringexpert.domain")
-            .build();
 
         SimpleModule dynamicRootNameModule = new SimpleModule();
-        dynamicRootNameModule.setSerializerModifier(new DynamicRootNameBeanSerializerModifier());
+        dynamicRootNameModule.addSerializer(ReqIFContent.class, new ReqIFContentSerializer());
+//        dynamicRootNameModule.addSerializer(SpecObjectType.class, new SpecObjectTypeSerializer());
 
 
         this.objectMapper = XmlMapper.builder()
             .findAndAddModules()
             .enable(INDENT_OUTPUT)
             .addModule(dynamicRootNameModule)
+//            .propertyNamingStrategy(new PropertyNamingStrategies.UpperSnakeCaseStrategy())
+//            .addTypeModifier(new DatatypeIDResolver())
             .build();
     }
 
@@ -66,18 +67,172 @@ public class ReqIFTest {
                 .build())
             .coreContent(ReqIFContent.builder()
                 .datatypes(List.of(
-                    DatatypeDefinitionString.builder()
-                        .maxLength(10000)
-                        .identifier("dt-string")
-                        .longName("String")
-                        .lastChange(LocalDateTime.now())
-                        .build())
+                        DatatypeDefinitionString.builder()
+                            .maxLength(10000)
+                            .identifier("dt-string")
+                            .longName("String")
+                            .lastChange(LocalDateTime.now())
+                            .build(),
+                        DatatypeDefinitionEnumeration.builder()
+                            .identifier("dt-kind")
+                            .longName("Kind")
+                            .lastChange(LocalDateTime.now())
+                            .build(),
+                        DatatypeDefinitionBoolean.builder()
+                            .identifier("dt-boolean")
+                            .longName("Boolean")
+                            .lastChange(LocalDateTime.now())
+                            .build()
+                    )
                 )
                 .specTypes(List.of(
-                    SpecType.builder()
+                    SpecObjectType.builder()
                         .identifier("st-normative")
                         .longName("Normative Statement")
                         .lastChange(LocalDateTime.now())
+                        .specAttributes(List.of(
+                            AttributeDefinitionString.builder()
+                                .identifier("a-document-code")
+                                .longName("Document Code")
+                                .type(DatatypeDefinitionString.builder()
+                                    .maxLength(10000)
+                                    .identifier("dt-string")
+                                    .longName("String")
+                                    .lastChange(LocalDateTime.now())
+                                    .build())
+                                .build(),
+                            AttributeDefinitionString.builder()
+                                .identifier("a-document-title")
+                                .longName("Document title")
+                                .type(DatatypeDefinitionString.builder()
+                                    .maxLength(10000)
+                                    .identifier("dt-string")
+                                    .longName("String")
+                                    .lastChange(LocalDateTime.now())
+                                    .build())
+                                .build(),
+                            AttributeDefinitionString.builder()
+                                .identifier("a-type")
+                                .longName("Type")
+                                .type(DatatypeDefinitionString.builder()
+                                    .maxLength(10000)
+                                    .identifier("dt-kind")
+                                    .longName("String")
+                                    .lastChange(LocalDateTime.now())
+                                    .build())
+                                .build(),
+                            AttributeDefinitionString.builder()
+                                .identifier("a-puid")
+                                .longName("PUID")
+                                .type(DatatypeDefinitionString.builder()
+                                    .maxLength(10000)
+                                    .identifier("dt-string")
+                                    .longName("String")
+                                    .lastChange(LocalDateTime.now())
+                                    .build())
+                                .build(),
+                            AttributeDefinitionString.builder()
+                                .identifier("a-parent-puid")
+                                .longName("Parent PUID")
+                                .type(DatatypeDefinitionString.builder()
+                                    .maxLength(10000)
+                                    .identifier("dt-string")
+                                    .longName("String")
+                                    .lastChange(LocalDateTime.now())
+                                    .build())
+                                .build(),
+                            AttributeDefinitionString.builder()
+                                .identifier("a-chapter")
+                                .longName("Chapter")
+                                .type(DatatypeDefinitionString.builder()
+                                    .maxLength(10000)
+                                    .identifier("dt-string")
+                                    .longName("String")
+                                    .lastChange(LocalDateTime.now())
+                                    .build())
+                                .build(),
+                            AttributeDefinitionString.builder()
+                                .identifier("a-discipline")
+                                .longName("Discipline")
+                                .type(DatatypeDefinitionString.builder()
+                                    .maxLength(10000)
+                                    .identifier("dt-string")
+                                    .longName("String")
+                                    .lastChange(LocalDateTime.now())
+                                    .build())
+                                .build(),
+                            AttributeDefinitionBoolean.builder()
+                                .identifier("a-active")
+                                .longName("Active")
+                                .type(DatatypeDefinitionBoolean.builder()
+                                    .identifier("dt-boolean")
+                                    .longName("Boolean")
+                                    .lastChange(LocalDateTime.now())
+                                    .build())
+                                .build(),
+                            AttributeDefinitionString.builder()
+                                .identifier("a-discipline")
+                                .longName("Discipline")
+                                .type(DatatypeDefinitionString.builder()
+                                    .maxLength(10000)
+                                    .identifier("dt-string")
+                                    .longName("String")
+                                    .lastChange(LocalDateTime.now())
+                                    .build())
+                                .build(), AttributeDefinitionString.builder()
+                                .identifier("a-description")
+                                .longName("Description")
+                                .type(DatatypeDefinitionString.builder()
+                                    .maxLength(10000)
+                                    .identifier("dt-string")
+                                    .longName("String")
+                                    .lastChange(LocalDateTime.now())
+                                    .build())
+                                .build(),
+                            AttributeDefinitionString.builder()
+                                .identifier("a-notes")
+                                .longName("Notes")
+                                .type(DatatypeDefinitionString.builder()
+                                    .maxLength(10000)
+                                    .identifier("dt-string")
+                                    .longName("String")
+                                    .lastChange(LocalDateTime.now())
+                                    .build())
+                                .build()
+                        ))
+                        .build(),
+                    SpecificationType.builder()
+                        .identifier("st-spec")
+                        .longName("Specification Type")
+                        .lastChange(LocalDateTime.now())
+                        .build()
+                ))
+                .specObjects(List.of(
+                    SpecObject.builder()
+                        .identifier("so-1")
+                        .lastChange(LocalDateTime.now())
+                        .type(SpecObjectType.builder()
+                            .identifier("st-normative")
+                            .longName("Normative Statement")
+                            .lastChange(LocalDateTime.now())
+                            .specAttributes(List.of(
+                                AttributeDefinitionString.builder()
+                                    .identifier("a-document-code")
+                                    .build()
+                            ))
+                            .build())
+                        .values(List.of(
+                            AttributeValueString.builder()
+                                .theValue("Q-80")
+                                .definition(AttributeDefinitionString.builder()
+                                    .type(DatatypeDefinitionString.builder()
+                                        .identifier("a-document-code")
+                                        .longName("Document Code")
+                                        .build())
+                                    .build())
+                                .build()
+                        ))
+                        //.type(SpecObjectType.builder().build())
                         .build()
                 ))
                 .build())

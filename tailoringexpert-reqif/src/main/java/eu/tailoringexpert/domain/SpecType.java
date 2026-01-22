@@ -1,7 +1,13 @@
 package eu.tailoringexpert.domain;
 
+import lombok.Getter;
+import lombok.Value;
 import lombok.experimental.SuperBuilder;
 
+import java.util.Collection;
+
+@Getter
 @SuperBuilder
-public class SpecType extends Identifiable{
+public abstract class SpecType extends Identifiable {
+    Collection<AttributeDefinition> specAttributes;
 }

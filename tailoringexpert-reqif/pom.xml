@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
     <name>${project.groupId}:${project.artifactId}</name>
@@ -51,4 +52,41 @@
             <artifactId>jackson-databind</artifactId>
         </dependency>
     </dependencies>
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>jaxb2-maven-plugin</artifactId>
+                <version>4.1.0</version>
+                <executions>
+                    <execution>
+                        <id>jaxb-test</id>
+                        <goals>
+                            <goal>xjc</goal>
+                        </goals>
+<!--                        <configuration>-->
+<!--                            <schemaDirectory>${project.basedir}/src/main/resources/</schemaDirectory>-->
+<!--                            <packageName>model</packageName>-->
+<!--                            <schemaFiles>dtc-11-04-05.xsd</schemaFiles>-->
+<!--                            <outputDirectory>${project.build.directory}/generated-sources/JAVAClassesOfXSDFile-->
+<!--                            </outputDirectory>-->
+<!--                        </configuration>-->
+                    </execution>
+                </executions>
+                <dependencies>
+                    <!-- Add JAXB dependencies -->
+                    <dependency>
+                        <groupId>javax.xml.bind</groupId>
+                        <artifactId>jaxb-api</artifactId>
+                        <version>2.3.1</version>
+                    </dependency>
+                    <dependency>
+                        <groupId>org.glassfish.jaxb</groupId>
+                        <artifactId>jaxb-runtime</artifactId>
+                        <version>2.3.1</version>
+                    </dependency>
+                </dependencies>
+            </plugin>
+        </plugins>
+    </build>
 </project>

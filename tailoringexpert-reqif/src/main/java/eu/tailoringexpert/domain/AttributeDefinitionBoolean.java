@@ -5,6 +5,6 @@ import lombok.experimental.SuperBuilder;
 
 @Value
 @SuperBuilder
-public class SpecObject extends SpecElementsWithAttributes {
-    SpecObjectType type;
+public class AttributeDefinitionBoolean extends AttributeDefinitionSimple {
+    DatatypeDefinitionBoolean type;
 }

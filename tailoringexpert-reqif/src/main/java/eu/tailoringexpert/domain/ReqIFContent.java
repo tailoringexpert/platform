@@ -1,6 +1,9 @@
 package eu.tailoringexpert.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonRootName;
+import com.fasterxml.jackson.annotation.JsonSubTypes;
+import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import com.fasterxml.jackson.annotation.JsonTypeName;
 import lombok.Builder;
 import lombok.Value;
@@ -13,19 +16,21 @@ import java.util.Collection;
 
 @Value
 @Builder
+public class ReqIFContent {
 
-class ReqIFContent {
-
-    @JacksonXmlElementWrapper(localName = "DATATYPES")
     Collection<DatatypeDefinition> datatypes;
 
-    @JacksonXmlElementWrapper(localName = "SPEC-TYPES")
-    Collection<SpecType> specTypes;
-
+    @JsonIgnore
     @JacksonXmlElementWrapper(localName = "SPEC-OBJECTS")
     Collection<SpecObject> specObjects;
+
+    Collection<SpecType> specTypes;
+
+
 //    Collection<SpecRelation> specRelations;
-//    Collection<Specification> specifications;
 //    Collection<RelationGroup> specRelationGroups;
-//    Collection<String> test;
+
+    //@JacksonXmlElementWrapper(localName = "SPEC-TYPES")
+    //Collection<Specification> specifications;
+
 }
