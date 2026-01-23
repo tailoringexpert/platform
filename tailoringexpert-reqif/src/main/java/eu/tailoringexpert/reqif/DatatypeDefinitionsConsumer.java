@@ -19,6 +19,6 @@ public class DatatypeDefinitionsConsumer implements BiConsumer<ToXmlGenerator, C
         datatypeDefinitions
             .forEach(datatypeDefinition -> datatype.accept(generator, datatypeDefinition));
 
-        generator.finishWrappedValue(null, new QName("", "DATATYPES"));
+        generator.finishWrappedValue(new QName("", "DATATYPES"), new QName("", "DATATYPES"));
     }
 }

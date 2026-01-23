@@ -8,5 +8,5 @@ import lombok.experimental.SuperBuilder;
 @Value
 public class EnumValue extends Identifiable {
 
-    DatatypeDefinitionEnumeration dataTpeDefEnum;
+    EmbeddedValue properties;
 }
