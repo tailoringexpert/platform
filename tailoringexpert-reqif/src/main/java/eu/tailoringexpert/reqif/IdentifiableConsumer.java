@@ -5,10 +5,10 @@ import tools.jackson.dataformat.xml.ser.ToXmlGenerator;
 
 import java.util.function.BiConsumer;
 
-public class IdentifiableConsumer implements BiConsumer<ToXmlGenerator, Identifiable> {
+public class IdentifiableConsumer implements BiConsumer<Identifiable, ToXmlGenerator> {
 
     @Override
-    public void accept(ToXmlGenerator generator, Identifiable identifiable) {
+    public void accept(Identifiable identifiable, ToXmlGenerator generator) {
         generator.setNextIsAttribute(true);
         generator.writeStringProperty("IDENTIFIER", identifiable.getIdentifier());
 //        xml.writeStringProperty("LAST-CHANGE", identifiable.getLastChange().toString());

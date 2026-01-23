@@ -10,13 +10,13 @@ import tools.jackson.dataformat.xml.ser.ToXmlGenerator;
 import javax.xml.namespace.QName;
 import java.util.function.BiConsumer;
 
-public class SpecTypeConsumer implements BiConsumer<ToXmlGenerator, SpecType> {
+public class SpecTypeConsumer implements BiConsumer<SpecType, ToXmlGenerator> {
 
-    private BiConsumer<ToXmlGenerator, Identifiable> identifiable = new IdentifiableConsumer();
-    private BiConsumer<ToXmlGenerator, AttributeDefinition> attributeDefinition = new AttributeDefinitionConsumer();
+    private BiConsumer<Identifiable, ToXmlGenerator> identifiable = new IdentifiableConsumer();
+    private BiConsumer<AttributeDefinition, ToXmlGenerator> attributeDefinition = new AttributeDefinitionConsumer();
 
     @Override
-    public void accept(ToXmlGenerator generator, SpecType specType) {
+    public void accept(SpecType specType, ToXmlGenerator generator) {
         if (specType instanceof SpecObjectType) {
             accept(generator, (SpecObjectType) specType);
         } else if (specType instanceof SpecificationType) {
@@ -25,18 +25,18 @@ public class SpecTypeConsumer implements BiConsumer<ToXmlGenerator, SpecType> {
     }
 
     private void accept(ToXmlGenerator generator, SpecificationType specType) {
-        identifiable.accept(generator, specType);
+        identifiable.accept(specType, generator);
     }
 
     private void accept(ToXmlGenerator generator, SpecObjectType specType) {
-        identifiable.accept(generator, specType);
+        identifiable.accept(specType, generator);
         generator.setNextIsAttribute(false);
 
         QName name = new QName("", "SPEC-ATTRIBUTES");
         generator.startWrappedValue(name, name);
 
         specType.getSpecAttributes()
-            .forEach(attribute -> attributeDefinition.accept(generator, attribute));
+            .forEach(attribute -> attributeDefinition.accept(attribute, generator));
 
         generator.setNextIsAttribute(false);
         generator.finishWrappedValue(name, name);

@@ -1,0 +1,177 @@
+<?xml version="1.0" encoding="UTF-8"?><REQ-IF xmlns="http://www.omg.org/spec/ReqIF/20110401/reqif.xsd" xml:lang="en">
+    <THE-HEADER>
+        <REQ-IF-HEADER IDENTIFIER="00b55150-31f7-4cb8-bee6-31ae50564020">
+            <COMMENT>Exported normative statements</COMMENT>
+            <CREATION-TIME>2026-01-19T13:33:00.568643071Z</CREATION-TIME>
+            <REQ-IF-TOOL-ID>Tailoring Tool Exporter</REQ-IF-TOOL-ID>
+            <REQ-IF-VERSION>1.2</REQ-IF-VERSION>
+            <SOURCE-TOOL-ID>ECSS Tailoring Tool</SOURCE-TOOL-ID>
+            <TITLE>Normative Statements</TITLE>
+        </REQ-IF-HEADER>
+    </THE-HEADER>
+    <CORE-CONTENT>
+        <REQ-IF-CONTENT>
+            <DATATYPES>
+                <DATATYPE-DEFINITION-STRING IDENTIFIER="dt-string" LAST-CHANGE="2026-01-19T13:33:00.568643071Z" LONG-NAME="String" MAX-LENGTH="100000"/>
+                <DATATYPE-DEFINITION-BOOLEAN IDENTIFIER="dt-boolean" LAST-CHANGE="2026-01-19T13:33:00.568643071Z" LONG-NAME="Boolean"/>
+                <DATATYPE-DEFINITION-ENUMERATION IDENTIFIER="dt-kind" LAST-CHANGE="2026-01-19T13:33:00.568643071Z" LONG-NAME="Kind">
+                    <SPECIFIED-VALUES>
+                        <ENUM-VALUE IDENTIFIER="v-req" LAST-CHANGE="2026-01-19T13:33:00.568643071Z" LONG-NAME="Requirement">
+                            <PROPERTIES>
+                                <EMBEDDED-VALUE KEY="0" OTHER-CONTENT="Requirement"/>
+                            </PROPERTIES>
+                        </ENUM-VALUE>
+                        <ENUM-VALUE IDENTIFIER="v-moc" LAST-CHANGE="2026-01-19T13:33:00.568643071Z" LONG-NAME="Means of Compliance">
+                            <PROPERTIES>
+                                <EMBEDDED-VALUE KEY="1" OTHER-CONTENT="Means of Compliance"/>
+                            </PROPERTIES>
+                        </ENUM-VALUE>
+                        <ENUM-VALUE IDENTIFIER="v-tp" LAST-CHANGE="2026-01-19T13:33:00.568643071Z" LONG-NAME="Technical Procedure">
+                            <PROPERTIES>
+                                <EMBEDDED-VALUE KEY="2" OTHER-CONTENT="Technical Procedure"/>
+                            </PROPERTIES>
+                        </ENUM-VALUE>
+                        <ENUM-VALUE IDENTIFIER="v-ts" LAST-CHANGE="2026-01-19T13:33:00.568643071Z" LONG-NAME="Technical Specification">
+                            <PROPERTIES>
+                                <EMBEDDED-VALUE KEY="3" OTHER-CONTENT="Technical Specification"/>
+                            </PROPERTIES>
+                        </ENUM-VALUE>
+                    </SPECIFIED-VALUES>
+                </DATATYPE-DEFINITION-ENUMERATION>
+            </DATATYPES>
+            <SPEC-TYPES>
+                <SPEC-OBJECT-TYPE IDENTIFIER="st-normative" LAST-CHANGE="2026-01-19T13:33:00.568643071Z" LONG-NAME="Normative Statement">
+                    <SPEC-ATTRIBUTES>
+                        <ATTRIBUTE-DEFINITION-STRING IDENTIFIER="a-document-code" LAST-CHANGE="2026-01-19T13:33:00.568643071Z" LONG-NAME="Document code">
+                            <TYPE>
+                                <DATATYPE-DEFINITION-STRING-REF>dt-string</DATATYPE-DEFINITION-STRING-REF>
+                            </TYPE>
+                        </ATTRIBUTE-DEFINITION-STRING>
+                        <ATTRIBUTE-DEFINITION-STRING IDENTIFIER="a-document-title" LAST-CHANGE="2026-01-19T13:33:00.568643071Z" LONG-NAME="Document title">
+                            <TYPE>
+                                <DATATYPE-DEFINITION-STRING-REF>dt-string</DATATYPE-DEFINITION-STRING-REF>
+                            </TYPE>
+                        </ATTRIBUTE-DEFINITION-STRING>
+                        <ATTRIBUTE-DEFINITION-ENUMERATION IDENTIFIER="a-type" LAST-CHANGE="2026-01-19T13:33:00.568643071Z" LONG-NAME="Type">
+                            <TYPE>
+                                <DATATYPE-DEFINITION-ENUMERATION-REF>dt-kind</DATATYPE-DEFINITION-ENUMERATION-REF>
+                            </TYPE>
+                        </ATTRIBUTE-DEFINITION-ENUMERATION>
+                        <ATTRIBUTE-DEFINITION-STRING IDENTIFIER="a-puid" LAST-CHANGE="2026-01-19T13:33:00.568643071Z" LONG-NAME="PUID">
+                            <TYPE>
+                                <DATATYPE-DEFINITION-STRING-REF>dt-string</DATATYPE-DEFINITION-STRING-REF>
+                            </TYPE>
+                        </ATTRIBUTE-DEFINITION-STRING>
+                        <ATTRIBUTE-DEFINITION-STRING IDENTIFIER="a-parent-puid" LAST-CHANGE="2026-01-19T13:33:00.568643071Z" LONG-NAME="Parent PUID">
+                            <TYPE>
+                                <DATATYPE-DEFINITION-STRING-REF>dt-string</DATATYPE-DEFINITION-STRING-REF>
+                            </TYPE>
+                        </ATTRIBUTE-DEFINITION-STRING>
+                        <ATTRIBUTE-DEFINITION-STRING IDENTIFIER="a-chapter" LAST-CHANGE="2026-01-19T13:33:00.568643071Z" LONG-NAME="Chapter">
+                            <TYPE>
+                                <DATATYPE-DEFINITION-STRING-REF>dt-string</DATATYPE-DEFINITION-STRING-REF>
+                            </TYPE>
+                        </ATTRIBUTE-DEFINITION-STRING>
+                        <ATTRIBUTE-DEFINITION-STRING IDENTIFIER="a-discipline" LAST-CHANGE="2026-01-19T13:33:00.568643071Z" LONG-NAME="Discipline">
+                            <TYPE>
+                                <DATATYPE-DEFINITION-STRING-REF>dt-string</DATATYPE-DEFINITION-STRING-REF>
+                            </TYPE>
+                        </ATTRIBUTE-DEFINITION-STRING>
+                        <ATTRIBUTE-DEFINITION-BOOLEAN IDENTIFIER="a-active" LAST-CHANGE="2026-01-19T13:33:00.568643071Z" LONG-NAME="Active">
+                            <TYPE>
+                                <DATATYPE-DEFINITION-BOOLEAN-REF>dt-boolean</DATATYPE-DEFINITION-BOOLEAN-REF>
+                            </TYPE>
+                        </ATTRIBUTE-DEFINITION-BOOLEAN>
+                        <ATTRIBUTE-DEFINITION-STRING IDENTIFIER="a-description" LAST-CHANGE="2026-01-19T13:33:00.568643071Z" LONG-NAME="Description">
+                            <TYPE>
+                                <DATATYPE-DEFINITION-STRING-REF>dt-string</DATATYPE-DEFINITION-STRING-REF>
+                            </TYPE>
+                        </ATTRIBUTE-DEFINITION-STRING>
+                        <ATTRIBUTE-DEFINITION-STRING IDENTIFIER="a-notes" LAST-CHANGE="2026-01-19T13:33:00.568643071Z" LONG-NAME="Notes">
+                            <TYPE>
+                                <DATATYPE-DEFINITION-STRING-REF>dt-string</DATATYPE-DEFINITION-STRING-REF>
+                            </TYPE>
+                        </ATTRIBUTE-DEFINITION-STRING>
+                    </SPEC-ATTRIBUTES>
+                </SPEC-OBJECT-TYPE>
+                <SPECIFICATION-TYPE IDENTIFIER="st-spec" LAST-CHANGE="2026-01-19T13:33:00.568643071Z" LONG-NAME="Specification Type"/>
+            </SPEC-TYPES>
+            <SPEC-OBJECTS>
+                <SPEC-OBJECT IDENTIFIER="so-1" LAST-CHANGE="2026-01-19T13:33:00.568643071Z">
+                    <TYPE>
+                        <SPEC-OBJECT-TYPE-REF>st-normative</SPEC-OBJECT-TYPE-REF>
+                    </TYPE>
+                    <VALUES>
+                        <ATTRIBUTE-VALUE-STRING THE-VALUE="Q-80">
+                            <DEFINITION>
+                                <ATTRIBUTE-DEFINITION-STRING-REF>a-document-code</ATTRIBUTE-DEFINITION-STRING-REF>
+                            </DEFINITION>
+                        </ATTRIBUTE-VALUE-STRING>
+                        <ATTRIBUTE-VALUE-STRING THE-VALUE="ECSS-Q-ST-80D Software product assurance">
+                            <DEFINITION>
+                                <ATTRIBUTE-DEFINITION-STRING-REF>a-document-title</ATTRIBUTE-DEFINITION-STRING-REF>
+                            </DEFINITION>
+                        </ATTRIBUTE-VALUE-STRING>
+                        <ATTRIBUTE-VALUE-ENUMERATION>
+                            <VALUES>
+                                <ENUM-VALUE-REF>v-ecss-q-st-80d software product assurance</ENUM-VALUE-REF>
+                            </VALUES>
+                            <DEFINITION>
+                                <ATTRIBUTE-DEFINITION-ENUMERATION-REF>a-type</ATTRIBUTE-DEFINITION-ENUMERATION-REF>
+                            </DEFINITION>
+                        </ATTRIBUTE-VALUE-ENUMERATION>
+                        <ATTRIBUTE-VALUE-STRING THE-VALUE="Requirement">
+                            <DEFINITION>
+                                <ATTRIBUTE-DEFINITION-STRING-REF>a-puid</ATTRIBUTE-DEFINITION-STRING-REF>
+                            </DEFINITION>
+                        </ATTRIBUTE-VALUE-STRING>
+                        <ATTRIBUTE-VALUE-STRING THE-VALUE="ECSS-Q-ST-80_0720001">
+                            <DEFINITION>
+                                <ATTRIBUTE-DEFINITION-STRING-REF>a-parent-puid</ATTRIBUTE-DEFINITION-STRING-REF>
+                            </DEFINITION>
+                        </ATTRIBUTE-VALUE-STRING>
+                        <ATTRIBUTE-VALUE-STRING THE-VALUE="">
+                            <DEFINITION>
+                                <ATTRIBUTE-DEFINITION-STRING-REF>a-chapter</ATTRIBUTE-DEFINITION-STRING-REF>
+                            </DEFINITION>
+                        </ATTRIBUTE-VALUE-STRING>
+                        <ATTRIBUTE-VALUE-STRING THE-VALUE="Software product assurance programme implementation / Organization and responsibility / Organization">
+                            <DEFINITION>
+                                <ATTRIBUTE-DEFINITION-STRING-REF>a-discipline</ATTRIBUTE-DEFINITION-STRING-REF>
+                            </DEFINITION>
+                        </ATTRIBUTE-VALUE-STRING>
+                        <ATTRIBUTE-VALUE-BOOLEAN THE-VALUE="true">
+                            <DEFINITION>
+                                <ATTRIBUTE-DEFINITION-BOOLEAN-REF>a-active</ATTRIBUTE-DEFINITION-BOOLEAN-REF>
+                            </DEFINITION>
+                        </ATTRIBUTE-VALUE-BOOLEAN>
+                        <ATTRIBUTE-VALUE-STRING THE-VALUE="The supplier shall ensure that an organizational structure is defined for software development, and that individuals have defined tasks and responsibilities.">
+                            <DEFINITION>
+                                <ATTRIBUTE-DEFINITION-STRING-REF>a-description</ATTRIBUTE-DEFINITION-STRING-REF>
+                            </DEFINITION>
+                        </ATTRIBUTE-VALUE-STRING>
+                        <ATTRIBUTE-VALUE-STRING THE-VALUE="">
+                            <DEFINITION>
+                                <ATTRIBUTE-DEFINITION-STRING-REF>a-notes</ATTRIBUTE-DEFINITION-STRING-REF>
+                            </DEFINITION>
+                        </ATTRIBUTE-VALUE-STRING>
+                    </VALUES>
+                </SPEC-OBJECT>
+            </SPEC-OBJECTS>
+            <SPECIFICATIONS>
+                <SPECIFICATION IDENTIFIER="spec-1" LAST-CHANGE="2026-01-19T13:33:00.568643071Z" LONG-NAME="Normative Statements">
+                    <TYPE>
+                        <SPECIFICATION-TYPE-REF>st-spec</SPECIFICATION-TYPE-REF>
+                    </TYPE>
+                    <CHILDREN>
+                        <SPEC-HIERARCHY IDENTIFIER="sh-1" LAST-CHANGE="2026-01-19T13:33:00.568643071Z">
+                            <OBJECT>
+                                <SPEC-OBJECT-REF>so-1</SPEC-OBJECT-REF>
+                            </OBJECT>
+                        </SPEC-HIERARCHY>
+                    </CHILDREN>
+                </SPECIFICATION>
+            </SPECIFICATIONS>
+        </REQ-IF-CONTENT>
+    </CORE-CONTENT>
+</REQ-IF>
