@@ -19,12 +19,9 @@ import java.util.Collection;
 public class ReqIFContent {
 
     Collection<DatatypeDefinition> datatypes;
-
-    @JsonIgnore
-    @JacksonXmlElementWrapper(localName = "SPEC-OBJECTS")
+    Collection<SpecType> specTypes;
     Collection<SpecObject> specObjects;
 
-    Collection<SpecType> specTypes;
 
 
 //    Collection<SpecRelation> specRelations;

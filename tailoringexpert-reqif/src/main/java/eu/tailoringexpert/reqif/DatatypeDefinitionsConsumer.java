@@ -7,18 +7,19 @@ import javax.xml.namespace.QName;
 import java.util.Collection;
 import java.util.function.BiConsumer;
 
-public class DatatypeDefinitionsConsumer implements BiConsumer<ToXmlGenerator, Collection<DatatypeDefinition>> {
+public class DatatypeDefinitionsConsumer implements BiConsumer<Collection<DatatypeDefinition>, ToXmlGenerator> {
 
-    private BiConsumer<ToXmlGenerator, DatatypeDefinition> datatype = new DatatypeDefinitionConsumer();
+    private BiConsumer<DatatypeDefinition, ToXmlGenerator> datatype = new DatatypeDefinitionConsumer();
 
     @Override
-    public void accept(ToXmlGenerator generator, Collection<DatatypeDefinition> datatypeDefinitions) {
-        generator.startWrappedValue(new QName("", "DATATYPES"), new QName("", "DATATYPES"));
+    public void accept(Collection<DatatypeDefinition> datatypeDefinitions, ToXmlGenerator generator) {
+        QName name = new QName("", "DATATYPES");
+        generator.startWrappedValue(name, name);
         generator.setNextIsAttribute(false);
 
         datatypeDefinitions
-            .forEach(datatypeDefinition -> datatype.accept(generator, datatypeDefinition));
+            .forEach(datatypeDefinition -> datatype.accept(datatypeDefinition, generator));
 
-        generator.finishWrappedValue(new QName("", "DATATYPES"), new QName("", "DATATYPES"));
+        generator.finishWrappedValue(name, name);
     }
 }

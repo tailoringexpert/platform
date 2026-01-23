@@ -12,9 +12,9 @@ import java.util.function.BiConsumer;
 
 import static java.util.Map.entry;
 
-public class AttributeDefinitionConsumer implements BiConsumer<ToXmlGenerator, AttributeDefinition> {
+public class AttributeDefinitionConsumer implements BiConsumer<AttributeDefinition, ToXmlGenerator> {
 
-    private BiConsumer<ToXmlGenerator, Identifiable> identifiable = new IdentifiableConsumer();
+    private BiConsumer<Identifiable, ToXmlGenerator> identifiable = new IdentifiableConsumer();
 
     private Map<Class, String> attributeDefinition2Xml = Map.ofEntries(
         entry(AttributeDefinitionString.class, "ATTRIBUTE-DEFINITION-STRING"),
@@ -27,12 +27,11 @@ public class AttributeDefinitionConsumer implements BiConsumer<ToXmlGenerator, A
     );
 
     @Override
-    public void accept(ToXmlGenerator generator, AttributeDefinition attributeDefinition) {
+    public void accept(AttributeDefinition attributeDefinition, ToXmlGenerator generator) {
         QName name = new QName("", attributeDefinition2Xml.get(attributeDefinition.getClass()));
 
         generator.startWrappedValue(name, name);
-        identifiable.accept(generator, attributeDefinition);
-        //writeIdentifiables(xml, attributeDefinition);
+        identifiable.accept(attributeDefinition, generator);
 
         // type
         generator.startWrappedValue(new QName("", "TYPE"), new QName("", "TYPE"));

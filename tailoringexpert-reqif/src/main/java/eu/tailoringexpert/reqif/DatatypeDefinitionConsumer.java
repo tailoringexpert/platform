@@ -8,15 +8,14 @@ import eu.tailoringexpert.domain.Identifiable;
 import tools.jackson.dataformat.xml.ser.ToXmlGenerator;
 
 import javax.xml.namespace.QName;
-import java.util.Collection;
 import java.util.Map;
 import java.util.function.BiConsumer;
 
 import static java.util.Map.entry;
 
-public class DatatypeDefinitionConsumer implements BiConsumer<ToXmlGenerator, DatatypeDefinition> {
+public class DatatypeDefinitionConsumer implements BiConsumer<DatatypeDefinition, ToXmlGenerator> {
 
-    BiConsumer<ToXmlGenerator, Identifiable> identifiable = new IdentifiableConsumer();
+    BiConsumer<Identifiable, ToXmlGenerator> identifiable = new IdentifiableConsumer();
 
     private Map<Class, String> datatype2Xml = Map.ofEntries(
         entry(DatatypeDefinitionString.class, "DATATYPE-DEFINITION-STRING"),
@@ -25,37 +24,44 @@ public class DatatypeDefinitionConsumer implements BiConsumer<ToXmlGenerator, Da
     );
 
     @Override
-    public void accept(ToXmlGenerator generator, DatatypeDefinition datatypeDefinition) {
+    public void accept(DatatypeDefinition datatypeDefinition, ToXmlGenerator generator) {
         QName name = new QName("", datatype2Xml.get(datatypeDefinition.getClass()));
         generator.startWrappedValue(name, name);
 
-        identifiable.accept(generator, datatypeDefinition);
+        identifiable.accept(datatypeDefinition, generator);
 
         if (DatatypeDefinitionEnumeration.class.equals(datatypeDefinition.getClass())) {
-            accept(generator, (DatatypeDefinitionEnumeration) datatypeDefinition);
+            accept((DatatypeDefinitionEnumeration) datatypeDefinition, generator);
         }
 
 
         generator.finishWrappedValue(name, name);
     }
 
-    private void accept(ToXmlGenerator generator, DatatypeDefinitionEnumeration datatypeDefinitionEnumeration) {
+    private void accept(DatatypeDefinitionEnumeration datatypeDefinitionEnumeration, ToXmlGenerator generator) {
         generator.startWrappedValue(new QName("", "SPECIFIED-VALUES"), new QName("", "SPECIFIED-VALUES"));
         generator.setNextIsAttribute(true);
 
         datatypeDefinitionEnumeration.getSpecifiedValues().forEach(value -> {
-            QName name = new QName("", "ENUM-VALUE");
-            generator.startWrappedValue(name, name);
-            this.identifiable.accept(generator, value);
+            //QName name = new QName("", "ENUM-VALUE");
+            generator.setNextIsAttribute(false);
+            generator.startWrappedValue(new QName("", "ENUM-VALUE"), new QName("", "ENUM-VALUE"));
+            generator.setNextIsAttribute(true);
+            this.identifiable.accept(value, generator);
+
+            generator.startWrappedValue(new QName("", "PROPERTIES"), new QName("", "PROPERTIES"));
+
             generator.startWrappedValue(new QName("", "EMBEDDED-VALUE"), new QName("", "EMBEDDED-VALUE"));
             generator.setNextIsAttribute(true);
             generator.writeNumberProperty("KEY", value.getProperties().getKey());
             generator.writeStringProperty("OTHER-CONTENT", value.getProperties().getOtherContent());
             generator.finishWrappedValue(new QName("", "EMBEDDED-VALUE"), new QName("", "EMBEDDED-VALUE"));
-            generator.finishWrappedValue(name, name);
+
+            generator.finishWrappedValue(new QName("", "PROPERTIES"), new QName("", "PROPERTIES"));
+
+            generator.finishWrappedValue(new QName("", "ENUM-VALUE"), new QName("", "ENUM-VALUE"));
         });
 
         generator.finishWrappedValue(new QName("", "SPECIFIED-VALUES"), new QName("", "SPECIFIED-VALUES"));
-        ;
     }
 }

@@ -13,10 +13,10 @@ import java.util.function.BiConsumer;
 
 import static java.util.Map.entry;
 
-public class SpecTypesConsumer implements BiConsumer<ToXmlGenerator, Collection<SpecType>> {
+public class SpecTypesConsumer implements BiConsumer<Collection<SpecType>, ToXmlGenerator> {
 
-    private BiConsumer<ToXmlGenerator, Identifiable> identifiable = new IdentifiableConsumer();
-    private BiConsumer<ToXmlGenerator, SpecType> specType = new SpecTypeConsumer();
+    private BiConsumer<Identifiable, ToXmlGenerator> identifiable = new IdentifiableConsumer();
+    private BiConsumer<SpecType, ToXmlGenerator> specType = new SpecTypeConsumer();
 
     private Map<Class, String> specType2Xml = Map.ofEntries(
         entry(SpecObjectType.class, "SPEC-OBJECT-TYPE"),
@@ -24,16 +24,16 @@ public class SpecTypesConsumer implements BiConsumer<ToXmlGenerator, Collection<
     );
 
     @Override
-    public void accept(ToXmlGenerator generator, Collection<SpecType> specTypes) {
-        generator.startWrappedValue(new QName("", "SPECTYPES"), new QName("", "SPECTYPES"));
+    public void accept(Collection<SpecType> specTypes, ToXmlGenerator generator) {
+        generator.startWrappedValue(new QName("", "SPEC-TYPES"), new QName("", "SPEC-TYPES"));
         generator.setNextIsAttribute(true);
 
         specTypes.forEach(specType -> {
             QName name = new QName("", specType2Xml.get(specType.getClass()));
             generator.startWrappedValue(name, name);
 
-            this.identifiable.accept(generator, specType);
-            this.specType.accept(generator, specType);
+            this.identifiable.accept(specType, generator);
+            this.specType.accept(specType, generator);
 
             generator.finishWrappedValue(name, name);
         });

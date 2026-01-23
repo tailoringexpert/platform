@@ -6,6 +6,7 @@ import eu.tailoringexpert.domain.AttributeDefinitionString;
 import eu.tailoringexpert.domain.DatatypeDefinition;
 import eu.tailoringexpert.domain.Identifiable;
 import eu.tailoringexpert.domain.ReqIFContent;
+import eu.tailoringexpert.domain.SpecObject;
 import eu.tailoringexpert.domain.SpecObjectType;
 import eu.tailoringexpert.domain.SpecType;
 import eu.tailoringexpert.domain.SpecificationType;
@@ -25,9 +26,10 @@ import static java.util.Map.entry;
 
 public class ReqIFContentSerializer extends StdSerializer<ReqIFContent> {
 
-    private BiConsumer<ToXmlGenerator, Identifiable> identifiable = new IdentifiableConsumer();
-    private BiConsumer<ToXmlGenerator, Collection<SpecType>> specTypes = new SpecTypesConsumer();
-    private BiConsumer<ToXmlGenerator, Collection<DatatypeDefinition>> datatypes = new DatatypeDefinitionsConsumer();
+    private BiConsumer<Identifiable, ToXmlGenerator> identifiable = new IdentifiableConsumer();
+    private BiConsumer<Collection<SpecType>, ToXmlGenerator> specTypes = new SpecTypesConsumer();
+    private BiConsumer<Collection<DatatypeDefinition>, ToXmlGenerator> datatypes = new DatatypeDefinitionsConsumer();
+    private BiConsumer<Collection<SpecObject>, ToXmlGenerator> specObjects = new SpecObjectsConsumer();
 
 
     public ReqIFContentSerializer() {
@@ -36,19 +38,20 @@ public class ReqIFContentSerializer extends StdSerializer<ReqIFContent> {
 
     @Override
     public void serialize(ReqIFContent value, JsonGenerator gen, SerializationContext provider) throws JacksonException {
-        ToXmlGenerator xml = (ToXmlGenerator) gen;
-        xml.startWrappedValue(new QName("", "CORE-CONTENT"), new QName("", "REQ-IF-CONTENT"));
-        xml.writeStartObject();
+        QName parent = new QName("", "CORE-CONTENT");
+        QName name = new QName("", "REQ-IF-CONTENT");
 
-        datatypes.accept(xml, value.getDatatypes());
-        specTypes.accept(xml, value.getSpecTypes());
+        ToXmlGenerator generator = (ToXmlGenerator) gen;
+        generator.startWrappedValue(parent, name);
+        generator.writeStartObject();
 
-        xml.writeEndObject();
-        xml.finishWrappedValue(new QName("", "CORE-CONTENT"), new QName("", "REQ-IF-CONTENT"));
+        datatypes.accept(value.getDatatypes(), generator);
+        specTypes.accept(value.getSpecTypes(), generator);
+        specObjects.accept(value.getSpecObjects(), generator);
+
+        generator.writeEndObject();
+        generator.finishWrappedValue(parent, name);
     }
-
-
-
 
 
 }
