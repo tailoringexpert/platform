@@ -37,14 +37,14 @@ public class ReqIFContentSerializer extends StdSerializer<ReqIFContent> {
     @Override
     public void serialize(ReqIFContent value, JsonGenerator gen, SerializationContext provider) throws JacksonException {
         ToXmlGenerator xml = (ToXmlGenerator) gen;
-        xml.setNextName(new QName("", "SPEC-OBJECT-TYPE"));
-        //xml.startWrappedValue(new QName("", "REQ-IF-CONTENT"), new QName("", "REQ-IF-CONTENT"));
+        xml.startWrappedValue(new QName("", "CORE-CONTENT"), new QName("", "REQ-IF-CONTENT"));
         xml.writeStartObject();
 
         datatypes.accept(xml, value.getDatatypes());
         specTypes.accept(xml, value.getSpecTypes());
 
         xml.writeEndObject();
+        xml.finishWrappedValue(new QName("", "CORE-CONTENT"), new QName("", "REQ-IF-CONTENT"));
     }
 
 
