@@ -5,9 +5,6 @@ import lombok.extern.log4j.Log4j2;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import tools.jackson.databind.ObjectMapper;
-import tools.jackson.databind.PropertyNamingStrategies;
-import tools.jackson.databind.jsontype.BasicPolymorphicTypeValidator;
-import tools.jackson.databind.jsontype.PolymorphicTypeValidator;
 import tools.jackson.databind.module.SimpleModule;
 import tools.jackson.dataformat.xml.XmlMapper;
 
@@ -274,8 +271,25 @@ public class ReqIFTest {
                                         .longName("Document title")
                                         .build())
                                     .build())
+                                .build(),
+                            AttributeValueEnumeration.builder()
+                                .values(List.of(
+                                    EnumValue.builder()
+                                        .identifier("v-ecss-q-st-80d software product assurance")
+                                        .build()
+                                ))
                                 .build()
                         ))
+
+//                        <ATTRIBUTE-VALUE-ENUMERATION>
+//                        <VALUES>
+//                        <ENUM-VALUE-REF>v-ecss-q-st-80d software product assurance</ENUM-VALUE-REF>
+//                        </VALUES>
+//                        <DEFINITION>
+//                        <ATTRIBUTE-DEFINITION-ENUMERATION-REF>a-type</ATTRIBUTE-DEFINITION-ENUMERATION-REF>
+//                        </DEFINITION>
+//                        </ATTRIBUTE-VALUE-ENUMERATION>
+
                         //.type(SpecObjectType.builder().build())
                         .build()
                 ))
