@@ -1,10 +1,6 @@
 package eu.tailoringexpert.reqif;
 
-import eu.tailoringexpert.domain.DatatypeDefinition;
-import eu.tailoringexpert.domain.DatatypeDefinitionBoolean;
-import eu.tailoringexpert.domain.DatatypeDefinitionEnumeration;
-import eu.tailoringexpert.domain.DatatypeDefinitionString;
-import eu.tailoringexpert.domain.Identifiable;
+import eu.tailoringexpert.domain.*;
 import tools.jackson.dataformat.xml.ser.ToXmlGenerator;
 
 import javax.xml.namespace.QName;
@@ -39,29 +35,28 @@ public class DatatypeDefinitionConsumer implements BiConsumer<DatatypeDefinition
     }
 
     private void accept(DatatypeDefinitionEnumeration datatypeDefinitionEnumeration, ToXmlGenerator generator) {
-        generator.startWrappedValue(new QName("", "SPECIFIED-VALUES"), new QName("", "SPECIFIED-VALUES"));
+        generator.startWrappedValue(new QName("SPECIFIED-VALUES"), new QName("SPECIFIED-VALUES"));
         generator.setNextIsAttribute(true);
 
         datatypeDefinitionEnumeration.getSpecifiedValues().forEach(value -> {
-            //QName name = new QName("", "ENUM-VALUE");
             generator.setNextIsAttribute(false);
-            generator.startWrappedValue(new QName("", "ENUM-VALUE"), new QName("", "ENUM-VALUE"));
+            generator.startWrappedValue(new QName("ENUM-VALUE"), new QName("ENUM-VALUE"));
             generator.setNextIsAttribute(true);
             this.identifiable.accept(value, generator);
 
-            generator.startWrappedValue(new QName("", "PROPERTIES"), new QName("", "PROPERTIES"));
+            generator.startWrappedValue(new QName("PROPERTIES"), new QName("PROPERTIES"));
 
-            generator.startWrappedValue(new QName("", "EMBEDDED-VALUE"), new QName("", "EMBEDDED-VALUE"));
+            generator.startWrappedValue(new QName("EMBEDDED-VALUE"), new QName("EMBEDDED-VALUE"));
             generator.setNextIsAttribute(true);
             generator.writeNumberProperty("KEY", value.getProperties().getKey());
             generator.writeStringProperty("OTHER-CONTENT", value.getProperties().getOtherContent());
-            generator.finishWrappedValue(new QName("", "EMBEDDED-VALUE"), new QName("", "EMBEDDED-VALUE"));
+            generator.finishWrappedValue(new QName("EMBEDDED-VALUE"), new QName("", "EMBEDDED-VALUE"));
 
-            generator.finishWrappedValue(new QName("", "PROPERTIES"), new QName("", "PROPERTIES"));
+            generator.finishWrappedValue(new QName("PROPERTIES"), new QName("PROPERTIES"));
 
-            generator.finishWrappedValue(new QName("", "ENUM-VALUE"), new QName("", "ENUM-VALUE"));
+            generator.finishWrappedValue(new QName("ENUM-VALUE"), new QName("ENUM-VALUE"));
         });
 
-        generator.finishWrappedValue(new QName("", "SPECIFIED-VALUES"), new QName("", "SPECIFIED-VALUES"));
+        generator.finishWrappedValue(new QName("SPECIFIED-VALUES"), new QName("SPECIFIED-VALUES"));
     }
 }
