@@ -27,8 +27,8 @@ import static java.util.Map.entry;
 public class ReqIFContentSerializer extends StdSerializer<ReqIFContent> {
 
     private BiConsumer<Identifiable, ToXmlGenerator> identifiable = new IdentifiableConsumer();
-    private BiConsumer<Collection<SpecType>, ToXmlGenerator> specTypes = new SpecTypesConsumer();
     private BiConsumer<Collection<DatatypeDefinition>, ToXmlGenerator> datatypes = new DatatypeDefinitionsConsumer();
+    private BiConsumer<Collection<SpecType>, ToXmlGenerator> specTypes = new SpecTypesConsumer();
     private BiConsumer<Collection<SpecObject>, ToXmlGenerator> specObjects = new SpecObjectsConsumer();
 
 
@@ -38,8 +38,8 @@ public class ReqIFContentSerializer extends StdSerializer<ReqIFContent> {
 
     @Override
     public void serialize(ReqIFContent value, JsonGenerator gen, SerializationContext provider) throws JacksonException {
-        QName parent = new QName("", "CORE-CONTENT");
-        QName name = new QName("", "REQ-IF-CONTENT");
+        QName parent = new QName("CORE-CONTENT");
+        QName name = new QName("REQ-IF-CONTENT");
 
         ToXmlGenerator generator = (ToXmlGenerator) gen;
         generator.startWrappedValue(parent, name);
