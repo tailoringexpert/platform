@@ -13,7 +13,7 @@ public class DatatypeDefinitionsConsumer implements BiConsumer<Collection<Dataty
 
     @Override
     public void accept(Collection<DatatypeDefinition> datatypeDefinitions, ToXmlGenerator generator) {
-        QName name = new QName("", "DATATYPES");
+        QName name = new QName("DATATYPES");
         generator.startWrappedValue(name, name);
         generator.setNextIsAttribute(false);
 

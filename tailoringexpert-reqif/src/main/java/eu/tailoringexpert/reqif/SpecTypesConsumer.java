@@ -20,7 +20,7 @@ public class SpecTypesConsumer implements BiConsumer<Collection<SpecType>, ToXml
     private BiConsumer<Identifiable, ToXmlGenerator> identifiable = new IdentifiableConsumer();
     private BiConsumer<SpecType, ToXmlGenerator> specType = new SpecTypeConsumer();
 
-    private Map<Class, BiConsumer<SpecType, ToXmlGenerator>> consumer = Map.ofEntries(
+    private final Map<Class, BiConsumer<SpecType, ToXmlGenerator>> consumer = Map.ofEntries(
         entry(SpecObjectType.class, (specType, generator) -> {
             QName name = new QName("SPEC-OBJECT-TYPE");
             generator.startWrappedValue(name, name);
@@ -48,7 +48,7 @@ public class SpecTypesConsumer implements BiConsumer<Collection<SpecType>, ToXml
         generator.setNextIsAttribute(true);
 
         specTypes.forEach(specType -> {
-            consumer.getOrDefault(specType.getClass(), (value, gen) -> log.debug("no consumer for {]", value.getClass()))
+            consumer.getOrDefault(specType.getClass(), (value, gen) -> log.debug("no consumer for {}", value.getClass()))
                 .accept(specType, generator);
         });
     }
