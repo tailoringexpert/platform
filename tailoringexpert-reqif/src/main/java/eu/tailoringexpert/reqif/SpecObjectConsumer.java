@@ -17,7 +17,6 @@ public class SpecObjectConsumer implements BiConsumer<SpecObject, ToXmlGenerator
     public void accept(SpecObject specObject, ToXmlGenerator generator) {
         QName name = new QName("SPEC-OBJECT");
         generator.startWrappedValue(name, name);
-
         identifiable.accept(specObject, generator);
 
         generator.startWrappedValue(new QName("TYPE"), new QName("TYPE"));
@@ -25,13 +24,9 @@ public class SpecObjectConsumer implements BiConsumer<SpecObject, ToXmlGenerator
         generator.finishWrappedValue(new QName("TYPE"), new QName("TYPE"));
 
         generator.startWrappedValue(new QName("VALUES"), new QName("VALUES"));
-
         specObject.getValues()
             .forEach(value -> attributeValue.accept(value, generator));
-
-
         generator.finishWrappedValue(new QName("VALUES"), new QName("VALUES"));
-
 
         generator.finishWrappedValue(name, name);
     }
