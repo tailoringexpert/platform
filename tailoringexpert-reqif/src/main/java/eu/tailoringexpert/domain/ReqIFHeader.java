@@ -9,7 +9,6 @@ import java.time.LocalDateTime;
 
 @Value
 @Builder
-@JsonRootName("CORE-HEader")
 public class ReqIFHeader {
 
     @NonNull
