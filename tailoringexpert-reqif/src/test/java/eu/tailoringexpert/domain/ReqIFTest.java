@@ -24,7 +24,6 @@ public class ReqIFTest {
 
         SimpleModule dynamicRootNameModule = new SimpleModule();
         dynamicRootNameModule.addSerializer(ReqIFContent.class, new ReqIFContentSerializer());
-//        dynamicRootNameModule.addSerializer(SpecObjectType.class, new SpecObjectTypeSerializer());
 
 
         this.objectMapper = XmlMapper.builder()
@@ -278,17 +277,21 @@ public class ReqIFTest {
                                         .identifier("v-ecss-q-st-80d software product assurance")
                                         .build()
                                 ))
+                                .definition(AttributeDefinitionEnumeration.builder()
+                                    .identifier("a-type")
+                                    .build())
+                                .build(),
+                            AttributeValueBoolean.builder()
+                                .theValue(true)
+                                .definition(AttributeDefinitionBoolean.builder()
+                                    .type(DatatypeDefinitionBoolean.builder()
+                                        .identifier("a-active")
+                                        .longName("Active")
+                                        .build())
+                                    .build())
                                 .build()
                         ))
 
-//                        <ATTRIBUTE-VALUE-ENUMERATION>
-//                        <VALUES>
-//                        <ENUM-VALUE-REF>v-ecss-q-st-80d software product assurance</ENUM-VALUE-REF>
-//                        </VALUES>
-//                        <DEFINITION>
-//                        <ATTRIBUTE-DEFINITION-ENUMERATION-REF>a-type</ATTRIBUTE-DEFINITION-ENUMERATION-REF>
-//                        </DEFINITION>
-//                        </ATTRIBUTE-VALUE-ENUMERATION>
 
                         //.type(SpecObjectType.builder().build())
                         .build()

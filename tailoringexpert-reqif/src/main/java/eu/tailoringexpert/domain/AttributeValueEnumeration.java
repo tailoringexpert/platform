@@ -9,4 +9,5 @@ import java.util.Collection;
 @SuperBuilder
 public class AttributeValueEnumeration extends AttributeValue {
     Collection<EnumValue> values;
+    AttributeDefinitionEnumeration definition;
 }
