@@ -1,6 +1,7 @@
 package eu.tailoringexpert.domain;
 
 import eu.tailoringexpert.reqif.ReqIFContentSerializer;
+import eu.tailoringexpert.reqif.ReqIFHeaderSerializer;
 import lombok.extern.log4j.Log4j2;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -24,6 +25,7 @@ public class ReqIFTest {
 
         SimpleModule dynamicRootNameModule = new SimpleModule();
         dynamicRootNameModule.addSerializer(ReqIFContent.class, new ReqIFContentSerializer());
+        dynamicRootNameModule.addSerializer(ReqIFHeader.class, new ReqIFHeaderSerializer());
 
 
         this.objectMapper = XmlMapper.builder()
