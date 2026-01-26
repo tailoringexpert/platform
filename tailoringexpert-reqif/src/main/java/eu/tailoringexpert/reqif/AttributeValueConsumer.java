@@ -17,7 +17,7 @@ import static java.util.Map.ofEntries;
 @Log4j2
 public class AttributeValueConsumer implements BiConsumer<AttributeValue, ToXmlGenerator> {
 
-    private Map<Class<?>, BiConsumer<AttributeValue, ToXmlGenerator>> consumer = ofEntries(
+    private final Map<Class<?>, BiConsumer<AttributeValue, ToXmlGenerator>> consumer = ofEntries(
         entry(AttributeValueString.class, (value, generator) -> {
             QName name = new QName("ATTRIBUTE-VALUE-STRING");
             generator.startWrappedValue(name, name);
@@ -65,7 +65,7 @@ public class AttributeValueConsumer implements BiConsumer<AttributeValue, ToXmlG
 
     @Override
     public void accept(AttributeValue attributeValue, ToXmlGenerator generator) {
-        consumer.getOrDefault(attributeValue.getClass(), (value, gen) -> log.debug("no consumer for {]", value.getClass()))
+        consumer.getOrDefault(attributeValue.getClass(), (value, gen) -> log.debug("no consumer for {}", value.getClass()))
             .accept(attributeValue, generator);
     }
 

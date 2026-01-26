@@ -20,15 +20,15 @@ public class AttributeDefinitionConsumer implements BiConsumer<AttributeDefiniti
 
     private BiConsumer<Identifiable, ToXmlGenerator> identifiable = new IdentifiableConsumer();
 
-    private Map<Class, BiConsumer<AttributeDefinition, ToXmlGenerator>> consumer = ofEntries(
+    private final Map<Class, BiConsumer<AttributeDefinition, ToXmlGenerator>> consumer = ofEntries(
         entry(AttributeDefinitionString.class, (attributeDefinition, generator) -> {
             QName name = new QName("ATTRIBUTE-DEFINITION-STRING");
             generator.startWrappedValue(name, name);
             identifiable.accept(attributeDefinition, generator);
 
-            generator.startWrappedValue(new QName("", "TYPE"), new QName("", "TYPE"));
+            generator.startWrappedValue(new QName("TYPE"), new QName("TYPE"));
             generator.writeStringProperty("DATATYPE-DEFINITION-STRING-REF", attributeDefinition.getType().getIdentifier());
-            generator.finishWrappedValue(new QName("", "TYPE"), new QName("", "TYPE"));
+            generator.finishWrappedValue(new QName("TYPE"), new QName("TYPE"));
 
             generator.finishWrappedValue(name, name);
         }),
@@ -37,9 +37,9 @@ public class AttributeDefinitionConsumer implements BiConsumer<AttributeDefiniti
             generator.startWrappedValue(name, name);
             identifiable.accept(attributeDefinition, generator);
 
-            generator.startWrappedValue(new QName("", "TYPE"), new QName("", "TYPE"));
+            generator.startWrappedValue(new QName("TYPE"), new QName("TYPE"));
             generator.writeStringProperty("DATATYPE-DEFINITION-BOOLEAN-REF", attributeDefinition.getType().getIdentifier());
-            generator.finishWrappedValue(new QName("", "TYPE"), new QName("", "TYPE"));
+            generator.finishWrappedValue(new QName("TYPE"), new QName("TYPE"));
 
             generator.finishWrappedValue(name, name);
         })
@@ -47,7 +47,7 @@ public class AttributeDefinitionConsumer implements BiConsumer<AttributeDefiniti
 
     @Override
     public void accept(AttributeDefinition attributeDefinition, ToXmlGenerator generator) {
-        consumer.getOrDefault(attributeDefinition.getClass(), (value, gen) -> log.debug("no consumer for {]", value.getClass()))
+        consumer.getOrDefault(attributeDefinition.getClass(), (value, gen) -> log.debug("no consumer for {}", value.getClass()))
             .accept(attributeDefinition, generator);
 
     }

@@ -1,17 +1,12 @@
 package eu.tailoringexpert.reqif;
 
-import eu.tailoringexpert.domain.AttributeDefinition;
-import eu.tailoringexpert.domain.Identifiable;
-import eu.tailoringexpert.domain.SpecObjectType;
-import eu.tailoringexpert.domain.SpecType;
-import eu.tailoringexpert.domain.SpecificationType;
+import eu.tailoringexpert.domain.*;
 import lombok.extern.log4j.Log4j2;
 import tools.jackson.dataformat.xml.ser.ToXmlGenerator;
 
 import javax.xml.namespace.QName;
 import java.util.Map;
 import java.util.function.BiConsumer;
-import java.util.function.BiFunction;
 
 import static java.util.Map.entry;
 import static java.util.Map.ofEntries;
@@ -22,12 +17,12 @@ public class SpecTypeConsumer implements BiConsumer<SpecType, ToXmlGenerator> {
     private BiConsumer<Identifiable, ToXmlGenerator> identifiable = new IdentifiableConsumer();
     private BiConsumer<AttributeDefinition, ToXmlGenerator> attributeDefinition = new AttributeDefinitionConsumer();
 
-    private Map<Class, BiConsumer<SpecType, ToXmlGenerator>> consumer = ofEntries(
+    private final Map<Class, BiConsumer<SpecType, ToXmlGenerator>> consumer = ofEntries(
         entry(SpecObjectType.class, (specType, generator) -> {
             identifiable.accept(specType, generator);
             generator.setNextIsAttribute(false);
 
-            QName name = new QName("", "SPEC-ATTRIBUTES");
+            QName name = new QName("SPEC-ATTRIBUTES");
             generator.startWrappedValue(name, name);
 
             specType.getSpecAttributes()
@@ -43,7 +38,7 @@ public class SpecTypeConsumer implements BiConsumer<SpecType, ToXmlGenerator> {
 
     @Override
     public void accept(SpecType specType, ToXmlGenerator generator) {
-        consumer.getOrDefault(specType.getClass(), (value, gen) -> log.debug("no consumer for {]", value.getClass()))
+        consumer.getOrDefault(specType.getClass(), (value, gen) -> log.debug("no consumer for {}", value.getClass()))
             .accept(specType, generator);
     }
 

@@ -15,7 +15,7 @@ public class DatatypeDefinitionConsumer implements BiConsumer<DatatypeDefinition
 
     BiConsumer<Identifiable, ToXmlGenerator> identifiable = new IdentifiableConsumer();
 
-    private Map<Class, BiConsumer<DatatypeDefinition, ToXmlGenerator>> consumer = Map.ofEntries(
+    private final Map<Class, BiConsumer<DatatypeDefinition, ToXmlGenerator>> consumer = Map.ofEntries(
         entry(DatatypeDefinitionString.class, (datatypeDefinition, generator) -> {
             QName name = new QName("DATATYPE-DEFINITION-STRING");
             generator.startWrappedValue(name, name);
@@ -62,7 +62,7 @@ public class DatatypeDefinitionConsumer implements BiConsumer<DatatypeDefinition
 
     @Override
     public void accept(DatatypeDefinition datatypeDefinition, ToXmlGenerator generator) {
-        consumer.getOrDefault(datatypeDefinition.getClass(), (value, gen) -> log.debug("no consumer for {]", value.getClass()))
+        consumer.getOrDefault(datatypeDefinition.getClass(), (value, gen) -> log.debug("no consumer for {}", value.getClass()))
             .accept(datatypeDefinition, generator);
     }
 }
