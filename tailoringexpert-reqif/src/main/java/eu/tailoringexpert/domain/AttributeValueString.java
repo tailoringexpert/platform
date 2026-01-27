@@ -7,5 +7,6 @@ import lombok.experimental.SuperBuilder;
 @Value
 public class AttributeValueString extends AttributeValueSimple {
     String theValue;
+    AttributeDefinitionString definition;
 
 }

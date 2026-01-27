@@ -1,5 +1,6 @@
 package eu.tailoringexpert.reqif;
 
+import eu.tailoringexpert.domain.AttributeDefinition;
 import eu.tailoringexpert.domain.AttributeDefinitionBoolean;
 import eu.tailoringexpert.domain.AttributeDefinitionEnumeration;
 import eu.tailoringexpert.domain.AttributeDefinitionString;
@@ -179,6 +180,10 @@ class AttributeValueConsumerTest {
     @SuperBuilder
     @Getter
     private static class UnKnownAttributeValue extends AttributeValue {
+        @Override
+        public AttributeDefinition getDefinition() {
+            return null;
+        }
     }
 
 }
