@@ -7,5 +7,6 @@ import lombok.experimental.SuperBuilder;
 @Value
 public class AttributeValueBoolean extends AttributeValueSimple {
     Boolean theValue;
+    AttributeDefinitionBoolean definition;
 
 }
