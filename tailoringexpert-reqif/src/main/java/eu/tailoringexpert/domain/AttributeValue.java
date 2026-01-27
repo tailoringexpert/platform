@@ -6,5 +6,4 @@ import lombok.experimental.SuperBuilder;
 @Getter
 @SuperBuilder
 public abstract class AttributeValue extends Identifiable{
-    AttributeDefinition definition;
 }
