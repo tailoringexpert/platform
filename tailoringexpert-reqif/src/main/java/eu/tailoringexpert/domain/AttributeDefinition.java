@@ -5,5 +5,5 @@ import lombok.experimental.SuperBuilder;
 @SuperBuilder
 public abstract class AttributeDefinition extends Identifiable {
 
-    abstract public DatatypeDefinition getType();
+    public abstract DatatypeDefinition getType();
 }

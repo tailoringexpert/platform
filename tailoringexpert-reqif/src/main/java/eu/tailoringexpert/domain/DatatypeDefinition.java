@@ -1,6 +1,5 @@
 package eu.tailoringexpert.domain;
 
-import com.fasterxml.jackson.annotation.JsonRootName;
 import lombok.experimental.SuperBuilder;
 
 @SuperBuilder

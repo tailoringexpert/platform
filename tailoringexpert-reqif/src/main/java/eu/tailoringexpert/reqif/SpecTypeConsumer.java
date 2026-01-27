@@ -17,7 +17,7 @@ public class SpecTypeConsumer implements BiConsumer<SpecType, ToXmlGenerator> {
     private BiConsumer<Identifiable, ToXmlGenerator> identifiable = new IdentifiableConsumer();
     private BiConsumer<AttributeDefinition, ToXmlGenerator> attributeDefinition = new AttributeDefinitionConsumer();
 
-    private final Map<Class, BiConsumer<SpecType, ToXmlGenerator>> consumer = ofEntries(
+    private final Map<Class<?>, BiConsumer<SpecType, ToXmlGenerator>> consumer = ofEntries(
         entry(SpecObjectType.class, (specType, generator) -> {
             identifiable.accept(specType, generator);
             generator.setNextIsAttribute(false);
@@ -31,9 +31,9 @@ public class SpecTypeConsumer implements BiConsumer<SpecType, ToXmlGenerator> {
             generator.setNextIsAttribute(false);
             generator.finishWrappedValue(name, name);
         }),
-        entry(SpecificationType.class, (specType, generator) -> {
-            identifiable.accept(specType, generator);
-        })
+        entry(SpecificationType.class, (specType, generator) ->
+            identifiable.accept(specType, generator)
+        )
     );
 
     @Override

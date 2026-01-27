@@ -9,7 +9,7 @@ import java.util.function.BiConsumer;
 
 public class DatatypeDefinitionsConsumer implements BiConsumer<Collection<DatatypeDefinition>, ToXmlGenerator> {
 
-    private BiConsumer<DatatypeDefinition, ToXmlGenerator> datatype = new DatatypeDefinitionConsumer();
+    private BiConsumer<DatatypeDefinition, ToXmlGenerator> datatypeDefinition = new DatatypeDefinitionConsumer();
 
     @Override
     public void accept(Collection<DatatypeDefinition> datatypeDefinitions, ToXmlGenerator generator) {
@@ -18,7 +18,7 @@ public class DatatypeDefinitionsConsumer implements BiConsumer<Collection<Dataty
         generator.setNextIsAttribute(false);
 
         datatypeDefinitions
-            .forEach(datatypeDefinition -> datatype.accept(datatypeDefinition, generator));
+            .forEach(value -> datatypeDefinition.accept(value, generator));
 
         generator.finishWrappedValue(name, name);
     }
