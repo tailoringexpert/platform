@@ -1,7 +1,23 @@
-package eu.tailoringexpert.domain;
+package eu.tailoringexpert.reqif;
 
-import eu.tailoringexpert.reqif.ReqIFContentSerializer;
-import eu.tailoringexpert.reqif.ReqIFHeaderSerializer;
+import eu.tailoringexpert.domain.AttributeDefinitionBoolean;
+import eu.tailoringexpert.domain.AttributeDefinitionEnumeration;
+import eu.tailoringexpert.domain.AttributeDefinitionString;
+import eu.tailoringexpert.domain.AttributeValueBoolean;
+import eu.tailoringexpert.domain.AttributeValueEnumeration;
+import eu.tailoringexpert.domain.AttributeValueString;
+import eu.tailoringexpert.domain.DatatypeDefinitionBoolean;
+import eu.tailoringexpert.domain.DatatypeDefinitionEnumeration;
+import eu.tailoringexpert.domain.DatatypeDefinitionString;
+import eu.tailoringexpert.domain.EmbeddedValue;
+import eu.tailoringexpert.domain.EnumValue;
+import eu.tailoringexpert.domain.ReqIF;
+import eu.tailoringexpert.domain.ReqIFContent;
+import eu.tailoringexpert.domain.ReqIFHeader;
+import eu.tailoringexpert.domain.ReqIFToolExtension;
+import eu.tailoringexpert.domain.SpecObject;
+import eu.tailoringexpert.domain.SpecObjectType;
+import eu.tailoringexpert.domain.SpecificationType;
 import lombok.extern.log4j.Log4j2;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -16,7 +32,7 @@ import java.util.UUID;
 import static tools.jackson.databind.SerializationFeature.INDENT_OUTPUT;
 
 @Log4j2
-public class ReqIFTest {
+class ReqIFTest {
 
     ObjectMapper objectMapper;
 
@@ -32,8 +48,6 @@ public class ReqIFTest {
             .findAndAddModules()
             .enable(INDENT_OUTPUT)
             .addModule(dynamicRootNameModule)
-//            .propertyNamingStrategy(new PropertyNamingStrategies.UpperSnakeCaseStrategy())
-//            .addTypeModifier(new DatatypeIDResolver())
             .build();
     }
 
@@ -45,14 +59,6 @@ public class ReqIFTest {
         String reqIFToolId = "TailoringExpert";
         String reqIFVersion = "1.2";
 
-        List<DatatypeDefinitionString> datatypeDefinitions = List.of(
-            DatatypeDefinitionString.builder()
-                .maxLength(10000)
-                .identifier("dt-string")
-                .longName("String")
-                .lastChange(LocalDateTime.now())
-                .build()
-        );
         ReqIF reqIF = ReqIF.builder()
             .theHeader(ReqIFHeader.builder()
                 .creationTimestamp(LocalDateTime.now())

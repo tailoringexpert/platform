@@ -18,7 +18,7 @@ public class SpecObjectsConsumer implements BiConsumer<Collection<SpecObject>, T
         generator.setNextIsAttribute(false);
 
         specObjects
-            .forEach(specObject -> this.specObject.accept(specObject, generator));
+            .forEach(value -> specObject.accept(value, generator));
 
         generator.finishWrappedValue(name, name);
     }

@@ -15,7 +15,7 @@ public class IdentifiableConsumer implements BiConsumer<Identifiable, ToXmlGener
         generator.writeStringProperty("IDENTIFIER", identifiable.getIdentifier());
         generator.writeStringProperty("LONG-NAME", identifiable.getLongName());
         ofNullable(identifiable.getLastChange())
-            .ifPresent((lastChange) -> generator.writeStringProperty("LAST-CHANGE", lastChange.toString()));
+            .ifPresent(lastChange -> generator.writeStringProperty("LAST-CHANGE", lastChange.toString()));
         generator.setNextIsAttribute(false);
     }
 }

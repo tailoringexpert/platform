@@ -10,24 +10,28 @@ import java.util.function.BiConsumer;
 
 public class SpecObjectConsumer implements BiConsumer<SpecObject, ToXmlGenerator> {
 
-    BiConsumer<Identifiable, ToXmlGenerator> identifiable = new IdentifiableConsumer();
-    BiConsumer<AttributeValue, ToXmlGenerator> attributeValue = new AttributeValueConsumer();
+    private static final QName QNAME_SPECOBJECT = new QName("SPEC-OBJECT");
+    private static final QName QNAME_TYPE = new QName("TYPE");
+    private static final QName QNAME_VALUES = new QName("VALUES");
+    private static final String PROPERTY_SPECTOBJECTTYPREF = "SPEC-OBJECT-TYPE-REF";
+
+    private final BiConsumer<Identifiable, ToXmlGenerator> identifiable = new IdentifiableConsumer();
+    private final BiConsumer<AttributeValue, ToXmlGenerator> attributeValue = new AttributeValueConsumer();
 
     @Override
     public void accept(SpecObject specObject, ToXmlGenerator generator) {
-        QName name = new QName("SPEC-OBJECT");
-        generator.startWrappedValue(name, name);
+        generator.startWrappedValue(QNAME_SPECOBJECT, QNAME_SPECOBJECT);
         identifiable.accept(specObject, generator);
 
-        generator.startWrappedValue(new QName("TYPE"), new QName("TYPE"));
-        generator.writeStringProperty("SPEC-OBJECT-TYPE-REF", specObject.getType().getIdentifier());
-        generator.finishWrappedValue(new QName("TYPE"), new QName("TYPE"));
+        generator.startWrappedValue(QNAME_TYPE, QNAME_TYPE);
+        generator.writeStringProperty(PROPERTY_SPECTOBJECTTYPREF, specObject.getType().getIdentifier());
+        generator.finishWrappedValue(QNAME_TYPE, QNAME_TYPE);
 
-        generator.startWrappedValue(new QName("VALUES"), new QName("VALUES"));
+        generator.startWrappedValue(QNAME_VALUES, QNAME_VALUES);
         specObject.getValues()
             .forEach(value -> attributeValue.accept(value, generator));
-        generator.finishWrappedValue(new QName("VALUES"), new QName("VALUES"));
+        generator.finishWrappedValue(QNAME_VALUES, QNAME_VALUES);
 
-        generator.finishWrappedValue(name, name);
+        generator.finishWrappedValue(QNAME_SPECOBJECT, QNAME_SPECOBJECT);
     }
 }

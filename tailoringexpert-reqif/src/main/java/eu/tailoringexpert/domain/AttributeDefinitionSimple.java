@@ -5,7 +5,7 @@ import lombok.experimental.SuperBuilder;
 
 @Getter
 @SuperBuilder
-abstract public class AttributeDefinitionSimple extends AttributeDefinition{
+public abstract class AttributeDefinitionSimple extends AttributeDefinition {
 
 
 }
