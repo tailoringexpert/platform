@@ -2,6 +2,7 @@ package eu.tailoringexpert.reqif;
 
 import eu.tailoringexpert.domain.Specification;
 import eu.tailoringexpert.domain.SpecificationType;
+import lombok.extern.log4j.Log4j2;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import tools.jackson.dataformat.xml.XmlMapper;
@@ -17,6 +18,7 @@ import java.time.LocalDateTime;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+@Log4j2
 class SpecificationConsumerTest {
 
     XmlMapper xmlMapper;
@@ -40,6 +42,7 @@ class SpecificationConsumerTest {
             .lastChange(LocalDateTime.of(2026, 1, 1, 0, 0))
             .longName("Normative Statement")
             .type(SpecificationType.builder()
+                .identifier("st-spec")
                 .build())
             .build();
 
@@ -58,9 +61,10 @@ class SpecificationConsumerTest {
         xmlWriter.close();
 
         // assert
+        log.debug(sw.toString());
         assertThat(sw.toString())
             .isNotEmpty()
-            .isEqualTo("<test><SPECIFICATION IDENTIFIER=\"spec-1\" LONG-NAME=\"Normative Statement\" LAST-CHANGE=\"2026-01-01T00:00\"/></test>");
+            .isEqualTo("<test><SPECIFICATION IDENTIFIER=\"spec-1\" LONG-NAME=\"Normative Statement\" LAST-CHANGE=\"2026-01-01T00:00\"><TYPE><SPECIFICATION-TYPE-REF>st-spec</SPECIFICATION-TYPE-REF></TYPE></SPECIFICATION></test>");
     }
 
 }
