@@ -14,11 +14,8 @@ public class ReqIFContent {
     Collection<SpecObject> specObjects;
 
 
-
 //    Collection<SpecRelation> specRelations;
 //    Collection<RelationGroup> specRelationGroups;
-
-    //@JacksonXmlElementWrapper(localName = "SPEC-TYPES")
-    //Collection<Specification> specifications;
+//    Collection<Specification> specifications;
 
 }
