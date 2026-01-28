@@ -1,15 +1,11 @@
 package eu.tailoringexpert.reqif;
 
-import eu.tailoringexpert.domain.AttributeDefinitionBoolean;
-import eu.tailoringexpert.domain.AttributeDefinitionString;
 import eu.tailoringexpert.domain.DatatypeDefinition;
 import eu.tailoringexpert.domain.DatatypeDefinitionBoolean;
 import eu.tailoringexpert.domain.DatatypeDefinitionEnumeration;
 import eu.tailoringexpert.domain.DatatypeDefinitionString;
 import eu.tailoringexpert.domain.EmbeddedValue;
 import eu.tailoringexpert.domain.EnumValue;
-import eu.tailoringexpert.domain.SpecObjectType;
-import eu.tailoringexpert.domain.SpecType;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import tools.jackson.dataformat.xml.XmlMapper;
