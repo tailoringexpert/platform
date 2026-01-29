@@ -18,6 +18,13 @@ import eu.tailoringexpert.domain.ReqIFToolExtension;
 import eu.tailoringexpert.domain.SpecObject;
 import eu.tailoringexpert.domain.SpecObjectType;
 import eu.tailoringexpert.domain.SpecificationType;
+import eu.tailoringexpert.serializer.AttributeDefinitionBooleanSerializer;
+import eu.tailoringexpert.serializer.AttributeDefinitionStringSerializer;
+import eu.tailoringexpert.serializer.AttributeValueBooleanSerializer;
+import eu.tailoringexpert.serializer.AttributeValueStringSerializer;
+import eu.tailoringexpert.serializer.DatatypeDefinitionBooleanSerializer;
+import eu.tailoringexpert.serializer.DatatypeDefinitionEnumerationSerializer;
+import eu.tailoringexpert.serializer.DatatypeDefinitionStringSerializer;
 import lombok.extern.log4j.Log4j2;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -42,7 +49,13 @@ class ReqIFTest {
         SimpleModule dynamicRootNameModule = new SimpleModule();
         dynamicRootNameModule.addSerializer(ReqIFContent.class, new ReqIFContentSerializer());
         dynamicRootNameModule.addSerializer(ReqIFHeader.class, new ReqIFHeaderSerializer());
-
+//        dynamicRootNameModule.addSerializer(DatatypeDefinitionString.class, new DatatypeDefinitionStringSerializer());
+//        dynamicRootNameModule.addSerializer(DatatypeDefinitionBoolean.class, new DatatypeDefinitionBooleanSerializer());
+//        dynamicRootNameModule.addSerializer(DatatypeDefinitionEnumeration.class, new DatatypeDefinitionEnumerationSerializer());
+//        dynamicRootNameModule.addSerializer(AttributeDefinitionBoolean.class, new AttributeDefinitionBooleanSerializer());
+//        dynamicRootNameModule.addSerializer(AttributeDefinitionString.class, new AttributeDefinitionStringSerializer());
+//        dynamicRootNameModule.addSerializer(AttributeValueBoolean.class, new AttributeValueBooleanSerializer());
+//        dynamicRootNameModule.addSerializer(AttributeValueString.class, new AttributeValueStringSerializer());
 
         this.objectMapper = XmlMapper.builder()
             .findAndAddModules()

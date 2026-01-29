@@ -163,7 +163,7 @@
                     <TYPE>
                         <SPECIFICATION-TYPE-REF>st-spec</SPECIFICATION-TYPE-REF>
                     </TYPE>
-                    <CHILDREN>
+                    <CHILDRATTRIBUTE-VALUE-BOOLEANEN>
                         <SPEC-HIERARCHY IDENTIFIER="sh-1" LAST-CHANGE="2026-01-19T13:33:00.568643071Z">
                             <OBJECT>
                                 <SPEC-OBJECT-REF>so-1</SPEC-OBJECT-REF>
