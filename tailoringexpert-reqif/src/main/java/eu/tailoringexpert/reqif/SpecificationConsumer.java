@@ -13,6 +13,10 @@ public class SpecificationConsumer implements BiConsumer<Specification, ToXmlGen
     private static final QName QNAME_TYPE = new QName("TYPE");
     private static final QName QNAME_CHILDREN = new QName("CHILDREN");
     private static final String PROPERTY_SPECIFICATIONTYPEREF = "SPECIFICATION-TYPE-REF";
+    private static final QName QNAME_OBJECT = new QName("OBJECT");
+    private static final QName QNAME_SPECHIERARCHY = new QName("SPEC-HIERARCHY");
+    private static final String PROPERTY_SPECOBJECTREF = "SPEC-OBJECT-REF";
+
 
     private final BiConsumer<Identifiable, ToXmlGenerator> identifiable = new IdentifiableConsumer();
 
@@ -31,7 +35,16 @@ public class SpecificationConsumer implements BiConsumer<Specification, ToXmlGen
             .ifPresent(hierarchies -> {
                 generator.startWrappedValue(QNAME_CHILDREN, QNAME_CHILDREN);
 
-                hierarchies.forEach(hierarchy -> System.out.println("SpecificationConsumer.accept"));
+                hierarchies.forEach(hierarchy -> {
+                        generator.startWrappedValue(QNAME_SPECHIERARCHY, QNAME_SPECHIERARCHY);
+                        generator.setNextIsAttribute(true);
+                        identifiable.accept(hierarchy, generator);
+
+                        generator.startWrappedValue(QNAME_OBJECT, QNAME_OBJECT);
+                        generator.writeStringProperty(PROPERTY_SPECOBJECTREF, hierarchy.getObject().getIdentifier());
+                        generator.finishWrappedValue(QNAME_OBJECT, QNAME_OBJECT);
+                    }
+                );
 
                 generator.finishWrappedValue(QNAME_CHILDREN, QNAME_CHILDREN);
 
