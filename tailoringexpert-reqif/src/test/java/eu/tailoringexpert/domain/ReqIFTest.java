@@ -1,26 +1,10 @@
-package eu.tailoringexpert.reqif;
+package eu.tailoringexpert.domain;
 
-import eu.tailoringexpert.domain.AttributeDefinitionBoolean;
-import eu.tailoringexpert.domain.AttributeDefinitionEnumeration;
-import eu.tailoringexpert.domain.AttributeDefinitionString;
-import eu.tailoringexpert.domain.AttributeValueBoolean;
-import eu.tailoringexpert.domain.AttributeValueEnumeration;
-import eu.tailoringexpert.domain.AttributeValueString;
-import eu.tailoringexpert.domain.DatatypeDefinitionBoolean;
-import eu.tailoringexpert.domain.DatatypeDefinitionEnumeration;
-import eu.tailoringexpert.domain.DatatypeDefinitionString;
-import eu.tailoringexpert.domain.EmbeddedValue;
-import eu.tailoringexpert.domain.EnumValue;
-import eu.tailoringexpert.domain.ReqIF;
-import eu.tailoringexpert.domain.ReqIFContent;
-import eu.tailoringexpert.domain.ReqIFHeader;
-import eu.tailoringexpert.domain.ReqIFToolExtension;
-import eu.tailoringexpert.domain.SpecObject;
-import eu.tailoringexpert.domain.SpecObjectType;
-import eu.tailoringexpert.domain.SpecificationType;
+import eu.tailoringexpert.reqif.ReqIFHeaderSerializer;
 import eu.tailoringexpert.serializer.AttributeDefinitionBooleanSerializer;
 import eu.tailoringexpert.serializer.AttributeDefinitionStringSerializer;
 import eu.tailoringexpert.serializer.AttributeValueBooleanSerializer;
+import eu.tailoringexpert.serializer.AttributeValueEnumerationSerializer;
 import eu.tailoringexpert.serializer.AttributeValueStringSerializer;
 import eu.tailoringexpert.serializer.DatatypeDefinitionBooleanSerializer;
 import eu.tailoringexpert.serializer.DatatypeDefinitionEnumerationSerializer;
@@ -47,15 +31,15 @@ class ReqIFTest {
     void setup() {
 
         SimpleModule dynamicRootNameModule = new SimpleModule();
-        dynamicRootNameModule.addSerializer(ReqIFContent.class, new ReqIFContentSerializer());
         dynamicRootNameModule.addSerializer(ReqIFHeader.class, new ReqIFHeaderSerializer());
-//        dynamicRootNameModule.addSerializer(DatatypeDefinitionString.class, new DatatypeDefinitionStringSerializer());
-//        dynamicRootNameModule.addSerializer(DatatypeDefinitionBoolean.class, new DatatypeDefinitionBooleanSerializer());
-//        dynamicRootNameModule.addSerializer(DatatypeDefinitionEnumeration.class, new DatatypeDefinitionEnumerationSerializer());
-//        dynamicRootNameModule.addSerializer(AttributeDefinitionBoolean.class, new AttributeDefinitionBooleanSerializer());
-//        dynamicRootNameModule.addSerializer(AttributeDefinitionString.class, new AttributeDefinitionStringSerializer());
-//        dynamicRootNameModule.addSerializer(AttributeValueBoolean.class, new AttributeValueBooleanSerializer());
-//        dynamicRootNameModule.addSerializer(AttributeValueString.class, new AttributeValueStringSerializer());
+        dynamicRootNameModule.addSerializer(DatatypeDefinitionString.class, new DatatypeDefinitionStringSerializer());
+        dynamicRootNameModule.addSerializer(DatatypeDefinitionBoolean.class, new DatatypeDefinitionBooleanSerializer());
+        dynamicRootNameModule.addSerializer(DatatypeDefinitionEnumeration.class, new DatatypeDefinitionEnumerationSerializer());
+        dynamicRootNameModule.addSerializer(AttributeDefinitionBoolean.class, new AttributeDefinitionBooleanSerializer());
+        dynamicRootNameModule.addSerializer(AttributeDefinitionString.class, new AttributeDefinitionStringSerializer());
+        dynamicRootNameModule.addSerializer(AttributeValueBoolean.class, new AttributeValueBooleanSerializer());
+        dynamicRootNameModule.addSerializer(AttributeValueEnumeration.class, new AttributeValueEnumerationSerializer());
+        dynamicRootNameModule.addSerializer(AttributeValueString.class, new AttributeValueStringSerializer());
 
         this.objectMapper = XmlMapper.builder()
             .findAndAddModules()
@@ -270,6 +254,10 @@ class ReqIFTest {
                             .specAttributes(List.of(
                                 AttributeDefinitionString.builder()
                                     .identifier("a-document-code")
+                                    .type(DatatypeDefinitionString.builder()
+                                        .identifier("a-document-code")
+                                        .longName("Document Code")
+                                        .build())
                                     .build()
                             ))
                             .build())
@@ -374,7 +362,7 @@ class ReqIFTest {
                                         .build())
                                     .build())
                                 .build()
-                            ))
+                        ))
 
 
                         //.type(SpecObjectType.builder().build())
