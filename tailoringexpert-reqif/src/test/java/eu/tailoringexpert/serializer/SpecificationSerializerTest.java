@@ -57,6 +57,7 @@ class SpecificationSerializerTest {
         String actual = xmlMapper.writeValueAsString(specification);
 
         // assert
+        log.debug(actual);
         assertThat(actual)
             .isNotEmpty()
             .isEqualTo("<SPECIFICATION IDENTIFIER=\"spec-1\" LONG-NAME=\"Normative Statement\" LAST-CHANGE=\"2026-01-01T00:00\"><TYPE><SPECIFICATION-TYPE-REF>st-spec</SPECIFICATION-TYPE-REF></TYPE><CHILDREN><SPEC-HIERARCHY IDENTIFIER=\"sh-1\" LAST-CHANGE=\"2026-01-01T00:00\"><OBJECT><SPEC-OBJECT-REF>so-1</SPEC-OBJECT-REF></OBJECT></SPEC-HIERARCHY></CHILDREN></SPECIFICATION>");

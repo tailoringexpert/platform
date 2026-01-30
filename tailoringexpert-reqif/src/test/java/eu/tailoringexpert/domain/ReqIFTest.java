@@ -420,10 +420,20 @@ class ReqIFTest {
                         Specification.builder()
                             .identifier("spec-1")
                             .lastChange(LocalDateTime.of(2026, 1, 1, 0, 0))
+                            .longName("Normative Statement")
                             .type(SpecificationType.builder()
                                 .identifier("st-spec")
-                                .lastChange(LocalDateTime.of(2026, 1, 1, 0, 0))
                                 .build())
+                            .children(List.of(
+                                    SpecHierarchy.builder()
+                                        .identifier("sh-1")
+                                        .lastChange(LocalDateTime.of(2026, 1, 1, 0, 0))
+                                        .object(SpecObject.builder()
+                                            .identifier("so-1")
+                                            .build())
+                                        .build()
+                                )
+                            )
                             .build()
                     )
                 )
@@ -436,11 +446,11 @@ class ReqIFTest {
             ))
             .build();
 
-//         <SPECIFICATION IDENTIFIER="spec-1" LAST-CHANGE="2026-01-19T13:33:00.568643071Z" LONG-NAME="Normative Statements">
+//                <SPECIFICATION IDENTIFIER="spec-1" LAST-CHANGE="2026-01-19T13:33:00.568643071Z" LONG-NAME="Normative Statements">
 //            <TYPE>
 //            <SPECIFICATION-TYPE-REF>st-spec</SPECIFICATION-TYPE-REF>
 //            </TYPE>
-//            <CHILDRATTRIBUTE-VALUE-BOOLEANEN>
+//            <CHILDREN>
 //            <SPEC-HIERARCHY IDENTIFIER="sh-1" LAST-CHANGE="2026-01-19T13:33:00.568643071Z">
 //            <OBJECT>
 //            <SPEC-OBJECT-REF>so-1</SPEC-OBJECT-REF>
