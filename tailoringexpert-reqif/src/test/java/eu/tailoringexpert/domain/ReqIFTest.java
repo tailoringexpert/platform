@@ -1,6 +1,5 @@
 package eu.tailoringexpert.domain;
 
-import eu.tailoringexpert.reqif.ReqIFHeaderSerializer;
 import eu.tailoringexpert.serializer.AttributeDefinitionBooleanSerializer;
 import eu.tailoringexpert.serializer.AttributeDefinitionEnumerationSerializer;
 import eu.tailoringexpert.serializer.AttributeDefinitionStringSerializer;
@@ -10,6 +9,7 @@ import eu.tailoringexpert.serializer.AttributeValueStringSerializer;
 import eu.tailoringexpert.serializer.DatatypeDefinitionBooleanSerializer;
 import eu.tailoringexpert.serializer.DatatypeDefinitionEnumerationSerializer;
 import eu.tailoringexpert.serializer.DatatypeDefinitionStringSerializer;
+import eu.tailoringexpert.serializer.ReqIFHeaderSerializer;
 import eu.tailoringexpert.serializer.SpecObjectSerializer;
 import eu.tailoringexpert.serializer.SpecObjectTypeSerializer;
 import eu.tailoringexpert.serializer.SpecificationSerializer;
