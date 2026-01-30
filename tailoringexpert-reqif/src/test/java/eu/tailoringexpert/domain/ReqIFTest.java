@@ -2,6 +2,7 @@ package eu.tailoringexpert.domain;
 
 import eu.tailoringexpert.reqif.ReqIFHeaderSerializer;
 import eu.tailoringexpert.serializer.AttributeDefinitionBooleanSerializer;
+import eu.tailoringexpert.serializer.AttributeDefinitionEnumerationSerializer;
 import eu.tailoringexpert.serializer.AttributeDefinitionStringSerializer;
 import eu.tailoringexpert.serializer.AttributeValueBooleanSerializer;
 import eu.tailoringexpert.serializer.AttributeValueEnumerationSerializer;
@@ -41,6 +42,7 @@ class ReqIFTest {
         reqIFModule.addSerializer(AttributeDefinitionBoolean.class, new AttributeDefinitionBooleanSerializer());
         reqIFModule.addSerializer(AttributeDefinitionString.class, new AttributeDefinitionStringSerializer());
         reqIFModule.addSerializer(AttributeValueBoolean.class, new AttributeValueBooleanSerializer());
+        reqIFModule.addSerializer(AttributeDefinitionEnumeration.class, new AttributeDefinitionEnumerationSerializer());
         reqIFModule.addSerializer(AttributeValueEnumeration.class, new AttributeValueEnumerationSerializer());
         reqIFModule.addSerializer(AttributeValueString.class, new AttributeValueStringSerializer());
 
@@ -156,14 +158,48 @@ class ReqIFTest {
                                     .lastChange(LocalDateTime.now())
                                     .build())
                                 .build(),
-                            AttributeDefinitionString.builder()
+                            AttributeDefinitionEnumeration.builder()
                                 .identifier("a-type")
                                 .longName("Type")
-                                .type(DatatypeDefinitionString.builder()
-                                    .maxLength(10000)
+                                .type(DatatypeDefinitionEnumeration.builder()
                                     .identifier("dt-kind")
-                                    .longName("String")
+                                    .longName("Kind")
                                     .lastChange(LocalDateTime.now())
+                                    .specifiedValues(List.of(
+                                            EnumValue.builder()
+                                                .identifier("v-req")
+                                                .longName("Requirement")
+                                                .properties(EmbeddedValue.builder()
+                                                    .key(0)
+                                                    .otherContent("Requirement")
+                                                    .build())
+                                                .build(),
+                                            EnumValue.builder()
+                                                .identifier("v-moc")
+                                                .longName("Means of Compliance")
+                                                .properties(EmbeddedValue.builder()
+                                                    .key(1)
+                                                    .otherContent("Means of Compliance")
+                                                    .build())
+                                                .build(),
+                                            EnumValue.builder()
+                                                .identifier("v-tp")
+                                                .longName("Technical Procedure")
+                                                .properties(EmbeddedValue.builder()
+                                                    .key(2)
+                                                    .otherContent("Technical Procedure")
+                                                    .build())
+                                                .build(),
+                                            EnumValue.builder()
+                                                .identifier("v-ts")
+                                                .longName("Technical Specification")
+                                                .properties(EmbeddedValue.builder()
+                                                    .key(3)
+                                                    .otherContent("Technical Specification")
+                                                    .build())
+                                                .build()
+                                        )
+                                    )
                                     .build())
                                 .build(),
                             AttributeDefinitionString.builder()

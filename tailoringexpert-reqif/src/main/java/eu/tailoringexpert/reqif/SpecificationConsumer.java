@@ -2,6 +2,7 @@ package eu.tailoringexpert.reqif;
 
 import eu.tailoringexpert.domain.Identifiable;
 import eu.tailoringexpert.domain.Specification;
+import eu.tailoringexpert.serializer.IdentifiableConsumer;
 import tools.jackson.dataformat.xml.ser.ToXmlGenerator;
 
 import javax.xml.namespace.QName;

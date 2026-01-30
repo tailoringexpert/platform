@@ -2,7 +2,6 @@ package eu.tailoringexpert.serializer;
 
 import eu.tailoringexpert.domain.DatatypeDefinitionEnumeration;
 import eu.tailoringexpert.domain.Identifiable;
-import eu.tailoringexpert.reqif.IdentifiableConsumer;
 import tools.jackson.core.JacksonException;
 import tools.jackson.core.JsonGenerator;
 import tools.jackson.databind.SerializationContext;
@@ -14,7 +13,7 @@ import java.util.function.BiConsumer;
 
 public class DatatypeDefinitionEnumerationSerializer extends StdSerializer<DatatypeDefinitionEnumeration> {
 
-    private static final QName QNAME_DATATYPEDEFINITIONENUMERATION = new QName("DATATYPE-DEFINITION-ENUMERATION");
+    private static final QName QNAME_DATATYPEDEFINITION = new QName("DATATYPE-DEFINITION-ENUMERATION");
     private static final QName QNAME_SPECIFIEDVALUES = new QName("SPECIFIED-VALUES");
     private static final QName QNAME_ENUMVALUE = new QName("ENUM-VALUE");
     private static final QName QNAME_PROPERTIES = new QName("PROPERTIES");
@@ -32,7 +31,7 @@ public class DatatypeDefinitionEnumerationSerializer extends StdSerializer<Datat
     public void serialize(DatatypeDefinitionEnumeration value, JsonGenerator gen, SerializationContext provider) throws JacksonException {
         ToXmlGenerator generator = (ToXmlGenerator) gen;
 
-        generator.setNextName(QNAME_DATATYPEDEFINITIONENUMERATION);
+        generator.setNextName(QNAME_DATATYPEDEFINITION);
         generator.writeStartObject();
         generator.setNextIsAttribute(true);
         identifiable.accept(value, generator);

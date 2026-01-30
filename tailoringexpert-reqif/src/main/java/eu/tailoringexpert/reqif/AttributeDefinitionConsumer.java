@@ -4,6 +4,7 @@ import eu.tailoringexpert.domain.AttributeDefinition;
 import eu.tailoringexpert.domain.AttributeDefinitionBoolean;
 import eu.tailoringexpert.domain.AttributeDefinitionString;
 import eu.tailoringexpert.domain.Identifiable;
+import eu.tailoringexpert.serializer.IdentifiableConsumer;
 import lombok.extern.log4j.Log4j2;
 import tools.jackson.dataformat.xml.ser.ToXmlGenerator;
 

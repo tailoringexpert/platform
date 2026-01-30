@@ -2,7 +2,6 @@ package eu.tailoringexpert.serializer;
 
 import eu.tailoringexpert.domain.DatatypeDefinitionBoolean;
 import eu.tailoringexpert.domain.Identifiable;
-import eu.tailoringexpert.reqif.IdentifiableConsumer;
 import tools.jackson.core.JacksonException;
 import tools.jackson.core.JsonGenerator;
 import tools.jackson.databind.SerializationContext;
@@ -14,9 +13,9 @@ import java.util.function.BiConsumer;
 
 public class DatatypeDefinitionBooleanSerializer extends StdSerializer<DatatypeDefinitionBoolean> {
 
-    private static final QName QNAME_DATATYPEDEFINITIONBOOLEAN = new QName("DATATYPE-DEFINITION-BOOLEAN");
+    private static final QName QNAME_DATATYPEDEFINITION = new QName("DATATYPE-DEFINITION-BOOLEAN");
 
-    BiConsumer<Identifiable, ToXmlGenerator> identifiable = new IdentifiableConsumer();
+    private final BiConsumer<Identifiable, ToXmlGenerator> identifiable = new IdentifiableConsumer();
 
     public DatatypeDefinitionBooleanSerializer() {
         super(DatatypeDefinitionBoolean.class);
@@ -26,7 +25,7 @@ public class DatatypeDefinitionBooleanSerializer extends StdSerializer<DatatypeD
     public void serialize(DatatypeDefinitionBoolean value, JsonGenerator gen, SerializationContext provider) throws JacksonException {
         ToXmlGenerator generator = (ToXmlGenerator) gen;
 
-        generator.setNextName(QNAME_DATATYPEDEFINITIONBOOLEAN);
+        generator.setNextName(QNAME_DATATYPEDEFINITION);
         generator.writeStartObject();
         generator.setNextIsAttribute(true);
         identifiable.accept(value, generator);

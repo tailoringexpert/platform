@@ -2,8 +2,6 @@ package eu.tailoringexpert.serializer;
 
 import eu.tailoringexpert.domain.AttributeValueEnumeration;
 import eu.tailoringexpert.domain.Identifiable;
-import eu.tailoringexpert.reqif.IdentifiableConsumer;
-import lombok.extern.log4j.Log4j2;
 import tools.jackson.core.JacksonException;
 import tools.jackson.core.JsonGenerator;
 import tools.jackson.databind.SerializationContext;
@@ -16,12 +14,12 @@ import java.util.function.BiConsumer;
 public class AttributeValueEnumerationSerializer extends StdSerializer<AttributeValueEnumeration> {
 
     private static final QName QNAME_DEFINITION = new QName("DEFINITION");
-    private static final QName QNAME_ATTRIBUTEVALUEENUMERATION = new QName("ATTRIBUTE-VALUE-ENUMERATION");
+    private static final QName QNAME_ATTRIBUTEVALUE = new QName("ATTRIBUTE-VALUE-ENUMERATION");
     private static final QName QNAME_VALUES = new QName("VALUES");
-    private static final String PROPERTY_ENUMVALUEREF = "ENUM-VALUE-REF";
-    private static final String PROPERTY_ATTRIBUTEDEFINITIONENUMERATIONREF = "ATTRIBUTE-DEFINITION-ENUMERATION-REF";
+    private static final String PROPERTY_ATTRIBUTEDEFINITIONREF = "ATTRIBUTE-DEFINITION-ENUMERATION-REF";
+    private static final String PROPERTY_ENUMREF = "ENUM-VALUE-REF";
 
-    private BiConsumer<Identifiable, ToXmlGenerator> identifiable = new IdentifiableConsumer();
+    private final BiConsumer<Identifiable, ToXmlGenerator> identifiable = new IdentifiableConsumer();
 
     public AttributeValueEnumerationSerializer() {
         super(AttributeValueEnumeration.class);
@@ -31,17 +29,17 @@ public class AttributeValueEnumerationSerializer extends StdSerializer<Attribute
     public void serialize(AttributeValueEnumeration value, JsonGenerator gen, SerializationContext provider) throws JacksonException {
         ToXmlGenerator generator = (ToXmlGenerator) gen;
 
-        generator.setNextName(QNAME_ATTRIBUTEVALUEENUMERATION);
+        generator.setNextName(QNAME_ATTRIBUTEVALUE);
         generator.writeStartObject();
         identifiable.accept(value, generator);
 
         generator.startWrappedValue(QNAME_VALUES, QNAME_VALUES);
         value.getValues()
-            .forEach(ref -> generator.writeStringProperty(PROPERTY_ENUMVALUEREF, ref.getIdentifier()));
+            .forEach(ref -> generator.writeStringProperty(PROPERTY_ENUMREF, ref.getIdentifier()));
         generator.finishWrappedValue(QNAME_VALUES, QNAME_VALUES);
 
         generator.startWrappedValue(QNAME_DEFINITION, QNAME_DEFINITION);
-        generator.writeStringProperty(PROPERTY_ATTRIBUTEDEFINITIONENUMERATIONREF, value.getDefinition().getIdentifier());
+        generator.writeStringProperty(PROPERTY_ATTRIBUTEDEFINITIONREF, value.getDefinition().getIdentifier());
         generator.finishWrappedValue(QNAME_DEFINITION, QNAME_DEFINITION);
 
         generator.writeEndObject();

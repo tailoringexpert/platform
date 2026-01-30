@@ -5,6 +5,7 @@ import eu.tailoringexpert.domain.Identifiable;
 import eu.tailoringexpert.domain.SpecObjectType;
 import eu.tailoringexpert.domain.SpecType;
 import eu.tailoringexpert.domain.SpecificationType;
+import eu.tailoringexpert.serializer.IdentifiableConsumer;
 import lombok.extern.log4j.Log4j2;
 import tools.jackson.dataformat.xml.ser.ToXmlGenerator;
 
