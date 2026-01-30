@@ -9,8 +9,6 @@ import org.junit.jupiter.api.Test;
 import tools.jackson.databind.module.SimpleModule;
 import tools.jackson.dataformat.xml.XmlMapper;
 
-import javax.xml.stream.XMLStreamException;
-import java.io.IOException;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -30,7 +28,7 @@ class AttributeValueEnumerationSerializerTest {
     }
 
     @Test
-    void accept_DatatypeDefinitionString_DatatypedefintionStringConsumed() throws XMLStreamException, IOException {
+    void accept_DatatypeDefinitionString_DatatypedefintionStringConsumed() {
         // arrange
         AttributeValueEnumeration attributeValue = AttributeValueEnumeration.builder()
             .values(List.of(
