@@ -1,6 +1,7 @@
 package eu.tailoringexpert.reqif;
 
 import eu.tailoringexpert.domain.Identifiable;
+import eu.tailoringexpert.serializer.IdentifiableConsumer;
 import lombok.Getter;
 import lombok.experimental.SuperBuilder;
 import lombok.extern.log4j.Log4j2;
@@ -15,7 +16,6 @@ import javax.xml.stream.XMLStreamWriter;
 import java.io.IOException;
 import java.io.StringWriter;
 import java.time.LocalDateTime;
-import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThat;
 

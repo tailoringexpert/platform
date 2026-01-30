@@ -12,7 +12,7 @@ import java.util.Collection;
 @Builder
 public class ReqIFContent {
 
-    @JsonProperty("DATATYES")
+    @JsonProperty("DATATYPES")
     Collection<DatatypeDefinition> datatypes;
 
     @JsonProperty("SPEC-TYPES")

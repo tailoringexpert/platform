@@ -2,7 +2,6 @@ package eu.tailoringexpert.serializer;
 
 import eu.tailoringexpert.domain.Identifiable;
 import eu.tailoringexpert.domain.Specification;
-import eu.tailoringexpert.reqif.IdentifiableConsumer;
 import tools.jackson.core.JacksonException;
 import tools.jackson.core.JsonGenerator;
 import tools.jackson.databind.SerializationContext;
@@ -19,9 +18,9 @@ public class SpecificationSerializer extends StdSerializer<Specification> {
     private static final QName QNAME_SPECIFICATION = new QName("SPECIFICATION");
     private static final QName QNAME_TYPE = new QName("TYPE");
     private static final QName QNAME_CHILDREN = new QName("CHILDREN");
-    private static final String PROPERTY_SPECIFICATIONTYPEREF = "SPECIFICATION-TYPE-REF";
     private static final QName QNAME_OBJECT = new QName("OBJECT");
     private static final QName QNAME_SPECHIERARCHY = new QName("SPEC-HIERARCHY");
+    private static final String PROPERTY_SPECIFICATIONTYPEREF = "SPECIFICATION-TYPE-REF";
     private static final String PROPERTY_SPECOBJECTREF = "SPEC-OBJECT-REF";
 
     private final BiConsumer<Identifiable, ToXmlGenerator> identifiable = new IdentifiableConsumer();
@@ -29,7 +28,6 @@ public class SpecificationSerializer extends StdSerializer<Specification> {
     public SpecificationSerializer() {
         super(Specification.class);
     }
-
 
     @Override
     public void serialize(Specification value, JsonGenerator gen, SerializationContext provider) throws JacksonException {

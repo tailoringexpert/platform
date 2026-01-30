@@ -2,7 +2,6 @@ package eu.tailoringexpert.serializer;
 
 import eu.tailoringexpert.domain.Identifiable;
 import eu.tailoringexpert.domain.SpecificationType;
-import eu.tailoringexpert.reqif.IdentifiableConsumer;
 import tools.jackson.core.JacksonException;
 import tools.jackson.core.JsonGenerator;
 import tools.jackson.databind.SerializationContext;
@@ -16,7 +15,7 @@ public class SpecificationTypeSerializer extends StdSerializer<SpecificationType
 
     private static final QName QNAME_SPECIFICATIONTYPE = new QName("SPECIFICATION-TYPE");
 
-    private BiConsumer<Identifiable, ToXmlGenerator> identifiable = new IdentifiableConsumer();
+    private final BiConsumer<Identifiable, ToXmlGenerator> identifiable = new IdentifiableConsumer();
 
     public SpecificationTypeSerializer() {
         super(SpecificationType.class);

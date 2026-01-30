@@ -2,7 +2,6 @@ package eu.tailoringexpert.serializer;
 
 import eu.tailoringexpert.domain.Identifiable;
 import eu.tailoringexpert.domain.SpecObject;
-import eu.tailoringexpert.reqif.IdentifiableConsumer;
 import tools.jackson.core.JacksonException;
 import tools.jackson.core.JsonGenerator;
 import tools.jackson.databind.SerializationContext;

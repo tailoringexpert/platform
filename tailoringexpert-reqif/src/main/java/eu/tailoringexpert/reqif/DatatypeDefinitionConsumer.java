@@ -1,6 +1,7 @@
 package eu.tailoringexpert.reqif;
 
 import eu.tailoringexpert.domain.*;
+import eu.tailoringexpert.serializer.IdentifiableConsumer;
 import lombok.extern.log4j.Log4j2;
 import tools.jackson.dataformat.xml.ser.ToXmlGenerator;
 

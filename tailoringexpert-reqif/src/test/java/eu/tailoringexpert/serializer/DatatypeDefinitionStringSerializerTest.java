@@ -42,7 +42,7 @@ class DatatypeDefinitionStringSerializerTest {
         // assert
         assertThat(actual)
             .isNotEmpty()
-            .isEqualTo("<DATATYPE-DEFINITION-STRING IDENTIFIER=\"dt-string\" LONG-NAME=\"String\" LAST-CHANGE=\"2026-01-01T00:00\"/>");
+            .isEqualTo("<DATATYPE-DEFINITION-STRING IDENTIFIER=\"dt-string\" LONG-NAME=\"String\" LAST-CHANGE=\"2026-01-01T00:00\" MAX-LENGTH=\"1000\"/>");
     }
 
 

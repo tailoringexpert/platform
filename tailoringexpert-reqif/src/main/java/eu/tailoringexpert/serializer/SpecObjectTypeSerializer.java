@@ -2,7 +2,6 @@ package eu.tailoringexpert.serializer;
 
 import eu.tailoringexpert.domain.Identifiable;
 import eu.tailoringexpert.domain.SpecObjectType;
-import eu.tailoringexpert.reqif.IdentifiableConsumer;
 import lombok.extern.log4j.Log4j2;
 import tools.jackson.core.JacksonException;
 import tools.jackson.core.JsonGenerator;
@@ -20,7 +19,7 @@ public class SpecObjectTypeSerializer extends StdSerializer<SpecObjectType> {
     private static final QName QNAME_SPECATTRIBUTES = new QName("SPEC-ATTRIBUTES");
     private static final String PROPERTY_SPEC_ATTRIBUTES = "specAttributes";
 
-    private BiConsumer<Identifiable, ToXmlGenerator> identifiable = new IdentifiableConsumer();
+    private final BiConsumer<Identifiable, ToXmlGenerator> identifiable = new IdentifiableConsumer();
 
     public SpecObjectTypeSerializer() {
         super(SpecObjectType.class);
