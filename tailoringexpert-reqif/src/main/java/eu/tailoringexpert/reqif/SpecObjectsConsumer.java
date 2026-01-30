@@ -15,15 +15,6 @@ public class SpecObjectsConsumer implements BiConsumer<Collection<SpecObject>, T
 
     @Override
     public void accept(Collection<SpecObject> specObjects, ToXmlGenerator generator) {
-//        QName name = new QName("SPEC-OBJECTS");
-//        generator.startWrappedValue(name, name);
-//        generator.setNextIsAttribute(false);
-//
-//        specObjects
-//            .forEach(value -> specObject.accept(value, generator));
-//
-//        generator.finishWrappedValue(name, name);
-
         generator.startWrappedValue(QNAME_SPECOBJECTS, QNAME_SPECOBJECTS);
         specObjects.forEach(value -> specObject.accept(value, generator));
         generator.finishWrappedValue(QNAME_SPECOBJECTS, QNAME_SPECOBJECTS);

@@ -8,8 +8,6 @@ import org.junit.jupiter.api.Test;
 import tools.jackson.databind.module.SimpleModule;
 import tools.jackson.dataformat.xml.XmlMapper;
 
-import javax.xml.stream.XMLStreamException;
-import java.io.IOException;
 import java.time.LocalDateTime;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -29,7 +27,7 @@ class AttributeDefinitionStringSerializerTest {
     }
 
     @Test
-    void accept_DatatypeDefinitionString_DatatypedefintionStringConsumed() throws XMLStreamException, IOException {
+    void accept_DatatypeDefinitionString_DatatypedefintionStringConsumed() {
         // arrange
         AttributeDefinitionString attributeDefinition = AttributeDefinitionString.builder()
             .identifier("a-document-code")
