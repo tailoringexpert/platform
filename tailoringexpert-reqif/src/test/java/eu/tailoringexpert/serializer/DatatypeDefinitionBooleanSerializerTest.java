@@ -7,8 +7,6 @@ import org.junit.jupiter.api.Test;
 import tools.jackson.databind.module.SimpleModule;
 import tools.jackson.dataformat.xml.XmlMapper;
 
-import javax.xml.stream.XMLStreamException;
-import java.io.IOException;
 import java.time.LocalDateTime;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -28,7 +26,7 @@ class DatatypeDefinitionBooleanSerializerTest {
     }
 
     @Test
-    void accept_DatatypeDefinitionBoolean_DatatypedefintionStringConsumed() throws XMLStreamException, IOException {
+    void accept_DatatypeDefinitionBoolean_DatatypedefintionStringConsumed() {
         // arrange
         DatatypeDefinitionBoolean datatypeDefinition = DatatypeDefinitionBoolean.builder()
             .identifier("dt-boolean")

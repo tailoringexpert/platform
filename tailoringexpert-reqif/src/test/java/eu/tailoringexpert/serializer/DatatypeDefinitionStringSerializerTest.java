@@ -7,7 +7,6 @@ import org.junit.jupiter.api.Test;
 import tools.jackson.databind.module.SimpleModule;
 import tools.jackson.dataformat.xml.XmlMapper;
 
-import java.io.IOException;
 import java.time.LocalDateTime;
 
 import static org.assertj.core.api.Assertions.assertThat;

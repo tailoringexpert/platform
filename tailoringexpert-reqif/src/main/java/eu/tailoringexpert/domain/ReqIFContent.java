@@ -1,10 +1,8 @@
 package eu.tailoringexpert.domain;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.annotation.JsonRootName;
 import lombok.Builder;
 import lombok.Value;
-import tools.jackson.dataformat.xml.annotation.JacksonXmlRootElement;
 
 import java.util.Collection;
 
@@ -21,9 +19,10 @@ public class ReqIFContent {
     @JsonProperty("SPEC-OBJECTS")
     Collection<SpecObject> specObjects;
 
+    @JsonProperty("SPECIFICATIONS")
+    Collection<Specification> specifications;
 
 //    Collection<SpecRelation> specRelations;
 //    Collection<RelationGroup> specRelationGroups;
-//    Collection<Specification> specifications;
 
 }

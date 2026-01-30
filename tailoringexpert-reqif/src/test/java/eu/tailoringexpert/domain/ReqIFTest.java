@@ -12,6 +12,7 @@ import eu.tailoringexpert.serializer.DatatypeDefinitionEnumerationSerializer;
 import eu.tailoringexpert.serializer.DatatypeDefinitionStringSerializer;
 import eu.tailoringexpert.serializer.SpecObjectSerializer;
 import eu.tailoringexpert.serializer.SpecObjectTypeSerializer;
+import eu.tailoringexpert.serializer.SpecificationSerializer;
 import eu.tailoringexpert.serializer.SpecificationTypeSerializer;
 import lombok.extern.log4j.Log4j2;
 import org.junit.jupiter.api.BeforeEach;
@@ -50,6 +51,8 @@ class ReqIFTest {
 
         reqIFModule.addSerializer(SpecificationType.class, new SpecificationTypeSerializer());
         reqIFModule.addSerializer(SpecObjectType.class, new SpecObjectTypeSerializer());
+
+        reqIFModule.addSerializer(Specification.class, new SpecificationSerializer());
 
 
         this.objectMapper = XmlMapper.builder()
@@ -413,12 +416,38 @@ class ReqIFTest {
                         //.type(SpecObjectType.builder().build())
                         .build()
                 ))
-                .build())
+                .specifications(List.of(
+                        Specification.builder()
+                            .identifier("spec-1")
+                            .lastChange(LocalDateTime.of(2026, 1, 1, 0, 0))
+                            .type(SpecificationType.builder()
+                                .identifier("st-spec")
+                                .lastChange(LocalDateTime.of(2026, 1, 1, 0, 0))
+                                .build())
+                            .build()
+                    )
+                )
+                .build()
+
+            )
             .toolExtensions(List.of(
                 ReqIFToolExtension.builder()
                     .build()
             ))
             .build();
+
+//         <SPECIFICATION IDENTIFIER="spec-1" LAST-CHANGE="2026-01-19T13:33:00.568643071Z" LONG-NAME="Normative Statements">
+//            <TYPE>
+//            <SPECIFICATION-TYPE-REF>st-spec</SPECIFICATION-TYPE-REF>
+//            </TYPE>
+//            <CHILDRATTRIBUTE-VALUE-BOOLEANEN>
+//            <SPEC-HIERARCHY IDENTIFIER="sh-1" LAST-CHANGE="2026-01-19T13:33:00.568643071Z">
+//            <OBJECT>
+//            <SPEC-OBJECT-REF>so-1</SPEC-OBJECT-REF>
+//            </OBJECT>
+//            </SPEC-HIERARCHY>
+//            </CHILDREN>
+//            </SPECIFICATION>
 
         // act
         String actual = objectMapper.writeValueAsString(reqIF);
