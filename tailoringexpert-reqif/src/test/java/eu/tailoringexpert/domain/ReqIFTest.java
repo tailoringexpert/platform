@@ -9,6 +9,9 @@ import eu.tailoringexpert.serializer.AttributeValueStringSerializer;
 import eu.tailoringexpert.serializer.DatatypeDefinitionBooleanSerializer;
 import eu.tailoringexpert.serializer.DatatypeDefinitionEnumerationSerializer;
 import eu.tailoringexpert.serializer.DatatypeDefinitionStringSerializer;
+import eu.tailoringexpert.serializer.SpecObjectSerializer;
+import eu.tailoringexpert.serializer.SpecObjectTypeSerializer;
+import eu.tailoringexpert.serializer.SpecificationTypeSerializer;
 import lombok.extern.log4j.Log4j2;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -30,21 +33,27 @@ class ReqIFTest {
     @BeforeEach
     void setup() {
 
-        SimpleModule dynamicRootNameModule = new SimpleModule();
-        dynamicRootNameModule.addSerializer(ReqIFHeader.class, new ReqIFHeaderSerializer());
-        dynamicRootNameModule.addSerializer(DatatypeDefinitionString.class, new DatatypeDefinitionStringSerializer());
-        dynamicRootNameModule.addSerializer(DatatypeDefinitionBoolean.class, new DatatypeDefinitionBooleanSerializer());
-        dynamicRootNameModule.addSerializer(DatatypeDefinitionEnumeration.class, new DatatypeDefinitionEnumerationSerializer());
-        dynamicRootNameModule.addSerializer(AttributeDefinitionBoolean.class, new AttributeDefinitionBooleanSerializer());
-        dynamicRootNameModule.addSerializer(AttributeDefinitionString.class, new AttributeDefinitionStringSerializer());
-        dynamicRootNameModule.addSerializer(AttributeValueBoolean.class, new AttributeValueBooleanSerializer());
-        dynamicRootNameModule.addSerializer(AttributeValueEnumeration.class, new AttributeValueEnumerationSerializer());
-        dynamicRootNameModule.addSerializer(AttributeValueString.class, new AttributeValueStringSerializer());
+        SimpleModule reqIFModule = new SimpleModule();
+        reqIFModule.addSerializer(ReqIFHeader.class, new ReqIFHeaderSerializer());
+        reqIFModule.addSerializer(DatatypeDefinitionString.class, new DatatypeDefinitionStringSerializer());
+        reqIFModule.addSerializer(DatatypeDefinitionBoolean.class, new DatatypeDefinitionBooleanSerializer());
+        reqIFModule.addSerializer(DatatypeDefinitionEnumeration.class, new DatatypeDefinitionEnumerationSerializer());
+        reqIFModule.addSerializer(AttributeDefinitionBoolean.class, new AttributeDefinitionBooleanSerializer());
+        reqIFModule.addSerializer(AttributeDefinitionString.class, new AttributeDefinitionStringSerializer());
+        reqIFModule.addSerializer(AttributeValueBoolean.class, new AttributeValueBooleanSerializer());
+        reqIFModule.addSerializer(AttributeValueEnumeration.class, new AttributeValueEnumerationSerializer());
+        reqIFModule.addSerializer(AttributeValueString.class, new AttributeValueStringSerializer());
+
+        reqIFModule.addSerializer(SpecObject.class, new SpecObjectSerializer());
+
+        reqIFModule.addSerializer(SpecificationType.class, new SpecificationTypeSerializer());
+        reqIFModule.addSerializer(SpecObjectType.class, new SpecObjectTypeSerializer());
+
 
         this.objectMapper = XmlMapper.builder()
             .findAndAddModules()
             .enable(INDENT_OUTPUT)
-            .addModule(dynamicRootNameModule)
+            .addModule(reqIFModule)
             .build();
     }
 
