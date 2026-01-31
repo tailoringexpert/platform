@@ -29,3 +29,32 @@
     </TYPE>
 </SPEC-RELATION>
 </SPEC-RELATIONS>
+<REQ-IF-CONTENT>
+
+<!-- 1. RELATION TYPE DEFINITION (optional but standard) -->
+<SPEC-TYPES>
+    <SPEC-RELATION-TYPE IDENTIFIER="_Type_Link" LONG-NAME="Derived From"/>
+</SPEC-TYPES>
+
+<!-- 2. THE RELATIONSHIP -->
+<SPEC-RELATIONS>
+    <SPEC-RELATION IDENTIFIER="_Relation_001" LAST-CHANGE="2023-10-27T10:00:00Z">
+
+        <!-- The source requirement (e.g., a low-level spec) -->
+        <SOURCE>
+            <SPEC-OBJECT-REF>_LowLevelReq_101</SPEC-OBJECT-REF>
+        </SOURCE>
+
+        <!-- The target requirement (e.g., a high-level user need) -->
+        <TARGET>
+            <SPEC-OBJECT-REF>_UserNeed_001</SPEC-OBJECT-REF>
+        </TARGET>
+
+        <!-- Linking back to the "Derived From" type defined above -->
+        <TYPE>
+            <SPEC-RELATION-TYPE-REF>_Type_Link</SPEC-RELATION-TYPE-REF>
+        </TYPE>
+
+    </SPEC-RELATION>
+</SPEC-RELATIONS>
+</REQ-IF-CONTENT>
