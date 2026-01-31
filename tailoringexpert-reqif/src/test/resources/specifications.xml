@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<REQ-IF xmlns="http://www.omg.org">
+    <CORE-CONTENT>
+        <REQ-IF-CONTENT>
+
+            <!-- 1. DIE INHALTE (Die eigentlichen Daten) -->
+            <SPEC-OBJECTS>
+                <SPEC-OBJECT IDENTIFIER="ID_Kapitel_1" LAST-CHANGE="2023-10-27T10:00:00Z">
+                    <VALUES>
+                        <ATTRIBUTE-VALUE-STRING THE-VALUE="Systemanforderungen">
+                            <DEFINITION><ATTRIBUTE-DEFINITION-STRING-REF>attr_title</ATTRIBUTE-DEFINITION-STRING-REF></DEFINITION>
+                        </ATTRIBUTE-VALUE-STRING>
+                    </VALUES>
+                </SPEC-OBJECT>
+
+                <SPEC-OBJECT IDENTIFIER="ID_Req_1.1" LAST-CHANGE="2023-10-27T10:00:00Z">
+                    <VALUES>
+                        <ATTRIBUTE-VALUE-STRING THE-VALUE="Das System muss wasserdicht sein.">
+                            <DEFINITION><ATTRIBUTE-DEFINITION-STRING-REF>attr_desc</ATTRIBUTE-DEFINITION-STRING-REF></DEFINITION>
+                        </ATTRIBUTE-VALUE-STRING>
+                    </VALUES>
+                </SPEC-OBJECT>
+            </SPEC-OBJECTS>
+
+            <!-- 2. DIE STRUKTUR (Die Hierarchie) -->
+            <SPECIFICATIONS>
+                <SPECIFICATION IDENTIFIER="Doc_ID_001" LONG-NAME="Lastenheft">
+                    <CHILDREN>
+
+                        <!-- HAUPTKAPITEL -->
+                        <SPEC-HIERARCHY IDENTIFIER="H_1">
+                            <OBJECT>
+                                <SPEC-OBJECT-REF>ID_Kapitel_1</SPEC-OBJECT-REF>
+                            </OBJECT>
+
+                            <!-- UNTERKAPITEL / UNTERGEORDNETE OBJEKTE -->
+                            <CHILDREN>
+                                <SPEC-HIERARCHY IDENTIFIER="H_1_1">
+                                    <OBJECT>
+                                        <SPEC-OBJECT-REF>ID_Req_1.1</SPEC-OBJECT-REF>
+                                    </OBJECT>
+                                </SPEC-HIERARCHY>
+
+                                <SPEC-HIERARCHY IDENTIFIER="H_1_2">
+                                    <OBJECT>
+                                        <!-- Hier könnte eine weitere Referenz stehen -->
+                                        <SPEC-OBJECT-REF>ID_Req_1.2</SPEC-OBJECT-REF>
+                                    </OBJECT>
+                                </SPEC-HIERARCHY>
+                            </CHILDREN>
+
+                        </SPEC-HIERARCHY>
+                    </CHILDREN>
+                </SPECIFICATION>
+            </SPECIFICATIONS>
+
+        </REQ-IF-CONTENT>
+    </CORE-CONTENT>
+</REQ-IF>

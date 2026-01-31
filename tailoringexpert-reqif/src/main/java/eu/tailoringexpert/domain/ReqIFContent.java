@@ -22,7 +22,9 @@ public class ReqIFContent {
     @JsonProperty("SPECIFICATIONS")
     Collection<Specification> specifications;
 
-//    Collection<SpecRelation> specRelations;
+    @JsonProperty("SPEC-RELATIONS")
+    Collection<SpecRelation> specRelations;
+
 //    Collection<RelationGroup> specRelationGroups;
 
 }
