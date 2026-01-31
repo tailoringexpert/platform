@@ -1,0 +1,31 @@
+<SPEC-TYPES>
+    <!-- Die Typen für deine Objekte -->
+    <SPEC-OBJECT-TYPE IDENTIFIER="type_requirement" LAST-CHANGE="2023-10-01T10:00:00Z" LONG-NAME="Anforderungstyp"/>
+    <SPEC-OBJECT-TYPE IDENTIFIER="type_testcase" LAST-CHANGE="2023-10-01T10:00:00Z" LONG-NAME="Testfalltyp"/>
+
+    <!-- Der Typ für die Referenz selbst -->
+    <SPEC-RELATION-TYPE IDENTIFIER="rel_type_verification" LAST-CHANGE="2023-10-01T10:00:00Z" LONG-NAME="verifiziert_durch"/>
+</SPEC-TYPES>
+
+<SPEC-OBJECTS>
+<SPEC-OBJECT IDENTIFIER="req_001" LAST-CHANGE="2023-10-01T10:00:00Z">
+    <TYPE><SPEC-OBJECT-TYPE-REF>type_requirement</SPEC-OBJECT-TYPE-REF></TYPE>
+</SPEC-OBJECT>
+<SPEC-OBJECT IDENTIFIER="test_001" LAST-CHANGE="2023-10-01T10:00:00Z">
+    <TYPE><SPEC-OBJECT-TYPE-REF>type_testcase</SPEC-OBJECT-TYPE-REF></TYPE>
+</SPEC-OBJECT>
+</SPEC-OBJECTS>
+
+<SPEC-RELATIONS>
+<SPEC-RELATION IDENTIFIER="link_id_unique" LAST-CHANGE="2023-10-01T10:00:00Z">
+    <SOURCE>
+        <SPEC-OBJECT-REF>req_001</SPEC-OBJECT-REF> <!-- ID des Objekts von Typ A -->
+    </SOURCE>
+    <TARGET>
+        <SPEC-OBJECT-REF>test_001</SPEC-OBJECT-REF> <!-- ID des Objekts von Typ B -->
+    </TARGET>
+    <TYPE>
+        <SPEC-RELATION-TYPE-REF>rel_type_verification</SPEC-RELATION-TYPE-REF>
+    </TYPE>
+</SPEC-RELATION>
+</SPEC-RELATIONS>

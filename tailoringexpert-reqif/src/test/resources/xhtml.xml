@@ -1,0 +1,51 @@
+<REQ-IF-HEADER> ... </REQ-IF-HEADER>
+<CORE-CONTENT>
+<REQ-IF-CONTENT>
+
+    <DATATYPES>
+        <!-- Der Basis-Datentyp für XHTML -->
+        <DATATYPE-DEFINITION-XHTML IDENTIFIER="dt_xhtml_rich" LAST-CHANGE="2024-01-31T10:00:00Z" LONG-NAME="RichTextType" />
+    </DATATYPES>
+
+    <SPEC-TYPES>
+        <SPEC-OBJECT-TYPE IDENTIFIER="type_requirement" LONG-NAME="Requirement">
+            <SPEC-ATTRIBUTES>
+
+                <!-- Hier wird der Datentyp dem Attribut zugewiesen -->
+                <ATTRIBUTE-DEFINITION-XHTML IDENTIFIER="attr_description_rich" LONG-NAME="Beschreibung">
+                    <TYPE>
+                        <DATATYPE-DEFINITION-XHTML-REF>dt_xhtml_rich</DATATYPE-DEFINITION-XHTML-REF>
+                    </TYPE>
+                </ATTRIBUTE-DEFINITION-XHTML>
+
+            </SPEC-ATTRIBUTES>
+        </SPEC-OBJECT-TYPE>
+    </SPEC-TYPES>
+
+    <!-- ... SPEC-OBJECTS folgen hier ... -->
+
+</REQ-IF-CONTENT>
+</CORE-CONTENT>
+
+<SPEC-OBJECT IDENTIFIER="obj_xhtml_001" LAST-CHANGE="2024-01-31T10:00:00Z">
+<VALUES>
+    <ATTRIBUTE-VALUE-XHTML>
+        <DEFINITION>
+            <ATTRIBUTE-DEFINITION-XHTML-REF>attr_description_rich</ATTRIBUTE-DEFINITION-XHTML-REF>
+        </DEFINITION>
+        <THE-VALUE>
+            <!-- Der XHTML-Inhalt startet hier -->
+            <xhtml:div xmlns:xhtml="http://www.w3.org">
+                <xhtml:p>Dies ist eine <xhtml:b>formatierte</xhtml:b> Anforderung:</xhtml:p>
+                <xhtml:ul>
+                    <xhtml:li>Punkt A (wichtig)</xhtml:li>
+                    <xhtml:li>Punkt B (optional)</xhtml:li>
+                </xhtml:ul>
+            </xhtml:div>
+        </THE-VALUE>
+    </ATTRIBUTE-VALUE-XHTML>
+</VALUES>
+<TYPE>
+    <SPEC-OBJECT-TYPE-REF>type_requirement</SPEC-OBJECT-TYPE-REF>
+</TYPE>
+</SPEC-OBJECT>

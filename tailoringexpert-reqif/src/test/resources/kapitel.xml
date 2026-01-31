@@ -1,0 +1,46 @@
+<REQ-IF-CONTENT>
+    <!-- 1. DEFINITION DER TYPEN -->
+    <SPEC-TYPES>
+        <!-- Typ für Überschriften -->
+        <SPEC-OBJECT-TYPE IDENTIFIER="type_headline" LONG-NAME="Headline">
+            <SPEC-ATTRIBUTES>
+                <ATTRIBUTE-DEFINITION-STRING IDENTIFIER="attr_title" LONG-NAME="Title" />
+            </SPEC-ATTRIBUTES>
+        </SPEC-OBJECT-TYPE>
+
+        <!-- Typ für echte Anforderungen -->
+        <SPEC-OBJECT-TYPE IDENTIFIER="type_requirement" LONG-NAME="Requirement">
+            <SPEC-ATTRIBUTES>
+                <ATTRIBUTE-DEFINITION-STRING IDENTIFIER="attr_desc" LONG-NAME="Description" />
+                <ATTRIBUTE-DEFINITION-STRING IDENTIFIER="attr_status" LONG-NAME="Status" />
+            </SPEC-ATTRIBUTES>
+        </SPEC-OBJECT-TYPE>
+    </SPEC-TYPES>
+
+    <!-- 2. ANWENDUNG DER TYPEN -->
+    <SPEC-OBJECTS>
+        <!-- Dieses Objekt ist eine Überschrift -->
+        <SPEC-OBJECT IDENTIFIER="obj_1" LAST-CHANGE="2023-10-27T10:00:00Z">
+            <TYPE>
+                <SPEC-OBJECT-TYPE-REF>type_headline</SPEC-OBJECT-TYPE-REF>
+            </TYPE>
+            <VALUES>
+                <ATTRIBUTE-VALUE-STRING THE-VALUE="1. Einleitung">
+                    <DEFINITION><ATTRIBUTE-DEFINITION-STRING-REF>attr_title</ATTRIBUTE-DEFINITION-STRING-REF></DEFINITION>
+                </ATTRIBUTE-VALUE-STRING>
+            </VALUES>
+        </SPEC-OBJECT>
+
+        <!-- Dieses Objekt ist eine Anforderung -->
+        <SPEC-OBJECT IDENTIFIER="obj_2" LAST-CHANGE="2023-10-27T10:00:00Z">
+            <TYPE>
+                <SPEC-OBJECT-TYPE-REF>type_requirement</SPEC-OBJECT-TYPE-REF>
+            </TYPE>
+            <VALUES>
+                <ATTRIBUTE-VALUE-STRING THE-VALUE="Das System muss 100 bar Druck standhalten.">
+                    <DEFINITION><ATTRIBUTE-DEFINITION-STRING-REF>attr_desc</ATTRIBUTE-DEFINITION-STRING-REF></DEFINITION>
+                </ATTRIBUTE-VALUE-STRING>
+            </VALUES>
+        </SPEC-OBJECT>
+    </SPEC-OBJECTS>
+</REQ-IF-CONTENT>
