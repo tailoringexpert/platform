@@ -32,14 +32,10 @@ class ReqIFTailoringeXpertTest {
         reqIFModule.addSerializer(AttributeDefinitionEnumeration.class, new AttributeDefinitionEnumerationSerializer());
         reqIFModule.addSerializer(AttributeValueEnumeration.class, new AttributeValueEnumerationSerializer());
         reqIFModule.addSerializer(AttributeValueString.class, new AttributeValueStringSerializer());
-
         reqIFModule.addSerializer(SpecObject.class, new SpecObjectSerializer());
-
         reqIFModule.addSerializer(SpecificationType.class, new SpecificationTypeSerializer());
         reqIFModule.addSerializer(SpecObjectType.class, new SpecObjectTypeSerializer());
-
         reqIFModule.addSerializer(Specification.class, new SpecificationSerializer());
-
         reqIFModule.addSerializer(SpecRelation.class, new SpecRelationSerializer());
 
         this.objectMapper = XmlMapper.builder()
