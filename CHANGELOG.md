@@ -1,5 +1,13 @@
 # Changelog
 
+## [v0.2.3](https://github.com/tailoringexpert/platform/tree/v0.2.3) (02.05.2026)
+
+[Full Changelog](https://github.com/tailoringexpert/platform/compare/v0.2.2...v0.2.3)
+
+**Fixed bugs:**
+
+- Deserialization exception during updating document signature [\#467](https://github.com/tailoringexpert/platform/issues/467)
+
 ## [v0.2.2](https://github.com/tailoringexpert/platform/tree/v0.2.2) (01.14.2026)
 
 [Full Changelog](https://github.com/tailoringexpert/platform/compare/v0.2.1...v0.2.2)
@@ -7,6 +15,7 @@
 **Fixed bugs:**
 
 - Jackson3 MixIn not working within app [\#464](https://github.com/tailoringexpert/platform/issues/464)
+- Deserialization exception during updating document signature [\#467](https://github.com/tailoringexpert/platform/issues/467)
 
 ## [v0.2.1](https://github.com/tailoringexpert/platform/tree/v0.2.1) (01.13.2026)
 
