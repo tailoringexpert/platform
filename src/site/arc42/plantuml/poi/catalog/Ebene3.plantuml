@@ -43,6 +43,11 @@ package tailoring {
     AbstractRequirementsBasedSheetCreator <|-- LogoSheetCreator
     LogoSheetCreator -[dotted]-> Styles : <use>
 
+    class ApplicableDocumentSheetCreator {
+    }
+    AbstractRequirementsBasedSheetCreator <|-- ApplicableDocumentSheetCreator
+    ApplicableDocumentSheetCreator -[dotted]-> Styles : <use>
+
     class BaseCatalogExportExcelDocumentCreator {
     }
     DocumentCreator <|-- BaseCatalogExportExcelDocumentCreator
@@ -50,6 +55,7 @@ package tailoring {
     BaseCatalogExportExcelDocumentCreator --> "1" sheetCreator : requirementSheetCreator
     BaseCatalogExportExcelDocumentCreator --> "1" sheetCreator : drdSheetCreator
     BaseCatalogExportExcelDocumentCreator --> "1" sheetCreator : logoSheetCreator
+    BaseCatalogExportExcelDocumentCreator --> "1" sheetCreator : applicableDocumentSheetCreator
 
     interface "Function<I, R>" as function {
     }

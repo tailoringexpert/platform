@@ -59,6 +59,8 @@ class BaseCatalogExcelDocumentCreatorTest {
     private BiConsumer<Catalog<BaseRequirement>, Sheet> drdSheetCreator;
     private BiConsumer<Catalog<BaseRequirement>, Sheet> documentSheetCreator;
     private BiConsumer<Catalog<BaseRequirement>, Sheet> logoSheetCreator;
+    private BiConsumer<Catalog<BaseRequirement>, Sheet> applicableDocumentRequirementsSheetCreator;
+
     private BaseCatalogExcelDocumentCreator creator;
 
     @BeforeEach
@@ -76,12 +78,14 @@ class BaseCatalogExcelDocumentCreatorTest {
         this.drdSheetCreator = mock(BiConsumer.class);
         this.documentSheetCreator = mock(BiConsumer.class);
         this.logoSheetCreator = mock(BiConsumer.class);
+        this.applicableDocumentRequirementsSheetCreator = mock(BiConsumer.class);
 
         this.creator = new BaseCatalogExcelDocumentCreator(
             this.requirementSheetCreatorMock,
             this.drdSheetCreator,
             this.documentSheetCreator,
-            this.logoSheetCreator
+            this.logoSheetCreator,
+            this.applicableDocumentRequirementsSheetCreator
         );
     }
 
@@ -112,6 +116,7 @@ class BaseCatalogExcelDocumentCreatorTest {
         verify(drdSheetCreator, times(0)).accept(eq(catalog), any(Sheet.class));
         verify(documentSheetCreator, times(0)).accept(eq(catalog), any(Sheet.class));
         verify(logoSheetCreator, times(0)).accept(eq(catalog), any(Sheet.class));
+        verify(applicableDocumentRequirementsSheetCreator, times(0)).accept(eq(catalog), any(Sheet.class));
     }
 
     @Test
@@ -138,5 +143,6 @@ class BaseCatalogExcelDocumentCreatorTest {
         verify(drdSheetCreator, times(1)).accept(eq(catalog), any(Sheet.class));
         verify(documentSheetCreator, times(1)).accept(eq(catalog), any(Sheet.class));
         verify(logoSheetCreator, times(1)).accept(eq(catalog), any(Sheet.class));
+        verify(applicableDocumentRequirementsSheetCreator, times(1)).accept(eq(catalog), any(Sheet.class));
     }
 }
