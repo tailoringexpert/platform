@@ -51,6 +51,8 @@ public class BaseCatalogExcelDocumentCreator implements DocumentCreator {
     BiConsumer<Catalog<BaseRequirement>, Sheet> documentSheetCreator;
     @NonNull
     BiConsumer<Catalog<BaseRequirement>, Sheet> logoSheetCreator;
+    @NonNull
+    BiConsumer<Catalog<BaseRequirement>, Sheet> applicableDocumentRequirementsSheetCreator;
 
 
     @Override
@@ -64,6 +66,7 @@ public class BaseCatalogExcelDocumentCreator implements DocumentCreator {
             drdSheetCreator.accept(catalog, wb.createSheet("DRD"));
             documentSheetCreator.accept(catalog, wb.createSheet("AD"));
             logoSheetCreator.accept(catalog, wb.createSheet("LOGO"));
+            applicableDocumentRequirementsSheetCreator.accept(catalog, wb.createSheet("DOCUMENTS_REQUIREMENTS"));
 
             try (ByteArrayOutputStream os = new ByteArrayOutputStream()) {
                 wb.write(os);

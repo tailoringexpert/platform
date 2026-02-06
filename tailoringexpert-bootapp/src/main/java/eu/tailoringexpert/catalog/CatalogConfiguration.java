@@ -174,17 +174,24 @@ public class CatalogConfiguration {
     }
 
     @Bean
+    BiConsumer<Catalog<BaseRequirement>, Sheet> applicableDocumentSheetCreator() {
+        return new ApplicableDocumentSheetCreator();
+    }
+
+    @Bean
     BaseCatalogExcelDocumentCreator baseCatalogExportExcelDocumentCreator(
         @NonNull @Qualifier("requirementSheetCreator") BiConsumer<Catalog<BaseRequirement>, Sheet> requirementSheetCreator,
         @NonNull @Qualifier("drdSheetCreator") BiConsumer<Catalog<BaseRequirement>, Sheet> drdSheetCreator,
         @NonNull @Qualifier("documentSheetCreator") BiConsumer<Catalog<BaseRequirement>, Sheet> documentSheetCreator,
-        @NonNull @Qualifier("logoSheetCreator") BiConsumer<Catalog<BaseRequirement>, Sheet> logoSheetCreator
+        @NonNull @Qualifier("logoSheetCreator") BiConsumer<Catalog<BaseRequirement>, Sheet> logoSheetCreator,
+        @NonNull @Qualifier("applicableDocumentSheetCreator") BiConsumer<Catalog<BaseRequirement>, Sheet> applicableDocumentSheetCreator
     ) {
         return new BaseCatalogExcelDocumentCreator(
             requirementSheetCreator,
             drdSheetCreator,
             documentSheetCreator,
-            logoSheetCreator
+            logoSheetCreator,
+            applicableDocumentSheetCreator
         );
     }
 
