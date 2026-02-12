@@ -21,19 +21,8 @@
  */
 package eu.tailoringexpert.tailoring;
 
-import eu.tailoringexpert.domain.DocumentSignature;
-import eu.tailoringexpert.domain.DocumentSignatureEntity;
-import eu.tailoringexpert.domain.Note;
-import eu.tailoringexpert.domain.Project;
-import eu.tailoringexpert.domain.ScreeningSheet;
-import eu.tailoringexpert.domain.SelectionVectorProfile;
-import eu.tailoringexpert.domain.Tailoring;
-import eu.tailoringexpert.domain.TailoringEntity;
-import eu.tailoringexpert.domain.TailoringState;
-import eu.tailoringexpert.repository.DokumentSigneeRepository;
-import eu.tailoringexpert.repository.ProjectRepository;
-import eu.tailoringexpert.repository.SelectionVectorProfileRepository;
-import eu.tailoringexpert.repository.TailoringRepository;
+import eu.tailoringexpert.domain.*;
+import eu.tailoringexpert.repository.*;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
@@ -46,9 +35,7 @@ import java.util.Optional;
 
 import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
-import static java.util.Optional.empty;
-import static java.util.Optional.of;
-import static java.util.Optional.ofNullable;
+import static java.util.Optional.*;
 
 /**
  * Implementation of {@link TailoringServiceRepository}.

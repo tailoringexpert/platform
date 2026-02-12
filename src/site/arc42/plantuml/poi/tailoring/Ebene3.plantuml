@@ -7,7 +7,7 @@ package tailoring {
         createDocument(docId : String, tailoring : Tailoring, placeholders : Map<String, Object>) : File
     }
 
-    interface "BiFunction<Kapitel<TailoringRequirement>, Collection<Phase>, Map<DRD, Set<String>>>" as drdSupplier {
+    interface "BiFunction<Chapter<TailoringRequirement>, Collection<Phase>, Map<DRD, Set<String>>>" as drdSupplier {
     }
 
     interface "Function<String, File>" as templateSupplier {
@@ -16,9 +16,15 @@ package tailoring {
     interface "RendererRequestConfigurationSupplier<RendererRequestConfiguration>" as RendererRequestConfigurationSupplier {
     }
 
+    interface "Function<String, Map<String, BaseRequirement>" as BaseRequirementsProvider {
+    }
+
+
     class TailoringCatalogExcelDocumentCreator {
     }
     DocumentCreator <|-- TailoringCatalogExcelDocumentCreator
+    TailoringCatalogExcelDocumentCreator --> "1" baseRequirementsProvider : BaseRequirementsProvider
+
 
     class CMExcelDocumentCreator {
         #addRequirements(requirements : Collection<TailoringRequirement>, level : int, sheet : Sheet, placeholders : Map<String, Object>) : void

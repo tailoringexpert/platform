@@ -68,6 +68,7 @@ import java.util.Optional;
 import java.util.function.Function;
 
 import static eu.tailoringexpert.domain.ResourceMapper.TAILORING;
+import static eu.tailoringexpert.domain.ResourceMapper.TAILORING_REQUIREMENTSAPPLICABILITY;
 import static eu.tailoringexpert.domain.ResourceMapper.TAILORING_ATTACHMENT;
 import static eu.tailoringexpert.domain.ResourceMapper.TAILORING_ATTACHMENTS;
 import static eu.tailoringexpert.domain.ResourceMapper.TAILORING_CATALOG;
@@ -95,6 +96,7 @@ import static org.springframework.http.HttpStatus.PRECONDITION_FAILED;
 import static org.springframework.http.ResponseEntity.created;
 import static org.springframework.http.ResponseEntity.notFound;
 import static org.springframework.http.ResponseEntity.ok;
+import static org.springframework.http.ResponseEntity.status;
 
 
 /**
@@ -301,7 +303,7 @@ public class TailoringController {
             responseCode = "404", description = "Tailoring does not exist",
             content = @Content)
     })
-    @PostMapping(value = TAILORING_ATTACHMENTS, consumes = { MediaType.MULTIPART_FORM_DATA_VALUE }, produces = {"application/hal+json"})
+    @PostMapping(value = TAILORING_ATTACHMENTS, consumes = {MediaType.MULTIPART_FORM_DATA_VALUE}, produces = {"application/hal+json"})
     public ResponseEntity<EntityModel<Void>> postFile(
         @Parameter(description = "Project identifier") @PathVariable String project,
         @Parameter(description = "Tailoring name") @PathVariable String tailoring,
@@ -800,6 +802,32 @@ public class TailoringController {
         ResponseEntity<EntityModel<TailoringResource>> result = tailoringService.updateState(project, tailoring, state)
             .map(updatedTailoring -> ok()
                 .body(of(mapper.toResource(pathContext, updatedTailoring))))
+            .orElseGet(() -> notFound().build());
+
+        log.traceExit();
+        return result;
+    }
+
+    @Operation(summary = "Unselect requirements according to phase applicability")
+    @ApiResponses(value = {
+        @ApiResponse(
+            responseCode = "200", description = "Update performed without error",
+            content = @Content(mediaType = "application/json+hal")),
+        @ApiResponse(
+            responseCode = "404", description = "Tailoring or base catalogue does not exist",
+            content = @Content)
+    })
+    @PutMapping(value = TAILORING_REQUIREMENTSAPPLICABILITY, produces = {"application/hal+json"})
+    public ResponseEntity<Boolean> putUnselectRequirementsAccordingToPhases(
+        @Parameter(description = "Project identifier") @PathVariable String project,
+        @Parameter(description = "Tailoring name") @PathVariable String tailoring) {
+        log.traceEntry();
+
+        ResponseEntity<Boolean> result = tailoringService.unselectRequirementsAccordingToPhases(
+                project,
+                tailoring
+            )
+            .map(state -> status(state ? OK : PRECONDITION_FAILED).body(state))
             .orElseGet(() -> notFound().build());
 
         log.traceExit();

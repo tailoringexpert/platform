@@ -21,22 +21,8 @@
  */
 package eu.tailoringexpert.tailoring;
 
-import eu.tailoringexpert.domain.BaseRequirement;
-import eu.tailoringexpert.domain.Note;
-import eu.tailoringexpert.domain.TailoringState;
+import eu.tailoringexpert.domain.*;
 import eu.tailoringexpert.requirement.RequirementService;
-import eu.tailoringexpert.domain.Catalog;
-import eu.tailoringexpert.domain.Chapter;
-import eu.tailoringexpert.domain.File;
-import eu.tailoringexpert.domain.DocumentSignature;
-import eu.tailoringexpert.domain.DocumentSignatureState;
-import eu.tailoringexpert.domain.Project;
-import eu.tailoringexpert.domain.ScreeningSheet;
-import eu.tailoringexpert.domain.ScreeningSheetParameter;
-import eu.tailoringexpert.domain.SelectionVector;
-import eu.tailoringexpert.domain.Tailoring;
-import eu.tailoringexpert.domain.TailoringRequirement;
-import eu.tailoringexpert.domain.TailoringInformation;
 import lombok.extern.log4j.Log4j2;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -45,46 +31,29 @@ import org.mockito.ArgumentCaptor;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-
-import java.util.AbstractMap;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 import java.util.function.Function;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 import java.util.zip.ZipOutputStream;
 
-import static eu.tailoringexpert.domain.Phase.E;
-import static eu.tailoringexpert.domain.Phase.F;
+import static eu.tailoringexpert.domain.Phase.*;
 import static eu.tailoringexpert.domain.TailoringState.AGREED;
-
 import static eu.tailoringexpert.domain.TailoringState.CREATED;
 import static java.lang.Boolean.TRUE;
 import static java.nio.charset.StandardCharsets.UTF_8;
 import static java.nio.file.Files.newInputStream;
 import static java.nio.file.Paths.get;
 import static java.util.Arrays.asList;
+import static java.util.Map.entry;
 import static java.util.Objects.nonNull;
-import static java.util.Optional.empty;
-import static java.util.Optional.of;
-import static java.util.Optional.ofNullable;
+import static java.util.Optional.*;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.catchThrowable;
 import static org.mockito.ArgumentCaptor.forClass;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.BDDMockito.given;
-import static org.mockito.Mockito.doReturn;
-import static org.mockito.Mockito.doThrow;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.spy;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.*;
 
 @Log4j2
 @SuppressWarnings("PMD.CyclomaticComplexity")
@@ -100,6 +69,7 @@ class TailoringServiceImplTest {
     private Function<byte[], Map<String, Collection<ImportRequirement>>> tailoringAnforderungFileReaderMock;
 
     private AttachmentService attachmentServiceMock;
+    private Function<String, Map<String, BaseRequirement>> fqnBaseRequirementsProviderMock;
 
     @BeforeEach
     void setup() {
@@ -110,6 +80,8 @@ class TailoringServiceImplTest {
         this.requirementServiceMock = mock(RequirementService.class);
         this.tailoringAnforderungFileReaderMock = mock(Function.class);
         this.attachmentServiceMock = mock(AttachmentService.class);
+        this.fqnBaseRequirementsProviderMock = mock(Function.class);
+
         this.service = new TailoringServiceImpl(
             repositoryMock,
             mapperMock,
@@ -117,7 +89,8 @@ class TailoringServiceImplTest {
             documentServiceMock,
             requirementServiceMock,
             tailoringAnforderungFileReaderMock,
-            attachmentServiceMock
+            attachmentServiceMock,
+            fqnBaseRequirementsProviderMock
         );
     }
 
@@ -1421,5 +1394,133 @@ class TailoringServiceImplTest {
 
         verify(repositoryMock, times(1)).getTailoring("SAMPLE", "master");
         verify(repositoryMock, times(1)).setState(any(), any(), any());
+    }
+
+    @Test
+    void unselectRequirementsAccordingToPhases_ProjectNull_NullPointerExceptionThrown() {
+        // arrange
+
+        // act
+        Throwable actual = catchThrowable(() -> service.unselectRequirementsAccordingToPhases(null, "master"));
+
+        // assert
+        assertThat(actual)
+            .isInstanceOf(NullPointerException.class);
+    }
+
+    @Test
+    void unselectRequirementsAccordingToPhasesTailoringNull_NullPointerExceptionThrown() {
+        // arrange
+
+        // act
+        Throwable actual = catchThrowable(() -> service.unselectRequirementsAccordingToPhases("demo", null));
+
+        // assert
+        assertThat(actual)
+            .isInstanceOf(NullPointerException.class);
+    }
+
+    @Test
+    void unselectRequirementsAccordingToPhases_TailoringDoesNotExist_ImplicitlyAborted() {
+        // arrange
+
+        // act
+        service.unselectRequirementsAccordingToPhases("demo", "master");
+
+        // assert
+        verify(repositoryMock, times(1)).getTailoring("demo", "master");
+    }
+
+    @Test
+    void unselectRequirementsAccordingToPhases_BaseCatalogDoesNotExist_ImplicitlyAborted() {
+        // arrange
+        Tailoring tailoring = Tailoring.builder().catalog(Catalog.<TailoringRequirement>builder()
+                .version("8.2.1")
+                .toc(Chapter.<TailoringRequirement>builder().chapters(List.of()).build())
+                .build())
+            .build();
+        given(repositoryMock.getTailoring("demo", "master")).willReturn(of(tailoring));
+
+        given(fqnBaseRequirementsProviderMock.apply("8.2.1")).willReturn(Map.of());
+
+        // act
+        service.unselectRequirementsAccordingToPhases("demo", "master");
+
+        // assert
+        verify(repositoryMock, times(1)).getTailoring("demo", "master");
+    }
+
+    @Test
+    void unselectRequirementsAccordingToPhases_BaseCatalogExist_() {
+        // arrange
+        Tailoring tailoring = Tailoring.builder()
+            .phases(List.of(B, C))
+            .catalog(Catalog.<TailoringRequirement>builder()
+                .version("8.2.1")
+                .toc(Chapter.<TailoringRequirement>builder()
+                    .chapters(asList(
+                        Chapter.<TailoringRequirement>builder()
+                            .number("1")
+                            .name("Chapter 1")
+                            .chapters(asList(
+                                    Chapter.<TailoringRequirement>builder()
+                                        .number("1.1")
+                                        .name("Chapter 1.1")
+                                        .requirements(asList(
+                                            TailoringRequirement.builder()
+                                                .selected(true)
+                                                .position("a")
+                                                .text("Requirement 1.1.a")
+                                                .build(),
+                                            TailoringRequirement.builder()
+                                                .selected(true)
+                                                .position("b")
+                                                .text("Requirement 1.1.b")
+                                                .build()
+                                        ))
+                                        .build()
+                                )
+                            )
+                            .build(),
+                        Chapter.<TailoringRequirement>builder()
+                            .number("2")
+                            .name("Chapter2")
+                            .requirements(asList(
+                                TailoringRequirement.builder()
+                                    .selected(true)
+                                    .position("a")
+                                    .text("Requirement 2.a")
+                                    .build(),
+                                TailoringRequirement.builder()
+                                    .selected(true)
+                                    .position("b")
+                                    .text("Requirement 2.b")
+                                    .build()
+                            ))
+                            .build()
+                    ))
+                    .build())
+                .build()
+            )
+            .build();
+        given(repositoryMock.getTailoring("demo", "master")).willReturn(of(tailoring));
+
+        Map<String, BaseRequirement> fqn2BaseRequirement = Map.ofEntries(
+            entry("1.1.a", BaseRequirement.builder().phases(asList(ZERO, A)).build()),
+            entry("1.1.b", BaseRequirement.builder().phases(asList(C, D)).build()),
+            entry("2.a", BaseRequirement.builder().phases(asList(E, F)).build()),
+            entry("2.b", BaseRequirement.builder().phases(asList(B)).build())
+        );
+        given(fqnBaseRequirementsProviderMock.apply("8.2.1")).willReturn(fqn2BaseRequirement);
+
+        // act
+        service.unselectRequirementsAccordingToPhases("demo", "master");
+
+        // assert
+        verify(repositoryMock, times(1)).getTailoring("demo", "master");
+        verify(requirementServiceMock, times(1)).handleSelected("demo", "master", "1.1", "a", false);
+        verify(requirementServiceMock, times(1)).handleSelected("demo", "master", "2", "a", false);
+        verify(requirementServiceMock, times(0)).handleSelected("demo", "master", "2", "b", true);
+        verify(requirementServiceMock, times(0)).handleSelected("demo", "master", "1.1", "b", true);
     }
 }

@@ -95,6 +95,8 @@ public abstract class ResourceMapper {
     public static final String TAILORING_NOTES = "project/{project}/tailoring/{tailoring}/note";
     public static final String TAILORING_NOTE = "project/{project}/tailoring/{tailoring}/note/{note}";
     public static final String TAILORING_STATE = "project/{project}/tailoring/{tailoring}/state/{state}";
+    public static final String TAILORING_REQUIREMENTSAPPLICABILITY = "project/{project}/tailoring/{tailoring}/requirements/applicabilty";
+
     public static final String BASECATALOG = "catalog";
     public static final String BASECATALOG_VERSION = "catalog/{version}";
     public static final String BASECATALOG_VERSION_PDF = "catalog/{version}/pdf";
@@ -115,7 +117,7 @@ public abstract class ResourceMapper {
     public static final String REL_SCREENINGSHEET = "screeningsheet";
     public static final String REL_SELECTIONVECTOR = "selectionvector";
     public static final String REL_TAILORING = "tailoring";
-    public static final String REL_KATALOG = "catalog";
+    public static final String REL_CATALOG = "catalog";
     public static final String REL_PDF = "pdf";
     public static final String REL_EXCEL = "excel";
     public static final String REL_JSON = "json";
@@ -128,6 +130,7 @@ public abstract class ResourceMapper {
     public static final String REL_SELECTED = "selected";
     public static final String REL_DOCUMENT = "document";
     public static final String REL_COMPARE = "compare";
+    public static final String REL_REQUIREMENTAPPLICIBILITY =  "requirementsapplicability";
     private static final String REL_NAME = "name";
     private static final String REL_IMPORT = "import";
     private static final String REL_ATTACHMENT = "attachment";
@@ -225,13 +228,14 @@ public abstract class ResourceMapper {
                 createLink(REL_DOCUMENT, TAILORING_DOCUMENT, parameter),
                 createLink(REL_TAILORINGCATALOG_DOCUMENT, TAILORING_DOCUMENT_CATALOG, parameter),
                 createLink(REL_COMPARE, TAILORING_COMPARE, parameter),
-                createLink(REL_KATALOG, TAILORING_CATALOG, parameter),
+                createLink(REL_CATALOG, TAILORING_CATALOG, parameter),
                 createLink(REL_NAME, TAILORING_NAME, parameter),
                 createLink(REL_IMPORT, TAILORING_REQUIREMENT_IMPORT, parameter),
                 createLink(REL_BASECATALOG_DOCUMENT, BASECATALOG_VERSION_PDF, parameter),
                 createLink(REL_ATTACHMENT, TAILORING_ATTACHMENTS, parameter),
                 createLink(REL_NOTE, TAILORING_NOTES, parameter),
-                createLink(REL_STATE, TAILORING_STATE, parameter)
+                createLink(REL_STATE, TAILORING_STATE, parameter),
+                createLink(REL_REQUIREMENTAPPLICIBILITY, TAILORING_REQUIREMENTSAPPLICABILITY, parameter)
             )
         );
     }

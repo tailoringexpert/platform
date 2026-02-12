@@ -21,10 +21,13 @@
  */
 package eu.tailoringexpert.tailoring;
 
+import eu.tailoringexpert.domain.BaseRequirement;
 import eu.tailoringexpert.domain.Chapter;
 import eu.tailoringexpert.domain.File;
 import eu.tailoringexpert.domain.Tailoring;
 import eu.tailoringexpert.domain.TailoringRequirement;
+import lombok.NonNull;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.apache.poi.ss.usermodel.CellStyle;
 import org.apache.poi.ss.usermodel.DataValidation;
@@ -43,9 +46,18 @@ import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import java.io.ByteArrayOutputStream;
 import java.util.Arrays;
 import java.util.Map;
+import java.util.function.Function;
 import java.util.stream.StreamSupport;
 
+import static eu.tailoringexpert.domain.Phase.A;
+import static eu.tailoringexpert.domain.Phase.B;
+import static eu.tailoringexpert.domain.Phase.C;
+import static eu.tailoringexpert.domain.Phase.D;
+import static eu.tailoringexpert.domain.Phase.E;
+import static eu.tailoringexpert.domain.Phase.F;
+import static eu.tailoringexpert.domain.Phase.ZERO;
 import static java.util.Objects.nonNull;
+import static java.util.Optional.ofNullable;
 import static java.util.stream.IntStream.of;
 
 /**
@@ -53,8 +65,12 @@ import static java.util.stream.IntStream.of;
  *
  * @author Michael Bädorf
  */
+@RequiredArgsConstructor
 @Log4j2
 public class TailoringCatalogExcelDocumentCreator implements DocumentCreator {
+
+    @NonNull
+    private Function<String, Map<String, BaseRequirement>> baseRequirementsProvider;
 
     /**
      * {@inheritDoc}
@@ -66,7 +82,8 @@ public class TailoringCatalogExcelDocumentCreator implements DocumentCreator {
         try (Workbook wb = new XSSFWorkbook()) {
             Sheet sheet = createSheet(wb, tailoring);
 
-            tailoring.getCatalog().getToc().getChapters().forEach(gruppe -> addChapter(gruppe, sheet));
+            Map<String, BaseRequirement> baseRequirements = baseRequirementsProvider.apply(tailoring.getCatalog().getVersion());
+            tailoring.getCatalog().getToc().getChapters().forEach(gruppe -> addChapter(gruppe, baseRequirements, sheet));
 
             applyTextStyle(sheet);
             applyValidationToColumn(sheet, 2);
@@ -99,11 +116,11 @@ public class TailoringCatalogExcelDocumentCreator implements DocumentCreator {
      * @param chapter chapter evaluate
      * @param sheet   sheet to add elements to
      */
-    private void addChapter(Chapter<TailoringRequirement> chapter, Sheet sheet) {
+    private void addChapter(Chapter<TailoringRequirement> chapter, Map<String, BaseRequirement> baseRequirements, Sheet sheet) {
         addRow(sheet, chapter.getName(), chapter.getNumber());
-        chapter.getRequirements().forEach(requirement -> addRow(sheet, requirement));
+        chapter.getRequirements().forEach(requirement -> addRow(sheet, requirement, chapter.getNumber(), baseRequirements));
 
-        chapter.getChapters().forEach(subChapter -> addChapter(subChapter, sheet));
+        chapter.getChapters().forEach(subChapter -> addChapter(subChapter, baseRequirements, sheet));
     }
 
     /**
@@ -136,9 +153,24 @@ public class TailoringCatalogExcelDocumentCreator implements DocumentCreator {
         row.createCell(5).setCellValue("Text changed");
         row.getCell(5).setCellStyle(headerCellStyle);
 
+        row.createCell(6).setCellValue("0");
+        row.getCell(6).setCellStyle(headerCellStyle);
+        row.createCell(7).setCellValue("A");
+        row.getCell(7).setCellStyle(headerCellStyle);
+        row.createCell(8).setCellValue("B");
+        row.getCell(8).setCellStyle(headerCellStyle);
+        row.createCell(9).setCellValue("C");
+        row.getCell(9).setCellStyle(headerCellStyle);
+        row.createCell(10).setCellValue("D");
+        row.getCell(10).setCellStyle(headerCellStyle);
+        row.createCell(11).setCellValue("E");
+        row.getCell(11).setCellStyle(headerCellStyle);
+        row.createCell(12).setCellValue("F");
+        row.getCell(12).setCellStyle(headerCellStyle);
+
         result.setColumnWidth(0, 40 * 256);
         result.setColumnWidth(3, 60 * 256);
-        result.setAutoFilter(new CellRangeAddress(0, 0, 0, 5));
+        result.setAutoFilter(new CellRangeAddress(0, 0, 0, 12));
 
         return result;
     }
@@ -162,7 +194,7 @@ public class TailoringCatalogExcelDocumentCreator implements DocumentCreator {
      * @param sheet       sheet to add row to
      * @param requirement tailoring requirement to be displayed in row
      */
-    private void addRow(Sheet sheet, TailoringRequirement requirement) {
+    private void addRow(Sheet sheet, TailoringRequirement requirement, String chapter, Map<String, BaseRequirement> baseRequirements) {
         Row row = sheet.createRow((short) sheet.getLastRowNum() + 1);
         row.createCell(0).setCellValue("");
         row.createCell(1).setCellValue(requirement.getPosition());
@@ -170,6 +202,25 @@ public class TailoringCatalogExcelDocumentCreator implements DocumentCreator {
         row.createCell(3).setCellValue(requirement.getText());
         row.createCell(4).setCellValue(nonNull(requirement.getSelectionChanged()) ? "YES" : "NO");
         row.createCell(5).setCellValue(nonNull(requirement.getTextChanged()) ? "YES" : "NO");
+
+        // phase cells. in case of "manual" requirement, base requirement does not exist
+        row.createCell(6);
+        row.createCell(7);
+        row.createCell(8);
+        row.createCell(9);
+        row.createCell(10);
+        row.createCell(11);
+        row.createCell(12);
+        ofNullable(baseRequirements.get(chapter + "." + requirement.getPosition()))
+            .ifPresent(baseRequirement -> {
+                row.getCell(6).setCellValue(baseRequirement.getPhases().contains(ZERO));
+                row.getCell(7).setCellValue(baseRequirement.getPhases().contains(A));
+                row.getCell(8).setCellValue(baseRequirement.getPhases().contains(B));
+                row.getCell(9).setCellValue(baseRequirement.getPhases().contains(C));
+                row.getCell(10).setCellValue(baseRequirement.getPhases().contains(D));
+                row.getCell(11).setCellValue(baseRequirement.getPhases().contains(E));
+                row.getCell(12).setCellValue(baseRequirement.getPhases().contains(F));
+            });
     }
 
 
@@ -193,12 +244,12 @@ public class TailoringCatalogExcelDocumentCreator implements DocumentCreator {
      */
     private void deleteColumnsNotUsedForImportSheet(Sheet sheet) {
         Row header = sheet.getRow(0);
-        of(4, 5).forEach(index -> header.removeCell(header.getCell(index)));
+        of(4, 5, 6, 7, 8, 9, 10, 11, 12).forEach(index -> header.removeCell(header.getCell(index)));
 
         StreamSupport.stream(sheet.spliterator(), false)
             .skip(1)
             .filter(row -> nonNull(row.getCell(3)))
-            .forEach(row -> of(3, 4, 5).forEach(index -> row.removeCell(row.getCell(index))));
+            .forEach(row -> of(3, 4, 5, 6, 7, 8, 9, 10, 11, 12).forEach(index -> row.removeCell(row.getCell(index))));
         sheet.setAutoFilter(new CellRangeAddress(0, 0, 0, 3));
     }
 
