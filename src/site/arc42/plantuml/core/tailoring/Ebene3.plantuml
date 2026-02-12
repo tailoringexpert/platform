@@ -28,7 +28,19 @@ package tailoring {
     TailoringDeletablePredicate <|.. DefaultTailoringDeletablePredicate
     DefaultTailoringDeletablePredicate --> "1" TailoringDeletablePredicateRepository : repository
 
+    interface "Function<T, U>" as Function {
+         accept(t: T) : U
+    }
 
+
+    interface BaseRequirementsProviderRepository {
+        getBaseCatalog(version : String) : Optional<Map<String, BaseRequirement>>
+    }
+
+    class "BaseRequirementsProvider<String, Map<String, BaseRequirement>>"  as BaseRequirementsProvider {
+    }
+    Function <|.. BaseRequirementsProvider
+    BaseRequirementsProvider --> "1" BaseRequirementsProviderRepository : repository
 
     interface TailoringService {
         createTailoring(name : String, identifier : String, screeningSheetData : byte[], applicableSelectionVectore : SelectionVector, catalog : Catalog<BaseRequirement>) : Tailoring
@@ -48,6 +60,7 @@ package tailoring {
         addNote(project : String, tailoring : String, note : String) : Optional<TailoringInformation>
         getNotes(project : String, tailoring : String) : Optional<Collection<Note>>
         getNote(project : String, tailoring : String, note : Integer) : Optional<Note>
+        unselectSelectedRequirementsAccordingToPhases(project : String, tailoring : String) : Optional<Boolean>
     }
 
     interface AttachmentService {
@@ -79,6 +92,7 @@ package tailoring {
         deleteTailoring(project : String, tailoring : String)
         addNote(project : String, tailoring : String, note : Note) : Optional<Tailoring>
         existsTailoring(project : String, tailoring : String) : boolean
+        getBaseCatalog(version : String) : Optional<Catalog<BaseRequirement>>
     }
 
     interface DocumentService {
@@ -102,5 +116,6 @@ package tailoring {
     TailoringServiceImpl --> "1" DokumentService : dokumentService
     TailoringServiceImpl --> "1" AnforderungService : anforderungService
     TailoringServiceImpl --> "1" "Function<byte[], Map<String, Collection<TailoringAnforderung>>>" : tailoringAnforderungFileReader
+    TailoringServiceImpl --> "1" BaseRequirementsProvider : baseRequirementsProvider
 }
 @enduml

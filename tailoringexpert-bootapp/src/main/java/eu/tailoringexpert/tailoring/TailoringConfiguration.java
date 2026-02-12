@@ -24,24 +24,11 @@ package eu.tailoringexpert.tailoring;
 
 import eu.tailoringexpert.Tenant;
 import eu.tailoringexpert.Tenants;
-import eu.tailoringexpert.domain.Catalog;
-import eu.tailoringexpert.domain.Chapter;
-import eu.tailoringexpert.domain.DRD;
-import eu.tailoringexpert.domain.Document;
-import eu.tailoringexpert.domain.MediaTypeProvider;
-import eu.tailoringexpert.domain.Phase;
-import eu.tailoringexpert.domain.ResourceMapper;
-import eu.tailoringexpert.domain.TailoringRequirement;
+import eu.tailoringexpert.domain.*;
 import eu.tailoringexpert.renderer.HTMLTemplateEngine;
 import eu.tailoringexpert.renderer.PDFEngine;
 import eu.tailoringexpert.renderer.RendererRequestConfigurationSupplier;
-import eu.tailoringexpert.repository.ApplicableDocumentRepository;
-import eu.tailoringexpert.repository.DokumentSigneeRepository;
-import eu.tailoringexpert.repository.LogoRepository;
-import eu.tailoringexpert.repository.ProjectRepository;
-import eu.tailoringexpert.repository.SelectionVectorProfileRepository;
-import eu.tailoringexpert.repository.TailoringIdentifierProviderRepository;
-import eu.tailoringexpert.repository.TailoringRepository;
+import eu.tailoringexpert.repository.*;
 import eu.tailoringexpert.requirement.RequirementService;
 import lombok.NonNull;
 import org.springframework.beans.factory.ListableBeanFactory;
@@ -64,13 +51,7 @@ import java.util.function.BiPredicate;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
-import static eu.tailoringexpert.domain.Phase.A;
-import static eu.tailoringexpert.domain.Phase.B;
-import static eu.tailoringexpert.domain.Phase.C;
-import static eu.tailoringexpert.domain.Phase.D;
-import static eu.tailoringexpert.domain.Phase.E;
-import static eu.tailoringexpert.domain.Phase.F;
-import static eu.tailoringexpert.domain.Phase.ZERO;
+import static eu.tailoringexpert.domain.Phase.*;
 import static java.util.Arrays.asList;
 import static java.util.Collections.unmodifiableCollection;
 
@@ -87,9 +68,25 @@ public class TailoringConfiguration {
         return result;
     }
 
+
     @Bean
-    DocumentCreator tailoringCatalogExcelDocumentCreator() {
-        return new TailoringCatalogExcelDocumentCreator();
+    JPABaseRequirementsProviderRepository baseRequirementsProviderRepository(
+        @NonNull JPABaseRequirementsProviderRepositoryMapper mapper,
+        @NonNull BaseCatalogRepository baseCatalogRepository) {
+        return new JPABaseRequirementsProviderRepository(
+            mapper,
+            baseCatalogRepository
+        );
+    }
+
+    @Bean
+    JPABaseRequirementsProviderRepositoryMapper jpaBaseRequirementsProviderRepositoryMapper() {
+        return new JPABaseRequirementsProviderRepositoryMapperGenerated();
+    }
+
+    @Bean
+    DocumentCreator tailoringCatalogExcelDocumentCreator(@NonNull Function<String, Map<String, BaseRequirement>> baseRequirementsProvider) {
+        return new TailoringCatalogExcelDocumentCreator(baseRequirementsProvider);
     }
 
     @Bean
@@ -105,7 +102,13 @@ public class TailoringConfiguration {
                                                           @NonNull TailoringRepository tailoringRepository,
                                                           @NonNull SelectionVectorProfileRepository selectionVectorProfileRepository,
                                                           @NonNull DokumentSigneeRepository dokumentSigneeRepository) {
-        return new JPATailoringServiceRepository(mapper, projectRepository, tailoringRepository, selectionVectorProfileRepository, dokumentSigneeRepository);
+        return new JPATailoringServiceRepository(
+            mapper,
+            projectRepository,
+            tailoringRepository,
+            selectionVectorProfileRepository,
+            dokumentSigneeRepository
+        );
     }
 
     @Bean
@@ -133,7 +136,8 @@ public class TailoringConfiguration {
         @NonNull DocumentService documentService,
         @NonNull RequirementService requirementService,
         @NonNull Function<byte[], Map<String, Collection<ImportRequirement>>> tailoringAnforderungFileReader,
-        @NonNull AttachmentService attachmentService
+        @NonNull AttachmentService attachmentService,
+        @NonNull Function<String, Map<String, BaseRequirement>> baseRequirementsProvider
     ) {
         return new TailoringServiceImpl(
             repository,
@@ -142,9 +146,11 @@ public class TailoringConfiguration {
             documentService,
             requirementService,
             tailoringAnforderungFileReader,
-            attachmentService
+            attachmentService,
+            baseRequirementsProvider
         );
     }
+
 
     @Bean
     BiPredicate<String, Collection<Phase>> drdAnwendbarPraedikat() {
@@ -228,8 +234,8 @@ public class TailoringConfiguration {
     }
 
     @Bean
-    DocumentCreator tailoringCatalogSpreadsheetCreator() {
-        return new TailoringCatalogExcelDocumentCreator();
+    DocumentCreator tailoringCatalogSpreadsheetCreator(@NonNull Function<String, Map<String, BaseRequirement>> baseRequirementsProvider) {
+        return new TailoringCatalogExcelDocumentCreator(baseRequirementsProvider);
     }
 
     @Bean
@@ -270,6 +276,12 @@ public class TailoringConfiguration {
         return new TenantAttachmentService(tailoringPathProvider, MessageDigest.getInstance("SHA-256"));
     }
 
+
+    @Bean
+    Function<String, Map<String, BaseRequirement>> baseRequirementsProvider(@NonNull BaseRequirementsProviderRepository serviceRepository) {
+        return new BaseRequirementsProvider(serviceRepository);
+    }
+
     private <T> Map<String, T> getTenantImplementations(ListableBeanFactory beanFactory, Class<T> clz) {
         return beanFactory.getBeansOfType(clz)
             .values()
@@ -278,6 +290,4 @@ public class TailoringConfiguration {
             .filter(bean -> Objects.nonNull(bean.getClass().getAnnotation(Tenant.class)))
             .collect(Collectors.toMap(bean -> bean.getClass().getAnnotation(Tenant.class).value(), Function.identity()));
     }
-
-
 }

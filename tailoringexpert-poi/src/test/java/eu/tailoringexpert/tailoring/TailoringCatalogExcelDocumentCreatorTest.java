@@ -21,6 +21,7 @@
  */
 package eu.tailoringexpert.tailoring;
 
+import eu.tailoringexpert.domain.BaseRequirement;
 import eu.tailoringexpert.domain.Catalog;
 import eu.tailoringexpert.domain.File;
 import eu.tailoringexpert.domain.Tailoring;
@@ -42,18 +43,28 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Arrays;
+import java.util.Map;
+import java.util.NoSuchElementException;
+import java.util.Optional;
 import java.util.function.BiConsumer;
+import java.util.function.Function;
 
 import static eu.tailoringexpert.domain.Phase.*;
 import static java.util.Collections.emptyList;
 import static java.util.Collections.emptyMap;
 import static java.util.Objects.nonNull;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.mock;
 import static tools.jackson.databind.DeserializationFeature.ACCEPT_EMPTY_ARRAY_AS_NULL_OBJECT;
 import static tools.jackson.databind.DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES;
 
 @Log4j2
 class TailoringCatalogExcelDocumentCreatorTest {
+
+    TailoringServiceRepository serviceRepositoryMock;
+    BaseRequirementsProviderRepository baseRequirementsProviderRepositoryMock;
+    Function<String, Map<String, BaseRequirement>> baseRequirementsProvider;
 
     TailoringCatalogExcelDocumentCreator creator;
     JsonMapper objectMapper;
@@ -76,7 +87,10 @@ class TailoringCatalogExcelDocumentCreatorTest {
             .disable(ACCEPT_EMPTY_ARRAY_AS_NULL_OBJECT)
             .build();
 
-        this.creator = new TailoringCatalogExcelDocumentCreator();
+        this.serviceRepositoryMock = mock(TailoringServiceRepository.class);
+        this.baseRequirementsProviderRepositoryMock = mock(BaseRequirementsProviderRepository.class);
+        this.baseRequirementsProvider = new BaseRequirementsProvider(this.baseRequirementsProviderRepositoryMock);
+        this.creator = new TailoringCatalogExcelDocumentCreator(this.baseRequirementsProvider);
 
     }
 
@@ -84,6 +98,7 @@ class TailoringCatalogExcelDocumentCreatorTest {
     @Test
     void createDocument_TailoringCatalogNull_NullReturned() {
         // arrange
+        given(baseRequirementsProvider.apply(null)).willThrow(NoSuchElementException.class);
 
         // act
         File actual = creator.createDocument("4711", Tailoring.builder().build(), emptyMap());
@@ -104,6 +119,17 @@ class TailoringCatalogExcelDocumentCreatorTest {
                     .constructParametricType(Catalog.class, TailoringRequirement.class)
             );
         }
+
+        Catalog<BaseRequirement> baseCatalog;
+        try (InputStream is = this.getClass().getResourceAsStream("/basecatalog.json")) {
+            assert nonNull(is);
+            baseCatalog = objectMapper.readValue(
+                is,
+                objectMapper.getTypeFactory()
+                    .constructParametricType(Catalog.class, BaseRequirement.class)
+            );
+        }
+        given(baseRequirementsProviderRepositoryMock.getBaseCatalog("8.2.1")).willReturn(Optional.of(baseCatalog));
 
         Tailoring tailoring = Tailoring.builder()
             .name("ut")

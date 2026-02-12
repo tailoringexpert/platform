@@ -23,8 +23,8 @@ package eu.tailoringexpert.tailoring;
 
 import eu.tailoringexpert.domain.DocumentSignature;
 import eu.tailoringexpert.domain.DocumentSignatureEntity;
-import eu.tailoringexpert.domain.DocumentSigneeEntity;
 import eu.tailoringexpert.domain.DocumentSignatureState;
+import eu.tailoringexpert.domain.DocumentSigneeEntity;
 import eu.tailoringexpert.domain.Note;
 import eu.tailoringexpert.domain.NoteEntity;
 import eu.tailoringexpert.domain.Project;
@@ -55,9 +55,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.BDDMockito.given;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.*;
 
 class JPATailoringServiceRepositoryTest {
 

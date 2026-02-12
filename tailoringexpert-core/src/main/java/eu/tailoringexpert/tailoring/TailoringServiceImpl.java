@@ -21,20 +21,21 @@
  */
 package eu.tailoringexpert.tailoring;
 
-import eu.tailoringexpert.domain.Note;
-import eu.tailoringexpert.requirement.RequirementService;
-import eu.tailoringexpert.domain.Catalog;
-import eu.tailoringexpert.domain.File;
-import eu.tailoringexpert.domain.DocumentSignature;
-import eu.tailoringexpert.domain.Chapter;
 import eu.tailoringexpert.domain.BaseRequirement;
+import eu.tailoringexpert.domain.Catalog;
+import eu.tailoringexpert.domain.Chapter;
+import eu.tailoringexpert.domain.DocumentSignature;
+import eu.tailoringexpert.domain.File;
+import eu.tailoringexpert.domain.Note;
+import eu.tailoringexpert.domain.Phase;
 import eu.tailoringexpert.domain.ScreeningSheet;
 import eu.tailoringexpert.domain.SelectionVector;
 import eu.tailoringexpert.domain.Tailoring;
 import eu.tailoringexpert.domain.Tailoring.TailoringBuilder;
-import eu.tailoringexpert.domain.TailoringRequirement;
 import eu.tailoringexpert.domain.TailoringInformation;
+import eu.tailoringexpert.domain.TailoringRequirement;
 import eu.tailoringexpert.domain.TailoringState;
+import eu.tailoringexpert.requirement.RequirementService;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
@@ -51,11 +52,10 @@ import java.util.function.Function;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
+import static java.lang.Boolean.TRUE;
 import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
-import static java.util.Optional.empty;
-import static java.util.Optional.of;
-import static java.util.Optional.ofNullable;
+import static java.util.Optional.*;
 import static java.util.function.Predicate.not;
 
 /**
@@ -68,29 +68,24 @@ import static java.util.function.Predicate.not;
 public class TailoringServiceImpl implements TailoringService {
 
     public static final String MSG_TAILORING_DOES_NOT_EXISTS = "Tailoring does not exists";
-
+    private static final String YES = "YES";
+    private static final String NO = "NO";
     @NonNull
     private TailoringServiceRepository repository;
-
     @NonNull
     private TailoringServiceMapper mapper;
-
     @NonNull
     private TailoringDeletablePredicate deletablePredicate;
     @NonNull
     private DocumentService documentService;
-
     @NonNull
     private RequirementService requirementService;
-
     @NonNull
     private Function<byte[], Map<String, Collection<ImportRequirement>>> tailoringRequirementFileReader;
-
     @NonNull
     private AttachmentService attachmentService;
-
-    private static final String YES = "YES";
-    private static final String NO = "NO";
+    @NonNull
+    private Function<String, Map<String, BaseRequirement>> baseRequirementsProvider;
 
     /**
      * {@inheritDoc}
@@ -435,7 +430,7 @@ public class TailoringServiceImpl implements TailoringService {
 
         Optional<Tailoring> oTailoring = repository.getTailoring(project, tailoring);
         if (oTailoring.isEmpty()) {
-            log.info("Tailoring does not exists.");
+            log.info(MSG_TAILORING_DOES_NOT_EXISTS);
             return log.traceExit(empty());
         }
 
@@ -455,7 +450,7 @@ public class TailoringServiceImpl implements TailoringService {
 
         Optional<Tailoring> oTailoring = repository.getTailoring(project, tailoring);
         if (oTailoring.isEmpty()) {
-            log.info("Tailoring does not exists.");
+            log.info(MSG_TAILORING_DOES_NOT_EXISTS);
             return log.traceExit(empty());
         }
 
@@ -472,6 +467,47 @@ public class TailoringServiceImpl implements TailoringService {
             .build());
 
     }
+
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public Optional<Boolean> unselectRequirementsAccordingToPhases(@NonNull String project, @NonNull String tailoring) {
+        log.traceEntry(() -> project, () -> tailoring);
+
+        Optional<Tailoring> oTailoring = repository.getTailoring(project, tailoring);
+        if (oTailoring.isEmpty()) {
+            log.info(MSG_TAILORING_DOES_NOT_EXISTS);
+            return log.traceExit(empty());
+        }
+
+        Collection<Phase> phases = oTailoring.get().getPhases();
+        Map<String, BaseRequirement> fqn2BaseRequirement = baseRequirementsProvider.apply(oTailoring.get().getCatalog().getVersion());
+        oTailoring.get()
+            .getCatalog()
+            .allChapters()
+            .forEach(chapter ->
+                ofNullable(chapter.getRequirements())
+                    .orElse(List.of())
+                    .forEach(requirement -> {
+                        // only selected requirements will be updated in case they are not related to tailoring phase(s)
+                        if (TRUE.equals(requirement.getSelected())) {
+                            BaseRequirement baseRequirement = fqn2BaseRequirement.get(chapter.getNumber() + "." + requirement.getPosition());
+                            boolean isApplicableForTailoring = baseRequirement.getPhases()
+                                .stream()
+                                .anyMatch(phases::contains);
+                            log.debug(chapter.getNumber() + "." + requirement.getPosition() + ": {}", isApplicableForTailoring);
+                            if (!isApplicableForTailoring) {
+                                requirementService.handleSelected(project, tailoring, chapter.getNumber(), requirement.getPosition(), false);
+                            }
+                        }
+                    })
+            );
+        log.traceExit();
+        return of(TRUE);
+    }
+
 
     /**
      * Add file to zip.
