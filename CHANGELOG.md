@@ -1,8 +1,13 @@
 # Changelog
 
-## [v0.2.3](https://github.com/tailoringexpert/platform/tree/v0.2.3) (02.05.2026)
+## [v0.2.3](https://github.com/tailoringexpert/platform/tree/v0.2.3) (02.12.2026)
 
 [Full Changelog](https://github.com/tailoringexpert/platform/compare/v0.2.2...v0.2.3)
+
+**Implemented enhancements:**
+
+- Provide an Excel spreadsheet to search for the applicable document to which a requirement refers [\#469](https://github.com/tailoringexpert/platform/issues/469)
+- Unselect requirements not related to project phase [\#471](https://github.com/tailoringexpert/platform/issues/471)
 
 **Fixed bugs:**
 
