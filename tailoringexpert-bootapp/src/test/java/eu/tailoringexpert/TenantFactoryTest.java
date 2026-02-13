@@ -22,7 +22,6 @@
 package eu.tailoringexpert;
 
 import lombok.extern.log4j.Log4j2;
-import org.jasypt.encryption.pbe.StandardPBEStringEncryptor;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -52,7 +51,6 @@ import static org.mockito.Mockito.*;
 @Log4j2
 class TenantFactoryTest {
 
-    StandardPBEStringEncryptor encryptor;
     DataSource defaultDataSourceMock;
     TenantFactory factory;
 
@@ -60,11 +58,8 @@ class TenantFactoryTest {
     void beforeEach() {
         this.defaultDataSourceMock = mock(DataSource.class);
         String tenantConfigRoot = Paths.get("tenants").toAbsolutePath().toString();
-        this.encryptor = new StandardPBEStringEncryptor();
-        this.encryptor.setPassword("TailoringForDemo!");
-        this.encryptor.setAlgorithm("PBEWithMD5AndTripleDES");
 
-        this.factory = spy(new TenantFactory(this.defaultDataSourceMock, tenantConfigRoot, this.encryptor));
+        this.factory = spy(new TenantFactory(this.defaultDataSourceMock, tenantConfigRoot));
     }
 
     @AfterEach

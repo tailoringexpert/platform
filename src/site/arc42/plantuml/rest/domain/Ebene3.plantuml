@@ -44,6 +44,7 @@ package domain {
         +{static} TAILORING_ATTACHMENT = "project/{project}/tailoring/{tailoring}/attachment/{name}" : String
         +{static} TAILORING_NOTES = "project/{project}/tailoring/{tailoring}/note" : String
         +{static} TAILORING_NOTE = "project/{project}/tailoring/{tailoring}/note/{note}" : String
+        +{static} TAILORING_REQUIREMENTSAPPLICABILITY = "project/{project}/tailoring/{tailoring}/requirements/applicabilty" : String
         +{static} BASECATALOG = "catalog" : String
         +{static} BASECATALOG_VERSION = "catalog/{version}" : String
         +{static} BASECATALOG_VALIDUNTIL = "catalog/{version}/validuntil/{validuntil}" : String
@@ -75,6 +76,7 @@ package domain {
         +{static} REL_SELECTED = "selected" : String
         +{static} REL_DOCUMENT = "document" : String
         +{static} REL_COMPARE = "compare" : String
+        +{static} REL_REQUIREMENTAPPLICIBILITY =  "requirementsapplicability" : String
         -{static} REL_NAME = "name" : String
         -{static} REL_IMPORT = "import" : String
         -{static} REL_ATTACHMENT = "attachment" : String

@@ -21,17 +21,22 @@
  */
 package eu.tailoringexpert.catalog;
 
-
+import com.fasterxml.jackson.annotation.JsonSetter;
+import com.fasterxml.jackson.annotation.Nulls;
 import eu.tailoringexpert.FileSaver;
-import eu.tailoringexpert.domain.*;
+import eu.tailoringexpert.domain.BaseRequirement;
+import eu.tailoringexpert.domain.Catalog;
+import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import tools.jackson.databind.json.JsonMapper;
 
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.List;
 
 import static java.util.Objects.nonNull;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -39,12 +44,12 @@ import static tools.jackson.databind.DeserializationFeature.ACCEPT_EMPTY_ARRAY_A
 import static tools.jackson.databind.DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES;
 
 
-class BaseCatalogExcelDocumentCreatorIntegrationTest {
+class ApplicableDocumentSheetCreatorTest {
 
     private JsonMapper objectMapper;
     private FileSaver fileSaver;
-
-    private BaseCatalogExcelDocumentCreator creator;
+    private Sheet sheet;
+    private ApplicableDocumentSheetCreator creator;
 
     @BeforeEach
     void setup() {
@@ -52,23 +57,20 @@ class BaseCatalogExcelDocumentCreatorIntegrationTest {
             .findAndAddModules()
             .disable(FAIL_ON_UNKNOWN_PROPERTIES)
             .disable(ACCEPT_EMPTY_ARRAY_AS_NULL_OBJECT)
+            .withConfigOverride(List.class, cfg ->
+                cfg.setNullHandling(JsonSetter.Value.forValueNulls(Nulls.AS_EMPTY))
+            )
             .build();
 
         this.fileSaver = new FileSaver("target");
 
-        this.creator = new BaseCatalogExcelDocumentCreator(
-            new RequirementSheetCreator(),
-            new DRDSheetCreator(),
-            new DocumentSheetCreator(new ApplicableDocumentProvider<BaseRequirement>(
-                new RequirementAlwaysSelectedPredicate<BaseRequirement>(), new DocumentNumberComparator())),
-            new LogoSheetCreator(),
-            new ApplicableDocumentSheetCreator()
-        );
+        this.sheet = new XSSFWorkbook().createSheet("ApplicableDocument2Requirements");
+
+        this.creator = new ApplicableDocumentSheetCreator();
     }
 
-
     @Test
-    void createDocument_validInput_FileCreated() throws IOException {
+    void accept_AllInputsProvided_CatalogDataAddedToSheet() throws IOException {
         // arrange
         Catalog<BaseRequirement> catalog;
         try (InputStream is = this.getClass().getResourceAsStream("/basecatalog.json")) {
@@ -80,13 +82,17 @@ class BaseCatalogExcelDocumentCreatorIntegrationTest {
             );
         }
 
-        Map<String, Object> parameter = new HashMap<>();
-
         // act
-        File actual = creator.createDocument("4711", catalog, parameter);
+        creator.accept(catalog, sheet);
 
         // assert
-        assertThat(actual).isNotNull();
-        fileSaver.accept("basecatalog.xlsx", actual.getData());
+        try (ByteArrayOutputStream os = new ByteArrayOutputStream()) {
+            sheet.getWorkbook().write(os);
+            fileSaver.accept("applicabledocs.xlsx", os.toByteArray());
+        }
+
+        assertThat(sheet.getSheetName()).isEqualTo("ApplicableDocument2Requirements");
+        assertThat(sheet.getLastRowNum()).isPositive();
+        assertThat(sheet.getRow(0).getPhysicalNumberOfCells()).isEqualTo(4);
     }
 }

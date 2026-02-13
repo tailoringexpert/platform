@@ -325,7 +325,8 @@ class ResourceMapperTest {
             Link.of(this.host + "/catalog/8.2.1/pdf", "basecatalog"),
             Link.of(this.host + "/project/SAMPLE/tailoring/master/attachment", "attachment"),
             Link.of(this.host + "/project/SAMPLE/tailoring/master/note", "note"),
-            Link.of(this.host + "/project/SAMPLE/tailoring/master/state/AGREED", "state")
+            Link.of(this.host + "/project/SAMPLE/tailoring/master/state/AGREED", "state"),
+            Link.of(this.host + "/project/SAMPLE/tailoring/master/requirements/applicabilty", "requirementsapplicability")
         );
     }
 
@@ -613,7 +614,8 @@ class ResourceMapperTest {
             Link.of(this.host + "/project/SAMPLE/tailoring/master/requirement/import", "import"),
             Link.of(this.host + "/catalog/8.2.1/pdf", "basecatalog"),
             Link.of(this.host + "/project/SAMPLE/tailoring/master/note", "note"),
-            Link.of(this.host + "/project/SAMPLE/tailoring/master/state/{state}", "state")
+            Link.of(this.host + "/project/SAMPLE/tailoring/master/state/{state}", "state"),
+            Link.of(this.host + "/project/SAMPLE/tailoring/master/requirements/applicabilty", "requirementsapplicability")
         );
     }
 

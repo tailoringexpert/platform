@@ -44,8 +44,8 @@ package tailoring {
         resolve(domain: Logo) : LogoEntity
         resolve(domain: Document) : DocumentEntity
     }
-    JPAProjektServiceRepositoryMapper -->  "1" LogoRepository : logoRepository
-    JPAProjektServiceRepositoryMapper -->  "1" ApplicableDocumentRepository : applicableDocumentRepository
+    JPATailoringServiceRepositoryMapper -->  "1" LogoRepository : logoRepository
+    JPATailoringServiceRepositoryMapper -->  "1" ApplicableDocumentRepository : applicableDocumentRepository
 
     class JPATailoringServiceRepository {
     }
@@ -63,5 +63,17 @@ package tailoring {
     }
     TailoringDeletablePredicateRepository <|.. JPATailoringDeletablePredicateRepository
 
+
+    abstract class JPABaseRequirementsProviderRepositoryMapper {
+        {abstract} getBaseCatalog(entity : BaseCatalogEntity) : Catalog<BaseRequirement>
+    }
+
+    interface BaseRequirementsProviderRepository {
+        getBaseCatalog(project : String) : Optional<Map<String, BaseRequirement>
+    }
+    class JPABaseRequirementsProviderRepository {
+    }
+    BaseRequirementsProviderRepository <|.. JPABaseRequirementsProviderRepository
+    JPABaseRequirementsProviderRepository --> "1" JPABaseRequirementsProviderRepositoryMapper : mapper
 }
 @enduml

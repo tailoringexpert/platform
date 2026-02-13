@@ -220,4 +220,12 @@ public interface TailoringService {
      */
     Optional<TailoringInformation> updateState(String project, String tailoring, TailoringState state);
 
+    /**
+     * Unselect requirements not related to phases of tailoring.
+     *
+     * @param project   Project of tailoring
+     * @param tailoring tailoring to unselect requirements if requirement is not applicable for tailoring phases
+     * @return true, if requirements were processed
+     */
+    Optional<Boolean> unselectRequirementsAccordingToPhases(String project, String tailoring);
 }

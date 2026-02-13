@@ -23,25 +23,10 @@ package eu.tailoringexpert.catalog;
 
 import com.github.difflib.text.DiffRowGenerator;
 import eu.tailoringexpert.Tenants;
-import eu.tailoringexpert.domain.BaseRequirement;
-import eu.tailoringexpert.domain.Catalog;
-import eu.tailoringexpert.domain.Chapter;
-import eu.tailoringexpert.domain.DRD;
-import eu.tailoringexpert.domain.DRDProvider;
-import eu.tailoringexpert.domain.Document;
-import eu.tailoringexpert.domain.Identifier;
-import eu.tailoringexpert.domain.Logo;
-import eu.tailoringexpert.domain.Phase;
-import eu.tailoringexpert.domain.Reference;
-import eu.tailoringexpert.domain.ResourceMapper;
+import eu.tailoringexpert.domain.*;
 import eu.tailoringexpert.renderer.HTMLTemplateEngine;
 import eu.tailoringexpert.renderer.PDFEngine;
-import eu.tailoringexpert.repository.BaseCatalogRepository;
-import eu.tailoringexpert.repository.DRDRepository;
-import eu.tailoringexpert.repository.ApplicableDocumentRepository;
-import eu.tailoringexpert.repository.LogoRepository;
-import eu.tailoringexpert.repository.SelectionVectorProfileRepository;
-import eu.tailoringexpert.repository.TailoringCatalogRepository;
+import eu.tailoringexpert.repository.*;
 import lombok.NonNull;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.springframework.beans.factory.ListableBeanFactory;
@@ -57,7 +42,6 @@ import java.util.Map;
 import java.util.Set;
 import java.util.function.*;
 
-import static java.util.List.of;
 import static java.util.function.Function.identity;
 
 @Configuration
@@ -174,17 +158,24 @@ public class CatalogConfiguration {
     }
 
     @Bean
+    BiConsumer<Catalog<BaseRequirement>, Sheet> applicableDocumentSheetCreator() {
+        return new ApplicableDocumentSheetCreator();
+    }
+
+    @Bean
     BaseCatalogExcelDocumentCreator baseCatalogExportExcelDocumentCreator(
         @NonNull @Qualifier("requirementSheetCreator") BiConsumer<Catalog<BaseRequirement>, Sheet> requirementSheetCreator,
         @NonNull @Qualifier("drdSheetCreator") BiConsumer<Catalog<BaseRequirement>, Sheet> drdSheetCreator,
         @NonNull @Qualifier("documentSheetCreator") BiConsumer<Catalog<BaseRequirement>, Sheet> documentSheetCreator,
-        @NonNull @Qualifier("logoSheetCreator") BiConsumer<Catalog<BaseRequirement>, Sheet> logoSheetCreator
+        @NonNull @Qualifier("logoSheetCreator") BiConsumer<Catalog<BaseRequirement>, Sheet> logoSheetCreator,
+        @NonNull @Qualifier("applicableDocumentSheetCreator") BiConsumer<Catalog<BaseRequirement>, Sheet> applicableDocumentSheetCreator
     ) {
         return new BaseCatalogExcelDocumentCreator(
             requirementSheetCreator,
             drdSheetCreator,
             documentSheetCreator,
-            logoSheetCreator
+            logoSheetCreator,
+            applicableDocumentSheetCreator
         );
     }
 
@@ -276,4 +267,6 @@ public class CatalogConfiguration {
         return new ToRevisedBaseCatalogFunction(diffRowGenerator);
 
     }
+
+
 }
