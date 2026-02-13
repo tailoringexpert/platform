@@ -21,13 +21,7 @@
  */
 package eu.tailoringexpert.tailoring;
 
-import eu.tailoringexpert.domain.DocumentSignature;
-import eu.tailoringexpert.domain.Note;
-import eu.tailoringexpert.domain.Project;
-import eu.tailoringexpert.domain.ScreeningSheet;
-import eu.tailoringexpert.domain.SelectionVectorProfile;
-import eu.tailoringexpert.domain.Tailoring;
-import eu.tailoringexpert.domain.TailoringState;
+import eu.tailoringexpert.domain.*;
 
 import java.util.Collection;
 import java.util.Optional;
@@ -154,8 +148,6 @@ public interface TailoringServiceRepository {
      * @return In case successful setting state tailoring, otherwise empty
      */
     Optional<Tailoring> setState(String project, String tailoring, TailoringState state);
-
-
 }
 
 

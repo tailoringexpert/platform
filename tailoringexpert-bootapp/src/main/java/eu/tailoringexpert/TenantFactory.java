@@ -25,8 +25,6 @@ import lombok.AllArgsConstructor;
 import lombok.NonNull;
 import lombok.SneakyThrows;
 import lombok.extern.log4j.Log4j2;
-import org.jasypt.encryption.StringEncryptor;
-import org.jasypt.properties.EncryptableProperties;
 import org.springframework.jdbc.datasource.DriverManagerDataSource;
 
 import javax.sql.DataSource;
@@ -53,10 +51,6 @@ public class TenantFactory {
 
     @NonNull
     private String tenantConfigRoot;
-
-    @NonNull
-    private StringEncryptor encryptor;
-
 
     public Map<String, String> tenants() {
         log.debug("Search tenant configuration in " + Paths.get(tenantConfigRoot).toFile());
@@ -135,7 +129,7 @@ public class TenantFactory {
 
         properties.forEach((key, value) -> properties.replace(key, resolveEnvVar((String) value)));
 
-        return new EncryptableProperties(properties, encryptor);
+        return properties;
     }
 
     @SneakyThrows

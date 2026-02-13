@@ -21,12 +21,8 @@
  */
 package eu.tailoringexpert;
 
-import com.ulisesbocchio.jasyptspringboot.annotation.EnableEncryptableProperties;
 import lombok.NonNull;
 import lombok.extern.log4j.Log4j2;
-import org.jasypt.encryption.StringEncryptor;
-import org.jasypt.encryption.pbe.StandardPBEStringEncryptor;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
@@ -55,34 +51,11 @@ import static org.springframework.context.annotation.FilterType.REGEX;
         @Filter(RestController.class),
     }
 )
-@EnableEncryptableProperties
 @Log4j2
 public class App {
 
     public static void main(String[] args) {
         SpringApplication.run(App.class, args);
-    }
-
-    @Bean
-    StringEncryptor encryptorBean(@Value("${jasypt.password}") String password) {
-        StandardPBEStringEncryptor result = new StandardPBEStringEncryptor();
-        result.setPassword(password);
-        result.setAlgorithm("PBEWithMD5AndTripleDES");
-        return result;
-    }
-
-    @Bean
-    PropertySourcesPlaceholderConfigurer propertyConfigurer() {
-        final PropertySourcesPlaceholderConfigurer result = new PropertySourcesPlaceholderConfigurer();
-        result.setOrder(0);
-        result.setIgnoreUnresolvablePlaceholders(false);
-        return result;
-    }
-
-    @Bean
-    Map<String, String> registerTenants(
-        @NonNull TenantFactory factory) {
-        return factory.tenants();
     }
 
     @EventListener
@@ -100,6 +73,20 @@ public class App {
             .filter(prop -> !(prop.contains("credentials") || prop.contains("password")))
             .forEach(prop -> log.info("{}: {}", prop, env.getProperty(prop)));
         log.info("===========================================");
+    }
+
+    @Bean
+    PropertySourcesPlaceholderConfigurer propertyConfigurer() {
+        final PropertySourcesPlaceholderConfigurer result = new PropertySourcesPlaceholderConfigurer();
+        result.setOrder(0);
+        result.setIgnoreUnresolvablePlaceholders(false);
+        return result;
+    }
+
+    @Bean
+    Map<String, String> registerTenants(
+        @NonNull TenantFactory factory) {
+        return factory.tenants();
     }
 
 

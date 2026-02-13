@@ -22,8 +22,6 @@
 package eu.tailoringexpert.catalog;
 
 
-import com.fasterxml.jackson.annotation.JsonSetter;
-import com.fasterxml.jackson.annotation.Nulls;
 import eu.tailoringexpert.FileSaver;
 import eu.tailoringexpert.domain.*;
 import org.junit.jupiter.api.BeforeEach;
@@ -33,7 +31,6 @@ import tools.jackson.databind.json.JsonMapper;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import static java.util.Objects.nonNull;
@@ -64,7 +61,8 @@ class BaseCatalogExcelDocumentCreatorIntegrationTest {
             new DRDSheetCreator(),
             new DocumentSheetCreator(new ApplicableDocumentProvider<BaseRequirement>(
                 new RequirementAlwaysSelectedPredicate<BaseRequirement>(), new DocumentNumberComparator())),
-            new LogoSheetCreator()
+            new LogoSheetCreator(),
+            new ApplicableDocumentSheetCreator()
         );
     }
 

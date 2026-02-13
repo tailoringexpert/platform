@@ -22,7 +22,6 @@
 package eu.tailoringexpert;
 
 import lombok.NonNull;
-import org.jasypt.encryption.StringEncryptor;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -54,11 +53,10 @@ public class DatabaseConfiguration {
         @NonNull @Value("${spring.datasource.url}") String url,
         @NonNull @Value("${spring.datasource.username}") String username,
         @NonNull @Value("${spring.datasource.password}") String password,
-        @NonNull @Qualifier("tenantConfigHome") String tenantConfigHome,
-        @NonNull @Qualifier("encryptorBean") StringEncryptor encryptor) {
+        @NonNull @Qualifier("tenantConfigHome") String tenantConfigHome) {
         DataSource defaultDataSource = dataSource(driverClassName, url, username, password);
 
-        return new TenantFactory(defaultDataSource, tenantConfigHome, encryptor);
+        return new TenantFactory(defaultDataSource, tenantConfigHome);
     }
 
     @Bean

@@ -1155,4 +1155,31 @@ class TailoringControllerTest {
         actual.andExpect(status().isOk());
         verify(serviceMock, times(1)).updateState("SAMPLE", "master", TailoringState.AGREED);
     }
+
+    @Test
+    void putUnselectRequirementsAccordingToPhases_TailoringNotExists_StateNotFound() throws Exception {
+        // arrange
+        given(serviceMock.unselectRequirementsAccordingToPhases("SAMPLE", "master")).willReturn(empty());
+
+        // act
+        ResultActions actual = mockMvc.perform(put("/project/{project}/tailoring/{tailoring}/requirements/applicabilty", "SAMPLE", "master"));
+
+        // assert
+        actual.andExpect(status().isNotFound());
+        assertThatNoException();
+    }
+
+    @Test
+    void putUnselectRequirementsAccordingToPhases_TailoringExists_StateCreated() throws Exception {
+        // arrange
+        given(serviceMock.unselectRequirementsAccordingToPhases("SAMPLE", "master"))
+            .willReturn(Optional.of(TRUE));
+
+        // act
+        ResultActions actual = mockMvc.perform(put("/project/{project}/tailoring/{tailoring}/requirements/applicabilty", "SAMPLE", "master"));
+
+        // assert
+        actual.andExpect(status().isOk());
+        verify(serviceMock, times(1)).unselectRequirementsAccordingToPhases("SAMPLE", "master");
+    }
 }

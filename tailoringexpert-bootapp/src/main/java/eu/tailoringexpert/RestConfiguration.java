@@ -50,6 +50,7 @@ import org.springframework.hateoas.server.core.EvoInflectorLinkRelationProvider;
 import org.springframework.http.MediaType;
 import org.springframework.http.converter.ByteArrayHttpMessageConverter;
 import org.springframework.web.filter.OncePerRequestFilter;
+import tools.jackson.databind.DeserializationFeature;
 import tools.jackson.databind.SerializationFeature;
 
 import java.io.IOException;
@@ -63,6 +64,7 @@ import java.util.Optional;
 import static java.util.Arrays.asList;
 import static java.util.Locale.GERMANY;
 import static java.util.stream.Collectors.toMap;
+import static tools.jackson.databind.DeserializationFeature.*;
 import static tools.jackson.databind.DeserializationFeature.ACCEPT_EMPTY_ARRAY_AS_NULL_OBJECT;
 
 @Log4j2
@@ -76,6 +78,7 @@ public class RestConfiguration {
                 .enable(SerializationFeature.INDENT_OUTPUT)
                 .disable(SerializationFeature.FAIL_ON_EMPTY_BEANS)
                 .disable(ACCEPT_EMPTY_ARRAY_AS_NULL_OBJECT)
+                .disable(FAIL_ON_NULL_FOR_PRIMITIVES)
                 .handlerInstantiator(new HalJacksonModule.HalHandlerInstantiator(new EvoInflectorLinkRelationProvider(),
                     CurieProvider.NONE, MessageResolver.DEFAULTS_ONLY))
                 .withConfigOverride(List.class, cfg ->
