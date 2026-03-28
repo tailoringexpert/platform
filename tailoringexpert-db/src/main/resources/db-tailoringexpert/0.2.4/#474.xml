@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
+
+    <changeSet id="1" author="tailoringexpert">
+        <comment>github issue #474</comment>
+        <createTable tableName="TAILORINGREQUIREMENTCHANGE">
+            <column name="REQUIREMENTCHANGE_ID" type="BIGINT">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="REQUIREMENT_ID" type="BIGINT"/>
+            <column name="USER_ID" type="VARCHAR(256)"/>
+            <column name="MODIFICATIONTIMESTAMP" type="VARCHAR(256)"/>
+            <column name="CHANGETYPE" type="VARCHAR(32)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="OLD" type="CLOB"/>
+            <column name="NEW" type="CLOB"/>
+        </createTable>
+
+        <insert tableName="SEQUENCE">
+            <column name="SEQ_NAME" value="SEQ_TAILORINGREQUIREMENTCHANGE"/>
+            <column name="SEQ_COUNT" valueNumeric="1"/>
+        </insert>
+
+        <addForeignKeyConstraint constraintName="FK_TAILORINGREQUIREMENTCHANGE"
+                                 baseTableName="TAILORINGREQUIREMENTCHANGE" baseColumnNames="REQUIREMENT_ID"
+                                 referencedTableName="TAILORINGREQUIREMENT"
+                                 referencedColumnNames="REQUIREMENT_ID"/>
+    </changeSet>
+
+</databaseChangeLog>

@@ -21,25 +21,21 @@
  */
 package eu.tailoringexpert.requirement;
 
-import eu.tailoringexpert.domain.Chapter;
-import eu.tailoringexpert.domain.TailoringRequirementEntity;
-import eu.tailoringexpert.domain.TailoringEntity;
-import eu.tailoringexpert.domain.TailoringCatalogChapterEntity;
-import eu.tailoringexpert.domain.TailoringRequirement;
+import eu.tailoringexpert.domain.*;
 import eu.tailoringexpert.repository.ProjectRepository;
+import eu.tailoringexpert.repository.TailoringRequirementChangeRepository;
+import jakarta.transaction.Transactional;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
-
-import jakarta.transaction.Transactional;
 import lombok.extern.log4j.Log4j2;
 
+import java.util.Collection;
 import java.util.Optional;
+import java.util.function.BiConsumer;
 
 import static java.util.Comparator.comparing;
 import static java.util.Objects.isNull;
-import static java.util.Optional.empty;
-import static java.util.Optional.of;
-import static java.util.Optional.ofNullable;
+import static java.util.Optional.*;
 
 /**
  * Implementation of {@link RequirementServiceRepository}.
@@ -57,15 +53,21 @@ public class JPARequirementServiceRepository implements RequirementServiceReposi
     @NonNull
     private ProjectRepository projectRepository;
 
+    @NonNull
+    private TailoringRequirementChangeRepository tailoringRequirementChangeRepository;
+
+    @NonNull
+    private BiConsumer<TailoringRequirementEntity, TailoringRequirementEntity> requirementChangeLog;
+
     /**
      * {@inheritDoc}
      */
     @Override
     public Optional<TailoringRequirement> getRequirement(
-        @NonNull String project,
-        @NonNull String tailoring,
-        @NonNull String chapter,
-        @NonNull String position) {
+            @NonNull String project,
+            @NonNull String tailoring,
+            @NonNull String chapter,
+            @NonNull String position) {
         log.traceEntry(() -> project, () -> tailoring, () -> chapter, () -> position);
 
         Optional<TailoringCatalogChapterEntity> oChapter = findChapter(project, tailoring, chapter);
@@ -75,11 +77,11 @@ public class JPARequirementServiceRepository implements RequirementServiceReposi
         }
 
         Optional<TailoringRequirement> result = ofNullable(mapper.toDomain(oChapter.get()
-            .getRequirements()
-            .stream()
-            .filter(requirement -> position.equals(requirement.getPosition()))
-            .findFirst()
-            .orElse(null)));
+                .getRequirements()
+                .stream()
+                .filter(requirement -> position.equals(requirement.getPosition()))
+                .findFirst()
+                .orElse(null)));
 
         log.traceExit();
         return result;
@@ -90,10 +92,10 @@ public class JPARequirementServiceRepository implements RequirementServiceReposi
      */
     @Override
     public Optional<TailoringRequirement> updateRequirement(
-        @NonNull String project,
-        @NonNull String tailoring,
-        @NonNull String chapter,
-        @NonNull TailoringRequirement requirement) {
+            @NonNull String project,
+            @NonNull String tailoring,
+            @NonNull String chapter,
+            @NonNull TailoringRequirement requirement) {
         log.traceEntry(() -> project, () -> tailoring, () -> chapter, requirement::getPosition);
 
         Optional<TailoringCatalogChapterEntity> oChapter = findChapter(project, tailoring, chapter);
@@ -103,18 +105,21 @@ public class JPARequirementServiceRepository implements RequirementServiceReposi
         }
 
         Optional<TailoringRequirementEntity> oRequirement = oChapter.get()
-            .getRequirements()
-            .stream()
-            .filter(a -> requirement.getPosition().equals(a.getPosition()))
-            .findFirst();
+                .getRequirements()
+                .stream()
+                .filter(a -> requirement.getPosition().equals(a.getPosition()))
+                .findFirst();
 
         if (oRequirement.isEmpty()) {
             log.traceExit();
             return empty();
         }
+        TailoringRequirementEntity original = mapper.clone(oRequirement.get());
 
         mapper.updateRequirement(requirement, oRequirement.get());
         Optional<TailoringRequirement> result = of(mapper.toDomain(oRequirement.get()));
+
+        requirementChangeLog.accept(original, oRequirement.get());
 
         log.traceExit();
         return result;
@@ -125,9 +130,9 @@ public class JPARequirementServiceRepository implements RequirementServiceReposi
      */
     @Override
     public Optional<Chapter<TailoringRequirement>> getChapter(
-        @NonNull String project,
-        @NonNull String tailoring,
-        @NonNull String chapter) {
+            @NonNull String project,
+            @NonNull String tailoring,
+            @NonNull String chapter) {
         log.traceEntry(() -> project, () -> tailoring, () -> chapter);
 
         Optional<TailoringCatalogChapterEntity> oChapter = findChapter(project, tailoring, chapter);
@@ -142,9 +147,9 @@ public class JPARequirementServiceRepository implements RequirementServiceReposi
      */
     @Override
     public Optional<Chapter<TailoringRequirement>> updateSelected(
-        @NonNull String project,
-        @NonNull String tailoring,
-        @NonNull Chapter<TailoringRequirement> chapter) {
+            @NonNull String project,
+            @NonNull String tailoring,
+            @NonNull Chapter<TailoringRequirement> chapter) {
         log.traceEntry(() -> project, () -> tailoring, () -> chapter);
 
         Optional<TailoringCatalogChapterEntity> oChapter = findChapter(project, tailoring, chapter.getNumber());
@@ -154,16 +159,15 @@ public class JPARequirementServiceRepository implements RequirementServiceReposi
         }
 
         oChapter.get().allChapters()
-            .forEachOrdered(subChapter -> {
-                Chapter<TailoringRequirement> domainChapter = chapter.getChapter(subChapter.getNumber());
-                subChapter.getRequirements()
-                    .stream()
-                    .sorted(comparing(TailoringRequirementEntity::getPosition))
-                    .forEachOrdered(requirement -> mapper.updateRequirement(
-                        domainChapter.getRequirement(requirement.getPosition()).get(),
-                        requirement)
-                    );
-            });
+                .forEachOrdered(subChapter -> {
+                    Chapter<TailoringRequirement> domainChapter = chapter.getChapter(subChapter.getNumber());
+                    subChapter.getRequirements()
+                            .stream()
+                            .sorted(comparing(TailoringRequirementEntity::getPosition))
+                            .forEachOrdered(requirement -> mapper.updateRequirement(
+                                    domainChapter.getRequirement(requirement.getPosition()).get(),
+                                    requirement));
+                });
         Optional<Chapter<TailoringRequirement>> result = of(mapper.toDomain(oChapter.get()));
 
         log.traceExit();
@@ -175,9 +179,9 @@ public class JPARequirementServiceRepository implements RequirementServiceReposi
      */
     @Override
     public Optional<Chapter<TailoringRequirement>> updateChapter(
-        @NonNull String project,
-        @NonNull String tailoring,
-        @NonNull Chapter<TailoringRequirement> chapter) {
+            @NonNull String project,
+            @NonNull String tailoring,
+            @NonNull Chapter<TailoringRequirement> chapter) {
         log.traceEntry(() -> project, () -> tailoring, () -> chapter);
 
         Optional<TailoringCatalogChapterEntity> oEntity = findChapter(project, tailoring, chapter.getNumber());
@@ -187,12 +191,48 @@ public class JPARequirementServiceRepository implements RequirementServiceReposi
         }
         mapper.updateChapter(chapter, oEntity.get());
         oEntity.get().getRequirements()
-            .stream()
-            .filter(requirement -> isNull(requirement.getNumber()))
-            .forEach(requirement -> requirement.setNumber(chapter.getNumber() + "." + requirement.getPosition()));
+                .stream()
+                .filter(requirement -> isNull(requirement.getNumber()))
+                .forEach(requirement -> requirement.setNumber(chapter.getNumber() + "." + requirement.getPosition()));
 
         Optional<Chapter<TailoringRequirement>> result = of(mapper.toDomain(oEntity.get()));
 
+        log.traceExit();
+        return result;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public Optional<Collection<RequirementChange>> getRequirementChanges(
+            @NonNull String project,
+            @NonNull String tailoring,
+            @NonNull String chapter,
+            @NonNull String position) {
+        log.traceEntry(() -> project, () -> tailoring, () -> chapter, () -> position);
+
+        Optional<TailoringCatalogChapterEntity> oChapter = findChapter(project, tailoring, chapter);
+        if (oChapter.isEmpty()) {
+            log.traceExit();
+            return empty();
+        }
+
+        Optional<TailoringRequirementEntity> oRequirement = oChapter.get()
+                .getRequirements()
+                .stream()
+                .filter(requirement -> position.equals(requirement.getPosition()))
+                .findFirst();
+        if (oRequirement.isEmpty()) {
+            log.traceExit();
+            return empty();
+        }
+
+        Optional<Collection<RequirementChange>> result = of(
+                tailoringRequirementChangeRepository.findAllByRequirementId(oRequirement.get().getId())
+                        .stream()
+                        .map(mapper::getRequirementChanges)
+                        .toList());
         log.traceExit();
         return result;
     }
@@ -206,9 +246,9 @@ public class JPARequirementServiceRepository implements RequirementServiceReposi
      * @return if exists the (fullqualified) chapter, otherwise empty
      */
     private Optional<TailoringCatalogChapterEntity> findChapter(
-        String project,
-        String tailoring,
-        String chapter) {
+            String project,
+            String tailoring,
+            String chapter) {
         log.traceEntry(() -> project, () -> tailoring, () -> chapter);
 
         TailoringEntity eTailoring = projectRepository.findTailoring(project, tailoring);
@@ -218,9 +258,9 @@ public class JPARequirementServiceRepository implements RequirementServiceReposi
         }
 
         Optional<TailoringCatalogChapterEntity> result = eTailoring
-            .getCatalog()
-            .getToc()
-            .getChapter(chapter);
+                .getCatalog()
+                .getToc()
+                .getChapter(chapter);
 
         log.traceExit();
         return result;

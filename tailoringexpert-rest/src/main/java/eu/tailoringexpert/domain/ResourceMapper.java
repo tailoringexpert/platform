@@ -28,6 +28,7 @@ import eu.tailoringexpert.domain.FileResource.FileResourceBuilder;
 import eu.tailoringexpert.domain.NoteResource.NoteResourceBuilder;
 import eu.tailoringexpert.domain.PathContext.PathContextBuilder;
 import eu.tailoringexpert.domain.ProjectResource.ProjectResourceBuilder;
+import eu.tailoringexpert.domain.RequirementChangeResource.RequirementChangeResourceBuilder;
 import eu.tailoringexpert.domain.ScreeningSheetResource.ScreeningSheetResourceBuilder;
 import eu.tailoringexpert.domain.SelectionVectorResource.SelectionVectorResourceBuilder;
 import eu.tailoringexpert.domain.TailoringCatalogChapterResource.TailoringCatalogChapterResourceBuilder;
@@ -73,6 +74,7 @@ public abstract class ResourceMapper {
     public static final String TAILORINGREQUIRMENT = "project/{project}/tailoring/{tailoring}/catalog/{chapter}/{requirement}";
     public static final String TAILORINGREQUIRMENT_SELECTED = "project/{project}/tailoring/{tailoring}/catalog/{chapter}/{requirement}/selected/{selected}";
     public static final String TAILORINGREQUIRMENT_TEXT = "project/{project}/tailoring/{tailoring}/catalog/{chapter}/{requirement}/text";
+    public static final String TAILORINGREQUIRMENT_CHANGES = "project/{project}/tailoring/{tailoring}/catalog/{chapter}/{requirement}/changes";
     public static final String CHAPTER_SELECTED = "project/{project}/tailoring/{tailoring}/catalog/{chapter}/selected/{selected}";
 
     public static final String TAILORINGS = "project/{project}/tailoring";
@@ -130,13 +132,14 @@ public abstract class ResourceMapper {
     public static final String REL_SELECTED = "selected";
     public static final String REL_DOCUMENT = "document";
     public static final String REL_COMPARE = "compare";
-    public static final String REL_REQUIREMENTAPPLICIBILITY =  "requirementsapplicability";
+    public static final String REL_REQUIREMENTAPPLICIBILITY = "requirementsapplicability";
     private static final String REL_NAME = "name";
     private static final String REL_IMPORT = "import";
     private static final String REL_ATTACHMENT = "attachment";
     private static final String REL_NOTE = "note";
     private static final String REL_STATE = "state";
     private static final String REL_VALIDUNTIL = "validuntil";
+    private static final String REL_REQUIREMENTCHANGES = "requirementchanges";
 
     @Setter
     private String contextPath;
@@ -351,8 +354,23 @@ public abstract class ResourceMapper {
         resource.links(asList(
             createLink(REL_SELF, TAILORINGREQUIRMENT, parameter),
             createLink(REL_SELECTED, TAILORINGREQUIRMENT_SELECTED, parameter),
-            createLink(REL_TEXT, TAILORINGREQUIRMENT_TEXT, parameter))
+            createLink(REL_TEXT, TAILORINGREQUIRMENT_TEXT, parameter),
+            createLink(REL_REQUIREMENTCHANGES, TAILORINGREQUIRMENT_CHANGES, parameter))
+
         );
+    }
+
+    // RequirementChange
+    @BeforeMapping
+    protected void updatePathContext(@Context PathContextBuilder pathContext, RequirementChange domain) {
+    }
+
+
+    public abstract RequirementChangeResource toResource(@Context PathContextBuilder pathContext, RequirementChange domain);
+
+
+    @AfterMapping
+    protected void addLinks(@Context PathContextBuilder pathContext, @MappingTarget RequirementChangeResourceBuilder resource) {
     }
 
     // DocumentSignature

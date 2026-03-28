@@ -23,9 +23,11 @@ package eu.tailoringexpert.requirement;
 
 import eu.tailoringexpert.Tenant;
 import eu.tailoringexpert.domain.ResourceMapper;
+import eu.tailoringexpert.domain.TailoringRequirementEntity;
 import eu.tailoringexpert.repository.DRDRepository;
 import eu.tailoringexpert.repository.LogoRepository;
 import eu.tailoringexpert.repository.ProjectRepository;
+import eu.tailoringexpert.repository.TailoringRequirementChangeRepository;
 import lombok.NonNull;
 import org.springframework.beans.factory.ListableBeanFactory;
 import org.springframework.context.annotation.Bean;
@@ -34,7 +36,9 @@ import org.springframework.context.annotation.Primary;
 
 import java.util.Map;
 import java.util.Objects;
+import java.util.function.BiConsumer;
 import java.util.function.Function;
+import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
 @Configuration
@@ -50,12 +54,26 @@ public class RequirementConfiguration {
         return result;
     }
 
+    @Bean
+    RequirementChangeLogHandler requirementChangeLogHandler(
+        @NonNull Supplier<String> usernameSupplier,
+        @NonNull TailoringRequirementChangeRepository repository
+    ) {
+        return new RequirementChangeLogHandler(usernameSupplier, repository);
+    }
 
     @Bean
     RequirementServiceRepository requirementServiceRepository(
         @NonNull JPARequirementServiceRepositoryMapper mapper,
-        @NonNull ProjectRepository projectRepository) {
-        return new JPARequirementServiceRepository(mapper, projectRepository);
+        @NonNull ProjectRepository projectRepository,
+        @NonNull TailoringRequirementChangeRepository tailoringRequirementChangeRepository,
+        @NonNull BiConsumer<TailoringRequirementEntity, TailoringRequirementEntity> requirementChangeLog) {
+        return new JPARequirementServiceRepository(
+            mapper,
+            projectRepository,
+            tailoringRequirementChangeRepository,
+            requirementChangeLog
+        );
     }
 
     @Bean

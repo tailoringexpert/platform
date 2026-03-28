@@ -22,14 +22,7 @@
 package eu.tailoringexpert.requirement;
 
 import eu.tailoringexpert.TailoringexpertMapperConfig;
-import eu.tailoringexpert.domain.Chapter;
-import eu.tailoringexpert.domain.DRDEntity;
-import eu.tailoringexpert.domain.LogoEntity;
-import eu.tailoringexpert.domain.TailoringRequirementEntity;
-import eu.tailoringexpert.domain.TailoringCatalogChapterEntity;
-import eu.tailoringexpert.domain.DRD;
-import eu.tailoringexpert.domain.Logo;
-import eu.tailoringexpert.domain.TailoringRequirement;
+import eu.tailoringexpert.domain.*;
 import eu.tailoringexpert.repository.DRDRepository;
 import eu.tailoringexpert.repository.LogoRepository;
 import lombok.Setter;
@@ -59,6 +52,10 @@ public abstract class JPARequirementServiceRepositoryMapper {
     abstract Chapter<TailoringRequirement> toDomain(TailoringCatalogChapterEntity entity);
 
     abstract void updateChapter(Chapter<TailoringRequirement> domain, @MappingTarget TailoringCatalogChapterEntity entity);
+
+    abstract TailoringRequirementEntity clone(TailoringRequirementEntity entity);
+
+    abstract RequirementChange getRequirementChanges(TailoringRequirementChangeEntity entity);
 
     LogoEntity resolve(Logo domain) {
         return nonNull(domain) ? logoRepository.findByName(domain.getName()) : null;

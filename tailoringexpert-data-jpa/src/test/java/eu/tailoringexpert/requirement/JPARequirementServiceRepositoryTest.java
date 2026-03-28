@@ -21,49 +21,51 @@
  */
 package eu.tailoringexpert.requirement;
 
-import eu.tailoringexpert.domain.Chapter;
-import eu.tailoringexpert.domain.ProjectEntity;
-import eu.tailoringexpert.domain.TailoringRequirement;
-import eu.tailoringexpert.domain.TailoringRequirementEntity;
-import eu.tailoringexpert.domain.TailoringEntity;
-import eu.tailoringexpert.domain.TailoringCatalogEntity;
-import eu.tailoringexpert.domain.TailoringCatalogChapterEntity;
+import eu.tailoringexpert.domain.*;
 import eu.tailoringexpert.repository.ProjectRepository;
+import eu.tailoringexpert.repository.TailoringRequirementChangeRepository;
 import lombok.extern.log4j.Log4j2;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
+import java.util.function.BiConsumer;
+import java.util.stream.Stream;
 
-import static eu.tailoringexpert.domain.Phase.E;
-import static eu.tailoringexpert.domain.Phase.F;
-import static eu.tailoringexpert.domain.Phase.ZERO;
+import static eu.tailoringexpert.domain.Phase.*;
 import static java.util.Arrays.asList;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.catchThrowable;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.timeout;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 @Log4j2
 class JPARequirementServiceRepositoryTest {
 
     ProjectRepository projectRepositoryMock;
+    TailoringRequirementChangeRepository tailoringRequirementChangeRepositoryMock;
     JPARequirementServiceRepositoryMapper mapperMock;
+    BiConsumer<TailoringRequirementEntity, TailoringRequirementEntity> changeLogMock;
     JPARequirementServiceRepository repository;
 
     @BeforeEach
     void setup() {
         this.projectRepositoryMock = mock(ProjectRepository.class);
+        this.tailoringRequirementChangeRepositoryMock = mock(TailoringRequirementChangeRepository.class);
         this.mapperMock = mock(JPARequirementServiceRepositoryMapper.class);
+        this.changeLogMock = mock(BiConsumer.class);
         this.repository = new JPARequirementServiceRepository(
-            this.mapperMock,
-            this.projectRepositoryMock
-        );
+                this.mapperMock,
+                this.projectRepositoryMock,
+                this.tailoringRequirementChangeRepositoryMock,
+                this.changeLogMock);
     }
 
     @Test
@@ -78,78 +80,52 @@ class JPARequirementServiceRepositoryTest {
         assertThat(actual).isEmpty();
     }
 
-    @Test
-    void getRequirement_ProjektNull_NullPointerExceptionThrown() {
-        // arrange
-
+    @ParameterizedTest
+    @MethodSource("getRequirement")
+    void getRequirement_NullParameter_NullPointerExceptionThrown(String project, String tailoring, String chapter,
+            String position) {
         // act
-        Throwable actual = catchThrowable(() -> repository.getRequirement(null, "master1", "1.2.1", "b"));
+        Throwable actual = catchThrowable(() -> repository.getRequirement(project, tailoring, chapter, position));
 
         // assert
         assertThat(actual).isInstanceOf(NullPointerException.class);
     }
 
-    @Test
-    void getRequirement_TailoringNull_NullPointerExceptionThrown() {
-        // arrange
-
-        // act
-        Throwable actual = catchThrowable(() -> repository.getRequirement("DUMMY", null, "1.2.1", "b"));
-
-        // assert
-        assertThat(actual).isInstanceOf(NullPointerException.class);
+    @SuppressWarnings({ "java:S1144" })
+    private static Stream<Arguments> getRequirement() { // NOPMD - suppressed UnusedPrivateMethod - Used by
+                                                        // parameterized test
+                                                        // getRequirement_NullParameter_ExceptionThrown
+        return Stream.of(
+                Arguments.of(null, "master1", "1.2.1", "b"),
+                Arguments.of("DUMMY", null, "1.2.1", "b"),
+                Arguments.of("DUMMY", "master1", null, "b"),
+                Arguments.of("DUMMY", "master1", "1.2.1", null));
     }
-
-    @Test
-    void getRequirement_ChapterNull_NullPointerExceptionThrown() {
-        // arrange
-
-        // act
-        Throwable actual = catchThrowable(() -> repository.getRequirement("DUMMY", "master", null, "b"));
-
-        // assert
-        assertThat(actual).isInstanceOf(NullPointerException.class);
-    }
-
-    @Test
-    void getRequirement_PositionNull_NullPointerExceptionThrown() {
-        // arrange
-
-        // act
-        Throwable actual = catchThrowable(() -> repository.getRequirement("DUMMY", "master", "1.2.1", null));
-
-        // assert
-        assertThat(actual).isInstanceOf(NullPointerException.class);
-    }
-
 
     @Test
     void getRequirement_ChapterNotExists_EmptyReturned() {
         // arrange
         TailoringEntity tailoring = TailoringEntity.builder()
-            .id(2L)
-            .name("master")
-            .phase(ZERO)
-            .catalog(TailoringCatalogEntity.builder()
-                .toc(TailoringCatalogChapterEntity.builder()
-                    .chapters(asList(
-                        TailoringCatalogChapterEntity.builder()
-                            .number("1")
-                            .chapters(asList(
-                                TailoringCatalogChapterEntity.builder()
-                                    .number("1.1")
-                                    .chapters(asList(
+                .id(2L)
+                .name("master")
+                .phase(ZERO)
+                .catalog(TailoringCatalogEntity.builder()
+                        .toc(TailoringCatalogChapterEntity.builder()
+                                .chapters(asList(
                                         TailoringCatalogChapterEntity.builder()
-                                            .number("1.1.1")
-                                            .build()
-                                    ))
-                                    .build()
-                            ))
-                            .build())
-                    )
-                    .build())
-                .build())
-            .build();
+                                                .number("1")
+                                                .chapters(asList(
+                                                        TailoringCatalogChapterEntity.builder()
+                                                                .number("1.1")
+                                                                .chapters(asList(
+                                                                        TailoringCatalogChapterEntity.builder()
+                                                                                .number("1.1.1")
+                                                                                .build()))
+                                                                .build()))
+                                                .build()))
+                                .build())
+                        .build())
+                .build();
         given(projectRepositoryMock.findTailoring("SAMPLE", "master")).willReturn(tailoring);
 
         // act
@@ -163,34 +139,30 @@ class JPARequirementServiceRepositoryTest {
     void getRequirement_RequirementNoExists_EmptyReturned() {
         // arrange
         TailoringEntity tailoring = TailoringEntity.builder()
-            .id(2L)
-            .name("master")
-            .phase(ZERO)
-            .catalog(TailoringCatalogEntity.builder()
-                .toc(TailoringCatalogChapterEntity.builder()
-                    .chapters(asList(
-                        TailoringCatalogChapterEntity.builder()
-                            .number("1")
-                            .chapters(asList(
-                                TailoringCatalogChapterEntity.builder()
-                                    .number("1.1")
-                                    .requirements(asList(
-                                        TailoringRequirementEntity.builder()
-                                            .position("a")
-                                            .build()
-                                    ))
-                                    .chapters(asList(
+                .id(2L)
+                .name("master")
+                .phase(ZERO)
+                .catalog(TailoringCatalogEntity.builder()
+                        .toc(TailoringCatalogChapterEntity.builder()
+                                .chapters(asList(
                                         TailoringCatalogChapterEntity.builder()
-                                            .number("1.1.1")
-                                            .build()
-                                    ))
-                                    .build()
-                            ))
-                            .build())
-                    )
-                    .build())
-                .build())
-            .build();
+                                                .number("1")
+                                                .chapters(asList(
+                                                        TailoringCatalogChapterEntity.builder()
+                                                                .number("1.1")
+                                                                .requirements(asList(
+                                                                        TailoringRequirementEntity.builder()
+                                                                                .position("a")
+                                                                                .build()))
+                                                                .chapters(asList(
+                                                                        TailoringCatalogChapterEntity.builder()
+                                                                                .number("1.1.1")
+                                                                                .build()))
+                                                                .build()))
+                                                .build()))
+                                .build())
+                        .build())
+                .build();
         given(projectRepositoryMock.findTailoring("SAMPLE", "master")).willReturn(tailoring);
 
         // act
@@ -204,43 +176,43 @@ class JPARequirementServiceRepositoryTest {
     void getRequirement_RequirementExists_RequirementReturned() {
         // arrange
         TailoringEntity tailoring = TailoringEntity.builder()
-            .id(3L)
-            .name("master1")
-            .phase(E)
-            .phase(F)
-            .catalog(TailoringCatalogEntity.builder()
-                .toc(TailoringCatalogChapterEntity.builder()
-                    .chapters(asList(
-                        TailoringCatalogChapterEntity.builder()
-                            .number("1")
-                            .chapters(asList(
-                                TailoringCatalogChapterEntity.builder()
-                                    .number("1.1")
-                                    .chapters(asList(
+                .id(3L)
+                .name("master1")
+                .phase(E)
+                .phase(F)
+                .catalog(TailoringCatalogEntity.builder()
+                        .toc(TailoringCatalogChapterEntity.builder()
+                                .chapters(asList(
                                         TailoringCatalogChapterEntity.builder()
-                                            .number("1.1.1")
-                                            .build()
-                                    ))
-                                    .build(),
-                                TailoringCatalogChapterEntity.builder()
-                                    .number("1.2")
-                                    .chapters(asList(
-                                        TailoringCatalogChapterEntity.builder()
-                                            .number("1.2.1")
-                                            .requirements(asList(
-                                                TailoringRequirementEntity.builder()
-                                                    .position("a")
-                                                    .build(),
-                                                TailoringRequirementEntity.builder()
-                                                    .position("b")
-                                                    .build()))
-                                            .build()
-                                    ))
-                                    .build()))
-                            .build()))
-                    .build())
-                .build())
-            .build();
+                                                .number("1")
+                                                .chapters(asList(
+                                                        TailoringCatalogChapterEntity.builder()
+                                                                .number("1.1")
+                                                                .chapters(asList(
+                                                                        TailoringCatalogChapterEntity.builder()
+                                                                                .number("1.1.1")
+                                                                                .build()))
+                                                                .build(),
+                                                        TailoringCatalogChapterEntity.builder()
+                                                                .number("1.2")
+                                                                .chapters(asList(
+                                                                        TailoringCatalogChapterEntity.builder()
+                                                                                .number("1.2.1")
+                                                                                .requirements(asList(
+                                                                                        TailoringRequirementEntity
+                                                                                                .builder()
+                                                                                                .position("a")
+                                                                                                .build(),
+                                                                                        TailoringRequirementEntity
+                                                                                                .builder()
+                                                                                                .position("b")
+                                                                                                .build()))
+                                                                                .build()))
+                                                                .build()))
+                                                .build()))
+                                .build())
+                        .build())
+                .build();
         given(projectRepositoryMock.findTailoring("SAMPLE", "master1")).willReturn(tailoring);
 
         // act
@@ -250,13 +222,13 @@ class JPARequirementServiceRepositoryTest {
         assertThat(actual).isNotNull();
     }
 
-
     @Test
     void updateRequirement_ProjectNull_NullPointerExceptionThrown() {
         // arrange
 
         // act
-        Throwable actual = catchThrowable(() -> repository.updateRequirement(null, "master1", "1.2.1", TailoringRequirement.builder().build()));
+        Throwable actual = catchThrowable(
+                () -> repository.updateRequirement(null, "master1", "1.2.1", TailoringRequirement.builder().build()));
 
         // assert
         assertThat(actual).isInstanceOf(NullPointerException.class);
@@ -267,7 +239,8 @@ class JPARequirementServiceRepositoryTest {
         // arrange
 
         // act
-        Throwable actual = catchThrowable(() -> repository.updateRequirement("DUMMY", null, "1.2.1", TailoringRequirement.builder().build()));
+        Throwable actual = catchThrowable(
+                () -> repository.updateRequirement("DUMMY", null, "1.2.1", TailoringRequirement.builder().build()));
 
         // assert
         assertThat(actual).isInstanceOf(NullPointerException.class);
@@ -278,7 +251,8 @@ class JPARequirementServiceRepositoryTest {
         // arrange
 
         // act
-        Throwable actual = catchThrowable(() -> repository.updateRequirement("DUMMY", "master", null, TailoringRequirement.builder().build()));
+        Throwable actual = catchThrowable(
+                () -> repository.updateRequirement("DUMMY", "master", null, TailoringRequirement.builder().build()));
 
         // assert
         assertThat(actual).isInstanceOf(NullPointerException.class);
@@ -301,90 +275,85 @@ class JPARequirementServiceRepositoryTest {
         when(projectRepositoryMock.findByIdentifier("SAMPLE")).thenReturn(null);
 
         TailoringRequirement requirement = TailoringRequirement.builder()
-            .position("a")
-            .build();
+                .position("a")
+                .build();
 
         // act
         Optional<TailoringRequirement> actual = repository.updateRequirement("SAMPLE", "master", "1.1", requirement);
 
         // assert
         assertThat(actual).isEmpty();
+        verify(changeLogMock, times(0)).accept(any(), any());
     }
 
     @Test
     void updateRequirement_RequirementNotExists_EmptyReturned() {
         // arrange
         TailoringEntity tailoring = TailoringEntity.builder()
-            .id(2L)
-            .name("master")
-            .phase(ZERO)
-            .catalog(TailoringCatalogEntity.builder()
-                .toc(TailoringCatalogChapterEntity.builder()
-                    .chapters(asList(
-                        TailoringCatalogChapterEntity.builder()
-                            .number("1")
-                            .chapters(asList(
-                                TailoringCatalogChapterEntity.builder()
-                                    .number("1.1")
-                                    .requirements(asList(
-                                        TailoringRequirementEntity.builder()
-                                            .position("a")
-                                            .build()
-                                    ))
-                                    .build()
-                            ))
-                            .build())
-                    )
-                    .build())
-                .build())
-            .build();
+                .id(2L)
+                .name("master")
+                .phase(ZERO)
+                .catalog(TailoringCatalogEntity.builder()
+                        .toc(TailoringCatalogChapterEntity.builder()
+                                .chapters(asList(
+                                        TailoringCatalogChapterEntity.builder()
+                                                .number("1")
+                                                .chapters(asList(
+                                                        TailoringCatalogChapterEntity.builder()
+                                                                .number("1.1")
+                                                                .requirements(asList(
+                                                                        TailoringRequirementEntity.builder()
+                                                                                .position("a")
+                                                                                .build()))
+                                                                .build()))
+                                                .build()))
+                                .build())
+                        .build())
+                .build();
         given(projectRepositoryMock.findTailoring("SAMPLE", "master")).willReturn(tailoring);
 
-
         TailoringRequirement requirement = TailoringRequirement.builder()
-            .position("b")
-            .build();
+                .position("b")
+                .build();
 
         // act
         Optional<TailoringRequirement> actual = repository.updateRequirement("SAMPLE", "master", "1.1", requirement);
 
         // assert
         assertThat(actual).isEmpty();
+        verify(changeLogMock, times(0)).accept(any(), any());
     }
 
     @Test
     void updateRequirement_RequirementExists_RequirementUpdated() {
         // arrange
         TailoringRequirementEntity requirementToUpdate = TailoringRequirementEntity.builder()
-            .position("a")
-            .build();
+                .position("a")
+                .build();
         TailoringEntity tailoring = TailoringEntity.builder()
-            .id(2L)
-            .name("master")
-            .phase(ZERO)
-            .catalog(TailoringCatalogEntity.builder()
-                .toc(TailoringCatalogChapterEntity.builder()
-                    .chapters(asList(
-                        TailoringCatalogChapterEntity.builder()
-                            .number("1")
-                            .chapters(asList(
-                                TailoringCatalogChapterEntity.builder()
-                                    .number("1.1")
-                                    .requirements(asList(
-                                        requirementToUpdate
-                                    ))
-                                    .build()
-                            ))
-                            .build())
-                    )
-                    .build())
-                .build())
-            .build();
+                .id(2L)
+                .name("master")
+                .phase(ZERO)
+                .catalog(TailoringCatalogEntity.builder()
+                        .toc(TailoringCatalogChapterEntity.builder()
+                                .chapters(asList(
+                                        TailoringCatalogChapterEntity.builder()
+                                                .number("1")
+                                                .chapters(asList(
+                                                        TailoringCatalogChapterEntity.builder()
+                                                                .number("1.1")
+                                                                .requirements(asList(
+                                                                        requirementToUpdate))
+                                                                .build()))
+                                                .build()))
+                                .build())
+                        .build())
+                .build();
         given(projectRepositoryMock.findTailoring("SAMPLE", "master")).willReturn(tailoring);
 
         TailoringRequirement requirement = TailoringRequirement.builder()
-            .position("a")
-            .build();
+                .position("a")
+                .build();
         given(mapperMock.toDomain(requirementToUpdate)).willReturn(requirement);
 
         // act
@@ -392,9 +361,9 @@ class JPARequirementServiceRepositoryTest {
 
         // assert
         assertThat(actual).isPresent();
+        verify(changeLogMock, times(1)).accept(any(), any());
         verify(mapperMock, timeout(1)).updateRequirement(requirement, requirementToUpdate);
     }
-
 
     @Test
     void getChapter_ProjectNull_NullPointerExceptionThrown() {
@@ -433,26 +402,23 @@ class JPARequirementServiceRepositoryTest {
     void getChapter_ChapterExists_MappedDomainObjectReturned() {
         // arrange
         TailoringCatalogChapterEntity chapter = TailoringCatalogChapterEntity.builder()
-            .number("1")
-            .chapters(asList(
-                TailoringCatalogChapterEntity.builder()
-                    .number("1.1")
-                    .build()
-            ))
-            .build();
+                .number("1")
+                .chapters(asList(
+                        TailoringCatalogChapterEntity.builder()
+                                .number("1.1")
+                                .build()))
+                .build();
         TailoringEntity tailoring = TailoringEntity.builder()
-            .id(2L)
-            .name("master")
-            .phase(ZERO)
-            .catalog(TailoringCatalogEntity.builder()
-                .toc(TailoringCatalogChapterEntity.builder()
-                    .chapters(asList(
-                            chapter
-                        )
-                    )
-                    .build())
-                .build())
-            .build();
+                .id(2L)
+                .name("master")
+                .phase(ZERO)
+                .catalog(TailoringCatalogEntity.builder()
+                        .toc(TailoringCatalogChapterEntity.builder()
+                                .chapters(asList(
+                                        chapter))
+                                .build())
+                        .build())
+                .build();
         given(projectRepositoryMock.findTailoring("SAMPLE", "master")).willReturn(tailoring);
 
         given(mapperMock.toDomain(chapter)).willReturn(Chapter.<TailoringRequirement>builder().build());
@@ -468,30 +434,27 @@ class JPARequirementServiceRepositoryTest {
     void getChapter_ChapterNotExists_EmptyReturned() {
         // arrange
         TailoringCatalogChapterEntity chapter = TailoringCatalogChapterEntity.builder()
-            .number("1")
-            .chapters(asList(
-                TailoringCatalogChapterEntity.builder()
-                    .number("1.1")
-                    .build()
-            ))
-            .build();
+                .number("1")
+                .chapters(asList(
+                        TailoringCatalogChapterEntity.builder()
+                                .number("1.1")
+                                .build()))
+                .build();
         ProjectEntity project = ProjectEntity.builder()
-            .identifier("SAMPLE")
-            .tailorings(asList(
-                TailoringEntity.builder()
-                    .id(2L)
-                    .name("master")
-                    .phase(ZERO)
-                    .catalog(TailoringCatalogEntity.builder()
-                        .toc(TailoringCatalogChapterEntity.builder()
-                            .chapters(asList(
-                                chapter)
-                            )
-                            .build())
-                        .build())
-                    .build()
-            ))
-            .build();
+                .identifier("SAMPLE")
+                .tailorings(asList(
+                        TailoringEntity.builder()
+                                .id(2L)
+                                .name("master")
+                                .phase(ZERO)
+                                .catalog(TailoringCatalogEntity.builder()
+                                        .toc(TailoringCatalogChapterEntity.builder()
+                                                .chapters(asList(
+                                                        chapter))
+                                                .build())
+                                        .build())
+                                .build()))
+                .build();
         given(projectRepositoryMock.findByIdentifier("SAMPLE")).willReturn(project);
 
         given(mapperMock.toDomain(chapter)).willReturn(Chapter.<TailoringRequirement>builder().build());
@@ -508,7 +471,8 @@ class JPARequirementServiceRepositoryTest {
         // arrange
 
         // act
-        Throwable actual = catchThrowable(() -> repository.updateChapter(null, "master", Chapter.<TailoringRequirement>builder().build()));
+        Throwable actual = catchThrowable(
+                () -> repository.updateChapter(null, "master", Chapter.<TailoringRequirement>builder().build()));
 
         // assert
         assertThat(actual).isInstanceOf(NullPointerException.class);
@@ -519,7 +483,8 @@ class JPARequirementServiceRepositoryTest {
         // arrange
 
         // act
-        Throwable actual = catchThrowable(() -> repository.updateChapter("DUMMY", null, Chapter.<TailoringRequirement>builder().build()));
+        Throwable actual = catchThrowable(
+                () -> repository.updateChapter("DUMMY", null, Chapter.<TailoringRequirement>builder().build()));
 
         // assert
         assertThat(actual).isInstanceOf(NullPointerException.class);
@@ -536,35 +501,31 @@ class JPARequirementServiceRepositoryTest {
         assertThat(actual).isInstanceOf(NullPointerException.class);
     }
 
-
     @Test
     void updateChapter_ChapterNotExists_EmptyReturned() {
         // arrange
         TailoringEntity tailoring = TailoringEntity.builder()
-            .id(2L)
-            .name("master")
-            .phase(ZERO)
-            .catalog(TailoringCatalogEntity.builder()
-                .toc(TailoringCatalogChapterEntity.builder()
-                    .chapters(asList(
-                            TailoringCatalogChapterEntity.builder()
-                                .number("1")
+                .id(2L)
+                .name("master")
+                .phase(ZERO)
+                .catalog(TailoringCatalogEntity.builder()
+                        .toc(TailoringCatalogChapterEntity.builder()
                                 .chapters(asList(
-                                    TailoringCatalogChapterEntity.builder()
-                                        .number("1.1")
-                                        .build()
-                                ))
-                                .build()
-                        )
-                    )
-                    .build())
-                .build())
-            .build();
+                                        TailoringCatalogChapterEntity.builder()
+                                                .number("1")
+                                                .chapters(asList(
+                                                        TailoringCatalogChapterEntity.builder()
+                                                                .number("1.1")
+                                                                .build()))
+                                                .build()))
+                                .build())
+                        .build())
+                .build();
         given(projectRepositoryMock.findTailoring("SAMPLE", "master")).willReturn(tailoring);
 
         Chapter<TailoringRequirement> chapter = Chapter.<TailoringRequirement>builder()
-            .number("2")
-            .build();
+                .number("2")
+                .build();
 
         // act
         Optional<Chapter<TailoringRequirement>> actual = repository.updateChapter("SAMPLE", "master", chapter);
@@ -577,31 +538,29 @@ class JPARequirementServiceRepositoryTest {
     void updateChapter_ChapterExists_ChapterUpdated() {
         // arrange
         TailoringCatalogChapterEntity chapterToUpdate = TailoringCatalogChapterEntity.builder()
-            .number("1")
-            .chapters(asList(
-                TailoringCatalogChapterEntity.builder()
-                    .number("1.1")
-                    .requirements(List.of())
-                    .build()
-            ))
-            .build();
+                .number("1")
+                .chapters(asList(
+                        TailoringCatalogChapterEntity.builder()
+                                .number("1.1")
+                                .requirements(List.of())
+                                .build()))
+                .build();
         TailoringEntity tailoring = TailoringEntity.builder()
-            .id(2L)
-            .name("master")
-            .phase(ZERO)
-            .catalog(TailoringCatalogEntity.builder()
-                .toc(TailoringCatalogChapterEntity.builder()
-                    .chapters(asList(
-                        chapterToUpdate)
-                    )
-                    .build())
-                .build())
-            .build();
+                .id(2L)
+                .name("master")
+                .phase(ZERO)
+                .catalog(TailoringCatalogEntity.builder()
+                        .toc(TailoringCatalogChapterEntity.builder()
+                                .chapters(asList(
+                                        chapterToUpdate))
+                                .build())
+                        .build())
+                .build();
         given(projectRepositoryMock.findTailoring("SAMPLE", "master")).willReturn(tailoring);
 
         Chapter<TailoringRequirement> chapter = Chapter.<TailoringRequirement>builder()
-            .number("1.1")
-            .build();
+                .number("1.1")
+                .build();
         given(mapperMock.toDomain(chapterToUpdate)).willReturn(chapter);
 
         // act
@@ -616,36 +575,33 @@ class JPARequirementServiceRepositoryTest {
     void updateChapter_ChapterExistsNewRequirment_ChapterUpdated() {
         // arrange
         TailoringCatalogChapterEntity chapterToUpdate = TailoringCatalogChapterEntity.builder()
-            .number("1")
-            .requirements(asList(
-                TailoringRequirementEntity.builder()
-                    .position("a1")
-                    .build()
-            ))
-            .build();
+                .number("1")
+                .requirements(asList(
+                        TailoringRequirementEntity.builder()
+                                .position("a1")
+                                .build()))
+                .build();
 
         TailoringEntity tailoring = TailoringEntity.builder()
-            .id(2L)
-            .name("master")
-            .phase(ZERO)
-            .catalog(TailoringCatalogEntity.builder()
-                .toc(TailoringCatalogChapterEntity.builder()
-                    .chapters(asList(
-                        chapterToUpdate)
-                    )
-                    .build())
-                .build())
-            .build();
+                .id(2L)
+                .name("master")
+                .phase(ZERO)
+                .catalog(TailoringCatalogEntity.builder()
+                        .toc(TailoringCatalogChapterEntity.builder()
+                                .chapters(asList(
+                                        chapterToUpdate))
+                                .build())
+                        .build())
+                .build();
         given(projectRepositoryMock.findTailoring("SAMPLE", "master")).willReturn(tailoring);
 
         Chapter<TailoringRequirement> chapter = Chapter.<TailoringRequirement>builder()
-            .number("1")
-            .requirements(List.of(
-                TailoringRequirement.builder()
-                    .position("a1")
-                    .build()
-            ))
-            .build();
+                .number("1")
+                .requirements(List.of(
+                        TailoringRequirement.builder()
+                                .position("a1")
+                                .build()))
+                .build();
         given(mapperMock.toDomain(chapterToUpdate)).willReturn(chapter);
 
         // act
@@ -657,13 +613,13 @@ class JPARequirementServiceRepositoryTest {
         verify(mapperMock, times(1)).updateChapter(chapter, chapterToUpdate);
     }
 
-
     @Test
     void updateSelected_ProjectNull_NullPointerExceptionThrown() {
         // arrange
 
         // act
-        Throwable actual = catchThrowable(() -> repository.updateSelected(null, "master", Chapter.<TailoringRequirement>builder().build()));
+        Throwable actual = catchThrowable(
+                () -> repository.updateSelected(null, "master", Chapter.<TailoringRequirement>builder().build()));
 
         // assert
         assertThat(actual).isInstanceOf(NullPointerException.class);
@@ -674,7 +630,8 @@ class JPARequirementServiceRepositoryTest {
         // arrange
 
         // act
-        Throwable actual = catchThrowable(() -> repository.updateSelected("DUMMY", null, Chapter.<TailoringRequirement>builder().build()));
+        Throwable actual = catchThrowable(
+                () -> repository.updateSelected("DUMMY", null, Chapter.<TailoringRequirement>builder().build()));
 
         // assert
         assertThat(actual).isInstanceOf(NullPointerException.class);
@@ -691,41 +648,37 @@ class JPARequirementServiceRepositoryTest {
         assertThat(actual).isInstanceOf(NullPointerException.class);
     }
 
-
     @Test
     void updateSelected_ChapterNotExists_EmptyReturned() {
         // arrange
         TailoringCatalogChapterEntity projectChapter = TailoringCatalogChapterEntity.builder()
-            .number("1")
-            .chapters(asList(
-                TailoringCatalogChapterEntity.builder()
-                    .number("1.1")
-                    .build()
-            ))
-            .build();
+                .number("1")
+                .chapters(asList(
+                        TailoringCatalogChapterEntity.builder()
+                                .number("1.1")
+                                .build()))
+                .build();
 
         ProjectEntity project = ProjectEntity.builder()
-            .identifier("SAMPLE")
-            .tailorings(asList(
-                TailoringEntity.builder()
-                    .id(2L)
-                    .name("master")
-                    .phase(ZERO)
-                    .catalog(TailoringCatalogEntity.builder()
-                        .toc(TailoringCatalogChapterEntity.builder()
-                            .chapters(asList(
-                                projectChapter)
-                            )
-                            .build())
-                        .build())
-                    .build()
-            ))
-            .build();
+                .identifier("SAMPLE")
+                .tailorings(asList(
+                        TailoringEntity.builder()
+                                .id(2L)
+                                .name("master")
+                                .phase(ZERO)
+                                .catalog(TailoringCatalogEntity.builder()
+                                        .toc(TailoringCatalogChapterEntity.builder()
+                                                .chapters(asList(
+                                                        projectChapter))
+                                                .build())
+                                        .build())
+                                .build()))
+                .build();
         given(projectRepositoryMock.findByIdentifier("SAMPLE")).willReturn(project);
 
         Chapter<TailoringRequirement> chapter = Chapter.<TailoringRequirement>builder()
-            .number("2")
-            .build();
+                .number("2")
+                .build();
 
         // act
         Optional<Chapter<TailoringRequirement>> actual = repository.updateSelected("SAMPLE", "master", chapter);
@@ -739,56 +692,52 @@ class JPARequirementServiceRepositoryTest {
     void updateSelected_ChapterExists_SelectionUpdated() {
         // arrange
         TailoringRequirementEntity requirementAToUpdate = TailoringRequirementEntity.builder()
-            .position("a")
-            .selected(Boolean.TRUE)
-            .build();
+                .position("a")
+                .selected(Boolean.TRUE)
+                .build();
         TailoringRequirementEntity requirementBToUpdate = TailoringRequirementEntity.builder()
-            .position("b")
-            .selected(Boolean.FALSE)
-            .build();
+                .position("b")
+                .selected(Boolean.FALSE)
+                .build();
 
         TailoringCatalogChapterEntity projectChapter = TailoringCatalogChapterEntity.builder()
-            .number("1")
-            .chapters(asList(
-                TailoringCatalogChapterEntity.builder()
-                    .number("1.1")
-                    .requirements(asList(
-                        requirementAToUpdate,
-                        requirementBToUpdate
-                    ))
-                    .build()
-            ))
-            .build();
+                .number("1")
+                .chapters(asList(
+                        TailoringCatalogChapterEntity.builder()
+                                .number("1.1")
+                                .requirements(asList(
+                                        requirementAToUpdate,
+                                        requirementBToUpdate))
+                                .build()))
+                .build();
 
         TailoringEntity tailoring = TailoringEntity.builder()
-            .id(2L)
-            .name("master")
-            .phase(ZERO)
-            .catalog(TailoringCatalogEntity.builder()
-                .toc(TailoringCatalogChapterEntity.builder()
-                    .chapters(asList(
-                        projectChapter)
-                    )
-                    .build())
-                .build())
-            .build();
+                .id(2L)
+                .name("master")
+                .phase(ZERO)
+                .catalog(TailoringCatalogEntity.builder()
+                        .toc(TailoringCatalogChapterEntity.builder()
+                                .chapters(asList(
+                                        projectChapter))
+                                .build())
+                        .build())
+                .build();
         given(projectRepositoryMock.findTailoring("SAMPLE", "master")).willReturn(tailoring);
 
         TailoringRequirement requirementA = TailoringRequirement.builder()
-            .position("a")
-            .selected(Boolean.TRUE)
-            .build();
+                .position("a")
+                .selected(Boolean.TRUE)
+                .build();
         TailoringRequirement requirementB = TailoringRequirement.builder()
-            .position("b")
-            .selected(Boolean.TRUE)
-            .build();
+                .position("b")
+                .selected(Boolean.TRUE)
+                .build();
         Chapter<TailoringRequirement> chapter = Chapter.<TailoringRequirement>builder()
-            .number("1.1")
-            .requirements(asList(
-                requirementA,
-                requirementB
-            ))
-            .build();
+                .number("1.1")
+                .requirements(asList(
+                        requirementA,
+                        requirementB))
+                .build();
         given(mapperMock.toDomain(projectChapter)).willReturn(chapter);
 
         // act
@@ -799,5 +748,114 @@ class JPARequirementServiceRepositoryTest {
         verify(mapperMock, times(1)).updateRequirement(requirementA, requirementAToUpdate);
         verify(mapperMock, times(1)).updateRequirement(requirementB, requirementBToUpdate);
 
+    }
+
+    @ParameterizedTest
+    @MethodSource("getRequirement")
+    void getRequirementChanges_NullParameter_NullPointerExceptionThrown(String project, String tailoring,
+            String chapter,
+            String position) {
+        // act
+        Throwable actual = catchThrowable(
+                () -> repository.getRequirementChanges(project, tailoring, chapter, position));
+
+        // assert
+        assertThat(actual).isInstanceOf(NullPointerException.class);
+    }
+
+    @Test
+    void getRequirementChanges_ChapterNotExists_EmptyReturned() {
+        // arrange
+        TailoringEntity tailoring = TailoringEntity.builder()
+                .id(2L)
+                .name("master")
+                .phase(ZERO)
+                .catalog(TailoringCatalogEntity.builder()
+                        .toc(TailoringCatalogChapterEntity.builder()
+                                .chapters(asList(
+                                        TailoringCatalogChapterEntity.builder()
+                                                .number("1")
+                                                .build()))
+                                .build())
+                        .build())
+                .build();
+        given(projectRepositoryMock.findTailoring("SAMPLE", "master")).willReturn(tailoring);
+
+        // act
+        Optional<Collection<RequirementChange>> actual = repository.getRequirementChanges("SAMPLE", "master", "1.1.2",
+                "b");
+
+        // assert
+        assertThat(actual).isEmpty();
+    }
+
+    @Test
+    void getRequirementChanges_RequirementNoExists_EmptyReturned() {
+        // arrange
+        TailoringEntity tailoring = TailoringEntity.builder()
+                .id(2L)
+                .name("master")
+                .phase(ZERO)
+                .catalog(TailoringCatalogEntity.builder()
+                        .toc(TailoringCatalogChapterEntity.builder()
+                                .chapters(asList(
+                                        TailoringCatalogChapterEntity.builder()
+                                                .number("1")
+                                                .requirements(asList(
+                                                        TailoringRequirementEntity.builder()
+                                                                .position("a")
+                                                                .build()))
+                                                .build()))
+                                .build())
+                        .build())
+                .build();
+        given(projectRepositoryMock.findTailoring("SAMPLE", "master")).willReturn(tailoring);
+
+        // act
+        Optional<Collection<RequirementChange>> actual = repository.getRequirementChanges("SAMPLE", "master", "1.1",
+                "b");
+
+        // assert
+        assertThat(actual).isEmpty();
+    }
+
+    @Test
+    void getRequirementChanges_RequirementExists_ListReturned() {
+        // arrange
+        TailoringEntity tailoring = TailoringEntity.builder()
+                .id(2L)
+                .name("master")
+                .phase(ZERO)
+                .catalog(TailoringCatalogEntity.builder()
+                        .toc(TailoringCatalogChapterEntity.builder()
+                                .chapters(asList(
+                                        TailoringCatalogChapterEntity.builder()
+                                                .number("1")
+                                                .requirements(asList(
+                                                        TailoringRequirementEntity.builder()
+                                                                .id(1L)
+                                                                .position("a")
+                                                                .build()))
+                                                .build()))
+                                .build())
+                        .build())
+                .build();
+        given(projectRepositoryMock.findTailoring("SAMPLE", "master")).willReturn(tailoring);
+        given(tailoringRequirementChangeRepositoryMock.findAllByRequirementId(1L)).willReturn(List.of(
+                TailoringRequirementChangeEntity.builder()
+                        .requirementId(1L)
+                        .changed(String.valueOf(Boolean.FALSE))
+                        .old(String.valueOf(Boolean.TRUE))
+                        .build()));
+
+        // act
+        Optional<Collection<RequirementChange>> actual = repository.getRequirementChanges("SAMPLE", "master", "1", "a");
+
+        // assert
+        assertThat(actual).isPresent();
+        assertThat(actual.get())
+                .hasSize(1);
+
+        verify(mapperMock, times(1)).getRequirementChanges(any());
     }
 }

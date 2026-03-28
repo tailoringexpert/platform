@@ -22,12 +22,15 @@
 package eu.tailoringexpert.requirement;
 
 import eu.tailoringexpert.domain.Chapter;
+import eu.tailoringexpert.domain.RequirementChange;
 import eu.tailoringexpert.domain.TailoringRequirement;
 
+import java.util.Collection;
 import java.util.Optional;
 
 /**
- * Service for handling (peristent) data used by @see {@link RequirementService}.
+ * Service for handling (peristent) data used by @see
+ * {@link RequirementService}.
  *
  * @author Michael Bädorf
  */
@@ -63,7 +66,8 @@ public interface RequirementServiceRepository {
      * @param requirement requirement to update
      * @return updated requirement
      */
-    Optional<TailoringRequirement> updateRequirement(String project, String tailoring, String chapter, TailoringRequirement requirement);
+    Optional<TailoringRequirement> updateRequirement(String project, String tailoring, String chapter,
+            TailoringRequirement requirement);
 
     /**
      * Update all direct and indirect requirements state of chapter.
@@ -73,10 +77,12 @@ public interface RequirementServiceRepository {
      * @param chapter   chapter, requirements shall be updated
      * @return updated chapter
      */
-    Optional<Chapter<TailoringRequirement>> updateSelected(String project, String tailoring, Chapter<TailoringRequirement> chapter);
+    Optional<Chapter<TailoringRequirement>> updateSelected(String project, String tailoring,
+            Chapter<TailoringRequirement> chapter);
 
     /**
-     * Update chapter.<p>
+     * Update chapter.
+     * <p>
      * New requirements will be created in corresponding chapter
      *
      * @param project   project identifier
@@ -84,5 +90,18 @@ public interface RequirementServiceRepository {
      * @param chapter   chapter to update with new requirement(s)
      * @return updated chapter
      */
-    Optional<Chapter<TailoringRequirement>> updateChapter(String project, String tailoring, Chapter<TailoringRequirement> chapter);
+    Optional<Chapter<TailoringRequirement>> updateChapter(String project, String tailoring,
+            Chapter<TailoringRequirement> chapter);
+
+    /**
+     * Get tailoring requirement change log.
+     *
+     * @param project   project identifier
+     * @param tailoring tailoring name
+     * @param chapter   chapter of requirement
+     * @param position  position of requirement in chapter
+     * @return Collection of changes if requirment exists
+     */
+    Optional<Collection<RequirementChange>> getRequirementChanges(String project, String tailoring, String chapter,
+            String position);
 }
