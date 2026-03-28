@@ -28,6 +28,8 @@ import eu.tailoringexpert.domain.TailoringCatalogChapterResource;
 import eu.tailoringexpert.domain.TailoringRequirementResource;
 import eu.tailoringexpert.domain.TailoringRequirement;
 import eu.tailoringexpert.domain.PathContext.PathContextBuilder;
+import eu.tailoringexpert.domain.RequirementChange;
+import eu.tailoringexpert.domain.RequirementChangeResource;
 import lombok.extern.log4j.Log4j2;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -47,6 +49,7 @@ import tools.jackson.databind.json.JsonMapper;
 
 import java.nio.charset.StandardCharsets;
 import java.text.SimpleDateFormat;
+import java.util.List;
 import java.util.Optional;
 
 import static java.lang.Boolean.FALSE;
@@ -87,55 +90,56 @@ class RequirementControllerTest {
         this.mapperMock = mock(ResourceMapper.class);
 
         this.objectMapper = JsonMapper.builder()
-            .defaultDateFormat(new SimpleDateFormat("yyyy-MM-dd", GERMANY))
-            .addModule(new HalJacksonModule())
-            .enable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES)
-            .disable(SerializationFeature.FAIL_ON_EMPTY_BEANS)
-            .handlerInstantiator(new HalJacksonModule.HalHandlerInstantiator(new EvoInflectorLinkRelationProvider(),
-                CurieProvider.NONE, MessageResolver.DEFAULTS_ONLY))
-            .build();
+                .defaultDateFormat(new SimpleDateFormat("yyyy-MM-dd", GERMANY))
+                .addModule(new HalJacksonModule())
+                .enable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES)
+                .disable(SerializationFeature.FAIL_ON_EMPTY_BEANS)
+                .handlerInstantiator(new HalJacksonModule.HalHandlerInstantiator(new EvoInflectorLinkRelationProvider(),
+                        CurieProvider.NONE, MessageResolver.DEFAULTS_ONLY))
+                .build();
 
         ByteArrayHttpMessageConverter byteArrayHttpMessageConverter = new ByteArrayHttpMessageConverter();
         byteArrayHttpMessageConverter.setSupportedMediaTypes(asList(
-            MediaType.IMAGE_JPEG,
-            MediaType.IMAGE_PNG,
-            MediaType.APPLICATION_OCTET_STREAM,
-            MediaType.APPLICATION_PDF,
-            new MediaType("application", "vnd.openxmlformats-officedocument.wordprocessingml.document")
-        ));
+                MediaType.IMAGE_JPEG,
+                MediaType.IMAGE_PNG,
+                MediaType.APPLICATION_OCTET_STREAM,
+                MediaType.APPLICATION_PDF,
+                new MediaType("application", "vnd.openxmlformats-officedocument.wordprocessingml.document")));
 
         this.mockMvc = standaloneSetup(new RequirementController(
-            mapperMock,
-            serviceMock,
-            repositoryMock))
-            .setMessageConverters(
-                new JacksonJsonHttpMessageConverter(objectMapper),
-                byteArrayHttpMessageConverter)
-            .build();
+                mapperMock,
+                serviceMock,
+                repositoryMock))
+                .setMessageConverters(
+                        new JacksonJsonHttpMessageConverter(objectMapper),
+                        byteArrayHttpMessageConverter)
+                .build();
     }
 
     @Test
     void getRequirement_RequirementExists_StateOk() throws Exception {
         // arrange
         PathContextBuilder pathContext = PathContext.builder()
-            .project("SAMPLE")
-            .tailoring("master")
-            .chapter("1.1");
+                .project("SAMPLE")
+                .tailoring("master")
+                .chapter("1.1");
 
         TailoringRequirement anforderung = TailoringRequirement.builder()
-            .position("a")
-            .text("Anforderungstext")
-            .selected(TRUE)
-            .build();
+                .position("a")
+                .text("Anforderungstext")
+                .selected(TRUE)
+                .build();
         given(repositoryMock.getRequirement("SAMPLE", "master", "1.1", "a")).willReturn(Optional.of(anforderung));
 
         ArgumentCaptor<PathContextBuilder> pathContextCaptor = ArgumentCaptor.forClass(PathContextBuilder.class);
-        given(mapperMock.toResource(pathContextCaptor.capture(), eq(anforderung))).willReturn(TailoringRequirementResource.builder().build());
+        given(mapperMock.toResource(pathContextCaptor.capture(), eq(anforderung)))
+                .willReturn(TailoringRequirementResource.builder().build());
 
         // act
-        ResultActions actual = mockMvc.perform(get("/project/{project}/tailoring/{tailoring}/catalog/{chapter}/{requirement}", "SAMPLE", "master", "1.1", "a")
-            .accept(HAL_JSON_VALUE)
-        );
+        ResultActions actual = mockMvc
+                .perform(get("/project/{project}/tailoring/{tailoring}/catalog/{chapter}/{requirement}", "SAMPLE",
+                        "master", "1.1", "a")
+                        .accept(HAL_JSON_VALUE));
 
         // assert
         actual.andExpect(status().isOk());
@@ -151,9 +155,10 @@ class RequirementControllerTest {
         given(repositoryMock.getRequirement("SAMPLE", "master", "1.1", "a")).willReturn(Optional.empty());
 
         // act
-        ResultActions actual = mockMvc.perform(get("/project/{project}/tailoring/{tailoring}/catalog/{chapter}/{requirement}", "SAMPLE", "master", "1.1", "a")
-            .accept(HAL_JSON_VALUE)
-        );
+        ResultActions actual = mockMvc
+                .perform(get("/project/{project}/tailoring/{tailoring}/catalog/{chapter}/{requirement}", "SAMPLE",
+                        "master", "1.1", "a")
+                        .accept(HAL_JSON_VALUE));
 
         // assert
         assertThatNoException();
@@ -164,26 +169,28 @@ class RequirementControllerTest {
     void putRequirementsState_RequirementExists_StateOk() throws Exception {
         // arrange
         PathContextBuilder pathContext = PathContext.builder()
-            .project("SAMPLE")
-            .tailoring("master")
-            .chapter("1.1")
-            .requirment("a");
+                .project("SAMPLE")
+                .tailoring("master")
+                .chapter("1.1")
+                .requirment("a");
 
         TailoringRequirement anforderung = TailoringRequirement.builder()
-            .position("a")
-            .text("Anforderungstext")
-            .selected(TRUE)
-            .build();
+                .position("a")
+                .text("Anforderungstext")
+                .selected(TRUE)
+                .build();
 
         given(serviceMock.handleSelected("SAMPLE", "master", "1.1", "a", FALSE)).willReturn(Optional.of(anforderung));
 
         ArgumentCaptor<PathContextBuilder> pathContextCaptor = ArgumentCaptor.forClass(PathContextBuilder.class);
-        given(mapperMock.toResource(pathContextCaptor.capture(), eq(anforderung))).willReturn(TailoringRequirementResource.builder().build());
+        given(mapperMock.toResource(pathContextCaptor.capture(), eq(anforderung)))
+                .willReturn(TailoringRequirementResource.builder().build());
 
         // act
-        ResultActions actual = mockMvc.perform(put("/project/{project}/tailoring/{tailoring}/catalog/{chapter}/{requirement}/selected/{selected}", "SAMPLE", "master", "1.1", "a", FALSE)
-            .accept(HAL_JSON_VALUE)
-        );
+        ResultActions actual = mockMvc.perform(
+                put("/project/{project}/tailoring/{tailoring}/catalog/{chapter}/{requirement}/selected/{selected}",
+                        "SAMPLE", "master", "1.1", "a", FALSE)
+                        .accept(HAL_JSON_VALUE));
 
         // assert
         actual.andExpect(status().isOk());
@@ -193,16 +200,16 @@ class RequirementControllerTest {
         assertThat(pathContextCaptor.getValue().build()).isEqualTo(pathContext.build());
     }
 
-
     @Test
     void putRequirementsState_RequirementNotExists_StateNotFound() throws Exception {
         // arrange
         given(serviceMock.handleSelected("SAMPLE", "master", "1.1", "a", FALSE)).willReturn(Optional.empty());
 
         // act
-        ResultActions actual = mockMvc.perform(put("/project/{project}/tailoring/{tailoring}/catalog/{chapter}/{requirement}/selected/{selected}", "SAMPLE", "master", "1.1", "a", FALSE)
-            .accept(HAL_JSON_VALUE)
-        );
+        ResultActions actual = mockMvc.perform(
+                put("/project/{project}/tailoring/{tailoring}/catalog/{chapter}/{requirement}/selected/{selected}",
+                        "SAMPLE", "master", "1.1", "a", FALSE)
+                        .accept(HAL_JSON_VALUE));
 
         // assert
         actual.andExpect(status().isNotFound());
@@ -213,28 +220,31 @@ class RequirementControllerTest {
     void putRequirementText_RequirementExists_StateOk() throws Exception {
         // arrange
         PathContextBuilder pathContext = PathContext.builder()
-            .project("SAMPLE")
-            .tailoring("master")
-            .chapter("1.1")
-            .requirment("a");
+                .project("SAMPLE")
+                .tailoring("master")
+                .chapter("1.1")
+                .requirment("a");
 
         TailoringRequirement anforderung = TailoringRequirement.builder()
-            .position("a")
-            .selected(TRUE)
-            .text("Dies ist ein neuer Text")
-            .build();
-        given(serviceMock.handleText("SAMPLE", "master", "1.1", "a", "Dies ist ein neuer Text")).willReturn(Optional.of(anforderung));
+                .position("a")
+                .selected(TRUE)
+                .text("Dies ist ein neuer Text")
+                .build();
+        given(serviceMock.handleText("SAMPLE", "master", "1.1", "a", "Dies ist ein neuer Text"))
+                .willReturn(Optional.of(anforderung));
 
         ArgumentCaptor<PathContextBuilder> pathContextCaptor = ArgumentCaptor.forClass(PathContextBuilder.class);
-        given(mapperMock.toResource(pathContextCaptor.capture(), eq(anforderung))).willReturn(TailoringRequirementResource.builder().build());
+        given(mapperMock.toResource(pathContextCaptor.capture(), eq(anforderung)))
+                .willReturn(TailoringRequirementResource.builder().build());
 
         // act
-        ResultActions actual = mockMvc.perform(put("/project/{project}/tailoring/{tailoring}/catalog/{chapter}/{requirement}/text", "SAMPLE", "master", "1.1", "a")
-            .accept(HAL_JSON_VALUE)
-            .param("text", "Dies ist ein neuer Text")
-            .contentType(APPLICATION_FORM_URLENCODED)
-            .characterEncoding(StandardCharsets.UTF_8.displayName())
-        );
+        ResultActions actual = mockMvc
+                .perform(put("/project/{project}/tailoring/{tailoring}/catalog/{chapter}/{requirement}/text", "SAMPLE",
+                        "master", "1.1", "a")
+                        .accept(HAL_JSON_VALUE)
+                        .param("text", "Dies ist ein neuer Text")
+                        .contentType(APPLICATION_FORM_URLENCODED)
+                        .characterEncoding(StandardCharsets.UTF_8.displayName()));
 
         // assert
         actual.andExpect(status().isOk());
@@ -247,15 +257,17 @@ class RequirementControllerTest {
     @Test
     void putRequirementText_RequirementNotExists_StateNotFound() throws Exception {
         // arrange
-        given(serviceMock.handleText("SAMPLE", "master", "1.1", "a", "Dies ist ein neuer Text")).willReturn(Optional.empty());
+        given(serviceMock.handleText("SAMPLE", "master", "1.1", "a", "Dies ist ein neuer Text"))
+                .willReturn(Optional.empty());
 
         // act
-        ResultActions actual = mockMvc.perform(put("/project/{project}/tailoring/{tailoring}/catalog/{chapter}/{requirement}/text", "SAMPLE", "master", "1.1", "a")
-            .accept(HAL_JSON_VALUE)
-            .param("text", "Dies ist ein neuer Text")
-            .contentType(APPLICATION_FORM_URLENCODED)
-            .characterEncoding(StandardCharsets.UTF_8.displayName())
-        );
+        ResultActions actual = mockMvc
+                .perform(put("/project/{project}/tailoring/{tailoring}/catalog/{chapter}/{requirement}/text", "SAMPLE",
+                        "master", "1.1", "a")
+                        .accept(HAL_JSON_VALUE)
+                        .param("text", "Dies ist ein neuer Text")
+                        .contentType(APPLICATION_FORM_URLENCODED)
+                        .characterEncoding(StandardCharsets.UTF_8.displayName()));
 
         // assert
         actual.andExpect(status().isNotFound());
@@ -266,35 +278,36 @@ class RequirementControllerTest {
     void putRequirementsState_ChapterExists_StateOk() throws Exception {
         // arrange
         PathContextBuilder pathContext = PathContext.builder()
-            .project("SAMPLE")
-            .tailoring("master")
-            .chapter("1.1");
+                .project("SAMPLE")
+                .tailoring("master")
+                .chapter("1.1");
 
         Chapter<TailoringRequirement> chapter = Chapter.<TailoringRequirement>builder()
-            .number("1.1")
-            .requirements(asList(
-                TailoringRequirement.builder()
-                    .position("a")
-                    .selected(TRUE)
-                    .build()
-            ))
-            .chapters(asList(
-                Chapter.<TailoringRequirement>builder()
-                    .number("1.1.1")
-                    .build()
-            ))
-            .build();
+                .number("1.1")
+                .requirements(asList(
+                        TailoringRequirement.builder()
+                                .position("a")
+                                .selected(TRUE)
+                                .build()))
+                .chapters(asList(
+                        Chapter.<TailoringRequirement>builder()
+                                .number("1.1.1")
+                                .build()))
+                .build();
 
         given(serviceMock.handleSelected("SAMPLE", "master", "1.1", TRUE)).willReturn(Optional.of(chapter));
         ArgumentCaptor<PathContextBuilder> pathContextCaptor = ArgumentCaptor.forClass(PathContextBuilder.class);
-        given(mapperMock.toResource(pathContextCaptor.capture(), eq(chapter))).willReturn(TailoringCatalogChapterResource.builder().build());
+        given(mapperMock.toResource(pathContextCaptor.capture(), eq(chapter)))
+                .willReturn(TailoringCatalogChapterResource.builder().build());
 
         // act
-        ResultActions actual = mockMvc.perform(put("/project/{project}/tailoring/{tailoring}/catalog/{chapter}/selected/{selected}", "SAMPLE", "master", "1.1", TRUE)
-            .accept(HAL_JSON_VALUE)
-            .contentType(MediaType.APPLICATION_JSON)
+        ResultActions actual = mockMvc
+                .perform(put("/project/{project}/tailoring/{tailoring}/catalog/{chapter}/selected/{selected}", "SAMPLE",
+                        "master", "1.1", TRUE)
+                        .accept(HAL_JSON_VALUE)
+                        .contentType(MediaType.APPLICATION_JSON)
 
-        );
+                );
 
         // assert
         actual.andExpect(status().isOk());
@@ -310,11 +323,13 @@ class RequirementControllerTest {
         given(serviceMock.handleSelected("SAMPLE", "master", "1.1", TRUE)).willReturn(Optional.empty());
 
         // act
-        ResultActions actual = mockMvc.perform(put("/project/{project}/tailoring/{tailoring}/catalog/{chapter}/selected/{selected}", "SAMPLE", "master", "1.1", TRUE)
-            .accept(HAL_JSON_VALUE)
-            .contentType(MediaType.APPLICATION_JSON)
+        ResultActions actual = mockMvc
+                .perform(put("/project/{project}/tailoring/{tailoring}/catalog/{chapter}/selected/{selected}", "SAMPLE",
+                        "master", "1.1", TRUE)
+                        .accept(HAL_JSON_VALUE)
+                        .contentType(MediaType.APPLICATION_JSON)
 
-        );
+                );
 
         // assert
         actual.andExpect(status().isNotFound());
@@ -325,33 +340,36 @@ class RequirementControllerTest {
     void postRequirement_ChapterExists_StateOk() throws Exception {
         // arrange
         PathContextBuilder pathContext = PathContext.builder()
-            .project("SAMPLE")
-            .tailoring("master")
-            .chapter("1.1");
+                .project("SAMPLE")
+                .tailoring("master")
+                .chapter("1.1");
 
         TailoringRequirement anforderung = TailoringRequirement.builder()
-            .position("a1")
-            .selected(TRUE)
-            .text("Dies ist eine neue Requirement")
-            .build();
+                .position("a1")
+                .selected(TRUE)
+                .text("Dies ist eine neue Requirement")
+                .build();
 
         given(serviceMock.createRequirement("SAMPLE", "master", "1.1", "a1", "Dies ist eine neue Requirement"))
-            .willReturn(Optional.of(anforderung));
+                .willReturn(Optional.of(anforderung));
 
         ArgumentCaptor<PathContextBuilder> pathContextCaptor = ArgumentCaptor.forClass(PathContextBuilder.class);
-        given(mapperMock.toResource(pathContextCaptor.capture(), eq(anforderung))).willReturn(TailoringRequirementResource.builder().build());
+        given(mapperMock.toResource(pathContextCaptor.capture(), eq(anforderung)))
+                .willReturn(TailoringRequirementResource.builder().build());
 
         // act
-        ResultActions actual = mockMvc.perform(post("/project/{project}/tailoring/{tailoring}/catalog/{chapter}/{requirement}", "SAMPLE", "master", "1.1", "a1")
-            .param("text", "Dies ist eine neue Requirement")
-            .contentType(APPLICATION_FORM_URLENCODED_VALUE)
-            .characterEncoding(UTF_8.displayName())
-        );
+        ResultActions actual = mockMvc
+                .perform(post("/project/{project}/tailoring/{tailoring}/catalog/{chapter}/{requirement}", "SAMPLE",
+                        "master", "1.1", "a1")
+                        .param("text", "Dies ist eine neue Requirement")
+                        .contentType(APPLICATION_FORM_URLENCODED_VALUE)
+                        .characterEncoding(UTF_8.displayName()));
 
         // assert
         actual.andExpect(status().isCreated());
 
-        verify(serviceMock, times(1)).createRequirement("SAMPLE", "master", "1.1", "a1", "Dies ist eine neue Requirement");
+        verify(serviceMock, times(1)).createRequirement("SAMPLE", "master", "1.1", "a1",
+                "Dies ist eine neue Requirement");
         verify(mapperMock, times(1)).toResource(any(), eq(anforderung));
         assertThat(pathContextCaptor.getValue().build()).isEqualTo(pathContext.build());
     }
@@ -359,19 +377,59 @@ class RequirementControllerTest {
     @Test
     void postRequirement_ChapterNotExists_StateNotFound() throws Exception {
         // arrange
-        given(serviceMock.createRequirement("SAMPLE", "master", "1.1", "a1", "Dies ist eine neue Requirement")).willReturn(Optional.empty());
+        given(serviceMock.createRequirement("SAMPLE", "master", "1.1", "a1", "Dies ist eine neue Requirement"))
+                .willReturn(Optional.empty());
 
         // act
-        ResultActions actual = mockMvc.perform(post("/project/{project}/tailoring/{tailoring}/catalog/{kapitel}/{anforderung}", "SAMPLE", "master", "1.1", "a1")
-            .param("text", "Dies ist eine neue Requirement")
-            .contentType(APPLICATION_FORM_URLENCODED_VALUE)
-            .characterEncoding(UTF_8.displayName())
-        );
+        ResultActions actual = mockMvc
+                .perform(post("/project/{project}/tailoring/{tailoring}/catalog/{kapitel}/{anforderung}", "SAMPLE",
+                        "master", "1.1", "a1")
+                        .param("text", "Dies ist eine neue Requirement")
+                        .contentType(APPLICATION_FORM_URLENCODED_VALUE)
+                        .characterEncoding(UTF_8.displayName()));
 
         // assert
         actual.andExpect(status().isNotFound());
         assertThatNoException();
     }
 
-}
+    @Test
+    void getRequirementChanges_RequirementNotExists_StateNotFound() throws Exception {
+        // arrange
+        given(serviceMock.getRequirementChanges("SAMPLE", "master", "1.1", "a")).willReturn(Optional.empty());
 
+        // act
+        ResultActions actual = mockMvc
+                .perform(get("/project/{project}/tailoring/{tailoring}/catalog/{chapter}/{requirement}/changes",
+                        "SAMPLE", "master", "1.1", "a")
+                        .accept(HAL_JSON_VALUE));
+
+        // assert
+        actual.andExpect(status().isNotFound());
+        assertThatNoException();
+    }
+
+    @Test
+    void getRequirementChanges_RequirementExists_StateOK() throws Exception {
+        // arrange
+        RequirementChange change = RequirementChange.builder().old("old").changed("new").build();
+        given(serviceMock.getRequirementChanges("SAMPLE", "master", "1.1", "a"))
+                .willReturn(Optional.of(List.of(change)));
+
+        ArgumentCaptor<PathContextBuilder> pathContextCaptor = ArgumentCaptor.forClass(PathContextBuilder.class);
+        given(mapperMock.toResource(pathContextCaptor.capture(), eq(change)))
+                .willReturn(RequirementChangeResource.builder().build());
+
+        // act
+        ResultActions actual = mockMvc
+                .perform(get("/project/{project}/tailoring/{tailoring}/catalog/{chapter}/{requirement}/changes",
+                        "SAMPLE", "master", "1.1", "a")
+                        .accept(HAL_JSON_VALUE));
+
+        // assert
+        actual.andExpect(status().isOk());
+        verify(mapperMock, times(1)).toResource(any(), eq(change));
+        assertThatNoException();
+    }
+
+}

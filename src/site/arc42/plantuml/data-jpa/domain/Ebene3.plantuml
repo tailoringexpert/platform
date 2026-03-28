@@ -240,6 +240,15 @@ package domain {
     }
     AttributeConverter <|-- ZonedDateTimeAttributeConverter
 
+    abstract class TailoringRequirementChangeEntity{
+        id : Long <<PK>>
+        requirementId : Long <<FK>>
+        changeType : String
+        old : String
+        changed : String
+        user : String
+        modificationTimestamp : ZonedDateTime
+    }
 }
 
 hide empty members

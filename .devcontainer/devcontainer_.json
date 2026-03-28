@@ -1,0 +1,58 @@
+// For format details, see https://aka.ms/vscode-remote/devcontainer.json or this file's README at:
+// https://github.com/microsoft/vscode-dev-containers/tree/v0.117.0/containers/java-11
+{
+    "name": "TailoringeXpert",
+    "dockerComposeFile": [
+        "./docker-compose.yaml"
+    ],
+    "service": "dev-container",
+    "workspaceFolder": "/workspaces",
+    "runServices": [
+      //  "db",
+        "dev-container"
+    ],
+    // Set *default* container specific settings.json values on container create.
+    "customizations": {
+        "vscode": {
+            "settings": {
+                "terminal.integrated.shell.linux": "/bin/bash",
+                "less.lint.emptyRules": "ignore"
+            },
+        },
+    },
+    
+    // "runArgs": [
+    //   "--cap-add=SYS_PTRACE",
+    //   "--security-opt",
+    //   "seccomp=unconfined",
+    //   // Mount your .ssh folder to /root/.ssh-localhost so we can copy its contents
+    //   "-v",
+    //   "${env:HOME}${env:USERPROFILE}/.ssh:/root/.ssh-localhost:ro"
+    // ],
+    // Add the IDs of extensions you want installed when the container is created.
+    //"extensions": [
+        //"vscjava.vscode-java-pack",
+        //"pivotal.vscode-boot-dev-pack",
+        //"github.vscode-pull-request-github",
+        //"kumar-harsh.graphql-for-vscode",
+        //"zxh404.vscode-proto3",
+        //"humao.rest-client"
+    //],
+    
+    // Use 'forwardPorts' to make a list of ports inside the container available locally.
+    "forwardPorts": [
+        8080,
+        8081,
+        9000
+    ],
+
+    // Use 'postCreateCommand' to run commands after the container is created.
+    // Copy the contents to the correct location and set permissions
+    //"postCreateCommand": "mkdir -p ~/.ssh && cp -r ~/.ssh-localhost/* ~/.ssh && chmod 700 ~/.ssh && chmod 600 ~/.ssh/*",
+    // Uncomment to connect as a non-root user. See https://aka.ms/vscode-remote/containers/non-root.
+    // "remoteUser": "vscode"
+
+    // Indicates whether VS Code should stop the containers when the VS Code window is closed / shut down.
+    // Values are none and stopCompose (default).
+    //"shutdownAction": "stopCompose"
+}

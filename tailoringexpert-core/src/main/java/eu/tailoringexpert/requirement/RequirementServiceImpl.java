@@ -22,6 +22,7 @@
 package eu.tailoringexpert.requirement;
 
 import eu.tailoringexpert.domain.Chapter;
+import eu.tailoringexpert.domain.RequirementChange;
 import eu.tailoringexpert.domain.TailoringRequirement;
 import eu.tailoringexpert.domain.TailoringRequirement.TailoringRequirementBuilder;
 import lombok.NonNull;
@@ -29,10 +30,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 
 import java.time.ZonedDateTime;
-import java.util.List;
-import java.util.Optional;
-import java.util.OptionalInt;
-import java.util.Scanner;
+import java.util.*;
 
 import static java.lang.Boolean.TRUE;
 import static java.lang.Integer.parseInt;
@@ -60,7 +58,8 @@ public class RequirementServiceImpl implements RequirementService {
      * {@inheritDoc}
      */
     @Override
-    public Optional<TailoringRequirement> handleSelected(String project, String tailoring, String chapter, String position, Boolean selected) {
+    public Optional<TailoringRequirement> handleSelected(String project, String tailoring, String chapter,
+            String position, Boolean selected) {
         log.traceEntry(() -> project, () -> tailoring, () -> chapter, () -> position, () -> selected);
 
         if (!modifiablePredicate.test(project, tailoring)) {
@@ -69,11 +68,14 @@ public class RequirementServiceImpl implements RequirementService {
             return empty();
         }
 
-        Optional<TailoringRequirement> tailoringRequirement = repository.getRequirement(project, tailoring, chapter, position);
+        Optional<TailoringRequirement> tailoringRequirement = repository.getRequirement(project, tailoring, chapter,
+                position);
         if (tailoringRequirement.isPresent()) {
             if (!tailoringRequirement.get().getSelected().equals(selected)) {
-                TailoringRequirement requirement = handleSelected(tailoringRequirement.get(), selected, ZonedDateTime.now());
-                Optional<TailoringRequirement> result = repository.updateRequirement(project, tailoring, chapter, requirement);
+                TailoringRequirement requirement = handleSelected(tailoringRequirement.get(), selected,
+                        ZonedDateTime.now());
+                Optional<TailoringRequirement> result = repository.updateRequirement(project, tailoring, chapter,
+                        requirement);
                 log.traceExit();
                 return result;
             }
@@ -88,7 +90,8 @@ public class RequirementServiceImpl implements RequirementService {
      * {@inheritDoc}
      */
     @Override
-    public Optional<Chapter<TailoringRequirement>> handleSelected(String project, String tailoring, String chapter, Boolean selected) {
+    public Optional<Chapter<TailoringRequirement>> handleSelected(String project, String tailoring, String chapter,
+            Boolean selected) {
         log.traceEntry(() -> project, () -> tailoring, () -> chapter, () -> selected);
 
         if (!modifiablePredicate.test(project, tailoring)) {
@@ -101,11 +104,11 @@ public class RequirementServiceImpl implements RequirementService {
         Optional<Chapter<TailoringRequirement>> tailoringChapter = repository.getChapter(project, tailoring, chapter);
         if (tailoringChapter.isPresent()) {
             tailoringChapter.get().allChapters()
-                .sorted(comparing(Chapter::getNumber))
-                .forEachOrdered(subChapter -> {
-                    subChapter.getRequirements().stream().sorted(comparing(TailoringRequirement::getPosition));
-                    handleSelected(subChapter, selected, now);
-                });
+                    .sorted(comparing(Chapter::getNumber))
+                    .forEachOrdered(subChapter -> {
+                        subChapter.getRequirements().stream().sorted(comparing(TailoringRequirement::getPosition));
+                        handleSelected(subChapter, selected, now);
+                    });
             log.traceExit();
             return repository.updateSelected(project, tailoring, tailoringChapter.get());
         }
@@ -118,7 +121,8 @@ public class RequirementServiceImpl implements RequirementService {
      * {@inheritDoc}
      */
     @Override
-    public Optional<TailoringRequirement> handleText(String project, String tailoring, String chapter, String position, String text) {
+    public Optional<TailoringRequirement> handleText(String project, String tailoring, String chapter, String position,
+            String text) {
         log.traceEntry(() -> project, () -> tailoring, () -> chapter, () -> position, () -> text);
 
         if (!modifiablePredicate.test(project, tailoring)) {
@@ -155,8 +159,8 @@ public class RequirementServiceImpl implements RequirementService {
      */
     @Override
     public Optional<TailoringRequirement> createRequirement(String project, String tailoring,
-                                                            String chapter, String position,
-                                                            String text) {
+            String chapter, String position,
+            String text) {
         log.traceEntry(() -> project, () -> tailoring, () -> chapter, () -> position, () -> text);
 
         if (!modifiablePredicate.test(project, tailoring)) {
@@ -178,8 +182,8 @@ public class RequirementServiceImpl implements RequirementService {
         }
 
         TailoringRequirementBuilder builder = TailoringRequirement.builder()
-            .text(text)
-            .selected(TRUE);
+                .text(text)
+                .selected(TRUE);
         if (isCustomRequirement(position)) {
             int i = parseInt(position.substring(position.length() - 1)) + 1;
             builder.position(position.substring(0, position.length() - 1) + i);
@@ -193,17 +197,18 @@ public class RequirementServiceImpl implements RequirementService {
 
         // nachfolgende Positionen für neue Anforderungen anpassen
         requirements.stream().skip(requirementPosition.getAsInt() + 2l)
-            .takeWhile(this::isCustomRequirement)
-            .forEach(requirement -> {
-                int i = new Scanner(requirement.getPosition()).useDelimiter("\\D+").nextInt() + 1;
-                if (isCustomRequirement(position)) {
-                    requirement.setPosition(position.substring(0, position.length() - 1) + i);
-                } else {
-                    requirement.setPosition(position + i);
-                }
-            });
+                .takeWhile(this::isCustomRequirement)
+                .forEach(requirement -> {
+                    int i = new Scanner(requirement.getPosition()).useDelimiter("\\D+").nextInt() + 1;
+                    if (isCustomRequirement(position)) {
+                        requirement.setPosition(position.substring(0, position.length() - 1) + i);
+                    } else {
+                        requirement.setPosition(position + i);
+                    }
+                });
 
-        Optional<Chapter<TailoringRequirement>> updateChapter = repository.updateChapter(project, tailoring, oChapter.get());
+        Optional<Chapter<TailoringRequirement>> updateChapter = repository.updateChapter(project, tailoring,
+                oChapter.get());
         if (updateChapter.isEmpty()) {
             log.traceExit();
             return empty();
@@ -213,11 +218,27 @@ public class RequirementServiceImpl implements RequirementService {
         return updateChapter.get().getRequirement(toCreate.getPosition());
     }
 
-    private Chapter<TailoringRequirement> handleSelected(Chapter<TailoringRequirement> chapter, Boolean selected, ZonedDateTime now) {
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public Optional<Collection<RequirementChange>> getRequirementChanges(String project, String tailoring,
+            String chapter, String position) {
+        log.traceEntry(() -> project, () -> tailoring, () -> chapter, () -> position);
+
+        Optional<Collection<RequirementChange>> result = repository.getRequirementChanges(project, tailoring, chapter,
+                position);
+
+        log.traceExit();
+        return result;
+    }
+
+    private Chapter<TailoringRequirement> handleSelected(Chapter<TailoringRequirement> chapter, Boolean selected,
+            ZonedDateTime now) {
         chapter.getRequirements()
-            .stream()
-            .sorted(comparing(TailoringRequirement::getPosition))
-            .forEachOrdered(requirement -> handleSelected(requirement, selected, now));
+                .stream()
+                .sorted(comparing(TailoringRequirement::getPosition))
+                .forEachOrdered(requirement -> handleSelected(requirement, selected, now));
         return chapter;
     }
 

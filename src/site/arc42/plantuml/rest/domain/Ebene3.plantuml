@@ -24,6 +24,7 @@ package domain {
         +{static} TAILORINGREQUIREMENT = "project/{project}/tailoring/{tailoring}/chapter/{chapter}/{requirement}" : String
         +{static} TAILORINGREQUIRMENT_SELECTED = "project/{project}/tailoring/{tailoring}/catalog/{chapter}/{requirement}/selected/{selected}" : String
         +{static} TAILORINGREQUIRMENT_TEXT = "project/{project}/tailoring/{tailoring}/catalog/{chapter}/{requirement}/text" : String
+        +{static} TAILORINGREQUIRMENT_CHANGES = "project/{project}/tailoring/{tailoring}/catalog/{chapter}/{requirement}/changes" : String
         +{static} CHAPTER_SELECTED = "project/{project}/tailoring/{tailoring}/catalog/{chapter}/selected/{selected}" : String
         +{static} TAILORINGS = "project/{project}/tailoring" : String
         +{static} TAILORING = "project/{project}/tailoring/{tailoring]" : String
@@ -82,6 +83,7 @@ package domain {
         -{static} REL_ATTACHMENT = "attachment" : String
         -{static} REL_NOTE = "note" : String
         -{static} REL_VALIDUNTIL = "validuntil" : String
+        -{static} REL_REQUIREMENTCHANGES = "requirementchanges" : String
 
         .. CatalogVersion ..
         updatePathContext(pathContext : PathContextBuilder, domain : CatalogVersion): void
@@ -266,6 +268,15 @@ package domain {
         ATTACHMENT : String = "attachment"
     }
     mediaTypeFunction <|-- MediaTypeProvider
+
+    class RequirementChangeResource {
+        changeType : String
+        old : String
+        changed : String
+        user : String
+        modificationTimestamp : String
+    }
+    RepresentationModel <|-- RequirementChangeResource
 
 }
 hide empty members
