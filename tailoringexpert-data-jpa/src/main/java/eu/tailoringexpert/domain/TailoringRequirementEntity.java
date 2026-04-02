@@ -42,8 +42,6 @@ import java.time.ZonedDateTime;
 import java.util.List;
 import java.util.Set;
 
-import static jakarta.persistence.CascadeType.*;
-import static jakarta.persistence.CascadeType.REFRESH;
 import static jakarta.persistence.FetchType.LAZY;
 import static jakarta.persistence.GenerationType.TABLE;
 
@@ -60,8 +58,7 @@ public class TailoringRequirementEntity implements Serializable {
      * Technical ID.
      */
     @Id
-    @TableGenerator(name = "SEQ_TAILORINGREQUIREMENT", table = "SEQUENCE", pkColumnName = "SEQ_NAME",
-        valueColumnName = "SEQ_COUNT", pkColumnValue = "SEQ_TAILORINGREQUIREMENT", initialValue = 1)
+    @TableGenerator(name = "SEQ_TAILORINGREQUIREMENT", table = "SEQUENCE", pkColumnName = "SEQ_NAME", valueColumnName = "SEQ_COUNT", pkColumnValue = "SEQ_TAILORINGREQUIREMENT", initialValue = 1)
     @GeneratedValue(strategy = TABLE, generator = "SEQ_TAILORINGREQUIREMENT")
     @Column(name = "REQUIREMENT_ID")
     private Long id;
@@ -76,8 +73,7 @@ public class TailoringRequirementEntity implements Serializable {
      * Requirement origin.
      */
     @Embedded
-    @AssociationOverride(name = "logo",
-        joinColumns = @JoinColumn(name = "REFERENCELOGO_ID"))
+    @AssociationOverride(name = "logo", joinColumns = @JoinColumn(name = "REFERENCELOGO_ID"))
     private ReferenceEntity reference;
 
     /**
@@ -89,23 +85,19 @@ public class TailoringRequirementEntity implements Serializable {
     /**
      * List of applicable documents of the requirement.
      */
-    @OneToMany(cascade = {DETACH, MERGE, PERSIST, REFRESH}, orphanRemoval = false, fetch = LAZY)
-    @JoinTable(
-        name = "TAILORINGREQUIREMENT_APPLICABLEDOC",
-        joinColumns = {@JoinColumn(name = "REQUIREMENT_ID", referencedColumnName = "REQUIREMENT_ID")},
-        inverseJoinColumns = {@JoinColumn(name = "DOCUMENT_ID", referencedColumnName = "APPLICABLEDOCUMENT_ID")}
-    )
+    @OneToMany(fetch = LAZY)
+    @JoinTable(name = "TAILORINGREQUIREMENT_APPLICABLEDOC", joinColumns = {
+            @JoinColumn(name = "REQUIREMENT_ID", referencedColumnName = "REQUIREMENT_ID") }, inverseJoinColumns = {
+                    @JoinColumn(name = "DOCUMENT_ID", referencedColumnName = "APPLICABLEDOCUMENT_ID") })
     private List<ApplicableDocumentEntity> applicableDocuments;
 
     /**
      * List of DRDs requirement shall be part of.
      */
     @OneToMany(fetch = LAZY)
-    @JoinTable(
-        name = "TAILORINGREQUIREMENT_DRD",
-        joinColumns = {@JoinColumn(name = "REQUIREMENT_ID", referencedColumnName = "REQUIREMENT_ID")},
-        inverseJoinColumns = {@JoinColumn(name = "DRD_ID", referencedColumnName = "DRD_ID")}
-    )
+    @JoinTable(name = "TAILORINGREQUIREMENT_DRD", joinColumns = {
+            @JoinColumn(name = "REQUIREMENT_ID", referencedColumnName = "REQUIREMENT_ID") }, inverseJoinColumns = {
+                    @JoinColumn(name = "DRD_ID", referencedColumnName = "DRD_ID") })
     private Set<DRDEntity> drds;
 
     /**
@@ -132,5 +124,3 @@ public class TailoringRequirementEntity implements Serializable {
     @Column(name = "NUMBER")
     private String number;
 }
-
-
