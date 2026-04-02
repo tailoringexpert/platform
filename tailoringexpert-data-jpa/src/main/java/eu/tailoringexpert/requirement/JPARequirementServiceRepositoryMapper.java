@@ -23,6 +23,7 @@ package eu.tailoringexpert.requirement;
 
 import eu.tailoringexpert.TailoringexpertMapperConfig;
 import eu.tailoringexpert.domain.*;
+import eu.tailoringexpert.repository.ApplicableDocumentRepository;
 import eu.tailoringexpert.repository.DRDRepository;
 import eu.tailoringexpert.repository.LogoRepository;
 import lombok.Setter;
@@ -32,7 +33,8 @@ import org.mapstruct.MappingTarget;
 import static java.util.Objects.nonNull;
 
 /**
- * Mapper used by {@link JPARequirementServiceRepository} to convert domain and entity objects.
+ * Mapper used by {@link JPARequirementServiceRepository} to convert domain and
+ * entity objects.
  *
  * @author Michael Bädorf
  */
@@ -45,13 +47,17 @@ public abstract class JPARequirementServiceRepositoryMapper {
     @Setter
     private DRDRepository drdRepository;
 
+    @Setter
+    private ApplicableDocumentRepository applicableDocumentRepository;
+
     abstract TailoringRequirement toDomain(TailoringRequirementEntity entity);
 
     abstract void updateRequirement(TailoringRequirement domain, @MappingTarget TailoringRequirementEntity entity);
 
     abstract Chapter<TailoringRequirement> toDomain(TailoringCatalogChapterEntity entity);
 
-    abstract void updateChapter(Chapter<TailoringRequirement> domain, @MappingTarget TailoringCatalogChapterEntity entity);
+    abstract void updateChapter(Chapter<TailoringRequirement> domain,
+            @MappingTarget TailoringCatalogChapterEntity entity);
 
     abstract TailoringRequirementEntity clone(TailoringRequirementEntity entity);
 
@@ -63,5 +69,12 @@ public abstract class JPARequirementServiceRepositoryMapper {
 
     DRDEntity resolve(DRD domain) {
         return nonNull(domain) ? drdRepository.findByNumber(domain.getNumber()) : null;
+    }
+
+    ApplicableDocumentEntity resolve(Document domain) {
+        return nonNull(domain)
+                ? applicableDocumentRepository.findByTitleAndIssueAndRevision(domain.getTitle(), domain.getIssue(),
+                        domain.getRevision())
+                : null;
     }
 }
