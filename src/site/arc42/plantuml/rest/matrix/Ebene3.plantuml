@@ -1,0 +1,16 @@
+@startuml Ebene3.png
+hide empty members
+
+package eu.tailoringexpert {
+    package domain {
+        abstract class ResourceMapper
+    }
+}
+
+package matrix {
+    class MatrixController {
+        +postMatrixFile(file : MultipartFile) : ResponseEntity<EntityModel<MatrixFileResource>>
+    }
+    MatrixController --> "1" ResourceMapper : mapper
+    MatrixController --> "1" MatrixService : matrixService
+}

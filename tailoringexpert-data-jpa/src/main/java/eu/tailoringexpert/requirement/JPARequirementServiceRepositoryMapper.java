@@ -77,4 +77,5 @@ public abstract class JPARequirementServiceRepositoryMapper {
                         domain.getRevision())
                 : null;
     }
+
 }

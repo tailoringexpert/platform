@@ -59,28 +59,25 @@ public class AppController {
 
     @Operation(summary = "Retrieve main urls of application")
     @ApiResponses(value = {
-        @ApiResponse(responseCode = "200", description = "Links to to level resources",
-            content = @Content(array = @ArraySchema(schema = @Schema(implementation = CollectionModel.class))))
+            @ApiResponse(responseCode = "200", description = "Links to to level resources", content = @Content(array = @ArraySchema(schema = @Schema(implementation = CollectionModel.class))))
     })
-    @GetMapping(value = "/", produces = {"application/hal+json"})
+    @GetMapping(value = "/", produces = { "application/hal+json" })
     public <T> ResponseEntity<CollectionModel<T>> getLinks() {
         log.traceEntry();
         Map<String, String> parameter = Collections.emptyMap();
         ResponseEntity<CollectionModel<T>> result = ResponseEntity
-            .ok()
-            .body(empty(
-                    mapper.createLink("catalog", BASECATALOG, parameter),
-                    mapper.createLink("projects", PROJECTS, parameter),
-                    mapper.createLink("screeningsheet", SCREENINGSHEET, parameter),
-                    mapper.createLink("selectionvector", SELECTIONVECTOR_PROFILE, parameter),
-                    mapper.createLink("catalogconversion", BASECATALOG_CONVERT_EXCEL, parameter),
-                    mapper.createLink("catalogpreview", BASECATALOG_PREVIEW_PDF, parameter),
-                    mapper.createLink("catalogcompare", BASECATALOG_COMPARE, parameter),
-                    mapper.createLink("catalogcomparepreview", BASECATALOG_COMPARE_PREVIEW, parameter),
-                    mapper.createLink("project", PROJECT, parameter)
-                )
-            );
-
+                .ok()
+                .body(empty(
+                        mapper.createLink("catalog", BASECATALOG, parameter),
+                        mapper.createLink("projects", PROJECTS, parameter),
+                        mapper.createLink("screeningsheet", SCREENINGSHEET, parameter),
+                        mapper.createLink("selectionvector", SELECTIONVECTOR_PROFILE, parameter),
+                        mapper.createLink("catalogconversion", BASECATALOG_CONVERT_EXCEL, parameter),
+                        mapper.createLink("catalogpreview", BASECATALOG_PREVIEW_PDF, parameter),
+                        mapper.createLink("catalogcompare", BASECATALOG_COMPARE, parameter),
+                        mapper.createLink("catalogcomparepreview", BASECATALOG_COMPARE_PREVIEW, parameter),
+                        mapper.createLink("project", PROJECT, parameter),
+                        mapper.createLink("matrix", MATRIX, parameter)));
         log.traceExit();
         return result;
     }

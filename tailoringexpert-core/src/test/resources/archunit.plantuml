@@ -36,4 +36,6 @@ skinparam componentStyle uml2
 [Repository] <-- [Catalog]
 [Renderer] <-- [Catalog]
 
+[Matrix] <<..matrix..>>
+[Domain] <-- [Matrix]
 @enduml

@@ -34,13 +34,13 @@ import static org.springframework.http.MediaType.valueOf;
 public class MediaTypeProvider implements Function<String, MediaType> {
     public static final String FORM_DATA = "form-data";
     public static final String ATTACHMENT = "attachment";
+    public static final String MATRIX = "matrix";
 
     private static final Map<String, MediaType> contentTypes = ofEntries(
-        new SimpleEntry<>("pdf", valueOf("application/pdf")),
-        new SimpleEntry<>("xlsx", valueOf("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet")),
-        new SimpleEntry<>("zip", valueOf("application/zip")),
-        new SimpleEntry<>("json", valueOf("application/json"))
-    );
+            new SimpleEntry<>("pdf", valueOf("application/pdf")),
+            new SimpleEntry<>("xlsx", valueOf("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet")),
+            new SimpleEntry<>("zip", valueOf("application/zip")),
+            new SimpleEntry<>("json", valueOf("application/json")));
 
     @Override
     public MediaType apply(String type) {
