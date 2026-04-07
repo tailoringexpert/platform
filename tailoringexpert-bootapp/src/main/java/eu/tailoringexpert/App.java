@@ -44,13 +44,10 @@ import java.util.stream.StreamSupport;
 import static org.springframework.context.annotation.FilterType.REGEX;
 
 @SpringBootApplication
-@ComponentScan(
-    basePackages = {"eu.tailoringexpert"},
-    excludeFilters = {
+@ComponentScan(basePackages = { "eu.tailoringexpert" }, excludeFilters = {
         @Filter(type = REGEX, pattern = ".*MapperImpl_?"),
         @Filter(RestController.class),
-    }
-)
+})
 @Log4j2
 public class App {
 
@@ -65,13 +62,13 @@ public class App {
         log.info("Active profiles: {}", Arrays.toString(env.getActiveProfiles()));
         final MutablePropertySources sources = ((AbstractEnvironment) env).getPropertySources();
         StreamSupport.stream(sources.spliterator(), false)
-            .filter(EnumerablePropertySource.class::isInstance)
-            .map(EnumerablePropertySource.class::cast)
-            .map(EnumerablePropertySource::getPropertyNames)
-            .flatMap(Arrays::stream)
-            .distinct()
-            .filter(prop -> !(prop.contains("credentials") || prop.contains("password")))
-            .forEach(prop -> log.info("{}: {}", prop, env.getProperty(prop)));
+                .filter(EnumerablePropertySource.class::isInstance)
+                .map(EnumerablePropertySource.class::cast)
+                .map(EnumerablePropertySource::getPropertyNames)
+                .flatMap(Arrays::stream)
+                .distinct()
+                .filter(prop -> !(prop.contains("credentials") || prop.contains("password")))
+                .forEach(prop -> log.info("{}: {}", prop, env.getProperty(prop)));
         log.info("===========================================");
     }
 
@@ -85,9 +82,8 @@ public class App {
 
     @Bean
     Map<String, String> registerTenants(
-        @NonNull TenantFactory factory) {
+            @NonNull TenantFactory factory) {
         return factory.tenants();
     }
-
 
 }

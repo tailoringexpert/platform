@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>eu.tailoringexpert</groupId>
@@ -52,12 +53,14 @@
     <distributionManagement>
         <snapshotRepository>
             <id>tailoringexpert-snapshots</id>
-            <!--suppress UnresolvedMavenProperty -->
+            <!--suppress
+            UnresolvedMavenProperty -->
             <url>${tailoringexpert-snapshots.repository}</url>
         </snapshotRepository>
         <repository>
             <id>tailoringexpert-releases</id>
-            <!--suppress UnresolvedMavenProperty -->
+            <!--suppress
+            UnresolvedMavenProperty -->
             <url>${tailoringexpert-releases.repository}</url>
         </repository>
     </distributionManagement>
@@ -69,7 +72,7 @@
         <module>tailoringexpert-db</module>
         <module>tailoringexpert-rest</module>
         <module>tailoringexpert-openhtmltopdf</module>
-        <module>tailoringexpert-poi</module>        
+        <module>tailoringexpert-poi</module>
         <module>tailoringexpert-coverage</module>
         <module>tailoringexpert-bootapp</module>
     </modules>
@@ -81,7 +84,7 @@
         <maven.compiler.target>${java.version}</maven.compiler.target>
         <maven.javadoc.skip>true</maven.javadoc.skip>
         <license.licenseName>gpl_v3</license.licenseName>
-        <platform.version>0.2.3</platform.version>
+        <platform.version>0.2.4-SNAPSHOT</platform.version>
 
         <jacoco.version>0.8.7</jacoco.version>
 
@@ -366,12 +369,12 @@
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-surefire-plugin</artifactId>
                 <version>${maven-surefire-plugin.version}</version>
-				<configuration>
+                <configuration>
                     <systemPropertyVariables>
                         <java.awt.headless>true</java.awt.headless>
                     </systemPropertyVariables>
-					<argLine>@{argLine} -javaagent:${org.mockito:mockito-core:jar}</argLine>
-				</configuration>                
+                    <argLine>@{argLine} -javaagent:${org.mockito:mockito-core:jar}</argLine>
+                </configuration>
             </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
@@ -449,7 +452,8 @@
 
     <profiles>
         <profile>
-            <!-- because of lombok @Builder javadoc generation problems, it is necessary to delombok first -->
+            <!-- because of lombok @Builder javadoc generation problems, it is necessary to delombok
+            first -->
             <id>javadoc</id>
             <activation>
                 <activeByDefault>false</activeByDefault>

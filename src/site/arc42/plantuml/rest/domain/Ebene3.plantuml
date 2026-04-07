@@ -57,6 +57,7 @@ package domain {
         +{static} BASECATALOG_COMPARE_PDF = "catalog/{base}/compare/{compare}/pdf" : String
         +{static} SCREENINGSHEET = "screeningsheet" : String
         +{static} SELECTIONVECTOR_PROFILE = "selectionvector" : String
+        +{static} MATRIXFILE = "matrixfile" : String
             
         ..Rel..
         +{static} REL_SELF = "self" : String
@@ -277,6 +278,15 @@ package domain {
         modificationTimestamp : String
     }
     RepresentationModel <|-- RequirementChangeResource
+
+    class MatrixFileResource {
+        description : String
+        fileName : String
+        data : byte[]
+        hash : String
+        createdTimestamp : ZonedDateTime
+    }
+    RepresentationModel <|-- MatrixFileResource
 
 }
 hide empty members

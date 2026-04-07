@@ -1,0 +1,15 @@
+@startuml Ebene3.png
+hide empty members
+
+package eu.tailoringexpert {
+}
+
+package matrix {
+
+    interface MatrixService {
+        getMatrixFiles() : Collection<MatrixFile> 
+        save(file : MatrixFile) : MatrixFile
+    }
+
+}
+@enduml

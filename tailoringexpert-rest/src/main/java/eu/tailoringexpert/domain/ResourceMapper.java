@@ -25,6 +25,7 @@ import eu.tailoringexpert.TailoringexpertMapperConfig;
 import eu.tailoringexpert.domain.BaseCatalogVersionResource.BaseCatalogVersionResourceBuilder;
 import eu.tailoringexpert.domain.DocumentSignatureResource.DocumentSignatureResourceBuilder;
 import eu.tailoringexpert.domain.FileResource.FileResourceBuilder;
+import eu.tailoringexpert.domain.MatrixFileResource.MatrixFileResourceBuilder;
 import eu.tailoringexpert.domain.NoteResource.NoteResourceBuilder;
 import eu.tailoringexpert.domain.PathContext.PathContextBuilder;
 import eu.tailoringexpert.domain.ProjectResource.ProjectResourceBuilder;
@@ -60,7 +61,7 @@ import static java.util.stream.Collectors.mapping;
 import static java.util.stream.Collectors.toCollection;
 
 @Mapper(config = TailoringexpertMapperConfig.class)
-@SuppressWarnings({"java:S6539"})
+@SuppressWarnings({ "java:S6539" })
 public abstract class ResourceMapper {
 
     // Resource URLs
@@ -113,6 +114,8 @@ public abstract class ResourceMapper {
 
     public static final String SCREENINGSHEET = "screeningsheet";
     public static final String SELECTIONVECTOR_PROFILE = "selectionvector";
+    public static final String MATRIX = "matrixfile";
+    public static final String MATRIX_FILE = "matrixfile/{name}";
 
     // RELs
     public static final String REL_SELF = "self";
@@ -144,7 +147,6 @@ public abstract class ResourceMapper {
     @Setter
     private String contextPath;
 
-
     // CatalogVersion
     @BeforeMapping
     protected void updatePathContext(@Context PathContextBuilder pathContext, CatalogVersion domain) {
@@ -154,21 +156,22 @@ public abstract class ResourceMapper {
     @Mapping(target = "validFrom", source = "validFrom", dateFormat = "dd.MM.yyyy")
     @Mapping(target = "validUntil", source = "validUntil", dateFormat = "dd.MM.yyyy")
     @Mapping(target = "valid", expression = "java( domain.getValidUntil() == null || java.time.ZonedDateTime.now().isBefore(domain.getValidUntil()))")
-    public abstract BaseCatalogVersionResource toResource(@Context PathContextBuilder pathContext, CatalogVersion domain);
+    public abstract BaseCatalogVersionResource toResource(@Context PathContextBuilder pathContext,
+            CatalogVersion domain);
 
     @AfterMapping
-    protected void addLinks(@Context PathContextBuilder pathContext, @MappingTarget BaseCatalogVersionResourceBuilder resource) {
+    protected void addLinks(@Context PathContextBuilder pathContext,
+            @MappingTarget BaseCatalogVersionResourceBuilder resource) {
         PathContext context = pathContext.build();
         Map<String, String> parameter = context.parameter();
         resource.links(asList(
-            createLink(PROJECTS, resolveParameter(PROJECT_NEW, context.parameter()), parameter),
-            createLink(REL_SELF, BASECATALOG_VERSION, parameter),
-            createLink(REL_PDF, BASECATALOG_VERSION_PDF, parameter),
-            createLink(REL_EXCEL, BASECATALOG_VERSION_EXCEL, parameter),
-            createLink(REL_JSON, BASECATALOG_VERSION_JSON, parameter),
-            createLink(REL_DOCUMENT, BASECATALOG_VERSION_DOCUMENT, parameter),
-            createLink(REL_VALIDUNTIL, BASECATALOG_VALIDUNTIL, parameter)
-        ));
+                createLink(PROJECTS, resolveParameter(PROJECT_NEW, context.parameter()), parameter),
+                createLink(REL_SELF, BASECATALOG_VERSION, parameter),
+                createLink(REL_PDF, BASECATALOG_VERSION_PDF, parameter),
+                createLink(REL_EXCEL, BASECATALOG_VERSION_EXCEL, parameter),
+                createLink(REL_JSON, BASECATALOG_VERSION_JSON, parameter),
+                createLink(REL_DOCUMENT, BASECATALOG_VERSION_DOCUMENT, parameter),
+                createLink(REL_VALIDUNTIL, BASECATALOG_VALIDUNTIL, parameter)));
     }
 
     // ProjectInformation
@@ -189,12 +192,11 @@ public abstract class ResourceMapper {
         parameter.put(REL_STATE, parameter.get("projectstate"));
 
         resource.links(asList(
-            createLink(REL_SELF, PROJECT, parameter),
-            createLink(REL_SELECTIONVECTOR, PROJECT_SELECTIONVECTOR, parameter),
-            createLink(REL_SCREENINGSHEET, PROJECT_SCREENINGSHEET, parameter),
-            createLink(REL_TAILORING, TAILORINGS, parameter),
-            createLink(REL_STATE, PROJECT_STATE, parameter)
-        ));
+                createLink(REL_SELF, PROJECT, parameter),
+                createLink(REL_SELECTIONVECTOR, PROJECT_SELECTIONVECTOR, parameter),
+                createLink(REL_SCREENINGSHEET, PROJECT_SCREENINGSHEET, parameter),
+                createLink(REL_TAILORING, TAILORINGS, parameter),
+                createLink(REL_STATE, PROJECT_STATE, parameter)));
     }
 
     // Project
@@ -205,7 +207,6 @@ public abstract class ResourceMapper {
 
     @Mapping(target = "name", source = "identifier")
     public abstract ProjectResource toResource(@Context PathContextBuilder pathContext, Project domain);
-
 
     // TailoringInformation
     @BeforeMapping
@@ -238,16 +239,16 @@ public abstract class ResourceMapper {
                 createLink(REL_ATTACHMENT, TAILORING_ATTACHMENTS, parameter),
                 createLink(REL_NOTE, TAILORING_NOTES, parameter),
                 createLink(REL_STATE, TAILORING_STATE, parameter),
-                createLink(REL_REQUIREMENTAPPLICIBILITY, TAILORING_REQUIREMENTSAPPLICABILITY, parameter)
-            )
-        );
+                createLink(REL_REQUIREMENTAPPLICIBILITY, TAILORING_REQUIREMENTSAPPLICABILITY, parameter)));
     }
 
     // ScreeningSheet
-    public abstract ScreeningSheetResource toResource(@Context PathContextBuilder builder, ScreeningSheet screeningSheet);
+    public abstract ScreeningSheetResource toResource(@Context PathContextBuilder builder,
+            ScreeningSheet screeningSheet);
 
     @AfterMapping
-    protected void addLinks(@Context PathContextBuilder pathContext, @MappingTarget ScreeningSheetResourceBuilder resource) {
+    protected void addLinks(@Context PathContextBuilder pathContext,
+            @MappingTarget ScreeningSheetResourceBuilder resource) {
         PathContext context = pathContext.build();
         if (isNull(context.getProject())) {
             return;
@@ -258,40 +259,36 @@ public abstract class ResourceMapper {
 
         Map<String, String> parameter = context.parameter();
         resource.links(asList(
-            createLink(REL_SELF, self, parameter),
-            createLink("file", file, parameter))
-        );
+                createLink(REL_SELF, self, parameter),
+                createLink("file", file, parameter)));
     }
 
-    @SuppressWarnings({"java:S1172"})
+    @SuppressWarnings({ "java:S1172" })
     public List<ScreeningSheetParameterResource> toResource(@Context PathContextBuilder builder,
-                                                            List<ScreeningSheetParameter> parameters) {
+            List<ScreeningSheetParameter> parameters) {
         if (isNull(parameters)) {
             return of();
         }
 
         // "persist" order of original provided categories
         LinkedHashSet<String> orderedCategories = parameters.stream()
-            .map(ScreeningSheetParameter::getCategory)
-            .collect(toCollection(LinkedHashSet::new));
+                .map(ScreeningSheetParameter::getCategory)
+                .collect(toCollection(LinkedHashSet::new));
 
         // construct "easily" concatination of values of each category
         Map<String, String> category2ValueString = parameters.stream()
-            .collect(groupingBy(
-                ScreeningSheetParameter::getCategory,
-                mapping(parameter -> parameter.getValue().toString(), joining("; "))
-            ));
+                .collect(groupingBy(
+                        ScreeningSheetParameter::getCategory,
+                        mapping(parameter -> parameter.getValue().toString(), joining("; "))));
 
         // create parameter in originally provided order
         return orderedCategories
-            .stream()
-            .map(category ->
-                ScreeningSheetParameterResource.builder()
-                    .label(category)
-                    .value(category2ValueString.get(category))
-                    .build()
-            )
-            .collect(toCollection(LinkedList::new));
+                .stream()
+                .map(category -> ScreeningSheetParameterResource.builder()
+                        .label(category)
+                        .value(category2ValueString.get(category))
+                        .build())
+                .collect(toCollection(LinkedList::new));
     }
 
     // Tailoring
@@ -313,10 +310,12 @@ public abstract class ResourceMapper {
         }
     }
 
-    public abstract TailoringCatalogChapterResource toResource(@Context PathContextBuilder pathContext, Chapter<TailoringRequirement> domain);
+    public abstract TailoringCatalogChapterResource toResource(@Context PathContextBuilder pathContext,
+            Chapter<TailoringRequirement> domain);
 
     @AfterMapping
-    protected void addLinks(@Context PathContextBuilder pathContext, @MappingTarget TailoringCatalogChapterResourceBuilder resource) {
+    protected void addLinks(@Context PathContextBuilder pathContext,
+            @MappingTarget TailoringCatalogChapterResourceBuilder resource) {
         PathContext context = pathContext.build();
         pathContext.chapter(resource.build().getNumber());
         Map<String, String> parameter = context.parameter();
@@ -324,12 +323,10 @@ public abstract class ResourceMapper {
         parameter.put(REL_KAPITEL, resource.build().getNumber());
 
         resource.links(asList(
-            createLink(REL_SELF, TAILORING_CATALOG_CHAPTER, parameter),
-            createLink("requirement", TAILORING_CATALOG_CHAPTER_REQUIREMENT, parameter),
-            createLink("selection", CHAPTER_SELECTED, parameter))
-        );
+                createLink(REL_SELF, TAILORING_CATALOG_CHAPTER, parameter),
+                createLink("requirement", TAILORING_CATALOG_CHAPTER_REQUIREMENT, parameter),
+                createLink("selection", CHAPTER_SELECTED, parameter)));
     }
-
 
     // TailoringRequirement
     @BeforeMapping
@@ -340,22 +337,22 @@ public abstract class ResourceMapper {
         }
     }
 
-
     @Mapping(target = "changed", expression = "java( domain.getSelectionChanged() != null || domain.getTextChanged() != null)")
     @Mapping(target = "reference", source = "domain.reference.text")
-    public abstract TailoringRequirementResource toResource(@Context PathContextBuilder pathContext, TailoringRequirement domain);
-
+    public abstract TailoringRequirementResource toResource(@Context PathContextBuilder pathContext,
+            TailoringRequirement domain);
 
     @AfterMapping
-    protected void addLinks(@Context PathContextBuilder pathContext, @MappingTarget TailoringRequirementResourceBuilder resource) {
+    protected void addLinks(@Context PathContextBuilder pathContext,
+            @MappingTarget TailoringRequirementResourceBuilder resource) {
         PathContext context = pathContext.build();
         Map<String, String> parameter = context.parameter();
 
         resource.links(asList(
-            createLink(REL_SELF, TAILORINGREQUIRMENT, parameter),
-            createLink(REL_SELECTED, TAILORINGREQUIRMENT_SELECTED, parameter),
-            createLink(REL_TEXT, TAILORINGREQUIRMENT_TEXT, parameter),
-            createLink(REL_REQUIREMENTCHANGES, TAILORINGREQUIRMENT_CHANGES, parameter))
+                createLink(REL_SELF, TAILORINGREQUIRMENT, parameter),
+                createLink(REL_SELECTED, TAILORINGREQUIRMENT_SELECTED, parameter),
+                createLink(REL_TEXT, TAILORINGREQUIRMENT_TEXT, parameter),
+                createLink(REL_REQUIREMENTCHANGES, TAILORINGREQUIRMENT_CHANGES, parameter))
 
         );
     }
@@ -365,26 +362,27 @@ public abstract class ResourceMapper {
     protected void updatePathContext(@Context PathContextBuilder pathContext, RequirementChange domain) {
     }
 
-
-    public abstract RequirementChangeResource toResource(@Context PathContextBuilder pathContext, RequirementChange domain);
-
+    public abstract RequirementChangeResource toResource(@Context PathContextBuilder pathContext,
+            RequirementChange domain);
 
     @AfterMapping
-    protected void addLinks(@Context PathContextBuilder pathContext, @MappingTarget RequirementChangeResourceBuilder resource) {
+    protected void addLinks(@Context PathContextBuilder pathContext,
+            @MappingTarget RequirementChangeResourceBuilder resource) {
     }
 
     // DocumentSignature
-    public abstract DocumentSignatureResource toResource(@Context PathContextBuilder pathContext, DocumentSignature domain);
+    public abstract DocumentSignatureResource toResource(@Context PathContextBuilder pathContext,
+            DocumentSignature domain);
 
     @AfterMapping
-    protected void addLinks(@Context PathContextBuilder pathContext, @MappingTarget DocumentSignatureResourceBuilder resource) {
+    protected void addLinks(@Context PathContextBuilder pathContext,
+            @MappingTarget DocumentSignatureResourceBuilder resource) {
         PathContext context = pathContext.build();
         Map<String, String> parameter = context.parameter();
         parameter.put("faculty", resource.build().getFaculty());
 
         resource.links(asList(
-            createLink(REL_SELF, TAILORING_SIGNATURE_FACULTY, parameter))
-        );
+                createLink(REL_SELF, TAILORING_SIGNATURE_FACULTY, parameter)));
     }
 
     // FileResource
@@ -397,43 +395,43 @@ public abstract class ResourceMapper {
         parameter.put("name", resource.build().getName());
 
         resource.links(asList(
-            createLink(REL_SELF, TAILORING_ATTACHMENT, parameter))
-        );
+                createLink(REL_SELF, TAILORING_ATTACHMENT, parameter)));
     }
 
     // Selectionvector
     public abstract SelectionVectorResource toResource(@Context PathContextBuilder pathContext, SelectionVector domain);
 
     @AfterMapping
-    protected void addLinks(@Context PathContextBuilder pathContext, @MappingTarget SelectionVectorResourceBuilder resource) {
+    protected void addLinks(@Context PathContextBuilder pathContext,
+            @MappingTarget SelectionVectorResourceBuilder resource) {
         PathContext context = pathContext.build();
         Map<String, String> parameter = context.parameter();
         if (nonNull(context.getTailoring())) {
             resource.links(asList(
-                createLink(REL_SELF, TAILORING_SELECTIONVECTOR, parameter))
-            );
+                    createLink(REL_SELF, TAILORING_SELECTIONVECTOR, parameter)));
         } else if (nonNull(context.getProject())) {
             resource.links(asList(
-                createLink(REL_SELF, PROJECT_SELECTIONVECTOR, parameter))
-            );
+                    createLink(REL_SELF, PROJECT_SELECTIONVECTOR, parameter)));
         }
     }
 
     // Catalog
-    public abstract TailoringCatalogResource toResource(@Context PathContextBuilder pathContext, Catalog<TailoringRequirement> domain);
+    public abstract TailoringCatalogResource toResource(@Context PathContextBuilder pathContext,
+            Catalog<TailoringRequirement> domain);
 
     @AfterMapping
-    protected void addLinks(@Context PathContextBuilder pathContext, @MappingTarget TailoringCatalogResourceBuilder resource) {
+    protected void addLinks(@Context PathContextBuilder pathContext,
+            @MappingTarget TailoringCatalogResourceBuilder resource) {
         PathContext context = pathContext.build();
         Map<String, String> parameter = context.parameter();
 
         resource.links(asList(
-            createLink(REL_SELF, TAILORING_CATALOG, parameter))
-        );
+                createLink(REL_SELF, TAILORING_CATALOG, parameter)));
     }
 
     // SelectionVectorProfile
-    public abstract SelectionVectorProfileResource toResource(@Context PathContextBuilder pathContext, SelectionVectorProfile domain);
+    public abstract SelectionVectorProfileResource toResource(@Context PathContextBuilder pathContext,
+            SelectionVectorProfile domain);
 
     // Note
     @BeforeMapping
@@ -450,8 +448,26 @@ public abstract class ResourceMapper {
         Map<String, String> parameter = context.parameter();
 
         resource.links(asList(
-            createLink(REL_SELF, TAILORING_NOTE, parameter))
-        );
+                createLink(REL_SELF, TAILORING_NOTE, parameter)));
+    }
+
+    // MatrixFileMeta
+    @BeforeMapping
+    protected void updatePathContext(@Context PathContextBuilder pathContext, MatrixFileMeta domain) {
+        pathContext.name(domain.getName());
+    }
+
+    @Mapping(target = "creationTimestamp", source = "creationTimestamp", dateFormat = "dd.MM.yyyy HH:mm")
+    public abstract MatrixFileResource toResource(@Context PathContextBuilder pathContext, MatrixFileMeta domain);
+
+    @AfterMapping
+    protected void addLinks(@Context PathContextBuilder pathContext,
+            @MappingTarget MatrixFileResourceBuilder resource) {
+        PathContext context = pathContext.build();
+        Map<String, String> parameter = context.parameter();
+
+        resource.links(asList(
+                createLink(REL_SELF, MATRIX_FILE, parameter)));
     }
 
     private String resolveParameter(String path, Map<String, String> parameter) {
