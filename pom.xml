@@ -45,22 +45,30 @@
             <url>https://s01.oss.sonatype.org/content/repositories/snapshots</url>
         </repository>
         <repository>
-            <id>tailoringexpert</id>
-            <url>${tailoringexpert.repository}</url>
+            <id>${server.snapshot}</id>
+            <!--suppress
+                    UnresolvedMavenProperty -->
+            <url>${tailoringexpert-snapshots.repository}</url>
+        </repository>
+        <repository>
+            <id>${server.release}</id>
+            <!--suppress
+                    UnresolvedMavenProperty -->
+            <url>${tailoringexpert-releases.repository}</url>
         </repository>
     </repositories>
 
     <distributionManagement>
         <snapshotRepository>
-            <id>tailoringexpert-snapshots</id>
+            <id>${server.snapshot}</id>
             <!--suppress
-            UnresolvedMavenProperty -->
+                    UnresolvedMavenProperty -->
             <url>${tailoringexpert-snapshots.repository}</url>
         </snapshotRepository>
         <repository>
-            <id>tailoringexpert-releases</id>
+            <id>${server.release}</id>
             <!--suppress
-            UnresolvedMavenProperty -->
+                    UnresolvedMavenProperty -->
             <url>${tailoringexpert-releases.repository}</url>
         </repository>
     </distributionManagement>
