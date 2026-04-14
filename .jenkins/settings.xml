@@ -9,17 +9,34 @@
             <username>${NEXUS_CREDENTIALS_USR}</username>
             <password>${NEXUS_CREDENTIALS_PSW}</password>
         </server>
+        <server>
+            <id>custom-maven</id>
+            <username>${NEXUS_CREDENTIALS_USR}</username>
+            <password>${NEXUS_CREDENTIALS_PSW}</password>
+        </server>
     </servers>
 
     <profiles>
         <profile>
-            <id>tailoringexpert</id>
+            <id>tailoringexpert-maven</id>
             <activation>
-                <activeByDefault>true</activeByDefault>
+                <activeByDefault>false</activeByDefault>
             </activation>
             <properties>
                 <server.snapshot>tailoringexpert-maven</server.snapshot>
                 <server.release>tailoringexpert-maven</server.release>
+                <tailoringexpert-releases.repository>${NEXUS_RELEASEURL}</tailoringexpert-releases.repository>
+                <tailoringexpert-snapshots.repository>${NEXUS_SNAPSHOTURL}</tailoringexpert-snapshots.repository>
+            </properties>
+        </profile>
+        <profile>
+            <id>custom-maven</id>
+            <activation>
+                <activeByDefault>false</activeByDefault>
+            </activation>
+            <properties>
+                <server.snapshot>custom-maven</server.snapshot>
+                <server.release>custom-maven</server.release>
                 <tailoringexpert-releases.repository>${NEXUS_RELEASEURL}</tailoringexpert-releases.repository>
                 <tailoringexpert-snapshots.repository>${NEXUS_SNAPSHOTURL}</tailoringexpert-snapshots.repository>
             </properties>
