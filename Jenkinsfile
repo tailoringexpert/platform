@@ -2,10 +2,16 @@ properties([
     parameters([
         booleanParam(
             name: 'RELEASE_BUILD',
-            defaultValue: false),
+            defaultValue: false,
+            description: 'Creaate a release'),
         booleanParam(
             name: 'DEPLOY',
-            defaultValue: false),
+            defaultValue: false,
+            description: 'Deploy to tailoringxpert repo'),
+        booleanParam(
+            name: 'DEPLOY_TO_CUSTOM_REPOSITORY',
+            defaultValue: false,
+            description: 'Select also to maven repo defined by profile custom-maven'),              
         gitParameter(
             name: 'BRANCH',
             branch: '',
@@ -174,7 +180,10 @@ pipeline {
             steps {
                 script {
                     if (params.DEPLOY) {
-                        sh "mvn --settings .jenkins/settings.xml -Dmaven.repo.local=${M2_VOLUME}/repository -DskipTests deploy"
+                        sh "mvn --settings .jenkins/settings.xml -Dmaven.repo.local=${M2_VOLUME}/repository -DskipTests deploy -P tailoringexpert-maven"
+                        if (params.DEPLOY_TO_CUSTOM_REPOSITORY) {
+                            sh "mvn --settings .jenkins/settings.xml -Dmaven.repo.local=${M2_VOLUME}/repository -DskipTests deploy -P custom-maven"
+                        }
                     } else {
                         sh 'exit 0'
                     }
