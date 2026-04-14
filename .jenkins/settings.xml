@@ -1,21 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <settings xmlns="http://maven.apache.org/SETTINGS/1.0.0"
-          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-          xsi:schemaLocation="http://maven.apache.org/SETTINGS/1.0.0 http://maven.apache.org/xsd/settings-1.0.0.xsd">
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://maven.apache.org/SETTINGS/1.0.0 http://maven.apache.org/xsd/settings-1.0.0.xsd">
 
     <servers>
         <server>
-            <id>tailoringexpert-releases</id>
-            <username>${NEXUS_CREDENTIALS_USR}</username>
-            <password>${NEXUS_CREDENTIALS_PSW}</password>
-        </server>
-		<server>
-            <id>tailoringexpert-snapshots</id>
-            <username>${NEXUS_CREDENTIALS_USR}</username>
-            <password>${NEXUS_CREDENTIALS_PSW}</password>
-        </server>
-        <server>
-            <id>tailoringexpert</id>
+            <id>tailoringexpert-maven</id>
             <username>${NEXUS_CREDENTIALS_USR}</username>
             <password>${NEXUS_CREDENTIALS_PSW}</password>
         </server>
@@ -23,24 +13,15 @@
 
     <profiles>
         <profile>
-            <id>nexus</id>
+            <id>tailoringexpert</id>
             <activation>
                 <activeByDefault>true</activeByDefault>
             </activation>
             <properties>
+                <server.snapshot>tailoringexpert-maven</server.snapshot>
+                <server.release>tailoringexpert-maven</server.release>
                 <tailoringexpert-releases.repository>${NEXUS_RELEASEURL}</tailoringexpert-releases.repository>
-				<tailoringexpert-snapshots.repository>${NEXUS_SNAPSHOTURL}</tailoringexpert-snapshots.repository>
-                <tailoringexpert.repository>${NEXUS_URL}</tailoringexpert.repository>
-            </properties>
-        </profile>
-        <profile>
-            <id>sonar</id>
-            <activation>
-                <activeByDefault>true</activeByDefault>
-            </activation>
-            <properties>
-                <sonar.host.url>${SONAR_HOSTURL}</sonar.host.url>
-                <sonar.token>${SONAR_TOKEN}</sonar.token>
+                <tailoringexpert-snapshots.repository>${NEXUS_SNAPSHOTURL}</tailoringexpert-snapshots.repository>
             </properties>
         </profile>
     </profiles>
