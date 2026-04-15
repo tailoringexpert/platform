@@ -26,6 +26,7 @@ properties([
 pipeline {
 
     environment {
+        GIT_CREDENTIALS_ID = 'TAILORINGEXPERT_GITHUB_CREDENTIALS'
         GIT_CREDENTIALS = credentials('TAILORINGEXPERT_GITHUB_CREDENTIALS')
         GPG_SIGNKEY = credentials('GITHUB_GPG_SIGNKEY')
         NEXUS_CREDENTIALS = credentials('NEXUS_CREDENTIALS')
