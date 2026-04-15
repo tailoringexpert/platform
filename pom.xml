@@ -41,10 +41,6 @@
 
     <repositories>
         <repository>
-            <id>ossrh</id>
-            <url>https://s01.oss.sonatype.org/content/repositories/snapshots</url>
-        </repository>
-        <repository>
             <id>${server.snapshot}</id>
             <!--suppress
                     UnresolvedMavenProperty -->
@@ -92,7 +88,7 @@
         <maven.compiler.target>${java.version}</maven.compiler.target>
         <maven.javadoc.skip>true</maven.javadoc.skip>
         <license.licenseName>gpl_v3</license.licenseName>
-        <platform.version>0.2.4-SNAPSHOT</platform.version>
+        <platform.version>0.2.4</platform.version>
 
         <jacoco.version>0.8.7</jacoco.version>
 
