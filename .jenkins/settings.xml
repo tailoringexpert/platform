@@ -11,8 +11,16 @@
         </server>
         <server>
             <id>custom-maven</id>
-            <username>${NEXUS_CREDENTIALS_USR}</username>
-            <password>${NEXUS_CREDENTIALS_PSW}</password>
+            <!-- <configuration>
+                <httpHeaders>
+                    <property>
+                        <name>${MAVEN_CUSTOM_CREDENTIALS_USR}</name>
+                        <value>${MAVEN_CUSTOM_CREDENTIALS_PSW}</value>
+                    </property>
+                </httpHeaders>
+            </configuration> -->
+            <username>${MAVEN_CUSTOM_CREDENTIALS_USR}</username>
+            <password>${MAVEN_CUSTOM_CREDENTIALS_PSW}</password>
         </server>
     </servers>
 
@@ -27,6 +35,7 @@
                 <server.release>tailoringexpert-maven</server.release>
                 <tailoringexpert-releases.repository>${NEXUS_RELEASEURL}</tailoringexpert-releases.repository>
                 <tailoringexpert-snapshots.repository>${NEXUS_SNAPSHOTURL}</tailoringexpert-snapshots.repository>
+                <tailoringexpert.repository>${NEXUS_URL}</tailoringexpert.repository>
             </properties>
         </profile>
         <profile>
@@ -37,8 +46,18 @@
             <properties>
                 <server.snapshot>custom-maven</server.snapshot>
                 <server.release>custom-maven</server.release>
-                <tailoringexpert-releases.repository>${NEXUS_RELEASEURL}</tailoringexpert-releases.repository>
-                <tailoringexpert-snapshots.repository>${NEXUS_SNAPSHOTURL}</tailoringexpert-snapshots.repository>
+                <tailoringexpert-releases.repository>${MAVEN_CUSTOM_RELEASEURL}</tailoringexpert-releases.repository>
+                <tailoringexpert-snapshots.repository>${MAVEN_CUSTOM_SNAPSHOTURL}</tailoringexpert-snapshots.repository>
+            </properties>
+        </profile>
+        <profile>
+            <id>sonar</id>
+            <activation>
+                <activeByDefault>true</activeByDefault>
+            </activation>
+            <properties>
+                <sonar.host.url>${SONAR_HOSTURL}</sonar.host.url>
+                <sonar.token>${SONAR_TOKEN}</sonar.token>
             </properties>
         </profile>
     </profiles>
