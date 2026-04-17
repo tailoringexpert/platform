@@ -23,6 +23,7 @@ package eu.tailoringexpert.requirement;
 
 import eu.tailoringexpert.domain.Chapter;
 import eu.tailoringexpert.domain.Reference;
+import eu.tailoringexpert.domain.RequirementChange;
 import eu.tailoringexpert.domain.TailoringRequirement;
 import lombok.extern.log4j.Log4j2;
 import org.junit.jupiter.api.BeforeEach;
@@ -30,6 +31,7 @@ import org.junit.jupiter.api.Test;
 
 import java.time.ZonedDateTime;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
@@ -73,7 +75,7 @@ class RequirementServiceImplTest {
         // act
         Throwable actual = catchThrowable(() -> new RequirementServiceImpl(null, null));
 
-        //assert
+        // assert
         assertThat(actual).isInstanceOf(NullPointerException.class);
     }
 
@@ -93,20 +95,16 @@ class RequirementServiceImplTest {
         verify(repositoryMock, times(0)).updateRequirement(any(), any(), any(), any());
     }
 
-
     @Test
     void handleSelected_RequirementNotSelectedBefore_StateSelected() {
         // arrange
         given(predicateMock.test("SAMPLE", "master")).willReturn(true);
         given(repositoryMock.getRequirement("SAMPLE", "master", "1.1", "a")).willReturn(of(
                 TailoringRequirement.builder()
-                    .selected(FALSE)
-                    .build()
-            )
-        );
+                        .selected(FALSE)
+                        .build()));
         given(repositoryMock.updateRequirement(anyString(), anyString(), anyString(), any(TailoringRequirement.class)))
-            .willAnswer(invocation -> of(invocation.getArgument(3)));
-
+                .willAnswer(invocation -> of(invocation.getArgument(3)));
 
         // act
         Optional<TailoringRequirement> actual = service.handleSelected("SAMPLE", "master", "1.1", "a", TRUE);
@@ -114,12 +112,11 @@ class RequirementServiceImplTest {
         // assert
         verify(predicateMock, times(1)).test("SAMPLE", "master");
         verify(repositoryMock, times(1))
-            .updateRequirement(eq("SAMPLE"), eq("master"), eq("1.1"), any(TailoringRequirement.class));
+                .updateRequirement(eq("SAMPLE"), eq("master"), eq("1.1"), any(TailoringRequirement.class));
         assertThat(actual).isPresent();
         assertThat(actual.get().getSelected()).isTrue();
         assertThat(actual.get().getSelectionChanged()).isNotNull();
     }
-
 
     @Test
     void handleSelected_RequirementNotExist_EmptyReturned() {
@@ -143,13 +140,11 @@ class RequirementServiceImplTest {
         given(predicateMock.test("SAMPLE", "master")).willReturn(true);
         given(repositoryMock.getRequirement("SAMPLE", "master", "1.1", "a")).willReturn(of(
                 TailoringRequirement.builder()
-                    .selected(FALSE)
-                    .selectionChanged(ZonedDateTime.now())
-                    .build()
-            )
-        );
+                        .selected(FALSE)
+                        .selectionChanged(ZonedDateTime.now())
+                        .build()));
         given(repositoryMock.updateRequirement(anyString(), anyString(), anyString(), any()))
-            .willAnswer(invocation -> of(invocation.getArgument(3)));
+                .willAnswer(invocation -> of(invocation.getArgument(3)));
 
         // act
         Optional<TailoringRequirement> actual = service.handleSelected("SAMPLE", "master", "1.1", "a", TRUE);
@@ -161,7 +156,7 @@ class RequirementServiceImplTest {
 
         verify(predicateMock, times(1)).test("SAMPLE", "master");
         verify(repositoryMock, times(1))
-            .updateRequirement(eq("SAMPLE"), eq("master"), eq("1.1"), any(TailoringRequirement.class));
+                .updateRequirement(eq("SAMPLE"), eq("master"), eq("1.1"), any(TailoringRequirement.class));
     }
 
     @Test
@@ -170,11 +165,9 @@ class RequirementServiceImplTest {
         given(predicateMock.test("SAMPLE", "master")).willReturn(true);
         given(repositoryMock.getRequirement("SAMPLE", "master", "1.1", "a")).willReturn(of(
                 TailoringRequirement.builder()
-                    .selected(FALSE)
-                    .selectionChanged(ZonedDateTime.now())
-                    .build()
-            )
-        );
+                        .selected(FALSE)
+                        .selectionChanged(ZonedDateTime.now())
+                        .build()));
 
         // act
         Optional<TailoringRequirement> actual = service.handleSelected("SAMPLE", "master", "1.1", "a", FALSE);
@@ -185,7 +178,6 @@ class RequirementServiceImplTest {
         assertThat(actual.get().getSelected()).isFalse();
         assertThat(actual.get().getSelectionChanged()).isNotNull();
     }
-
 
     @Test
     void handleSelected_NonModifiableTailoringChapter_EmptyReturned() {
@@ -202,7 +194,6 @@ class RequirementServiceImplTest {
         verify(predicateMock, times(1)).test("SAMPLE", "master");
         verify(repositoryMock, times(0)).updateSelected(any(), any(), any());
     }
-
 
     @Test
     void handleSelected_ChapterNotExisting_EmptyReturned() {
@@ -226,42 +217,40 @@ class RequirementServiceImplTest {
         given(predicateMock.test("SAMPLE", "master")).willReturn(true);
         given(repositoryMock.getChapter("SAMPLE", "master", "1")).willReturn(of(
                 Chapter.<TailoringRequirement>builder()
-                    .number("1")
-                    .requirements(asList(
-                        TailoringRequirement.builder()
-                            .text("Requirement 1")
-                            .selected(FALSE)
-                            .build()))
-                    .chapters(asList(
-                        Chapter.<TailoringRequirement>builder()
-                            .number("1.1")
-                            .requirements(asList(
+                        .number("1")
+                        .requirements(asList(
                                 TailoringRequirement.builder()
-                                    .text("Requirement 1.1")
-                                    .selected(TRUE)
-                                    .build()))
-                            .chapters(asList(
+                                        .text("Requirement 1")
+                                        .selected(FALSE)
+                                        .build()))
+                        .chapters(asList(
                                 Chapter.<TailoringRequirement>builder()
-                                    .number("1.1.1")
-                                    .requirements(asList(
-                                        TailoringRequirement.builder()
-                                            .text("Requirement 1.1.1")
-                                            .selected(FALSE)
-                                            .build()))
-                                    .build()))
-                            .build(),
-                        Chapter.<TailoringRequirement>builder()
-                            .number("1.2")
-                            .requirements(asList(TailoringRequirement.builder()
-                                .text("Requirement 1.2")
-                                .selected(TRUE)
-                                .build()))
-                            .build()))
-                    .build()
-            )
-        );
+                                        .number("1.1")
+                                        .requirements(asList(
+                                                TailoringRequirement.builder()
+                                                        .text("Requirement 1.1")
+                                                        .selected(TRUE)
+                                                        .build()))
+                                        .chapters(asList(
+                                                Chapter.<TailoringRequirement>builder()
+                                                        .number("1.1.1")
+                                                        .requirements(asList(
+                                                                TailoringRequirement.builder()
+                                                                        .text("Requirement 1.1.1")
+                                                                        .selected(FALSE)
+                                                                        .build()))
+                                                        .build()))
+                                        .build(),
+                                Chapter.<TailoringRequirement>builder()
+                                        .number("1.2")
+                                        .requirements(asList(TailoringRequirement.builder()
+                                                .text("Requirement 1.2")
+                                                .selected(TRUE)
+                                                .build()))
+                                        .build()))
+                        .build()));
         given(repositoryMock.updateSelected(anyString(), anyString(), any(Chapter.class)))
-            .willAnswer(invocation -> of(invocation.getArgument(2)));
+                .willAnswer(invocation -> of(invocation.getArgument(2)));
 
         // act
         Optional<Chapter<TailoringRequirement>> actual = service.handleSelected("SAMPLE", "master", "1", TRUE);
@@ -270,9 +259,9 @@ class RequirementServiceImplTest {
         assertThat(actual).isPresent();
         assertThat(actual.get().allRequirements()).allMatch(anforderung -> TRUE.equals(anforderung.getSelected()));
         assertThat(actual.get().allRequirements())
-            .extracting(TailoringRequirement::getSelectionChanged)
-            .filteredOn(Objects::nonNull)
-            .hasSize(2);
+                .extracting(TailoringRequirement::getSelectionChanged)
+                .filteredOn(Objects::nonNull)
+                .hasSize(2);
 
         verify(predicateMock, times(1)).test("SAMPLE", "master");
     }
@@ -284,12 +273,11 @@ class RequirementServiceImplTest {
 
         // act
         Optional<TailoringRequirement> actual = service.createRequirement(
-            "SAMPLE",
-            "master",
-            "1.1.1",
-            "b",
-            "Dies ist eine neue Requirement"
-        );
+                "SAMPLE",
+                "master",
+                "1.1.1",
+                "b",
+                "Dies ist eine neue Requirement");
 
         // assert
         assertThat(actual).isEmpty();
@@ -304,40 +292,39 @@ class RequirementServiceImplTest {
         // arrange
         List<TailoringRequirement> anforderungen = new ArrayList<>();
         anforderungen.add(TailoringRequirement.builder()
-            .position("a")
-            .text("Requirement 1.1.1")
-            .selected(FALSE)
-            .build());
+                .position("a")
+                .text("Requirement 1.1.1")
+                .selected(FALSE)
+                .build());
         anforderungen.add(TailoringRequirement.builder()
-            .position("b")
-            .text("Requirement 1.1.2")
-            .selected(FALSE)
-            .build());
+                .position("b")
+                .text("Requirement 1.1.2")
+                .selected(FALSE)
+                .build());
         anforderungen.add(TailoringRequirement.builder()
-            .position("c")
-            .text("Requirement 1.1.3")
-            .selected(FALSE)
-            .build());
+                .position("c")
+                .text("Requirement 1.1.3")
+                .selected(FALSE)
+                .build());
 
         Chapter<TailoringRequirement> chapter = Chapter.<TailoringRequirement>builder()
-            .number("1.1.1")
-            .requirements(anforderungen)
-            .build();
+                .number("1.1.1")
+                .requirements(anforderungen)
+                .build();
 
         given(predicateMock.test("SAMPLE", "master")).willReturn(true);
         given(repositoryMock.getChapter("SAMPLE", "master", "1.1.1"))
-            .willReturn(of(chapter));
+                .willReturn(of(chapter));
         given(repositoryMock.updateChapter("SAMPLE", "master", chapter))
-            .willAnswer(invocation -> of(invocation.getArgument(2)));
+                .willAnswer(invocation -> of(invocation.getArgument(2)));
 
         // act
         Optional<TailoringRequirement> actual = service.createRequirement(
-            "SAMPLE",
-            "master",
-            "1.1.1",
-            "b",
-            "Dies ist eine neue Requirement"
-        );
+                "SAMPLE",
+                "master",
+                "1.1.1",
+                "b",
+                "Dies ist eine neue Requirement");
 
         // assert
         assertThat(actual).isPresent();
@@ -348,51 +335,49 @@ class RequirementServiceImplTest {
         verify(predicateMock, times(1)).test("SAMPLE", "master");
     }
 
-
     @Test
     void createRequirement_Requirement111b1ExistNewOneToCreate_Requirement111b1CreatedRequirement111b1ChangedTo111b2() {
         // arrange
         List<TailoringRequirement> requirements = new ArrayList<>();
         requirements.add(TailoringRequirement.builder()
-            .position("a")
-            .text("Requirement 1.1.1")
-            .selected(FALSE)
-            .build());
+                .position("a")
+                .text("Requirement 1.1.1")
+                .selected(FALSE)
+                .build());
         requirements.add(TailoringRequirement.builder()
-            .position("b")
-            .text("Requirement 1.1.2")
-            .selected(FALSE)
-            .build());
+                .position("b")
+                .text("Requirement 1.1.2")
+                .selected(FALSE)
+                .build());
         requirements.add(TailoringRequirement.builder()
-            .position("b1")
-            .text("Requirement 1.1.2b1")
-            .selected(FALSE)
-            .build());
+                .position("b1")
+                .text("Requirement 1.1.2b1")
+                .selected(FALSE)
+                .build());
         requirements.add(TailoringRequirement.builder()
-            .position("c")
-            .text("Requirement 1.1.3")
-            .selected(FALSE)
-            .build());
+                .position("c")
+                .text("Requirement 1.1.3")
+                .selected(FALSE)
+                .build());
 
         Chapter<TailoringRequirement> chapter = Chapter.<TailoringRequirement>builder()
-            .number("1.1.1")
-            .requirements(requirements)
-            .build();
+                .number("1.1.1")
+                .requirements(requirements)
+                .build();
 
         given(predicateMock.test("SAMPLE", "master")).willReturn(true);
         given(repositoryMock.getChapter("SAMPLE", "master", "1.1.1"))
-            .willReturn(of(chapter));
+                .willReturn(of(chapter));
         given(repositoryMock.updateChapter("SAMPLE", "master", chapter))
-            .willAnswer(invocation -> of(invocation.getArgument(2)));
+                .willAnswer(invocation -> of(invocation.getArgument(2)));
 
         // act
         Optional<TailoringRequirement> actual = service.createRequirement(
-            "SAMPLE",
-            "master",
-            "1.1.1",
-            "b",
-            "Dies ist eine neue zwischengeschobene neue Requirement"
-        );
+                "SAMPLE",
+                "master",
+                "1.1.1",
+                "b",
+                "Dies ist eine neue zwischengeschobene neue Requirement");
 
         // assert
         assertThat(actual).isPresent();
@@ -408,45 +393,44 @@ class RequirementServiceImplTest {
         // arrange
         List<TailoringRequirement> requirements = new ArrayList<>();
         requirements.add(TailoringRequirement.builder()
-            .position("a")
-            .text("Requirement 1.1.1")
-            .selected(FALSE)
-            .build());
+                .position("a")
+                .text("Requirement 1.1.1")
+                .selected(FALSE)
+                .build());
         requirements.add(TailoringRequirement.builder()
-            .position("b")
-            .text("Requirement 1.1.2")
-            .selected(FALSE)
-            .build());
+                .position("b")
+                .text("Requirement 1.1.2")
+                .selected(FALSE)
+                .build());
         requirements.add(TailoringRequirement.builder()
-            .position("b1")
-            .text("Requirement 1.1.2b1")
-            .selected(FALSE)
-            .build());
+                .position("b1")
+                .text("Requirement 1.1.2b1")
+                .selected(FALSE)
+                .build());
         requirements.add(TailoringRequirement.builder()
-            .position("c")
-            .text("Requirement 1.1.3")
-            .selected(FALSE)
-            .build());
+                .position("c")
+                .text("Requirement 1.1.3")
+                .selected(FALSE)
+                .build());
 
         Chapter<TailoringRequirement> chapter = Chapter.<TailoringRequirement>builder()
-            .number("1.1.1")
-            .requirements(requirements)
-            .build();
+                .number("1.1.1")
+                .requirements(requirements)
+                .build();
 
         given(predicateMock.test("SAMPLE", "master")).willReturn(true);
         given(repositoryMock.getChapter("SAMPLE", "master", "1.1.1"))
-            .willReturn(of(chapter));
+                .willReturn(of(chapter));
         given(repositoryMock.updateChapter("SAMPLE", "master", chapter))
-            .willAnswer(invocation -> of(invocation.getArgument(2)));
+                .willAnswer(invocation -> of(invocation.getArgument(2)));
 
         // act
         Optional<TailoringRequirement> actual = service.createRequirement(
-            "SAMPLE",
-            "master",
-            "1.1.1",
-            "b1",
-            "Dies ist eine neue 2. neue Requirement"
-        );
+                "SAMPLE",
+                "master",
+                "1.1.1",
+                "b1",
+                "Dies ist eine neue 2. neue Requirement");
 
         // assert
         assertThat(actual).isPresent();
@@ -464,38 +448,36 @@ class RequirementServiceImplTest {
         // arrange
         List<TailoringRequirement> requirements = new ArrayList<>();
         requirements.add(
-            TailoringRequirement.builder()
-                .position("a1")
-                .text("a1")
-                .selected(FALSE)
-                .build());
+                TailoringRequirement.builder()
+                        .position("a1")
+                        .text("a1")
+                        .selected(FALSE)
+                        .build());
         requirements.add(
-            TailoringRequirement.builder()
-                .position("a2")
-                .text("a2")
-                .selected(FALSE)
-                .build()
-        );
+                TailoringRequirement.builder()
+                        .position("a2")
+                        .text("a2")
+                        .selected(FALSE)
+                        .build());
 
         Chapter<TailoringRequirement> chapter = Chapter.<TailoringRequirement>builder()
-            .number("1.1.1")
-            .requirements(requirements)
-            .build();
+                .number("1.1.1")
+                .requirements(requirements)
+                .build();
 
         given(predicateMock.test("SAMPLE", "master")).willReturn(true);
         given(repositoryMock.getChapter("SAMPLE", "master", "1.1.1"))
-            .willReturn(of(chapter));
+                .willReturn(of(chapter));
         given(repositoryMock.updateChapter("SAMPLE", "master", chapter))
-            .willAnswer(invocation -> of(invocation.getArgument(2)));
+                .willAnswer(invocation -> of(invocation.getArgument(2)));
 
         // act
         Optional<TailoringRequirement> actual = service.createRequirement(
-            "SAMPLE",
-            "master",
-            "1.1.1",
-            "a1",
-            "Dies ist eine neue 2. neue Requirement"
-        );
+                "SAMPLE",
+                "master",
+                "1.1.1",
+                "a1",
+                "Dies ist eine neue 2. neue Requirement");
 
         // assert
         assertThat(actual).isPresent();
@@ -515,12 +497,11 @@ class RequirementServiceImplTest {
 
         // act
         Optional<TailoringRequirement> actual = service.createRequirement(
-            "SAMPLE",
-            "master",
-            "1.1.1",
-            "b1",
-            "Dies ist eine neue Requirement"
-        );
+                "SAMPLE",
+                "master",
+                "1.1.1",
+                "b1",
+                "Dies ist eine neue Requirement");
 
         // assert
         assertThat(actual).isEmpty();
@@ -533,20 +514,19 @@ class RequirementServiceImplTest {
     void createRequirement_PreceedingRequirementNotExisting_RequirementNotCreated() {
         // arrange
         Chapter<TailoringRequirement> chapter = Chapter.<TailoringRequirement>builder()
-            .number("1.1.1")
-            .requirements(Collections.emptyList())
-            .build();
+                .number("1.1.1")
+                .requirements(Collections.emptyList())
+                .build();
         given(repositoryMock.getChapter("SAMPLE", "master", "1.1.1")).willReturn(of(chapter));
         given(predicateMock.test("SAMPLE", "master")).willReturn(true);
 
         // act
         Optional<TailoringRequirement> actual = service.createRequirement(
-            "SAMPLE",
-            "master",
-            "1.1.1",
-            "b1",
-            "Dies ist eine neue Requirement"
-        );
+                "SAMPLE",
+                "master",
+                "1.1.1",
+                "b1",
+                "Dies ist eine neue Requirement");
 
         // assert
         assertThat(actual).isEmpty();
@@ -560,45 +540,44 @@ class RequirementServiceImplTest {
         // arrange
         List<TailoringRequirement> requirements = new ArrayList<>();
         requirements.add(TailoringRequirement.builder()
-            .position("a")
-            .text("Requirement 1.1.1")
-            .selected(FALSE)
-            .build());
+                .position("a")
+                .text("Requirement 1.1.1")
+                .selected(FALSE)
+                .build());
         requirements.add(TailoringRequirement.builder()
-            .position("b")
-            .text("Requirement 1.1.2")
-            .selected(FALSE)
-            .build());
+                .position("b")
+                .text("Requirement 1.1.2")
+                .selected(FALSE)
+                .build());
         requirements.add(TailoringRequirement.builder()
-            .position("b1")
-            .text("Requirement 1.1.2b1")
-            .selected(FALSE)
-            .build());
+                .position("b1")
+                .text("Requirement 1.1.2b1")
+                .selected(FALSE)
+                .build());
         requirements.add(TailoringRequirement.builder()
-            .position("c")
-            .text("Requirement 1.1.3")
-            .selected(FALSE)
-            .build());
+                .position("c")
+                .text("Requirement 1.1.3")
+                .selected(FALSE)
+                .build());
 
         Chapter<TailoringRequirement> chapter = Chapter.<TailoringRequirement>builder()
-            .number("1.1.1")
-            .requirements(requirements)
-            .build();
+                .number("1.1.1")
+                .requirements(requirements)
+                .build();
 
         given(predicateMock.test("SAMPLE", "master")).willReturn(true);
         given(repositoryMock.getChapter("SAMPLE", "master", "1.1.1"))
-            .willReturn(of(chapter));
+                .willReturn(of(chapter));
         given(repositoryMock.updateChapter("SAMPLE", "master", chapter))
-            .willAnswer(invocation -> of(invocation.getArgument(2)));
+                .willAnswer(invocation -> of(invocation.getArgument(2)));
 
         // act
         Optional<TailoringRequirement> actual = service.createRequirement(
-            "SAMPLE",
-            "master",
-            "1.1.1",
-            "b1",
-            "Dies ist eine neue Requirement"
-        );
+                "SAMPLE",
+                "master",
+                "1.1.1",
+                "b1",
+                "Dies ist eine neue Requirement");
 
         // assert
         assertThat(actual).isPresent();
@@ -614,40 +593,39 @@ class RequirementServiceImplTest {
         // arrange
         List<TailoringRequirement> requirements = new ArrayList<>();
         requirements.add(TailoringRequirement.builder()
-            .position("a")
-            .text("Requirement 1.1.1")
-            .selected(FALSE)
-            .build());
+                .position("a")
+                .text("Requirement 1.1.1")
+                .selected(FALSE)
+                .build());
         requirements.add(TailoringRequirement.builder()
-            .position("b")
-            .text("Requirement 1.1.2")
-            .selected(FALSE)
-            .build());
+                .position("b")
+                .text("Requirement 1.1.2")
+                .selected(FALSE)
+                .build());
         requirements.add(TailoringRequirement.builder()
-            .position("c")
-            .text("Requirement 1.1.3")
-            .selected(FALSE)
-            .build());
+                .position("c")
+                .text("Requirement 1.1.3")
+                .selected(FALSE)
+                .build());
 
         Chapter<TailoringRequirement> chapter = Chapter.<TailoringRequirement>builder()
-            .number("1.1.1")
-            .requirements(requirements)
-            .build();
+                .number("1.1.1")
+                .requirements(requirements)
+                .build();
 
         given(predicateMock.test("SAMPLE", "master")).willReturn(true);
         given(repositoryMock.getChapter("SAMPLE", "master", "1.1.1"))
-            .willReturn(of(chapter));
+                .willReturn(of(chapter));
         given(repositoryMock.updateChapter("SAMPLE", "master", chapter))
-            .willReturn(empty());
+                .willReturn(empty());
 
         // act
         Optional<TailoringRequirement> actual = service.createRequirement(
-            "SAMPLE",
-            "master",
-            "1.1.1",
-            "b",
-            "Dies ist eine neue Requirement"
-        );
+                "SAMPLE",
+                "master",
+                "1.1.1",
+                "b",
+                "Dies ist eine neue Requirement");
 
         // assert
         assertThat(actual).isEmpty();
@@ -662,12 +640,11 @@ class RequirementServiceImplTest {
 
         // act
         Optional<TailoringRequirement> actual = service.handleText(
-            "SAMPLE",
-            "master",
-            "1.1",
-            "a",
-            "Dies iet ein geändeter Text"
-        );
+                "SAMPLE",
+                "master",
+                "1.1",
+                "a",
+                "Dies iet ein geändeter Text");
 
         // assert
         assertThat(actual).isEmpty();
@@ -677,7 +654,6 @@ class RequirementServiceImplTest {
         verify(repositoryMock, times(0)).updateRequirement(any(), any(), any(), any());
     }
 
-
     @Test
     void handleText_RequirementNotExists_EmptyReturned() {
         // arrange
@@ -686,19 +662,18 @@ class RequirementServiceImplTest {
 
         // act
         Optional<TailoringRequirement> actual = service.handleText(
-            "SAMPLE",
-            "master",
-            "1.1",
-            "a",
-            "Dies iet ein geändeter Text"
-        );
+                "SAMPLE",
+                "master",
+                "1.1",
+                "a",
+                "Dies iet ein geändeter Text");
 
         // assert
         assertThat(actual).isEmpty();
 
         verify(predicateMock, times(1)).test("SAMPLE", "master");
         verify(repositoryMock, times(0))
-            .updateRequirement(anyString(), anyString(), anyString(), any(TailoringRequirement.class));
+                .updateRequirement(anyString(), anyString(), anyString(), any(TailoringRequirement.class));
     }
 
     @Test
@@ -707,22 +682,19 @@ class RequirementServiceImplTest {
         given(predicateMock.test("SAMPLE", "master")).willReturn(true);
         given(repositoryMock.getRequirement("SAMPLE", "master", "1.1", "a")).willReturn(of(
                 TailoringRequirement.builder()
-                    .text("Der Text vor der Änderung")
-                    .selected(TRUE)
-                    .build()
-            )
-        );
+                        .text("Der Text vor der Änderung")
+                        .selected(TRUE)
+                        .build()));
         given(repositoryMock.updateRequirement(anyString(), anyString(), anyString(), any()))
-            .willAnswer(invocation -> of(invocation.getArgument(3)));
+                .willAnswer(invocation -> of(invocation.getArgument(3)));
 
         // act
         Optional<TailoringRequirement> actual = service.handleText(
-            "SAMPLE",
-            "master",
-            "1.1",
-            "a",
-            "Dies iet ein geändeter Text"
-        );
+                "SAMPLE",
+                "master",
+                "1.1",
+                "a",
+                "Dies iet ein geändeter Text");
 
         // assert
         assertThat(actual).isPresent();
@@ -731,7 +703,7 @@ class RequirementServiceImplTest {
 
         verify(predicateMock, times(1)).test("SAMPLE", "master");
         verify(repositoryMock, times(1))
-            .updateRequirement(eq("SAMPLE"), eq("master"), eq("1.1"), any(TailoringRequirement.class));
+                .updateRequirement(eq("SAMPLE"), eq("master"), eq("1.1"), any(TailoringRequirement.class));
     }
 
     @Test
@@ -740,23 +712,20 @@ class RequirementServiceImplTest {
         given(predicateMock.test("SAMPLE", "master")).willReturn(true);
         given(repositoryMock.getRequirement("SAMPLE", "master", "1.1", "a")).willReturn(of(
                 TailoringRequirement.builder()
-                    .text("Der Text vor der Änderung")
-                    .selected(TRUE)
-                    .reference(Reference.builder().text("Reference").build())
-                    .build()
-            )
-        );
+                        .text("Der Text vor der Änderung")
+                        .selected(TRUE)
+                        .reference(Reference.builder().text("Reference").build())
+                        .build()));
         given(repositoryMock.updateRequirement(anyString(), anyString(), anyString(), any()))
-            .willAnswer(invocation -> of(invocation.getArgument(3)));
+                .willAnswer(invocation -> of(invocation.getArgument(3)));
 
         // act
         Optional<TailoringRequirement> actual = service.handleText(
-            "SAMPLE",
-            "master",
-            "1.1",
-            "a",
-            "Dies iet ein geändeter Text"
-        );
+                "SAMPLE",
+                "master",
+                "1.1",
+                "a",
+                "Dies iet ein geändeter Text");
 
         // assert
         assertThat(actual).isPresent();
@@ -766,7 +735,7 @@ class RequirementServiceImplTest {
 
         verify(predicateMock, times(1)).test("SAMPLE", "master");
         verify(repositoryMock, times(1))
-            .updateRequirement(eq("SAMPLE"), eq("master"), eq("1.1"), any(TailoringRequirement.class));
+                .updateRequirement(eq("SAMPLE"), eq("master"), eq("1.1"), any(TailoringRequirement.class));
     }
 
     @Test
@@ -775,22 +744,19 @@ class RequirementServiceImplTest {
         given(predicateMock.test("SAMPLE", "master")).willReturn(true);
         given(repositoryMock.getRequirement("SAMPLE", "master", "1.1", "a")).willReturn(of(
                 TailoringRequirement.builder()
-                    .text("Der Text vor der Änderung")
-                    .selected(TRUE)
-                    .build()
-            )
-        );
+                        .text("Der Text vor der Änderung")
+                        .selected(TRUE)
+                        .build()));
         given(repositoryMock.updateRequirement(anyString(), anyString(), anyString(), any()))
-            .willAnswer(invocation -> of(invocation.getArgument(3)));
+                .willAnswer(invocation -> of(invocation.getArgument(3)));
 
         // act
         Optional<TailoringRequirement> actual = service.handleText(
-            "SAMPLE",
-            "master",
-            "1.1",
-            "a",
-            "Der Text vor der Änderung"
-        );
+                "SAMPLE",
+                "master",
+                "1.1",
+                "a",
+                "Der Text vor der Änderung");
 
         // assert
         assertThat(actual).isPresent();
@@ -799,6 +765,36 @@ class RequirementServiceImplTest {
 
         verify(predicateMock, times(1)).test("SAMPLE", "master");
         verify(repositoryMock, times(0))
-            .updateRequirement(eq("SAMPLE"), eq("master"), eq("1.1"), any(TailoringRequirement.class));
+                .updateRequirement(eq("SAMPLE"), eq("master"), eq("1.1"), any(TailoringRequirement.class));
     }
+
+    @Test
+    void getRequirementChanges_RequirementNotExisting_EmptyReturned() {
+        // arrange
+        given(repositoryMock.getRequirementChanges("SAMPLE", "master", "1.1", "a")).willReturn(empty());
+
+        // act
+        Optional<Collection<RequirementChange>> actual = service.getRequirementChanges("SAMPLE", "master", "1.1", "a");
+
+        // assert
+        assertThat(actual).isEmpty();
+
+        verify(repositoryMock, times(1)).getRequirementChanges("SAMPLE", "master", "1.1", "a");
+    }
+
+    @Test
+    void getRequirementChanges_RequirementExistingNoChange_EmptyCollectionOptionalReturned() {
+        // arrange
+        given(repositoryMock.getRequirementChanges("SAMPLE", "master", "1.1", "a")).willReturn(Optional.of(List.of()));
+
+        // act
+        Optional<Collection<RequirementChange>> actual = service.getRequirementChanges("SAMPLE", "master", "1.1", "a");
+
+        // assert
+        assertThat(actual).isPresent();
+        assertThat(actual.get()).isEmpty();
+
+        verify(repositoryMock, times(1)).getRequirementChanges("SAMPLE", "master", "1.1", "a");
+    }
+
 }

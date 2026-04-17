@@ -65,5 +65,9 @@ package repository {
         existsByVersion( version : String ) : boolean
     }
     JpaRepository <|-- TailoringCatalogRepository
+
+    interface TailoringRequirementChangeRepository<TailoringRequirementChangeEntity, Long> {
+    }
+    JpaRepository <|-- TailoringRequirementChangeRepository
 }
 @enduml

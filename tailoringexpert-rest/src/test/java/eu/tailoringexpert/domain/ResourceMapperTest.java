@@ -661,7 +661,8 @@ class ResourceMapperTest {
         assertThat(actual.getLinks()).containsExactlyInAnyOrder(
             Link.of(this.host + "/project/SAMPLE/tailoring/master/catalog/1.4/c", "self"),
             Link.of(this.host + "/project/SAMPLE/tailoring/master/catalog/1.4/c/selected/false", "selected"),
-            Link.of(this.host + "/project/SAMPLE/tailoring/master/catalog/1.4/c/text", "text")
+            Link.of(this.host + "/project/SAMPLE/tailoring/master/catalog/1.4/c/text", "text"),
+            Link.of(this.host + "/project/SAMPLE/tailoring/master/catalog/1.4/c/changes", "requirementchanges")
         );
     }
 
@@ -694,7 +695,8 @@ class ResourceMapperTest {
         assertThat(actual.getLinks()).containsExactlyInAnyOrder(
             Link.of(this.host + "/project/SAMPLE/tailoring/master/catalog/1.4/c", "self"),
             Link.of(this.host + "/project/SAMPLE/tailoring/master/catalog/1.4/c/selected/true", "selected"),
-            Link.of(this.host + "/project/SAMPLE/tailoring/master/catalog/1.4/c/text", "text")
+            Link.of(this.host + "/project/SAMPLE/tailoring/master/catalog/1.4/c/text", "text"),
+            Link.of(this.host + "/project/SAMPLE/tailoring/master/catalog/1.4/c/changes", "requirementchanges")
         );
     }
 
@@ -764,7 +766,7 @@ class ResourceMapperTest {
         Chapter<TailoringRequirement> chapter = Chapter.<TailoringRequirement>builder()
             .number("1.1")
             .chapters(List.of(
-               Chapter.<TailoringRequirement>builder().name("1.2").build()
+                Chapter.<TailoringRequirement>builder().name("1.2").build()
             ))
             .build();
 
@@ -993,5 +995,32 @@ class ResourceMapperTest {
         assertThat(actual.getLinks()).containsExactlyInAnyOrder(
             Link.of(this.host + "/project/SAMPLE/tailoring/master/attachment/demo.pdf", "self")
         );
+    }
+
+    @Test
+    void toResource_RequirementChange_DatenUndLinksOk() {
+        // arrange
+        PathContextBuilder pathContext = PathContext.builder()
+            .project("SAMPLE")
+            .tailoring("master")
+            .chapter("1.4");
+
+        RequirementChange change = RequirementChange.builder()
+            .changeType("SELECTED")
+            .user("dummy")
+            .old("oldTest")
+            .changed("new")
+            .build();
+
+        // act
+        RequirementChangeResource actual = mapper.toResource(pathContext, change);
+
+        // assert
+        assertThat(actual).isNotNull();
+        assertThat(actual.getChangeType()).isEqualTo(change.getChangeType());
+        assertThat(actual.getOld()).isEqualTo(change.getOld());
+        assertThat(actual.getChanged()).isEqualTo(change.getChanged());
+
+        assertThat(actual.getLinks()).isEmpty();
     }
 }
