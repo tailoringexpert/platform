@@ -43,6 +43,7 @@ public class PathContext {
     String note;
     String tailoringState;
     String projectState;
+    String name;
 
     public Map<String, String> parameter() {
         final HashMap<String, String> result = new HashMap<>();
@@ -55,6 +56,7 @@ public class PathContext {
         result.put("note", note);
         result.put("tailoringstate", tailoringState);
         result.put("projectstate", projectState);
+        result.put("name", name);
         return result;
     }
 }

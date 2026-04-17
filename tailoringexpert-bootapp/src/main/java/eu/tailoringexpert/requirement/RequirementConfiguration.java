@@ -23,9 +23,12 @@ package eu.tailoringexpert.requirement;
 
 import eu.tailoringexpert.Tenant;
 import eu.tailoringexpert.domain.ResourceMapper;
+import eu.tailoringexpert.domain.TailoringRequirementEntity;
+import eu.tailoringexpert.repository.ApplicableDocumentRepository;
 import eu.tailoringexpert.repository.DRDRepository;
 import eu.tailoringexpert.repository.LogoRepository;
 import eu.tailoringexpert.repository.ProjectRepository;
+import eu.tailoringexpert.repository.TailoringRequirementChangeRepository;
 import lombok.NonNull;
 import org.springframework.beans.factory.ListableBeanFactory;
 import org.springframework.context.annotation.Bean;
@@ -34,7 +37,9 @@ import org.springframework.context.annotation.Primary;
 
 import java.util.Map;
 import java.util.Objects;
+import java.util.function.BiConsumer;
 import java.util.function.Function;
+import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
 @Configuration
@@ -42,64 +47,80 @@ public class RequirementConfiguration {
 
     @Bean
     JPARequirementServiceRepositoryMapper jpaRequirementServiceRepositoryMapper(
-        @NonNull LogoRepository logoRepository,
-        @NonNull DRDRepository drdRepository) {
+            @NonNull LogoRepository logoRepository,
+            @NonNull DRDRepository drdRepository,
+            @NonNull ApplicableDocumentRepository applicableDocumentRepository) {
         JPARequirementServiceRepositoryMapperGenerated result = new JPARequirementServiceRepositoryMapperGenerated();
         result.setLogoRepository(logoRepository);
         result.setDrdRepository(drdRepository);
+        result.setApplicableDocumentRepository(applicableDocumentRepository);
         return result;
     }
 
+    @Bean
+    RequirementChangeLogHandler requirementChangeLogHandler(
+            @NonNull Supplier<String> usernameSupplier,
+            @NonNull TailoringRequirementChangeRepository repository) {
+        return new RequirementChangeLogHandler(usernameSupplier, repository);
+    }
 
     @Bean
     RequirementServiceRepository requirementServiceRepository(
-        @NonNull JPARequirementServiceRepositoryMapper mapper,
-        @NonNull ProjectRepository projectRepository) {
-        return new JPARequirementServiceRepository(mapper, projectRepository);
+            @NonNull JPARequirementServiceRepositoryMapper mapper,
+            @NonNull ProjectRepository projectRepository,
+            @NonNull TailoringRequirementChangeRepository tailoringRequirementChangeRepository,
+            @NonNull BiConsumer<TailoringRequirementEntity, TailoringRequirementEntity> requirementChangeLog) {
+        return new JPARequirementServiceRepository(
+                mapper,
+                projectRepository,
+                tailoringRequirementChangeRepository,
+                requirementChangeLog);
     }
 
     @Bean
     RequirementModifiablePredicateRepository requirementModifiablePredicateRepository(
-        @NonNull ProjectRepository projectRepository) {
+            @NonNull ProjectRepository projectRepository) {
         return new JPARequirementModifiablePredicateRepository(projectRepository);
     }
 
     @Bean
     DefaultRequirementModifiablePredicate defaultRequirementModifiablePredicate(
-        @NonNull RequirementModifiablePredicateRepository repository) {
+            @NonNull RequirementModifiablePredicateRepository repository) {
         return new DefaultRequirementModifiablePredicate(repository);
     }
 
     @Bean
     RequirementService requirementService(
-        @NonNull RequirementServiceRepository repository,
-        @NonNull DefaultRequirementModifiablePredicate predicate) {
+            @NonNull RequirementServiceRepository repository,
+            @NonNull DefaultRequirementModifiablePredicate predicate) {
         return new RequirementServiceImpl(repository, predicate);
     }
 
     @Bean
     RequirementController requirementController(
-        @NonNull ResourceMapper mapper,
-        @NonNull RequirementService requirementService,
-        @NonNull RequirementServiceRepository requirementServiceRepository) {
+            @NonNull ResourceMapper mapper,
+            @NonNull RequirementService requirementService,
+            @NonNull RequirementServiceRepository requirementServiceRepository) {
         return new RequirementController(mapper, requirementService, requirementServiceRepository);
     }
 
     @Bean
     @Primary
     RequirementModifiablePredicate requirementModifiablePredicate(
-        @NonNull DefaultRequirementModifiablePredicate defaultRequirementModifiablePredicate,
-        @NonNull ListableBeanFactory beanFactory) {
-        Map<String, RequirementModifiablePredicate> predicates = getTenantImplementierungen(beanFactory, RequirementModifiablePredicate.class);
+            @NonNull DefaultRequirementModifiablePredicate defaultRequirementModifiablePredicate,
+            @NonNull ListableBeanFactory beanFactory) {
+        Map<String, RequirementModifiablePredicate> predicates = getTenantImplementierungen(beanFactory,
+                RequirementModifiablePredicate.class);
         return new TenantRequirementModifiablePredicate(predicates, defaultRequirementModifiablePredicate);
     }
 
     private <T> Map<String, T> getTenantImplementierungen(ListableBeanFactory beanFactory, Class<T> clz) {
         return beanFactory.getBeansOfType(clz)
-            .values()
-            .stream()
-            // Defaultimplementation has no tenant annotation!
-            .filter(bean -> Objects.nonNull(bean.getClass().getAnnotation(Tenant.class)))
-            .collect(Collectors.toMap(bean -> bean.getClass().getAnnotation(Tenant.class).value(), Function.identity()));
+                .values()
+                .stream()
+                // Defaultimplementation has no tenant annotation!
+                .filter(bean -> Objects.nonNull(bean.getClass().getAnnotation(Tenant.class)))
+                .collect(Collectors.toMap(bean -> bean.getClass().getAnnotation(Tenant.class).value(),
+                        Function.identity()));
     }
 }

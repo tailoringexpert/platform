@@ -1,10 +1,14 @@
 @startuml Ebene3.png
 hide empty members
 
+interface "BiConsumer<TailoringRequirementEntity, TailoringRequirementEntity>" as tailoringRequirementChangeBiConsumer {
+}
+
 package repository {
     interface ProjectRepository
     interface LogoRepository
     interface DRDRepository
+    interface TailoringRequirementChangeRepository
 }
 
 package requirement {
@@ -21,6 +25,7 @@ package requirement {
         {abstract} updateAnforderung(domain : TailoringRequirement, entity : TailoringRequirementEntity) : void
         {abstract} toDomain(entity : TailoringCatalogChapterEntity) : Chapter<TailoringRequirement>
         {abstract} updateChapter(domain : Chapter<TailoringRequirement>, entity : TailoringCatalogChapterEntity) : void
+        {abstract} clone(entity : TailoringRequirementEntity) : TailoringRequirementEntity
         resolve(domain : Logo) : LogoEntity
         resolve(domain : DRD) : DRDEntity
     }
@@ -33,6 +38,7 @@ package requirement {
     RequirementServiceRepository <|.. JPARequirementServiceRepository
     JPARequirementServiceRepository --> "1" JPARequirmentServiceRepositoryMapper : mapper
     JPARequirementServiceRepository --> "1" ProjectRepository : projectRepository
+    JPARequirementServiceRepository --> "1" tailoringRequirementChangeBiConsumer : requirementLogHandler
 
     interface RequirementModifiablePredicateRepository {
         getTailoringState(project : String, tailoring : String) : Optional<TailoringState>
@@ -41,7 +47,11 @@ package requirement {
     }
     RequirementModifiablePredicateRepository <|.. JPARequirementModifiablePredicateRepository
 
-
+    class RequirementChangeLogHandler {
+    }
+    tailoringRequirementChangeBiConsumer <|-- RequirementChangeLogHandler
+    RequirementChangeLogHandler --> "1" Supplier<String> : username
+    RequirementChangeLogHandler --> "1" TailoringRequirementChangeRepository : repository
 }
 
 @enduml

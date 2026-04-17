@@ -1,0 +1,50 @@
+volumes:
+  db-data:
+  
+services:
+  # app:
+  #   container_name: javadev
+  #   build: 
+  #     context: .
+  #     dockerfile: Dockerfile
+  #   #volumes:
+  #   #  - ../..:/workspaces:cached
+      
+  #   # Overrides default command so things don't shut down after the process ends.
+  #   command: sleep infinity
+  
+  db:
+    image: mariadb:lts-ubi
+    container_name: db
+    hostname: tailoringexpert-db
+    restart: unless-stopped
+    #user: ${PUID}:${PGID}
+    environment:
+      MARIADB_ROOT_PASSWORD: test1234
+      TZ: Europe/Berlin
+    ports:
+      - 3306:3306
+    command: --init_file=/docker-entrypoint-initdb.d/bootstrap.sql
+    healthcheck:
+      test: ["CMD", "healthcheck.sh", "--connect", "--innodb_initialized"]
+      interval: 15s
+      timeout: 5s
+      retries: 6
+    volumes:
+      - /etc/localtime:/etc/localtime:ro
+      - ./.devcontainer/db/bootstrap.sql:/docker-entrypoint-initdb.d/bootstrap.sql:ro      
+    
+    
+    
+  dev-container:
+    container_name: dev-container
+    build:
+        context: .
+        dockerfile: .devcontainer/Dockerfile
+    user: "1001:1001"
+    command: sleep infinity
+    volumes:
+        - .:/workspace    
+    network_mode: service:db        
+    #networks:
+    #  - app

@@ -22,8 +22,10 @@
 package eu.tailoringexpert.requirement;
 
 import eu.tailoringexpert.domain.Chapter;
+import eu.tailoringexpert.domain.RequirementChange;
 import eu.tailoringexpert.domain.TailoringRequirement;
 
+import java.util.Collection;
 import java.util.Optional;
 
 /**
@@ -79,4 +81,15 @@ public interface RequirementService {
      * @return new created requirement
      */
     Optional<TailoringRequirement> createRequirement(String project, String tailoring, String chapter, String position, String text);
+
+    /**
+     * Returns a list of all changes of a requirement.
+     *
+     * @param project   identifier of project
+     * @param tailoring tailoring identifier
+     * @param chapter   chapter to add new requirement
+     * @param position  position in chapter after which requirement shall be created
+     * @return if requirement exists a list of changes, otherwise empty
+     */
+    Optional<Collection<RequirementChange>> getRequirementChanges(String project, String tailoring, String chapter, String position);
 }

@@ -1,0 +1,42 @@
+{
+  "name": "TailoringeXpert",
+  #"runArgs": [
+#		"--name",
+#		"tx-dev"
+	#],	
+ 
+  "dockerComposeFile": [
+    "./docker-compose.yml"
+  ],
+  "service": "dev-container",
+  "workspaceFolder": "/workspace",
+  #"workspaceFolder": "/workspaces/${localWorkspaceFolderBasename}",
+  "customizations": {
+    "vscode": {
+      "settings": {
+        "java.jdt.ls.java.home": "/opt/java/openjdk",
+        "java.configuration.updateBuildConfiguration": "automatic",
+        "editor.formatOnSave": true,
+        "editor.codeActionsOnSave": {
+          "source.fixAll.eslint": "explicit"
+        }
+      },
+      "extensions": [
+        "vscjava.vscode-java-pack", 
+        "vmware.vscode-boot-dev-pack",
+        "vscjava.vscode-lombok",
+        "sonarsource.sonarlint-vscode",
+        "editorconfig.editorconfig",
+        "vue.volar",
+        "dbaeumer.vscode-eslint",
+        "esbenp.prettier-vscode",
+        "k--kato.intellij-idea-keybindings",
+		"mtxr.sqltools",
+		"mtxr.sqltools-driver-mysql"
+      ]
+    }
+  },
+  "forwardPorts": [3306],  
+  
+  #"remoteUser": "developer"
+}

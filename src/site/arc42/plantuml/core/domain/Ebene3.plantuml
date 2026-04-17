@@ -242,6 +242,22 @@ package domain {
     applicableDocumentProvider <|-- ApplicableDocumentProvider
     ApplicableDocumentProvider --> "1" documentComparator : numberComparator
 
+    class MatrixFile {
+        name : String
+        description : String
+        catalogueVersion : String
+        data : byte[]
+        hash : String
+        createdTimestamp : ZonedDateTime
+    }
+
+    class MatrixFileMeta {
+        name : String
+        description : String
+        catalogueVersion : String
+        hash : String
+        createdTimestamp : ZonedDateTime
+    }
 }
 hide empty members
 @enduml
