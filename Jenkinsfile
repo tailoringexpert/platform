@@ -45,7 +45,7 @@ pipeline {
 
     agent {
         docker {
-            image 'tailoringexpert/maven:3.9-eclipse-23'
+            image 'tailoringexpert/maven:3.9-eclipse-25'
             args '''  
                 -u 501:1000
                 -v $GPG_VOLUME:/.gnupg \
