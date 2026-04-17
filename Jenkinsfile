@@ -167,7 +167,7 @@ pipeline {
                 sh('git config commit.gpgsign true')
                 sh('git config user.signingkey $GPG_SIGNKEY')
                 
-                sh "mvn --settings .jenkins/settings.xml -Dmaven.repo.local=${M2_VOLUME}/repository -B -Dresume=false -P tailoringexpert-maven -DargLine='-DprocessAllModules --settings .jenkins/settings.xml -Dmaven.repo.local=/home/maven/.m2 --settings .jenkins/settings.xml -P tailoringexpert-maven' -DskipTestProject=true  -DgpgSignTag=true -DgpgSignCommit=true -DpostReleaseGoals=deploy gitflow:release" 
+                sh "mvn --settings .jenkins/settings.xml -Dmaven.repo.local=${M2_VOLUME}/repository -B -Dresume=false -DargLine='-DprocessAllModules --settings .jenkins/settings.xml -Dmaven.repo.local=/home/maven/.m2 --settings .jenkins/settings.xml' -DskipTestProject=true  -DgpgSignTag=true -DgpgSignCommit=true gitflow:release" 
 
                 // remove credentials
                 sh('git remote set-url origin $GIT_URL')
@@ -184,8 +184,15 @@ pipeline {
                     
             steps {
                 script {
-                    if (params.DEPLOY) {
+                    if (params.RELEASE_BUILD) {
+                        git branch: "main", url: env.GIT_URL, credentialsId: GIT_CREDENTIALS_ID
+                    }
+
+                    if (params.DEPLOY || params.RELEASE_BUILD) {
+                        // Standard-Deploy
                         sh "mvn --settings .jenkins/settings.xml -Dmaven.repo.local=${M2_VOLUME}/repository -DskipTests deploy -P tailoringexpert-maven"
+
+                        // Optionaler Deploy in ein weiteres Repository via Profil
                         if (params.DEPLOY_TO_CUSTOM_REPOSITORY) {
                             sh "mvn --settings .jenkins/settings.xml -Dmaven.repo.local=${M2_VOLUME}/repository -DskipTests deploy -P custom-maven"
                         }
