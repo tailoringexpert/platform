@@ -38,5 +38,14 @@ package eu.tailoringexpert {
             createAll(tailoring : Tailoring, creationTimestamp : LocalDateTime): Optional<File>
         }
     }
+
+    package matrix {
+        interface MatrixService {
+            list() : Collection<MatrixFile> 
+            get(name: String) : Optional<File>
+            save(file : MatrixFile) : MatrixFileMeta
+            delete(name: String) : boolean
+        }
+    }
 }
 @enduml

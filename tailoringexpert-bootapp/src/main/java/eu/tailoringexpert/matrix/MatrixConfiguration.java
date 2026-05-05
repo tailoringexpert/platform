@@ -21,7 +21,6 @@
  */
 package eu.tailoringexpert.matrix;
 
-import java.nio.file.Path;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.Optional;
@@ -42,8 +41,14 @@ import tools.jackson.databind.ObjectMapper;
 public class MatrixConfiguration {
 
     @Bean
-    MatrixService matrixService(@NonNull @Value("${matrixHome}") String basedir,
-            @NonNull @Qualifier("tenantDownload") Function<Path, Optional<File>> download,
+    Function<String, Optional<File>> matrixDownload(@NonNull @Value("${matrixHome}") String basedir) {
+        return new TenantMatrixDownloadProvider(basedir);
+    }
+
+    @Bean
+    MatrixService matrixService(
+            @NonNull @Value("${matrixHome}") String basedir,
+            @NonNull @Qualifier("matrixDownload") Function<String, Optional<File>> download,
             @NonNull ObjectMapper objectMapper) throws NoSuchAlgorithmException {
         return new TenantMatrixService(basedir, MessageDigest.getInstance("SHA-256"), objectMapper, download);
 

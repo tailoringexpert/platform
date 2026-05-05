@@ -30,6 +30,8 @@ import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.mockStatic;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -60,7 +62,7 @@ class TenantMatrixServiceTest {
 
     MessageDigest md;
     ObjectMapper objectMapperMock;
-    Function<Path, Optional<File>> downloadMock;
+    Function<String, Optional<File>> downloadMock;
     TenantMatrixService service;
 
     @SuppressWarnings("unchecked")
@@ -332,5 +334,33 @@ class TenantMatrixServiceTest {
         // assert
         assertThat(actual).isInstanceOf(IOException.class);
 
+    }
+
+    @Test
+    void get_FileNameNull_NullPointerExceptioThrown() {
+        // arrange
+
+        // act
+        Throwable actual = catchThrowable(() -> service.get(null));
+
+        // assert
+        assertThat(actual)
+                .isInstanceOf(NullPointerException.class);
+        verify(downloadMock, times(0)).apply(any());
+
+    }
+
+    @Test
+    void get_FileNameGiven_NullPointerExceptioThrown() {
+        // arrange
+        given(downloadMock.apply("test.xslx")).willReturn(Optional.of(File.builder().name("test.xslx").build()));
+
+        // act
+        Optional<File> actual = service.get("test.xslx");
+
+        // assert
+        assertThat(actual)
+                .isPresent();
+        verify(downloadMock, times(1)).apply("test.xslx");
     }
 }

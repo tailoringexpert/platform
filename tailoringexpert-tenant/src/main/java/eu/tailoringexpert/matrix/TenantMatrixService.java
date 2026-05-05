@@ -64,7 +64,7 @@ public class TenantMatrixService implements MatrixService {
     ObjectMapper objectMapper;
 
     @NonNull
-    Function<Path, Optional<File>> download;
+    Function<String, Optional<File>> download;
 
     private static final String SUFFIX_METAFILE = ".json";
 
@@ -93,14 +93,12 @@ public class TenantMatrixService implements MatrixService {
      * {@inheritDoc}
      */
     @Override
-    public Optional<File> get(String name) {
+    public Optional<File> get(@NonNull String name) {
         log.traceEntry(() -> name);
 
-        Path fqn = Paths.get(this.basedir, TenantContext.getCurrentTenant()).toAbsolutePath().resolve(name);
-        Optional<File> result = download.apply(fqn);
+        Optional<File> result = download.apply(name);
 
         log.traceExit();
-
         return result;
     }
 
@@ -114,7 +112,7 @@ public class TenantMatrixService implements MatrixService {
         Path targetDir = Paths.get(this.basedir, TenantContext.getCurrentTenant()).toAbsolutePath();
         try {
             Files.createDirectories(targetDir);
-        } catch (IOException e) {
+        } catch (Exception e) {
             throw log.throwing(new RuntimeException(e));
         }
 

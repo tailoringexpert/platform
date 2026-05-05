@@ -21,46 +21,6 @@
  */
 package eu.tailoringexpert.project;
 
-import eu.tailoringexpert.domain.PathContext;
-import eu.tailoringexpert.domain.PathContext.PathContextBuilder;
-import eu.tailoringexpert.domain.Project;
-import eu.tailoringexpert.domain.ProjectInformation;
-import eu.tailoringexpert.domain.ProjectResource;
-import eu.tailoringexpert.domain.ResourceMapper;
-import eu.tailoringexpert.domain.ScreeningSheet;
-import eu.tailoringexpert.domain.ScreeningSheetResource;
-import eu.tailoringexpert.domain.SelectionVector;
-import eu.tailoringexpert.domain.SelectionVectorResource;
-import eu.tailoringexpert.domain.Tailoring;
-import eu.tailoringexpert.tailoring.TailoringService;
-import lombok.extern.log4j.Log4j2;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-import org.mockito.ArgumentCaptor;
-import org.springframework.hateoas.Link;
-import org.springframework.hateoas.mediatype.MessageResolver;
-import org.springframework.hateoas.mediatype.hal.CurieProvider;
-import org.springframework.hateoas.mediatype.hal.HalJacksonModule;
-import org.springframework.hateoas.server.core.EvoInflectorLinkRelationProvider;
-import org.springframework.http.MediaType;
-import org.springframework.http.converter.ByteArrayHttpMessageConverter;
-import org.springframework.http.converter.json.JacksonJsonHttpMessageConverter;
-import org.springframework.mock.web.MockMultipartFile;
-import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.ResultActions;
-import tools.jackson.databind.DeserializationFeature;
-import tools.jackson.databind.SerializationFeature;
-import tools.jackson.databind.json.JsonMapper;
-
-import java.io.IOException;
-import java.io.InputStream;
-import java.nio.charset.StandardCharsets;
-import java.nio.file.Paths;
-import java.text.SimpleDateFormat;
-import java.util.Collections;
-import java.util.Map;
-import java.util.Optional;
-
 import static eu.tailoringexpert.domain.ProjectState.COMPLETED;
 import static eu.tailoringexpert.domain.ResourceMapper.PROJECT;
 import static eu.tailoringexpert.domain.ResourceMapper.REL_SELF;
@@ -92,6 +52,47 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.springframework.test.web.servlet.setup.MockMvcBuilders.standaloneSetup;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Paths;
+import java.text.SimpleDateFormat;
+import java.util.Collections;
+import java.util.Map;
+import java.util.Optional;
+
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.mockito.ArgumentCaptor;
+import org.springframework.hateoas.Link;
+import org.springframework.hateoas.mediatype.MessageResolver;
+import org.springframework.hateoas.mediatype.hal.CurieProvider;
+import org.springframework.hateoas.mediatype.hal.HalJacksonModule;
+import org.springframework.hateoas.server.core.EvoInflectorLinkRelationProvider;
+import org.springframework.http.MediaType;
+import org.springframework.http.converter.ByteArrayHttpMessageConverter;
+import org.springframework.http.converter.json.JacksonJsonHttpMessageConverter;
+import org.springframework.mock.web.MockMultipartFile;
+import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.ResultActions;
+
+import eu.tailoringexpert.domain.PathContext;
+import eu.tailoringexpert.domain.PathContext.PathContextBuilder;
+import eu.tailoringexpert.domain.Project;
+import eu.tailoringexpert.domain.ProjectInformation;
+import eu.tailoringexpert.domain.ProjectResource;
+import eu.tailoringexpert.domain.ResourceMapper;
+import eu.tailoringexpert.domain.ScreeningSheet;
+import eu.tailoringexpert.domain.ScreeningSheetResource;
+import eu.tailoringexpert.domain.SelectionVector;
+import eu.tailoringexpert.domain.SelectionVectorResource;
+import eu.tailoringexpert.domain.Tailoring;
+import eu.tailoringexpert.tailoring.TailoringService;
+import lombok.extern.log4j.Log4j2;
+import tools.jackson.databind.DeserializationFeature;
+import tools.jackson.databind.SerializationFeature;
+import tools.jackson.databind.json.JsonMapper;
+
 @Log4j2
 class ProjectControllerTest {
 
@@ -110,31 +111,30 @@ class ProjectControllerTest {
         this.mapperMock = mock(ResourceMapper.class);
 
         this.objectMapper = JsonMapper.builder()
-            .defaultDateFormat(new SimpleDateFormat("yyyy-MM-dd", GERMANY))
-            .addModule(new HalJacksonModule())
-            .enable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES)
-            .disable(SerializationFeature.FAIL_ON_EMPTY_BEANS)
-            .handlerInstantiator(new HalJacksonModule.HalHandlerInstantiator(new EvoInflectorLinkRelationProvider(),
-                CurieProvider.NONE, MessageResolver.DEFAULTS_ONLY))
-            .build();
+                .defaultDateFormat(new SimpleDateFormat("yyyy-MM-dd", GERMANY))
+                .addModule(new HalJacksonModule())
+                .enable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES)
+                .disable(SerializationFeature.FAIL_ON_EMPTY_BEANS)
+                .handlerInstantiator(new HalJacksonModule.HalHandlerInstantiator(new EvoInflectorLinkRelationProvider(),
+                        CurieProvider.NONE, MessageResolver.DEFAULTS_ONLY))
+                .build();
 
         ByteArrayHttpMessageConverter byteArrayHttpMessageConverter = new ByteArrayHttpMessageConverter();
         byteArrayHttpMessageConverter.setSupportedMediaTypes(asList(
-            MediaType.IMAGE_JPEG,
-            MediaType.IMAGE_PNG,
-            MediaType.APPLICATION_OCTET_STREAM,
-            MediaType.APPLICATION_PDF,
-            new MediaType("application", "vnd.openxmlformats-officedocument.wordprocessingml.document")
-        ));
+                MediaType.IMAGE_JPEG,
+                MediaType.IMAGE_PNG,
+                MediaType.APPLICATION_OCTET_STREAM,
+                MediaType.APPLICATION_PDF,
+                new MediaType("application", "vnd.openxmlformats-officedocument.wordprocessingml.document")));
 
         this.mockMvc = standaloneSetup(new ProjectController(
-            mapperMock,
-            projectServiceMock,
-            projectServiceRepositoryMock))
-            .setMessageConverters(
-                new JacksonJsonHttpMessageConverter(objectMapper),
-                byteArrayHttpMessageConverter)
-            .build();
+                mapperMock,
+                projectServiceMock,
+                projectServiceRepositoryMock))
+                .setMessageConverters(
+                        new JacksonJsonHttpMessageConverter(objectMapper),
+                        byteArrayHttpMessageConverter)
+                .build();
     }
 
     @Test
@@ -148,43 +148,40 @@ class ProjectControllerTest {
 
         SelectionVector selectionVector = SelectionVector.builder().build();
         CreateProjectTO createProject = CreateProjectTO.builder()
-            .project("SAMPLE")
-            .tailoring("master")
-            .selectionVector(selectionVector)
-            .build();
+                .project("SAMPLE")
+                .tailoring("master")
+                .selectionVector(selectionVector)
+                .build();
 
-        given(projectServiceMock.createProject("8.2.1", data, selectionVector, null)).willReturn(createProject);
+        given(projectServiceMock.createProject("8.2.1", data, selectionVector, null, empty()))
+                .willReturn(createProject);
 
         ProjectCreationRequest anlageRequest = ProjectCreationRequest.builder()
-            .screeningSheet(ScreeningSheet.builder()
-                .parameters(Collections.emptyList())
-                .data(data)
+                .screeningSheet(ScreeningSheet.builder()
+                        .parameters(Collections.emptyList())
+                        .data(data)
+                        .selectionVector(selectionVector)
+                        .build())
                 .selectionVector(selectionVector)
-                .build())
-            .selectionVector(selectionVector)
-            .build();
-
+                .build();
 
         given(mapperMock.createLink(REL_SELF, PROJECT, Map.of("project", "SAMPLE")))
-            .willReturn(Link.of("http://localhost/project/SAMPLE", "self"));
-
+                .willReturn(Link.of("http://localhost/project/SAMPLE", "self"));
 
         // act
         ResultActions actual = mockMvc.perform(post("/catalog/{version}/project", "8.2.1")
-            .content(objectMapper.writeValueAsString(anlageRequest))
-            .contentType(MediaType.APPLICATION_JSON)
-            .characterEncoding(StandardCharsets.UTF_8.displayName())
-            .accept("application/hal+json")
-        );
+                .content(objectMapper.writeValueAsString(anlageRequest))
+                .contentType(MediaType.APPLICATION_JSON)
+                .characterEncoding(StandardCharsets.UTF_8.displayName())
+                .accept("application/hal+json"));
 
         // assert
         actual
-            .andExpect(status().isCreated())
-            .andExpect(header().string("Location", "http://localhost/project/SAMPLE"));
+                .andExpect(status().isCreated())
+                .andExpect(header().string("Location", "http://localhost/project/SAMPLE"));
 
-        verify(projectServiceMock, times(1)).createProject("8.2.1", data, selectionVector, null);
+        verify(projectServiceMock, times(1)).createProject("8.2.1", data, selectionVector, null, empty());
     }
-
 
     @Test
     void getProjects_ProjectsExist_StateOK() throws Exception {
@@ -194,12 +191,12 @@ class ProjectControllerTest {
 
         PathContextBuilder pathContext = PathContext.builder();
         ArgumentCaptor<PathContextBuilder> pathContextCaptor = forClass(PathContextBuilder.class);
-        given(mapperMock.toResource(pathContextCaptor.capture(), eq(projekt))).willReturn(ProjectResource.builder().build());
+        given(mapperMock.toResource(pathContextCaptor.capture(), eq(projekt)))
+                .willReturn(ProjectResource.builder().build());
 
         // act
         ResultActions actual = mockMvc.perform(get("/project")
-            .accept(HAL_JSON_VALUE)
-        );
+                .accept(HAL_JSON_VALUE));
 
         // assert
         actual.andExpect(status().isOk());
@@ -214,18 +211,18 @@ class ProjectControllerTest {
     void getProject_ProjectExist_StateOK() throws Exception {
         // arrange
         ProjectInformation projekt = ProjectInformation.builder()
-            .identifier("SAMPLE")
-            .build();
+                .identifier("SAMPLE")
+                .build();
         given(projectServiceRepositoryMock.getProjectInformation("SAMPLE")).willReturn(Optional.of(projekt));
 
         PathContextBuilder pathContext = PathContext.builder();
         ArgumentCaptor<PathContextBuilder> pathContextCaptor = forClass(PathContextBuilder.class);
-        given(mapperMock.toResource(pathContextCaptor.capture(), eq(projekt))).willReturn(ProjectResource.builder().build());
+        given(mapperMock.toResource(pathContextCaptor.capture(), eq(projekt)))
+                .willReturn(ProjectResource.builder().build());
 
         // act
         ResultActions actual = mockMvc.perform(get("/project/{project}", "SAMPLE")
-            .accept(HAL_JSON_VALUE)
-        );
+                .accept(HAL_JSON_VALUE));
 
         // assert
         actual.andExpect(status().isOk());
@@ -243,8 +240,7 @@ class ProjectControllerTest {
 
         // act
         ResultActions actual = mockMvc.perform(get("/project/{project}", "SAMPLE")
-            .accept(HAL_JSON_VALUE)
-        );
+                .accept(HAL_JSON_VALUE));
 
         // assert
         actual.andExpect(status().isNotFound());
@@ -261,12 +257,12 @@ class ProjectControllerTest {
 
         PathContextBuilder pathContext = PathContext.builder().project("SAMPLE");
         ArgumentCaptor<PathContextBuilder> pathContextCaptor = forClass(PathContextBuilder.class);
-        given(mapperMock.toResource(pathContextCaptor.capture(), eq(screeningSheet))).willReturn(ScreeningSheetResource.builder().build());
+        given(mapperMock.toResource(pathContextCaptor.capture(), eq(screeningSheet)))
+                .willReturn(ScreeningSheetResource.builder().build());
 
         // act
         ResultActions actual = mockMvc.perform(get("/project/{project}/screeningsheet", "SAMPLE")
-            .accept(HAL_JSON_VALUE)
-        );
+                .accept(HAL_JSON_VALUE));
 
         // assert
         actual.andExpect(status().isOk());
@@ -283,8 +279,7 @@ class ProjectControllerTest {
 
         // act
         ResultActions actual = mockMvc.perform(get("/project/{project}/screeningsheet", "SAMPLE")
-            .accept(HAL_JSON_VALUE)
-        );
+                .accept(HAL_JSON_VALUE));
 
         // assert
         actual.andExpect(status().isNotFound());
@@ -306,13 +301,13 @@ class ProjectControllerTest {
 
         // act
         ResultActions actual = mockMvc.perform(get("/project/{project}/screeningsheet/pdf", "SAMPLE")
-            .accept("application/pdf")
-        );
+                .accept("application/pdf"));
 
         // assert
         actual.andExpect(status().isOk());
-        actual.andExpect(header().string("Content-Disposition", "form-data; name=\"attachment\"; filename=\"screeningsheet.pdf\""))
-            .andExpect(header().string("Access-Control-Expose-Headers", "Content-Disposition"));
+        actual.andExpect(header().string("Content-Disposition",
+                "form-data; name=\"attachment\"; filename=\"screeningsheet.pdf\""))
+                .andExpect(header().string("Access-Control-Expose-Headers", "Content-Disposition"));
 
         verify(projectServiceRepositoryMock, times(1)).getScreeningSheetFile("SAMPLE");
 
@@ -325,8 +320,7 @@ class ProjectControllerTest {
 
         // act
         ResultActions actual = mockMvc.perform(get("/project/{project}/screeningsheet/pdf", "SAMPLE")
-            .accept("application/pdf")
-        );
+                .accept("application/pdf"));
 
         // assert
         actual.andExpect(status().isNotFound());
@@ -334,7 +328,6 @@ class ProjectControllerTest {
         verify(projectServiceRepositoryMock, times(1)).getScreeningSheetFile("SAMPLE");
 
     }
-
 
     @Test
     void deleteProject_ProjectExists_StateNoContent() throws Exception {
@@ -374,16 +367,15 @@ class ProjectControllerTest {
         }
 
         MockMultipartFile screeningSheet = new MockMultipartFile("file", "screeningsheet_0d.pdf",
-            "text/plain", data);
+                "text/plain", data);
 
         given(projectServiceMock.copyProject("SAMPLE", data)).willReturn(empty());
 
         // act
         ResultActions actual = mockMvc.perform(multipart("/project/{project}", "SAMPLE")
-            .file(screeningSheet)
-            .contentType(MULTIPART_FORM_DATA)
-            .accept("application/hal+json")
-        );
+                .file(screeningSheet)
+                .contentType(MULTIPART_FORM_DATA)
+                .accept("application/hal+json"));
 
         // assert
         actual.andExpect(status().isNotFound());
@@ -402,28 +394,28 @@ class ProjectControllerTest {
         }
 
         MockMultipartFile screeningSheet = new MockMultipartFile("file", "screeningsheet_0d.pdf",
-            "text/plain", data);
+                "text/plain", data);
 
         Project createdProject = Project.builder().identifier("SAMPLE2").build();
         given(projectServiceMock.copyProject("SAMPLE", data)).willReturn(Optional.of(createdProject));
 
         given(mapperMock.createLink(REL_SELF, PROJECT, Map.of("project", "SAMPLE2")))
-            .willReturn(Link.of("http://localhost/project/SAMPLE2", "self"));
+                .willReturn(Link.of("http://localhost/project/SAMPLE2", "self"));
 
         PathContextBuilder pathContext = PathContext.builder();
         ArgumentCaptor<PathContextBuilder> pathContextCaptor = forClass(PathContextBuilder.class);
-        given(mapperMock.toResource(pathContextCaptor.capture(), eq(createdProject))).willReturn(ProjectResource.builder().build());
+        given(mapperMock.toResource(pathContextCaptor.capture(), eq(createdProject)))
+                .willReturn(ProjectResource.builder().build());
 
         // act
         ResultActions actual = mockMvc.perform(multipart("/project/{project}", "SAMPLE")
-            .file(screeningSheet)
-            .contentType(MULTIPART_FORM_DATA)
-            .accept("application/hal+json")
-        );
+                .file(screeningSheet)
+                .contentType(MULTIPART_FORM_DATA)
+                .accept("application/hal+json"));
 
         // assert
         actual.andExpect(status().isCreated())
-            .andExpect(header().string("Location", "http://localhost/project/SAMPLE2"));
+                .andExpect(header().string("Location", "http://localhost/project/SAMPLE2"));
 
         verify(projectServiceMock, times(1)).copyProject("SAMPLE", data);
         verify(mapperMock, times(1)).toResource(pathContextCaptor.capture(), eq(createdProject));
@@ -440,17 +432,16 @@ class ProjectControllerTest {
         }
 
         MockMultipartFile screeningSheet = new MockMultipartFile("file", "screeningsheet_0d.pdf",
-            "text/plain", data);
+                "text/plain", data);
 
         MockMultipartFile spy = spy(screeningSheet);
         given(spy.getBytes()).willThrow(IOException.class);
 
         // act
         Throwable actual = catchThrowable(() -> mockMvc.perform(multipart("/project/{project}", "SAMPLE")
-            .file(spy)
-            .contentType(MULTIPART_FORM_DATA)
-            .accept("application/hal+json")
-        ));
+                .file(spy)
+                .contentType(MULTIPART_FORM_DATA)
+                .accept("application/hal+json")));
 
         // assert
         assertThat(actual).isNotNull();
@@ -469,36 +460,36 @@ class ProjectControllerTest {
 
         SelectionVector selectionVector = SelectionVector.builder().build();
         Tailoring tailoring = Tailoring.builder()
-            .name("master1")
-            .build();
-        given(projectServiceMock.addTailoring("SAMPLE", "8.2.1", data, selectionVector, null)).willReturn(Optional.of(tailoring));
+                .name("master1")
+                .build();
+        given(projectServiceMock.addTailoring("SAMPLE", "8.2.1", data, selectionVector, null, empty()))
+                .willReturn(Optional.of(tailoring));
 
         ProjectCreationRequest creationRequest = ProjectCreationRequest.builder()
-            .catalog("8.2.1")
-            .screeningSheet(ScreeningSheet.builder()
-                .parameters(Collections.emptyList())
-                .data(data)
+                .catalog("8.2.1")
+                .screeningSheet(ScreeningSheet.builder()
+                        .parameters(Collections.emptyList())
+                        .data(data)
+                        .selectionVector(selectionVector)
+                        .build())
                 .selectionVector(selectionVector)
-                .build())
-            .selectionVector(selectionVector)
-            .build();
+                .build();
 
         given(mapperMock.createLink(any(), any(), any())).willReturn(Link.of("/project/SAMPLE/tailoring/master1"));
 
         // act
         ResultActions actual = mockMvc.perform(post("/project/{project}/tailoring", "SAMPLE")
-            .content(objectMapper.writeValueAsString(creationRequest))
-            .contentType(MediaType.APPLICATION_JSON)
-            .characterEncoding(StandardCharsets.UTF_8.displayName())
-            .accept("application/hal+json")
-        );
+                .content(objectMapper.writeValueAsString(creationRequest))
+                .contentType(MediaType.APPLICATION_JSON)
+                .characterEncoding(StandardCharsets.UTF_8.displayName())
+                .accept("application/hal+json"));
 
         // assert
         actual
-            .andExpect(status().isCreated())
-            .andExpect(header().string("Location", "/project/SAMPLE/tailoring/master1"));
+                .andExpect(status().isCreated())
+                .andExpect(header().string("Location", "/project/SAMPLE/tailoring/master1"));
 
-        verify(projectServiceMock, times(1)).addTailoring("SAMPLE", "8.2.1", data, selectionVector, null);
+        verify(projectServiceMock, times(1)).addTailoring("SAMPLE", "8.2.1", data, selectionVector, null, empty());
         verify(mapperMock, times(0)).toResource(any(), any(Tailoring.class));
     }
 
@@ -512,32 +503,32 @@ class ProjectControllerTest {
         }
 
         SelectionVector selectionVector = SelectionVector.builder().build();
-        given(projectServiceMock.addTailoring("SAMPLE", "8.2.1", data, selectionVector, "Test")).willReturn(empty());
+        given(projectServiceMock.addTailoring("SAMPLE", "8.2.1", data, selectionVector, "Test", empty()))
+                .willReturn(empty());
 
         ProjectCreationRequest creationRequest = ProjectCreationRequest.builder()
-            .catalog("8.2.1")
-            .screeningSheet(ScreeningSheet.builder()
-                .parameters(Collections.emptyList())
-                .data(data)
+                .catalog("8.2.1")
+                .screeningSheet(ScreeningSheet.builder()
+                        .parameters(Collections.emptyList())
+                        .data(data)
+                        .selectionVector(selectionVector)
+                        .build())
                 .selectionVector(selectionVector)
-                .build())
-            .selectionVector(selectionVector)
-            .note("Test")
-            .build();
+                .note("Test")
+                .build();
 
         // act
         ResultActions actual = mockMvc.perform(post("/project/{project}/tailoring", "SAMPLE")
-            .content(objectMapper.writeValueAsString(creationRequest))
-            .contentType(MediaType.APPLICATION_JSON)
-            .characterEncoding(StandardCharsets.UTF_8.displayName())
-            .accept("application/hal+json")
-        );
+                .content(objectMapper.writeValueAsString(creationRequest))
+                .contentType(MediaType.APPLICATION_JSON)
+                .characterEncoding(StandardCharsets.UTF_8.displayName())
+                .accept("application/hal+json"));
 
         // assert
         actual
-            .andExpect(status().isNotFound());
+                .andExpect(status().isNotFound());
 
-        verify(projectServiceMock, times(1)).addTailoring("SAMPLE", "8.2.1", data, selectionVector, "Test");
+        verify(projectServiceMock, times(1)).addTailoring("SAMPLE", "8.2.1", data, selectionVector, "Test", empty());
         verify(mapperMock, times(0)).toResource(any(), any(Tailoring.class));
     }
 
@@ -545,28 +536,28 @@ class ProjectControllerTest {
     void getSelectionVector_SelectionVectorExists_StateOK() throws Exception {
         // arrange
         Project project = Project.builder()
-            .identifier("SAMPLE")
-            .screeningSheet(ScreeningSheet.builder()
-                .selectionVector(SelectionVector.builder().build())
-                .build())
-            .build();
+                .identifier("SAMPLE")
+                .screeningSheet(ScreeningSheet.builder()
+                        .selectionVector(SelectionVector.builder().build())
+                        .build())
+                .build();
         given(projectServiceRepositoryMock.getProject("SAMPLE")).willReturn(Optional.of(project));
 
         PathContextBuilder pathContext = PathContext.builder().project("SAMPLE");
         ArgumentCaptor<PathContextBuilder> pathContextCaptor = forClass(PathContextBuilder.class);
         given(mapperMock.toResource(pathContextCaptor.capture(), eq(project.getScreeningSheet().getSelectionVector())))
-            .willReturn(SelectionVectorResource.builder().build());
+                .willReturn(SelectionVectorResource.builder().build());
 
         // act
         ResultActions actual = mockMvc.perform(get("/project/{project}/selectionvector", "SAMPLE")
-            .accept(HAL_JSON_VALUE)
-        );
+                .accept(HAL_JSON_VALUE));
 
         // assert
         actual.andExpect(status().isOk());
 
         verify(projectServiceRepositoryMock, times(1)).getProject("SAMPLE");
-        verify(mapperMock, times(1)).toResource(pathContextCaptor.capture(), eq(project.getScreeningSheet().getSelectionVector()));
+        verify(mapperMock, times(1)).toResource(pathContextCaptor.capture(),
+                eq(project.getScreeningSheet().getSelectionVector()));
         assertThat(pathContextCaptor.getValue().build()).isEqualTo(pathContext.build());
     }
 
@@ -577,8 +568,7 @@ class ProjectControllerTest {
 
         // act
         ResultActions actual = mockMvc.perform(get("/project/{project}/selectionvector", "SAMPLE")
-            .accept(HAL_JSON_VALUE)
-        );
+                .accept(HAL_JSON_VALUE));
 
         // assert
         actual.andExpect(status().isNotFound());
@@ -586,7 +576,6 @@ class ProjectControllerTest {
         verify(projectServiceRepositoryMock, times(1)).getProject("SAMPLE");
         verify(mapperMock, times(0)).toResource(any(), any(SelectionVector.class));
     }
-
 
     @Test
     void putState_ProjectNotExists_StateNotFound() throws Exception {
@@ -606,12 +595,11 @@ class ProjectControllerTest {
         // arrange
         ProjectInformation projectInformation = ProjectInformation.builder().build();
         given(projectServiceMock.updateState("SAMPLE", COMPLETED))
-            .willReturn(Optional.of(projectInformation));
+                .willReturn(Optional.of(projectInformation));
 
         ArgumentCaptor<PathContextBuilder> pathContextCaptor = forClass(PathContextBuilder.class);
         given(mapperMock.toResource(pathContextCaptor.capture(), eq(projectInformation)))
-            .willReturn(ProjectResource.builder().build());
-
+                .willReturn(ProjectResource.builder().build());
 
         // act
         ResultActions actual = mockMvc.perform(put("/project/{project}/state/{state}", "SAMPLE", COMPLETED));
@@ -621,4 +609,3 @@ class ProjectControllerTest {
         verify(projectServiceMock, times(1)).updateState("SAMPLE", COMPLETED);
     }
 }
-

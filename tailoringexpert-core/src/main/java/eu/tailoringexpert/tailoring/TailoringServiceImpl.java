@@ -21,6 +21,25 @@
  */
 package eu.tailoringexpert.tailoring;
 
+import static java.lang.Boolean.TRUE;
+import static java.util.Objects.isNull;
+import static java.util.Objects.nonNull;
+import static java.util.Optional.empty;
+import static java.util.Optional.of;
+import static java.util.Optional.ofNullable;
+import static java.util.function.Predicate.not;
+
+import java.io.ByteArrayOutputStream;
+import java.time.LocalDateTime;
+import java.time.ZonedDateTime;
+import java.util.Collection;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.function.Function;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipOutputStream;
+
 import eu.tailoringexpert.domain.BaseRequirement;
 import eu.tailoringexpert.domain.Catalog;
 import eu.tailoringexpert.domain.Chapter;
@@ -40,23 +59,6 @@ import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import lombok.extern.log4j.Log4j2;
-
-import java.io.ByteArrayOutputStream;
-import java.time.LocalDateTime;
-import java.time.ZonedDateTime;
-import java.util.Collection;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.function.Function;
-import java.util.zip.ZipEntry;
-import java.util.zip.ZipOutputStream;
-
-import static java.lang.Boolean.TRUE;
-import static java.util.Objects.isNull;
-import static java.util.Objects.nonNull;
-import static java.util.Optional.*;
-import static java.util.function.Predicate.not;
 
 /**
  * Implementation of {@link TailoringService}.
@@ -90,36 +92,40 @@ public class TailoringServiceImpl implements TailoringService {
     /**
      * {@inheritDoc}
      */
-    @Override
     public Tailoring createTailoring(String name,
-                                     String identifier,
-                                     ScreeningSheet screeningSheet,
-                                     SelectionVector applicableSelectionVector,
-                                     String note,
-                                     Catalog<BaseRequirement> catalog) {
-        log.traceEntry(() -> name, () -> identifier, screeningSheet::getParameters, () -> applicableSelectionVector, catalog::getVersion);
+            String identifier,
+            ScreeningSheet screeningSheet,
+            SelectionVector applicableSelectionVector,
+            String note,
+            Catalog<BaseRequirement> catalog,
+            Optional<byte[]> matrixFileRawData) {
+        log.traceEntry(() -> name, () -> identifier, screeningSheet::getParameters, () -> applicableSelectionVector,
+                catalog::getVersion);
+
+        Optional<Map<String, Collection<ImportRequirement>>> matrixRequirements = matrixFileRawData.isPresent()
+                ? of(tailoringRequirementFileReader.apply(matrixFileRawData.get()))
+                : empty();
 
         Catalog<TailoringRequirement> tailoringCatalog = mapper.toTailoringCatalog(
-            catalog, screeningSheet, applicableSelectionVector
-        );
+                catalog, screeningSheet, applicableSelectionVector, matrixRequirements);
 
         TailoringBuilder tailoringBuilder = Tailoring.builder()
-            .name(name)
-            .identifier(identifier)
-            .screeningSheet(screeningSheet)
-            .selectionVector(applicableSelectionVector)
-            .catalog(tailoringCatalog)
-            .signatures(repository.getDefaultSignatures())
-            .state(TailoringState.CREATED)
-            .phases(screeningSheet.getPhases());
+                .name(name)
+                .identifier(identifier)
+                .screeningSheet(screeningSheet)
+                .selectionVector(applicableSelectionVector)
+                .catalog(tailoringCatalog)
+                .signatures(repository.getDefaultSignatures())
+                .state(TailoringState.CREATED)
+                .phases(screeningSheet.getPhases());
 
         Tailoring result = tailoringBuilder
-            .notes(nonNull(note) ? List.of(Note.builder()
-                .number(1)
-                .text(note)
-                .creationTimestamp(ZonedDateTime.now())
-                .build()) : null)
-            .build();
+                .notes(nonNull(note) ? List.of(Note.builder()
+                        .number(1)
+                        .text(note)
+                        .creationTimestamp(ZonedDateTime.now())
+                        .build()) : null)
+                .build();
         log.traceExit();
         return result;
 
@@ -132,7 +138,8 @@ public class TailoringServiceImpl implements TailoringService {
     public Optional<File> createRequirementDocument(String project, String tailoring) {
         log.traceEntry(() -> project, () -> tailoring);
 
-        @SuppressWarnings("PMD.PrematureDeclaration") final LocalDateTime creationTimestamp = LocalDateTime.now();
+        @SuppressWarnings("PMD.PrematureDeclaration")
+        final LocalDateTime creationTimestamp = LocalDateTime.now();
 
         Optional<Tailoring> oTailoring = repository.getTailoring(project, tailoring);
         if (oTailoring.isEmpty()) {
@@ -152,7 +159,8 @@ public class TailoringServiceImpl implements TailoringService {
     public Optional<File> createComparisonDocument(String project, String tailoring) {
         log.traceEntry(() -> project, () -> tailoring);
 
-        @SuppressWarnings("PMD.PrematureDeclaration") final LocalDateTime creationTimestamp = LocalDateTime.now();
+        @SuppressWarnings("PMD.PrematureDeclaration")
+        final LocalDateTime creationTimestamp = LocalDateTime.now();
 
         Optional<Tailoring> oTailoring = repository.getTailoring(project, tailoring);
         if (oTailoring.isEmpty()) {
@@ -188,7 +196,8 @@ public class TailoringServiceImpl implements TailoringService {
      * {@inheritDoc}
      */
     @Override
-    public Optional<List<TailoringRequirement>> getRequirements(@NonNull String project, @NonNull String tailoring, @NonNull String chapter) {
+    public Optional<List<TailoringRequirement>> getRequirements(@NonNull String project, @NonNull String tailoring,
+            @NonNull String chapter) {
         log.traceEntry(() -> project, () -> tailoring, () -> chapter);
 
         Optional<Chapter<TailoringRequirement>> oChapter = getChapter(project, tailoring, chapter);
@@ -237,7 +246,8 @@ public class TailoringServiceImpl implements TailoringService {
      * {@inheritDoc}
      */
     @Override
-    public Optional<Chapter<TailoringRequirement>> getChapter(@NonNull String project, @NonNull String tailoring, @NonNull String chapter) {
+    public Optional<Chapter<TailoringRequirement>> getChapter(@NonNull String project, @NonNull String tailoring,
+            @NonNull String chapter) {
         log.traceEntry(() -> project, () -> tailoring, () -> chapter);
 
         Optional<Tailoring> oTailoring = repository.getTailoring(project, tailoring);
@@ -253,7 +263,8 @@ public class TailoringServiceImpl implements TailoringService {
      * {@inheritDoc}
      */
     @Override
-    public Optional<Collection<DocumentSignature>> getDocumentSignatures(@NonNull String project, @NonNull String tailoring) {
+    public Optional<Collection<DocumentSignature>> getDocumentSignatures(@NonNull String project,
+            @NonNull String tailoring) {
         log.traceEntry(() -> project, () -> tailoring);
 
         Optional<Tailoring> oTailoring = repository.getTailoring(project, tailoring);
@@ -269,7 +280,8 @@ public class TailoringServiceImpl implements TailoringService {
      * {@inheritDoc}
      */
     @Override
-    public Optional<DocumentSignature> updateDocumentSignature(@NonNull String project, @NonNull String tailoring, @NonNull DocumentSignature signature) {
+    public Optional<DocumentSignature> updateDocumentSignature(@NonNull String project, @NonNull String tailoring,
+            @NonNull DocumentSignature signature) {
         log.traceEntry(() -> project, () -> tailoring, () -> signature);
         return log.traceExit(repository.updateDocumentSignature(project, tailoring, signature));
     }
@@ -294,7 +306,8 @@ public class TailoringServiceImpl implements TailoringService {
         }
 
         Optional<Tailoring> oTailoring = repository.updateName(project, tailoring, name);
-        Optional<TailoringInformation> result = oTailoring.map(updatedPhase -> mapper.toTailoringInformation(updatedPhase));
+        Optional<TailoringInformation> result = oTailoring
+                .map(updatedPhase -> mapper.toTailoringInformation(updatedPhase));
         return log.traceExit(result);
     }
 
@@ -317,8 +330,9 @@ public class TailoringServiceImpl implements TailoringService {
                 boolean selected = YES.equalsIgnoreCase(requirement.getApplicable());
                 requirementService.handleSelected(project, tailoring, chapter, requirement.getPosition(), selected);
                 ofNullable(requirement.getText())
-                    .filter(not(String::isBlank))
-                    .ifPresent(text -> requirementService.handleText(project, tailoring, chapter, requirement.getPosition(), text));
+                        .filter(not(String::isBlank))
+                        .ifPresent(text -> requirementService.handleText(project, tailoring, chapter,
+                                requirement.getPosition(), text));
             }
         }));
 
@@ -361,10 +375,10 @@ public class TailoringServiceImpl implements TailoringService {
 
         Collection<Note> notes = oTailoring.get().getNotes();
         Note noteToAdd = Note.builder()
-            .number(nonNull(notes) ? notes.size() + 1 : 1)
-            .text(note)
-            .creationTimestamp(ZonedDateTime.now())
-            .build();
+                .number(nonNull(notes) ? notes.size() + 1 : 1)
+                .text(note)
+                .creationTimestamp(ZonedDateTime.now())
+                .build();
 
         Optional<Tailoring> updatedTailoring = repository.addNote(project, tailoring, noteToAdd);
         if (updatedTailoring.isEmpty()) {
@@ -388,8 +402,8 @@ public class TailoringServiceImpl implements TailoringService {
         }
 
         Optional<Note> result = oTailoring.get().getNotes().stream()
-            .filter(n -> note.equals(n.getNumber()))
-            .findFirst();
+                .filter(n -> note.equals(n.getNumber()))
+                .findFirst();
 
         return log.traceExit(result);
     }
@@ -446,7 +460,8 @@ public class TailoringServiceImpl implements TailoringService {
     public Optional<File> createDocuments(@NonNull String project, @NonNull String tailoring) {
         log.traceEntry(() -> project, () -> tailoring);
 
-        @SuppressWarnings("PMD.PrematureDeclaration") final LocalDateTime erstellungsZeitpunkt = LocalDateTime.now();
+        @SuppressWarnings("PMD.PrematureDeclaration")
+        final LocalDateTime erstellungsZeitpunkt = LocalDateTime.now();
 
         Optional<Tailoring> oTailoring = repository.getTailoring(project, tailoring);
         if (oTailoring.isEmpty()) {
@@ -462,12 +477,11 @@ public class TailoringServiceImpl implements TailoringService {
 
         log.traceExit();
         return of(File.builder()
-            .name(project + "-" + tailoring + ".zip")
-            .data(os.toByteArray())
-            .build());
+                .name(project + "-" + tailoring + ".zip")
+                .data(os.toByteArray())
+                .build());
 
     }
-
 
     /**
      * {@inheritDoc}
@@ -483,31 +497,33 @@ public class TailoringServiceImpl implements TailoringService {
         }
 
         Collection<Phase> phases = oTailoring.get().getPhases();
-        Map<String, BaseRequirement> fqn2BaseRequirement = baseRequirementsProvider.apply(oTailoring.get().getCatalog().getVersion());
+        Map<String, BaseRequirement> fqn2BaseRequirement = baseRequirementsProvider
+                .apply(oTailoring.get().getCatalog().getVersion());
         oTailoring.get()
-            .getCatalog()
-            .allChapters()
-            .forEach(chapter ->
-                ofNullable(chapter.getRequirements())
-                    .orElse(List.of())
-                    .forEach(requirement -> {
-                        // only selected requirements will be updated in case they are not related to tailoring phase(s)
-                        if (TRUE.equals(requirement.getSelected())) {
-                            BaseRequirement baseRequirement = fqn2BaseRequirement.get(chapter.getNumber() + "." + requirement.getPosition());
-                            boolean isApplicableForTailoring = baseRequirement.getPhases()
-                                .stream()
-                                .anyMatch(phases::contains);
-                            log.debug(chapter.getNumber() + "." + requirement.getPosition() + ": {}", isApplicableForTailoring);
-                            if (!isApplicableForTailoring) {
-                                requirementService.handleSelected(project, tailoring, chapter.getNumber(), requirement.getPosition(), false);
+                .getCatalog()
+                .allChapters()
+                .forEach(chapter -> ofNullable(chapter.getRequirements())
+                        .orElse(List.of())
+                        .forEach(requirement -> {
+                            // only selected requirements will be updated in case they are not related to
+                            // tailoring phase(s)
+                            if (TRUE.equals(requirement.getSelected())) {
+                                BaseRequirement baseRequirement = fqn2BaseRequirement
+                                        .get(chapter.getNumber() + "." + requirement.getPosition());
+                                boolean isApplicableForTailoring = baseRequirement.getPhases()
+                                        .stream()
+                                        .anyMatch(phases::contains);
+                                log.debug(chapter.getNumber() + "." + requirement.getPosition() + ": {}",
+                                        isApplicableForTailoring);
+                                if (!isApplicableForTailoring) {
+                                    requirementService.handleSelected(project, tailoring, chapter.getNumber(),
+                                            requirement.getPosition(), false);
+                                }
                             }
-                        }
-                    })
-            );
+                        }));
         log.traceExit();
         return of(TRUE);
     }
-
 
     /**
      * Add file to zip.
