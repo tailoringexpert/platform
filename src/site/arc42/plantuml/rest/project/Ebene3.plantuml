@@ -21,7 +21,11 @@ package project {
 
     class ProjectCreationRequest {
         catalog : String
+        screeningSheet : ScreeningSheet
+        selectionVector : SelectionVector
         note : String
+        matrix : byte[]
+
     }
     ProjectCreationRequest -> "1" ScreeningSheet : screeningSheet
     ProjectCreationRequest -> "1" SelectionVector : selectionVector

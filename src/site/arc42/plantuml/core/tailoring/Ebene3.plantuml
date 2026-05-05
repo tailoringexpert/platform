@@ -43,7 +43,7 @@ package tailoring {
     BaseRequirementsProvider --> "1" BaseRequirementsProviderRepository : repository
 
     interface TailoringService {
-        createTailoring(name : String, identifier : String, screeningSheetData : byte[], applicableSelectionVectore : SelectionVector, catalog : Catalog<BaseRequirement>) : Tailoring
+        createTailoring(name : String, identifier : String, screeningSheetData : byte[], applicableSelectionVectore : SelectionVector, catalog : Catalog<BaseRequirement>, matrixFileRawData: Optional<byte[]>) : Tailoring
         createRequirementDocument(project : String, tailoring : String): Optional<File>
         createComparisonDocument(project : String, tailoring : String): Optional<File>
         createDocuments(project : String, tailoring : String): Optional<File>
@@ -72,8 +72,10 @@ package tailoring {
 
     abstract class TailoringServiceMapper {
         toTailoringInformation(domain : Tailoring) : TailoringInformation
-        toTailoringCatalog(catalog : Catalog<BaseRequirement>, screeningSheet : ScreeningSheet, selectionVector : SelectionVector) : Catalog<TailoringRequirement>
-        toTailoringRequirement(baseRequirement : BaseRequirement, screeningSheet: ScreeningSheet, selectionVector : SelectionVector, builder : TailoringRequirementBuilder) : void
+        toTailoringCatalog(catalog : Catalog<BaseRequirement>, screeningSheet : ScreeningSheet, selectionVector : SelectionVector, Optional<Map<String, matrixRequirements : Collection<ImportRequirement>>>) : Catalog<TailoringRequirement>
+        toChapter(chapter : Chapter<BaseRequirement>, screeningSheet : ScreeningSheet, selectionVector : SelectionVector, matrixRequirements : Optional<Map<String, Collection<ImportRequirement>>>) : Chapter<TailoringRequirement>
+        toTailoringRequirements(requirements : List<BaseRequirement>, screeningSheet : ScreeningSheet, selectionVector : SelectionVector, chapter : Chapter<BaseRequirement>, matrixRequirements : Optional<Map<String, Collection<ImportRequirement>>>) : ArrayList<TailoringRequirement> 
+        toTailoringRequirement(baseRequirement : BaseRequirement, screeningSheet: ScreeningSheet, selectionVector : SelectionVector, chapter : Chapter<BaseRequirement>, matrixRequirements : Optional<Map<String, Collection<ImportRequirement>>>, builder : TailoringRequirementBuilder) : void
     }
 
     interface TailoringServiceRepository {

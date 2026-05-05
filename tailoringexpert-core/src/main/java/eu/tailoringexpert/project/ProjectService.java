@@ -21,13 +21,13 @@
  */
 package eu.tailoringexpert.project;
 
+import java.util.Optional;
+
 import eu.tailoringexpert.domain.Project;
 import eu.tailoringexpert.domain.ProjectInformation;
 import eu.tailoringexpert.domain.ProjectState;
 import eu.tailoringexpert.domain.SelectionVector;
 import eu.tailoringexpert.domain.Tailoring;
-
-import java.util.Optional;
 
 /**
  * Service for management of projects.
@@ -39,25 +39,37 @@ public interface ProjectService {
     /**
      * Create a new project.
      *
-     * @param catalog                   Version of base catalog to use to create initial tailoring
-     * @param screeningSheet            Screeningsheet to evaluate for tailoring parameters
-     * @param applicableSelectionVector electionvector to use for making requirements applicable
+     * @param catalog                   Version of base catalog to use to create
+     *                                  initial tailoring
+     * @param screeningSheet            Screeningsheet to evaluate for tailoring
+     *                                  parameters
+     * @param applicableSelectionVector electionvector to use for making
+     *                                  requirements applicable
      * @param note                      Note on created tailoring
+     * @param matrixFileRawData         raw data of file contaiing requirement
+     *                                  states to import
      * @return Minimal data of created project
      */
-    CreateProjectTO createProject(String catalog, byte[] screeningSheet, SelectionVector applicableSelectionVector, String note);
+    CreateProjectTO createProject(String catalog, byte[] screeningSheet, SelectionVector applicableSelectionVector,
+            String note, Optional<byte[]> matrixFileRawData);
 
     /**
      * Create a new tailoring and adds to project.
      *
      * @param project                   Identifier of project to add tailoring for
-     * @param catalog                   Version of base catalog to use to create tailoring
-     * @param screeningSheetData        Screeningsheet to evaluate for tailoring parameters
-     * @param applicableSelectionVector Selectionvector to use for making requirements applicable
+     * @param catalog                   Version of base catalog to use to create
+     *                                  tailoring
+     * @param screeningSheetData        Screeningsheet to evaluate for tailoring
+     *                                  parameters
+     * @param applicableSelectionVector Selectionvector to use for making
+     *                                  requirements applicable
      * @param note                      Note on created tailoring
+     * @param matrixFileRawData         raw data of file contaiing requirement
+     *                                  states to import
      * @return added new tailoring
      */
-    Optional<Tailoring> addTailoring(String project, String catalog, byte[] screeningSheetData, SelectionVector applicableSelectionVector, String note);
+    Optional<Tailoring> addTailoring(String project, String catalog, byte[] screeningSheetData,
+            SelectionVector applicableSelectionVector, String note, Optional<byte[]> matrixFileRawData);
 
     /**
      * Create (full) copy of provided project.

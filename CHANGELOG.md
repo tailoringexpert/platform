@@ -1,13 +1,31 @@
 # Changelog
 
-## [v0.2.3](https://github.com/tailoringexpert/platform/tree/v0.2.3) (02.12.2026)
+## [v0.2.7](https://github.com/tailoringexpert/platform/tree/v0.2.7) (05.05.2026)
+
+[Full Changelog](https://github.com/tailoringexpert/platform/compare/v0.2.4...v0.2.7)
+
+**Implemented enhancements:**
+
+- Matrices management [\#481](https://github.com/tailoringexpert/platform/issues/481)
+- Log tailoring requirement changes [\#474](https://github.com/tailoringexpert/platform/issues/474)
+
+**Fixed bugs:**
+
+- Handing of applicable documents [\#483](https://github.com/tailoringexpert/platform/issues/483)
+
+## [v0.2.4](https://github.com/tailoringexpert/platform/tree/v0.2.4) (04.17.2026)
+
+[Full Changelog](https://github.com/tailoringexpert/platform/compare/v0.2.3...v0.2.4)
+
+## [v0.2.3](https://github.com/tailoringexpert/platform/tree/v0.2.3) (02.13.2026)
 
 [Full Changelog](https://github.com/tailoringexpert/platform/compare/v0.2.2...v0.2.3)
 
 **Implemented enhancements:**
 
-- Provide an Excel spreadsheet to search for the applicable document to which a requirement refers [\#469](https://github.com/tailoringexpert/platform/issues/469)
 - Unselect requirements not related to project phase [\#471](https://github.com/tailoringexpert/platform/issues/471)
+- Provide an Excel spreadsheet to search for the applicable document to which a requirement refers [\#469](https://github.com/tailoringexpert/platform/issues/469)
+- Log tailoring requirement changes [\#474](https://github.com/tailoringexpert/platform/issues/474)
 
 **Fixed bugs:**
 

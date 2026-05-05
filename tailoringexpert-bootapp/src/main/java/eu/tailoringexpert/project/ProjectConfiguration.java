@@ -21,27 +21,28 @@
  */
 package eu.tailoringexpert.project;
 
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+
 import eu.tailoringexpert.domain.ResourceMapper;
+import eu.tailoringexpert.repository.ApplicableDocumentRepository;
 import eu.tailoringexpert.repository.BaseCatalogRepository;
 import eu.tailoringexpert.repository.DRDRepository;
-import eu.tailoringexpert.repository.ApplicableDocumentRepository;
 import eu.tailoringexpert.repository.LogoRepository;
 import eu.tailoringexpert.repository.ProjectRepository;
 import eu.tailoringexpert.screeningsheet.ScreeningSheetService;
 import eu.tailoringexpert.tailoring.TailoringService;
 import lombok.NonNull;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
 
 @Configuration
 public class ProjectConfiguration {
 
     @Bean
     JPAProjectServiceRepositoryMapper jpaProjektServiceRepositoryMapper(
-        @NonNull BaseCatalogRepository baseCatalogRepository,
-        @NonNull LogoRepository logoRepository,
-        @NonNull DRDRepository drdRepository,
-        @NonNull ApplicableDocumentRepository applicableDocumentRepository) {
+            @NonNull BaseCatalogRepository baseCatalogRepository,
+            @NonNull LogoRepository logoRepository,
+            @NonNull DRDRepository drdRepository,
+            @NonNull ApplicableDocumentRepository applicableDocumentRepository) {
         JPAProjectServiceRepositoryMapperGenerated result = new JPAProjectServiceRepositoryMapperGenerated();
         result.setBaseCatalogRepository(baseCatalogRepository);
         result.setLogoRepository(logoRepository);
@@ -52,24 +53,24 @@ public class ProjectConfiguration {
 
     @Bean
     ProjectServiceRepository projectServiceRepository(
-        @NonNull JPAProjectServiceRepositoryMapper mapper,
-        @NonNull ProjectRepository projectRepository,
-        @NonNull BaseCatalogRepository baseCatalogRepository) {
+            @NonNull JPAProjectServiceRepositoryMapper mapper,
+            @NonNull ProjectRepository projectRepository,
+            @NonNull BaseCatalogRepository baseCatalogRepository) {
         return new JPAProjectServiceRepository(mapper, projectRepository, baseCatalogRepository);
     }
 
     @Bean
     ProjectService projektService(@NonNull ProjectServiceRepository repository,
-                                  @NonNull ScreeningSheetService screeningSheetService,
-                                  @NonNull TailoringService tailoringService) {
+            @NonNull ScreeningSheetService screeningSheetService,
+            @NonNull TailoringService tailoringService) {
         return new ProjectServiceImpl(repository, screeningSheetService, tailoringService);
     }
 
     @Bean
     ProjectController projectController(
-        @NonNull ResourceMapper mapper,
-        @NonNull ProjectService projectService,
-        @NonNull ProjectServiceRepository projectServiceRepository) {
+            @NonNull ResourceMapper mapper,
+            @NonNull ProjectService projectService,
+            @NonNull ProjectServiceRepository projectServiceRepository) {
         return new ProjectController(mapper, projectService, projectServiceRepository);
     }
 

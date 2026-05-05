@@ -19,7 +19,7 @@
  * <http://www.gnu.org/licenses/gpl-3.0.html>.
  * #L%
  */
-package eu.tailoringexpert.io;
+package eu.tailoringexpert.matrix;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.catchThrowable;
@@ -28,24 +28,24 @@ import static org.mockito.Mockito.mockStatic;
 
 import java.io.ByteArrayInputStream;
 import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.util.Optional;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.MockedStatic;
 
+import eu.tailoringexpert.TenantContext;
 import eu.tailoringexpert.domain.File;
 import lombok.extern.log4j.Log4j2;
 
 @Log4j2
-class DownloadProviderTest {
+class TenantMatrixDownloadProviderTest {
 
-    DownloadProvider download;
+    TenantMatrixDownloadProvider download;
 
     @BeforeEach
     void beforeEach() {
-        this.download = new DownloadProvider();
+        this.download = new TenantMatrixDownloadProvider("target/PLATFORM/test/1000");
     }
 
     @Test
@@ -62,21 +62,22 @@ class DownloadProviderTest {
     }
 
     @Test
-    void apply_NoInpustream_IOExceptionThrown() {
+    void apply_NoInpustream_EmptyReturned() {
         // arrange
 
         // act
-        Throwable actual = null;
-        try (MockedStatic<Files> filesMock = mockStatic(Files.class)) {
+        Optional<File> actual = null;
+        try (MockedStatic<TenantContext> tc = mockStatic(TenantContext.class);
+                MockedStatic<Files> filesMock = mockStatic(Files.class)) {
+            tc.when(TenantContext::getCurrentTenant).thenReturn("PLATFORM");
             filesMock.when(() -> Files.newInputStream(any())).thenReturn(null);
 
-            actual = catchThrowable(() -> download.apply(Paths.get("target/test.pdf")));
+            actual = download.apply("test.pdf");
         }
 
         // assert
         assertThat(actual)
-                .isNotNull()
-                .isInstanceOf(RuntimeException.class);
+                .isEmpty();
     }
 
     @Test
@@ -86,10 +87,12 @@ class DownloadProviderTest {
 
         // act
         Optional<File> actual = null;
-        try (MockedStatic<Files> filesMock = mockStatic(Files.class)) {
+        try (MockedStatic<TenantContext> tc = mockStatic(TenantContext.class);
+                MockedStatic<Files> filesMock = mockStatic(Files.class)) {
+            tc.when(TenantContext::getCurrentTenant).thenReturn("PLATFORM");
             filesMock.when(() -> Files.newInputStream(any())).thenReturn(new ByteArrayInputStream(data));
 
-            actual = download.apply(Paths.get("target/test.pdf"));
+            actual = download.apply("screeningsheet.pdf");
         }
         // assert
         assertThat(actual)

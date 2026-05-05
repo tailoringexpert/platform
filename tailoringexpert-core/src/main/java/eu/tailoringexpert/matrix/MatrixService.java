@@ -42,6 +42,12 @@ public interface MatrixService {
      */
     Collection<MatrixFileMeta> list();
 
+    /**
+     * Get a matrix file by name
+     * 
+     * @param name of the matrix file
+     * @return matrix file if found, empty otherwise
+     */
     Optional<File> get(String name);
 
     /**
