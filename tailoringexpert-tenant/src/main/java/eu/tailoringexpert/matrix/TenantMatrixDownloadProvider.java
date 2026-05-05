@@ -19,16 +19,21 @@
  * <http://www.gnu.org/licenses/gpl-3.0.html>.
  * #L%
  */
-package eu.tailoringexpert.io;
+package eu.tailoringexpert.matrix;
 
-import java.io.IOException;
+import static java.util.Optional.of;
+
 import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.Optional;
 import java.util.function.Function;
 
+import eu.tailoringexpert.TenantContext;
+import eu.tailoringexpert.domain.File;
 import lombok.NonNull;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 
 /**
@@ -36,21 +41,31 @@ import lombok.extern.log4j.Log4j2;
  * 
  * @author Michael Bädorf
  */
+@RequiredArgsConstructor
 @Log4j2
-public class DownloadProvider implements Function<Path, Optional<eu.tailoringexpert.domain.File>> {
+public class TenantMatrixDownloadProvider implements Function<String, Optional<File>> {
+
+    @NonNull
+    private String basedir;
 
     @Override
-    public Optional<eu.tailoringexpert.domain.File> apply(@NonNull Path fqn) {
+    public Optional<File> apply(@NonNull String name) {
+        Path fqn = Paths.get(this.basedir, TenantContext.getCurrentTenant()).toAbsolutePath().resolve(name);
+        return download(fqn);
+    }
+
+    private Optional<File> download(@NonNull Path fqn) {
         log.traceEntry(() -> fqn);
 
         byte[] data = null;
         try (InputStream is = Files.newInputStream(fqn)) {
             data = is.readAllBytes();
-        } catch (IOException e) {
-            throw log.throwing(new RuntimeException(e));
+        } catch (Exception _) {
+            log.info("file {} does not exists", fqn.getFileName().toString());
+            return Optional.empty();
         }
 
-        Optional<eu.tailoringexpert.domain.File> result = Optional.of(eu.tailoringexpert.domain.File.builder()
+        Optional<File> result = of(File.builder()
                 .name(fqn.getFileName().toString())
                 .data(data)
                 .build());

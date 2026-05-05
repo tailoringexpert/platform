@@ -21,23 +21,13 @@
  */
 package eu.tailoringexpert.tailoring;
 
-import eu.tailoringexpert.domain.*;
-import eu.tailoringexpert.requirement.RequirementService;
-import lombok.extern.log4j.Log4j2;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-import org.mockito.ArgumentCaptor;
-
-import java.io.ByteArrayInputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.*;
-import java.util.function.Function;
-import java.util.zip.ZipEntry;
-import java.util.zip.ZipInputStream;
-import java.util.zip.ZipOutputStream;
-
-import static eu.tailoringexpert.domain.Phase.*;
+import static eu.tailoringexpert.domain.Phase.A;
+import static eu.tailoringexpert.domain.Phase.B;
+import static eu.tailoringexpert.domain.Phase.C;
+import static eu.tailoringexpert.domain.Phase.D;
+import static eu.tailoringexpert.domain.Phase.E;
+import static eu.tailoringexpert.domain.Phase.F;
+import static eu.tailoringexpert.domain.Phase.ZERO;
 import static eu.tailoringexpert.domain.TailoringState.AGREED;
 import static eu.tailoringexpert.domain.TailoringState.CREATED;
 import static java.lang.Boolean.TRUE;
@@ -47,13 +37,59 @@ import static java.nio.file.Paths.get;
 import static java.util.Arrays.asList;
 import static java.util.Map.entry;
 import static java.util.Objects.nonNull;
-import static java.util.Optional.*;
+import static java.util.Optional.empty;
+import static java.util.Optional.of;
+import static java.util.Optional.ofNullable;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.catchThrowable;
 import static org.mockito.ArgumentCaptor.forClass;
-import static org.mockito.ArgumentMatchers.*;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.BDDMockito.given;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.doThrow;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.spy;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.AbstractMap;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.function.Function;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipInputStream;
+import java.util.zip.ZipOutputStream;
+
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.mockito.ArgumentCaptor;
+
+import eu.tailoringexpert.domain.BaseRequirement;
+import eu.tailoringexpert.domain.Catalog;
+import eu.tailoringexpert.domain.Chapter;
+import eu.tailoringexpert.domain.DocumentSignature;
+import eu.tailoringexpert.domain.DocumentSignatureState;
+import eu.tailoringexpert.domain.File;
+import eu.tailoringexpert.domain.Note;
+import eu.tailoringexpert.domain.Project;
+import eu.tailoringexpert.domain.ScreeningSheet;
+import eu.tailoringexpert.domain.ScreeningSheetParameter;
+import eu.tailoringexpert.domain.SelectionVector;
+import eu.tailoringexpert.domain.Tailoring;
+import eu.tailoringexpert.domain.TailoringInformation;
+import eu.tailoringexpert.domain.TailoringRequirement;
+import eu.tailoringexpert.domain.TailoringState;
+import eu.tailoringexpert.requirement.RequirementService;
+import lombok.extern.log4j.Log4j2;
 
 @Log4j2
 @SuppressWarnings("PMD.CyclomaticComplexity")
@@ -83,15 +119,14 @@ class TailoringServiceImplTest {
         this.fqnBaseRequirementsProviderMock = mock(Function.class);
 
         this.service = new TailoringServiceImpl(
-            repositoryMock,
-            mapperMock,
-            tailoringDeletableMock,
-            documentServiceMock,
-            requirementServiceMock,
-            tailoringAnforderungFileReaderMock,
-            attachmentServiceMock,
-            fqnBaseRequirementsProviderMock
-        );
+                repositoryMock,
+                mapperMock,
+                tailoringDeletableMock,
+                documentServiceMock,
+                requirementServiceMock,
+                tailoringAnforderungFileReaderMock,
+                attachmentServiceMock,
+                fqnBaseRequirementsProviderMock);
     }
 
     @Test
@@ -120,12 +155,11 @@ class TailoringServiceImplTest {
     void getCatalog_TailoringExists_CatalogLoaded() {
         // arrange
         given(repositoryMock.getTailoring("SAMPLE", "master"))
-            .willAnswer(invocation -> of(
-                Tailoring.builder()
-                    .name("master")
-                    .catalog(Catalog.<TailoringRequirement>builder().build())
-                    .build())
-            );
+                .willAnswer(invocation -> of(
+                        Tailoring.builder()
+                                .name("master")
+                                .catalog(Catalog.<TailoringRequirement>builder().build())
+                                .build()));
 
         // act
         Optional<Catalog<TailoringRequirement>> actual = service.getCatalog("SAMPLE", "master");
@@ -138,7 +172,7 @@ class TailoringServiceImplTest {
     void getCatalog_ProjectNotExists_EmptyReturned() {
         // arrange
         given(repositoryMock.getProject("SAMPLE"))
-            .willAnswer(invocation -> empty());
+                .willAnswer(invocation -> empty());
 
         // act
         Optional<Catalog<TailoringRequirement>> actual = service.getCatalog("SAMPLE", "master");
@@ -151,17 +185,15 @@ class TailoringServiceImplTest {
     void getCatalog_TailoringNotExists_EmptyExists() {
         // arrange
         given(repositoryMock.getProject("SAMPLE"))
-            .willAnswer(invocation -> of(
-                Project.builder()
-                    .identifier(invocation.getArgument(0))
-                    .tailorings(asList(
-                        Tailoring.builder()
-                            .name("master1")
-                            .catalog(Catalog.<TailoringRequirement>builder().build())
-                            .build()
-                    ))
-                    .build())
-            );
+                .willAnswer(invocation -> of(
+                        Project.builder()
+                                .identifier(invocation.getArgument(0))
+                                .tailorings(asList(
+                                        Tailoring.builder()
+                                                .name("master1")
+                                                .catalog(Catalog.<TailoringRequirement>builder().build())
+                                                .build()))
+                                .build()));
 
         // act
         Optional<Catalog<TailoringRequirement>> actual = service.getCatalog("SAMPLE", "master");
@@ -187,45 +219,46 @@ class TailoringServiceImplTest {
     void createRequirementDocument_TailoringExists_DocumentCreated() {
         // arrange
         Collection<DocumentSignature> zeichnungen = asList(
-            DocumentSignature.builder()
-                .state(DocumentSignatureState.PREPARED)
-                .faculty("Safety")
-                .signee("B. Safe")
-                .build(),
-            DocumentSignature.builder()
-                .state(DocumentSignatureState.AGREED)
-                .faculty("Software")
-                .signee("Software Tuppes")
-                .build(),
-            DocumentSignature.builder()
-                .state(DocumentSignatureState.AGREED)
-                .faculty("Project Management")
-                .signee("P. Management/RD-???")
-                .build(),
-            DocumentSignature.builder()
-                .state(DocumentSignatureState.RELEASED)
-                .faculty("Head of Product Assurance")
-                .signee("Head Hunter/RD-PS")
-                .build()
-        );
+                DocumentSignature.builder()
+                        .state(DocumentSignatureState.PREPARED)
+                        .faculty("Safety")
+                        .signee("B. Safe")
+                        .build(),
+                DocumentSignature.builder()
+                        .state(DocumentSignatureState.AGREED)
+                        .faculty("Software")
+                        .signee("Software Tuppes")
+                        .build(),
+                DocumentSignature.builder()
+                        .state(DocumentSignatureState.AGREED)
+                        .faculty("Project Management")
+                        .signee("P. Management/RD-???")
+                        .build(),
+                DocumentSignature.builder()
+                        .state(DocumentSignatureState.RELEASED)
+                        .faculty("Head of Product Assurance")
+                        .signee("Head Hunter/RD-PS")
+                        .build());
 
         Catalog<TailoringRequirement> catalog = Catalog.<TailoringRequirement>builder()
-            .version("8.2.1")
-            .build();
+                .version("8.2.1")
+                .build();
 
         Tailoring tailoring = Tailoring.builder()
-            .name("master1")
-            .catalog(catalog)
-            .screeningSheet(ScreeningSheet.builder()
-                .parameters(asList(ScreeningSheetParameter.builder().category(ScreeningSheetDataProviderSupplier.Identifier.getName()).value("SAMPLE").build()))
-                .build())
-            .signatures(zeichnungen)
-            .build();
+                .name("master1")
+                .catalog(catalog)
+                .screeningSheet(ScreeningSheet.builder()
+                        .parameters(asList(ScreeningSheetParameter.builder()
+                                .category(ScreeningSheetDataProviderSupplier.Identifier.getName()).value("SAMPLE")
+                                .build()))
+                        .build())
+                .signatures(zeichnungen)
+                .build();
         given(repositoryMock.getTailoring("SAMPLE", "master1"))
-            .willAnswer(invocation -> of(tailoring));
+                .willAnswer(invocation -> of(tailoring));
 
         given(documentServiceMock.createRequirementDocument(eq(tailoring), any()))
-            .willReturn(of(File.builder().build()));
+                .willReturn(of(File.builder().build()));
 
         // act
         Optional<File> actual = service.createRequirementDocument("SAMPLE", "master1");
@@ -233,7 +266,7 @@ class TailoringServiceImplTest {
         // assert
         assertThat(actual).isPresent();
         verify(documentServiceMock, times(1))
-            .createRequirementDocument(eq(tailoring), any());
+                .createRequirementDocument(eq(tailoring), any());
     }
 
     @Test
@@ -302,18 +335,17 @@ class TailoringServiceImplTest {
         // arrange
         TailoringService serviceSpy = spy(service);
         doReturn(of(
-            Chapter.<TailoringRequirement>builder()
-                .number("1.1")
-                .requirements(asList(
-                    TailoringRequirement.builder()
-                        .text("Requirement 1")
-                        .build(),
-                    TailoringRequirement.builder()
-                        .text("Requirement 2")
-                        .build()
-                ))
-                .build()))
-            .when(serviceSpy).getChapter("Dummy", "master", "1.1");
+                Chapter.<TailoringRequirement>builder()
+                        .number("1.1")
+                        .requirements(asList(
+                                TailoringRequirement.builder()
+                                        .text("Requirement 1")
+                                        .build(),
+                                TailoringRequirement.builder()
+                                        .text("Requirement 2")
+                                        .build()))
+                        .build()))
+                .when(serviceSpy).getChapter("Dummy", "master", "1.1");
 
         // act
         Optional<List<TailoringRequirement>> actual = serviceSpy.getRequirements("Dummy", "master", "1.1");
@@ -363,8 +395,7 @@ class TailoringServiceImplTest {
     void getScreeningSheet_TailoringNoScreeningSheet_EmptyReturned() {
         // arrange
         given(repositoryMock.getTailoring(any(), any())).willReturn(of(
-            Tailoring.builder().screeningSheet(null).build()
-        ));
+                Tailoring.builder().screeningSheet(null).build()));
 
         // act
         Optional<ScreeningSheet> actual = service.getScreeningSheet("Dummy", "master");
@@ -378,8 +409,7 @@ class TailoringServiceImplTest {
     void getScreeningSheet_TailoringWithScreningSheet_ScreeningSheeReturned() {
         // arrange
         given(repositoryMock.getTailoring(any(), any())).willReturn(of(
-            Tailoring.builder().screeningSheet(ScreeningSheet.builder().build()).build()
-        ));
+                Tailoring.builder().screeningSheet(ScreeningSheet.builder().build()).build()));
 
         // act
         Optional<ScreeningSheet> actual = service.getScreeningSheet("Dummy", "master");
@@ -428,8 +458,7 @@ class TailoringServiceImplTest {
     void getSelectionVector_TailoringWithSelectionVector_SelectionVectorReturned() {
         // arrange
         given(repositoryMock.getTailoring(any(), any())).willReturn(of(
-            Tailoring.builder().selectionVector(SelectionVector.builder().build()).build()
-        ));
+                Tailoring.builder().selectionVector(SelectionVector.builder().build()).build()));
 
         // act
         Optional<SelectionVector> actual = service.getSelectionVector("Dummy", "master");
@@ -438,7 +467,6 @@ class TailoringServiceImplTest {
         assertThat(actual).isNotEmpty();
         verify(repositoryMock, times(1)).getTailoring("Dummy", "master");
     }
-
 
     @Test
     void getChapter_ProjectNull_NullPointerExceptionThrown() {
@@ -489,22 +517,20 @@ class TailoringServiceImplTest {
     void getChapter_ChapteExists_ChapterReturned() {
         // arrange
         given(repositoryMock.getTailoring("Dummy", "master")).willReturn(of(
-            Tailoring.builder()
-                .catalog(Catalog.<TailoringRequirement>builder()
-                    .toc(Chapter.<TailoringRequirement>builder()
-                        .chapters(asList(
-                            Chapter.<TailoringRequirement>builder()
-                                .number("1")
-                                .chapters(asList(
-                                    Chapter.<TailoringRequirement>builder()
-                                        .number("1.1")
-                                        .build()
-                                ))
-                                .build()
-                        ))
-                        .build())
-                    .build())
-                .build()));
+                Tailoring.builder()
+                        .catalog(Catalog.<TailoringRequirement>builder()
+                                .toc(Chapter.<TailoringRequirement>builder()
+                                        .chapters(asList(
+                                                Chapter.<TailoringRequirement>builder()
+                                                        .number("1")
+                                                        .chapters(asList(
+                                                                Chapter.<TailoringRequirement>builder()
+                                                                        .number("1.1")
+                                                                        .build()))
+                                                        .build()))
+                                        .build())
+                                .build())
+                        .build()));
 
         // act
         Optional<Chapter<TailoringRequirement>> actual = service.getChapter("Dummy", "master", "1.1");
@@ -553,15 +579,13 @@ class TailoringServiceImplTest {
     void getDocumentSignatures_TailoringWithSignatuesExists_DocumentSignaturesReturned() {
         // arrange
         given(repositoryMock.getTailoring(any(), any())).willReturn(of(
-            Tailoring.builder().signatures(asList(
-                    DocumentSignature.builder()
-                        .faculty("Software")
-                        .signee("Hans Dampf")
-                        .state(DocumentSignatureState.AGREED)
-                        .build()
-                ))
-                .build()
-        ));
+                Tailoring.builder().signatures(asList(
+                        DocumentSignature.builder()
+                                .faculty("Software")
+                                .signee("Hans Dampf")
+                                .state(DocumentSignatureState.AGREED)
+                                .build()))
+                        .build()));
 
         // act
         Optional<Collection<DocumentSignature>> actual = service.getDocumentSignatures("Dummy", "master");
@@ -577,7 +601,8 @@ class TailoringServiceImplTest {
         // arrange
 
         // act
-        Throwable actual = catchThrowable(() -> service.updateDocumentSignature(null, "master", DocumentSignature.builder().build()));
+        Throwable actual = catchThrowable(
+                () -> service.updateDocumentSignature(null, "master", DocumentSignature.builder().build()));
 
         // assert
         assertThat(actual).isInstanceOf(NullPointerException.class);
@@ -599,7 +624,8 @@ class TailoringServiceImplTest {
         // arrange
 
         // act
-        Throwable actual = catchThrowable(() -> service.updateDocumentSignature("Dummy", null, DocumentSignature.builder().build()));
+        Throwable actual = catchThrowable(
+                () -> service.updateDocumentSignature("Dummy", null, DocumentSignature.builder().build()));
 
         // assert
         assertThat(actual).isInstanceOf(NullPointerException.class);
@@ -609,12 +635,13 @@ class TailoringServiceImplTest {
     void updateDocumentSignature_DocumentSignatureNotExists_EmptyReturned() {
         // arrange
         DocumentSignature zeichnung = DocumentSignature.builder()
-            .faculty("Software")
-            .signee("Hans Dampf")
-            .state(DocumentSignatureState.AGREED)
-            .build();
+                .faculty("Software")
+                .signee("Hans Dampf")
+                .state(DocumentSignatureState.AGREED)
+                .build();
 
-        given(repositoryMock.updateDocumentSignature(anyString(), anyString(), any(DocumentSignature.class))).willReturn(empty());
+        given(repositoryMock.updateDocumentSignature(anyString(), anyString(), any(DocumentSignature.class)))
+                .willReturn(empty());
         // act
         Optional<DocumentSignature> actual = service.updateDocumentSignature("Dummy", "master", zeichnung);
 
@@ -627,10 +654,10 @@ class TailoringServiceImplTest {
     void updateDocumentSignature_DocumentSignatureExists_UpdatedDocumentSignatureReturned() {
         // arrange
         DocumentSignature zeichnung = DocumentSignature.builder()
-            .faculty("Software")
-            .signee("Hans Dampf")
-            .state(DocumentSignatureState.AGREED)
-            .build();
+                .faculty("Software")
+                .signee("Hans Dampf")
+                .state(DocumentSignatureState.AGREED)
+                .build();
 
         given(repositoryMock.updateDocumentSignature("Dummy", "master", zeichnung)).willReturn(of(zeichnung));
         // act
@@ -638,8 +665,8 @@ class TailoringServiceImplTest {
 
         // assert
         assertThat(actual)
-            .isNotEmpty()
-            .contains(zeichnung);
+                .isNotEmpty()
+                .contains(zeichnung);
         verify(repositoryMock, times(1)).updateDocumentSignature("Dummy", "master", zeichnung);
     }
 
@@ -658,7 +685,7 @@ class TailoringServiceImplTest {
     void updateName_NewNameAlreadyInUse_NameNotUpdated() {
         // arrange
         given(repositoryMock.getTailoring("DUMMY", "test"))
-            .willReturn(of(Tailoring.builder().build()));
+                .willReturn(of(Tailoring.builder().build()));
 
         // act
         Optional<TailoringInformation> actual = service.updateName("DUMMY", "master", "test");
@@ -672,13 +699,13 @@ class TailoringServiceImplTest {
     void updateName_NewNameNotUsed_NameUpdated() {
         // arrange
         given(repositoryMock.getTailoring("DUMMY", "test"))
-            .willReturn(empty());
+                .willReturn(empty());
 
         Tailoring tailoring = Tailoring.builder().build();
         given(repositoryMock.updateName("DUMMY", "master", "test"))
-            .willReturn(of(tailoring));
+                .willReturn(of(tailoring));
         given(mapperMock.toTailoringInformation(tailoring))
-            .willReturn(TailoringInformation.builder().build());
+                .willReturn(TailoringInformation.builder().build());
 
         // act
         Optional<TailoringInformation> actual = service.updateName("DUMMY", "master", "test");
@@ -712,35 +739,35 @@ class TailoringServiceImplTest {
         }
 
         ScreeningSheet screeningSheet = ScreeningSheet.builder()
-            .data(data)
-            .phases(List.of(E, F))
-            .selectionVector(SelectionVector.builder().build())
-            .build();
+                .data(data)
+                .phases(List.of(E, F))
+                .selectionVector(SelectionVector.builder().build())
+                .build();
 
         SelectionVector anzuwendenderSelectionVector = SelectionVector.builder().build();
 
         Catalog<BaseRequirement> catalog = Catalog.<BaseRequirement>builder()
-            .toc(Chapter.<BaseRequirement>builder()
-                .chapters(asList(
-                    Chapter.<BaseRequirement>builder()
-                        .number("1")
+                .toc(Chapter.<BaseRequirement>builder()
                         .chapters(asList(
-                            Chapter.<BaseRequirement>builder()
-                                .number("1.1")
-                                .build()
-                        ))
-                        .build()
-                ))
-                .build())
-            .build();
+                                Chapter.<BaseRequirement>builder()
+                                        .number("1")
+                                        .chapters(asList(
+                                                Chapter.<BaseRequirement>builder()
+                                                        .number("1.1")
+                                                        .build()))
+                                        .build()))
+                        .build())
+                .build();
 
         List<DocumentSignature> defaultZeichnungen = Collections.emptyList();
         given(repositoryMock.getDefaultSignatures()).willReturn(defaultZeichnungen);
 
-        given(mapperMock.toTailoringCatalog(catalog, screeningSheet, anzuwendenderSelectionVector)).willReturn(Catalog.<TailoringRequirement>builder().build());
+        given(mapperMock.toTailoringCatalog(catalog, screeningSheet, anzuwendenderSelectionVector, empty()))
+                .willReturn(Catalog.<TailoringRequirement>builder().build());
 
         // act
-        Tailoring actual = service.createTailoring("master1", "1000", screeningSheet, anzuwendenderSelectionVector, null, catalog);
+        Tailoring actual = service.createTailoring("master1", "1000", screeningSheet, anzuwendenderSelectionVector,
+                null, catalog, empty());
 
         // assert
         assertThat(actual.getName()).isEqualTo("master1");
@@ -751,7 +778,7 @@ class TailoringServiceImplTest {
         assertThat(actual.getState()).isEqualTo(CREATED);
         assertThat(actual.getPhases()).containsOnly(E, F);
 
-        verify(mapperMock, times(1)).toTailoringCatalog(catalog, screeningSheet, anzuwendenderSelectionVector);
+        verify(mapperMock, times(1)).toTailoringCatalog(catalog, screeningSheet, anzuwendenderSelectionVector, empty());
         verify(repositoryMock, times(1)).getDefaultSignatures();
     }
 
@@ -765,35 +792,35 @@ class TailoringServiceImplTest {
         }
 
         ScreeningSheet screeningSheet = ScreeningSheet.builder()
-            .data(data)
-            .phases(List.of(E, F))
-            .selectionVector(SelectionVector.builder().build())
-            .build();
+                .data(data)
+                .phases(List.of(E, F))
+                .selectionVector(SelectionVector.builder().build())
+                .build();
 
         SelectionVector anzuwendenderSelectionVector = SelectionVector.builder().build();
 
         Catalog<BaseRequirement> catalog = Catalog.<BaseRequirement>builder()
-            .toc(Chapter.<BaseRequirement>builder()
-                .chapters(asList(
-                    Chapter.<BaseRequirement>builder()
-                        .number("1")
+                .toc(Chapter.<BaseRequirement>builder()
                         .chapters(asList(
-                            Chapter.<BaseRequirement>builder()
-                                .number("1.1")
-                                .build()
-                        ))
-                        .build()
-                ))
-                .build())
-            .build();
+                                Chapter.<BaseRequirement>builder()
+                                        .number("1")
+                                        .chapters(asList(
+                                                Chapter.<BaseRequirement>builder()
+                                                        .number("1.1")
+                                                        .build()))
+                                        .build()))
+                        .build())
+                .build();
 
         List<DocumentSignature> defaultZeichnungen = Collections.emptyList();
         given(repositoryMock.getDefaultSignatures()).willReturn(defaultZeichnungen);
 
-        given(mapperMock.toTailoringCatalog(catalog, screeningSheet, anzuwendenderSelectionVector)).willReturn(Catalog.<TailoringRequirement>builder().build());
+        given(mapperMock.toTailoringCatalog(catalog, screeningSheet, anzuwendenderSelectionVector, empty()))
+                .willReturn(Catalog.<TailoringRequirement>builder().build());
 
         // act
-        Tailoring actual = service.createTailoring("master1", "1000", screeningSheet, anzuwendenderSelectionVector, "Hello", catalog);
+        Tailoring actual = service.createTailoring("master1", "1000", screeningSheet, anzuwendenderSelectionVector,
+                "Hello", catalog, empty());
 
         // assert
         assertThat(actual.getName()).isEqualTo("master1");
@@ -804,10 +831,69 @@ class TailoringServiceImplTest {
         assertThat(actual.getState()).isEqualTo(CREATED);
         assertThat(actual.getPhases()).containsOnly(E, F);
 
-        verify(mapperMock, times(1)).toTailoringCatalog(catalog, screeningSheet, anzuwendenderSelectionVector);
+        verify(mapperMock, times(1)).toTailoringCatalog(catalog, screeningSheet, anzuwendenderSelectionVector, empty());
         verify(repositoryMock, times(1)).getDefaultSignatures();
     }
 
+    @Test
+    void createTailoring_ValidDataNoteNotNullMatrixGiven_TailoringCreated() throws IOException {
+        // arrange
+        byte[] data;
+        try (InputStream is = newInputStream(get("src/test/resources/screeningsheet.pdf"))) {
+            assert nonNull(is);
+            data = is.readAllBytes();
+        }
+
+        ScreeningSheet screeningSheet = ScreeningSheet.builder()
+                .data(data)
+                .phases(List.of(E, F))
+                .selectionVector(SelectionVector.builder().build())
+                .build();
+
+        SelectionVector anzuwendenderSelectionVector = SelectionVector.builder().build();
+
+        Catalog<BaseRequirement> catalog = Catalog.<BaseRequirement>builder()
+                .toc(Chapter.<BaseRequirement>builder()
+                        .chapters(asList(
+                                Chapter.<BaseRequirement>builder()
+                                        .number("1")
+                                        .chapters(asList(
+                                                Chapter.<BaseRequirement>builder()
+                                                        .number("1.1")
+                                                        .build()))
+                                        .build()))
+                        .build())
+                .build();
+
+        Optional<byte[]> matrix = Optional.of("dummy content".getBytes());
+        Map<String, Collection<ImportRequirement>> matrixRequirements = Map.of();
+        given(tailoringAnforderungFileReaderMock.apply(matrix.get()))
+                .willReturn(matrixRequirements);
+
+        List<DocumentSignature> defaultZeichnungen = Collections.emptyList();
+        given(repositoryMock.getDefaultSignatures()).willReturn(defaultZeichnungen);
+
+        given(mapperMock.toTailoringCatalog(catalog, screeningSheet, anzuwendenderSelectionVector,
+                Optional.of(matrixRequirements)))
+                .willReturn(Catalog.<TailoringRequirement>builder().build());
+
+        // act
+        Tailoring actual = service.createTailoring("master1", "1000", screeningSheet, anzuwendenderSelectionVector,
+                "Hello", catalog, matrix);
+
+        // assert
+        assertThat(actual.getName()).isEqualTo("master1");
+        assertThat(actual.getScreeningSheet()).isEqualTo(screeningSheet);
+        assertThat(actual.getSelectionVector()).isEqualTo(anzuwendenderSelectionVector);
+        assertThat(actual.getCatalog()).isNotNull();
+        assertThat(actual.getSignatures()).isEqualTo(defaultZeichnungen);
+        assertThat(actual.getState()).isEqualTo(CREATED);
+        assertThat(actual.getPhases()).containsOnly(E, F);
+
+        verify(mapperMock, times(1)).toTailoringCatalog(catalog, screeningSheet, anzuwendenderSelectionVector,
+                of(matrixRequirements));
+        verify(repositoryMock, times(1)).getDefaultSignatures();
+    }
 
     @Test
     void createDocuments_ProjectNull_NullPointerExceptionThrown() {
@@ -850,11 +936,10 @@ class TailoringServiceImplTest {
         given(repositoryMock.getTailoring("DUMMY", "master")).willReturn(of(tailoring));
 
         List<File> dokumente = asList(
-            File.builder()
-                .name("DUMMY-KATALOG.pdf")
-                .data("Testdokument".getBytes(UTF_8))
-                .build()
-        );
+                File.builder()
+                        .name("DUMMY-KATALOG.pdf")
+                        .data("Testdokument".getBytes(UTF_8))
+                        .build());
         given(documentServiceMock.createAll(eq(tailoring), any())).willReturn(dokumente);
 
         // act
@@ -867,8 +952,8 @@ class TailoringServiceImplTest {
 
         Collection<String> zipDateien = fileNameInZip(actual.get().getData());
         assertThat(zipDateien)
-            .hasSize(1)
-            .containsExactly("DUMMY-KATALOG.pdf");
+                .hasSize(1)
+                .containsExactly("DUMMY-KATALOG.pdf");
     }
 
     @Test
@@ -889,7 +974,8 @@ class TailoringServiceImplTest {
         Tailoring tailoring = Tailoring.builder().build();
         given(repositoryMock.getTailoring("DUMMY", "master")).willReturn(of(tailoring));
 
-        given(documentServiceMock.createComparisonDocument(eq(tailoring), any())).willReturn(of(File.builder().build()));
+        given(documentServiceMock.createComparisonDocument(eq(tailoring), any()))
+                .willReturn(of(File.builder().build()));
 
         // act
         Optional<File> actual = service.createComparisonDocument("DUMMY", "master");
@@ -898,7 +984,6 @@ class TailoringServiceImplTest {
         assertThat(actual).isNotEmpty();
         verify(documentServiceMock, times(1)).createComparisonDocument(eq(tailoring), any());
     }
-
 
     @Test
     void updateImportedRequirements_ProjectNull_NullPointerExceptionThrown() {
@@ -963,11 +1048,8 @@ class TailoringServiceImplTest {
 
         given(tailoringAnforderungFileReaderMock.apply(data)).willReturn(Map.ofEntries(
                 new AbstractMap.SimpleEntry<>("1", asList(
-                    ImportRequirement.builder().position("a").applicable("YNO").build(),
-                    ImportRequirement.builder().position("b").applicable("NO").build()
-                ))
-            )
-        );
+                        ImportRequirement.builder().position("a").applicable("YNO").build(),
+                        ImportRequirement.builder().position("b").applicable("NO").build()))));
 
         // act
         service.updateImportedRequirements(project, tailoring, data);
@@ -986,11 +1068,8 @@ class TailoringServiceImplTest {
 
         given(tailoringAnforderungFileReaderMock.apply(data)).willReturn(Map.ofEntries(
                 new AbstractMap.SimpleEntry<>("1", asList(
-                    ImportRequirement.builder().position("a").applicable("YES").build(),
-                    ImportRequirement.builder().position("b").applicable("NO").build()
-                ))
-            )
-        );
+                        ImportRequirement.builder().position("a").applicable("YES").build(),
+                        ImportRequirement.builder().position("b").applicable("NO").build()))));
 
         // act
         service.updateImportedRequirements(project, tailoring, data);
@@ -999,7 +1078,6 @@ class TailoringServiceImplTest {
         verify(requirementServiceMock, times(1)).handleSelected("DUMMY", "master", "1", "a", true);
         verify(requirementServiceMock, times(1)).handleSelected("DUMMY", "master", "1", "b", false);
     }
-
 
     @Test
     void updateImportedRequirements_RequirementsValidStateAndTextChanges_AllRequirementsProcesed() {
@@ -1010,11 +1088,9 @@ class TailoringServiceImplTest {
 
         given(tailoringAnforderungFileReaderMock.apply(data)).willReturn(Map.ofEntries(
                 new AbstractMap.SimpleEntry<>("1", asList(
-                    ImportRequirement.builder().position("a").applicable("YES").text("Dies ist der neue Text").build(),
-                    ImportRequirement.builder().position("b").applicable("NO").build()
-                ))
-            )
-        );
+                        ImportRequirement.builder().position("a").applicable("YES").text("Dies ist der neue Text")
+                                .build(),
+                        ImportRequirement.builder().position("b").applicable("NO").build()))));
 
         // act
         service.updateImportedRequirements(project, tailoring, data);
@@ -1034,11 +1110,8 @@ class TailoringServiceImplTest {
 
         given(tailoringAnforderungFileReaderMock.apply(data)).willReturn(Map.ofEntries(
                 new AbstractMap.SimpleEntry<>("1", asList(
-                    ImportRequirement.builder().position("a").applicable("JA").text("").build(),
-                    ImportRequirement.builder().position("b").applicable("NEIN").build()
-                ))
-            )
-        );
+                        ImportRequirement.builder().position("a").applicable("JA").text("").build(),
+                        ImportRequirement.builder().position("b").applicable("NEIN").build()))));
 
         // act
         service.updateImportedRequirements(project, tailoring, data);
@@ -1047,7 +1120,6 @@ class TailoringServiceImplTest {
         verify(requirementServiceMock, times(0)).handleText(eq("DUMMY"), eq("master"), eq("1"), any(), any());
 
     }
-
 
     @Test
     void deleteTailoring_ProjectNull_NullPointerExceptionThrown() {
@@ -1099,11 +1171,11 @@ class TailoringServiceImplTest {
         String tailoring = "master";
 
         given(repositoryMock.getTailoring(project, tailoring))
-            .willReturn(of(Tailoring.builder().build()));
+                .willReturn(of(Tailoring.builder().build()));
         given(tailoringDeletableMock.test(project, tailoring))
-            .willReturn(true);
+                .willReturn(true);
         given(repositoryMock.deleteTailoring(project, tailoring))
-            .willReturn(TRUE);
+                .willReturn(TRUE);
 
         // act
         Optional<Boolean> actual = service.deleteTailoring(project, tailoring);
@@ -1123,9 +1195,9 @@ class TailoringServiceImplTest {
         String tailoring = "master";
 
         given(repositoryMock.getTailoring(project, tailoring))
-            .willReturn(of(Tailoring.builder().build()));
+                .willReturn(of(Tailoring.builder().build()));
         given(tailoringDeletableMock.test(project, tailoring))
-            .willReturn(false);
+                .willReturn(false);
 
         // act
         Optional<Boolean> actual = service.deleteTailoring(project, tailoring);
@@ -1145,7 +1217,7 @@ class TailoringServiceImplTest {
         String tailoring = "master";
 
         given(repositoryMock.getTailoring(project, tailoring))
-            .willReturn(of(Tailoring.builder().state(AGREED).build()));
+                .willReturn(of(Tailoring.builder().state(AGREED).build()));
         given(repositoryMock.deleteTailoring(project, tailoring)).willReturn(TRUE);
 
         // act
@@ -1157,7 +1229,6 @@ class TailoringServiceImplTest {
         verify(repositoryMock, times(1)).getTailoring(project, tailoring);
         verify(repositoryMock, times(0)).deleteTailoring(project, tailoring);
     }
-
 
     Collection<String> fileNameInZip(byte[] zip) throws IOException {
         Collection<String> result = new ArrayList<>();
@@ -1188,8 +1259,7 @@ class TailoringServiceImplTest {
     void getNote_TailoringNoteNotExists_EmptyReturned() {
         // arrange
         given(repositoryMock.getTailoring(any(), any())).willReturn(of(
-            Tailoring.builder().notes(List.of(Note.builder().number(1).text("demo").build())).build()
-        ));
+                Tailoring.builder().notes(List.of(Note.builder().number(1).text("demo").build())).build()));
 
         // act
         Optional<Note> actual = service.getNote("Dummy", "master", 2);
@@ -1203,8 +1273,7 @@ class TailoringServiceImplTest {
     void getNote_TailoringWithNote_NoteReturned() {
         // arrange
         given(repositoryMock.getTailoring(any(), any())).willReturn(of(
-            Tailoring.builder().notes(List.of(Note.builder().number(1).text("demo").build())).build()
-        ));
+                Tailoring.builder().notes(List.of(Note.builder().number(1).text("demo").build())).build()));
 
         // act
         Optional<Note> actual = service.getNote("Dummy", "master", 1);
@@ -1254,11 +1323,10 @@ class TailoringServiceImplTest {
 
         ArgumentCaptor<Note> noteCaptor = forClass(Note.class);
         given(repositoryMock.addNote(eq("Dummy"), eq("master"), noteCaptor.capture()))
-            .willAnswer(invocation -> {
+                .willAnswer(invocation -> {
                     tailoring.getNotes().add(noteCaptor.getValue());
                     return of(tailoring);
-                }
-            );
+                });
 
         given(mapperMock.toTailoringInformation(any())).willReturn(TailoringInformation.builder().build());
 
@@ -1348,8 +1416,8 @@ class TailoringServiceImplTest {
 
         // assert
         assertThat(actual)
-            .isPresent()
-            .contains(tailoringInformation);
+                .isPresent()
+                .contains(tailoringInformation);
 
         verify(repositoryMock, times(1)).getTailoring("SAMPLE", "master");
         verify(repositoryMock, times(0)).setState(any(), any(), any());
@@ -1358,7 +1426,8 @@ class TailoringServiceImplTest {
     @Test
     void updateState_RespositorySetStateError_EmptyReturned() {
         // arrange
-        given(repositoryMock.getTailoring("SAMPLE", "master")).willReturn(of(Tailoring.builder().state(CREATED).build()));
+        given(repositoryMock.getTailoring("SAMPLE", "master"))
+                .willReturn(of(Tailoring.builder().state(CREATED).build()));
         given(repositoryMock.setState("SAMPLE", "master", AGREED)).willReturn(empty());
 
         // act
@@ -1375,11 +1444,11 @@ class TailoringServiceImplTest {
     void updateState_StateChanged_UpdatedTailoringReturned() {
         // arrange
         given(repositoryMock.getTailoring("SAMPLE", "master"))
-            .willReturn(of(Tailoring.builder().state(CREATED).build()));
+                .willReturn(of(Tailoring.builder().state(CREATED).build()));
 
         Tailoring tailoring = Tailoring.builder().state(AGREED).build();
         given(repositoryMock.setState("SAMPLE", "master", AGREED))
-            .willReturn(of(tailoring));
+                .willReturn(of(tailoring));
 
         TailoringInformation tailoringInformation = TailoringInformation.builder().build();
         given(mapperMock.toTailoringInformation(tailoring)).willReturn(tailoringInformation);
@@ -1389,8 +1458,8 @@ class TailoringServiceImplTest {
 
         // assert
         assertThat(actual)
-            .isPresent()
-            .contains(tailoringInformation);
+                .isPresent()
+                .contains(tailoringInformation);
 
         verify(repositoryMock, times(1)).getTailoring("SAMPLE", "master");
         verify(repositoryMock, times(1)).setState(any(), any(), any());
@@ -1405,7 +1474,7 @@ class TailoringServiceImplTest {
 
         // assert
         assertThat(actual)
-            .isInstanceOf(NullPointerException.class);
+                .isInstanceOf(NullPointerException.class);
     }
 
     @Test
@@ -1417,7 +1486,7 @@ class TailoringServiceImplTest {
 
         // assert
         assertThat(actual)
-            .isInstanceOf(NullPointerException.class);
+                .isInstanceOf(NullPointerException.class);
     }
 
     @Test
@@ -1438,7 +1507,7 @@ class TailoringServiceImplTest {
                 .version("8.2.1")
                 .toc(Chapter.<TailoringRequirement>builder().chapters(List.of()).build())
                 .build())
-            .build();
+                .build();
         given(repositoryMock.getTailoring("demo", "master")).willReturn(of(tailoring));
 
         given(fqnBaseRequirementsProviderMock.apply("8.2.1")).willReturn(Map.of());
@@ -1454,63 +1523,123 @@ class TailoringServiceImplTest {
     void unselectRequirementsAccordingToPhases_BaseCatalogExist_() {
         // arrange
         Tailoring tailoring = Tailoring.builder()
-            .phases(List.of(B, C))
-            .catalog(Catalog.<TailoringRequirement>builder()
-                .version("8.2.1")
-                .toc(Chapter.<TailoringRequirement>builder()
-                    .chapters(asList(
-                        Chapter.<TailoringRequirement>builder()
-                            .number("1")
-                            .name("Chapter 1")
-                            .chapters(asList(
-                                    Chapter.<TailoringRequirement>builder()
-                                        .number("1.1")
-                                        .name("Chapter 1.1")
-                                        .requirements(asList(
-                                            TailoringRequirement.builder()
-                                                .selected(true)
-                                                .position("a")
-                                                .text("Requirement 1.1.a")
+                .phases(List.of(B, C))
+                .catalog(Catalog.<TailoringRequirement>builder()
+                        .version("8.2.1")
+                        .toc(Chapter.<TailoringRequirement>builder()
+                                .chapters(asList(
+                                        Chapter.<TailoringRequirement>builder()
+                                                .number("1")
+                                                .name("Chapter 1")
+                                                .chapters(asList(
+                                                        Chapter.<TailoringRequirement>builder()
+                                                                .number("1.1")
+                                                                .name("Chapter 1.1")
+                                                                .requirements(asList(
+                                                                        TailoringRequirement.builder()
+                                                                                .selected(true)
+                                                                                .position("a")
+                                                                                .text("Requirement 1.1.a")
+                                                                                .build(),
+                                                                        TailoringRequirement.builder()
+                                                                                .selected(true)
+                                                                                .position("b")
+                                                                                .text("Requirement 1.1.b")
+                                                                                .build()))
+                                                                .build()))
                                                 .build(),
-                                            TailoringRequirement.builder()
-                                                .selected(true)
-                                                .position("b")
-                                                .text("Requirement 1.1.b")
-                                                .build()
-                                        ))
-                                        .build()
-                                )
-                            )
-                            .build(),
-                        Chapter.<TailoringRequirement>builder()
-                            .number("2")
-                            .name("Chapter2")
-                            .requirements(asList(
-                                TailoringRequirement.builder()
-                                    .selected(true)
-                                    .position("a")
-                                    .text("Requirement 2.a")
-                                    .build(),
-                                TailoringRequirement.builder()
-                                    .selected(true)
-                                    .position("b")
-                                    .text("Requirement 2.b")
-                                    .build()
-                            ))
-                            .build()
-                    ))
-                    .build())
-                .build()
-            )
-            .build();
+                                        Chapter.<TailoringRequirement>builder()
+                                                .number("2")
+                                                .name("Chapter2")
+                                                .requirements(asList(
+                                                        TailoringRequirement.builder()
+                                                                .selected(true)
+                                                                .position("a")
+                                                                .text("Requirement 2.a")
+                                                                .build(),
+                                                        TailoringRequirement.builder()
+                                                                .selected(true)
+                                                                .position("b")
+                                                                .text("Requirement 2.b")
+                                                                .build()))
+                                                .build()))
+                                .build())
+                        .build())
+                .build();
         given(repositoryMock.getTailoring("demo", "master")).willReturn(of(tailoring));
 
         Map<String, BaseRequirement> fqn2BaseRequirement = Map.ofEntries(
-            entry("1.1.a", BaseRequirement.builder().phases(asList(ZERO, A)).build()),
-            entry("1.1.b", BaseRequirement.builder().phases(asList(C, D)).build()),
-            entry("2.a", BaseRequirement.builder().phases(asList(E, F)).build()),
-            entry("2.b", BaseRequirement.builder().phases(asList(B)).build())
-        );
+                entry("1.1.a", BaseRequirement.builder().phases(asList(ZERO, A)).build()),
+                entry("1.1.b", BaseRequirement.builder().phases(asList(C, D)).build()),
+                entry("2.a", BaseRequirement.builder().phases(asList(E, F)).build()),
+                entry("2.b", BaseRequirement.builder().phases(asList(B)).build()));
+        given(fqnBaseRequirementsProviderMock.apply("8.2.1")).willReturn(fqn2BaseRequirement);
+
+        // act
+        service.unselectRequirementsAccordingToPhases("demo", "master");
+
+        // assert
+        verify(repositoryMock, times(1)).getTailoring("demo", "master");
+        verify(requirementServiceMock, times(1)).handleSelected("demo", "master", "1.1", "a", false);
+        verify(requirementServiceMock, times(1)).handleSelected("demo", "master", "2", "a", false);
+        verify(requirementServiceMock, times(0)).handleSelected("demo", "master", "2", "b", true);
+        verify(requirementServiceMock, times(0)).handleSelected("demo", "master", "1.1", "b", true);
+    }
+
+    @Test
+    void unselectRequirementsAccordingToPhasesMixed_BaseCatalogExist_() {
+        // arrange
+        Tailoring tailoring = Tailoring.builder()
+                .phases(List.of(B, C))
+                .catalog(Catalog.<TailoringRequirement>builder()
+                        .version("8.2.1")
+                        .toc(Chapter.<TailoringRequirement>builder()
+                                .chapters(asList(
+                                        Chapter.<TailoringRequirement>builder()
+                                                .number("1")
+                                                .name("Chapter 1")
+                                                .chapters(asList(
+                                                        Chapter.<TailoringRequirement>builder()
+                                                                .number("1.1")
+                                                                .name("Chapter 1.1")
+                                                                .requirements(asList(
+                                                                        TailoringRequirement.builder()
+                                                                                .selected(true)
+                                                                                .position("a")
+                                                                                .text("Requirement 1.1.a")
+                                                                                .build(),
+                                                                        TailoringRequirement.builder()
+                                                                                .selected(true)
+                                                                                .position("b")
+                                                                                .text("Requirement 1.1.b")
+                                                                                .build()))
+                                                                .build()))
+                                                .build(),
+                                        Chapter.<TailoringRequirement>builder()
+                                                .number("2")
+                                                .name("Chapter2")
+                                                .requirements(asList(
+                                                        TailoringRequirement.builder()
+                                                                .selected(true)
+                                                                .position("a")
+                                                                .text("Requirement 2.a")
+                                                                .build(),
+                                                        TailoringRequirement.builder()
+                                                                .selected(false)
+                                                                .position("b")
+                                                                .text("Requirement 2.b")
+                                                                .build()))
+                                                .build()))
+                                .build())
+                        .build())
+                .build();
+        given(repositoryMock.getTailoring("demo", "master")).willReturn(of(tailoring));
+
+        Map<String, BaseRequirement> fqn2BaseRequirement = Map.ofEntries(
+                entry("1.1.a", BaseRequirement.builder().phases(asList(ZERO, A)).build()),
+                entry("1.1.b", BaseRequirement.builder().phases(asList(C, D)).build()),
+                entry("2.a", BaseRequirement.builder().phases(asList(E, F)).build()),
+                entry("2.b", BaseRequirement.builder().phases(asList(B)).build()));
         given(fqnBaseRequirementsProviderMock.apply("8.2.1")).willReturn(fqn2BaseRequirement);
 
         // act
