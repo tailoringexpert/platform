@@ -21,6 +21,15 @@
  */
 package eu.tailoringexpert.project;
 
+import static eu.tailoringexpert.domain.ProjectState.ONGOING;
+import static java.lang.Integer.parseInt;
+import static java.util.Comparator.comparingInt;
+import static java.util.Objects.isNull;
+import static java.util.Optional.empty;
+import static java.util.Optional.of;
+
+import java.util.Optional;
+
 import eu.tailoringexpert.TailoringexpertException;
 import eu.tailoringexpert.domain.BaseRequirement;
 import eu.tailoringexpert.domain.Catalog;
@@ -35,15 +44,6 @@ import eu.tailoringexpert.tailoring.TailoringService;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
-
-import java.util.Optional;
-
-import static eu.tailoringexpert.domain.ProjectState.ONGOING;
-import static java.lang.Integer.parseInt;
-import static java.util.Comparator.comparingInt;
-import static java.util.Objects.isNull;
-import static java.util.Optional.empty;
-import static java.util.Optional.of;
 
 /**
  * Implementation of {@link ProjectService}.
@@ -67,31 +67,34 @@ public class ProjectServiceImpl implements ProjectService {
      * {@inheritDoc}
      */
     @Override
-    public CreateProjectTO createProject(String catalogVersion, byte[] screeningSheetData, SelectionVector applicableSelectionVector, String note) {
+    public CreateProjectTO createProject(String catalogVersion, byte[] screeningSheetData,
+            SelectionVector applicableSelectionVector, String note, Optional<byte[]> matrixFileRawData) {
         log.traceEntry(() -> catalogVersion);
 
         ScreeningSheet screeningSheet = screeningSheetService.createScreeningSheet(screeningSheetData);
         String identifier = screeningSheet.getProject();
         if (repository.isExistingProject(identifier)) {
-            throw new TailoringexpertException("A project with name " + identifier + " already exists!\nEither change project identifier or add new tailoring to exitsing project " + identifier);
+            throw new TailoringexpertException("A project with name " + identifier
+                    + " already exists!\nEither change project identifier or add new tailoring to exitsing project "
+                    + identifier);
         }
 
         Catalog<BaseRequirement> catalog = repository.getBaseCatalog(catalogVersion);
-        Tailoring tailoring = tailoringService.createTailoring("master", "1000", screeningSheet, applicableSelectionVector, note, catalog);
+        Tailoring tailoring = tailoringService.createTailoring("master", "1000", screeningSheet,
+                applicableSelectionVector, note, catalog, matrixFileRawData);
 
         Project project = repository.createProject(Project.builder()
-            .screeningSheet(screeningSheet)
-            .identifier(identifier)
-            .tailoring(tailoring)
-            .state(ONGOING)
-            .build()
-        );
+                .screeningSheet(screeningSheet)
+                .identifier(identifier)
+                .tailoring(tailoring)
+                .state(ONGOING)
+                .build());
 
         return log.traceExit(CreateProjectTO.builder()
-            .project(project.getIdentifier())
-            .tailoring(tailoring.getName())
-            .selectionVector(applicableSelectionVector)
-            .build());
+                .project(project.getIdentifier())
+                .tailoring(tailoring.getName())
+                .selectionVector(applicableSelectionVector)
+                .build());
     }
 
     /**
@@ -127,7 +130,8 @@ public class ProjectServiceImpl implements ProjectService {
      * {@inheritDoc}
      */
     @Override
-    public Optional<Tailoring> addTailoring(String project, String catalog, byte[] screeningSheetData, SelectionVector applicableSelectionVector, String note) {
+    public Optional<Tailoring> addTailoring(String project, String catalog, byte[] screeningSheetData,
+            SelectionVector applicableSelectionVector, String note, Optional<byte[]> matrixFileRawData) {
         log.traceEntry(() -> project, () -> catalog);
 
         Optional<Project> oProject = repository.getProject(project);
@@ -158,20 +162,20 @@ public class ProjectServiceImpl implements ProjectService {
         }
 
         Optional<String> identifier = oProject.get()
-            .getTailorings()
-            .stream()
-            .map(p -> parseInt(p.getIdentifier()))
-            .max(comparingInt(Integer::intValue))
-            .map(max -> String.valueOf(max + 1));
+                .getTailorings()
+                .stream()
+                .map(p -> parseInt(p.getIdentifier()))
+                .max(comparingInt(Integer::intValue))
+                .map(max -> String.valueOf(max + 1));
 
         Tailoring tailoring = tailoringService.createTailoring(
-            tailoringName.toString(),
-            identifier.orElse("1000"),
-            screeningSheet,
-            applicableSelectionVector,
-            note,
-            baseCatalog
-        );
+                tailoringName.toString(),
+                identifier.orElse("1000"),
+                screeningSheet,
+                applicableSelectionVector,
+                note,
+                baseCatalog,
+                matrixFileRawData);
 
         Optional<Tailoring> result = repository.addTailoring(project, tailoring);
         log.traceExit(result.isPresent());
@@ -201,7 +205,8 @@ public class ProjectServiceImpl implements ProjectService {
         if (repository.isExistingProject(screeningSheet.getProject())) {
             log.error("Exception while copying project because a project with same name already exists");
             log.traceExit();
-            throw new TailoringexpertException("A project with name " + project + " already exists!\nEither change project identifier or add new tailoring to existing project.");
+            throw new TailoringexpertException("A project with name " + project
+                    + " already exists!\nEither change project identifier or add new tailoring to existing project.");
         }
 
         Project projectCopy = projectToCopy.get();
@@ -209,10 +214,10 @@ public class ProjectServiceImpl implements ProjectService {
         projectCopy.setIdentifier(screeningSheet.getProject());
 
         projectCopy.getTailorings()
-            .forEach(tailorings -> {
-                log.debug("Copying tailoring {}", tailorings.getName());
-                tailorings.setScreeningSheet(screeningSheet);
-            });
+                .forEach(tailorings -> {
+                    log.debug("Copying tailoring {}", tailorings.getName());
+                    tailorings.setScreeningSheet(screeningSheet);
+                });
 
         Optional<Project> result = of(repository.createProject(projectCopy));
         log.traceExit(result.isPresent());

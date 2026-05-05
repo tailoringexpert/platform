@@ -21,22 +21,22 @@
  */
 package eu.tailoringexpert.tailoring;
 
+import java.util.Collection;
+import java.util.List;
+import java.util.Optional;
+
 import eu.tailoringexpert.domain.BaseRequirement;
 import eu.tailoringexpert.domain.Catalog;
-import eu.tailoringexpert.domain.File;
-import eu.tailoringexpert.domain.DocumentSignature;
 import eu.tailoringexpert.domain.Chapter;
+import eu.tailoringexpert.domain.DocumentSignature;
+import eu.tailoringexpert.domain.File;
 import eu.tailoringexpert.domain.Note;
 import eu.tailoringexpert.domain.ScreeningSheet;
 import eu.tailoringexpert.domain.SelectionVector;
 import eu.tailoringexpert.domain.Tailoring;
-import eu.tailoringexpert.domain.TailoringRequirement;
 import eu.tailoringexpert.domain.TailoringInformation;
+import eu.tailoringexpert.domain.TailoringRequirement;
 import eu.tailoringexpert.domain.TailoringState;
-
-import java.util.Collection;
-import java.util.List;
-import java.util.Optional;
 
 /**
  * Interface for working on/with tailorings.
@@ -46,18 +46,25 @@ import java.util.Optional;
 public interface TailoringService {
 
     /**
-     * Create a new tailoring.<p>
+     * Create a new tailoring.
+     * <p>
      * A tailoring con consist of multiple phases.
      *
      * @param name                      Tailoring name
      * @param identifier                DocID identifier
      * @param screeningSheet            screeningsheet of tailoring
-     * @param applicableSelectionVector selection vector to use of selecting requirements
+     * @param applicableSelectionVector selection vector to use of selecting
+     *                                  requirements
      * @param note                      note to add to tailoring
-     * @param catalog                   Base catalog to use for creating the tailoring
+     * @param catalog                   Base catalog to use for creating the
+     *                                  tailoring
+     * @param matrixFileRawData         raw data of file contaiing requirement
+     *                                  states to import
      * @return Create tailoring
      */
-    Tailoring createTailoring(String name, String identifier, ScreeningSheet screeningSheet, SelectionVector applicableSelectionVector, String note, Catalog<BaseRequirement> catalog);
+    Tailoring createTailoring(String name, String identifier, ScreeningSheet screeningSheet,
+            SelectionVector applicableSelectionVector, String note, Catalog<BaseRequirement> catalog,
+            Optional<byte[]> matrixFileRawData);
 
     /**
      * Create a requirements document of tailoring.
@@ -78,7 +85,8 @@ public interface TailoringService {
     Optional<File> createComparisonDocument(String project, String tailoring);
 
     /**
-     * Create all documents of tialoring.<p>
+     * Create all documents of tialoring.
+     * <p>
      * Documents will be provided in {@code Zip-File}.
      *
      * @param project   Project identifier
@@ -168,7 +176,8 @@ public interface TailoringService {
      *
      * @param project   project identifier
      * @param tailoring tailoring, to import requirements to
-     * @param data      Excel ByteArray containing entries of Chapter, Position und State
+     * @param data      Excel ByteArray containing entries of Chapter, Position und
+     *                  State
      */
     void updateImportedRequirements(String project, String tailoring, byte[] data);
 
@@ -224,7 +233,8 @@ public interface TailoringService {
      * Unselect requirements not related to phases of tailoring.
      *
      * @param project   Project of tailoring
-     * @param tailoring tailoring to unselect requirements if requirement is not applicable for tailoring phases
+     * @param tailoring tailoring to unselect requirements if requirement is not
+     *                  applicable for tailoring phases
      * @return true, if requirements were processed
      */
     Optional<Boolean> unselectRequirementsAccordingToPhases(String project, String tailoring);

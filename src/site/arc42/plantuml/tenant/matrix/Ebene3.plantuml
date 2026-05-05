@@ -1,0 +1,35 @@
+@startuml Ebene3.png
+hide empty members
+
+package eu.tailoringexpert {
+    package domain {
+        class File
+    }
+}
+
+package matrix {
+    interface MatrixService {
+        list() : Collection<MatrixFile> 
+        get(name: String) : Optional<File>
+        save(file : MatrixFile) : MatrixFileMeta
+        delete(name: String) : boolean
+    }
+
+    interface "Function<String, Optional<File>>>" as matrixDownload {
+    }
+
+    class TenantMatrixDownloadProvider {
+        baseDir : String
+    }
+    TenantMatrixDownloadProvider ..|> matrixDownload
+
+    class TenantMatrixService {
+        basedir : String
+        md : MessageDigest
+        objectMapper : ObjectMapper
+    }
+    TenantMatrixService ..|> MatrixService
+    TenantMatrixService --> "1" matrixDownload : download
+
+}
+@enduml

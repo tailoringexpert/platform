@@ -34,5 +34,6 @@ public class ProjectCreationRequest {
     ScreeningSheet screeningSheet;
     SelectionVector selectionVector;
     String note;
+    byte[] matrix;
 
 }
