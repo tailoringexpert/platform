@@ -21,20 +21,17 @@
  */
 package eu.tailoringexpert.catalog;
 
-import eu.tailoringexpert.domain.BaseRequirement;
-import eu.tailoringexpert.domain.Catalog;
-import eu.tailoringexpert.domain.Chapter;
-import eu.tailoringexpert.domain.DRD;
-import eu.tailoringexpert.domain.DRDElement;
-import eu.tailoringexpert.domain.Document;
-import eu.tailoringexpert.domain.File;
-import eu.tailoringexpert.domain.Identifier;
-import eu.tailoringexpert.domain.Phase;
-import eu.tailoringexpert.renderer.PDFEngine;
-import eu.tailoringexpert.renderer.HTMLTemplateEngine;
-import lombok.NonNull;
-import lombok.RequiredArgsConstructor;
-import lombok.extern.log4j.Log4j2;
+import static eu.tailoringexpert.domain.Phase.A;
+import static eu.tailoringexpert.domain.Phase.B;
+import static eu.tailoringexpert.domain.Phase.C;
+import static eu.tailoringexpert.domain.Phase.D;
+import static eu.tailoringexpert.domain.Phase.E;
+import static eu.tailoringexpert.domain.Phase.F;
+import static eu.tailoringexpert.domain.Phase.ZERO;
+import static java.util.Collections.emptyMap;
+import static java.util.List.of;
+import static java.util.Objects.nonNull;
+import static java.util.stream.Collectors.toCollection;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -49,18 +46,22 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.BiFunction;
 import java.util.function.Function;
 
-import static eu.tailoringexpert.domain.Phase.A;
-import static eu.tailoringexpert.domain.Phase.B;
-import static eu.tailoringexpert.domain.Phase.C;
-import static eu.tailoringexpert.domain.Phase.D;
-import static eu.tailoringexpert.domain.Phase.E;
-import static eu.tailoringexpert.domain.Phase.F;
-import static eu.tailoringexpert.domain.Phase.ZERO;
-import static java.lang.String.format;
-import static java.util.Collections.emptyMap;
-import static java.util.List.of;
-import static java.util.Objects.nonNull;
-import static java.util.stream.Collectors.toCollection;
+import eu.tailoringexpert.domain.BaseCatalogElement;
+import eu.tailoringexpert.domain.BaseCatalogElement.BaseCatalogElementBuilder;
+import eu.tailoringexpert.domain.BaseRequirement;
+import eu.tailoringexpert.domain.Catalog;
+import eu.tailoringexpert.domain.Chapter;
+import eu.tailoringexpert.domain.DRD;
+import eu.tailoringexpert.domain.DRDElement;
+import eu.tailoringexpert.domain.Document;
+import eu.tailoringexpert.domain.File;
+import eu.tailoringexpert.domain.Identifier;
+import eu.tailoringexpert.domain.Phase;
+import eu.tailoringexpert.renderer.HTMLTemplateEngine;
+import eu.tailoringexpert.renderer.PDFEngine;
+import lombok.NonNull;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.log4j.Log4j2;
 
 /**
  * Create a base catalog PDF file.
@@ -90,8 +91,8 @@ public class BaseCatalogPDFDocumentCreator implements DocumentCreator {
      */
     @Override
     public File createDocument(@NonNull String docId,
-                               @NonNull Catalog<BaseRequirement> catalog,
-                               @NonNull Map<String, Object> placeholders) {
+            @NonNull Catalog<BaseRequirement> catalog,
+            @NonNull Map<String, Object> placeholders) {
         log.traceEntry(() -> docId, catalog::getVersion, () -> placeholders);
 
         try {
@@ -113,10 +114,10 @@ public class BaseCatalogPDFDocumentCreator implements DocumentCreator {
             parameter.put("phases", phases);
 
             catalog.getToc().getChapters()
-                .forEach(chapter -> {
-                    bookmarks.put(chapter.getNumber(), chapter.getName());
-                    addChapter(chapter, 1, requirements);
-                });
+                    .forEach(chapter -> {
+                        bookmarks.put(chapter.getNumber(), chapter.getName());
+                        addChapter(chapter, 1, requirements);
+                    });
             addDRD(catalog.getToc(), drds, phases);
 
             String html = templateEngine.process(catalog.getVersion() + "/basecatalog", parameter);
@@ -131,7 +132,6 @@ public class BaseCatalogPDFDocumentCreator implements DocumentCreator {
         return null;
     }
 
-
     /**
      * Add chapter and all requirement to rows object.
      * All subchapter will be evaluated as well.
@@ -142,15 +142,15 @@ public class BaseCatalogPDFDocumentCreator implements DocumentCreator {
      */
     void addChapter(Chapter<BaseRequirement> chapter, int level, Collection<BaseCatalogElement> rows) {
         rows.add(BaseCatalogElement.builder()
-            .text(templateEngine.toXHTML(chapter.getNumber() + " " + chapter.getName(), emptyMap()))
-            .chapter(chapter.getNumber())
+                .text(templateEngine.toXHTML(chapter.getNumber() + " " + chapter.getName(), emptyMap()))
+                .chapter(chapter.getNumber())
                 .level(level)
-            .build());
+                .build());
         chapter.getRequirements()
-            .forEach(requirement -> addRequirement(requirement, rows));
+                .forEach(requirement -> addRequirement(requirement, rows));
         final AtomicInteger nextLevel = new AtomicInteger(level + 1);
         chapter.getChapters()
-            .forEach(subChapter -> addChapter(subChapter, nextLevel.get(), rows));
+                .forEach(subChapter -> addChapter(subChapter, nextLevel.get(), rows));
     }
 
     /**
@@ -166,9 +166,9 @@ public class BaseCatalogPDFDocumentCreator implements DocumentCreator {
                 result.add(identifier.getType() + identifier.getLevel());
             } else {
                 identifier.getLimitations()
-                    .stream()
-                    .map(limitation -> identifier.getType() + identifier.getLevel() + "(" + limitation + ")")
-                    .forEachOrdered(result::add);
+                        .stream()
+                        .map(limitation -> identifier.getType() + identifier.getLevel() + "(" + limitation + ")")
+                        .forEachOrdered(result::add);
             }
         }
         return result;
@@ -181,10 +181,11 @@ public class BaseCatalogPDFDocumentCreator implements DocumentCreator {
      * @param rows        collection to add to
      */
     void addRequirement(BaseRequirement requirement, Collection<BaseCatalogElement> rows) {
-        BaseCatalogElement.BaseCatalogElementBuilder builder = BaseCatalogElement.builder();
+        BaseCatalogElementBuilder<?, ?> builder = BaseCatalogElement.builder();
 
         if (nonNull(requirement.getReference())) {
-            builder.reference(templateEngine.toXHTML(requirement.getReference().getText() + (requirement.getReference().getChanged().booleanValue() ? "(mod)" : ""), emptyMap()));
+            builder.reference(templateEngine.toXHTML(requirement.getReference().getText()
+                    + (requirement.getReference().getChanged().booleanValue() ? "(mod)" : ""), emptyMap()));
             if (nonNull(requirement.getReference().getLogo())) {
                 builder.logo(requirement.getReference().getLogo().getUrl());
             }
@@ -193,30 +194,31 @@ public class BaseCatalogPDFDocumentCreator implements DocumentCreator {
         List<String> identifiers = new ArrayList<>();
         if (!requirement.getIdentifiers().isEmpty()) {
             requirement.getIdentifiers()
-                .stream()
-                .forEach(identifier -> identifiers.addAll(buildLimitations(identifier)));
+                    .stream()
+                    .forEach(identifier -> identifiers.addAll(buildLimitations(identifier)));
         }
 
         Collection<String> phases = new ArrayList<>();
         if (nonNull(requirement.getPhases())) {
             requirement.getPhases()
-                .stream()
-                .sorted(Comparator.comparing(Phase::ordinal))
-                .map(Phase::getValue)
-                .collect(toCollection(() -> phases));
+                    .stream()
+                    .sorted(Comparator.comparing(Phase::ordinal))
+                    .map(Phase::getValue)
+                    .collect(toCollection(() -> phases));
         }
 
         rows.add(builder
-            .phases(phases)
-            .identifiers(identifiers)
-            .position(templateEngine.toXHTML(requirement.getPosition(), emptyMap()))
-            .text(templateEngine.toXHTML(requirement.getText(), emptyMap()))
-            .chapter(null)
-            .build());
+                .phases(phases)
+                .identifiers(identifiers)
+                .position(templateEngine.toXHTML(requirement.getPosition(), emptyMap()))
+                .text(templateEngine.toXHTML(requirement.getText(), emptyMap()))
+                .chapter(null)
+                .build());
     }
 
     /**
-     * Evaluate all applicable DRD in chapter for given phases and add them to row object.
+     * Evaluate all applicable DRD in chapter for given phases and add them to row
+     * object.
      *
      * @param chapter chapter to retrieve requirements DRDs of
      * @param rows    object to add DRDs to
@@ -224,14 +226,14 @@ public class BaseCatalogPDFDocumentCreator implements DocumentCreator {
      */
     void addDRD(Chapter<BaseRequirement> chapter, Collection<DRDElement> rows, Collection<Phase> phases) {
         drdProvider.apply(chapter, phases)
-            .entrySet()
-            .forEach(entry -> rows.add(DRDElement.builder()
-                .title(entry.getKey().getTitle())
-                .deliveryDate(entry.getKey().getDeliveryDate())
-                .requirements(entry.getValue())
-                .number(entry.getKey().getNumber())
-                .action(entry.getKey().getAction())
-                .subtitle(entry.getKey().getSubtitle())
-                .build()));
+                .entrySet()
+                .forEach(entry -> rows.add(DRDElement.builder()
+                        .title(entry.getKey().getTitle())
+                        .deliveryDate(entry.getKey().getDeliveryDate())
+                        .requirements(entry.getValue())
+                        .number(entry.getKey().getNumber())
+                        .action(entry.getKey().getAction())
+                        .subtitle(entry.getKey().getSubtitle())
+                        .build()));
     }
 }

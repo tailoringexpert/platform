@@ -21,34 +21,6 @@
  */
 package eu.tailoringexpert.tailoring;
 
-import com.openhtmltopdf.extend.FSDOMMutator;
-import eu.tailoringexpert.FileSaver;
-import eu.tailoringexpert.domain.*;
-import eu.tailoringexpert.renderer.HTMLTemplateEngine;
-import eu.tailoringexpert.renderer.PDFEngine;
-import eu.tailoringexpert.renderer.RendererRequestConfiguration;
-import eu.tailoringexpert.renderer.RendererRequestConfigurationSupplier;
-import eu.tailoringexpert.renderer.TailoringexpertDOMMutator;
-import eu.tailoringexpert.renderer.ThymeleafTemplateEngine;
-import io.github.cdimascio.dotenv.Dotenv;
-import lombok.extern.log4j.Log4j2;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-import org.thymeleaf.spring6.SpringTemplateEngine;
-import org.thymeleaf.templateresolver.FileTemplateResolver;
-import tools.jackson.databind.json.JsonMapper;
-
-import java.io.InputStream;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
-import java.util.AbstractMap.SimpleEntry;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.function.Predicate;
-
 import static eu.tailoringexpert.domain.Phase.A;
 import static eu.tailoringexpert.domain.Phase.B;
 import static eu.tailoringexpert.domain.Phase.C;
@@ -62,6 +34,47 @@ import static java.util.List.of;
 import static java.util.Objects.nonNull;
 import static org.assertj.core.api.Assertions.assertThat;
 import static tools.jackson.databind.DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES;
+
+import java.io.InputStream;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.AbstractMap.SimpleEntry;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.function.Predicate;
+
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.thymeleaf.spring6.SpringTemplateEngine;
+import org.thymeleaf.templateresolver.FileTemplateResolver;
+
+import com.openhtmltopdf.extend.FSDOMMutator;
+
+import eu.tailoringexpert.FileSaver;
+import eu.tailoringexpert.domain.ApplicableDocumentProvider;
+import eu.tailoringexpert.domain.Catalog;
+import eu.tailoringexpert.domain.DRDProvider;
+import eu.tailoringexpert.domain.DocumentNumberComparator;
+import eu.tailoringexpert.domain.DocumentSignature;
+import eu.tailoringexpert.domain.DocumentSignatureState;
+import eu.tailoringexpert.domain.File;
+import eu.tailoringexpert.domain.Logo;
+import eu.tailoringexpert.domain.Reference;
+import eu.tailoringexpert.domain.Tailoring;
+import eu.tailoringexpert.domain.TailoringCatalogElement;
+import eu.tailoringexpert.domain.TailoringRequirement;
+import eu.tailoringexpert.renderer.HTMLTemplateEngine;
+import eu.tailoringexpert.renderer.PDFEngine;
+import eu.tailoringexpert.renderer.RendererRequestConfiguration;
+import eu.tailoringexpert.renderer.RendererRequestConfigurationSupplier;
+import eu.tailoringexpert.renderer.TailoringexpertDOMMutator;
+import eu.tailoringexpert.renderer.ThymeleafTemplateEngine;
+import io.github.cdimascio.dotenv.Dotenv;
+import lombok.extern.log4j.Log4j2;
+import tools.jackson.databind.json.JsonMapper;
 
 @Log4j2
 class TailoringCatalogPDFDocumentCreatorTest {
@@ -82,9 +95,9 @@ class TailoringCatalogPDFDocumentCreatorTest {
         this.assetHome = env.get("ASSET_HOME", "src/test/resources/templates/");
 
         this.objectMapper = JsonMapper.builder()
-            .findAndAddModules()
-            .disable(FAIL_ON_UNKNOWN_PROPERTIES)
-            .build();
+                .findAndAddModules()
+                .disable(FAIL_ON_UNKNOWN_PROPERTIES)
+                .build();
 
         this.fileSaver = new FileSaver("target");
 
@@ -96,10 +109,10 @@ class TailoringCatalogPDFDocumentCreatorTest {
         fileTemplateResolver.setOrder(1);
 
         RendererRequestConfigurationSupplier supplier = () -> RendererRequestConfiguration.builder()
-            .id("unittest")
-            .name("TailoringExpert")
-            .templateHome(this.templateHome)
-            .build();
+                .id("unittest")
+                .name("TailoringExpert")
+                .templateHome(this.templateHome)
+                .build();
 
         SpringTemplateEngine springTemplateEngine = new SpringTemplateEngine();
         springTemplateEngine.addTemplateResolver(fileTemplateResolver);
@@ -107,27 +120,26 @@ class TailoringCatalogPDFDocumentCreatorTest {
         HTMLTemplateEngine templateEngine = new ThymeleafTemplateEngine(springTemplateEngine, supplier);
 
         this.drdProviderMock = new DRDProvider(
-            (Predicate<TailoringRequirement>) requirement -> ((TailoringRequirement) requirement).getSelected(), new DRDApplicablePredicate(Map.ofEntries(
-            new SimpleEntry<>(ZERO, unmodifiableCollection(asList("MDR"))),
-            new SimpleEntry<>(A, unmodifiableCollection(asList("SRR"))),
-            new SimpleEntry<>(B, unmodifiableCollection(asList("PDR"))),
-            new SimpleEntry<>(C, unmodifiableCollection(asList("CDR"))),
-            new SimpleEntry<>(D, unmodifiableCollection(asList("AR", "DRB", "FRR", "LRR"))),
-            new SimpleEntry<>(E, unmodifiableCollection(asList("ORR"))),
-            new SimpleEntry<>(F, unmodifiableCollection(asList("EOM")))
-        )));
+                (Predicate<TailoringRequirement>) requirement -> ((TailoringRequirement) requirement).getSelected(),
+                new DRDApplicablePredicate(Map.ofEntries(
+                        new SimpleEntry<>(ZERO, unmodifiableCollection(asList("MDR"))),
+                        new SimpleEntry<>(A, unmodifiableCollection(asList("SRR"))),
+                        new SimpleEntry<>(B, unmodifiableCollection(asList("PDR"))),
+                        new SimpleEntry<>(C, unmodifiableCollection(asList("CDR"))),
+                        new SimpleEntry<>(D, unmodifiableCollection(asList("AR", "DRB", "FRR", "LRR"))),
+                        new SimpleEntry<>(E, unmodifiableCollection(asList("ORR"))),
+                        new SimpleEntry<>(F, unmodifiableCollection(asList("EOM"))))));
 
         this.applicableDocumentProviderMock = new ApplicableDocumentProvider(
-            new RequirementSelectedPredicate(),
-            new DocumentNumberComparator());
+                new RequirementSelectedPredicate(),
+                new DocumentNumberComparator());
 
         FSDOMMutator domMutator = new TailoringexpertDOMMutator();
         this.creator = new TailoringCatalogPDFDocumentCreator(
-            drdProviderMock,
-            applicableDocumentProviderMock,
-            templateEngine,
-            new PDFEngine(domMutator, supplier)
-        );
+                drdProviderMock,
+                applicableDocumentProviderMock,
+                templateEngine,
+                new PDFEngine(domMutator, supplier));
     }
 
     @Test
@@ -182,21 +194,21 @@ class TailoringCatalogPDFDocumentCreatorTest {
     void addRequirement_458_RowWithReferenceDataAdded() {
         // arrange
         TailoringRequirement requirement = TailoringRequirement.builder()
-            .position("a")
-            .text("Sample Text")
-            .selected(true)
-            .reference(Reference.builder()
-                .changed(false)
-                .text("Referencetext")
-                .logo(Logo.builder()
-                    .name("demo")
-                    .url("demo_logo.png")
-                    .build())
-                .build())
-            .build();
+                .position("a")
+                .text("Sample Text")
+                .selected(true)
+                .reference(Reference.builder()
+                        .changed(false)
+                        .text("Referencetext")
+                        .logo(Logo.builder()
+                                .name("demo")
+                                .url("demo_logo.png")
+                                .build())
+                        .build())
+                .build();
 
         Map<String, Object> ctx = new HashMap<>();
-        List<CatalogElement> rows = new ArrayList<>();
+        List<TailoringCatalogElement> rows = new ArrayList<>();
 
         // act
         creator.addRequirement(requirement, rows, ctx);

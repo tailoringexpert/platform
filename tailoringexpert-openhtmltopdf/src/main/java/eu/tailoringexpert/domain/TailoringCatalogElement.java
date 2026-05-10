@@ -19,44 +19,20 @@
  * <http://www.gnu.org/licenses/gpl-3.0.html>.
  * #L%
  */
-package eu.tailoringexpert.tailoring;
+package eu.tailoringexpert.domain;
 
-import lombok.Builder;
 import lombok.Value;
+import lombok.experimental.SuperBuilder;
 
 /**
- * Requirement data element to be used for generating tailoring catalog document.
+ * Requirement data element to be used for generating tailoring catalog
+ * document.
  *
  * @author Michael Bädorf
  */
 @Value
-@Builder
-public class CatalogElement {
-
-    /**
-     * Text of element origin.
-     */
-    private String reference;
-
-    /**
-     * Logo of element origin.
-     */
-    private String logo;
-
-    /**
-     * Position to render element at.
-     */
-    private String position;
-
-    /**
-     * Chapter of element.
-     */
-    private String chapter;
-
-    /**
-     * Outputtext.
-     */
-    private String text;
+@SuperBuilder
+public class TailoringCatalogElement extends CatalogElement {
 
     /**
      * +
@@ -64,8 +40,4 @@ public class CatalogElement {
      */
     private boolean applicable;
 
-    /**
-     * Level of element in chapter tree.
-     */
-    private int level;
 }
