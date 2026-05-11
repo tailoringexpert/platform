@@ -44,7 +44,7 @@ import eu.tailoringexpert.domain.DocumentSignature;
 import eu.tailoringexpert.domain.File;
 import eu.tailoringexpert.domain.Phase;
 import eu.tailoringexpert.domain.Tailoring;
-import eu.tailoringexpert.domain.TailoringCatalogElement;
+import eu.tailoringexpert.domain.TailoringCatalogueElement;
 import eu.tailoringexpert.domain.TailoringRequirement;
 import eu.tailoringexpert.renderer.HTMLTemplateEngine;
 import eu.tailoringexpert.renderer.PDFEngine;
@@ -87,7 +87,7 @@ public class TailoringCatalogPDFDocumentCreator implements DocumentCreator {
         Map<String, Object> parameter = new HashMap<>(placeholders);
         parameter.put("catalogVersion", tailoring.getCatalog().getVersion());
 
-        Collection<TailoringCatalogElement> requirements = new LinkedList<>();
+        Collection<TailoringCatalogueElement> requirements = new LinkedList<>();
         parameter.put("requirements", requirements);
 
         Collection<DRDElement> drds = new LinkedList<>();
@@ -124,9 +124,9 @@ public class TailoringCatalogPDFDocumentCreator implements DocumentCreator {
      * @param level   chapter level
      * @param rows    collection to add elements to
      */
-    void addChapter(Chapter<TailoringRequirement> chapter, int level, Collection<TailoringCatalogElement> rows,
+    void addChapter(Chapter<TailoringRequirement> chapter, int level, Collection<TailoringCatalogueElement> rows,
             Map<String, Object> placeholders) {
-        rows.add(TailoringCatalogElement.builder()
+        rows.add(TailoringCatalogueElement.builder()
                 .text(templateEngine.toXHTML(chapter.getNumber() + " " + chapter.getName(), emptyMap()))
                 .chapter(chapter.getNumber())
                 .applicable(true)
@@ -146,9 +146,9 @@ public class TailoringCatalogPDFDocumentCreator implements DocumentCreator {
      * @param rows         collection to add to
      * @param placeholders placeholders to use for evaluation in requirement text
      */
-    void addRequirement(TailoringRequirement requirement, Collection<TailoringCatalogElement> rows,
+    void addRequirement(TailoringRequirement requirement, Collection<TailoringCatalogueElement> rows,
             Map<String, Object> placeholders) {
-        TailoringCatalogElement.TailoringCatalogElementBuilder<?, ?> builder = TailoringCatalogElement.builder();
+        TailoringCatalogueElement.TailoringCatalogueElementBuilder<?, ?> builder = TailoringCatalogueElement.builder();
         if (nonNull(requirement.getReference())) {
             builder.reference(templateEngine.toXHTML(requirement.getReference().getText()
                     + (requirement.getReference().getChanged().booleanValue() ? "(mod)" : ""), emptyMap()));

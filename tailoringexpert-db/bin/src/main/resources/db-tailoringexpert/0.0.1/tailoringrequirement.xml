@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+         http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
+
+    <changeSet id="1" author="tailoringexpert">
+        <createTable tableName="TAILORINGREQUIREMENT">
+            <column name="REQUIREMENT_ID" type="BIGINT">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="TEXT" type="CLOB"/>
+            <column name="REFERENCE" type="VARCHAR(256)"/>
+            <column name="REFERENCE_CHANGED"  type="BOOLEAN"/>
+            <column name="REFERENCELOGO_ID"  type="BIGINT"/>
+            <column name="POSITION" type="VARCHAR(2)"/>
+            <column name="SELECTED" type="BOOLEAN"/>
+            <column name="CHAPTER_ID" type="BIGINT"/>
+            <column name="SELECTIONCHANGED" type="VARCHAR(256)"/>
+            <column name="TEXTCHANGED" type="VARCHAR(256)"/>
+            <column name="REQUIREMENT_ORDER" type="BIGINT"/>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="2" author="tailoringexpert">
+        <addForeignKeyConstraint constraintName="FK_TAILORINGREQUIREMENT_CHAPTER"
+                                 baseTableName="TAILORINGREQUIREMENT" baseColumnNames="CHAPTER_ID"
+                                 referencedTableName="TAILORINGCATALOGCHAPTER"
+                                 referencedColumnNames="CHAPTER_ID"/>
+    </changeSet>
+
+</databaseChangeLog>

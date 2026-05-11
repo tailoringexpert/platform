@@ -64,7 +64,7 @@ import eu.tailoringexpert.domain.File;
 import eu.tailoringexpert.domain.Logo;
 import eu.tailoringexpert.domain.Reference;
 import eu.tailoringexpert.domain.Tailoring;
-import eu.tailoringexpert.domain.TailoringCatalogElement;
+import eu.tailoringexpert.domain.TailoringCatalogueElement;
 import eu.tailoringexpert.domain.TailoringRequirement;
 import eu.tailoringexpert.renderer.HTMLTemplateEngine;
 import eu.tailoringexpert.renderer.PDFEngine;
@@ -208,7 +208,7 @@ class TailoringCatalogPDFDocumentCreatorTest {
                 .build();
 
         Map<String, Object> ctx = new HashMap<>();
-        List<TailoringCatalogElement> rows = new ArrayList<>();
+        List<TailoringCatalogueElement> rows = new ArrayList<>();
 
         // act
         creator.addRequirement(requirement, rows, ctx);

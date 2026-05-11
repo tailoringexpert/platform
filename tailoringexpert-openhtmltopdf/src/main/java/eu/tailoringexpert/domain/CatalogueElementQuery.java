@@ -19,7 +19,7 @@
  * <http://www.gnu.org/licenses/gpl-3.0.html>.
  * #L%
  */
-package eu.tailoringexpert.renderer;
+package eu.tailoringexpert.domain;
 
 import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
@@ -27,9 +27,7 @@ import static java.util.Objects.nonNull;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.LinkedList;
-import java.util.List;
 
-import eu.tailoringexpert.domain.CatalogElement;
 import lombok.NonNull;
 import lombok.extern.log4j.Log4j2;
 
@@ -40,27 +38,24 @@ import lombok.extern.log4j.Log4j2;
  * @author Michael Bädorf
  */
 @Log4j2
-public class CatalogElementFilter {
+public class CatalogueElementQuery {
 
-    public Collection<CatalogElement> apply(List<CatalogElement> elements, @NonNull String chapter) {
+    public Collection<CatalogueElement> byChapter(Collection<CatalogueElement> elements, @NonNull String chapter) {
         log.traceEntry(() -> chapter);
 
-        Collection<CatalogElement> result = new LinkedList<>();
+        Collection<CatalogueElement> result = new LinkedList<>();
         if (isNull(elements)) {
             log.info("Null requirements, returning empty list");
             log.traceExit();
             return result;
         }
 
-        int tokens = chapter.split("\\.").length;
-
-        // such start
         String currentChapter = chapter;
-        Iterator<CatalogElement> iterator = elements.iterator();
+        Iterator<CatalogueElement> iterator = elements.iterator();
         while (iterator.hasNext()) {
-            CatalogElement element = iterator.next();
+            CatalogueElement element = iterator.next();
             currentChapter = nonNull(element.getChapter()) ? element.getChapter() : currentChapter;
-            if (currentChapter.startsWith(chapter) && currentChapter.split("\\.").length >= tokens) {
+            if (currentChapter.startsWith(chapter)) {
                 result.add(element);
             }
         }

@@ -36,7 +36,7 @@ import lombok.experimental.SuperBuilder;
 @Value
 @EqualsAndHashCode(callSuper = true)
 @SuperBuilder
-public class BaseCatalogElement extends CatalogElement {
+public class BaseCatalogueElement extends CatalogueElement {
 
     /**
      * Identifiers this requirement shall be selected automatically.

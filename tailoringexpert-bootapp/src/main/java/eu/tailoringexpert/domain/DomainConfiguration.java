@@ -21,13 +21,6 @@
  */
 package eu.tailoringexpert.domain;
 
-import eu.tailoringexpert.catalog.RequirementAlwaysSelectedPredicate;
-import eu.tailoringexpert.tailoring.RequirementSelectedPredicate;
-import lombok.NonNull;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
-
 import java.util.Collection;
 import java.util.Comparator;
 import java.util.Map;
@@ -36,6 +29,14 @@ import java.util.function.BiFunction;
 import java.util.function.BiPredicate;
 import java.util.function.Function;
 import java.util.function.Predicate;
+
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+
+import eu.tailoringexpert.catalog.RequirementAlwaysSelectedPredicate;
+import eu.tailoringexpert.tailoring.RequirementSelectedPredicate;
+import lombok.NonNull;
 
 @Configuration
 public class DomainConfiguration {
@@ -58,16 +59,15 @@ public class DomainConfiguration {
 
     @Bean
     Function<Catalog<TailoringRequirement>, Collection<Document>> tailoringCatalogApplicableDocumentProvider(
-        @NonNull Predicate<TailoringRequirement> tailoringRequirementSelectedPredicate,
-        @NonNull Comparator<Document> documentNumberComparator
-    ) {
+            @NonNull Predicate<TailoringRequirement> tailoringRequirementSelectedPredicate,
+            @NonNull Comparator<Document> documentNumberComparator) {
         return new ApplicableDocumentProvider<>(tailoringRequirementSelectedPredicate, documentNumberComparator);
     }
 
     @Bean
     BiFunction<Chapter<TailoringRequirement>, Collection<Phase>, Map<DRD, Set<String>>> tailoringCatalogDTDProvider(
-        @NonNull BiPredicate<String, Collection<Phase>> drdApplicable,
-        @NonNull Predicate<TailoringRequirement> tailoringRequirementSelectedPredicate) {
+            @NonNull BiPredicate<String, Collection<Phase>> drdApplicable,
+            @NonNull Predicate<TailoringRequirement> tailoringRequirementSelectedPredicate) {
         return new DRDProvider<>(tailoringRequirementSelectedPredicate, drdApplicable);
     }
 
@@ -75,18 +75,23 @@ public class DomainConfiguration {
     Predicate<BaseRequirement> requirementAlwaysSelectedPredicate() {
         return new RequirementAlwaysSelectedPredicate<>();
     }
+
     @Bean
     Function<Catalog<BaseRequirement>, Collection<Document>> baseCatalogApplicableDocumentProvider(
-        @NonNull Predicate<BaseRequirement> requirementAlwaysSelectedPredicate,
-        @NonNull Comparator<Document> documentNumberComparator
-    ) {
+            @NonNull Predicate<BaseRequirement> requirementAlwaysSelectedPredicate,
+            @NonNull Comparator<Document> documentNumberComparator) {
         return new ApplicableDocumentProvider<>(requirementAlwaysSelectedPredicate, documentNumberComparator);
     }
 
     @Bean
     BiFunction<Chapter<BaseRequirement>, Collection<Phase>, Map<DRD, Set<String>>> baseCatalogDRDProvider(
-        @NonNull BiPredicate<String, Collection<Phase>> drdApplicable,
-        @NonNull Predicate<BaseRequirement> requirementAlwaysSelectedPredicate) {
+            @NonNull BiPredicate<String, Collection<Phase>> drdApplicable,
+            @NonNull Predicate<BaseRequirement> requirementAlwaysSelectedPredicate) {
         return new DRDProvider<>(requirementAlwaysSelectedPredicate, drdApplicable);
+    }
+
+    @Bean
+    CatalogueElementQuery catalogueElementQuery() {
+        return new CatalogueElementQuery();
     }
 }

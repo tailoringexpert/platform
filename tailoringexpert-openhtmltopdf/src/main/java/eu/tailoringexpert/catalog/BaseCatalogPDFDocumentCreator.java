@@ -46,8 +46,8 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.BiFunction;
 import java.util.function.Function;
 
-import eu.tailoringexpert.domain.BaseCatalogElement;
-import eu.tailoringexpert.domain.BaseCatalogElement.BaseCatalogElementBuilder;
+import eu.tailoringexpert.domain.BaseCatalogueElement;
+import eu.tailoringexpert.domain.BaseCatalogueElement.BaseCatalogueElementBuilder;
 import eu.tailoringexpert.domain.BaseRequirement;
 import eu.tailoringexpert.domain.Catalog;
 import eu.tailoringexpert.domain.Chapter;
@@ -101,7 +101,7 @@ public class BaseCatalogPDFDocumentCreator implements DocumentCreator {
 
             parameter.put("applicableDocuments", applicableDocumentProvider.apply(catalog));
 
-            Collection<BaseCatalogElement> requirements = new LinkedList<>();
+            Collection<BaseCatalogueElement> requirements = new LinkedList<>();
             parameter.put("requirements", requirements);
 
             Collection<DRDElement> drds = new LinkedList<>();
@@ -140,8 +140,8 @@ public class BaseCatalogPDFDocumentCreator implements DocumentCreator {
      * @param level   chapter level
      * @param rows    collection to add elements to
      */
-    void addChapter(Chapter<BaseRequirement> chapter, int level, Collection<BaseCatalogElement> rows) {
-        rows.add(BaseCatalogElement.builder()
+    void addChapter(Chapter<BaseRequirement> chapter, int level, Collection<BaseCatalogueElement> rows) {
+        rows.add(BaseCatalogueElement.builder()
                 .text(templateEngine.toXHTML(chapter.getNumber() + " " + chapter.getName(), emptyMap()))
                 .chapter(chapter.getNumber())
                 .level(level)
@@ -180,8 +180,8 @@ public class BaseCatalogPDFDocumentCreator implements DocumentCreator {
      * @param requirement requirement to build row object of
      * @param rows        collection to add to
      */
-    void addRequirement(BaseRequirement requirement, Collection<BaseCatalogElement> rows) {
-        BaseCatalogElementBuilder<?, ?> builder = BaseCatalogElement.builder();
+    void addRequirement(BaseRequirement requirement, Collection<BaseCatalogueElement> rows) {
+        BaseCatalogueElementBuilder<?, ?> builder = BaseCatalogueElement.builder();
 
         if (nonNull(requirement.getReference())) {
             builder.reference(templateEngine.toXHTML(requirement.getReference().getText()
