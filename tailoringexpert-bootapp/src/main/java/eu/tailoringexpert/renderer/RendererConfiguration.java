@@ -21,22 +21,27 @@
  */
 package eu.tailoringexpert.renderer;
 
-import com.openhtmltopdf.extend.FSDOMMutator;
-import lombok.NonNull;
+import static java.nio.charset.StandardCharsets.UTF_8;
+import static org.thymeleaf.templatemode.TemplateMode.HTML;
+
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.thymeleaf.spring6.SpringTemplateEngine;
+import org.thymeleaf.spring6.templateresolver.SpringResourceTemplateResolver;
 import org.thymeleaf.templateresolver.FileTemplateResolver;
 
-import static java.nio.charset.StandardCharsets.UTF_8;
-import static org.thymeleaf.templatemode.TemplateMode.HTML;
+import com.openhtmltopdf.extend.FSDOMMutator;
+
+import lombok.NonNull;
 
 @Configuration
 public class RendererConfiguration {
 
     @Bean
-    SpringTemplateEngine springTemplateEngine(@NonNull @Value("${templateHome}") final String templateHome) {
+    SpringTemplateEngine springTemplateEngine(@NonNull @Value("${templateHome}") final String templateHome,
+            ApplicationContext applicationContext) {
         SpringTemplateEngine result = new SpringTemplateEngine();
         FileTemplateResolver fileTemplateResolver = new FileTemplateResolver();
         fileTemplateResolver.setPrefix(templateHome);
@@ -47,29 +52,36 @@ public class RendererConfiguration {
         fileTemplateResolver.setOrder(1);
         fileTemplateResolver.setCheckExistence(true);
         fileTemplateResolver.setName("base");
-        result.addTemplateResolver(fileTemplateResolver);
+        result.setTemplateResolver(fileTemplateResolver);
+
+        // SpringResourceTemplateResolver resourceResolver = new
+        // SpringResourceTemplateResolver();
+        // resourceResolver.setApplicationContext(applicationContext); // Korrekt h
+        // result.addTemplateResolver(resourceResolver);
+
+        result.setEnableSpringELCompiler(true);
 
         return result;
     }
 
     @Bean
     RendererRequestConfigurationSupplier rendererRequestConfigurationSupplier(
-        @NonNull @Value("${templateHome}") final String templateHome) {
+            @NonNull @Value("${templateHome}") final String templateHome) {
         return new TenantRendererConfigurationSupplier(templateHome);
     }
 
     @Bean
     HTMLTemplateEngine templateEngine(
-        @NonNull SpringTemplateEngine templateEngine,
-        @NonNull RendererRequestConfigurationSupplier rendererRequestConfigurationSupplier) {
+            @NonNull SpringTemplateEngine templateEngine,
+            @NonNull RendererRequestConfigurationSupplier rendererRequestConfigurationSupplier) {
         return new TenantTemplateEngine(
-            htmlTemplateEngine(templateEngine, rendererRequestConfigurationSupplier),
-            rendererRequestConfigurationSupplier);
+                htmlTemplateEngine(templateEngine, rendererRequestConfigurationSupplier),
+                rendererRequestConfigurationSupplier);
     }
 
     private HTMLTemplateEngine htmlTemplateEngine(
-        @NonNull SpringTemplateEngine templateEngine,
-        @NonNull RendererRequestConfigurationSupplier rendererRequestConfigurationSupplier) {
+            @NonNull SpringTemplateEngine templateEngine,
+            @NonNull RendererRequestConfigurationSupplier rendererRequestConfigurationSupplier) {
         return new ThymeleafTemplateEngine(templateEngine, rendererRequestConfigurationSupplier);
     }
 
@@ -80,7 +92,7 @@ public class RendererConfiguration {
 
     @Bean
     PDFEngine pdfEngine(@NonNull FSDOMMutator fsdomMutator,
-                        @NonNull RendererRequestConfigurationSupplier rendererRequestConfigurationSupplier) {
+            @NonNull RendererRequestConfigurationSupplier rendererRequestConfigurationSupplier) {
         return new PDFEngine(fsdomMutator, rendererRequestConfigurationSupplier);
     }
 }
