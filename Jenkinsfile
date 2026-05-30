@@ -47,10 +47,11 @@ pipeline {
         docker {
             image 'tailoringexpert/maven:3.9-eclipse-25'
             args '''  
-                -u 501:1000
-                -v $GPG_VOLUME:/.gnupg \
-                -v $PWD:/data \
-                -v $M2_VOLUME:/home/maven \
+			    --network jenkins_jenkins \
+                -u 501:1000 \
+                -v "$GPG_VOLUME:/.gnupg" \
+                -v "$PWD:/data" \
+                -v "$M2_VOLUME:/home/maven" \
                 -e GIT_CREDENTIALS=$GIT_CREDENTIALS \
                 -e GIT_COMMITTER_NAME=$GIT_COMMITTER_NAME \
                 -e GIT_COMMITTER_EMAIL=$GIT_COMMITTER_EMAIL \
@@ -62,8 +63,9 @@ pipeline {
                 -e MAVEN_CUSTOM_CREDENTIALS_PSW=$MAVEN_CUSTOM_CREDENTIALS_PSW \
                 -e MAVEN_CUSTOM_SNAPSHOTURL=$MAVEN_CUSTOM_SNAPSHOTURL \
                 -e MAVEN_CUSTOM_RELEASEURL=$MAVEN_CUSTOM_RELEASEURL \
+				-e MAVEN_OPTS="-Djava.net.preferIPv6Addresses=true" \
                 -e GPG_SIGNKEY=$GPG_SIGNKEY \
-                -e SONAR_TOKEN=$SONAR_TOKEN 
+                -e SONAR_TOKEN=$SONAR_TOKEN 				
             '''
             reuseNode true
        }       
