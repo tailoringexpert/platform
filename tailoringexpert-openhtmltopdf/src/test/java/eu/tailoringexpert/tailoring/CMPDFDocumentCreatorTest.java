@@ -21,8 +21,41 @@
  */
 package eu.tailoringexpert.tailoring;
 
+import static eu.tailoringexpert.domain.Phase.A;
+import static eu.tailoringexpert.domain.Phase.B;
+import static eu.tailoringexpert.domain.Phase.C;
+import static eu.tailoringexpert.domain.Phase.D;
+import static eu.tailoringexpert.domain.Phase.E;
+import static eu.tailoringexpert.domain.Phase.F;
+import static eu.tailoringexpert.domain.Phase.ZERO;
+import static java.util.Arrays.asList;
+import static java.util.Collections.unmodifiableCollection;
+import static java.util.List.of;
+import static java.util.Objects.nonNull;
+import static org.assertj.core.api.Assertions.assertThat;
+import static tools.jackson.databind.DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES;
+
+import java.io.IOException;
+import java.io.InputStream;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.AbstractMap;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Set;
+import java.util.function.BiFunction;
+import java.util.function.Predicate;
+
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.thymeleaf.spring6.SpringTemplateEngine;
+import org.thymeleaf.templateresolver.FileTemplateResolver;
 
 import com.openhtmltopdf.extend.FSDOMMutator;
+import com.openhtmltopdf.extend.FSObjectDrawerFactory;
+import com.openhtmltopdf.render.DefaultObjectDrawerFactory;
+
 import eu.tailoringexpert.FileSaver;
 import eu.tailoringexpert.domain.Catalog;
 import eu.tailoringexpert.domain.Chapter;
@@ -42,37 +75,7 @@ import eu.tailoringexpert.renderer.TailoringexpertDOMMutator;
 import eu.tailoringexpert.renderer.ThymeleafTemplateEngine;
 import io.github.cdimascio.dotenv.Dotenv;
 import lombok.extern.log4j.Log4j2;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-import org.thymeleaf.spring6.SpringTemplateEngine;
-import org.thymeleaf.templateresolver.FileTemplateResolver;
 import tools.jackson.databind.json.JsonMapper;
-
-import java.io.IOException;
-import java.io.InputStream;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
-import java.util.AbstractMap;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Set;
-import java.util.function.BiFunction;
-import java.util.function.Predicate;
-
-import static eu.tailoringexpert.domain.Phase.A;
-import static eu.tailoringexpert.domain.Phase.B;
-import static eu.tailoringexpert.domain.Phase.C;
-import static eu.tailoringexpert.domain.Phase.D;
-import static eu.tailoringexpert.domain.Phase.E;
-import static eu.tailoringexpert.domain.Phase.F;
-import static eu.tailoringexpert.domain.Phase.ZERO;
-import static java.util.Arrays.asList;
-import static java.util.Collections.unmodifiableCollection;
-import static java.util.List.of;
-import static java.util.Objects.nonNull;
-import static org.assertj.core.api.Assertions.assertThat;
-import static tools.jackson.databind.DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES;
 
 @Log4j2
 class CMPDFDocumentCreatorTest {
@@ -90,9 +93,9 @@ class CMPDFDocumentCreatorTest {
         this.templateHome = env.get("TEMPLATE_HOME", "src/test/resources/templates/");
 
         this.objectMapper = JsonMapper.builder()
-            .findAndAddModules()
-            .disable(FAIL_ON_UNKNOWN_PROPERTIES)
-            .build();
+                .findAndAddModules()
+                .disable(FAIL_ON_UNKNOWN_PROPERTIES)
+                .build();
 
         this.fileSaver = new FileSaver("target");
 
@@ -107,31 +110,30 @@ class CMPDFDocumentCreatorTest {
         springTemplateEngine.addTemplateResolver(fileTemplateResolver);
 
         RendererRequestConfigurationSupplier supplier = () -> RendererRequestConfiguration.builder()
-            .id("unittest")
-            .name("platform")
-            .templateHome(this.templateHome)
-            .build();
+                .id("unittest")
+                .name("platform")
+                .templateHome(this.templateHome)
+                .build();
 
         HTMLTemplateEngine templateEngine = new ThymeleafTemplateEngine(springTemplateEngine, supplier);
 
         this.drdProviderMock = new DRDProvider(
-            (Predicate<TailoringRequirement>) requirement -> ((TailoringRequirement) requirement).getSelected(),
-            new DRDApplicablePredicate(Map.ofEntries(
-                new AbstractMap.SimpleEntry<>(ZERO, unmodifiableCollection(asList("MDR"))),
-                new AbstractMap.SimpleEntry<>(A, unmodifiableCollection(asList("SRR"))),
-                new AbstractMap.SimpleEntry<>(B, unmodifiableCollection(asList("PDR"))),
-                new AbstractMap.SimpleEntry<>(C, unmodifiableCollection(asList("CDR"))),
-                new AbstractMap.SimpleEntry<>(D, unmodifiableCollection(asList("AR", "DRB", "FRR", "LRR"))),
-                new AbstractMap.SimpleEntry<>(E, unmodifiableCollection(asList("ORR"))),
-                new AbstractMap.SimpleEntry<>(F, unmodifiableCollection(asList("EOM")))
-            )));
+                (Predicate<TailoringRequirement>) requirement -> ((TailoringRequirement) requirement).getSelected(),
+                new DRDApplicablePredicate(Map.ofEntries(
+                        new AbstractMap.SimpleEntry<>(ZERO, unmodifiableCollection(asList("MDR"))),
+                        new AbstractMap.SimpleEntry<>(A, unmodifiableCollection(asList("SRR"))),
+                        new AbstractMap.SimpleEntry<>(B, unmodifiableCollection(asList("PDR"))),
+                        new AbstractMap.SimpleEntry<>(C, unmodifiableCollection(asList("CDR"))),
+                        new AbstractMap.SimpleEntry<>(D, unmodifiableCollection(asList("AR", "DRB", "FRR", "LRR"))),
+                        new AbstractMap.SimpleEntry<>(E, unmodifiableCollection(asList("ORR"))),
+                        new AbstractMap.SimpleEntry<>(F, unmodifiableCollection(asList("EOM"))))));
 
         FSDOMMutator domMutator = new TailoringexpertDOMMutator();
+        FSObjectDrawerFactory objectDrawerFactory = new DefaultObjectDrawerFactory();
         this.creator = new CMPDFDocumentCreator(
-            drdProviderMock,
-            templateEngine,
-            new PDFEngine(domMutator, supplier)
-        );
+                drdProviderMock,
+                templateEngine,
+                new PDFEngine(domMutator, objectDrawerFactory, supplier));
     }
 
     @Test
@@ -142,26 +144,24 @@ class CMPDFDocumentCreatorTest {
             assert nonNull(is);
 
             catalog = objectMapper.readValue(
-                is,
-                objectMapper.getTypeFactory()
-                    .constructParametricType(Catalog.class, TailoringRequirement.class)
-            );
+                    is,
+                    objectMapper.getTypeFactory()
+                            .constructParametricType(Catalog.class, TailoringRequirement.class));
         }
 
         Collection<DocumentSignature> zeichnungen = of(
-            DocumentSignature.builder()
-                .applicable(true)
-                .faculty("Sofware")
-                .signee("Hans Dampf")
-                .state(DocumentSignatureState.AGREED)
-                .build()
-        );
+                DocumentSignature.builder()
+                        .applicable(true)
+                        .faculty("Sofware")
+                        .signee("Hans Dampf")
+                        .state(DocumentSignatureState.AGREED)
+                        .build());
 
         Tailoring tailoring = Tailoring.builder()
-            .catalog(catalog)
-            .signatures(zeichnungen)
-            .phases(of(ZERO, A, B, C, D, E, F))
-            .build();
+                .catalog(catalog)
+                .signatures(zeichnungen)
+                .phases(of(ZERO, A, B, C, D, E, F))
+                .build();
 
         LocalDateTime now = LocalDateTime.now();
         Map<String, Object> platzhalter = new HashMap<>();

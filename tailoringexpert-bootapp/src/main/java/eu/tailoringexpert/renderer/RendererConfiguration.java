@@ -29,10 +29,11 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.thymeleaf.spring6.SpringTemplateEngine;
-import org.thymeleaf.spring6.templateresolver.SpringResourceTemplateResolver;
 import org.thymeleaf.templateresolver.FileTemplateResolver;
 
 import com.openhtmltopdf.extend.FSDOMMutator;
+import com.openhtmltopdf.extend.FSObjectDrawerFactory;
+import com.openhtmltopdf.render.DefaultObjectDrawerFactory;
 
 import lombok.NonNull;
 
@@ -92,7 +93,15 @@ public class RendererConfiguration {
 
     @Bean
     PDFEngine pdfEngine(@NonNull FSDOMMutator fsdomMutator,
+        @NonNull FSObjectDrawerFactory objectDrawerFactory,
             @NonNull RendererRequestConfigurationSupplier rendererRequestConfigurationSupplier) {
-        return new PDFEngine(fsdomMutator, rendererRequestConfigurationSupplier);
+        return new PDFEngine(fsdomMutator, objectDrawerFactory, rendererRequestConfigurationSupplier);
+    }
+
+    @Bean
+    FSObjectDrawerFactory objectDrawerFactory() {
+        DefaultObjectDrawerFactory result = new DefaultObjectDrawerFactory();
+        result.registerDrawer("watermark", new WatermarkDrawer());
+        return result;
     }
 }
