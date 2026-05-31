@@ -22,6 +22,9 @@
 package eu.tailoringexpert.tailoring;
 
 import com.openhtmltopdf.extend.FSDOMMutator;
+import com.openhtmltopdf.extend.FSObjectDrawerFactory;
+import com.openhtmltopdf.render.DefaultObjectDrawerFactory;
+
 import eu.tailoringexpert.FileSaver;
 import eu.tailoringexpert.domain.Catalog;
 import eu.tailoringexpert.domain.Chapter;
@@ -105,10 +108,12 @@ class DRDPDFDocumentCreatorTest {
 
         this.drdProviderMock = mock(BiFunction.class);
         FSDOMMutator domMutator = new TailoringexpertDOMMutator();
+        FSObjectDrawerFactory objectDrawerFactory = new DefaultObjectDrawerFactory();
+
         this.creator = new DRDPDFDocumentCreator(
             drdProviderMock,
             templateEngine,
-            new PDFEngine(domMutator, supplier)
+            new PDFEngine(domMutator, objectDrawerFactory, supplier)
         );
     }
 

@@ -5,6 +5,15 @@ component openhtmltopdf {
         interface FSDOMMutator {
             mutateDocument(document : org.w3c.dom.Document) : void
         }
+
+        interface FSObjectDrawer {
+            drawObject(e : org.w3c.dom.Element, x: double, y : double y, width : double , height : double, outputDevice : OutputDevice, ctx : RenderingContext, dotsPerPixel : int) : Map<Shape, String>
+        }
+
+        interface  FSObjectDrawerFactory {
+            createDrawer(e : org.w3c.dom.Element) : FSObjectDrawer
+            isReplacedObject(e : org.w3c.dom.Element) : boolean
+        }
 }
 
 package renderer {
@@ -28,12 +37,20 @@ package renderer {
     }
     FSDOMMutator <|.. TailoringexpertDOMMutator
 
+    class WatermarkDrawer {
+        {static} font: Font
+        {static} getWatermarkFont()  : Font
+    }
+    FSObjectDrawer <|.. WatermarkDrawer 
+
     class PDFEngine {
         baseUri : String
         process(docId : String, html : String, pfadSuffix : String) :  File
     }
     PDFEngine --> "1" TailoringexpertDOMMutator : domMutator
+    PDFEngine --> "1" FSObjectDrawerFactory : drawerFactory
     PDFEngine --> "1" RendererRequestConfigurationSupplier : supplier
 
+    
 }
 @enduml
