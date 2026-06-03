@@ -194,7 +194,6 @@ public class BaseCatalogPDFDocumentCreator implements DocumentCreator {
         List<String> identifiers = new ArrayList<>();
         if (!requirement.getIdentifiers().isEmpty()) {
             requirement.getIdentifiers()
-                    .stream()
                     .forEach(identifier -> identifiers.addAll(buildLimitations(identifier)));
         }
 
