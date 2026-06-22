@@ -21,22 +21,15 @@
  */
 package eu.tailoringexpert;
 
-import lombok.extern.log4j.Log4j2;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.TestPropertySource;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
-
 import static org.assertj.core.api.Assertions.assertThatNoException;
 
-@ExtendWith(SpringExtension.class)
-@ContextConfiguration(classes = App.class)
-@TestPropertySource(locations = {
-    "classpath:application.properties",
-    "classpath:application-dev.properties"
-})
+import org.junit.jupiter.api.Test;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.ActiveProfiles;
+
+import lombok.extern.log4j.Log4j2;
+
+@SpringBootTest
 @ActiveProfiles("dev")
 @Log4j2
 class AppTest {

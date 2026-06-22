@@ -1,0 +1,55 @@
+tailoringexpert:
+  version: "0.0.4.SNAPSHOT"
+  home:
+    template: ${TEMPLATE_HOME:${user.home}/apps/tailoring/templates/}
+    attachment: ${ATTACHMENT_HOME:target/attachments}
+    matrix: ${MATRIX_HOME:target/matrix}
+    tenant: ${TENANT_CONFIG_HOME:${user.home}/apps/tailoring/tenants}
+  mix-ins: ${MIXIN:}
+management:
+  endpoints:
+    web:
+      exposure:
+        include: restart,health,info
+  endpoint:
+    restart:
+      enabled: 'true'
+spring:
+  jpa:
+    generate-ddl: 'false'
+    hibernate:
+      ddl-auto: none
+    database-platform: ${DEFAULT_DATASOURCE_DATABASE_PLATFORM:org.hibernate.dialect.MariaDBDialect}
+    database: ${DEFAULT_DATASOURCE_DATABASE:MYSQL}
+    show-sql: 'false'
+  servlet:
+    encoding:
+      force: 'true'
+      charset: UTF-8
+      enabled: 'true'
+    multipart:
+      max-file-size: 10MB
+      max-request-size: 10MB
+  main:
+    allow-bean-definition-overriding: 'true'
+  datasource:
+    driver-class-name: ${DEFAULT_DATASOURCE_DRIVER_CLASS:org.mariadb.jdbc.Driver}
+    password: ${DEFAULT_DATASOURCE_PASSWORD:test1234}
+    username: ${DEFAULT_DATASOURCE_USERNAME:tailoringexpert}
+    url: ${DEFAULT_DATASOURCE_URL:jdbc:mariadb://localhost:3306/tailoringexpert}
+  cloud:
+    config:
+      enabled: 'false'
+      import-check:
+        enabled: 'false'
+  application:
+    name: tailoringexpert-api
+server:
+  forward-headers-strategy: native
+  tomcat:
+    remote_ip_header: x-forwarded-for
+    protocol_header: x-forwarded-proto
+    uri-encoding: UTF-8
+  port: ${SERVER_PORT:8080}
+  servlet:
+    context-path: /api
