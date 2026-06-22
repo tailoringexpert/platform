@@ -21,20 +21,20 @@
  */
 package eu.tailoringexpert;
 
-import com.fasterxml.jackson.annotation.JsonSetter;
-import com.fasterxml.jackson.annotation.Nulls;
-import eu.tailoringexpert.domain.ResourceMapper;
-import io.swagger.v3.oas.models.OpenAPI;
-import io.swagger.v3.oas.models.info.Info;
-import io.swagger.v3.oas.models.info.License;
-import io.swagger.v3.oas.models.media.StringSchema;
-import io.swagger.v3.oas.models.parameters.Parameter;
-import jakarta.servlet.FilterChain;
-import jakarta.servlet.ServletException;
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
-import lombok.NonNull;
-import lombok.extern.log4j.Log4j2;
+import static java.util.Arrays.asList;
+import static java.util.Locale.GERMANY;
+import static java.util.stream.Collectors.toMap;
+import static tools.jackson.databind.DeserializationFeature.ACCEPT_EMPTY_ARRAY_AS_NULL_OBJECT;
+import static tools.jackson.databind.DeserializationFeature.FAIL_ON_NULL_FOR_PRIMITIVES;
+
+import java.io.IOException;
+import java.text.SimpleDateFormat;
+import java.util.AbstractMap.SimpleEntry;
+import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Optional;
+
 import org.springdoc.core.customizers.OperationCustomizer;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.jackson.autoconfigure.JsonMapperBuilderCustomizer;
@@ -50,22 +50,23 @@ import org.springframework.hateoas.server.core.EvoInflectorLinkRelationProvider;
 import org.springframework.http.MediaType;
 import org.springframework.http.converter.ByteArrayHttpMessageConverter;
 import org.springframework.web.filter.OncePerRequestFilter;
-import tools.jackson.databind.DeserializationFeature;
+
+import com.fasterxml.jackson.annotation.JsonSetter;
+import com.fasterxml.jackson.annotation.Nulls;
+
+import eu.tailoringexpert.domain.ResourceMapper;
+import io.swagger.v3.oas.models.OpenAPI;
+import io.swagger.v3.oas.models.info.Info;
+import io.swagger.v3.oas.models.info.License;
+import io.swagger.v3.oas.models.media.StringSchema;
+import io.swagger.v3.oas.models.parameters.Parameter;
+import jakarta.servlet.FilterChain;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import lombok.NonNull;
+import lombok.extern.log4j.Log4j2;
 import tools.jackson.databind.SerializationFeature;
-
-import java.io.IOException;
-import java.text.SimpleDateFormat;
-import java.util.AbstractMap.SimpleEntry;
-import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.Optional;
-
-import static java.util.Arrays.asList;
-import static java.util.Locale.GERMANY;
-import static java.util.stream.Collectors.toMap;
-import static tools.jackson.databind.DeserializationFeature.*;
-import static tools.jackson.databind.DeserializationFeature.ACCEPT_EMPTY_ARRAY_AS_NULL_OBJECT;
 
 @Log4j2
 @Configuration
@@ -86,9 +87,9 @@ public class RestConfiguration {
                 )
                 .addMixIns(mixIns);
     }
-
+ 
     @Bean
-    Map<Class<?>, Class<?>> mixIns(@Value("#{${mixIns}}") List<String> mixIns) {
+    Map<Class<?>, Class<?>> mixIns(@Value("${tailoringexpert.mix-ins:#{T(java.util.Collections).emptyList()}}") List<String> mixIns) {
         return Optional.ofNullable(mixIns)
             .stream()
             .flatMap(List::stream)
@@ -145,7 +146,7 @@ public class RestConfiguration {
     }
 
     @Bean
-    public OpenAPI customOpenAPI(@Value("${app.version}") String version) {
+    public OpenAPI customOpenAPI(@Value("${tailoringexpert.version}") String version) {
         return new OpenAPI().info(
             new Info()
                 .title("Tailoring API")

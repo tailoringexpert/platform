@@ -1,0 +1,18 @@
+logging:
+  level:
+    org:
+      springframework:
+        security: DEBUG
+jwt:
+  auth:
+    converter:
+      resource-id: tailoringexpert
+      principle-attribute: tailoringexpert
+auth:
+  permit-all: ${AUTH_PERMIT_ALL:/,/actuator/**}
+  authenticated: ${AUTH_AUTHENTICATED:/**}
+spring:
+  securityoauth2:
+    resourceserver:
+      jwt:
+        issuer-uri: ${JWT_ISSUER_URI:http://localhost:8090/realms/tailoringexpert}

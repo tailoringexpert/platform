@@ -41,7 +41,7 @@ import lombok.NonNull;
 public class RendererConfiguration {
 
     @Bean
-    SpringTemplateEngine springTemplateEngine(@NonNull @Value("${templateHome}") final String templateHome,
+    SpringTemplateEngine springTemplateEngine(@NonNull @Value("${tailoringexpert.home.template}") final String templateHome,
             ApplicationContext applicationContext) {
         SpringTemplateEngine result = new SpringTemplateEngine();
         FileTemplateResolver fileTemplateResolver = new FileTemplateResolver();
@@ -67,7 +67,7 @@ public class RendererConfiguration {
 
     @Bean
     RendererRequestConfigurationSupplier rendererRequestConfigurationSupplier(
-            @NonNull @Value("${templateHome}") final String templateHome) {
+            @NonNull @Value("${tailoringexpert.home.template}") final String templateHome) {
         return new TenantRendererConfigurationSupplier(templateHome);
     }
 

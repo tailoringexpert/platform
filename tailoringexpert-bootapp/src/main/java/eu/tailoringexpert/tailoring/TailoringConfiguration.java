@@ -22,22 +22,15 @@
 package eu.tailoringexpert.tailoring;
 
 
-import eu.tailoringexpert.Tenant;
-import eu.tailoringexpert.Tenants;
-import eu.tailoringexpert.domain.*;
-import eu.tailoringexpert.renderer.HTMLTemplateEngine;
-import eu.tailoringexpert.renderer.PDFEngine;
-import eu.tailoringexpert.renderer.RendererRequestConfigurationSupplier;
-import eu.tailoringexpert.repository.*;
-import eu.tailoringexpert.requirement.RequirementService;
-import lombok.NonNull;
-import org.springframework.beans.factory.ListableBeanFactory;
-import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Primary;
-import org.springframework.http.MediaType;
+import static eu.tailoringexpert.domain.Phase.A;
+import static eu.tailoringexpert.domain.Phase.B;
+import static eu.tailoringexpert.domain.Phase.C;
+import static eu.tailoringexpert.domain.Phase.D;
+import static eu.tailoringexpert.domain.Phase.E;
+import static eu.tailoringexpert.domain.Phase.F;
+import static eu.tailoringexpert.domain.Phase.ZERO;
+import static java.util.Arrays.asList;
+import static java.util.Collections.unmodifiableCollection;
 
 import java.nio.file.Path;
 import java.security.MessageDigest;
@@ -51,9 +44,38 @@ import java.util.function.BiPredicate;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
-import static eu.tailoringexpert.domain.Phase.*;
-import static java.util.Arrays.asList;
-import static java.util.Collections.unmodifiableCollection;
+import org.springframework.beans.factory.ListableBeanFactory;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Primary;
+import org.springframework.http.MediaType;
+
+import eu.tailoringexpert.Tenant;
+import eu.tailoringexpert.Tenants;
+import eu.tailoringexpert.domain.BaseRequirement;
+import eu.tailoringexpert.domain.Catalog;
+import eu.tailoringexpert.domain.Chapter;
+import eu.tailoringexpert.domain.DRD;
+import eu.tailoringexpert.domain.Document;
+import eu.tailoringexpert.domain.MediaTypeProvider;
+import eu.tailoringexpert.domain.Phase;
+import eu.tailoringexpert.domain.ResourceMapper;
+import eu.tailoringexpert.domain.TailoringRequirement;
+import eu.tailoringexpert.renderer.HTMLTemplateEngine;
+import eu.tailoringexpert.renderer.PDFEngine;
+import eu.tailoringexpert.renderer.RendererRequestConfigurationSupplier;
+import eu.tailoringexpert.repository.ApplicableDocumentRepository;
+import eu.tailoringexpert.repository.BaseCatalogRepository;
+import eu.tailoringexpert.repository.DokumentSigneeRepository;
+import eu.tailoringexpert.repository.LogoRepository;
+import eu.tailoringexpert.repository.ProjectRepository;
+import eu.tailoringexpert.repository.SelectionVectorProfileRepository;
+import eu.tailoringexpert.repository.TailoringIdentifierProviderRepository;
+import eu.tailoringexpert.repository.TailoringRepository;
+import eu.tailoringexpert.requirement.RequirementService;
+import lombok.NonNull;
 
 @Configuration
 public class TailoringConfiguration {
@@ -185,7 +207,7 @@ public class TailoringConfiguration {
     }
 
     @Bean
-    String tenantConfigHome(@Value("${tenantConfigHome}") String tenantConfigHome) {
+    String tenantConfigHome(@Value("${tailoringexpert.home.tenant}") String tenantConfigHome) {
         return tenantConfigHome;
     }
 
@@ -263,7 +285,7 @@ public class TailoringConfiguration {
 
     @Bean
     BiFunction<String, String, Path> tailoringPathProvider(
-        @NonNull @Value("${attachmentHome}") String basedir,
+        @NonNull @Value("${tailoringexpert.home.attachment}") String basedir,
         @NonNull TailoringIdentifierProviderRepository tailoringIdentifierProvider
     ) {
         return new TenantTailoringPathProvider(basedir, tailoringIdentifierProvider);
