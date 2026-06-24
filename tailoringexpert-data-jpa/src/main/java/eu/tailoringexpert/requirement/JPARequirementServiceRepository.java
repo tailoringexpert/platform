@@ -21,21 +21,28 @@
  */
 package eu.tailoringexpert.requirement;
 
-import eu.tailoringexpert.domain.*;
+import static java.util.Comparator.comparing;
+import static java.util.Objects.isNull;
+import static java.util.Optional.empty;
+import static java.util.Optional.of;
+import static java.util.Optional.ofNullable;
+
+import java.util.Collection;
+import java.util.Optional;
+import java.util.function.BiConsumer;
+
+import eu.tailoringexpert.domain.Chapter;
+import eu.tailoringexpert.domain.RequirementChange;
+import eu.tailoringexpert.domain.TailoringCatalogChapterEntity;
+import eu.tailoringexpert.domain.TailoringEntity;
+import eu.tailoringexpert.domain.TailoringRequirement;
+import eu.tailoringexpert.domain.TailoringRequirementEntity;
 import eu.tailoringexpert.repository.ProjectRepository;
 import eu.tailoringexpert.repository.TailoringRequirementChangeRepository;
 import jakarta.transaction.Transactional;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
-
-import java.util.Collection;
-import java.util.Optional;
-import java.util.function.BiConsumer;
-
-import static java.util.Comparator.comparing;
-import static java.util.Objects.isNull;
-import static java.util.Optional.*;
 
 /**
  * Implementation of {@link RequirementServiceRepository}.
@@ -114,12 +121,9 @@ public class JPARequirementServiceRepository implements RequirementServiceReposi
             log.traceExit();
             return empty();
         }
-        TailoringRequirementEntity original = mapper.clone(oRequirement.get());
 
         mapper.updateRequirement(requirement, oRequirement.get());
         Optional<TailoringRequirement> result = of(mapper.toDomain(oRequirement.get()));
-
-        requirementChangeLog.accept(original, oRequirement.get());
 
         log.traceExit();
         return result;
