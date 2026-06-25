@@ -61,128 +61,141 @@ import lombok.extern.log4j.Log4j2;
 @RequiredArgsConstructor
 public class TailoringCatalogPDFDocumentCreator implements DocumentCreator {
 
-    @NonNull
-    private BiFunction<Chapter<TailoringRequirement>, Collection<Phase>, Map<DRD, Set<String>>> drdProvider;
+        @NonNull
+        private BiFunction<Chapter<TailoringRequirement>, Collection<Phase>, Map<DRD, Set<String>>> drdProvider;
 
-    @NonNull
-    private Function<Catalog<TailoringRequirement>, Collection<Document>> applicableDocumentProvider;
+        @NonNull
+        private Function<Catalog<TailoringRequirement>, Collection<Document>> applicableDocumentProvider;
 
-    @NonNull
-    private HTMLTemplateEngine templateEngine;
+        @NonNull
+        private HTMLTemplateEngine templateEngine;
 
-    @NonNull
-    private PDFEngine pdfEngine;
+        @NonNull
+        private PDFEngine pdfEngine;
 
-    private static final String REFERENZ_LOGO_LINK = "<img src=\"%s\" alt=\"%s\"></img><br/>";
+        private static final String REFERENZ_LOGO_LINK = "<img src=\"%s\" alt=\"%s\"></img><br/>";
 
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public File createDocument(String docId,
-            Tailoring tailoring,
-            Map<String, Object> placeholders) {
-        log.traceEntry(() -> docId, () -> tailoring.getCatalog().getVersion(), () -> placeholders);
+        /**
+         * {@inheritDoc}
+         */
+        @Override
+        public File createDocument(String docId,
+                        Tailoring tailoring,
+                        Map<String, Object> placeholders) {
+                log.traceEntry(() -> docId, () -> tailoring.getCatalog().getVersion(), () -> placeholders);
 
-        Map<String, Object> parameter = new HashMap<>(placeholders);
-        parameter.put("catalogVersion", tailoring.getCatalog().getVersion());
+                Map<String, Object> parameter = new HashMap<>(placeholders);
+                parameter.put("catalogVersion", tailoring.getCatalog().getVersion());
 
-        Collection<TailoringCatalogueElement> requirements = new LinkedList<>();
-        parameter.put("requirements", requirements);
+                Collection<TailoringCatalogueElement> chapters = new LinkedList<>();
+                parameter.put("chapters", chapters);
 
-        Collection<DRDElement> drds = new LinkedList<>();
-        parameter.put("drds", drds);
+                Collection<TailoringCatalogueElement> requirements = new LinkedList<>();
+                parameter.put("requirements", requirements);
 
-        Map<String, String> bookmarks = new LinkedHashMap<>();
-        parameter.put("bookmarks", bookmarks);
+                Collection<DRDElement> drds = new LinkedList<>();
+                parameter.put("drds", drds);
 
-        tailoring.getCatalog().getToc().getChapters()
-                .forEach(chapter -> {
-                    bookmarks.put(chapter.getNumber(), chapter.getName());
-                    addChapter(chapter, 1, requirements, placeholders);
-                });
-        addDRD(tailoring.getCatalog().getToc(), drds, tailoring.getPhases());
+                Map<String, String> bookmarks = new LinkedHashMap<>();
+                parameter.put("bookmarks", bookmarks);
 
-        parameter.put("applicableDocuments", applicableDocumentProvider.apply(tailoring.getCatalog()));
+                tailoring.getCatalog().getToc().getChapters()
+                                .forEach(chapter -> {
+                                        bookmarks.put(chapter.getNumber(), chapter.getName());
+                                        addChapter(chapter, 1, chapters, requirements, placeholders);
+                                });
+                addDRD(tailoring.getCatalog().getToc(), drds, tailoring.getPhases());
 
-        parameter.put("signatures", tailoring.getSignatures().stream()
-                .sorted(comparingInt(DocumentSignature::getPosition))
-                .toList());
+                parameter.put("applicableDocuments", applicableDocumentProvider.apply(tailoring.getCatalog()));
 
-        String html = templateEngine.process(tailoring.getCatalog().getVersion() + "/tailoringcatalog", parameter);
-        File result = pdfEngine.process(docId, html, tailoring.getCatalog().getVersion() + "/catalog");
+                parameter.put("signatures", tailoring.getSignatures().stream()
+                                .sorted(comparingInt(DocumentSignature::getPosition))
+                                .toList());
 
-        log.traceExit();
-        return result;
-    }
+                String html = templateEngine.process(tailoring.getCatalog().getVersion() + "/tailoringcatalog",
+                                parameter);
+                File result = pdfEngine.process(docId, html, tailoring.getCatalog().getVersion() + "/catalog");
 
-    /**
-     * Add chapter and all requirement to rows object.
-     * All subchapter will be evaluated as well.
-     *
-     * @param chapter chapter evaluate
-     * @param level   chapter level
-     * @param rows    collection to add elements to
-     */
-    void addChapter(Chapter<TailoringRequirement> chapter, int level, Collection<TailoringCatalogueElement> rows,
-            Map<String, Object> placeholders) {
-        rows.add(TailoringCatalogueElement.builder()
-                .text(templateEngine.toXHTML(chapter.getNumber() + " " + chapter.getName(), emptyMap()))
-                .chapter(chapter.getNumber())
-                .applicable(true)
-                .level(level)
-                .build());
-        chapter.getRequirements()
-                .forEach(requirement -> addRequirement(requirement, rows, placeholders));
-        final AtomicInteger nextLevel = new AtomicInteger(level + 1);
-        chapter.getChapters()
-                .forEach(subChapter -> addChapter(subChapter, nextLevel.get(), rows, placeholders));
-    }
-
-    /**
-     * Add a evaluated requirement to rows collection.
-     *
-     * @param requirement  requirement to build row object of
-     * @param rows         collection to add to
-     * @param placeholders placeholders to use for evaluation in requirement text
-     */
-    void addRequirement(TailoringRequirement requirement, Collection<TailoringCatalogueElement> rows,
-            Map<String, Object> placeholders) {
-        TailoringCatalogueElement.TailoringCatalogueElementBuilder<?, ?> builder = TailoringCatalogueElement.builder();
-        if (nonNull(requirement.getReference())) {
-            builder.reference(templateEngine.toXHTML(requirement.getReference().getText()
-                    + (requirement.getReference().getChanged().booleanValue() ? "(mod)" : ""), emptyMap()));
-            if (nonNull(requirement.getReference().getLogo())) {
-                builder.logo(requirement.getReference().getLogo().getUrl());
-            }
+                log.traceExit();
+                return result;
         }
 
-        rows.add(builder
-                .applicable(requirement.getSelected().booleanValue())
-                .position(templateEngine.toXHTML(requirement.getPosition(), emptyMap()))
-                .text(templateEngine.toXHTML(requirement.getText(), placeholders))
-                .chapter(null)
-                .build());
-    }
+        /**
+         * Add chapter and all requirement to rows object.
+         * All subchapter will be evaluated as well.
+         *
+         * @param chapter chapter evaluate
+         * @param level   chapter level
+         * @param rows    collection to add elements to
+         */
+        void addChapter(Chapter<TailoringRequirement> chapter, int level,
+                        Collection<TailoringCatalogueElement> chapters, Collection<TailoringCatalogueElement> rows,
+                        Map<String, Object> placeholders) {
+                chapters.add(TailoringCatalogueElement.builder()
+                                .text(templateEngine.toXHTML(chapter.getNumber() + " " + chapter.getName(), emptyMap()))
+                                .chapter(chapter.getNumber())
+                                .level(level)
+                                .build());
+                rows.add(TailoringCatalogueElement.builder()
+                                .text(templateEngine.toXHTML(chapter.getNumber() + " " + chapter.getName(), emptyMap()))
+                                .chapter(chapter.getNumber())
+                                .applicable(true)
+                                .level(level)
+                                .build());
+                chapter.getRequirements()
+                                .forEach(requirement -> addRequirement(requirement, rows, placeholders));
+                final AtomicInteger nextLevel = new AtomicInteger(level + 1);
+                chapter.getChapters()
+                                .forEach(subChapter -> addChapter(subChapter, nextLevel.get(), chapters, rows,
+                                                placeholders));
+        }
 
-    /**
-     * Evaluate all applicable DRD in chapter for given phases and add them to row
-     * object.
-     *
-     * @param chapter chapter to retrieve requirements DRDs of
-     * @param rows    object to add DRDs to
-     * @param phases  phase of tailoring to use of applicabilty check
-     */
-    void addDRD(Chapter<TailoringRequirement> chapter, Collection<DRDElement> rows, Collection<Phase> phases) {
-        drdProvider.apply(chapter, phases)
-                .entrySet()
-                .forEach(entry -> rows.add(DRDElement.builder()
-                        .title(entry.getKey().getTitle())
-                        .deliveryDate(entry.getKey().getDeliveryDate())
-                        .requirements(entry.getValue())
-                        .number(entry.getKey().getNumber())
-                        .action(entry.getKey().getAction())
-                        .subtitle(entry.getKey().getSubtitle())
-                        .build()));
-    }
+        /**
+         * Add a evaluated requirement to rows collection.
+         *
+         * @param requirement  requirement to build row object of
+         * @param rows         collection to add to
+         * @param placeholders placeholders to use for evaluation in requirement text
+         */
+        void addRequirement(TailoringRequirement requirement, Collection<TailoringCatalogueElement> rows,
+                        Map<String, Object> placeholders) {
+                TailoringCatalogueElement.TailoringCatalogueElementBuilder<?, ?> builder = TailoringCatalogueElement
+                                .builder();
+                if (nonNull(requirement.getReference())) {
+                        builder.reference(templateEngine.toXHTML(requirement.getReference().getText()
+                                        + (requirement.getReference().getChanged().booleanValue() ? "(mod)" : ""),
+                                        emptyMap()));
+                        if (nonNull(requirement.getReference().getLogo())) {
+                                builder.logo(requirement.getReference().getLogo().getUrl());
+                        }
+                }
+
+                rows.add(builder
+                                .applicable(requirement.getSelected().booleanValue())
+                                .position(templateEngine.toXHTML(requirement.getPosition(), emptyMap()))
+                                .text(templateEngine.toXHTML(requirement.getText(), placeholders))
+                                .chapter(null)
+                                .build());
+        }
+
+        /**
+         * Evaluate all applicable DRD in chapter for given phases and add them to row
+         * object.
+         *
+         * @param chapter chapter to retrieve requirements DRDs of
+         * @param rows    object to add DRDs to
+         * @param phases  phase of tailoring to use of applicabilty check
+         */
+        void addDRD(Chapter<TailoringRequirement> chapter, Collection<DRDElement> rows, Collection<Phase> phases) {
+                drdProvider.apply(chapter, phases)
+                                .entrySet()
+                                .forEach(entry -> rows.add(DRDElement.builder()
+                                                .title(entry.getKey().getTitle())
+                                                .deliveryDate(entry.getKey().getDeliveryDate())
+                                                .requirements(entry.getValue())
+                                                .number(entry.getKey().getNumber())
+                                                .action(entry.getKey().getAction())
+                                                .subtitle(entry.getKey().getSubtitle())
+                                                .build()));
+        }
 }
