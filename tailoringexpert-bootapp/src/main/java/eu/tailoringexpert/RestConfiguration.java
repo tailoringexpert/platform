@@ -33,15 +33,17 @@ import java.util.AbstractMap.SimpleEntry;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
-import java.util.Optional;
 
 import org.springdoc.core.customizers.OperationCustomizer;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.context.properties.bind.Bindable;
+import org.springframework.boot.context.properties.bind.Binder;
 import org.springframework.boot.jackson.autoconfigure.JsonMapperBuilderCustomizer;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
+import org.springframework.core.env.Environment;
 import org.springframework.hateoas.mediatype.MessageResolver;
 import org.springframework.hateoas.mediatype.hal.CurieProvider;
 import org.springframework.hateoas.mediatype.hal.HalConfiguration;
@@ -73,36 +75,35 @@ import tools.jackson.databind.SerializationFeature;
 public class RestConfiguration {
     @Bean
     JsonMapperBuilderCustomizer jacksonCustomizer(Map<Class<?>, Class<?>> mixIns) {
-        return builder ->
-            builder.defaultDateFormat(new SimpleDateFormat("yyyy-MM-dd", GERMANY))
+        return builder -> builder.defaultDateFormat(new SimpleDateFormat("yyyy-MM-dd", GERMANY))
                 .findAndAddModules()
                 .enable(SerializationFeature.INDENT_OUTPUT)
                 .disable(SerializationFeature.FAIL_ON_EMPTY_BEANS)
                 .disable(ACCEPT_EMPTY_ARRAY_AS_NULL_OBJECT)
                 .disable(FAIL_ON_NULL_FOR_PRIMITIVES)
                 .handlerInstantiator(new HalJacksonModule.HalHandlerInstantiator(new EvoInflectorLinkRelationProvider(),
-                    CurieProvider.NONE, MessageResolver.DEFAULTS_ONLY))
-                .withConfigOverride(List.class, cfg ->
-                    cfg.setNullHandling(JsonSetter.Value.forValueNulls(Nulls.AS_EMPTY))
-                )
+                        CurieProvider.NONE, MessageResolver.DEFAULTS_ONLY))
+                .withConfigOverride(List.class,
+                        cfg -> cfg.setNullHandling(JsonSetter.Value.forValueNulls(Nulls.AS_EMPTY)))
                 .addMixIns(mixIns);
     }
- 
+
     @Bean
-    Map<Class<?>, Class<?>> mixIns(@Value("${tailoringexpert.mix-ins:#{T(java.util.Collections).emptyList()}}") List<String> mixIns) {
-        return Optional.ofNullable(mixIns)
-            .stream()
-            .flatMap(List::stream)
-            .map(mixIn -> {
-                String[] config = mixIn.split(":");
-                try {
-                    log.info("Create MixIn {} for {}", config[1], config[0]);
-                    return new SimpleEntry<Class<?>, Class<?>>(Class.forName(config[0]), Class.forName(config[1]));
-                } catch (ClassNotFoundException e) {
-                    throw log.throwing(new RuntimeException(e));
-                }
-            })
-            .collect(toMap(Entry::getKey, Entry::getValue));
+    public Map<Class<?>, Class<?>> mixIns(Environment env) {
+        return Binder.get(env).bind("tailoringexpert.mix-ins", Bindable.listOf(String.class))
+                .orElse(List.of())
+                .stream()
+                .map(mixIn -> {
+                    String[] config = mixIn.split(":");
+                    try {
+                        log.info("Create MixIn {} for {}", config[1], config[0]);
+                        return new SimpleEntry<Class<?>, Class<?>>(Class.forName(config[0]), Class.forName(config[1]));
+                    } catch (ClassNotFoundException e) {
+                        throw log.throwing(new RuntimeException(e));
+                    }
+                })
+                .collect(toMap(Entry::getKey, Entry::getValue));
+
     }
 
     @Bean
@@ -114,11 +115,10 @@ public class RestConfiguration {
     public ByteArrayHttpMessageConverter byteArrayHttpMessageConverter() {
         final ByteArrayHttpMessageConverter result = new ByteArrayHttpMessageConverter();
         result.setSupportedMediaTypes(asList(
-            MediaType.IMAGE_JPEG,
-            MediaType.IMAGE_PNG,
-            MediaType.APPLICATION_OCTET_STREAM,
-            new MediaType("application", "vnd.openxmlformats-officedocument.wordprocessingml.document")
-        ));
+                MediaType.IMAGE_JPEG,
+                MediaType.IMAGE_PNG,
+                MediaType.APPLICATION_OCTET_STREAM,
+                new MediaType("application", "vnd.openxmlformats-officedocument.wordprocessingml.document")));
         return result;
     }
 
@@ -126,7 +126,6 @@ public class RestConfiguration {
     AppController appController(@NonNull ResourceMapper resourceMapper) {
         return new AppController(resourceMapper);
     }
-
 
     @Bean("tenantRequestFilter")
     @Order(Ordered.HIGHEST_PRECEDENCE)
@@ -137,7 +136,8 @@ public class RestConfiguration {
              * {@inheritDoc}
              */
             @Override
-            protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain) throws ServletException, IOException {
+            protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain)
+                    throws ServletException, IOException {
                 final String tenant = request.getHeader("x-tenant");
                 TenantContext.setCurrentTenant(tenant);
                 chain.doFilter(request, response);
@@ -148,27 +148,24 @@ public class RestConfiguration {
     @Bean
     public OpenAPI customOpenAPI(@Value("${tailoringexpert.version}") String version) {
         return new OpenAPI().info(
-            new Info()
-                .title("Tailoring API")
-                .version(version)
-                .description("Tailoringexpert is a multi tenant platform to create easily, fast and reproduceable requirement documentation based on a general requirement catalog on a limited set of parameters, which characterize the specific project.")
-                .license(new License()
-                    .name("GNU General Public License v3.0")
-                    .url("https://www.gnu.org/licenses/gpl-3.0")
-                )
-        );
+                new Info()
+                        .title("Tailoring API")
+                        .version(version)
+                        .description(
+                                "Tailoringexpert is a multi tenant platform to create easily, fast and reproduceable requirement documentation based on a general requirement catalog on a limited set of parameters, which characterize the specific project.")
+                        .license(new License()
+                                .name("GNU General Public License v3.0")
+                                .url("https://www.gnu.org/licenses/gpl-3.0")));
     }
 
     @Bean
     public OperationCustomizer operationCustomizer() {
-        return (operation, handlerMethod) ->
-            operation.addParametersItem(
+        return (operation, handlerMethod) -> operation.addParametersItem(
                 new Parameter()
-                    .in("header")
-                    .required(true)
-                    .description("Tenant using API")
-                    .name("X-Tenant")
-                    .schema(new StringSchema())
-            );
+                        .in("header")
+                        .required(true)
+                        .description("Tenant using API")
+                        .name("X-Tenant")
+                        .schema(new StringSchema()));
     }
 }

@@ -5,7 +5,8 @@ tailoringexpert:
     attachment: ${ATTACHMENT_HOME:target/attachments}
     matrix: ${MATRIX_HOME:target/matrix}
     tenant: ${TENANT_CONFIG_HOME:${user.home}/apps/tailoring/tenants}
-  mix-ins: ${MIXIN:}
+  mix-ins: ${MIXINS:}    
+  # mix-ins: [ "eu.tailoringexpert.domain.TailoringCatalogChapterResource:eu.tailoringexpert.domain.TailoringCatalogChapterResourcePrimevueMixIn" ]
 management:
   endpoints:
     web:
