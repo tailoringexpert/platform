@@ -87,10 +87,10 @@ public class TailoringsDiffPDFDocumentCreatorTest {
     @Test
     void createDocument_TailoringWithDiffs_FileCreated() {
         // arrage
-        Tailoring master = load.apply("src/test/resources/tailoringcatalog.json");
+        Tailoring master = load.apply("src/test/resources/master.json");
         assert nonNull(master);
 
-        Tailoring master1 = load.apply("src/test/resources/rau10.json");
+        Tailoring master1 = load.apply("src/test/resources/master1.json");
         assert nonNull(master1);
 
         Map<String, Object> parameters = Map.ofEntries(
