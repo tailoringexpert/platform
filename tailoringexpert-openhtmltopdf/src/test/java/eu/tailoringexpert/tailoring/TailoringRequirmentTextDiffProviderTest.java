@@ -124,7 +124,7 @@ class TailoringRequirmentTextDiffProviderTest {
 
         // assert
         assertThat(actual).isNotEmpty();
-        assertThat(actual.get().getOther().getSelected()).isEqualTo(false);
+        assertThat(actual.get().getOther().getSelected()).isFalse();
     }
 
 }

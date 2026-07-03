@@ -21,59 +21,6 @@
  */
 package eu.tailoringexpert.tailoring;
 
-import eu.tailoringexpert.ExceptionHandlerAdvice;
-import eu.tailoringexpert.domain.Catalog;
-import eu.tailoringexpert.domain.Chapter;
-import eu.tailoringexpert.domain.FileResource;
-import eu.tailoringexpert.domain.DocumentSignatureResource;
-import eu.tailoringexpert.domain.File;
-import eu.tailoringexpert.domain.DocumentSignature;
-import eu.tailoringexpert.domain.Note;
-import eu.tailoringexpert.domain.NoteResource;
-import eu.tailoringexpert.domain.SelectionVectorProfileResource;
-import eu.tailoringexpert.domain.TailoringCatalogResource;
-import eu.tailoringexpert.domain.PathContext;
-import eu.tailoringexpert.domain.PathContext.PathContextBuilder;
-import eu.tailoringexpert.domain.Project;
-import eu.tailoringexpert.domain.ResourceMapper;
-import eu.tailoringexpert.domain.ScreeningSheet;
-import eu.tailoringexpert.domain.ScreeningSheetResource;
-import eu.tailoringexpert.domain.SelectionVector;
-import eu.tailoringexpert.domain.SelectionVectorProfile;
-import eu.tailoringexpert.domain.SelectionVectorResource;
-import eu.tailoringexpert.domain.Tailoring;
-import eu.tailoringexpert.domain.TailoringRequirement;
-import eu.tailoringexpert.domain.TailoringRequirementResource;
-import eu.tailoringexpert.domain.TailoringInformation;
-import eu.tailoringexpert.domain.TailoringResource;
-import eu.tailoringexpert.domain.TailoringCatalogChapterResource;
-import eu.tailoringexpert.domain.TailoringState;
-import lombok.extern.log4j.Log4j2;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-import org.mockito.ArgumentCaptor;
-import org.springframework.hateoas.Link;
-import org.springframework.hateoas.mediatype.MessageResolver;
-import org.springframework.hateoas.mediatype.hal.CurieProvider;
-import org.springframework.hateoas.mediatype.hal.HalJacksonModule;
-import org.springframework.hateoas.server.core.EvoInflectorLinkRelationProvider;
-import org.springframework.http.ContentDisposition;
-import org.springframework.http.MediaType;
-import org.springframework.http.converter.ByteArrayHttpMessageConverter;
-import org.springframework.http.converter.json.JacksonJsonHttpMessageConverter;
-import org.springframework.mock.web.MockMultipartFile;
-import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.ResultActions;
-import tools.jackson.databind.DeserializationFeature;
-import tools.jackson.databind.SerializationFeature;
-import tools.jackson.databind.json.JsonMapper;
-
-import java.io.InputStream;
-import java.nio.file.Paths;
-import java.text.SimpleDateFormat;
-import java.util.Optional;
-import java.util.function.Function;
-
 import static eu.tailoringexpert.domain.MediaTypeProvider.ATTACHMENT;
 import static eu.tailoringexpert.domain.MediaTypeProvider.FORM_DATA;
 import static java.lang.Boolean.TRUE;
@@ -98,7 +45,14 @@ import static org.springframework.hateoas.MediaTypes.HAL_JSON_VALUE;
 import static org.springframework.http.HttpHeaders.ACCESS_CONTROL_EXPOSE_HEADERS;
 import static org.springframework.http.HttpHeaders.CONTENT_DISPOSITION;
 import static org.springframework.http.HttpHeaders.CONTENT_TYPE;
-import static org.springframework.http.MediaType.*;
+import static org.springframework.http.MediaType.APPLICATION_FORM_URLENCODED;
+import static org.springframework.http.MediaType.APPLICATION_FORM_URLENCODED_VALUE;
+import static org.springframework.http.MediaType.APPLICATION_JSON;
+import static org.springframework.http.MediaType.APPLICATION_OCTET_STREAM;
+import static org.springframework.http.MediaType.APPLICATION_PDF;
+import static org.springframework.http.MediaType.IMAGE_JPEG;
+import static org.springframework.http.MediaType.IMAGE_PNG;
+import static org.springframework.http.MediaType.MULTIPART_FORM_DATA;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.multipart;
@@ -108,6 +62,60 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.header;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.springframework.test.web.servlet.setup.MockMvcBuilders.standaloneSetup;
+
+import java.io.InputStream;
+import java.nio.file.Paths;
+import java.text.SimpleDateFormat;
+import java.util.Optional;
+import java.util.function.Function;
+
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.mockito.ArgumentCaptor;
+import org.springframework.hateoas.Link;
+import org.springframework.hateoas.mediatype.MessageResolver;
+import org.springframework.hateoas.mediatype.hal.CurieProvider;
+import org.springframework.hateoas.mediatype.hal.HalJacksonModule;
+import org.springframework.hateoas.server.core.EvoInflectorLinkRelationProvider;
+import org.springframework.http.ContentDisposition;
+import org.springframework.http.MediaType;
+import org.springframework.http.converter.ByteArrayHttpMessageConverter;
+import org.springframework.http.converter.json.JacksonJsonHttpMessageConverter;
+import org.springframework.mock.web.MockMultipartFile;
+import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.ResultActions;
+
+import eu.tailoringexpert.ExceptionHandlerAdvice;
+import eu.tailoringexpert.domain.Catalog;
+import eu.tailoringexpert.domain.Chapter;
+import eu.tailoringexpert.domain.DocumentSignature;
+import eu.tailoringexpert.domain.DocumentSignatureResource;
+import eu.tailoringexpert.domain.File;
+import eu.tailoringexpert.domain.FileResource;
+import eu.tailoringexpert.domain.Note;
+import eu.tailoringexpert.domain.NoteResource;
+import eu.tailoringexpert.domain.PathContext;
+import eu.tailoringexpert.domain.PathContext.PathContextBuilder;
+import eu.tailoringexpert.domain.Project;
+import eu.tailoringexpert.domain.ResourceMapper;
+import eu.tailoringexpert.domain.ScreeningSheet;
+import eu.tailoringexpert.domain.ScreeningSheetResource;
+import eu.tailoringexpert.domain.SelectionVector;
+import eu.tailoringexpert.domain.SelectionVectorProfile;
+import eu.tailoringexpert.domain.SelectionVectorProfileResource;
+import eu.tailoringexpert.domain.SelectionVectorResource;
+import eu.tailoringexpert.domain.Tailoring;
+import eu.tailoringexpert.domain.TailoringCatalogChapterResource;
+import eu.tailoringexpert.domain.TailoringCatalogResource;
+import eu.tailoringexpert.domain.TailoringInformation;
+import eu.tailoringexpert.domain.TailoringRequirement;
+import eu.tailoringexpert.domain.TailoringRequirementResource;
+import eu.tailoringexpert.domain.TailoringResource;
+import eu.tailoringexpert.domain.TailoringState;
+import lombok.extern.log4j.Log4j2;
+import tools.jackson.databind.DeserializationFeature;
+import tools.jackson.databind.SerializationFeature;
+import tools.jackson.databind.json.JsonMapper;
 
 @Log4j2
 class TailoringControllerTest {
@@ -131,34 +139,33 @@ class TailoringControllerTest {
         this.mapperMock = mock(ResourceMapper.class);
 
         this.objectMapper = JsonMapper.builder()
-            .defaultDateFormat(new SimpleDateFormat("yyyy-MM-dd", GERMANY))
-            .addModule(new HalJacksonModule())
-            .enable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES)
-            .disable(SerializationFeature.FAIL_ON_EMPTY_BEANS)
-            .handlerInstantiator(new HalJacksonModule.HalHandlerInstantiator(new EvoInflectorLinkRelationProvider(),
-                CurieProvider.NONE, MessageResolver.DEFAULTS_ONLY))
-            .build();
+                .defaultDateFormat(new SimpleDateFormat("yyyy-MM-dd", GERMANY))
+                .addModule(new HalJacksonModule())
+                .enable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES)
+                .disable(SerializationFeature.FAIL_ON_EMPTY_BEANS)
+                .handlerInstantiator(new HalJacksonModule.HalHandlerInstantiator(new EvoInflectorLinkRelationProvider(),
+                        CurieProvider.NONE, MessageResolver.DEFAULTS_ONLY))
+                .build();
 
         ByteArrayHttpMessageConverter byteArrayHttpMessageConverter = new ByteArrayHttpMessageConverter();
         byteArrayHttpMessageConverter.setSupportedMediaTypes(asList(
-            IMAGE_JPEG,
-            IMAGE_PNG,
-            APPLICATION_OCTET_STREAM,
-            APPLICATION_PDF,
-            new MediaType("application", "vnd.openxmlformats-officedocument.wordprocessingml.document")
-        ));
+                IMAGE_JPEG,
+                IMAGE_PNG,
+                APPLICATION_OCTET_STREAM,
+                APPLICATION_PDF,
+                new MediaType("application", "vnd.openxmlformats-officedocument.wordprocessingml.document")));
 
         this.mockMvc = standaloneSetup(new TailoringController(
-            mapperMock,
-            serviceMock,
-            repositoryMock,
-            attachmentServiceMock,
-            mediaTypeProviderMock))
-            .setControllerAdvice(new ExceptionHandlerAdvice())
-            .setMessageConverters(
-                new JacksonJsonHttpMessageConverter(objectMapper),
-                byteArrayHttpMessageConverter)
-            .build()
+                mapperMock,
+                serviceMock,
+                repositoryMock,
+                attachmentServiceMock,
+                mediaTypeProviderMock))
+                .setControllerAdvice(new ExceptionHandlerAdvice())
+                .setMessageConverters(
+                        new JacksonJsonHttpMessageConverter(objectMapper),
+                        byteArrayHttpMessageConverter)
+                .build()
 
         ;
     }
@@ -169,9 +176,9 @@ class TailoringControllerTest {
         given(serviceMock.getCatalog("SAMPLE", "master")).willReturn(empty());
 
         // act
-        ResultActions actual = mockMvc.perform(get("/project/{project}/tailoring/{tailoring}/catalog", "SAMPLE", "master")
-            .accept(HAL_JSON_VALUE)
-        );
+        ResultActions actual = mockMvc
+                .perform(get("/project/{project}/tailoring/{tailoring}/catalog", "SAMPLE", "master")
+                        .accept(HAL_JSON_VALUE));
 
         // assert
         actual.andExpect(status().isNotFound());
@@ -184,26 +191,27 @@ class TailoringControllerTest {
     void getCatalog_TailoringExists_StateOk() throws Exception {
         // arrange
         Catalog<TailoringRequirement> catalog = Catalog.<TailoringRequirement>builder()
-            .toc(Chapter.<TailoringRequirement>builder().build())
-            .build();
+                .toc(Chapter.<TailoringRequirement>builder().build())
+                .build();
         given(serviceMock.getCatalog("SAMPLE", "master"))
-            .willReturn(Optional.of(catalog));
+                .willReturn(Optional.of(catalog));
 
         ArgumentCaptor<PathContextBuilder> pathContextCaptor = forClass(PathContextBuilder.class);
         given(mapperMock.toResource(pathContextCaptor.capture(), eq(catalog)))
-            .willReturn(TailoringCatalogResource.builder().build());
+                .willReturn(TailoringCatalogResource.builder().build());
 
         // act
-        ResultActions actual = mockMvc.perform(get("/project/{project}/tailoring/{tailoring}/catalog", "SAMPLE", "master")
-            .accept(HAL_JSON_VALUE)
-        );
+        ResultActions actual = mockMvc
+                .perform(get("/project/{project}/tailoring/{tailoring}/catalog", "SAMPLE", "master")
+                        .accept(HAL_JSON_VALUE));
 
         // assert
         actual.andExpect(status().isOk());
 
         verify(serviceMock, times(1)).getCatalog("SAMPLE", "master");
         verify(mapperMock, times(1)).toResource(pathContextCaptor.capture(), eq(catalog));
-        assertThat(pathContextCaptor.getValue().build()).isEqualTo(PathContext.builder().project("SAMPLE").tailoring("master").build());
+        assertThat(pathContextCaptor.getValue().build())
+                .isEqualTo(PathContext.builder().project("SAMPLE").tailoring("master").build());
     }
 
     @Test
@@ -212,7 +220,8 @@ class TailoringControllerTest {
         given(serviceMock.getChapter("SAMPLE", "master", "1.1")).willReturn(empty());
 
         // act
-        ResultActions actual = mockMvc.perform(get("/project/{project}/tailoring/{tailoring}/catalog/{chapter}", "SAMPLE", "master", "1.1"));
+        ResultActions actual = mockMvc
+                .perform(get("/project/{project}/tailoring/{tailoring}/catalog/{chapter}", "SAMPLE", "master", "1.1"));
 
         // assert
         actual.andExpect(status().isNotFound());
@@ -225,26 +234,27 @@ class TailoringControllerTest {
     void getChapter_TailoringExists_StateOk() throws Exception {
         // arrange
         Chapter<TailoringRequirement> gruppe = Chapter.<TailoringRequirement>builder()
-            .number("1.1")
-            .build();
+                .number("1.1")
+                .build();
         given(serviceMock.getChapter("SAMPLE", "master", "1.1"))
-            .willReturn(Optional.of(gruppe));
+                .willReturn(Optional.of(gruppe));
 
         ArgumentCaptor<PathContextBuilder> pathContextCaptor = forClass(PathContextBuilder.class);
         given(mapperMock.toResource(pathContextCaptor.capture(), eq(gruppe)))
-            .willReturn(TailoringCatalogChapterResource.builder().build());
+                .willReturn(TailoringCatalogChapterResource.builder().build());
 
         // act
-        ResultActions actual = mockMvc.perform(get("/project/{project}/tailoring/{tailoring}/catalog/{chapter}", "SAMPLE", "master", "1.1")
-            .accept(HAL_JSON_VALUE)
-        );
+        ResultActions actual = mockMvc
+                .perform(get("/project/{project}/tailoring/{tailoring}/catalog/{chapter}", "SAMPLE", "master", "1.1")
+                        .accept(HAL_JSON_VALUE));
 
         // assert
         actual.andExpect(status().isOk());
 
         verify(serviceMock, times(1)).getChapter("SAMPLE", "master", "1.1");
         verify(mapperMock, times(1)).toResource(pathContextCaptor.capture(), eq(gruppe));
-        assertThat(pathContextCaptor.getValue().build()).isEqualTo(PathContext.builder().project("SAMPLE").tailoring("master").build());
+        assertThat(pathContextCaptor.getValue().build())
+                .isEqualTo(PathContext.builder().project("SAMPLE").tailoring("master").build());
     }
 
     @Test
@@ -252,23 +262,24 @@ class TailoringControllerTest {
         // arrange
         ScreeningSheet screeningSheet = ScreeningSheet.builder().build();
         given(serviceMock.getScreeningSheet("SAMPLE", "master"))
-            .willReturn(Optional.of(screeningSheet));
+                .willReturn(Optional.of(screeningSheet));
 
         ArgumentCaptor<PathContextBuilder> pathContextCaptor = forClass(PathContextBuilder.class);
         given(mapperMock.toResource(pathContextCaptor.capture(), eq(screeningSheet)))
-            .willReturn(ScreeningSheetResource.builder().build());
+                .willReturn(ScreeningSheetResource.builder().build());
 
         // act
-        ResultActions actual = mockMvc.perform(get("/project/{project}/tailoring/{tailoring}/screeningsheet", "SAMPLE", "master")
-            .accept(HAL_JSON_VALUE)
-        );
+        ResultActions actual = mockMvc
+                .perform(get("/project/{project}/tailoring/{tailoring}/screeningsheet", "SAMPLE", "master")
+                        .accept(HAL_JSON_VALUE));
 
         // assert
         actual.andExpect(status().isOk());
 
         verify(serviceMock, times(1)).getScreeningSheet("SAMPLE", "master");
         verify(mapperMock, times(1)).toResource(pathContextCaptor.capture(), eq(screeningSheet));
-        assertThat(pathContextCaptor.getValue().build()).isEqualTo(PathContext.builder().project("SAMPLE").tailoring("master").build());
+        assertThat(pathContextCaptor.getValue().build())
+                .isEqualTo(PathContext.builder().project("SAMPLE").tailoring("master").build());
     }
 
     @Test
@@ -277,9 +288,9 @@ class TailoringControllerTest {
         given(serviceMock.getScreeningSheet("SAMPLE", "master")).willReturn(empty());
 
         // act
-        ResultActions actual = mockMvc.perform(get("/project/{project}/tailoring/{tailoring}/screeningsheet", "SAMPLE", "master")
-            .accept(HAL_JSON_VALUE)
-        );
+        ResultActions actual = mockMvc
+                .perform(get("/project/{project}/tailoring/{tailoring}/screeningsheet", "SAMPLE", "master")
+                        .accept(HAL_JSON_VALUE));
 
         // assert
         actual.andExpect(status().isNotFound());
@@ -292,7 +303,8 @@ class TailoringControllerTest {
         given(repositoryMock.getScreeningSheetFile("SAMPLE", "master")).willReturn(empty());
 
         // act
-        ResultActions actual = mockMvc.perform(get("/project/{project}/tailoring/{tailoring}/screeningsheet/pdf", "SAMPLE", "master"));
+        ResultActions actual = mockMvc
+                .perform(get("/project/{project}/tailoring/{tailoring}/screeningsheet/pdf", "SAMPLE", "master"));
 
         // assert
         actual.andExpect(status().isNotFound());
@@ -309,18 +321,19 @@ class TailoringControllerTest {
         }
 
         given(repositoryMock.getScreeningSheetFile("SAMPLE", "master"))
-            .willReturn(Optional.of(data));
+                .willReturn(Optional.of(data));
 
         // act
-        ResultActions actual = mockMvc.perform(get("/project/{project}/tailoring/{tailoring}/screeningsheet/pdf", "SAMPLE", "master")
-            .accept("application/pdf")
-        );
+        ResultActions actual = mockMvc
+                .perform(get("/project/{project}/tailoring/{tailoring}/screeningsheet/pdf", "SAMPLE", "master")
+                        .accept("application/pdf"));
 
         // assert
         actual.andExpect(status().isOk())
-            .andExpect(header().string(CONTENT_TYPE, "application/pdf"));
-        actual.andExpect(header().string("Content-Disposition", "form-data; name=\"attachment\"; filename=\"screeningsheet.pdf\""))
-            .andExpect(header().string("Access-Control-Expose-Headers", "Content-Disposition"));
+                .andExpect(header().string(CONTENT_TYPE, "application/pdf"));
+        actual.andExpect(header().string("Content-Disposition",
+                "form-data; name=\"attachment\"; filename=\"screeningsheet.pdf\""))
+                .andExpect(header().string("Access-Control-Expose-Headers", "Content-Disposition"));
 
         verify(repositoryMock, times(1)).getScreeningSheetFile("SAMPLE", "master");
     }
@@ -331,7 +344,8 @@ class TailoringControllerTest {
         given(serviceMock.getSelectionVector("SAMPLE", "master")).willReturn(empty());
 
         // act
-        ResultActions actual = mockMvc.perform(get("/project/{project}/tailoring/{tailoring}/selectionvector", "SAMPLE", "master"));
+        ResultActions actual = mockMvc
+                .perform(get("/project/{project}/tailoring/{tailoring}/selectionvector", "SAMPLE", "master"));
 
         // assert
         actual.andExpect(status().isNotFound());
@@ -348,19 +362,20 @@ class TailoringControllerTest {
 
         ArgumentCaptor<PathContextBuilder> pathContextCaptor = forClass(PathContextBuilder.class);
         given(mapperMock.toResource(pathContextCaptor.capture(), eq(selectionVector)))
-            .willReturn(SelectionVectorResource.builder().build());
+                .willReturn(SelectionVectorResource.builder().build());
 
         // act
-        ResultActions actual = mockMvc.perform(get("/project/{project}/tailoring/{tailoring}/selectionvector", "SAMPLE", "master")
-            .accept(HAL_JSON_VALUE)
-        );
+        ResultActions actual = mockMvc
+                .perform(get("/project/{project}/tailoring/{tailoring}/selectionvector", "SAMPLE", "master")
+                        .accept(HAL_JSON_VALUE));
 
         // assert
         actual.andExpect(status().isOk());
 
         verify(serviceMock, times(1)).getSelectionVector("SAMPLE", "master");
         verify(mapperMock, times(1)).toResource(pathContextCaptor.capture(), eq(selectionVector));
-        assertThat(pathContextCaptor.getValue().build()).isEqualTo(PathContext.builder().project("SAMPLE").tailoring("master").build());
+        assertThat(pathContextCaptor.getValue().build())
+                .isEqualTo(PathContext.builder().project("SAMPLE").tailoring("master").build());
     }
 
     @Test
@@ -368,36 +383,35 @@ class TailoringControllerTest {
         // arrange
         Tailoring tailoring = Tailoring.builder().name("master").build();
         given(repositoryMock.getTailoring("SAMPLE", "master"))
-            .willReturn(Optional.of(tailoring));
+                .willReturn(Optional.of(tailoring));
 
         ArgumentCaptor<PathContextBuilder> pathContextCaptor = forClass(PathContextBuilder.class);
         given(mapperMock.toResource(pathContextCaptor.capture(), eq(tailoring)))
-            .willReturn(TailoringResource.builder().build());
+                .willReturn(TailoringResource.builder().build());
 
         // act
         ResultActions actual = mockMvc.perform(get("/project/{project}/tailoring/{tailoring}", "SAMPLE", "master")
-            .contentType(APPLICATION_JSON)
-            .accept(HAL_JSON_VALUE)
-        );
+                .contentType(APPLICATION_JSON)
+                .accept(HAL_JSON_VALUE));
 
         // assert
         actual.andExpect(status().isOk());
         verify(repositoryMock, times(1)).getTailoring("SAMPLE", "master");
         verify(mapperMock, times(1)).toResource(pathContextCaptor.capture(), eq(tailoring));
-        assertThat(pathContextCaptor.getValue().build()).isEqualTo(PathContext.builder().project("SAMPLE").tailoring("master").build());
+        assertThat(pathContextCaptor.getValue().build())
+                .isEqualTo(PathContext.builder().project("SAMPLE").tailoring("master").build());
     }
 
     @Test
     void getTailoring_TailoringNotExists_StateNotFound() throws Exception {
         // arrange
         given(repositoryMock.getProject("SAMPLE"))
-            .willReturn(Optional.of(Project.builder().tailoring(Tailoring.builder().build()).build()));
+                .willReturn(Optional.of(Project.builder().tailoring(Tailoring.builder().build()).build()));
 
         // act
         ResultActions actual = mockMvc.perform(get("/project/{project}/tailoring/{tailoring}", "SAMPLE2", "master")
-            .contentType(APPLICATION_JSON)
-            .accept(HAL_JSON_VALUE)
-        );
+                .contentType(APPLICATION_JSON)
+                .accept(HAL_JSON_VALUE));
 
         // assert
         actual.andExpect(status().isNotFound());
@@ -414,31 +428,31 @@ class TailoringControllerTest {
         }
 
         MockMultipartFile dokument = new MockMultipartFile("file", "DUMMY_CM.pdf",
-            "text/plain", data);
+                "text/plain", data);
 
         Tailoring tailoring = Tailoring.builder()
-            .name("master")
-            .build();
+                .name("master")
+                .build();
 
         File toSave = File.builder().name("DUMMY_CM.pdf").data(data).build();
         given(attachmentServiceMock.save("SAMPLE", "master", toSave))
-            .willReturn(Optional.of(toSave));
+                .willReturn(Optional.of(toSave));
 
         ArgumentCaptor<PathContextBuilder> pathContextCaptor = forClass(PathContextBuilder.class);
         given(mapperMock.toResource(pathContextCaptor.capture(), eq(tailoring)))
-            .willReturn(TailoringResource.builder().build());
+                .willReturn(TailoringResource.builder().build());
 
         // act
-        ResultActions actual = mockMvc.perform(multipart("/project/{project}/tailoring/{tailoring}/attachment", "SAMPLE", "master")
-            .file(dokument)
-            .contentType(MULTIPART_FORM_DATA)
-            .accept("application/hal+json")
-        );
+        ResultActions actual = mockMvc
+                .perform(multipart("/project/{project}/tailoring/{tailoring}/attachment", "SAMPLE", "master")
+                        .file(dokument)
+                        .contentType(MULTIPART_FORM_DATA)
+                        .accept("application/hal+json"));
 
         // assert
         actual
-            .andExpect(status().isCreated())
-            .andExpect(header().string("Location", "/project/SAMPLE/tailoring/master/attachment/DUMMY_CM.pdf"));
+                .andExpect(status().isCreated())
+                .andExpect(header().string("Location", "/project/SAMPLE/tailoring/master/attachment/DUMMY_CM.pdf"));
 
         verify(attachmentServiceMock, times(1)).save("SAMPLE", "master", toSave);
     }
@@ -453,18 +467,18 @@ class TailoringControllerTest {
         }
 
         MockMultipartFile dokument = new MockMultipartFile("file", "DUMMY_CM.pdf",
-            "text/plain", data);
+                "text/plain", data);
 
         File toSave = File.builder().name("DUMMY_CM.pdf").data(data).build();
         given(attachmentServiceMock.save("SAMPLE", "master", toSave))
-            .willReturn(empty());
+                .willReturn(empty());
 
         // act
-        ResultActions actual = mockMvc.perform(multipart("/project/{project}/tailoring/{tailoring}/attachment", "SAMPLE", "master")
-            .file(dokument)
-            .contentType(MULTIPART_FORM_DATA)
-            .accept("application/hal+json")
-        );
+        ResultActions actual = mockMvc
+                .perform(multipart("/project/{project}/tailoring/{tailoring}/attachment", "SAMPLE", "master")
+                        .file(dokument)
+                        .contentType(MULTIPART_FORM_DATA)
+                        .accept("application/hal+json"));
 
         // assert
         actual.andExpect(status().isNotFound());
@@ -480,11 +494,10 @@ class TailoringControllerTest {
         // arrange
         given(serviceMock.createRequirementDocument("SAMPLE", "master")).willReturn(empty());
 
-
         // act
-        ResultActions actual = mockMvc.perform(get("/project/{project}/tailoring/{tailoring}/document/catalog", "SAMPLE", "master")
-            .accept("application/pdf")
-        );
+        ResultActions actual = mockMvc
+                .perform(get("/project/{project}/tailoring/{tailoring}/document/catalog", "SAMPLE", "master")
+                        .accept("application/pdf"));
 
         // assert
         actual.andExpect(status().isNotFound());
@@ -502,22 +515,22 @@ class TailoringControllerTest {
         }
 
         given(serviceMock.createRequirementDocument("SAMPLE", "master"))
-            .willReturn(Optional.of(File.builder()
-                .name("DUMMY-RD-PS-DLR-1000-DV-8.2.1_01.01.2021_Product Assurance Safety Sustainability Requirements for DUMMY.pdf")
-                .data(data)
-                .build()
-            ));
+                .willReturn(Optional.of(File.builder()
+                        .name("DUMMY-RD-PS-DLR-1000-DV-8.2.1_01.01.2021_Product Assurance Safety Sustainability Requirements for DUMMY.pdf")
+                        .data(data)
+                        .build()));
 
         // act
-        ResultActions actual = mockMvc.perform(get("/project/{project}/tailoring/{tailoring}/document/catalog", "SAMPLE", "master")
-            .accept("application/pdf")
-        );
+        ResultActions actual = mockMvc
+                .perform(get("/project/{project}/tailoring/{tailoring}/document/catalog", "SAMPLE", "master")
+                        .accept("application/pdf"));
 
         // assert
         actual.andExpect(status().isOk())
-            .andExpect(header().string(CONTENT_TYPE, "application/pdf"));
-        actual.andExpect(header().string("Content-Disposition", "form-data; name=\"attachment\"; filename=\"DUMMY-RD-PS-DLR-1000-DV-8.2.1_01.01.2021_Product Assurance Safety Sustainability Requirements for DUMMY.pdf\""))
-            .andExpect(header().string("Access-Control-Expose-Headers", "Content-Disposition"));
+                .andExpect(header().string(CONTENT_TYPE, "application/pdf"));
+        actual.andExpect(header().string("Content-Disposition",
+                "form-data; name=\"attachment\"; filename=\"DUMMY-RD-PS-DLR-1000-DV-8.2.1_01.01.2021_Product Assurance Safety Sustainability Requirements for DUMMY.pdf\""))
+                .andExpect(header().string("Access-Control-Expose-Headers", "Content-Disposition"));
 
         assertThatNoException();
     }
@@ -528,9 +541,9 @@ class TailoringControllerTest {
         given(serviceMock.createRequirementDocument("SAMPLE", "master")).willReturn(empty());
 
         // act
-        ResultActions actual = mockMvc.perform(get("/project/{project}/tailoring/{tailoring}/document", "SAMPLE", "master")
-            .accept("application/zip")
-        );
+        ResultActions actual = mockMvc
+                .perform(get("/project/{project}/tailoring/{tailoring}/document", "SAMPLE", "master")
+                        .accept("application/zip"));
 
         // assert
 
@@ -542,76 +555,79 @@ class TailoringControllerTest {
     void getRequirements_ChapterExists_StateOk() throws Exception {
         // arrange
         TailoringRequirement anforderung = TailoringRequirement.builder()
-            .position("a")
-            .selected(TRUE)
-            .build();
+                .position("a")
+                .selected(TRUE)
+                .build();
         given(serviceMock.getRequirements("SAMPLE", "master", "1.1"))
-            .willReturn(Optional.of(of(anforderung)));
+                .willReturn(Optional.of(of(anforderung)));
 
         ArgumentCaptor<TailoringRequirement> anforderungCaptor = forClass(TailoringRequirement.class);
         ArgumentCaptor<PathContextBuilder> pathContextCaptor = forClass(PathContextBuilder.class);
-        given(mapperMock.toResource(pathContextCaptor.capture(), anforderungCaptor.capture())).willReturn(TailoringRequirementResource.builder().build());
+        given(mapperMock.toResource(pathContextCaptor.capture(), anforderungCaptor.capture()))
+                .willReturn(TailoringRequirementResource.builder().build());
 
         // act
-        ResultActions actual = mockMvc.perform(get("/project/{project}/tailoring/{tailoring}/catalog/{chapter}/requirement", "SAMPLE", "master", "1.1")
-            .accept(HAL_JSON_VALUE)
-        );
+        ResultActions actual = mockMvc.perform(
+                get("/project/{project}/tailoring/{tailoring}/catalog/{chapter}/requirement", "SAMPLE", "master", "1.1")
+                        .accept(HAL_JSON_VALUE));
 
         // assert
         actual.andExpect(status().isOk());
 
         verify(mapperMock, times(1)).toResource(pathContextCaptor.capture(), anforderungCaptor.capture());
         assertThat(anforderungCaptor.getValue()).isEqualTo(anforderung);
-        assertThat(pathContextCaptor.getValue().build()).isEqualTo(PathContext.builder().project("SAMPLE").tailoring("master").chapter("1.1").build());
+        assertThat(pathContextCaptor.getValue().build())
+                .isEqualTo(PathContext.builder().project("SAMPLE").tailoring("master").chapter("1.1").build());
     }
 
     @Test
     void getSigntures_TailoringExists_StateOk() throws Exception {
         // arrange
         DocumentSignature zeichnung = DocumentSignature.builder()
-            .faculty("Software")
-            .build();
+                .faculty("Software")
+                .build();
         given(serviceMock.getDocumentSignatures("SAMPLE", "master"))
-            .willReturn(Optional.of(of(zeichnung)));
+                .willReturn(Optional.of(of(zeichnung)));
 
         ArgumentCaptor<PathContextBuilder> pathContextCaptor = forClass(PathContextBuilder.class);
         given(mapperMock.toResource(pathContextCaptor.capture(), eq(zeichnung)))
-            .willReturn(DocumentSignatureResource.builder().build());
+                .willReturn(DocumentSignatureResource.builder().build());
 
         // act
-        ResultActions actual = mockMvc.perform(get("/project/{project}/tailoring/{tailoring}/signature", "SAMPLE", "master")
-            .accept(HAL_JSON_VALUE)
-        );
+        ResultActions actual = mockMvc
+                .perform(get("/project/{project}/tailoring/{tailoring}/signature", "SAMPLE", "master")
+                        .accept(HAL_JSON_VALUE));
 
         // assert
         actual.andExpect(status().isOk());
 
         verify(serviceMock, times(1)).getDocumentSignatures("SAMPLE", "master");
         verify(mapperMock, times(1)).toResource(pathContextCaptor.capture(), eq(zeichnung));
-        assertThat(pathContextCaptor.getValue().build()).isEqualTo(PathContext.builder().project("SAMPLE").tailoring("master").build());
+        assertThat(pathContextCaptor.getValue().build())
+                .isEqualTo(PathContext.builder().project("SAMPLE").tailoring("master").build());
     }
 
     @Test
     void updateDocumentSignature_TailoringNotExists_StateNotFound() throws Exception {
         // arrange
         DocumentSignature zeichnung = DocumentSignature.builder()
-            .faculty("Software")
-            .build();
+                .faculty("Software")
+                .build();
 
         given(serviceMock.updateDocumentSignature("SAMPLE", "master", zeichnung))
-            .willReturn(empty());
+                .willReturn(empty());
 
         ArgumentCaptor<PathContextBuilder> pathContextCaptor = forClass(PathContextBuilder.class);
         given(mapperMock.toResource(pathContextCaptor.capture(), eq(zeichnung)))
-            .willReturn(DocumentSignatureResource.builder().build());
+                .willReturn(DocumentSignatureResource.builder().build());
 
         // act
-        ResultActions actual = mockMvc.perform(put("/project/{project}/tailoring/{tailoring}/signature/{faculty}", "SAMPLE", "master", "Software")
-            .accept(HAL_JSON_VALUE)
-            .content(objectMapper.writeValueAsString(zeichnung))
-            .contentType(APPLICATION_JSON)
-            .characterEncoding(UTF_8.displayName())
-        );
+        ResultActions actual = mockMvc.perform(
+                put("/project/{project}/tailoring/{tailoring}/signature/{faculty}", "SAMPLE", "master", "Software")
+                        .accept(HAL_JSON_VALUE)
+                        .content(objectMapper.writeValueAsString(zeichnung))
+                        .contentType(APPLICATION_JSON)
+                        .characterEncoding(UTF_8.displayName()));
 
         // assert
         actual.andExpect(status().isNotFound());
@@ -622,72 +638,73 @@ class TailoringControllerTest {
     void updateDocumentSignature_TailoringNotExists_StateOk() throws Exception {
         // arrange
         DocumentSignature zeichnung = DocumentSignature.builder()
-            .faculty("Software")
-            .build();
+                .faculty("Software")
+                .build();
         given(serviceMock.updateDocumentSignature("SAMPLE", "master", zeichnung))
-            .willReturn(Optional.of(zeichnung));
+                .willReturn(Optional.of(zeichnung));
 
         ArgumentCaptor<PathContextBuilder> pathContextCaptor = forClass(PathContextBuilder.class);
         given(mapperMock.toResource(pathContextCaptor.capture(), eq(zeichnung)))
-            .willReturn(DocumentSignatureResource.builder().build());
+                .willReturn(DocumentSignatureResource.builder().build());
 
         // act
-        ResultActions actual = mockMvc.perform(put("/project/{project}/tailoring/{tailoring}/signature/{faculty}", "SAMPLE", "master", "Software")
-            .accept(HAL_JSON_VALUE)
-            .content(objectMapper.writeValueAsString(zeichnung))
-            .contentType(APPLICATION_JSON)
-            .characterEncoding(UTF_8.displayName())
-        );
+        ResultActions actual = mockMvc.perform(
+                put("/project/{project}/tailoring/{tailoring}/signature/{faculty}", "SAMPLE", "master", "Software")
+                        .accept(HAL_JSON_VALUE)
+                        .content(objectMapper.writeValueAsString(zeichnung))
+                        .contentType(APPLICATION_JSON)
+                        .characterEncoding(UTF_8.displayName()));
 
         // assert
         actual.andExpect(status().isOk());
 
         verify(serviceMock, times(1)).updateDocumentSignature("SAMPLE", "master", zeichnung);
         verify(mapperMock, times(1)).toResource(pathContextCaptor.capture(), eq(zeichnung));
-        assertThat(pathContextCaptor.getValue().build()).isEqualTo(PathContext.builder().project("SAMPLE").tailoring("master").build());
+        assertThat(pathContextCaptor.getValue().build())
+                .isEqualTo(PathContext.builder().project("SAMPLE").tailoring("master").build());
     }
 
     @Test
     void putName_TailoringExistsNewNameNotUsed_StateOk() throws Exception {
         // arrange
         TailoringInformation projektPhase = TailoringInformation.builder()
-            .name("test")
-            .build();
+                .name("test")
+                .build();
         given(serviceMock.updateName("SAMPLE", "master", "test"))
-            .willReturn(Optional.of(projektPhase));
+                .willReturn(Optional.of(projektPhase));
 
         ArgumentCaptor<PathContextBuilder> pathContextCaptor = forClass(PathContextBuilder.class);
         given(mapperMock.toResource(pathContextCaptor.capture(), eq(projektPhase)))
-            .willReturn(TailoringResource.builder().build());
+                .willReturn(TailoringResource.builder().build());
 
         // act
         ResultActions actual = mockMvc.perform(put("/project/{project}/tailoring/{tailoring}/name", "SAMPLE", "master")
-            .accept(HAL_JSON_VALUE)
-            .param("name", "test")
-            .contentType(APPLICATION_FORM_URLENCODED_VALUE)
-            .characterEncoding(UTF_8.displayName())
-        );
+                .accept(HAL_JSON_VALUE)
+                .param("name", "test")
+                .contentType(APPLICATION_FORM_URLENCODED_VALUE)
+                .characterEncoding(UTF_8.displayName()));
 
         // assert
         actual.andExpect(status().isOk());
 
         verify(serviceMock, times(1)).updateName("SAMPLE", "master", "test");
         verify(mapperMock, times(1)).toResource(pathContextCaptor.capture(), eq(projektPhase));
-        assertThat(pathContextCaptor.getValue().build()).isEqualTo(PathContext.builder().project("SAMPLE").tailoring("test").build());
+        assertThat(pathContextCaptor.getValue().build())
+                .isEqualTo(PathContext.builder().project("SAMPLE").tailoring("test").build());
     }
 
     @Test
     void putName_TailoringNotExists_StateNotFound() throws Exception {
         // arrange
         given(serviceMock.updateName("SAMPLE", "master", "test"))
-            .willReturn(empty());
+                .willReturn(empty());
 
         // act
         ResultActions actual = mockMvc.perform(put("/project/{project}/tailoring/{tailoring}/name", "SAMPLE", "master")
-            .accept(HAL_JSON_VALUE)
-            .param("name", "test")
-            .contentType(APPLICATION_FORM_URLENCODED_VALUE)
-            .characterEncoding(UTF_8.displayName()));
+                .accept(HAL_JSON_VALUE)
+                .param("name", "test")
+                .contentType(APPLICATION_FORM_URLENCODED_VALUE)
+                .characterEncoding(UTF_8.displayName()));
 
         // assert
         actual.andExpect(status().isPreconditionFailed());
@@ -696,7 +713,6 @@ class TailoringControllerTest {
         verify(mapperMock, times(0)).toResource(any(), any(Tailoring.class));
     }
 
-
     @Test
     void getAttachmentList_TailoringExist_StateOk() throws Exception {
         // arrange
@@ -704,23 +720,24 @@ class TailoringControllerTest {
         File file2 = File.builder().build();
 
         given(attachmentServiceMock.list("SAMPLE", "master"))
-            .willReturn(of(file1, file2));
+                .willReturn(of(file1, file2));
 
         ArgumentCaptor<PathContextBuilder> pathContextCaptor = forClass(PathContextBuilder.class);
         given(mapperMock.toResource(pathContextCaptor.capture(), any(File.class)))
-            .willReturn(FileResource.builder().build());
+                .willReturn(FileResource.builder().build());
 
         // act
-        ResultActions actual = mockMvc.perform(get("/project/{project}/tailoring/{tailoring}/attachment", "SAMPLE", "master")
-            .accept(HAL_JSON_VALUE)
-        );
+        ResultActions actual = mockMvc
+                .perform(get("/project/{project}/tailoring/{tailoring}/attachment", "SAMPLE", "master")
+                        .accept(HAL_JSON_VALUE));
 
         // assert
         actual.andExpect(status().isOk());
 
         verify(attachmentServiceMock, times(1)).list("SAMPLE", "master");
         verify(mapperMock, times(2)).toResource(pathContextCaptor.capture(), any(File.class));
-        assertThat(pathContextCaptor.getValue().build()).isEqualTo(PathContext.builder().project("SAMPLE").tailoring("master").build());
+        assertThat(pathContextCaptor.getValue().build())
+                .isEqualTo(PathContext.builder().project("SAMPLE").tailoring("master").build());
     }
 
     @Test
@@ -730,12 +747,12 @@ class TailoringControllerTest {
 
         ArgumentCaptor<PathContextBuilder> pathContextCaptor = forClass(PathContextBuilder.class);
         given(mapperMock.toResource(pathContextCaptor.capture(), any(File.class)))
-            .willReturn(FileResource.builder().build());
+                .willReturn(FileResource.builder().build());
 
         // act
-        ResultActions actual = mockMvc.perform(get("/project/{project}/tailoring/{tailoring}/attachment", "SAMPLE", "master")
-            .accept(HAL_JSON_VALUE)
-        );
+        ResultActions actual = mockMvc
+                .perform(get("/project/{project}/tailoring/{tailoring}/attachment", "SAMPLE", "master")
+                        .accept(HAL_JSON_VALUE));
 
         // assert
         actual.andExpect(status().isOk());
@@ -751,8 +768,7 @@ class TailoringControllerTest {
 
         // act
         ResultActions actual = mockMvc.perform(get("/selectionvector")
-            .accept(HAL_JSON_VALUE)
-        );
+                .accept(HAL_JSON_VALUE));
 
         // assert
         actual.andExpect(status().isOk());
@@ -765,18 +781,16 @@ class TailoringControllerTest {
     void getProfiles_ProfilesExists_StateOkK() throws Exception {
         // arrange
         given(repositoryMock.getSelectionVectorProfile()).willReturn(asList(
-            SelectionVectorProfile.builder().build(),
-            SelectionVectorProfile.builder().build()
-        ));
+                SelectionVectorProfile.builder().build(),
+                SelectionVectorProfile.builder().build()));
 
         ArgumentCaptor<PathContextBuilder> pathContextCaptor = forClass(PathContextBuilder.class);
         given(mapperMock.toResource(pathContextCaptor.capture(), any(SelectionVectorProfile.class)))
-            .willReturn(SelectionVectorProfileResource.builder().build());
+                .willReturn(SelectionVectorProfileResource.builder().build());
 
         // act
         ResultActions actual = mockMvc.perform(get("/selectionvector")
-            .accept(HAL_JSON_VALUE)
-        );
+                .accept(HAL_JSON_VALUE));
 
         // assert
         actual.andExpect(status().isOk());
@@ -791,7 +805,8 @@ class TailoringControllerTest {
         given(serviceMock.createComparisonDocument("SAMPLE", "master")).willReturn(empty());
 
         // act
-        ResultActions actual = mockMvc.perform(get("/project/{project}/tailoring/{tailoring}/compare", "SAMPLE", "master"));
+        ResultActions actual = mockMvc
+                .perform(get("/project/{project}/tailoring/{tailoring}/compare", "SAMPLE", "master"));
 
         // assert
         actual.andExpect(status().isNotFound());
@@ -803,18 +818,19 @@ class TailoringControllerTest {
     void getComparisionDocument_DataExist_StatusOK() throws Exception {
         // arrange
         given(serviceMock.createComparisonDocument("SAMPLE", "master")).willReturn(Optional.of(
-            File.builder()
-                .data("Blindtext".getBytes(UTF_8))
-                .name("DOCID_42.pdf")
-                .build())
-        );
+                File.builder()
+                        .data("Blindtext".getBytes(UTF_8))
+                        .name("DOCID_42.pdf")
+                        .build()));
 
         // act
-        ResultActions actual = mockMvc.perform(get("/project/{project}/tailoring/{tailoring}/compare", "SAMPLE", "master"));
+        ResultActions actual = mockMvc
+                .perform(get("/project/{project}/tailoring/{tailoring}/compare", "SAMPLE", "master"));
 
         // assert
         actual.andExpect(status().isOk());
-        actual.andExpect(header().string("Content-Disposition", "form-data; name=\"attachment\"; filename=\"DOCID_42.pdf\""));
+        actual.andExpect(
+                header().string("Content-Disposition", "form-data; name=\"attachment\"; filename=\"DOCID_42.pdf\""));
         actual.andExpect(header().string("Access-Control-Expose-Headers", "Content-Disposition"));
         actual.andExpect(content().contentType("application/json"));
 
@@ -827,7 +843,8 @@ class TailoringControllerTest {
         given(attachmentServiceMock.load("SAMPLE", "master", "DOCID-42.pdf")).willReturn(empty());
 
         // act
-        ResultActions actual = mockMvc.perform(get("/project/{project}/tailoring/{tailoring}/attachment/{name}", "SAMPLE", "master", "DOCID-42.pdf"));
+        ResultActions actual = mockMvc.perform(
+                get("/project/{project}/tailoring/{tailoring}/attachment/{name}", "SAMPLE", "master", "DOCID-42.pdf"));
 
         // assert
         actual.andExpect(status().isNotFound());
@@ -840,18 +857,18 @@ class TailoringControllerTest {
         // arrange
         given(attachmentServiceMock.load("SAMPLE", "master", "DOCID-42.pdf")).willReturn(Optional.of(
                 File.builder()
-                    .data("Blindtext".getBytes(UTF_8))
-                    .name("DOCID_42.pdf")
-                    .build()
-            )
-        );
+                        .data("Blindtext".getBytes(UTF_8))
+                        .name("DOCID_42.pdf")
+                        .build()));
 
         // act
-        ResultActions actual = mockMvc.perform(get("/project/{project}/tailoring/{tailoring}/attachment/{name}", "SAMPLE", "master", "DOCID-42.pdf"));
+        ResultActions actual = mockMvc.perform(
+                get("/project/{project}/tailoring/{tailoring}/attachment/{name}", "SAMPLE", "master", "DOCID-42.pdf"));
 
         // assert
         actual.andExpect(status().isOk());
-        actual.andExpect(header().string("Content-Disposition", "form-data; name=\"attachment\"; filename=\"DOCID-42.pdf\""));
+        actual.andExpect(
+                header().string("Content-Disposition", "form-data; name=\"attachment\"; filename=\"DOCID-42.pdf\""));
         actual.andExpect(header().string("Access-Control-Expose-Headers", "Content-Disposition"));
         actual.andExpect(content().contentType("application/json"));
 
@@ -904,12 +921,12 @@ class TailoringControllerTest {
     void postRequirements_FileEmpty_StateAccepted() throws Exception {
         // arrange
         MockMultipartFile dokument = new MockMultipartFile("file", "DUMMY_CM.pdf",
-            "text/plain", (byte[]) null);
+                "text/plain", (byte[]) null);
         // act
-        ResultActions actual = mockMvc.perform(multipart("/project/{project}/tailoring/{tailoring}/requirement/import", "SAMPLE", "master")
-            .file(dokument)
-            .contentType(MULTIPART_FORM_DATA)
-        );
+        ResultActions actual = mockMvc
+                .perform(multipart("/project/{project}/tailoring/{tailoring}/requirement/import", "SAMPLE", "master")
+                        .file(dokument)
+                        .contentType(MULTIPART_FORM_DATA));
 
         // assert
         actual.andExpect(status().isAccepted());
@@ -921,17 +938,18 @@ class TailoringControllerTest {
     void postRequirements_FileNotEmpty_StateAccepted() throws Exception {
         // arrange
         MockMultipartFile dokument = new MockMultipartFile("file", "DUMMY_CM.pdf",
-            "text/plain", "Excel Import File".getBytes(UTF_8));
+                "text/plain", "Excel Import File".getBytes(UTF_8));
         // act
-        ResultActions actual = mockMvc.perform(multipart("/project/{project}/tailoring/{tailoring}/requirement/import", "SAMPLE", "master")
-            .file(dokument)
-            .contentType(MULTIPART_FORM_DATA)
-        );
+        ResultActions actual = mockMvc
+                .perform(multipart("/project/{project}/tailoring/{tailoring}/requirement/import", "SAMPLE", "master")
+                        .file(dokument)
+                        .contentType(MULTIPART_FORM_DATA));
 
         // assert
         actual.andExpect(status().isAccepted());
 
-        verify(serviceMock, times(1)).updateImportedRequirements("SAMPLE", "master", "Excel Import File".getBytes(UTF_8));
+        verify(serviceMock, times(1)).updateImportedRequirements("SAMPLE", "master",
+                "Excel Import File".getBytes(UTF_8));
     }
 
     @Test
@@ -939,7 +957,8 @@ class TailoringControllerTest {
         // arrange
         given(serviceMock.createDocuments("SAMPLE", "master")).willReturn(empty());
         // act
-        ResultActions actual = mockMvc.perform(get("/project/{project}/tailoring/{tailoring}/document", "SAMPLE", "master"));
+        ResultActions actual = mockMvc
+                .perform(get("/project/{project}/tailoring/{tailoring}/document", "SAMPLE", "master"));
 
         // assert
         actual.andExpect(status().isNotFound());
@@ -957,23 +976,26 @@ class TailoringControllerTest {
         }
 
         given(serviceMock.createDocuments("SAMPLE", "master"))
-            .willReturn(Optional.of(File.builder()
-                .name("DOC-CAT-001.pdf")
-                .data(data)
-                .build()));
+                .willReturn(Optional.of(File.builder()
+                        .name("DOC-CAT-001.pdf")
+                        .data(data)
+                        .build()));
 
         given(mediaTypeProviderMock.apply("pdf"))
-            .willReturn(APPLICATION_PDF);
+                .willReturn(APPLICATION_PDF);
 
         // act
-        ResultActions actual = mockMvc.perform(get("/project/{project}/tailoring/{tailoring}/document", "SAMPLE", "master"));
+        ResultActions actual = mockMvc
+                .perform(get("/project/{project}/tailoring/{tailoring}/document", "SAMPLE", "master"));
 
         // assert
         actual.andExpect(status().isOk())
-            .andExpect(header().string(CONTENT_DISPOSITION, ContentDisposition.builder(FORM_DATA).name(ATTACHMENT).filename("DOC-CAT-001.pdf").build().toString()))
-            .andExpect(header().string(ACCESS_CONTROL_EXPOSE_HEADERS, CONTENT_DISPOSITION))
-            .andExpect(content().contentType(APPLICATION_PDF))
-            .andExpect(content().bytes(data));
+                .andExpect(header().string(CONTENT_DISPOSITION,
+                        ContentDisposition.builder(FORM_DATA).name(ATTACHMENT).filename("DOC-CAT-001.pdf").build()
+                                .toString()))
+                .andExpect(header().string(ACCESS_CONTROL_EXPOSE_HEADERS, CONTENT_DISPOSITION))
+                .andExpect(content().contentType(APPLICATION_PDF))
+                .andExpect(content().bytes(data));
 
         verify(mediaTypeProviderMock, times(1)).apply("pdf");
         assertThatNoException();
@@ -985,9 +1007,8 @@ class TailoringControllerTest {
         given(attachmentServiceMock.delete("SAMPLE", "master", "SAMPLE-CM-4711.pdf")).willReturn(false);
         // act
         ResultActions actual = mockMvc.perform(delete(
-            "/project/{project}/tailoring/{tailoring}/attachment/{name}",
-            "SAMPLE", "master", "SAMPLE-CM-4711.pdf")
-        );
+                "/project/{project}/tailoring/{tailoring}/attachment/{name}",
+                "SAMPLE", "master", "SAMPLE-CM-4711.pdf"));
 
         // assert
         actual.andExpect(status().isNotFound());
@@ -1000,9 +1021,8 @@ class TailoringControllerTest {
         given(attachmentServiceMock.delete("SAMPLE", "master", "SAMPLE-CM-4711.pdf")).willReturn(true);
         // act
         ResultActions actual = mockMvc.perform(delete(
-            "/project/{project}/tailoring/{tailoring}/attachment/{name}",
-            "SAMPLE", "master", "SAMPLE-CM-4711.pdf")
-        );
+                "/project/{project}/tailoring/{tailoring}/attachment/{name}",
+                "SAMPLE", "master", "SAMPLE-CM-4711.pdf"));
 
         // assert
         actual.andExpect(status().isOk());
@@ -1018,9 +1038,8 @@ class TailoringControllerTest {
 
         // act
         ResultActions actual = mockMvc.perform(get("/project/{project}/tailoring/{tailoring}/note", "SAMPLE", "master")
-            .contentType(APPLICATION_JSON)
-            .accept(HAL_JSON_VALUE)
-        );
+                .contentType(APPLICATION_JSON)
+                .accept(HAL_JSON_VALUE));
 
         // assert
         actual.andExpect(status().isNotFound());
@@ -1035,13 +1054,12 @@ class TailoringControllerTest {
         given(serviceMock.getNotes("SAMPLE", "master")).willReturn(Optional.of(of(note)));
         ArgumentCaptor<PathContextBuilder> pathContextCaptor = forClass(PathContextBuilder.class);
         given(mapperMock.toResource(pathContextCaptor.capture(), eq(note)))
-            .willReturn(NoteResource.builder().build());
+                .willReturn(NoteResource.builder().build());
 
         // act
         ResultActions actual = mockMvc.perform(get("/project/{project}/tailoring/{tailoring}/note", "SAMPLE", "master")
-            .contentType(APPLICATION_JSON)
-            .accept(HAL_JSON_VALUE)
-        );
+                .contentType(APPLICATION_JSON)
+                .accept(HAL_JSON_VALUE));
 
         // assert
         actual.andExpect(status().isOk());
@@ -1058,13 +1076,13 @@ class TailoringControllerTest {
 
         ArgumentCaptor<PathContextBuilder> pathContextCaptor = forClass(PathContextBuilder.class);
         given(mapperMock.toResource(pathContextCaptor.capture(), eq(note)))
-            .willReturn(NoteResource.builder().build());
+                .willReturn(NoteResource.builder().build());
 
         // act
-        ResultActions actual = mockMvc.perform(get("/project/{project}/tailoring/{tailoring}/note/{note}", "SAMPLE", "master", 1)
-            .contentType(APPLICATION_JSON)
-            .accept(HAL_JSON_VALUE)
-        );
+        ResultActions actual = mockMvc
+                .perform(get("/project/{project}/tailoring/{tailoring}/note/{note}", "SAMPLE", "master", 1)
+                        .contentType(APPLICATION_JSON)
+                        .accept(HAL_JSON_VALUE));
 
         // assert
         actual.andExpect(status().isOk());
@@ -1078,10 +1096,10 @@ class TailoringControllerTest {
         given(serviceMock.getNote("SAMPLE", "master", 1)).willReturn(empty());
 
         // act
-        ResultActions actual = mockMvc.perform(get("/project/{project}/tailoring/{tailoring}/note/{note}", "SAMPLE", "master", 1)
-            .contentType(APPLICATION_JSON)
-            .accept(HAL_JSON_VALUE)
-        );
+        ResultActions actual = mockMvc
+                .perform(get("/project/{project}/tailoring/{tailoring}/note/{note}", "SAMPLE", "master", 1)
+                        .contentType(APPLICATION_JSON)
+                        .accept(HAL_JSON_VALUE));
 
         // assert
         actual.andExpect(status().isNotFound());
@@ -1095,10 +1113,9 @@ class TailoringControllerTest {
 
         // act
         ResultActions actual = mockMvc.perform(post("/project/{project}/tailoring/{tailoring}/note", "SAMPLE", "master")
-            .param("note", "Hello")
-            .contentType(APPLICATION_FORM_URLENCODED_VALUE)
-            .characterEncoding(UTF_8.displayName())
-        );
+                .param("note", "Hello")
+                .contentType(APPLICATION_FORM_URLENCODED_VALUE)
+                .characterEncoding(UTF_8.displayName()));
 
         // assert
         actual.andExpect(status().isNotFound());
@@ -1108,15 +1125,16 @@ class TailoringControllerTest {
     @Test
     void postNote_TailoringExists_StateCreated() throws Exception {
         // arrange
-        given(serviceMock.addNote("SAMPLE", "master", "Hello")).willReturn(Optional.of(Note.builder().number(2).build()));
-        given(mapperMock.createLink(any(), any(), any())).willReturn(Link.of("/project/SAMPLE/tailoring/master/note/2"));
+        given(serviceMock.addNote("SAMPLE", "master", "Hello"))
+                .willReturn(Optional.of(Note.builder().number(2).build()));
+        given(mapperMock.createLink(any(), any(), any()))
+                .willReturn(Link.of("/project/SAMPLE/tailoring/master/note/2"));
 
         // act
         ResultActions actual = mockMvc.perform(post("/project/{project}/tailoring/{tailoring}/note", "SAMPLE", "master")
-            .param("note", "Hello")
-            .contentType(APPLICATION_FORM_URLENCODED)
-            .characterEncoding(UTF_8.displayName())
-        );
+                .param("note", "Hello")
+                .contentType(APPLICATION_FORM_URLENCODED)
+                .characterEncoding(UTF_8.displayName()));
 
         // assert
         actual.andExpect(status().isCreated());
@@ -1129,7 +1147,8 @@ class TailoringControllerTest {
         given(serviceMock.updateState("SAMPLE", "master", TailoringState.AGREED)).willReturn(empty());
 
         // act
-        ResultActions actual = mockMvc.perform(put("/project/{project}/tailoring/{tailoring}/state/{state}", "SAMPLE", "master", TailoringState.AGREED));
+        ResultActions actual = mockMvc.perform(put("/project/{project}/tailoring/{tailoring}/state/{state}", "SAMPLE",
+                "master", TailoringState.AGREED));
 
         // assert
         actual.andExpect(status().isNotFound());
@@ -1141,15 +1160,15 @@ class TailoringControllerTest {
         // arrange
         TailoringInformation tailoringInformation = TailoringInformation.builder().build();
         given(serviceMock.updateState("SAMPLE", "master", TailoringState.AGREED))
-            .willReturn(Optional.of(tailoringInformation));
+                .willReturn(Optional.of(tailoringInformation));
 
         ArgumentCaptor<PathContextBuilder> pathContextCaptor = forClass(PathContextBuilder.class);
         given(mapperMock.toResource(pathContextCaptor.capture(), eq(tailoringInformation)))
-            .willReturn(TailoringResource.builder().build());
-
+                .willReturn(TailoringResource.builder().build());
 
         // act
-        ResultActions actual = mockMvc.perform(put("/project/{project}/tailoring/{tailoring}/state/{state}", "SAMPLE", "master", TailoringState.AGREED));
+        ResultActions actual = mockMvc.perform(put("/project/{project}/tailoring/{tailoring}/state/{state}", "SAMPLE",
+                "master", TailoringState.AGREED));
 
         // assert
         actual.andExpect(status().isOk());
@@ -1162,7 +1181,8 @@ class TailoringControllerTest {
         given(serviceMock.unselectRequirementsAccordingToPhases("SAMPLE", "master")).willReturn(empty());
 
         // act
-        ResultActions actual = mockMvc.perform(put("/project/{project}/tailoring/{tailoring}/requirements/applicabilty", "SAMPLE", "master"));
+        ResultActions actual = mockMvc
+                .perform(put("/project/{project}/tailoring/{tailoring}/requirements/applicabilty", "SAMPLE", "master"));
 
         // assert
         actual.andExpect(status().isNotFound());
@@ -1173,13 +1193,61 @@ class TailoringControllerTest {
     void putUnselectRequirementsAccordingToPhases_TailoringExists_StateCreated() throws Exception {
         // arrange
         given(serviceMock.unselectRequirementsAccordingToPhases("SAMPLE", "master"))
-            .willReturn(Optional.of(TRUE));
+                .willReturn(Optional.of(TRUE));
 
         // act
-        ResultActions actual = mockMvc.perform(put("/project/{project}/tailoring/{tailoring}/requirements/applicabilty", "SAMPLE", "master"));
+        ResultActions actual = mockMvc
+                .perform(put("/project/{project}/tailoring/{tailoring}/requirements/applicabilty", "SAMPLE", "master"));
 
         // assert
         actual.andExpect(status().isOk());
         verify(serviceMock, times(1)).unselectRequirementsAccordingToPhases("SAMPLE", "master");
+    }
+
+    @Test
+    void getDiffDocumentFile_TailoringNotExists_StateNotFound() throws Exception {
+        // arrange
+        given(serviceMock.createTailoringsDiffDocument("SAMPLE", "master", "SAMPLE2", "master")).willReturn(empty());
+
+        // act
+        ResultActions actual = mockMvc.perform(get("/project/{project}/tailoring/{tailoring}/compare/{cproject}/{ctailoring}",
+                "SAMPLE", "master", "SAMPLE2", "master")
+                .accept("application/pdf"));
+
+        // assert
+        actual.andExpect(status().isNotFound());
+        verify(serviceMock, times(1)).createTailoringsDiffDocument("SAMPLE", "master", "SAMPLE2", "master");
+        assertThatNoException();
+    }
+
+    @Test
+    void getDiffDocumentFile_TailoringExists_StateOkHeaderContentDisposition() throws Exception {
+        // arrange
+        byte[] data;
+        try (InputStream is = newInputStream(Paths.get("src/test/resources/screeningsheet_0d.pdf"))) {
+            assert nonNull(is);
+            data = is.readAllBytes();
+        }
+
+        given(serviceMock.createTailoringsDiffDocument("SAMPLE", "master", "SAMPLE2", "master"))
+                .willReturn(Optional.of(File.builder()
+                        .name("DUMMY-RD-PS-DLR-1000-DV-8.2.1_01.01.2021_Product Assurance Safety Sustainability Requirements for DUMMY.pdf")
+                        .data(data)
+                        .build()));
+
+        // act
+        ResultActions actual = mockMvc
+                .perform(get("/project/{project}/tailoring/{tailoring}/compare/{cproject}/{ctailoring}",
+                        "SAMPLE", "master", "SAMPLE2", "master")
+                        .accept("application/pdf"));
+
+        // assert
+        actual.andExpect(status().isOk())
+                .andExpect(header().string(CONTENT_TYPE, "application/pdf"));
+        actual.andExpect(header().string("Content-Disposition",
+                "form-data; name=\"attachment\"; filename=\"DUMMY-RD-PS-DLR-1000-DV-8.2.1_01.01.2021_Product Assurance Safety Sustainability Requirements for DUMMY.pdf\""))
+                .andExpect(header().string("Access-Control-Expose-Headers", "Content-Disposition"));
+
+        assertThatNoException();
     }
 }

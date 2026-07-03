@@ -23,6 +23,7 @@ package eu.tailoringexpert.tailoring;
 
 import static java.util.Map.entry;
 import static java.util.Objects.nonNull;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import java.io.InputStream;
 import java.nio.file.Files;
@@ -124,6 +125,7 @@ class TailoringsDiffPDFDocumentCreatorTest {
         File actual = requirementDiff.createDocument("docId", master, master1,parameters) ;
 
         // assert
+        assertThat(actual.getData()).isNotNull();
         fileSaver.accept("diff.pdf", actual.getData());
     }
 
