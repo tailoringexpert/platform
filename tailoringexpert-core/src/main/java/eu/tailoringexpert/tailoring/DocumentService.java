@@ -21,13 +21,13 @@
  */
 package eu.tailoringexpert.tailoring;
 
-import eu.tailoringexpert.TenantInterface;
-import eu.tailoringexpert.domain.File;
-import eu.tailoringexpert.domain.Tailoring;
-
 import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.Optional;
+
+import eu.tailoringexpert.TenantInterface;
+import eu.tailoringexpert.domain.File;
+import eu.tailoringexpert.domain.Tailoring;
 
 /**
  * Interface for providing generated document files of tailorings.
@@ -48,7 +48,8 @@ public interface DocumentService {
     Optional<File> createRequirementDocument(Tailoring tailoring, LocalDateTime creationTimestamp);
 
     /**
-     * Create a comparison document of differences between automatic and manual tailored requirements.
+     * Create a comparison document of differences between automatic and manual
+     * tailored requirements.
      *
      * @param tailoring         Data to create document of
      * @param creationTimestamp timestamp of document creation
@@ -64,4 +65,14 @@ public interface DocumentService {
      * @return created document {@code zip-file}
      */
     Collection<File> createAll(Tailoring tailoring, LocalDateTime creationTimestamp);
+
+    /**
+     * Create a printable document of a base catalog.
+     *
+     * @param base              tailoring to be used as baseline
+     * @param compare           tailoring to mark diffs in
+     * @param creationTimestamp timestamp of document creation
+     * @return printable document of provided tailoring document data
+     */
+    Optional<File> createDiffDocument(Tailoring base, Tailoring compare, LocalDateTime creationTimestamp);
 }

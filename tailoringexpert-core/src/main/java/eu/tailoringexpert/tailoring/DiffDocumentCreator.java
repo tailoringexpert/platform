@@ -21,13 +21,25 @@
  */
 package eu.tailoringexpert.tailoring;
 
-import eu.tailoringexpert.domain.TailoringRequirement;
-import lombok.Builder;
-import lombok.Value;
+import java.util.Map;
 
-@Value
-@Builder
-public class TailoringRequirementDiff {
-    TailoringRequirement base;
-    TailoringRequirement other;
+import eu.tailoringexpert.domain.File;
+import eu.tailoringexpert.domain.Tailoring;
+
+/**
+ * Interface for generating a tailorings diff document.
+ * 
+ * @author Michael Bädorf
+ */
+public interface DiffDocumentCreator {
+    /**
+     * Create a printable document of a base catalog.
+     *
+     * @param docId        Identifier of document to create
+     * @param base         tailoring to be used as baseline
+     * @param compare      tailoring to mark diffs in
+     * @param placeholders Placeholders to use in document generation
+     * @return printable document of provided tailoring document data
+     */
+    File createDocument(String docId, Tailoring base, Tailoring compare, Map<String, Object> placeholders);
 }

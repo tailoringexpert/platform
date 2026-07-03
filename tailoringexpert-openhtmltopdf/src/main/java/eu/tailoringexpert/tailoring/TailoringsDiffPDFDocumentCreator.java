@@ -1,4 +1,27 @@
+/*-
+ * #%L
+ * TailoringExpert
+ * %%
+ * Copyright (C) 2022 - 2026 Michael Bädorf and others
+ * %%
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public
+ * License along with this program.  If not, see
+ * <http://www.gnu.org/licenses/gpl-3.0.html>.
+ * #L%
+ */
 package eu.tailoringexpert.tailoring;
+
+import static java.util.Optional.ofNullable;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -30,7 +53,7 @@ import lombok.extern.log4j.Log4j2;
  */
 @Log4j2
 @RequiredArgsConstructor
-public class TailoringsDiffPDFDocumentCreator {
+public class TailoringsDiffPDFDocumentCreator implements DiffDocumentCreator{
 
     @NonNull
     BiFunction<TailoringRequirement, TailoringRequirement, Optional<TailoringRequirementDiff>> diffProvider;
@@ -41,8 +64,8 @@ public class TailoringsDiffPDFDocumentCreator {
     @NonNull
     private PDFEngine pdfEngine;
 
-    public File createDocument(Tailoring base,
-            Tailoring compare, Map<String, Object> placeholders) {
+    @Override
+    public File createDocument(String docId, Tailoring base, Tailoring compare, Map<String, Object> placeholders) {
         log.traceEntry(base.getCatalog().getVersion());
         Map<String, Object> parameter = new HashMap<>(placeholders);
 
@@ -50,6 +73,7 @@ public class TailoringsDiffPDFDocumentCreator {
         parameter.put("diffs", diffs);
 
         apply(base.getCatalog().getToc(), compare.getCatalog().getToc(), diffs);
+        diffs.entrySet().removeIf(entry -> entry.getValue().isEmpty());
 
         // dokument generieren
         String html = templateEngine.process(base.getCatalog().getVersion() + "/tailoringdiffs", parameter);
@@ -71,13 +95,11 @@ public class TailoringsDiffPDFDocumentCreator {
                         .map(Optional::get)
                         .toList());
 
-        Optional.ofNullable(compare.getChapters())
+        ofNullable(compare.getChapters())
                 .ifPresent(subChapters -> subChapters.forEach(subChapter -> apply(
                         subChapter,
                         base.getChapter(subChapter.getNumber()),
                         diffs)));
-
-        diffs.entrySet().removeIf(entry -> entry.getValue().isEmpty());
     }
 
 }

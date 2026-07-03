@@ -238,4 +238,7 @@ public interface TailoringService {
      * @return true, if requirements were processed
      */
     Optional<Boolean> unselectRequirementsAccordingToPhases(String project, String tailoring);
+    
+     Optional<File> createTailoringsDiffDocument(String baseProject, String baseTailoring, String compareProject,
+            String compareTailoring);
 }
