@@ -531,8 +531,9 @@ public class TailoringServiceImpl implements TailoringService {
      * {@inheritDoc}
      */
     @Override
-    public Optional<File> createTailoringsDiffDocument(String baseProject, String baseTailoring, String compareProject,
-            String compareTailoring) {
+    public Optional<File> createTailoringsDiffDocument(
+        @NonNull String baseProject, @NonNull String baseTailoring, 
+        @NonNull String compareProject, @NonNull String compareTailoring) {
         log.traceEntry(() -> baseProject, () -> baseTailoring);
 
         @SuppressWarnings("PMD.PrematureDeclaration")
@@ -546,7 +547,7 @@ public class TailoringServiceImpl implements TailoringService {
         }
 
         Optional<Tailoring> oCompareTailoring = repository.getTailoring(compareProject, compareTailoring);
-        if (oBaseTailoring.isEmpty()) {
+        if (oCompareTailoring.isEmpty()) {
             log.error(MSG_TAILORING_DOES_NOT_EXISTS);
             log.traceExit();
             return empty();
