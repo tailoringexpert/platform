@@ -21,6 +21,29 @@
  */
 package eu.tailoringexpert.domain;
 
+import static java.util.Arrays.asList;
+import static java.util.List.of;
+import static java.util.Objects.isNull;
+import static java.util.Objects.nonNull;
+import static java.util.stream.Collectors.groupingBy;
+import static java.util.stream.Collectors.joining;
+import static java.util.stream.Collectors.mapping;
+import static java.util.stream.Collectors.toCollection;
+
+import java.util.LinkedHashSet;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+
+import org.mapstruct.AfterMapping;
+import org.mapstruct.BeforeMapping;
+import org.mapstruct.Context;
+import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
+import org.mapstruct.MappingTarget;
+import org.springframework.hateoas.Link;
+import org.springframework.hateoas.UriTemplate;
+
 import eu.tailoringexpert.TailoringexpertMapperConfig;
 import eu.tailoringexpert.domain.BaseCatalogVersionResource.BaseCatalogVersionResourceBuilder;
 import eu.tailoringexpert.domain.DocumentSignatureResource.DocumentSignatureResourceBuilder;
@@ -37,28 +60,6 @@ import eu.tailoringexpert.domain.TailoringCatalogResource.TailoringCatalogResour
 import eu.tailoringexpert.domain.TailoringRequirementResource.TailoringRequirementResourceBuilder;
 import eu.tailoringexpert.domain.TailoringResource.TailoringResourceBuilder;
 import lombok.Setter;
-import org.mapstruct.AfterMapping;
-import org.mapstruct.BeforeMapping;
-import org.mapstruct.Context;
-import org.mapstruct.Mapper;
-import org.mapstruct.Mapping;
-import org.mapstruct.MappingTarget;
-import org.springframework.hateoas.Link;
-import org.springframework.hateoas.UriTemplate;
-
-import java.util.LinkedHashSet;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-
-import static java.util.Arrays.asList;
-import static java.util.List.of;
-import static java.util.Objects.isNull;
-import static java.util.Objects.nonNull;
-import static java.util.stream.Collectors.groupingBy;
-import static java.util.stream.Collectors.joining;
-import static java.util.stream.Collectors.mapping;
-import static java.util.stream.Collectors.toCollection;
 
 @Mapper(config = TailoringexpertMapperConfig.class)
 @SuppressWarnings({ "java:S6539" })
@@ -99,6 +100,7 @@ public abstract class ResourceMapper {
     public static final String TAILORING_NOTE = "project/{project}/tailoring/{tailoring}/note/{note}";
     public static final String TAILORING_STATE = "project/{project}/tailoring/{tailoring}/state/{state}";
     public static final String TAILORING_REQUIREMENTSAPPLICABILITY = "project/{project}/tailoring/{tailoring}/requirements/applicabilty";
+    public static final String TAILORING_DIFF = "project/{project}/tailoring/{tailoring}/compare/{cproject}/{ctailoring}";
 
     public static final String BASECATALOG = "catalog";
     public static final String BASECATALOG_VERSION = "catalog/{version}";
@@ -143,6 +145,7 @@ public abstract class ResourceMapper {
     private static final String REL_STATE = "state";
     private static final String REL_VALIDUNTIL = "validuntil";
     private static final String REL_REQUIREMENTCHANGES = "requirementchanges";
+    private static final String REL_TAILORINGDIFF = "tailoringdiff";
 
     @Setter
     private String contextPath;
@@ -239,7 +242,8 @@ public abstract class ResourceMapper {
                 createLink(REL_ATTACHMENT, TAILORING_ATTACHMENTS, parameter),
                 createLink(REL_NOTE, TAILORING_NOTES, parameter),
                 createLink(REL_STATE, TAILORING_STATE, parameter),
-                createLink(REL_REQUIREMENTAPPLICIBILITY, TAILORING_REQUIREMENTSAPPLICABILITY, parameter)));
+                createLink(REL_REQUIREMENTAPPLICIBILITY, TAILORING_REQUIREMENTSAPPLICABILITY, parameter),
+                createLink(REL_TAILORINGDIFF, TAILORING_DIFF, parameter)));
     }
 
     // ScreeningSheet
