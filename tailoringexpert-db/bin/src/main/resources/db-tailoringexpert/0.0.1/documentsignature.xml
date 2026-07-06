@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
+
+    <changeSet id="1" author="tailoringexpert">
+        <createTable tableName="DOCUMENTSIGNATURE">
+            <column name="FACULTY" type="VARCHAR(256)"/>
+            <column name="SIGNEE" type="VARCHAR(256)"/>
+            <column name="STATE" type="VARCHAR(64)"/>
+            <column name="APPLICABLE" type="BOOLEAN"/>
+            <column name="TAILORING_ID" type="BIGINT"/>
+            <column name="POSITION" type="BIGINT"/>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="2" author="tailoringexpert">
+        <addForeignKeyConstraint constraintName="FK_DOKUMENTZEICHNUNG_TAILORING"
+                                 baseTableName="DOCUMENTSIGNATURE"
+                                 baseColumnNames="TAILORING_ID"
+                                 referencedTableName="TAILORING"
+                                 referencedColumnNames="TAILORING_ID"/>
+    </changeSet>
+
+</databaseChangeLog>

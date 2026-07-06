@@ -89,6 +89,8 @@ public class TailoringServiceImpl implements TailoringService {
     @NonNull
     private Function<String, Map<String, BaseRequirement>> baseRequirementsProvider;
 
+
+
     /**
      * {@inheritDoc}
      */
@@ -525,6 +527,37 @@ public class TailoringServiceImpl implements TailoringService {
         return of(TRUE);
     }
 
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public Optional<File> createTailoringsDiffDocument(
+        @NonNull String baseProject, @NonNull String baseTailoring, 
+        @NonNull String compareProject, @NonNull String compareTailoring) {
+        log.traceEntry(() -> baseProject, () -> baseTailoring);
+
+        @SuppressWarnings("PMD.PrematureDeclaration")
+        final LocalDateTime creationTimestamp = LocalDateTime.now();
+
+        Optional<Tailoring> oBaseTailoring = repository.getTailoring(baseProject, baseTailoring);
+        if (oBaseTailoring.isEmpty()) {
+            log.error(MSG_TAILORING_DOES_NOT_EXISTS);
+            log.traceExit();
+            return empty();
+        }
+
+        Optional<Tailoring> oCompareTailoring = repository.getTailoring(compareProject, compareTailoring);
+        if (oCompareTailoring.isEmpty()) {
+            log.error(MSG_TAILORING_DOES_NOT_EXISTS);
+            log.traceExit();
+            return empty();
+        }
+
+        log.traceExit();
+        return documentService.createDiffDocument(oBaseTailoring.get(),oCompareTailoring.get(), creationTimestamp);
+    }
+
+    
     /**
      * Add file to zip.
      *

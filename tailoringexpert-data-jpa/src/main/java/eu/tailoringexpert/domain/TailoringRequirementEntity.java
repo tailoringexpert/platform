@@ -21,10 +21,17 @@
  */
 package eu.tailoringexpert.domain;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import static jakarta.persistence.CascadeType.DETACH;
+import static jakarta.persistence.CascadeType.MERGE;
+import static jakarta.persistence.CascadeType.PERSIST;
+import static jakarta.persistence.CascadeType.REFRESH;
+import static jakarta.persistence.FetchType.LAZY;
+import static jakarta.persistence.GenerationType.TABLE;
+
+import java.io.Serializable;
+import java.time.ZonedDateTime;
+import java.util.List;
+import java.util.Set;
 
 import jakarta.persistence.AssociationOverride;
 import jakarta.persistence.Column;
@@ -37,13 +44,10 @@ import jakarta.persistence.JoinTable;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import jakarta.persistence.TableGenerator;
-import java.io.Serializable;
-import java.time.ZonedDateTime;
-import java.util.List;
-import java.util.Set;
-
-import static jakarta.persistence.FetchType.LAZY;
-import static jakarta.persistence.GenerationType.TABLE;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Data
 @NoArgsConstructor
@@ -85,7 +89,7 @@ public class TailoringRequirementEntity implements Serializable {
     /**
      * List of applicable documents of the requirement.
      */
-    @OneToMany(fetch = LAZY)
+    @OneToMany(cascade = { DETACH, MERGE, PERSIST, REFRESH }, orphanRemoval = false, fetch = LAZY)
     @JoinTable(name = "TAILORINGREQUIREMENT_APPLICABLEDOC", joinColumns = {
             @JoinColumn(name = "REQUIREMENT_ID", referencedColumnName = "REQUIREMENT_ID") }, inverseJoinColumns = {
                     @JoinColumn(name = "DOCUMENT_ID", referencedColumnName = "APPLICABLEDOCUMENT_ID") })
@@ -94,7 +98,7 @@ public class TailoringRequirementEntity implements Serializable {
     /**
      * List of DRDs requirement shall be part of.
      */
-    @OneToMany(fetch = LAZY)
+    @OneToMany(cascade = { DETACH, MERGE, PERSIST, REFRESH }, orphanRemoval = false, fetch = LAZY)
     @JoinTable(name = "TAILORINGREQUIREMENT_DRD", joinColumns = {
             @JoinColumn(name = "REQUIREMENT_ID", referencedColumnName = "REQUIREMENT_ID") }, inverseJoinColumns = {
                     @JoinColumn(name = "DRD_ID", referencedColumnName = "DRD_ID") })

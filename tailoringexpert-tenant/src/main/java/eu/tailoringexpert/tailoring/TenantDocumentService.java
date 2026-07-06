@@ -21,18 +21,18 @@
  */
 package eu.tailoringexpert.tailoring;
 
-import eu.tailoringexpert.TenantContext;
-import eu.tailoringexpert.domain.File;
-import eu.tailoringexpert.domain.Tailoring;
-import lombok.RequiredArgsConstructor;
-import lombok.SneakyThrows;
+import static java.util.Objects.isNull;
 
 import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.Map;
 import java.util.Optional;
 
-import static java.util.Objects.isNull;
+import eu.tailoringexpert.TenantContext;
+import eu.tailoringexpert.domain.File;
+import eu.tailoringexpert.domain.Tailoring;
+import lombok.RequiredArgsConstructor;
+import lombok.SneakyThrows;
 
 /**
  * Proxy for providing tenant implementations of {@link DocumentService}.
@@ -65,11 +65,20 @@ public class TenantDocumentService implements DocumentService {
         return service.createAll(tailoring, creationTimestamp);
     }
 
+    @Override
+    @SneakyThrows
+    public Optional<File> createDiffDocument(Tailoring base, Tailoring compare, LocalDateTime creationTimestamp) {
+        DocumentService service = getTenantImplementation();
+        return service.createDiffDocument(base, compare, creationTimestamp);
+    }
+
     private DocumentService getTenantImplementation() throws NoSuchMethodException {
         DocumentService result = tenantService.get(TenantContext.getCurrentTenant());
         if (isNull(result)) {
-            throw new NoSuchMethodException("Tenant " + TenantContext.getCurrentTenant() + " does not implement " + DocumentService.class.getName());
+            throw new NoSuchMethodException("Tenant " + TenantContext.getCurrentTenant() + " does not implement "
+                    + DocumentService.class.getName());
         }
         return result;
     }
+
 }

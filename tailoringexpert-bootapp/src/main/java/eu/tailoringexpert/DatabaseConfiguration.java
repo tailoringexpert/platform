@@ -43,7 +43,7 @@ import javax.sql.DataSource;
 public class DatabaseConfiguration {
 
     @Bean
-    String tenantConfigHome(@NonNull @Value("${tenantConfigHome}") String tenantConfigHome) {
+    String tenantConfigHome(@NonNull @Value("${tailoringexpert.home.tenant}") String tenantConfigHome) {
         return tenantConfigHome;
     }
 

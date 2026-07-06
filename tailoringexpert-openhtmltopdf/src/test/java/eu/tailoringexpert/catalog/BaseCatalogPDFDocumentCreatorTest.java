@@ -22,6 +22,9 @@
 package eu.tailoringexpert.catalog;
 
 import com.openhtmltopdf.extend.FSDOMMutator;
+import com.openhtmltopdf.extend.FSObjectDrawerFactory;
+import com.openhtmltopdf.render.DefaultObjectDrawerFactory;
+
 import eu.tailoringexpert.FileSaver;
 import eu.tailoringexpert.domain.ApplicableDocumentProvider;
 import eu.tailoringexpert.domain.BaseRequirement;
@@ -109,6 +112,7 @@ class BaseCatalogPDFDocumentCreatorTest {
         );
 
         FSDOMMutator domMutator = new TailoringexpertDOMMutator();
+        FSObjectDrawerFactory objectDrawerFactory = new DefaultObjectDrawerFactory();
 
 
         this.creator = new BaseCatalogPDFDocumentCreator(
@@ -126,7 +130,7 @@ class BaseCatalogPDFDocumentCreatorTest {
                 ))
             ),
             templateEngine,
-            new PDFEngine(domMutator, supplier)
+            new PDFEngine(domMutator, objectDrawerFactory, supplier)
         );
     }
 

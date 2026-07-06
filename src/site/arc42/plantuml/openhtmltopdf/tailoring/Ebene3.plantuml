@@ -1,6 +1,10 @@
 @startuml Ebene3.png
 hide empty members
 
+package com.github.difflib.ext {
+    class DiffRowGenerator
+}
+
 package domain {
     class DRDElement
 }
@@ -40,6 +44,10 @@ package tailoring {
         -applicable : boolean
     }
 
+    class TailoringRequirementDiff {
+        -base : TailoringRequirement
+        -compare : TailoringRequirement
+    }
 
     class DRDPDFDocumentCreator {
     }
@@ -73,5 +81,20 @@ package tailoring {
         -changed : boolean
         -changeDate : ZonedDateTime
     }
+
+    interface "BiFunction<TailoringRequirement, TailoringRequirement, Optional<TailoringRequirementDiff>>" as tailoringRequirmentTextDiff
+    class TailoringRequirmentTextDiffProvider     {
+
+    }
+    TailoringRequirmentTextDiffProvider --> "1" DiffRowGenerator : generator
+    TailoringRequirmentTextDiffProvider --> "1" HTMLTemplateEngine : templateEngine
+    tailoringRequirmentTextDiff <|-- TailoringRequirmentTextDiffProvider
+
+    class TailoringsDiffPDFDocumentCreator {
+    }
+    TailoringsDiffPDFDocumentCreator --> "1" tailoringRequirmentTextDiff : diffProvider 
+    TailoringsDiffPDFDocumentCreator --> "1" HTMLTemplateEngine : templateEngine
+    TailoringsDiffPDFDocumentCreator --> "1" PDFEngine : pdfEngine
+    DiffDocumentCreator <-- TailoringsDiffPDFDocumentCreator
 }
 @enduml

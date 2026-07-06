@@ -13,6 +13,10 @@ package tailoring {
         createDocument(docId : String, tailoring : Tailoring, placeholders : Map<String, Object>) : File
     }
 
+    interface DiffDocumentCreator{
+        createDocument(docId : String, base : Tailoring, compare : Tailoring, placeholders : Map<String, Object>) : File
+    }
+
     interface TailoringDeletablePredicateRepository {
         getTailoringState(project : String, tailoring : String) : Optional<TailoringState>
     }
@@ -61,6 +65,7 @@ package tailoring {
         getNotes(project : String, tailoring : String) : Optional<Collection<Note>>
         getNote(project : String, tailoring : String, note : Integer) : Optional<Note>
         unselectSelectedRequirementsAccordingToPhases(project : String, tailoring : String) : Optional<Boolean>
+        createTailoringsDiffDocument(baseProject : String, baseTailoring : String, compareProject : String, compareTailoring  String) : Optional<File>
     }
 
     interface AttachmentService {
@@ -101,6 +106,7 @@ package tailoring {
         createRequirementDocument(tailoring : Tailoring, creationTimestamp : LocalDateTime): Optional<File>
         createComparisonDocument(tailoring : Tailoring, creationTimestamp : LocalDateTime): Optional<File>
         createAll(tailoring : Tailoring, creationTimestamp : LocalDateTime): Optional<File>
+        createDiffDocument(base : Tailoring, compare : Tailoring, creationTimestamp : LocalDateTime) : Optional<File> 
     }
 
     class ImportRequirement {

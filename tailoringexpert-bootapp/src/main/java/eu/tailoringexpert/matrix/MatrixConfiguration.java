@@ -41,13 +41,13 @@ import tools.jackson.databind.ObjectMapper;
 public class MatrixConfiguration {
 
     @Bean
-    Function<String, Optional<File>> matrixDownload(@NonNull @Value("${matrixHome}") String basedir) {
+    Function<String, Optional<File>> matrixDownload(@NonNull @Value("${tailoringexpert.home.matrix}") String basedir) {
         return new TenantMatrixDownloadProvider(basedir);
     }
 
     @Bean
     MatrixService matrixService(
-            @NonNull @Value("${matrixHome}") String basedir,
+            @NonNull @Value("${tailoringexpert.home.matrix}") String basedir,
             @NonNull @Qualifier("matrixDownload") Function<String, Optional<File>> download,
             @NonNull ObjectMapper objectMapper) throws NoSuchAlgorithmException {
         return new TenantMatrixService(basedir, MessageDigest.getInstance("SHA-256"), objectMapper, download);
