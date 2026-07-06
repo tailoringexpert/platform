@@ -21,19 +21,6 @@
  */
 package eu.tailoringexpert.domain;
 
-import eu.tailoringexpert.domain.PathContext.PathContextBuilder;
-import lombok.extern.log4j.Log4j2;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-import org.springframework.hateoas.Link;
-
-import java.io.IOException;
-import java.io.InputStream;
-import java.nio.charset.StandardCharsets;
-import java.time.ZonedDateTime;
-import java.time.format.DateTimeFormatter;
-import java.util.List;
-
 import static eu.tailoringexpert.domain.Phase.A;
 import static eu.tailoringexpert.domain.Phase.C;
 import static eu.tailoringexpert.domain.ProjectState.ONGOING;
@@ -45,6 +32,20 @@ import static java.nio.file.Paths.get;
 import static java.util.Arrays.asList;
 import static java.util.Objects.nonNull;
 import static org.assertj.core.api.Assertions.assertThat;
+
+import java.io.IOException;
+import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
+import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.List;
+
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.springframework.hateoas.Link;
+
+import eu.tailoringexpert.domain.PathContext.PathContextBuilder;
+import lombok.extern.log4j.Log4j2;
 
 @Log4j2
 class ResourceMapperTest {
@@ -326,7 +327,8 @@ class ResourceMapperTest {
             Link.of(this.host + "/project/SAMPLE/tailoring/master/attachment", "attachment"),
             Link.of(this.host + "/project/SAMPLE/tailoring/master/note", "note"),
             Link.of(this.host + "/project/SAMPLE/tailoring/master/state/AGREED", "state"),
-            Link.of(this.host + "/project/SAMPLE/tailoring/master/requirements/applicabilty", "requirementsapplicability")
+            Link.of(this.host + "/project/SAMPLE/tailoring/master/requirements/applicabilty", "requirementsapplicability"),
+            Link.of(this.host + "/project/SAMPLE/tailoring/master/compare/{cproject}/{ctailoring}", "tailoringdiff")
         );
     }
 
@@ -615,7 +617,8 @@ class ResourceMapperTest {
             Link.of(this.host + "/catalog/8.2.1/pdf", "basecatalog"),
             Link.of(this.host + "/project/SAMPLE/tailoring/master/note", "note"),
             Link.of(this.host + "/project/SAMPLE/tailoring/master/state/{state}", "state"),
-            Link.of(this.host + "/project/SAMPLE/tailoring/master/requirements/applicabilty", "requirementsapplicability")
+            Link.of(this.host + "/project/SAMPLE/tailoring/master/requirements/applicabilty", "requirementsapplicability"),
+            Link.of(this.host + "/project/SAMPLE/tailoring/master/compare/{cproject}/{ctailoring}", "tailoringdiff")
         );
     }
 

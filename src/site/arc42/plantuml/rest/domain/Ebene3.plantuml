@@ -58,6 +58,7 @@ package domain {
         +{static} SCREENINGSHEET = "screeningsheet" : String
         +{static} SELECTIONVECTOR_PROFILE = "selectionvector" : String
         +{static} MATRIXFILE = "matrixfile" : String
+        +{static} TAILORING_DIFF = "project/{project}/tailoring/{tailoring}/compare/{cproject}/{ctailoring}" : String
             
         ..Rel..
         +{static} REL_SELF = "self" : String
@@ -85,6 +86,7 @@ package domain {
         -{static} REL_NOTE = "note" : String
         -{static} REL_VALIDUNTIL = "validuntil" : String
         -{static} REL_REQUIREMENTCHANGES = "requirementchanges" : String
+        -{static} REL_TAILORINGDIFF = "tailoringdiff": String
 
         .. CatalogVersion ..
         updatePathContext(pathContext : PathContextBuilder, domain : CatalogVersion): void
