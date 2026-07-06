@@ -21,20 +21,23 @@
  */
 package eu.tailoringexpert.renderer;
 
+import static java.lang.String.format;
+
+import java.io.ByteArrayOutputStream;
+import java.io.InputStream;
+
+import org.apache.pdfbox.io.IOUtils;
+import org.apache.pdfbox.pdmodel.PDDocument;
+
 import com.openhtmltopdf.extend.FSDOMMutator;
+import com.openhtmltopdf.extend.FSObjectDrawerFactory;
 import com.openhtmltopdf.pdfboxout.PdfRendererBuilder;
+
 import eu.tailoringexpert.domain.File;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import lombok.extern.log4j.Log4j2;
-import org.apache.pdfbox.io.IOUtils;
-import org.apache.pdfbox.pdmodel.PDDocument;
-
-import java.io.ByteArrayOutputStream;
-import java.io.InputStream;
-
-import static java.lang.String.format;
 
 /**
  * Engine for creating PDF output of HTML input.
@@ -45,7 +48,11 @@ import static java.lang.String.format;
 @Log4j2
 public class PDFEngine {
 
-    @NonNull FSDOMMutator domMutator;
+    @NonNull
+    FSDOMMutator domMutator;
+    
+    @NonNull
+    private FSObjectDrawerFactory drawerFactory;
 
     @NonNull
     private RendererRequestConfigurationSupplier requestConfigurationSupplier;
@@ -55,7 +62,8 @@ public class PDFEngine {
      *
      * @param docId      docid to use in PDF file
      * @param html       HTML to use as input
-     * @param pathSuffix Path relarive to defined <strong>baseUri</strong>. Will be used for relative addressing of images
+     * @param pathSuffix Path relarive to defined <strong>baseUri</strong>. Will be
+     *                   used for relative addressing of images
      * @return Die erzeugte "PA" File
      */
     public File process(@NonNull String docId, @NonNull String html, @NonNull String pathSuffix) {
@@ -69,25 +77,27 @@ public class PDFEngine {
 
             RendererRequestConfiguration configuration = requestConfigurationSupplier.get();
             String baseUri = new java.io.File(
-                format("%s/%s/%s",
-                    configuration.getTemplateHome(),
-                    pathSuffix,
-                    "non-existing-base-uri-file.html")).toURI()
-                .toString();
+                    format("%s/%s/%s",
+                            configuration.getTemplateHome(),
+                            pathSuffix,
+                            "non-existing-base-uri-file.html"))
+                    .toURI()
+                    .toString();
             log.info("using baseuri: " + baseUri);
             builder
-                .withUri(baseUri)
-                .withHtmlContent(html, baseUri)
-                .addDOMMutator(domMutator)
-                .withProducer(configuration.getName())
-                .usePDDocument(document)
-                .toStream(os)
-                .run();
+                    .withUri(baseUri)
+                    .withHtmlContent(html, baseUri)
+                    .addDOMMutator(domMutator)
+                    .withProducer(configuration.getName())
+                    .usePDDocument(document)
+                    .useObjectDrawerFactory(drawerFactory)
+                    .toStream(os)
+                    .run();
 
             File result = File.builder()
-                .name(docId + ".pdf")
-                .data(os.toByteArray())
-                .build();
+                    .name(docId + ".pdf")
+                    .data(os.toByteArray())
+                    .build();
 
             log.traceExit();
             return result;

@@ -21,11 +21,12 @@
  */
 package eu.tailoringexpert.tailoring;
 
-import eu.tailoringexpert.TenantContext;
-import eu.tailoringexpert.domain.File;
-import eu.tailoringexpert.domain.Tailoring;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.catchException;
+import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 
 import java.time.LocalDateTime;
 import java.util.AbstractMap.SimpleEntry;
@@ -34,12 +35,12 @@ import java.util.Collection;
 import java.util.Map;
 import java.util.Optional;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.catchException;
-import static org.mockito.BDDMockito.given;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+
+import eu.tailoringexpert.TenantContext;
+import eu.tailoringexpert.domain.File;
+import eu.tailoringexpert.domain.Tailoring;
 
 class TenantDocumentServiceTest {
 
@@ -50,8 +51,7 @@ class TenantDocumentServiceTest {
     void beforeEach() {
         this.tenentDocumentServiceMock = mock(DocumentService.class);
         this.service = new TenantDocumentService(Map.ofEntries(
-            new SimpleEntry("TENANT", tenentDocumentServiceMock)
-        ));
+                new SimpleEntry("TENANT", tenentDocumentServiceMock)));
     }
 
     @Test
@@ -77,7 +77,7 @@ class TenantDocumentServiceTest {
         LocalDateTime erstellungsZeitpunt = LocalDateTime.now();
 
         given(tenentDocumentServiceMock.createRequirementDocument(tailoring, erstellungsZeitpunt))
-            .willReturn(Optional.of(File.builder().build()));
+                .willReturn(Optional.of(File.builder().build()));
 
         // act
         Optional<File> actual = service.createRequirementDocument(tailoring, erstellungsZeitpunt);
@@ -102,7 +102,6 @@ class TenantDocumentServiceTest {
         verify(tenentDocumentServiceMock, times(0)).createComparisonDocument(tailoring, erstellungsZeitpunt);
     }
 
-
     @Test
     void createComparisonDocument_TenantExists_TenantImplementationReturned() {
         // arrange
@@ -111,7 +110,7 @@ class TenantDocumentServiceTest {
         LocalDateTime erstellungsZeitpunt = LocalDateTime.now();
 
         given(tenentDocumentServiceMock.createComparisonDocument(tailoring, erstellungsZeitpunt))
-            .willReturn(Optional.of(File.builder().build()));
+                .willReturn(Optional.of(File.builder().build()));
 
         // act
         Optional<File> actual = service.createComparisonDocument(tailoring, erstellungsZeitpunt);
@@ -144,7 +143,7 @@ class TenantDocumentServiceTest {
         LocalDateTime erstellungsZeitpunt = LocalDateTime.now();
 
         given(tenentDocumentServiceMock.createAll(tailoring, erstellungsZeitpunt))
-            .willReturn(Arrays.asList(File.builder().build()));
+                .willReturn(Arrays.asList(File.builder().build()));
 
         // act
         Collection<File> actual = service.createAll(tailoring, erstellungsZeitpunt);
@@ -152,5 +151,40 @@ class TenantDocumentServiceTest {
         // assert
         verify(tenentDocumentServiceMock, times(1)).createAll(tailoring, erstellungsZeitpunt);
         assertThat(actual).hasSize(1);
+    }
+
+    @Test
+    void createDiffDocument_TenantNotExists_NoSuchMethodExceptionThrown() {
+        // arrange
+        TenantContext.setCurrentTenant("INVALD");
+        Tailoring tailoring = Tailoring.builder().build();
+        Tailoring compare = Tailoring.builder().build();
+        LocalDateTime erstellungsZeitpunt = LocalDateTime.now();
+
+        // act
+        Exception actual = catchException(() -> service.createDiffDocument(tailoring, compare, erstellungsZeitpunt));
+
+        // assert
+        assertThat(actual).isInstanceOf(NoSuchMethodException.class);
+        verify(tenentDocumentServiceMock, times(0)).createDiffDocument(tailoring, compare, erstellungsZeitpunt);
+    }
+
+    @Test
+    void createDiffDocument_TenantExists_TenantImplementationReturned() {
+        // arrange
+        TenantContext.setCurrentTenant("TENANT");
+        Tailoring tailoring = Tailoring.builder().build();
+        Tailoring compare =Tailoring.builder().build();
+        LocalDateTime erstellungsZeitpunt = LocalDateTime.now();
+
+        given(tenentDocumentServiceMock.createDiffDocument(tailoring, compare, erstellungsZeitpunt))
+            .willReturn(Optional.of(File.builder().build()));
+
+        // act
+        Optional<File> actual =  service.createDiffDocument(tailoring, compare, erstellungsZeitpunt);
+
+        // assert
+        verify(tenentDocumentServiceMock, times(1)).createDiffDocument(tailoring, compare, erstellungsZeitpunt);
+        assertThat(actual).isNotEmpty();
     }
 }

@@ -11,5 +11,31 @@ package domain {
         -action : String
     }
 
+    abstract class CatalogueElement {
+        reference : String
+        logo : String
+        position : String
+        chapter : String
+        text : String
+        level : int
+    }
+
+    class BaseCatalogueElement {
+        identifiers : Collection<String>
+        phases : Collection<String>
+        added : boolean
+        changed : boolean
+   
+    }
+    CatalogueElement <|-- BaseCatalogueElement
+
+    class TailoringCatalogueElement {
+        applicable : boolean
+    }
+    CatalogueElement <|-- TailoringCatalogueElement
+
+    class CatalogueElementQuery {
+        +byChapter(elements : Collection<CatalogElement>, chapter : String) : Collection<CatalogElement> 
+    }
 }
 @enduml

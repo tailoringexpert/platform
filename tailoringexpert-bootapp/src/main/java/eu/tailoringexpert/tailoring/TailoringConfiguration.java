@@ -21,16 +21,29 @@
  */
 package eu.tailoringexpert.tailoring;
 
+import static eu.tailoringexpert.domain.Phase.A;
+import static eu.tailoringexpert.domain.Phase.B;
+import static eu.tailoringexpert.domain.Phase.C;
+import static eu.tailoringexpert.domain.Phase.D;
+import static eu.tailoringexpert.domain.Phase.E;
+import static eu.tailoringexpert.domain.Phase.F;
+import static eu.tailoringexpert.domain.Phase.ZERO;
+import static java.util.Arrays.asList;
+import static java.util.Collections.unmodifiableCollection;
 
-import eu.tailoringexpert.Tenant;
-import eu.tailoringexpert.Tenants;
-import eu.tailoringexpert.domain.*;
-import eu.tailoringexpert.renderer.HTMLTemplateEngine;
-import eu.tailoringexpert.renderer.PDFEngine;
-import eu.tailoringexpert.renderer.RendererRequestConfigurationSupplier;
-import eu.tailoringexpert.repository.*;
-import eu.tailoringexpert.requirement.RequirementService;
-import lombok.NonNull;
+import java.nio.file.Path;
+import java.security.MessageDigest;
+import java.util.AbstractMap.SimpleEntry;
+import java.util.Collection;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Optional;
+import java.util.Set;
+import java.util.function.BiFunction;
+import java.util.function.BiPredicate;
+import java.util.function.Function;
+import java.util.stream.Collectors;
+
 import org.springframework.beans.factory.ListableBeanFactory;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
@@ -39,44 +52,59 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
 import org.springframework.http.MediaType;
 
-import java.nio.file.Path;
-import java.security.MessageDigest;
-import java.util.AbstractMap.SimpleEntry;
-import java.util.Collection;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Set;
-import java.util.function.BiFunction;
-import java.util.function.BiPredicate;
-import java.util.function.Function;
-import java.util.stream.Collectors;
+import com.github.difflib.text.DiffRowGenerator;
 
-import static eu.tailoringexpert.domain.Phase.*;
-import static java.util.Arrays.asList;
-import static java.util.Collections.unmodifiableCollection;
+import eu.tailoringexpert.Tenant;
+import eu.tailoringexpert.Tenants;
+import eu.tailoringexpert.domain.BaseRequirement;
+import eu.tailoringexpert.domain.Catalog;
+import eu.tailoringexpert.domain.Chapter;
+import eu.tailoringexpert.domain.DRD;
+import eu.tailoringexpert.domain.Document;
+import eu.tailoringexpert.domain.MediaTypeProvider;
+import eu.tailoringexpert.domain.Phase;
+import eu.tailoringexpert.domain.ResourceMapper;
+import eu.tailoringexpert.domain.TailoringRequirement;
+import eu.tailoringexpert.renderer.HTMLTemplateEngine;
+import eu.tailoringexpert.renderer.PDFEngine;
+import eu.tailoringexpert.renderer.RendererRequestConfigurationSupplier;
+import eu.tailoringexpert.repository.ApplicableDocumentRepository;
+import eu.tailoringexpert.repository.BaseCatalogRepository;
+import eu.tailoringexpert.repository.DokumentSigneeRepository;
+import eu.tailoringexpert.repository.LogoRepository;
+import eu.tailoringexpert.repository.ProjectRepository;
+import eu.tailoringexpert.repository.SelectionVectorProfileRepository;
+import eu.tailoringexpert.repository.TailoringIdentifierProviderRepository;
+import eu.tailoringexpert.repository.TailoringRepository;
+import eu.tailoringexpert.requirement.RequirementService;
+import lombok.NonNull;
 
 @Configuration
 public class TailoringConfiguration {
 
+    private final HTMLTemplateEngine templateEngine;
+
+    TailoringConfiguration(HTMLTemplateEngine templateEngine) {
+        this.templateEngine = templateEngine;
+    }
+
     @Bean
     JPATailoringServiceRepositoryMapper jpaTailoringServiceRepositoryMapper(
-        @NonNull LogoRepository logoRepository,
-        @NonNull ApplicableDocumentRepository applicableDocumentRepository) {
+            @NonNull LogoRepository logoRepository,
+            @NonNull ApplicableDocumentRepository applicableDocumentRepository) {
         JPATailoringServiceRepositoryMapperGenerated result = new JPATailoringServiceRepositoryMapperGenerated();
         result.setLogoRepository(logoRepository);
         result.setApplicableDocumentRepository(applicableDocumentRepository);
         return result;
     }
 
-
     @Bean
     JPABaseRequirementsProviderRepository baseRequirementsProviderRepository(
-        @NonNull JPABaseRequirementsProviderRepositoryMapper mapper,
-        @NonNull BaseCatalogRepository baseCatalogRepository) {
+            @NonNull JPABaseRequirementsProviderRepositoryMapper mapper,
+            @NonNull BaseCatalogRepository baseCatalogRepository) {
         return new JPABaseRequirementsProviderRepository(
-            mapper,
-            baseCatalogRepository
-        );
+                mapper,
+                baseCatalogRepository);
     }
 
     @Bean
@@ -85,7 +113,8 @@ public class TailoringConfiguration {
     }
 
     @Bean
-    DocumentCreator tailoringCatalogExcelDocumentCreator(@NonNull Function<String, Map<String, BaseRequirement>> baseRequirementsProvider) {
+    DocumentCreator tailoringCatalogExcelDocumentCreator(
+            @NonNull Function<String, Map<String, BaseRequirement>> baseRequirementsProvider) {
         return new TailoringCatalogExcelDocumentCreator(baseRequirementsProvider);
     }
 
@@ -98,22 +127,21 @@ public class TailoringConfiguration {
 
     @Bean
     TailoringServiceRepository tailoringServiceRepository(@NonNull JPATailoringServiceRepositoryMapper mapper,
-                                                          @NonNull ProjectRepository projectRepository,
-                                                          @NonNull TailoringRepository tailoringRepository,
-                                                          @NonNull SelectionVectorProfileRepository selectionVectorProfileRepository,
-                                                          @NonNull DokumentSigneeRepository dokumentSigneeRepository) {
+            @NonNull ProjectRepository projectRepository,
+            @NonNull TailoringRepository tailoringRepository,
+            @NonNull SelectionVectorProfileRepository selectionVectorProfileRepository,
+            @NonNull DokumentSigneeRepository dokumentSigneeRepository) {
         return new JPATailoringServiceRepository(
-            mapper,
-            projectRepository,
-            tailoringRepository,
-            selectionVectorProfileRepository,
-            dokumentSigneeRepository
-        );
+                mapper,
+                projectRepository,
+                tailoringRepository,
+                selectionVectorProfileRepository,
+                dokumentSigneeRepository);
     }
 
     @Bean
     TailoringDeletablePredicateRepository tailoringDeletablePredicateRepository(
-        @NonNull ProjectRepository projectRepository) {
+            @NonNull ProjectRepository projectRepository) {
         return new JPATailoringDeletablePredicateRepository(projectRepository);
     }
 
@@ -124,45 +152,44 @@ public class TailoringConfiguration {
 
     @Bean
     DefaultTailoringDeletablePredicate defaultTailoringDeletablePredicate(
-        @NonNull TailoringDeletablePredicateRepository repository) {
+            @NonNull TailoringDeletablePredicateRepository repository) {
         return new DefaultTailoringDeletablePredicate(repository);
     }
 
     @Bean
     TailoringService tailoringService(
-        @NonNull TailoringServiceRepository repository,
-        @NonNull TailoringServiceMapper mapper,
-        @NonNull TailoringDeletablePredicate tailoringDeletablePredicate,
-        @NonNull DocumentService documentService,
-        @NonNull RequirementService requirementService,
-        @NonNull Function<byte[], Map<String, Collection<ImportRequirement>>> tailoringAnforderungFileReader,
-        @NonNull AttachmentService attachmentService,
-        @NonNull Function<String, Map<String, BaseRequirement>> baseRequirementsProvider
-    ) {
+            @NonNull TailoringServiceRepository repository,
+            @NonNull TailoringServiceMapper mapper,
+            @NonNull TailoringDeletablePredicate tailoringDeletablePredicate,
+            @NonNull DocumentService documentService,
+            @NonNull RequirementService requirementService,
+            @NonNull Function<byte[], Map<String, Collection<ImportRequirement>>> tailoringAnforderungFileReader,
+            @NonNull AttachmentService attachmentService,
+            @NonNull Function<String, Map<String, BaseRequirement>> baseRequirementsProvider) {
         return new TailoringServiceImpl(
-            repository,
-            mapper,
-            tailoringDeletablePredicate,
-            documentService,
-            requirementService,
-            tailoringAnforderungFileReader,
-            attachmentService,
-            baseRequirementsProvider
-        );
+                repository,
+                mapper,
+                tailoringDeletablePredicate,
+                documentService,
+                requirementService,
+                tailoringAnforderungFileReader,
+                attachmentService,
+                baseRequirementsProvider);
     }
-
 
     @Bean
     BiPredicate<String, Collection<Phase>> drdAnwendbarPraedikat() {
         Map<Phase, Collection<String>> phase2Meilensteine = Map.ofEntries(
-            new SimpleEntry<>(ZERO, unmodifiableCollection(asList("MDR"))),
-            new SimpleEntry<>(A, unmodifiableCollection(asList("PRR", "SRR"))),
-            new SimpleEntry<>(B, unmodifiableCollection(asList("PDR"))),
-            new SimpleEntry<>(C, unmodifiableCollection(asList("CDR"))),
-            new SimpleEntry<>(D, unmodifiableCollection(asList("MRR", "TRR", "QR", "CCB", "MPCB", "AR", "DRB", "DAR", "FRR", "LRR"))),
-            new SimpleEntry<>(E, unmodifiableCollection(asList("AR", "ORR", "GS upgrades", "SW upgrades", "CRR", "ELR"))),
-            new SimpleEntry<>(F, unmodifiableCollection(asList("EOM", "MCR")))
-        );
+                new SimpleEntry<>(ZERO, unmodifiableCollection(asList("MDR"))),
+                new SimpleEntry<>(A, unmodifiableCollection(asList("PRR", "SRR"))),
+                new SimpleEntry<>(B, unmodifiableCollection(asList("PDR"))),
+                new SimpleEntry<>(C, unmodifiableCollection(asList("CDR"))),
+                new SimpleEntry<>(D,
+                        unmodifiableCollection(
+                                asList("MRR", "TRR", "QR", "CCB", "MPCB", "AR", "DRB", "DAR", "FRR", "LRR"))),
+                new SimpleEntry<>(E,
+                        unmodifiableCollection(asList("AR", "ORR", "GS upgrades", "SW upgrades", "CRR", "ELR"))),
+                new SimpleEntry<>(F, unmodifiableCollection(asList("EOM", "MCR"))));
 
         return new DRDApplicablePredicate(phase2Meilensteine);
     }
@@ -174,18 +201,17 @@ public class TailoringConfiguration {
 
     @Bean
     TailoringController tailoringController(
-        @NonNull ResourceMapper mapper,
-        @NonNull TailoringService tailoringService,
-        @NonNull TailoringServiceRepository tailoringServiceRepository,
-        @NonNull AttachmentService attachmentService,
-        @NonNull Function<String, MediaType> mediaTypeProvider) {
+            @NonNull ResourceMapper mapper,
+            @NonNull TailoringService tailoringService,
+            @NonNull TailoringServiceRepository tailoringServiceRepository,
+            @NonNull AttachmentService attachmentService,
+            @NonNull Function<String, MediaType> mediaTypeProvider) {
         return new TailoringController(
-            mapper, tailoringService, tailoringServiceRepository, attachmentService, mediaTypeProvider
-        );
+                mapper, tailoringService, tailoringServiceRepository, attachmentService, mediaTypeProvider);
     }
 
     @Bean
-    String tenantConfigHome(@Value("${tenantConfigHome}") String tenantConfigHome) {
+    String tenantConfigHome(@Value("${tailoringexpert.home.tenant}") String tenantConfigHome) {
         return tenantConfigHome;
     }
 
@@ -197,97 +223,127 @@ public class TailoringConfiguration {
     @Bean
     @Primary
     TailoringDeletablePredicate tailoringDeletablePredicate(
-        @NonNull DefaultTailoringDeletablePredicate defaultTailoringDeletablePredicate,
-        @NonNull ListableBeanFactory beanFactory) {
-        Map<String, TailoringDeletablePredicate> predicates = getTenantImplementations(beanFactory, TailoringDeletablePredicate.class);
+            @NonNull DefaultTailoringDeletablePredicate defaultTailoringDeletablePredicate,
+            @NonNull ListableBeanFactory beanFactory) {
+        Map<String, TailoringDeletablePredicate> predicates = getTenantImplementations(beanFactory,
+                TailoringDeletablePredicate.class);
         return new TenantTailoringDeletablePredicate(predicates, defaultTailoringDeletablePredicate);
     }
 
     @Bean
     DocumentCreator tailoringCatalogPDFDocumentCreator(
-        @NonNull HTMLTemplateEngine templateEngine,
-        @NonNull PDFEngine pdfEngine,
-        @NonNull BiFunction<Chapter<TailoringRequirement>, Collection<Phase>, Map<DRD, Set<String>>> drdProvider,
-        @NonNull Function<Catalog<TailoringRequirement>, Collection<Document>> tailoringCatalogApplicableDocumentProvider) {
+            @NonNull HTMLTemplateEngine templateEngine,
+            @NonNull PDFEngine pdfEngine,
+            @NonNull BiFunction<Chapter<TailoringRequirement>, Collection<Phase>, Map<DRD, Set<String>>> drdProvider,
+            @NonNull Function<Catalog<TailoringRequirement>, Collection<Document>> tailoringCatalogApplicableDocumentProvider) {
         return new TailoringCatalogPDFDocumentCreator(
-            drdProvider,
-            tailoringCatalogApplicableDocumentProvider,
-            templateEngine,
-            pdfEngine
-        );
+                drdProvider,
+                tailoringCatalogApplicableDocumentProvider,
+                templateEngine,
+                pdfEngine);
     }
 
     @Bean
     DocumentCreator comparisionPDFDocumentCreator(
-        @NonNull HTMLTemplateEngine templateEngine,
-        @NonNull PDFEngine pdfEngine,
-        @NonNull BiFunction<Chapter<TailoringRequirement>, Collection<Phase>, Map<DRD, Set<String>>> drdProvider) {
+            @NonNull HTMLTemplateEngine templateEngine,
+            @NonNull PDFEngine pdfEngine,
+            @NonNull BiFunction<Chapter<TailoringRequirement>, Collection<Phase>, Map<DRD, Set<String>>> drdProvider) {
         return new ComparisonPDFDocumentCreator(templateEngine, pdfEngine);
     }
 
     @Bean
     DocumentCreator drdPDFDocumentCreator(
-        @NonNull HTMLTemplateEngine templateEngine,
-        @NonNull PDFEngine pdfEngine,
-        @NonNull BiFunction<Chapter<TailoringRequirement>, Collection<Phase>, Map<DRD, Set<String>>> drdProvider) {
+            @NonNull HTMLTemplateEngine templateEngine,
+            @NonNull PDFEngine pdfEngine,
+            @NonNull BiFunction<Chapter<TailoringRequirement>, Collection<Phase>, Map<DRD, Set<String>>> drdProvider) {
         return new DRDPDFDocumentCreator(drdProvider, templateEngine, pdfEngine);
     }
 
     @Bean
-    DocumentCreator tailoringCatalogSpreadsheetCreator(@NonNull Function<String, Map<String, BaseRequirement>> baseRequirementsProvider) {
+    DocumentCreator tailoringCatalogSpreadsheetCreator(
+            @NonNull Function<String, Map<String, BaseRequirement>> baseRequirementsProvider) {
         return new TailoringCatalogExcelDocumentCreator(baseRequirementsProvider);
     }
 
     @Bean
     DocumentCreator cmSpreadsheetDocumentCreator(
-        @NonNull RendererRequestConfigurationSupplier requestConfigurationSupplier,
-        @NonNull BiFunction<Chapter<TailoringRequirement>, Collection<Phase>, Map<DRD, Set<String>>> drdProvider) {
+            @NonNull RendererRequestConfigurationSupplier requestConfigurationSupplier,
+            @NonNull BiFunction<Chapter<TailoringRequirement>, Collection<Phase>, Map<DRD, Set<String>>> drdProvider) {
         return new CMExcelDocumentCreator(requestConfigurationSupplier, drdProvider);
     }
 
     @Bean
     DocumentCreator cmRequirementsSpreadsheetDocumentCreator(
-        @NonNull RendererRequestConfigurationSupplier requestConfigurationSupplier,
-        @NonNull BiFunction<Chapter<TailoringRequirement>, Collection<Phase>, Map<DRD, Set<String>>> drdProvider) {
+            @NonNull RendererRequestConfigurationSupplier requestConfigurationSupplier,
+            @NonNull BiFunction<Chapter<TailoringRequirement>, Collection<Phase>, Map<DRD, Set<String>>> drdProvider) {
         return new CMRequirementsExcelDocumentCreator(requestConfigurationSupplier, drdProvider);
     }
 
     @Bean
     DocumentCreator cmPDFDocumentCreator(
-        @NonNull HTMLTemplateEngine templateEngine,
-        @NonNull PDFEngine pdfEngine,
-        @NonNull BiFunction<Chapter<TailoringRequirement>, Collection<Phase>, Map<DRD, Set<String>>> drdProvider) {
+            @NonNull HTMLTemplateEngine templateEngine,
+            @NonNull PDFEngine pdfEngine,
+            @NonNull BiFunction<Chapter<TailoringRequirement>, Collection<Phase>, Map<DRD, Set<String>>> drdProvider) {
         return new CMPDFDocumentCreator(drdProvider, templateEngine, pdfEngine);
     }
 
-
     @Bean
     BiFunction<String, String, Path> tailoringPathProvider(
-        @NonNull @Value("${attachmentHome}") String basedir,
-        @NonNull TailoringIdentifierProviderRepository tailoringIdentifierProvider
-    ) {
+            @NonNull @Value("${tailoringexpert.home.attachment}") String basedir,
+            @NonNull TailoringIdentifierProviderRepository tailoringIdentifierProvider) {
         return new TenantTailoringPathProvider(basedir, tailoringIdentifierProvider);
     }
 
     @Bean
     AttachmentService attachmentService(
-        @NonNull @Qualifier("tailoringPathProvider") BiFunction<String, String, Path> tailoringPathProvider
-    ) throws Exception {
+            @NonNull @Qualifier("tailoringPathProvider") BiFunction<String, String, Path> tailoringPathProvider)
+            throws Exception {
         return new TenantAttachmentService(tailoringPathProvider, MessageDigest.getInstance("SHA-256"));
     }
 
+    @Bean
+    DiffRowGenerator tailoringRequirementGenerator() {
+        return DiffRowGenerator.create()
+                .reportLinesUnchanged(false)
+                .showInlineDiffs(true)
+                .mergeOriginalRevised(false)
+                .inlineDiffByWord(true)
+                .ignoreWhiteSpaces(true)
+                .lineNormalizer(Function.identity())
+                // .oldTag((tag, f) -> f ? "<span class='requirement-old'>" : "</span>")
+                .newTag((tag, f) -> f ? "<span class='requirement-new'>" : "</span>")
+                .build();
+    }
 
     @Bean
-    Function<String, Map<String, BaseRequirement>> baseRequirementsProvider(@NonNull BaseRequirementsProviderRepository serviceRepository) {
+    BiFunction<TailoringRequirement, TailoringRequirement, Optional<TailoringRequirementDiff>> tailoringRequirmentTextDiffProvider(
+            @NonNull @Qualifier("tailoringRequirementGenerator") DiffRowGenerator generator,
+            @NonNull HTMLTemplateEngine htmlTemplateEngine) {
+        return new TailoringRequirmentTextDiffProvider(generator, templateEngine);
+    }
+
+    @Bean
+    TailoringsDiffPDFDocumentCreator tailoringsDiffPDFDocumentCreator(
+            BiFunction<TailoringRequirement, TailoringRequirement, Optional<TailoringRequirementDiff>> tailoringRequirmentTextDiffProvider,
+            @NonNull HTMLTemplateEngine htmlTemplateEngine,
+            @NonNull PDFEngine pdfEngine
+    ) {
+        return new TailoringsDiffPDFDocumentCreator(tailoringRequirmentTextDiffProvider, htmlTemplateEngine, pdfEngine);
+    }
+
+    @Bean
+    Function<String, Map<String, BaseRequirement>> baseRequirementsProvider(
+            @NonNull BaseRequirementsProviderRepository serviceRepository) {
         return new BaseRequirementsProvider(serviceRepository);
     }
 
     private <T> Map<String, T> getTenantImplementations(ListableBeanFactory beanFactory, Class<T> clz) {
         return beanFactory.getBeansOfType(clz)
-            .values()
-            .stream()
-            // Defaultimplementation has no tenant annotation!
-            .filter(bean -> Objects.nonNull(bean.getClass().getAnnotation(Tenant.class)))
-            .collect(Collectors.toMap(bean -> bean.getClass().getAnnotation(Tenant.class).value(), Function.identity()));
+                .values()
+                .stream()
+                // Defaultimplementation has no tenant annotation!
+                .filter(bean -> Objects.nonNull(bean.getClass().getAnnotation(Tenant.class)))
+                .collect(Collectors.toMap(bean -> bean.getClass().getAnnotation(Tenant.class).value(),
+                        Function.identity()));
     }
 }

@@ -21,20 +21,23 @@
  */
 package eu.tailoringexpert.renderer;
 
-import com.openhtmltopdf.extend.FSDOMMutator;
-import eu.tailoringexpert.domain.File;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.catchException;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.mockStatic;
+
+import java.io.IOException;
+
 import org.apache.pdfbox.io.IOUtils;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.MockedStatic;
 import org.mockito.Mockito;
 
-import java.io.IOException;
+import com.openhtmltopdf.extend.FSDOMMutator;
+import com.openhtmltopdf.extend.FSObjectDrawerFactory;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.catchException;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.mockStatic;
+import eu.tailoringexpert.domain.File;
 
 class PDFEngineTest {
 
@@ -42,15 +45,14 @@ class PDFEngineTest {
 
     @BeforeEach
     void beforeEach() {
-        this.engine =
-                new PDFEngine(
-                        Mockito.mock(FSDOMMutator.class),
-                        () -> RendererRequestConfiguration.builder()
-                                .id("platform")
-                                .name("TailoringExpert")
-                                .templateHome("baseuri")
-                                .build()
-                );
+        this.engine = new PDFEngine(
+                Mockito.mock(FSDOMMutator.class),
+                Mockito.mock(FSObjectDrawerFactory.class),
+                () -> RendererRequestConfiguration.builder()
+                        .id("platform")
+                        .name("TailoringExpert")
+                        .templateHome("baseuri")
+                        .build());
     }
 
     @Test

@@ -238,4 +238,16 @@ public interface TailoringService {
      * @return true, if requirements were processed
      */
     Optional<Boolean> unselectRequirementsAccordingToPhases(String project, String tailoring);
+
+    /**
+     * Creates a diff document of two tailorings.
+     * 
+     * @param baseProject      base project identifier
+     * @param baseTailoring    base tailoting name
+     * @param compareProject   identifier of tailorings project
+     * @param compareTailoring tailoring to compare to
+     * @return File with calculated diffs
+     */
+    Optional<File> createTailoringsDiffDocument(String baseProject, String baseTailoring, String compareProject,
+            String compareTailoring);
 }

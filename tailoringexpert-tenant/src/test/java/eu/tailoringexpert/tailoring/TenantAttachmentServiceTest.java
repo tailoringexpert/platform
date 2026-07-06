@@ -299,7 +299,7 @@ class TenantAttachmentServiceTest {
         ArrayList<File> files = new ArrayList<>(actual);
         assertThat(files.get(0).getHash()).isNotNull();
 
-        actual.stream().forEach(file -> log.debug(file.getName()));
+        actual.forEach(file -> log.debug(file.getName()));
 
     }
 

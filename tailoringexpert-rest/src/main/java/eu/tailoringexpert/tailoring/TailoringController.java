@@ -21,6 +21,62 @@
  */
 package eu.tailoringexpert.tailoring;
 
+import static eu.tailoringexpert.domain.ResourceMapper.TAILORING;
+import static eu.tailoringexpert.domain.ResourceMapper.TAILORING_ATTACHMENT;
+import static eu.tailoringexpert.domain.ResourceMapper.TAILORING_ATTACHMENTS;
+import static eu.tailoringexpert.domain.ResourceMapper.TAILORING_CATALOG;
+import static eu.tailoringexpert.domain.ResourceMapper.TAILORING_CATALOG_CHAPTER;
+import static eu.tailoringexpert.domain.ResourceMapper.TAILORING_CATALOG_CHAPTER_REQUIREMENT;
+import static eu.tailoringexpert.domain.ResourceMapper.TAILORING_COMPARE;
+import static eu.tailoringexpert.domain.ResourceMapper.TAILORING_DIFF;
+import static eu.tailoringexpert.domain.ResourceMapper.TAILORING_DOCUMENT;
+import static eu.tailoringexpert.domain.ResourceMapper.TAILORING_DOCUMENT_CATALOG;
+import static eu.tailoringexpert.domain.ResourceMapper.TAILORING_NAME;
+import static eu.tailoringexpert.domain.ResourceMapper.TAILORING_NOTE;
+import static eu.tailoringexpert.domain.ResourceMapper.TAILORING_NOTES;
+import static eu.tailoringexpert.domain.ResourceMapper.TAILORING_REQUIREMENTSAPPLICABILITY;
+import static eu.tailoringexpert.domain.ResourceMapper.TAILORING_REQUIREMENT_IMPORT;
+import static eu.tailoringexpert.domain.ResourceMapper.TAILORING_SCREENINGSHEET;
+import static eu.tailoringexpert.domain.ResourceMapper.TAILORING_SCREENINGSHEET_PDF;
+import static eu.tailoringexpert.domain.ResourceMapper.TAILORING_SELECTIONVECTOR;
+import static eu.tailoringexpert.domain.ResourceMapper.TAILORING_SIGNATURE;
+import static eu.tailoringexpert.domain.ResourceMapper.TAILORING_SIGNATURE_FACULTY;
+import static eu.tailoringexpert.domain.ResourceMapper.TAILORING_STATE;
+import static org.springframework.hateoas.EntityModel.of;
+import static org.springframework.http.HttpHeaders.ACCESS_CONTROL_EXPOSE_HEADERS;
+import static org.springframework.http.HttpHeaders.CONTENT_DISPOSITION;
+import static org.springframework.http.HttpStatus.NOT_FOUND;
+import static org.springframework.http.HttpStatus.OK;
+import static org.springframework.http.HttpStatus.PRECONDITION_FAILED;
+import static org.springframework.http.ResponseEntity.created;
+import static org.springframework.http.ResponseEntity.notFound;
+import static org.springframework.http.ResponseEntity.ok;
+import static org.springframework.http.ResponseEntity.status;
+
+import java.io.IOException;
+import java.util.Collection;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.function.Function;
+
+import org.springframework.hateoas.CollectionModel;
+import org.springframework.hateoas.EntityModel;
+import org.springframework.hateoas.UriTemplate;
+import org.springframework.http.ContentDisposition;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
+
 import eu.tailoringexpert.ResourceException;
 import eu.tailoringexpert.domain.DocumentSignature;
 import eu.tailoringexpert.domain.DocumentSignatureResource;
@@ -50,53 +106,6 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
-import org.springframework.hateoas.CollectionModel;
-import org.springframework.hateoas.EntityModel;
-import org.springframework.hateoas.UriTemplate;
-import org.springframework.http.ContentDisposition;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
-
-import java.io.IOException;
-import java.util.Collection;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.function.Function;
-
-import static eu.tailoringexpert.domain.ResourceMapper.TAILORING;
-import static eu.tailoringexpert.domain.ResourceMapper.TAILORING_REQUIREMENTSAPPLICABILITY;
-import static eu.tailoringexpert.domain.ResourceMapper.TAILORING_ATTACHMENT;
-import static eu.tailoringexpert.domain.ResourceMapper.TAILORING_ATTACHMENTS;
-import static eu.tailoringexpert.domain.ResourceMapper.TAILORING_CATALOG;
-import static eu.tailoringexpert.domain.ResourceMapper.TAILORING_CATALOG_CHAPTER;
-import static eu.tailoringexpert.domain.ResourceMapper.TAILORING_CATALOG_CHAPTER_REQUIREMENT;
-import static eu.tailoringexpert.domain.ResourceMapper.TAILORING_COMPARE;
-import static eu.tailoringexpert.domain.ResourceMapper.TAILORING_DOCUMENT;
-import static eu.tailoringexpert.domain.ResourceMapper.TAILORING_DOCUMENT_CATALOG;
-import static eu.tailoringexpert.domain.ResourceMapper.TAILORING_NAME;
-import static eu.tailoringexpert.domain.ResourceMapper.TAILORING_NOTE;
-import static eu.tailoringexpert.domain.ResourceMapper.TAILORING_NOTES;
-import static eu.tailoringexpert.domain.ResourceMapper.TAILORING_REQUIREMENT_IMPORT;
-import static eu.tailoringexpert.domain.ResourceMapper.TAILORING_SCREENINGSHEET;
-import static eu.tailoringexpert.domain.ResourceMapper.TAILORING_SCREENINGSHEET_PDF;
-import static eu.tailoringexpert.domain.ResourceMapper.TAILORING_SELECTIONVECTOR;
-import static eu.tailoringexpert.domain.ResourceMapper.TAILORING_SIGNATURE;
-import static eu.tailoringexpert.domain.ResourceMapper.TAILORING_SIGNATURE_FACULTY;
-import static eu.tailoringexpert.domain.ResourceMapper.TAILORING_STATE;
-import static org.springframework.hateoas.EntityModel.of;
-import static org.springframework.http.HttpHeaders.ACCESS_CONTROL_EXPOSE_HEADERS;
-import static org.springframework.http.HttpHeaders.CONTENT_DISPOSITION;
-import static org.springframework.http.HttpStatus.NOT_FOUND;
-import static org.springframework.http.HttpStatus.OK;
-import static org.springframework.http.HttpStatus.PRECONDITION_FAILED;
-import static org.springframework.http.ResponseEntity.created;
-import static org.springframework.http.ResponseEntity.notFound;
-import static org.springframework.http.ResponseEntity.ok;
-import static org.springframework.http.ResponseEntity.status;
 
 
 /**
@@ -828,6 +837,27 @@ public class TailoringController {
                 tailoring
             )
             .map(state -> status(state ? OK : PRECONDITION_FAILED).body(state))
+            .orElseGet(() -> notFound().build());
+
+        log.traceExit();
+        return result;
+    }
+
+    @GetMapping(TAILORING_DIFF)
+    public ResponseEntity<byte[]> getDiffDocument(
+        @Parameter(description = "Baselinbe project identifier") @PathVariable String project,
+        @Parameter(description = "Baseline tailoring name") @PathVariable String tailoring,
+        @Parameter(description = "Compare project identifier") @PathVariable String cproject,
+        @Parameter(description = "Compare tailoring name") @PathVariable String ctailoring) {
+        log.traceEntry();
+
+        ResponseEntity<byte[]> result = tailoringService.createTailoringsDiffDocument(project, tailoring, cproject, ctailoring)
+            .map(dokument -> ok()
+                .header(CONTENT_DISPOSITION, ContentDisposition.builder(MediaTypeProvider.FORM_DATA).name(MediaTypeProvider.ATTACHMENT).filename(dokument.getName()).build().toString())
+                .header(ACCESS_CONTROL_EXPOSE_HEADERS, CONTENT_DISPOSITION)
+                .contentType(mediaTypeProvider.apply(dokument.getType()))
+                .contentLength(dokument.getLength())
+                .body(dokument.getData()))
             .orElseGet(() -> notFound().build());
 
         log.traceExit();

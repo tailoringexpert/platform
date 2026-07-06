@@ -21,10 +21,28 @@
  */
 package eu.tailoringexpert.tailoring;
 
+import static java.util.Objects.nonNull;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.catchException;
+import static tools.jackson.databind.DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES;
+
+import java.io.InputStream;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.thymeleaf.spring6.SpringTemplateEngine;
+import org.thymeleaf.templateresolver.FileTemplateResolver;
+
 import com.openhtmltopdf.extend.FSDOMMutator;
+import com.openhtmltopdf.extend.FSObjectDrawerFactory;
+import com.openhtmltopdf.render.DefaultObjectDrawerFactory;
+
 import eu.tailoringexpert.FileSaver;
-import eu.tailoringexpert.domain.File;
 import eu.tailoringexpert.domain.Catalog;
+import eu.tailoringexpert.domain.File;
 import eu.tailoringexpert.domain.ScreeningSheet;
 import eu.tailoringexpert.domain.ScreeningSheetParameter;
 import eu.tailoringexpert.domain.Tailoring;
@@ -36,21 +54,7 @@ import eu.tailoringexpert.renderer.RendererRequestConfigurationSupplier;
 import eu.tailoringexpert.renderer.TailoringexpertDOMMutator;
 import eu.tailoringexpert.renderer.ThymeleafTemplateEngine;
 import io.github.cdimascio.dotenv.Dotenv;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-import org.thymeleaf.spring6.SpringTemplateEngine;
-import org.thymeleaf.templateresolver.FileTemplateResolver;
 import tools.jackson.databind.json.JsonMapper;
-
-import java.io.InputStream;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
-
-import static java.util.Objects.nonNull;
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.catchException;
-import static tools.jackson.databind.DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES;
 
 class ComparisonPDFDocumentCreatorTest {
 
@@ -65,9 +69,9 @@ class ComparisonPDFDocumentCreatorTest {
         this.templateHome = env.get("TEMPLATE_HOME", "src/test/resources/templates/");
 
         this.objectMapper = JsonMapper.builder()
-            .findAndAddModules()
-            .disable(FAIL_ON_UNKNOWN_PROPERTIES)
-            .build();
+                .findAndAddModules()
+                .disable(FAIL_ON_UNKNOWN_PROPERTIES)
+                .build();
 
         this.fileSaver = new FileSaver("target");
 
@@ -82,15 +86,17 @@ class ComparisonPDFDocumentCreatorTest {
         springTemplateEngine.addTemplateResolver(fileTemplateResolver);
 
         RendererRequestConfigurationSupplier supplier = () -> RendererRequestConfiguration.builder()
-            .id("unittest")
-            .name("platform")
-            .templateHome(this.templateHome)
-            .build();
+                .id("unittest")
+                .name("platform")
+                .templateHome(this.templateHome)
+                .build();
 
         HTMLTemplateEngine templateEngine = new ThymeleafTemplateEngine(springTemplateEngine, supplier);
 
         FSDOMMutator domMutator = new TailoringexpertDOMMutator();
-        this.creator = new ComparisonPDFDocumentCreator(templateEngine, new PDFEngine(domMutator, supplier));
+        FSObjectDrawerFactory objectDrawerFactory = new DefaultObjectDrawerFactory();
+        this.creator = new ComparisonPDFDocumentCreator(templateEngine,
+                new PDFEngine(domMutator, objectDrawerFactory, supplier));
     }
 
     @Test
@@ -101,82 +107,80 @@ class ComparisonPDFDocumentCreatorTest {
             assert nonNull(is);
 
             catalog = objectMapper.readValue(
-                is,
-                objectMapper.getTypeFactory()
-                    .constructParametricType(Catalog.class, TailoringRequirement.class)
-            );
+                    is,
+                    objectMapper.getTypeFactory()
+                            .constructParametricType(Catalog.class, TailoringRequirement.class));
         }
 
         List<ScreeningSheetParameter> parameters = Arrays.asList(
-            ScreeningSheetParameter.builder()
-                .category("Anwendungcharakter")
-                .value("wissenschaftlich")
-                .build(),
-            ScreeningSheetParameter.builder()
-                .category("Einsatzort")
-                .value("LEO")
-                .build(),
-            ScreeningSheetParameter.builder()
-                .category("Ensatzzweck")
-                .value("Erdbeobachtungssatellit")
-                .build(),
-            ScreeningSheetParameter.builder()
-                .category("Kostenorientierung")
-                .value("150 <= k")
-                .build(),
-            ScreeningSheetParameter.builder()
-                .category("Lebensdauer")
-                .value("15 Jahre < t")
-                .build(),
-            ScreeningSheetParameter.builder()
-                .category("Produkttyp")
-                .value("SAT")
-                .build(),
-            ScreeningSheetParameter.builder()
-                .category("Programmatische Bewertung")
-                .value("erforderlich")
-                .build(),
-            ScreeningSheetParameter.builder()
-                .category("Phase")
-                .value("ZERO, A, B, C, D")
-                .build(),
+                ScreeningSheetParameter.builder()
+                        .category("Anwendungcharakter")
+                        .value("wissenschaftlich")
+                        .build(),
+                ScreeningSheetParameter.builder()
+                        .category("Einsatzort")
+                        .value("LEO")
+                        .build(),
+                ScreeningSheetParameter.builder()
+                        .category("Ensatzzweck")
+                        .value("Erdbeobachtungssatellit")
+                        .build(),
+                ScreeningSheetParameter.builder()
+                        .category("Kostenorientierung")
+                        .value("150 <= k")
+                        .build(),
+                ScreeningSheetParameter.builder()
+                        .category("Lebensdauer")
+                        .value("15 Jahre < t")
+                        .build(),
+                ScreeningSheetParameter.builder()
+                        .category("Produkttyp")
+                        .value("SAT")
+                        .build(),
+                ScreeningSheetParameter.builder()
+                        .category("Programmatische Bewertung")
+                        .value("erforderlich")
+                        .build(),
+                ScreeningSheetParameter.builder()
+                        .category("Phase")
+                        .value("ZERO, A, B, C, D")
+                        .build(),
 
-            ScreeningSheetParameter.builder()
-                .category("Identifier")
-                .value("DUMMY")
-                .build(),
-            ScreeningSheetParameter.builder()
-                .category("Abteilung")
-                .value("XY-Z")
-                .build(),
-            ScreeningSheetParameter.builder()
-                .category("Kurzname")
-                .value("DUMMY")
-                .build(),
-            ScreeningSheetParameter.builder()
-                .category("Langname")
-                .value("Dummy Project")
-                .build(),
-            ScreeningSheetParameter.builder()
-                .category("Projektleiter")
-                .value("Tim Mälzer")
-                .build()
-        );
+                ScreeningSheetParameter.builder()
+                        .category("Identifier")
+                        .value("DUMMY")
+                        .build(),
+                ScreeningSheetParameter.builder()
+                        .category("Abteilung")
+                        .value("XY-Z")
+                        .build(),
+                ScreeningSheetParameter.builder()
+                        .category("Kurzname")
+                        .value("DUMMY")
+                        .build(),
+                ScreeningSheetParameter.builder()
+                        .category("Langname")
+                        .value("Dummy Project")
+                        .build(),
+                ScreeningSheetParameter.builder()
+                        .category("Projektleiter")
+                        .value("Tim Mälzer")
+                        .build());
         ScreeningSheet screeningSheet = ScreeningSheet.builder()
-            .parameters(parameters)
-            .build();
+                .parameters(parameters)
+                .build();
 
         Tailoring tailoring = Tailoring.builder()
-            .catalog(catalog)
-            .screeningSheet(screeningSheet)
-            .build();
+                .catalog(catalog)
+                .screeningSheet(screeningSheet)
+                .build();
         // act
         File actual = creator.createDocument("4711", tailoring, Collections.emptyMap());
 
         // assert
         assertThat(actual).
 
-            isNotNull();
+                isNotNull();
         fileSaver.accept("comparision.pdf", actual.getData());
 
     }
@@ -186,7 +190,8 @@ class ComparisonPDFDocumentCreatorTest {
         // arrange
 
         // act
-        Exception actual = catchException(() -> creator.createDocument(null, Tailoring.builder().build(), Collections.emptyMap()));
+        Exception actual = catchException(
+                () -> creator.createDocument(null, Tailoring.builder().build(), Collections.emptyMap()));
 
         // assert
         assertThat(actual).isInstanceOf(NullPointerException.class);

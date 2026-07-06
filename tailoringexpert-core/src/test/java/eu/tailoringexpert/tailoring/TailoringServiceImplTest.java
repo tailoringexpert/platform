@@ -65,12 +65,16 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.function.Function;
+import java.util.stream.Stream;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 import java.util.zip.ZipOutputStream;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.mockito.ArgumentCaptor;
 
 import eu.tailoringexpert.domain.BaseRequirement;
@@ -865,7 +869,7 @@ class TailoringServiceImplTest {
                         .build())
                 .build();
 
-        Optional<byte[]> matrix = Optional.of("dummy content".getBytes());
+        Optional<byte[]> matrix = of("dummy content".getBytes());
         Map<String, Collection<ImportRequirement>> matrixRequirements = Map.of();
         given(tailoringAnforderungFileReaderMock.apply(matrix.get()))
                 .willReturn(matrixRequirements);
@@ -874,7 +878,7 @@ class TailoringServiceImplTest {
         given(repositoryMock.getDefaultSignatures()).willReturn(defaultZeichnungen);
 
         given(mapperMock.toTailoringCatalog(catalog, screeningSheet, anzuwendenderSelectionVector,
-                Optional.of(matrixRequirements)))
+                of(matrixRequirements)))
                 .willReturn(Catalog.<TailoringRequirement>builder().build());
 
         // act
@@ -1652,4 +1656,81 @@ class TailoringServiceImplTest {
         verify(requirementServiceMock, times(0)).handleSelected("demo", "master", "2", "b", true);
         verify(requirementServiceMock, times(0)).handleSelected("demo", "master", "1.1", "b", true);
     }
+
+    @ParameterizedTest(name = "baseline [{0}/{1}], compare [{2}/{3}] throws NullPointerException")
+    @MethodSource("createTailoringsDiffDocument_OneNullParameter")
+    void createTailoringsDiffDocument_OneNullParameter_NullPointerExceptionThrown(String baseProject,
+            String baseTailoring, String compareProject, String compareTailoring) {
+        // act
+        Throwable actual = catchThrowable(() -> service.createTailoringsDiffDocument(baseProject, baseTailoring,
+                compareProject, compareTailoring));
+
+        // assert
+        assertThat(actual)
+                .isInstanceOf(NullPointerException.class);
+    }
+
+    @SuppressWarnings({ "java:S1144" })
+    private static Stream<Arguments> createTailoringsDiffDocument_OneNullParameter() {
+        // NOPMD - suppressed UnusedPrivateMethod - Used by parameterized test
+        // createTailoringsDiffDocument_OneNullParameter_NullPointerExceptionThrown
+
+        // arrange
+        return Stream.of(
+                Arguments.of(null, "master", "Demo1", "master1"),
+                Arguments.of("Demo", null, "Demo1", "master1"),
+                Arguments.of("Demo", "master", null, "master1"),
+                Arguments.of("Demo", "master", "Demo1", null));
+    }
+
+    @Test
+    void createTailoringsDiffDocument_BaseTailoringNotExits_EmptyReturned() {
+        // arrange
+        given(repositoryMock.getTailoring("Demo", "master")).willReturn(empty());
+
+        // act
+        Optional<File> actual = service.createTailoringsDiffDocument("Demo", "master",
+                "Demo1", "demo2");
+
+        // assert
+        assertThat(actual).isEmpty();
+        verify(repositoryMock, times(0)).getTailoring("Demo1", "master1");
+        verify(documentServiceMock, times(0)).createDiffDocument(any(), any(), any());
+    }
+
+    @Test
+    void createTailoringsDiffDocument_CompareTailoringNotExits_EmptyReturned() {
+        // arrange
+        given(repositoryMock.getTailoring("Demo", "master")).willReturn(of(Tailoring.builder().build()));
+        given(repositoryMock.getTailoring("Demo1", "master1")).willReturn(empty());
+
+        // act
+        Optional<File> actual = service.createTailoringsDiffDocument("Demo", "master",
+                "Demo1", "master1");
+
+        // assert
+        assertThat(actual).isEmpty();
+        verify(repositoryMock, times(1)).getTailoring("Demo", "master");
+        verify(documentServiceMock, times(0)).createDiffDocument(any(), any(), any());
+    }
+
+     @Test
+    void createTailoringsDiffDocument_TailoringsExits_FileReturned() {
+        // arrange
+        Optional<Tailoring> demo = of(Tailoring.builder().build());
+        Optional<Tailoring> demo1 = of(Tailoring.builder().build());
+        given(repositoryMock.getTailoring("Demo", "master")).willReturn(demo);
+        given(repositoryMock.getTailoring("Demo1", "master1")).willReturn(demo1);
+        given(documentServiceMock.createDiffDocument(eq(demo.get()), eq(demo1.get()),any())).willReturn(of(File.builder().build()));
+
+        // act
+        Optional<File> actual = service.createTailoringsDiffDocument("Demo", "master",
+                "Demo1", "master1");
+
+        // assert
+        assertThat(actual).isNotEmpty();
+        verify(repositoryMock, times(1)).getTailoring("Demo", "master");
+        verify(repositoryMock, times(1)).getTailoring("Demo1", "master1");
+    }
+
 }

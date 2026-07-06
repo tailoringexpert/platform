@@ -1,0 +1,179 @@
+<!DOCTYPE html SYSTEM "http://www.thymeleaf.org/dtd/xhtml1-strict-thymeleaf-4.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="utf-8" />
+    <title th:text="${titel}">Requirements catalog</title>
+    <meta name="title" th:text="${titel}" />
+    <meta name="description" th:content="${beschreibung}" />
+    <meta name="author" content="TailoringExpert" />
+    <meta name="subject" content="Requirements" />
+    <meta name="keywords" content="Requirements, Projectname" />
+
+    <link rel="stylesheet" type="text/css" href="../css/page.css" />
+
+    <style>
+        .box {
+            font-size: 1.17em;
+            font-weight: bolder;
+            padding: 10px;
+            background-color: rgb(210, 233, 255);
+        }
+
+
+        .na {
+            font-style: italic;
+            color: #D3D3D3;
+            /* display: none; */
+        }
+
+        .col-position {
+            width: 5%;
+        }
+
+        .col-selected {
+            width: 5%;
+        }
+
+        .col-text {
+            width: 90%;
+        }
+
+        .requirement-old {
+            text-decoration: line-through;
+        }
+
+        .requirement-new {
+            color: red;
+            text-decoration: underline;
+        }
+
+        /* Die leere Box */
+        .checkbox {
+            display: inline-block;
+            width: 14px;
+            height: 14px;
+            border: 1px solid #000000;
+            background-color: #ffffff;
+            vertical-align: middle;
+            margin-right: 6px;
+            position: relative;
+        }
+
+        /* Das Häkchen (wird nur gerendert, wenn die Klasse 'checked' aktiv ist) */
+        .checkbox.checked::after {
+            content: '';
+            position: absolute;
+            left: 4px;
+            top: 1px;
+            width: 4px;
+            height: 8px;
+            border: solid #000000;
+            border-width: 0 2px 2px 0;
+            transform: rotate(45deg);
+        }
+    </style>
+    <bookmarks>
+        <bookmark th:each="bookmark: ${bookmarks}" th:name="${bookmark.value}" th:href="'#' + ${bookmark.key}" />
+    </bookmarks>
+</head>
+
+<body>
+
+    <div style="position: running(dokument_datum);font-size:x-small;border-bottom: 1px solid black;">
+        <span th:text="${DOKUMENT}" /><br />
+        <span th:text="${DATUM}" />
+    </div>
+
+    <div style="position: running(logo)">
+        <img class="logo" src="../css/img/logo.png" alt="Logo" />
+    </div>
+
+    <header-box>
+        <h1>Tailoringexpert<br />Thymeleaf Template</h1>
+        <h2>Unittest</h2>
+    </header-box>
+
+
+    <div style="position: running(dokumenttyp_projekt);font-size:x-small;border-top: 1px solid black">
+        <span>Title:Tailoring Diffs</span><br />
+        <span th:text="${PROJEKT}" />
+    </div>
+
+
+    <title-box>
+        <dokument-typ>Product Assurance</dokument-typ>
+        <dokument-subtyp>Tailoring Diffs</dokument-subtyp>
+        <dokument-project>for [[${BASE_PROJECT}]] and [[${COMPARE_PROJECT}]]</dokument-project>
+        <dokument-release>[[${DOKUMENT}]] [[${DATUM}]]</dokument-release>
+    </title-box>
+
+
+    <page-after>
+        <div style="width: 60%;margin:auto;text-align:center">
+            <hr />
+            <dokument-typ>Product Assurance</dokument-typ>
+            <dokument-subtyp>Tailoring Diffs</dokument-subtyp>
+            <dokument-project>for [[${BASE_PROJECT}]]/[[${BASE_TAILORING}]] and
+                [[${COMPARE_PROJECT}]]/[[${COMPARE_TAILORING}]]</dokument-project>
+            <hr />
+        </div>
+
+    </page-after>
+
+    <page-after>
+        <div style="margin-top: 300px;text-align:center">
+            (THIS PAGE INTENTIONALLY LEFT BLANK)
+        </div>
+    </page-after>
+
+    <page-after id="toc">
+        <h2>Table of Content</h2>
+        <ul class="toc">
+            <li th:each="chapter: ${diffs.keySet()}">
+                <a th:href="'#' + ${chapter.substring(0, chapter.indexOf(' '))}" th:text="${chapter}"></a>
+
+            </li>
+        </ul>
+    </page-after>
+
+    <table style=" width: 100%;border-collapse: collapse;">
+        <colgroup>
+            <col style="width: 5%;" />
+            <col style="width: 5%;" />
+            <col style="width: auto;" />
+        </colgroup>
+        <tbody>
+            <th:block th:each="entry, stat : ${diffs}">
+                <tr>
+                    <td style="width:100%" colspan="3" th:classappend="box"
+                        th:attrappend="id=${entry.key.substring(0, entry.key.indexOf(' '))}" th:utext="${entry.key}">
+                    </td>
+                </tr>
+                <th:block th:each="diff : ${entry.value}">
+                    <tr>
+                        <td style="width:5%" th:utext="${diff.base.position}"></td>
+                        <td style="width:10%">
+                            <span class="checkbox"
+                                th:classappend="${diff.base.selected.booleanValue} ? 'checked' : ''"></span>
+                        </td>
+                        <td style="width:85%" th:utext="${diff.base.text}"></td>
+                    </tr>
+                    <tr>
+                        <td></td>
+                        <span class="checkbox"
+                            th:classappend="${diff.other.selected.booleanValue} ? 'checked' : ''"></span>
+                        <td th:utext="${diff.other.text}"></td>
+                    </tr>
+                    <tr th:if="${!stat.last}" class="row-separator">
+                        <td></td>
+                        <td colspan="2">
+                            <hr />
+                        </td>
+                    </tr>
+                </th:block>
+        </tbody>
+    </table>
+</body>
+
+</html>
