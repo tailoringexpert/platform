@@ -1,13 +1,35 @@
 # Changelog
 
-## [v0.2.7](https://github.com/tailoringexpert/platform/tree/v0.2.7) (05.05.2026)
+## [v0.2.6](https://github.com/tailoringexpert/platform/tree/v0.2.6) (07.06.2026)
 
-[Full Changelog](https://github.com/tailoringexpert/platform/compare/v0.2.4...v0.2.7)
+[Full Changelog](https://github.com/tailoringexpert/platform/compare/v0.2.5...v0.2.6)
 
 **Implemented enhancements:**
 
+- Provide list of chapter for pdf tailoringcatalog creation [\#504](https://github.com/tailoringexpert/platform/issues/504)
+- Add watermark option for pdf generation [\#494](https://github.com/tailoringexpert/platform/issues/494)
+- Provide filter for selecting requirements per chapter during \(base\)catalogue creation [\#492](https://github.com/tailoringexpert/platform/issues/492)
+- PDF document for showing diffs between different tailorings [\#507](https://github.com/tailoringexpert/platform/issues/507)
+
+**Fixed bugs:**
+
+- MIXINS not resolved after migration to yml [\#505](https://github.com/tailoringexpert/platform/issues/505)
+- Disable logging for tailoring requirement change [\#503](https://github.com/tailoringexpert/platform/issues/503)
+- Applicabe documents not added to tailoring requirements [\#491](https://github.com/tailoringexpert/platform/issues/491)
+
+**Closed issues:**
+
+- Convert application.properties to application.yml [\#502](https://github.com/tailoringexpert/platform/issues/502)
+- Update Java 23 -\> 25 [\#508](https://github.com/tailoringexpert/platform/issues/508)
+
+## [v0.2.5](https://github.com/tailoringexpert/platform/tree/v0.2.5) (05.05.2026)
+
+[Full Changelog](https://github.com/tailoringexpert/platform/compare/v0.2.4...v0.2.5)
+
+**Implemented enhancements:**
+
+- Use matrix for creating new projects and tailorings [\#489](https://github.com/tailoringexpert/platform/issues/489)
 - Matrices management [\#481](https://github.com/tailoringexpert/platform/issues/481)
-- Log tailoring requirement changes [\#474](https://github.com/tailoringexpert/platform/issues/474)
 
 **Fixed bugs:**
 
@@ -23,13 +45,9 @@
 
 **Implemented enhancements:**
 
+- Log tailoring requirement changes [\#474](https://github.com/tailoringexpert/platform/issues/474)
 - Unselect requirements not related to project phase [\#471](https://github.com/tailoringexpert/platform/issues/471)
 - Provide an Excel spreadsheet to search for the applicable document to which a requirement refers [\#469](https://github.com/tailoringexpert/platform/issues/469)
-- Log tailoring requirement changes [\#474](https://github.com/tailoringexpert/platform/issues/474)
-
-**Fixed bugs:**
-
-- Deserialization exception during updating document signature [\#467](https://github.com/tailoringexpert/platform/issues/467)
 
 ## [v0.2.2](https://github.com/tailoringexpert/platform/tree/v0.2.2) (01.14.2026)
 
@@ -37,8 +55,8 @@
 
 **Fixed bugs:**
 
-- Jackson3 MixIn not working within app [\#464](https://github.com/tailoringexpert/platform/issues/464)
 - Deserialization exception during updating document signature [\#467](https://github.com/tailoringexpert/platform/issues/467)
+- Jackson3 MixIn not working within app [\#464](https://github.com/tailoringexpert/platform/issues/464)
 
 ## [v0.2.1](https://github.com/tailoringexpert/platform/tree/v0.2.1) (01.13.2026)
 
