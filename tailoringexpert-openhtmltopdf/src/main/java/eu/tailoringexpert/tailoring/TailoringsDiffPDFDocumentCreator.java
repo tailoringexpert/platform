@@ -21,6 +21,7 @@
  */
 package eu.tailoringexpert.tailoring;
 
+import static java.util.Objects.nonNull;
 import static java.util.Optional.ofNullable;
 
 import java.util.ArrayList;
@@ -84,24 +85,35 @@ public class TailoringsDiffPDFDocumentCreator implements DiffDocumentCreator {
         return result;
     }
 
-    private void apply(Chapter<TailoringRequirement> base,
+    void apply(Chapter<TailoringRequirement> base,
             Chapter<TailoringRequirement> compare,
             Map<String, List<TailoringRequirementDiff>> diffs) {
-        diffs.computeIfAbsent(templateEngine.toXHTML(base.getNumber() + " " + base.getName(), Map.of()),
-                key -> new ArrayList<>())
-                .addAll(compare.getRequirements()
-                        .stream()
-                        .map(requirement -> base.getRequirement(requirement.getPosition())
-                                .flatMap(baseReq -> diffProvider.apply(requirement, baseReq)))
-                        .filter(Optional::isPresent)
-                        .map(Optional::get)
-                        .toList());
+        log.traceEntry(() -> base.getNumber());
 
-        ofNullable(compare.getChapters())
-                .ifPresent(subChapters -> subChapters.forEach(subChapter -> apply(
-                        subChapter,
-                        base.getChapter(subChapter.getNumber()),
-                        diffs)));
+        String key = templateEngine.toXHTML(base.getNumber() + " " + base.getName(), Map.of());
+        List<TailoringRequirementDiff> requirements = diffs.computeIfAbsent(key, k -> new ArrayList<>());
+
+        base.getRequirements()
+                .stream()
+                .map(bReq -> {
+                    TailoringRequirement cReq = ofNullable(compare)
+                            .flatMap(c -> c.getRequirement(bReq.getPosition()))
+                            .orElse(null);
+                    return diffProvider.apply(bReq, cReq);
+                })
+                .flatMap(Optional::stream)
+                .forEachOrdered(requirements::add);
+
+        if (nonNull(base.getChapters())) {
+            base.getChapters().forEach(subChapter -> {
+                Chapter<TailoringRequirement> subCompare = Optional.ofNullable(compare)
+                        .map(c -> c.getChapter(subChapter.getNumber()))
+                        .orElse(null);
+                apply(subChapter, subCompare, diffs);
+            });
+        }
+
+        log.traceExit();
     }
 
 }
