@@ -21,6 +21,7 @@
  */
 package eu.tailoringexpert.tailoring;
 
+import static java.lang.Boolean.TRUE;
 import static java.util.Map.entry;
 import static java.util.Objects.nonNull;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -28,6 +29,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
 
@@ -42,8 +45,11 @@ import com.openhtmltopdf.extend.FSObjectDrawerFactory;
 import com.openhtmltopdf.render.DefaultObjectDrawerFactory;
 
 import eu.tailoringexpert.FileSaver;
+import eu.tailoringexpert.domain.Catalog;
+import eu.tailoringexpert.domain.Chapter;
 import eu.tailoringexpert.domain.File;
 import eu.tailoringexpert.domain.Tailoring;
+import eu.tailoringexpert.domain.TailoringRequirement;
 import eu.tailoringexpert.renderer.HTMLTemplateEngine;
 import eu.tailoringexpert.renderer.PDFEngine;
 import eu.tailoringexpert.renderer.RendererRequestConfiguration;
@@ -122,11 +128,96 @@ class TailoringsDiffPDFDocumentCreatorTest {
                 entry("COMPARE_TAILORING", "master2"));
 
         // act
-        File actual = requirementDiff.createDocument("docId", master, master1,parameters) ;
+        File actual = requirementDiff.createDocument("docId", master, master1, parameters);
 
         // assert
         assertThat(actual.getData()).isNotNull();
         fileSaver.accept("diff.pdf", actual.getData());
+    }
+
+    @Test
+    void apply() {
+        // arrange
+        Tailoring master = Tailoring.builder()
+                .catalog(Catalog.<TailoringRequirement>builder()
+                        .toc(Chapter.<TailoringRequirement>builder()
+                                .chapters(List.of(
+                                        Chapter.<TailoringRequirement>builder()
+                                                .number("1")
+                                                .chapters(List.of(
+                                                        Chapter.<TailoringRequirement>builder()
+                                                                .number("1.1")
+                                                                .chapters(List.of(
+                                                                        Chapter.<TailoringRequirement>builder()
+                                                                                .number("1.1.1")
+                                                                                .requirements(List.of(
+                                                                                        TailoringRequirement.builder()
+                                                                                                .position("a")
+                                                                                                .text("Hallo 1.1.1a")
+                                                                                                .selected(TRUE)
+                                                                                                .build()))
+                                                                                .build()))
+                                                                .requirements(List.of(
+                                                                        TailoringRequirement.builder()
+                                                                                .position("a")
+                                                                                .text("Hallo 1.1a")
+                                                                                .selected(TRUE)
+                                                                                .build()))
+                                                                .build(),
+                                                        Chapter.<TailoringRequirement>builder()
+                                                                .number("1.2")
+                                                                .requirements(List.of(
+                                                                        TailoringRequirement.builder()
+                                                                                .position("a")
+                                                                                .text("Hallo 1.2a")
+                                                                                .selected(TRUE)
+                                                                                .build()))
+                                                                .build()))
+                                                .requirements(List.of())
+                                                .build())
+
+                                )
+                                .requirements(List.of())
+                                .build())
+                        .build())
+                .build();
+
+        Tailoring master1 = Tailoring.builder()
+                .catalog(Catalog.<TailoringRequirement>builder()
+                        .toc(Chapter.<TailoringRequirement>builder()
+                                .chapters(List.of(
+                                        Chapter.<TailoringRequirement>builder()
+                                                .number("1")
+                                                .chapters(List.of(
+                                                        Chapter.<TailoringRequirement>builder()
+                                                                .number("1.1")
+                                                                .requirements(List.of())
+                                                                .build(),
+                                                        Chapter.<TailoringRequirement>builder()
+                                                                .number("1.2")
+                                                                .requirements(List.of(
+                                                                        TailoringRequirement.builder()
+                                                                                .position("a")
+                                                                                .text("Hallo 1.2a")
+                                                                                .selected(TRUE)
+                                                                                .build()))
+                                                                .build()))
+                                                .requirements(List.of())
+                                                .build())
+
+                                )
+                                .requirements(List.of())
+                                .build())
+                        .build())
+                .build();
+
+        // act
+        Map<String, List<TailoringRequirementDiff>> actual = new LinkedHashMap<>();
+        requirementDiff.apply(master.getCatalog().getToc(), master1.getCatalog().getToc(), actual);
+        actual.entrySet().removeIf(entry -> entry.getValue().isEmpty());
+
+        // assert
+        log.info(actual);
     }
 
     Function<String, Tailoring> load = name -> {

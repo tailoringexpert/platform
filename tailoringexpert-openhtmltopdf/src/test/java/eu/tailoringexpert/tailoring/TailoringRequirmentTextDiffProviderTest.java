@@ -24,14 +24,17 @@ package eu.tailoringexpert.tailoring;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.anyMap;
 import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 
 import java.util.Optional;
 import java.util.function.Function;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mockito;
 
 import com.github.difflib.text.DiffRowGenerator;
 
@@ -46,7 +49,7 @@ class TailoringRequirmentTextDiffProviderTest {
     @BeforeEach
     void beforeEach() {
 
-        this.templateEngineMock = Mockito.mock(HTMLTemplateEngine.class);
+        this.templateEngineMock = mock(HTMLTemplateEngine.class);
 
         DiffRowGenerator generator = DiffRowGenerator.create()
                 .reportLinesUnchanged(false)
@@ -60,6 +63,24 @@ class TailoringRequirmentTextDiffProviderTest {
                 .build();
 
         this.provider = new TailoringRequirmentTextDiffProvider(generator, templateEngineMock);
+    }
+
+    @Test
+    void apply_NullCompare_BaseAsDiffReturned() {
+        given(templateEngineMock.toXHTML(anyString(), anyMap()))
+                .willAnswer(invocation -> invocation.getArgument(0));
+
+        // act
+        Optional<TailoringRequirementDiff> actual = provider.apply(
+                TailoringRequirement.builder()
+                        .text("New Requirement")
+                        .selected(true)
+                        .build(),
+                null);
+
+        // assert
+        assertThat(actual).isNotEmpty();
+        verify(templateEngineMock, times(1)).toXHTML(eq("New Requirement"), anyMap());
     }
 
     @Test
@@ -126,5 +147,4 @@ class TailoringRequirmentTextDiffProviderTest {
         assertThat(actual).isNotEmpty();
         assertThat(actual.get().getOther().getSelected()).isFalse();
     }
-
 }
