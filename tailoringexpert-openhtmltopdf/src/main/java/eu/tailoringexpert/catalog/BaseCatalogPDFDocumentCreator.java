@@ -99,6 +99,9 @@ public class BaseCatalogPDFDocumentCreator implements DocumentCreator {
             Map<String, Object> parameter = new HashMap<>(placeholders);
             parameter.put("catalogVersion", catalog.getVersion());
 
+            Collection<BaseCatalogueElement> chapters = new LinkedList<>();
+
+            parameter.put("chapters", chapters);
             parameter.put("applicableDocuments", applicableDocumentProvider.apply(catalog));
 
             Collection<BaseCatalogueElement> requirements = new LinkedList<>();
@@ -116,7 +119,7 @@ public class BaseCatalogPDFDocumentCreator implements DocumentCreator {
             catalog.getToc().getChapters()
                     .forEach(chapter -> {
                         bookmarks.put(chapter.getNumber(), chapter.getName());
-                        addChapter(chapter, 1, requirements);
+                        addChapter(chapter, 1, chapters, requirements);
                     });
             addDRD(catalog.getToc(), drds, phases);
 
@@ -140,7 +143,14 @@ public class BaseCatalogPDFDocumentCreator implements DocumentCreator {
      * @param level   chapter level
      * @param rows    collection to add elements to
      */
-    void addChapter(Chapter<BaseRequirement> chapter, int level, Collection<BaseCatalogueElement> rows) {
+    void addChapter(Chapter<BaseRequirement> chapter, int level,
+            Collection<BaseCatalogueElement> chapters, Collection<BaseCatalogueElement> rows) {
+        chapters.add(BaseCatalogueElement.builder()
+                .text(templateEngine.toXHTML(chapter.getNumber() + " " + chapter.getName(), emptyMap()))
+                .chapter(chapter.getNumber())
+                .level(level)
+                .build());
+
         rows.add(BaseCatalogueElement.builder()
                 .text(templateEngine.toXHTML(chapter.getNumber() + " " + chapter.getName(), emptyMap()))
                 .chapter(chapter.getNumber())
@@ -150,7 +160,7 @@ public class BaseCatalogPDFDocumentCreator implements DocumentCreator {
                 .forEach(requirement -> addRequirement(requirement, rows));
         final AtomicInteger nextLevel = new AtomicInteger(level + 1);
         chapter.getChapters()
-                .forEach(subChapter -> addChapter(subChapter, nextLevel.get(), rows));
+                .forEach(subChapter -> addChapter(subChapter, nextLevel.get(), chapters, rows));
     }
 
     /**
