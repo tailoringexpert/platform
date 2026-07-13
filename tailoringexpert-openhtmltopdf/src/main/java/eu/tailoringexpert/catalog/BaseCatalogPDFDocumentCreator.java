@@ -216,9 +216,22 @@ public class BaseCatalogPDFDocumentCreator implements DocumentCreator {
                     .collect(toCollection(() -> phases));
         }
 
+        Collection<DRDElement> drds = new LinkedList<>();
+        if (nonNull(requirement.getDrds())) {
+            requirement.getDrds()
+                    .stream()
+                    .map(drd -> DRDElement.builder()
+                            .number(drd.getNumber())
+                            .title(templateEngine.toXHTML(drd.getTitle(), emptyMap()))
+                            .subtitle(drd.getSubtitle())
+                            .build())
+                    .collect(toCollection(() -> drds));
+        }
+
         rows.add(builder
                 .phases(phases)
                 .identifiers(identifiers)
+                .drds(drds)
                 .position(templateEngine.toXHTML(requirement.getPosition(), emptyMap()))
                 .text(templateEngine.toXHTML(requirement.getText(), emptyMap()))
                 .chapter(null)
