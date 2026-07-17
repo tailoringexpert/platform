@@ -21,6 +21,7 @@
  */
 package eu.tailoringexpert.tailoring;
 
+import static java.util.Objects.isNull;
 import static java.util.Optional.empty;
 
 import java.util.List;
@@ -38,17 +39,21 @@ import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
-public class TailoringRequirmentTextDiffProvider
-        implements BiFunction<TailoringRequirement, TailoringRequirement, Optional<TailoringRequirementDiff>> {
+public class TailoringRequirmentTextDiffProvider implements
+        BiFunction<TailoringRequirement, TailoringRequirement, Optional<TailoringRequirementDiff>> {
 
     @NonNull
-    DiffRowGenerator generator;
+    private DiffRowGenerator generator;
 
     @NonNull
     private HTMLTemplateEngine templateEngine;
 
     @Override
     public Optional<TailoringRequirementDiff> apply(TailoringRequirement base, TailoringRequirement compare) {
+        if (isNull(compare)) {
+            return apply(base);
+        }
+
         List<DiffRow> diffs = generator.generateDiffRows(
                 List.of(base.getText()),
                 List.of(compare.getText()));
@@ -57,17 +62,17 @@ public class TailoringRequirmentTextDiffProvider
             return empty();
         }
 
+        DiffRow firstDiff = diffs.getFirst();
         return Optional.of(TailoringRequirementDiff.builder()
-                .base(TailoringRequirement.builder()
-                        .position(base.getPosition())
-                        .text(templateEngine.toXHTML(diffs.get(0).getOldLine(), Map.of()))
-                        .selected(base.getSelected())
-                        .build())
-                .other(TailoringRequirement.builder()
-                        .position(compare.getPosition())
-                        .text(templateEngine.toXHTML(diffs.get(0).getNewLine(), Map.of()))
-                        .selected(compare.getSelected())
-                        .build())
+                .base(buildRequirement(base, firstDiff.getOldLine()))
+                .other(buildRequirement(compare, firstDiff.getNewLine()))
+                .build());
+    }
+
+    private Optional<TailoringRequirementDiff> apply(TailoringRequirement requirement) {
+        return Optional.of(TailoringRequirementDiff.builder()
+                .base(buildRequirement(requirement, requirement.getText()))
+                .other(TailoringRequirement.builder().selected(Boolean.FALSE).build())
                 .build());
     }
 
@@ -77,5 +82,13 @@ public class TailoringRequirmentTextDiffProvider
 
     private boolean hasTextDiff(List<DiffRow> diffs) {
         return !diffs.getFirst().getTag().equals(Tag.EQUAL);
+    }
+
+    private TailoringRequirement buildRequirement(TailoringRequirement source, String rawText) {
+        return TailoringRequirement.builder()
+                .position(source.getPosition())
+                .text(templateEngine.toXHTML(rawText, Map.of()))
+                .selected(source.getSelected())
+                .build();
     }
 }

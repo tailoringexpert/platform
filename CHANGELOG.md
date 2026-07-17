@@ -1,15 +1,28 @@
 # Changelog
 
+## [v0.2.7](https://github.com/tailoringexpert/platform/tree/v0.2.7) (07.13.2026)
+
+[Full Changelog](https://github.com/tailoringexpert/platform/compare/v0.2.6...v0.2.7)
+
+**Implemented enhancements:**
+
+- Provide referenced drd to baserequirement for basecatalogue pdf generation [\#511](https://github.com/tailoringexpert/platform/issues/511)
+
+**Fixed bugs:**
+
+- Basecatalogue pdf use outdated/unsupported toc chapter selection [\#510](https://github.com/tailoringexpert/platform/issues/510)
+- Tailoring catalogue diff generation creates exception using different base catalogue versions [\#509](https://github.com/tailoringexpert/platform/issues/509)
+
 ## [v0.2.6](https://github.com/tailoringexpert/platform/tree/v0.2.6) (07.06.2026)
 
 [Full Changelog](https://github.com/tailoringexpert/platform/compare/v0.2.5...v0.2.6)
 
 **Implemented enhancements:**
 
+- PDF document for showing diffs between different tailorings [\#507](https://github.com/tailoringexpert/platform/issues/507)
 - Provide list of chapter for pdf tailoringcatalog creation [\#504](https://github.com/tailoringexpert/platform/issues/504)
 - Add watermark option for pdf generation [\#494](https://github.com/tailoringexpert/platform/issues/494)
 - Provide filter for selecting requirements per chapter during \(base\)catalogue creation [\#492](https://github.com/tailoringexpert/platform/issues/492)
-- PDF document for showing diffs between different tailorings [\#507](https://github.com/tailoringexpert/platform/issues/507)
 
 **Fixed bugs:**
 
@@ -19,8 +32,8 @@
 
 **Closed issues:**
 
-- Convert application.properties to application.yml [\#502](https://github.com/tailoringexpert/platform/issues/502)
 - Update Java 23 -\> 25 [\#508](https://github.com/tailoringexpert/platform/issues/508)
+- Convert application.properties to application.yml [\#502](https://github.com/tailoringexpert/platform/issues/502)
 
 ## [v0.2.5](https://github.com/tailoringexpert/platform/tree/v0.2.5) (05.05.2026)
 
