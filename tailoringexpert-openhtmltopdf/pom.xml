@@ -37,7 +37,7 @@
         <dependency>
             <groupId>io.github.openhtmltopdf</groupId>
             <artifactId>openhtmltopdf-objects</artifactId>
-            <version>1.1.40</version>
+            <version>1.1.46</version>
         </dependency>
 
         <dependency>
