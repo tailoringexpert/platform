@@ -91,13 +91,13 @@ pipeline {
 
         stage('build') {
             steps {
-                sh "mvn --settings .jenkins/settings.xml -Dmaven.repo.local=${M2_VOLUME}/repository -DskipTests clean compile"
+                sh "mvn --settings .jenkins/settings.xml -Dmaven.repo.local=${M2_VOLUME}/repository -DskipTests clean compile -P tailoringexpert-maven"
             }
         }
 
         stage('verify') {
             steps {
-                sh "mvn --settings .jenkins/settings.xml -Dmaven.repo.local=${M2_VOLUME}/repository verify"
+                sh "mvn --settings .jenkins/settings.xml -Dmaven.repo.local=${M2_VOLUME}/repository verify -P tailoringexpert-maven"
             }
 
             post {
@@ -142,7 +142,7 @@ pipeline {
         stage("quality gate") {
             steps {
                 withSonarQubeEnv('default') {
-                    sh "mvn --settings .jenkins/settings.xml -Dmaven.repo.local=${M2_VOLUME}/repository sonar:sonar"
+                    sh "mvn --settings .jenkins/settings.xml -Dmaven.repo.local=${M2_VOLUME}/repository sonar:sonar -P tailoringexpert-maven"
                 }
               timeout(time: 1, unit: 'HOURS') {
                 waitForQualityGate abortPipeline: true, credentialsId: '${SONAR_TOKEN}'
@@ -152,7 +152,7 @@ pipeline {
 
         stage('install') {
             steps {
-                sh "mvn --settings .jenkins/settings.xml -Dmaven.repo.local=${M2_VOLUME}/repository -DskipTests install"
+                sh "mvn --settings .jenkins/settings.xml -Dmaven.repo.local=${M2_VOLUME}/repository -DskipTests install -P tailoringexpert-maven"
             }
         }
 
@@ -169,7 +169,7 @@ pipeline {
                 sh('git config commit.gpgsign true')
                 sh('git config user.signingkey $GPG_SIGNKEY')
                 
-                sh "mvn --settings .jenkins/settings.xml -Dmaven.repo.local=${M2_VOLUME}/repository -B -Dresume=false -DargLine='-DprocessAllModules --settings .jenkins/settings.xml -Dmaven.repo.local=/home/maven/.m2 --settings .jenkins/settings.xml' -DskipTestProject=true  -DgpgSignTag=true -DgpgSignCommit=true gitflow:release" 
+                sh "mvn --settings .jenkins/settings.xml -Dmaven.repo.local=${M2_VOLUME}/repository -B -Dresume=false -DargLine='-DprocessAllModules --settings .jenkins/settings.xml -Dmaven.repo.local=/home/maven/.m2 --settings .jenkins/settings.xml -P tailoringexpert-maven' -DskipTestProject=true  -DgpgSignTag=true -DgpgSignCommit=true gitflow:release -P tailoringexpert-maven" 
 
                 // remove credentials
                 sh('git remote set-url origin $GIT_URL')
