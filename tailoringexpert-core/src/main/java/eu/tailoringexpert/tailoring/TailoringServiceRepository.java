@@ -21,10 +21,16 @@
  */
 package eu.tailoringexpert.tailoring;
 
-import eu.tailoringexpert.domain.*;
-
 import java.util.Collection;
 import java.util.Optional;
+
+import eu.tailoringexpert.domain.DocumentSignature;
+import eu.tailoringexpert.domain.Note;
+import eu.tailoringexpert.domain.Project;
+import eu.tailoringexpert.domain.ScreeningSheet;
+import eu.tailoringexpert.domain.SelectionVectorProfile;
+import eu.tailoringexpert.domain.Tailoring;
+import eu.tailoringexpert.domain.TailoringState;
 
 /**
  * Service for handling (peristent) data used by @see {@link TailoringService}.
@@ -148,6 +154,14 @@ public interface TailoringServiceRepository {
      * @return In case successful setting state tailoring, otherwise empty
      */
     Optional<Tailoring> setState(String project, String tailoring, TailoringState state);
+
+    /**
+     * Set issue of tailoring.
+     *
+     * @param project   project identifier
+     * @param tailoring tailoring to add note to
+     * @param issue     issue to set
+     * @return In case successful setting issue tailoring, otherwise empty
+     */
+    Optional<Tailoring> setIssue(String project, String tailoring, String issue);
 }
-
-

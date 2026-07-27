@@ -59,6 +59,7 @@ package domain {
         +{static} SELECTIONVECTOR_PROFILE = "selectionvector" : String
         +{static} MATRIXFILE = "matrixfile" : String
         +{static} TAILORING_DIFF = "project/{project}/tailoring/{tailoring}/compare/{cproject}/{ctailoring}" : String
+        +{static} TAILORING_ISSUE = "project/{project}/tailoring/{tailoring}/issue/{issue}" : String
             
         ..Rel..
         +{static} REL_SELF = "self" : String
@@ -87,6 +88,7 @@ package domain {
         -{static} REL_VALIDUNTIL = "validuntil" : String
         -{static} REL_REQUIREMENTCHANGES = "requirementchanges" : String
         -{static} REL_TAILORINGDIFF = "tailoringdiff": String
+        -{static} REL_TAILORINGISSUE = "tailoringissue": String
 
         .. CatalogVersion ..
         updatePathContext(pathContext : PathContextBuilder, domain : CatalogVersion): void
@@ -232,6 +234,7 @@ package domain {
 
     class TailoringResource {
         name : String
+        issue : String
     }
     RepresentationModel <|-- TailoringResource
     TailoringResource --> "1" TailoringState : state

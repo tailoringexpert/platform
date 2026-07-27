@@ -197,6 +197,7 @@ package domain {
         identifier : String
         name : String
         creationTimestamp : ZonedDateTime
+        issue : String
     }
     TailoringEntity --> "1" SelectionVectorEntity : selectionVector
     TailoringEntity --> "1" BaseCatalogEntity : baseCatalog
