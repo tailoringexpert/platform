@@ -44,6 +44,7 @@ package tailoring {
         +getNote(project : String, tailoring : String, note: Integer): ResponseEntity<EntityModel<NoteResource>>
         +putUnselectRequirementsAccordingToPhases(project : String, tailoring : String): ResponseEntity<Boolean>
         +getDiffDocument(project : String, tailoring : String, cproject : String, ctailoring : String) : ResponseEntity<byte[]>
+        +updateTailoringIssue(project : String, tailoring : String, issue : String) : ResponseEntity<EntityModel<TailoringResource>> 
     }
 
     TailoringController --> "1" ResourceMapper : mapper

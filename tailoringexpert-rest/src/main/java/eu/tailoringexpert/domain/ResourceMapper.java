@@ -101,6 +101,7 @@ public abstract class ResourceMapper {
     public static final String TAILORING_STATE = "project/{project}/tailoring/{tailoring}/state/{state}";
     public static final String TAILORING_REQUIREMENTSAPPLICABILITY = "project/{project}/tailoring/{tailoring}/requirements/applicabilty";
     public static final String TAILORING_DIFF = "project/{project}/tailoring/{tailoring}/compare/{cproject}/{ctailoring}";
+    public static final String TAILORING_ISSUE = "project/{project}/tailoring/{tailoring}/issue/{issue}";
 
     public static final String BASECATALOG = "catalog";
     public static final String BASECATALOG_VERSION = "catalog/{version}";
@@ -146,6 +147,7 @@ public abstract class ResourceMapper {
     private static final String REL_VALIDUNTIL = "validuntil";
     private static final String REL_REQUIREMENTCHANGES = "requirementchanges";
     private static final String REL_TAILORINGDIFF = "tailoringdiff";
+    private static final String REL_TAILORINGISSUE = "tailoringissue";
 
     @Setter
     private String contextPath;
@@ -243,7 +245,8 @@ public abstract class ResourceMapper {
                 createLink(REL_NOTE, TAILORING_NOTES, parameter),
                 createLink(REL_STATE, TAILORING_STATE, parameter),
                 createLink(REL_REQUIREMENTAPPLICIBILITY, TAILORING_REQUIREMENTSAPPLICABILITY, parameter),
-                createLink(REL_TAILORINGDIFF, TAILORING_DIFF, parameter)));
+                createLink(REL_TAILORINGDIFF, TAILORING_DIFF, parameter),
+                createLink(REL_TAILORINGISSUE, TAILORING_ISSUE, parameter)));
     }
 
     // ScreeningSheet

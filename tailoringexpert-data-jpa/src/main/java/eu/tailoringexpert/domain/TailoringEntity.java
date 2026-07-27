@@ -21,11 +21,15 @@
  */
 package eu.tailoringexpert.domain;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
-import lombok.Singular;
+import static jakarta.persistence.CascadeType.ALL;
+import static jakarta.persistence.EnumType.STRING;
+import static jakarta.persistence.FetchType.LAZY;
+import static jakarta.persistence.GenerationType.TABLE;
+
+import java.io.Serializable;
+import java.time.ZonedDateTime;
+import java.util.Collection;
+import java.util.List;
 
 import jakarta.persistence.CollectionTable;
 import jakarta.persistence.Column;
@@ -40,15 +44,11 @@ import jakarta.persistence.OneToOne;
 import jakarta.persistence.OrderColumn;
 import jakarta.persistence.Table;
 import jakarta.persistence.TableGenerator;
-import java.io.Serializable;
-import java.time.ZonedDateTime;
-import java.util.Collection;
-import java.util.List;
-
-import static jakarta.persistence.CascadeType.ALL;
-import static jakarta.persistence.EnumType.STRING;
-import static jakarta.persistence.FetchType.LAZY;
-import static jakarta.persistence.GenerationType.TABLE;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+import lombok.Singular;
 
 @Data
 @Builder
@@ -63,8 +63,7 @@ public class TailoringEntity implements Serializable {
      * Technical ID.
      */
     @Id
-    @TableGenerator(name = "SEQ_TAILORING", table = "SEQUENCE", pkColumnName = "SEQ_NAME",
-        valueColumnName = "SEQ_COUNT", pkColumnValue = "SEQ_TAILORING", initialValue = 1)
+    @TableGenerator(name = "SEQ_TAILORING", table = "SEQUENCE", pkColumnName = "SEQ_NAME", valueColumnName = "SEQ_COUNT", pkColumnValue = "SEQ_TAILORING", initialValue = 1)
     @GeneratedValue(strategy = TABLE, generator = "SEQ_TAILORING")
     @Column(name = "TAILORING_ID")
     private Long id;
@@ -100,10 +99,7 @@ public class TailoringEntity implements Serializable {
      */
     @Singular("phase")
     @ElementCollection
-    @CollectionTable(
-        name = "TAILORING_PHASE",
-        joinColumns = @JoinColumn(name = "TAILORING_ID")
-    )
+    @CollectionTable(name = "TAILORING_PHASE", joinColumns = @JoinColumn(name = "TAILORING_ID"))
     @Enumerated(STRING)
     @Column(name = "PHASE")
     @OrderColumn(name = "PHASE_ORDER")
@@ -127,10 +123,7 @@ public class TailoringEntity implements Serializable {
      * Signatures to be used for document generation.
      */
     @ElementCollection
-    @CollectionTable(
-        name = "DOCUMENTSIGNATURE",
-        joinColumns = @JoinColumn(name = "TAILORING_ID")
-    )
+    @CollectionTable(name = "DOCUMENTSIGNATURE", joinColumns = @JoinColumn(name = "TAILORING_ID"))
     private Collection<DocumentSignatureEntity> signatures;
 
     /**
@@ -145,4 +138,10 @@ public class TailoringEntity implements Serializable {
      */
     @Column(name = "CREATIONTIMESTAMP")
     private ZonedDateTime creationTimestamp;
+
+    /**
+     * Issue of tailoring.
+     */
+    @Column(name = "ISSUE")
+    private String issue;
 }

@@ -89,8 +89,6 @@ public class TailoringServiceImpl implements TailoringService {
     @NonNull
     private Function<String, Map<String, BaseRequirement>> baseRequirementsProvider;
 
-
-
     /**
      * {@inheritDoc}
      */
@@ -113,6 +111,7 @@ public class TailoringServiceImpl implements TailoringService {
 
         TailoringBuilder tailoringBuilder = Tailoring.builder()
                 .name(name)
+                .issue("1")
                 .identifier(identifier)
                 .screeningSheet(screeningSheet)
                 .selectionVector(applicableSelectionVector)
@@ -532,8 +531,8 @@ public class TailoringServiceImpl implements TailoringService {
      */
     @Override
     public Optional<File> createTailoringsDiffDocument(
-        @NonNull String baseProject, @NonNull String baseTailoring, 
-        @NonNull String compareProject, @NonNull String compareTailoring) {
+            @NonNull String baseProject, @NonNull String baseTailoring,
+            @NonNull String compareProject, @NonNull String compareTailoring) {
         log.traceEntry(() -> baseProject, () -> baseTailoring);
 
         @SuppressWarnings("PMD.PrematureDeclaration")
@@ -554,10 +553,31 @@ public class TailoringServiceImpl implements TailoringService {
         }
 
         log.traceExit();
-        return documentService.createDiffDocument(oBaseTailoring.get(),oCompareTailoring.get(), creationTimestamp);
+        return documentService.createDiffDocument(oBaseTailoring.get(), oCompareTailoring.get(), creationTimestamp);
     }
 
-    
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public Optional<TailoringInformation> updateIssue(String project, String tailoring, String issue) {
+        log.traceEntry(() -> project, () -> tailoring, () -> issue);
+
+        Optional<Tailoring> oTailoring = repository.getTailoring(project, tailoring);
+        if (oTailoring.isEmpty()) {
+            log.info("Tailoring not existing. Not adding.");
+            return log.traceExit(empty());
+        }
+
+        Optional<Tailoring> updatedTailoring = repository.setIssue(project, tailoring, issue);
+        if (updatedTailoring.isEmpty()) {
+            log.info("Failed setting issue");
+            return log.traceExit(empty());
+        }
+
+        return log.traceExit(of(mapper.toTailoringInformation(updatedTailoring.get())));
+    }
+
     /**
      * Add file to zip.
      *
@@ -571,4 +591,5 @@ public class TailoringServiceImpl implements TailoringService {
         zip.write(file.getData(), 0, file.getData().length);
         zip.closeEntry();
     }
+
 }

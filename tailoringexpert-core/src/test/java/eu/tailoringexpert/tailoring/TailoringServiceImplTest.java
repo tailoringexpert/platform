@@ -1714,14 +1714,15 @@ class TailoringServiceImplTest {
         verify(documentServiceMock, times(0)).createDiffDocument(any(), any(), any());
     }
 
-     @Test
+    @Test
     void createTailoringsDiffDocument_TailoringsExits_FileReturned() {
         // arrange
         Optional<Tailoring> demo = of(Tailoring.builder().build());
         Optional<Tailoring> demo1 = of(Tailoring.builder().build());
         given(repositoryMock.getTailoring("Demo", "master")).willReturn(demo);
         given(repositoryMock.getTailoring("Demo1", "master1")).willReturn(demo1);
-        given(documentServiceMock.createDiffDocument(eq(demo.get()), eq(demo1.get()),any())).willReturn(of(File.builder().build()));
+        given(documentServiceMock.createDiffDocument(eq(demo.get()), eq(demo1.get()), any()))
+                .willReturn(of(File.builder().build()));
 
         // act
         Optional<File> actual = service.createTailoringsDiffDocument("Demo", "master",
@@ -1733,4 +1734,60 @@ class TailoringServiceImplTest {
         verify(repositoryMock, times(1)).getTailoring("Demo1", "master1");
     }
 
+    @Test
+    void updateISSUE_TailoringNotExists_EmptyReturned() {
+        // arrange
+        given(repositoryMock.getTailoring("SAMPLE", "master")).willReturn(empty());
+
+        // act
+        Optional<TailoringInformation> actual = service.updateIssue("SAMPLE", "master", "2");
+
+        // assert
+        assertThat(actual).isEmpty();
+
+        verify(repositoryMock, times(1)).getTailoring("SAMPLE", "master");
+        verify(repositoryMock, times(0)).setIssue(any(), any(), any());
+    }
+
+    @Test
+    void updateIssue_RespositorySetIssueError_EmptyReturned() {
+        // arrange
+        given(repositoryMock.getTailoring("SAMPLE", "master"))
+                .willReturn(of(Tailoring.builder().issue("1").build()));
+        given(repositoryMock.setIssue("SAMPLE", "master", "2")).willReturn(empty());
+
+        // act
+        Optional<TailoringInformation> actual = service.updateIssue("SAMPLE", "master", "2");
+
+        // assert
+        assertThat(actual).isEmpty();
+
+        verify(repositoryMock, times(1)).getTailoring("SAMPLE", "master");
+        verify(repositoryMock, times(1)).setIssue("SAMPLE", "master", "2");
+    }
+
+    @Test
+    void updateIssue_IssueChanged_UpdatedTailoringReturned() {
+        // arrange
+        given(repositoryMock.getTailoring("SAMPLE", "master"))
+                .willReturn(of(Tailoring.builder().issue("1").build()));
+
+        Tailoring tailoring = Tailoring.builder().issue("2").build();
+        given(repositoryMock.setIssue("SAMPLE", "master", "2"))
+                .willReturn(of(tailoring));
+
+        TailoringInformation tailoringInformation = TailoringInformation.builder().build();
+        given(mapperMock.toTailoringInformation(tailoring)).willReturn(tailoringInformation);
+
+        // act
+        Optional<TailoringInformation> actual = service.updateIssue("SAMPLE", "master", "2");
+
+        // assert
+        assertThat(actual)
+                .isPresent()
+                .contains(tailoringInformation);
+
+        verify(repositoryMock, times(1)).getTailoring("SAMPLE", "master");
+        verify(repositoryMock, times(1)).setIssue("SAMPLE", "master", "2");
+    }
 }
