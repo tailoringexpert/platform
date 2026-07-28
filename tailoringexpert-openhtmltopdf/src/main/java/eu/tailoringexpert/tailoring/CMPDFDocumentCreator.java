@@ -52,6 +52,7 @@ import lombok.extern.log4j.Log4j2;
  */
 @RequiredArgsConstructor
 @Log4j2
+@SuppressWarnings("common-sonar:DuplicatedBlocks")
 public class CMPDFDocumentCreator implements DocumentCreator {
 
     @NonNull
