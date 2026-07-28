@@ -5,19 +5,29 @@
 
     <changeSet id="1" author="tailoringexpert">
         <comment>github issue #516</comment>
+
         <addColumn tableName="TAILORING">
             <column name="ISSUE" type="VARCHAR(16)" defaultValue="1" />
         </addColumn>
-
         <update tableName="TAILORING">
             <column name="ISSUE" value="1" />
         </update>
 
         <addNotNullConstraint
+            constraintName="NN_TAILORING_ISSUE"
             tableName="TAILORING"
             columnName="ISSUE"
-            columnDataType="VARCHAR(16)"
-            constraintName="NN_TAILORING_ISSUE" />
+            columnDataType="VARCHAR(16)" />
+
+        <addUniqueConstraint
+            constraintName="UC_TAILORING_NAME"
+            tableName="TAILORING"
+            columnNames="PROJECT_ID, NAME" />
+
+        <dropUniqueConstraint
+            constraintName="UC_TAILORING_IDENTIFIER"
+            tableName="TAILORING"
+        />
     </changeSet>
 
 </databaseChangeLog>
