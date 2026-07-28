@@ -63,7 +63,6 @@ pipeline {
                 -e MAVEN_CUSTOM_CREDENTIALS_PSW=$MAVEN_CUSTOM_CREDENTIALS_PSW \
                 -e MAVEN_CUSTOM_SNAPSHOTURL=$MAVEN_CUSTOM_SNAPSHOTURL \
                 -e MAVEN_CUSTOM_RELEASEURL=$MAVEN_CUSTOM_RELEASEURL \
-				-e MAVEN_OPTS="-Djava.net.preferIPv6Addresses=true" \
                 -e GPG_SIGNKEY=$GPG_SIGNKEY \
                 -e SONAR_TOKEN=$SONAR_TOKEN 				
             '''
