@@ -147,7 +147,7 @@ public abstract class ResourceMapper {
     private static final String REL_VALIDUNTIL = "validuntil";
     private static final String REL_REQUIREMENTCHANGES = "requirementchanges";
     private static final String REL_TAILORINGDIFF = "tailoringdiff";
-    private static final String REL_TAILORINGISSUE = "tailoringissue";
+    private static final String REL_TAILORINGISSUE = "issue";
 
     @Setter
     private String contextPath;

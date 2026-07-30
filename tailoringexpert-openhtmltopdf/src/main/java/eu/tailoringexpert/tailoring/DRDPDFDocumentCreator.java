@@ -41,7 +41,6 @@ import eu.tailoringexpert.renderer.DRDFragment;
 import eu.tailoringexpert.renderer.HTMLTemplateEngine;
 import eu.tailoringexpert.renderer.PDFEngine;
 import lombok.NonNull;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 
 /**
@@ -49,18 +48,19 @@ import lombok.extern.log4j.Log4j2;
  *
  * @author Michael Bädorf
  */
-@RequiredArgsConstructor
 @Log4j2
-public class DRDPDFDocumentCreator implements DocumentCreator {
+public class DRDPDFDocumentCreator extends AbstractPDFDocumentCreator implements DocumentCreator {
 
     @NonNull
     private BiFunction<Chapter<TailoringRequirement>, Collection<Phase>, Map<DRD, Set<String>>> drdProvider;
 
-    @NonNull
-    private HTMLTemplateEngine templateEngine;
-
-    @NonNull
-    private PDFEngine pdfEngine;
+    public DRDPDFDocumentCreator(
+            BiFunction<Chapter<TailoringRequirement>, Collection<Phase>, Map<DRD, Set<String>>> drdProvider,
+            HTMLTemplateEngine templateEngine,
+            PDFEngine pdfEngine) {
+        super(templateEngine, pdfEngine);
+        this.drdProvider = drdProvider;
+    }
 
     /**
      * {@inheritDoc}
@@ -82,8 +82,8 @@ public class DRDPDFDocumentCreator implements DocumentCreator {
         Catalog<TailoringRequirement> catalog = tailoring.getCatalog();
         addDRD(catalog.getToc(), catalog.getVersion(), drds, tailoring.getPhases());
 
-        String html = templateEngine.process(catalog.getVersion() + "/drd", parameter);
-        File result = pdfEngine.process(docId, html, catalog.getVersion() + "/drd");
+        String html = toHtml(catalog.getVersion() + "/drd", parameter);
+        File result = toFile(docId, html, tailoring.getCatalog().getVersion() + "/drd");
 
         log.traceExit();
         return result;

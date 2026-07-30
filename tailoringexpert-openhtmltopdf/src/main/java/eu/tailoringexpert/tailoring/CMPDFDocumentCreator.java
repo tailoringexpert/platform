@@ -42,7 +42,6 @@ import eu.tailoringexpert.domain.TailoringRequirement;
 import eu.tailoringexpert.renderer.HTMLTemplateEngine;
 import eu.tailoringexpert.renderer.PDFEngine;
 import lombok.NonNull;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 
 /**
@@ -50,19 +49,19 @@ import lombok.extern.log4j.Log4j2;
  *
  * @author Michael Bädorf
  */
-@RequiredArgsConstructor
 @Log4j2
-@SuppressWarnings("common-sonar:DuplicatedBlocks")
-public class CMPDFDocumentCreator implements DocumentCreator {
+public class CMPDFDocumentCreator extends AbstractPDFDocumentCreator implements DocumentCreator {
 
     @NonNull
     private BiFunction<Chapter<TailoringRequirement>, Collection<Phase>, Map<DRD, Set<String>>> drdProvider;
 
-    @NonNull
-    private HTMLTemplateEngine templateEngine;
-
-    @NonNull
-    private PDFEngine pdfEngine;
+    public CMPDFDocumentCreator(
+            BiFunction<Chapter<TailoringRequirement>, Collection<Phase>, Map<DRD, Set<String>>> drdProvider,
+            HTMLTemplateEngine templateEngine,
+            PDFEngine pdfEngine) {
+        super(templateEngine, pdfEngine);
+        this.drdProvider = drdProvider;
+    }
 
     /**
      * {@inheritDoc}
@@ -89,8 +88,8 @@ public class CMPDFDocumentCreator implements DocumentCreator {
                 .forEach(chapter -> addChapter(chapter, 1, chapters, placeholders));
         addDRD(catalog.getToc(), drds, tailoring.getPhases());
 
-        String html = templateEngine.process(catalog.getVersion() + "/cm", parameter);
-        File result = pdfEngine.process(docId, html, tailoring.getCatalog().getVersion() + "/catalog");
+        String html = toHtml(catalog.getVersion() + "/cm", parameter);
+        File result = toFile(docId, html, tailoring.getCatalog().getVersion() + "/catalog");
 
         log.traceExit();
         return result;
@@ -108,8 +107,8 @@ public class CMPDFDocumentCreator implements DocumentCreator {
             Map<String, Object> placeholders) {
         rows.add(CMElement.builder()
                 .level(level)
-                .number(xhtml(chapter.getNumber(), emptyMap()))
-                .name(xhtml(chapter.getName(), placeholders))
+                .number(toXhtml(chapter.getNumber(), emptyMap()))
+                .name(toXhtml(chapter.getName(), placeholders))
                 .requirement(false)
                 .applicable(chapter.getRequirements().stream().anyMatch(TailoringRequirement::getSelected))
                 .build());
@@ -137,8 +136,8 @@ public class CMPDFDocumentCreator implements DocumentCreator {
         // hook for adding also requirements to cm instead of "only" chapters
         requirements.forEach(requirement -> rows.add(CMElement.builder()
                 .level(level)
-                .number(xhtml(requirement.getPosition(), emptyMap()))
-                .name(xhtml(requirement.getText(), placeholders))
+                .number(toXhtml(requirement.getPosition(), emptyMap()))
+                .name(toXhtml(requirement.getText(), placeholders))
                 .applicable(requirement.getSelected())
                 .requirement(true)
                 .build()));
@@ -162,16 +161,5 @@ public class CMPDFDocumentCreator implements DocumentCreator {
                         .number(entry.getKey().getNumber())
                         .action(entry.getKey().getAction())
                         .build()));
-    }
-
-    /**
-     * Formats text with replaced placeholders as valid xhtml.
-     *
-     * @param text         text to format and replaced with placeholders
-     * @param placeholders placeholders to use
-     * @return formatted xhtml text
-     */
-    protected String xhtml(String text, Map<String, Object> placeholders) {
-        return templateEngine.toXHTML(text, placeholders);
     }
 }

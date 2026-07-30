@@ -195,6 +195,7 @@ package domain {
     class TailoringInformation<<Projection>> {
         name : String
         catalogVersion : String
+        issue: String
     }
     TailoringInformation --> "1.." Phase : phases
 

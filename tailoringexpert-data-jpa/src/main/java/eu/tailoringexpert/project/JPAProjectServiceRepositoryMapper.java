@@ -21,14 +21,22 @@
  */
 package eu.tailoringexpert.project;
 
+import static java.util.Objects.nonNull;
+
+import org.mapstruct.AfterMapping;
+import org.mapstruct.BeanMapping;
+import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
+import org.mapstruct.MappingTarget;
+
 import eu.tailoringexpert.TailoringexpertMapperConfig;
+import eu.tailoringexpert.domain.ApplicableDocumentEntity;
 import eu.tailoringexpert.domain.BaseCatalogEntity;
 import eu.tailoringexpert.domain.BaseRequirement;
 import eu.tailoringexpert.domain.Catalog;
 import eu.tailoringexpert.domain.DRD;
 import eu.tailoringexpert.domain.DRDEntity;
 import eu.tailoringexpert.domain.Document;
-import eu.tailoringexpert.domain.ApplicableDocumentEntity;
 import eu.tailoringexpert.domain.Logo;
 import eu.tailoringexpert.domain.LogoEntity;
 import eu.tailoringexpert.domain.Project;
@@ -40,21 +48,15 @@ import eu.tailoringexpert.domain.Tailoring;
 import eu.tailoringexpert.domain.TailoringCatalogChapterEntity;
 import eu.tailoringexpert.domain.TailoringEntity;
 import eu.tailoringexpert.domain.TailoringInformation;
+import eu.tailoringexpert.repository.ApplicableDocumentRepository;
 import eu.tailoringexpert.repository.BaseCatalogRepository;
 import eu.tailoringexpert.repository.DRDRepository;
-import eu.tailoringexpert.repository.ApplicableDocumentRepository;
 import eu.tailoringexpert.repository.LogoRepository;
 import lombok.Setter;
-import org.mapstruct.AfterMapping;
-import org.mapstruct.BeanMapping;
-import org.mapstruct.Mapper;
-import org.mapstruct.Mapping;
-import org.mapstruct.MappingTarget;
-
-import static java.util.Objects.nonNull;
 
 /**
- * Mapper used by {@link JPAProjectServiceRepository} to convert domain and entity objects.
+ * Mapper used by {@link JPAProjectServiceRepository} to convert domain and
+ * entity objects.
  *
  * @author Michael Bädorf
  */
@@ -86,7 +88,6 @@ public abstract class JPAProjectServiceRepositoryMapper {
     @Mapping(target = "creationTimestamp", expression = "java( java.time.ZonedDateTime.now())")
     abstract ProjectEntity createProject(Project domain);
 
-
     @BeanMapping(ignoreByDefault = true)
     @Mapping(target = "identifier", source = "entity.identifier")
     @Mapping(target = "creationTimestamp", source = "entity.creationTimestamp")
@@ -105,13 +106,15 @@ public abstract class JPAProjectServiceRepositoryMapper {
     @Mapping(target = "phases", source = "entity.phases")
     @Mapping(target = "catalogVersion", source = "entity.catalog.version")
     @Mapping(target = "state", source = "entity.state")
+    @Mapping(target = "issue", source = "entity.issue")
     abstract TailoringInformation getProjectInformationen(TailoringEntity entity);
 
     @Mapping(target = "data", ignore = true)
     abstract ScreeningSheet getScreeningSheet(ScreeningSheetEntity entity);
 
     BaseCatalogEntity resolve(Catalog<BaseRequirement> domain) {
-        return nonNull(domain) ? baseCatalogRepository.findByVersion(domain.getVersion(), BaseCatalogEntity.class) : null;
+        return nonNull(domain) ? baseCatalogRepository.findByVersion(domain.getVersion(), BaseCatalogEntity.class)
+                : null;
     }
 
     LogoEntity resolve(Logo domain) {
@@ -122,8 +125,11 @@ public abstract class JPAProjectServiceRepositoryMapper {
         return nonNull(domain) ? drdRepository.findByNumber(domain.getNumber()) : null;
     }
 
-    ApplicableDocumentEntity resolve(Document domain)  {
-        return nonNull(domain) ? applicableDocumentRepository.findByTitleAndIssueAndRevision(domain.getTitle(), domain.getIssue(), domain.getRevision()) : null;
+    ApplicableDocumentEntity resolve(Document domain) {
+        return nonNull(domain)
+                ? applicableDocumentRepository.findByTitleAndIssueAndRevision(domain.getTitle(), domain.getIssue(),
+                        domain.getRevision())
+                : null;
     }
 
     @AfterMapping
@@ -131,7 +137,8 @@ public abstract class JPAProjectServiceRepositoryMapper {
         TailoringCatalogChapterEntity entity = builder.build();
         if (nonNull(entity.getRequirements())) {
             entity.getRequirements()
-                .forEach(requirement -> requirement.setNumber(entity.getNumber() + "." + requirement.getPosition()));
+                    .forEach(
+                            requirement -> requirement.setNumber(entity.getNumber() + "." + requirement.getPosition()));
         }
         builder.requirements(entity.getRequirements());
     }

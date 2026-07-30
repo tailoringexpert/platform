@@ -49,7 +49,6 @@ import eu.tailoringexpert.domain.TailoringRequirement;
 import eu.tailoringexpert.renderer.HTMLTemplateEngine;
 import eu.tailoringexpert.renderer.PDFEngine;
 import lombok.NonNull;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 
 /**
@@ -58,8 +57,7 @@ import lombok.extern.log4j.Log4j2;
  * @author Michael Bädorf
  */
 @Log4j2
-@RequiredArgsConstructor
-public class TailoringCatalogPDFDocumentCreator implements DocumentCreator {
+public class TailoringCatalogPDFDocumentCreator extends AbstractPDFDocumentCreator implements DocumentCreator {
 
     @NonNull
     private BiFunction<Chapter<TailoringRequirement>, Collection<Phase>, Map<DRD, Set<String>>> drdProvider;
@@ -67,13 +65,15 @@ public class TailoringCatalogPDFDocumentCreator implements DocumentCreator {
     @NonNull
     private Function<Catalog<TailoringRequirement>, Collection<Document>> applicableDocumentProvider;
 
-    @NonNull
-    private HTMLTemplateEngine templateEngine;
-
-    @NonNull
-    private PDFEngine pdfEngine;
-
-    private static final String REFERENZ_LOGO_LINK = "<img src=\"%s\" alt=\"%s\"></img><br/>";
+    public TailoringCatalogPDFDocumentCreator(
+            BiFunction<Chapter<TailoringRequirement>, Collection<Phase>, Map<DRD, Set<String>>> drdProvider,
+            Function<Catalog<TailoringRequirement>, Collection<Document>> applicableDocumentProvider,
+            HTMLTemplateEngine templateEngine,
+            PDFEngine pdfEngine) {
+        super(templateEngine, pdfEngine);
+        this.applicableDocumentProvider = applicableDocumentProvider;
+        this.drdProvider = drdProvider;
+    }
 
     /**
      * {@inheritDoc}
@@ -114,9 +114,8 @@ public class TailoringCatalogPDFDocumentCreator implements DocumentCreator {
                 .sorted(comparingInt(DocumentSignature::getPosition))
                 .toList());
 
-        String html = templateEngine.process(tailoring.getCatalog().getVersion() + "/tailoringcatalog",
-                parameter);
-        File result = pdfEngine.process(docId, html, tailoring.getCatalog().getVersion() + "/catalog");
+        String html = toHtml(tailoring.getCatalog().getVersion() + "/tailoringcatalog", parameter);
+        File result = toFile(docId, html, tailoring.getCatalog().getVersion() + "/catalog");
 
         log.traceExit();
         return result;
@@ -134,12 +133,12 @@ public class TailoringCatalogPDFDocumentCreator implements DocumentCreator {
             Collection<TailoringCatalogueElement> chapters, Collection<TailoringCatalogueElement> rows,
             Map<String, Object> placeholders) {
         chapters.add(TailoringCatalogueElement.builder()
-                .text(templateEngine.toXHTML(chapter.getNumber() + " " + chapter.getName(), emptyMap()))
+                .text(toXhtml(chapter.getNumber() + " " + chapter.getName(), emptyMap()))
                 .chapter(chapter.getNumber())
                 .level(level)
                 .build());
         rows.add(TailoringCatalogueElement.builder()
-                .text(templateEngine.toXHTML(chapter.getNumber() + " " + chapter.getName(), emptyMap()))
+                .text(toXhtml(chapter.getNumber() + " " + chapter.getName(), emptyMap()))
                 .chapter(chapter.getNumber())
                 .applicable(true)
                 .level(level)
@@ -164,7 +163,7 @@ public class TailoringCatalogPDFDocumentCreator implements DocumentCreator {
         TailoringCatalogueElement.TailoringCatalogueElementBuilder<?, ?> builder = TailoringCatalogueElement
                 .builder();
         if (nonNull(requirement.getReference())) {
-            builder.reference(templateEngine.toXHTML(requirement.getReference().getText()
+            builder.reference(toXhtml(requirement.getReference().getText()
                     + (requirement.getReference().getChanged().booleanValue() ? "(mod)" : ""),
                     emptyMap()));
             if (nonNull(requirement.getReference().getLogo())) {
@@ -174,8 +173,8 @@ public class TailoringCatalogPDFDocumentCreator implements DocumentCreator {
 
         rows.add(builder
                 .applicable(requirement.getSelected().booleanValue())
-                .position(templateEngine.toXHTML(requirement.getPosition(), emptyMap()))
-                .text(templateEngine.toXHTML(requirement.getText(), placeholders))
+                .position(toXhtml(requirement.getPosition(), emptyMap()))
+                .text(toXhtml(requirement.getText(), placeholders))
                 .chapter(null)
                 .build());
     }

@@ -88,7 +88,7 @@ package domain {
         -{static} REL_VALIDUNTIL = "validuntil" : String
         -{static} REL_REQUIREMENTCHANGES = "requirementchanges" : String
         -{static} REL_TAILORINGDIFF = "tailoringdiff": String
-        -{static} REL_TAILORINGISSUE = "tailoringissue": String
+        -{static} REL_TAILORINGISSUE = "issue": String
 
         .. CatalogVersion ..
         updatePathContext(pathContext : PathContextBuilder, domain : CatalogVersion): void

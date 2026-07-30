@@ -21,6 +21,13 @@
  */
 package eu.tailoringexpert.tailoring;
 
+import static java.util.Collections.emptyMap;
+
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.Map;
+
 import eu.tailoringexpert.domain.Chapter;
 import eu.tailoringexpert.domain.File;
 import eu.tailoringexpert.domain.Tailoring;
@@ -28,38 +35,29 @@ import eu.tailoringexpert.domain.TailoringRequirement;
 import eu.tailoringexpert.renderer.HTMLTemplateEngine;
 import eu.tailoringexpert.renderer.PDFEngine;
 import lombok.NonNull;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
-
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.Map;
-
-import static java.util.Collections.emptyMap;
 
 /**
  * Create PDF document containg differences of automatic and manual tailoring.
  *
  * @author Michael Bädorf
  */
-@RequiredArgsConstructor
 @Log4j2
-public class ComparisonPDFDocumentCreator implements DocumentCreator {
+public class ComparisonPDFDocumentCreator extends AbstractPDFDocumentCreator implements DocumentCreator {
 
-    @NonNull
-    private HTMLTemplateEngine templateEngine;
-
-    @NonNull
-    private PDFEngine pdfEngine;
+    public ComparisonPDFDocumentCreator(
+            @NonNull HTMLTemplateEngine templateEngine,
+            @NonNull PDFEngine pdfEngine) {
+        super(templateEngine, pdfEngine);
+    }
 
     /**
      * {@inheritDoc}
      */
     @Override
     public File createDocument(@NonNull String docId,
-                               @NonNull Tailoring tailoring,
-                               @NonNull Map<String, Object> placeholders) {
+            @NonNull Tailoring tailoring,
+            @NonNull Map<String, Object> placeholders) {
         log.traceEntry(() -> docId, () -> tailoring.getCatalog().getVersion(), () -> placeholders);
 
         Map<String, Object> parameter = new HashMap<>(placeholders);
@@ -69,10 +67,10 @@ public class ComparisonPDFDocumentCreator implements DocumentCreator {
 
         parameter.put("requirements", requirements);
         tailoring.getCatalog().getToc().getChapters()
-            .forEach(chapter -> addChapter(chapter, requirements));
+                .forEach(chapter -> addChapter(chapter, requirements));
 
-        String html = templateEngine.process(tailoring.getCatalog().getVersion() + "/comparision", parameter);
-        File result = pdfEngine.process(docId, html, tailoring.getCatalog().getVersion() + "/comparision");
+        String html = toHtml(tailoring.getCatalog().getVersion() + "/comparision", parameter);
+        File result = toFile(docId, html, tailoring.getCatalog().getVersion() + "/comparision");
 
         log.traceExit();
         return result;
@@ -87,13 +85,13 @@ public class ComparisonPDFDocumentCreator implements DocumentCreator {
      */
     void addChapter(Chapter<TailoringRequirement> chapter, Collection<ComparisionElement> rows) {
         rows.add(ComparisionElement.builder()
-            .section(templateEngine.toXHTML(chapter.getNumber(), emptyMap()))
-            .title(templateEngine.toXHTML(chapter.getName(), emptyMap()))
-            .build());
+                .section(toXhtml(chapter.getNumber(), emptyMap()))
+                .title(toXhtml(chapter.getName(), emptyMap()))
+                .build());
         chapter.getRequirements()
-            .forEach(requirement -> addRequirement(requirement, rows));
+                .forEach(requirement -> addRequirement(requirement, rows));
         chapter.getChapters()
-            .forEach(subChapter -> addChapter(subChapter, rows));
+                .forEach(subChapter -> addChapter(subChapter, rows));
     }
 
     /**
@@ -104,10 +102,10 @@ public class ComparisonPDFDocumentCreator implements DocumentCreator {
      */
     void addRequirement(TailoringRequirement requirement, Collection<ComparisionElement> rows) {
         rows.add(ComparisionElement.builder()
-            .section(templateEngine.toXHTML(requirement.getPosition(), emptyMap()))
-            .selected(requirement.getSelected())
-            .changed(requirement.isChanged())
-            .changeDate(requirement.getChangeDate())
-            .build());
+                .section(toXhtml(requirement.getPosition(), emptyMap()))
+                .selected(requirement.getSelected())
+                .changed(requirement.isChanged())
+                .changeDate(requirement.getChangeDate())
+                .build());
     }
 }
