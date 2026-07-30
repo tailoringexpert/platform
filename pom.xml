@@ -101,6 +101,8 @@
         <sonar.projectName>${sonar.projectKey}</sonar.projectName>
         <sonar.exclusions>**/*MixIn.java, **/*Configuration.java, **/App.java</sonar.exclusions>
 
+        <skipFeatureVersion>true</skipFeatureVersion>
+
         <!-- plugins -->
         <jacoco-maven-plugin.version>0.8.15</jacoco-maven-plugin.version>
         <liquibase-maven-plugin.version>5.0.3</liquibase-maven-plugin.version>

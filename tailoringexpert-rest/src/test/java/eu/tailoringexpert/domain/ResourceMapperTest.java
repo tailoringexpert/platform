@@ -324,7 +324,7 @@ class ResourceMapperTest {
                         "requirementsapplicability"),
                 Link.of(this.host + "/project/SAMPLE/tailoring/master/compare/{cproject}/{ctailoring}",
                         "tailoringdiff"),
-                Link.of(this.host + "/project/SAMPLE/tailoring/master/issue/{issue}", "tailoringissue"));
+                Link.of(this.host + "/project/SAMPLE/tailoring/master/issue/{issue}", "issue"));
     }
 
     @Test
@@ -609,7 +609,7 @@ class ResourceMapperTest {
                         "requirementsapplicability"),
                 Link.of(this.host + "/project/SAMPLE/tailoring/master/compare/{cproject}/{ctailoring}",
                         "tailoringdiff"),
-                Link.of(this.host + "/project/SAMPLE/tailoring/master/issue/{issue}", "tailoringissue"));
+                Link.of(this.host + "/project/SAMPLE/tailoring/master/issue/{issue}", "issue"));
     }
 
     @Test
