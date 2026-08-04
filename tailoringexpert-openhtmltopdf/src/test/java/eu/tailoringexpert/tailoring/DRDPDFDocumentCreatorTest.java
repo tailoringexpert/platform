@@ -21,6 +21,31 @@
  */
 package eu.tailoringexpert.tailoring;
 
+import static java.util.Collections.emptySet;
+import static java.util.Map.entry;
+import static java.util.Map.ofEntries;
+import static java.util.Objects.nonNull;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.mock;
+import static tools.jackson.databind.DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES;
+
+import java.io.IOException;
+import java.io.InputStream;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Set;
+import java.util.function.BiFunction;
+
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.thymeleaf.spring6.SpringTemplateEngine;
+import org.thymeleaf.templateresolver.FileTemplateResolver;
+
 import com.openhtmltopdf.extend.FSDOMMutator;
 import com.openhtmltopdf.extend.FSObjectDrawerFactory;
 import com.openhtmltopdf.render.DefaultObjectDrawerFactory;
@@ -41,31 +66,7 @@ import eu.tailoringexpert.renderer.TailoringexpertDOMMutator;
 import eu.tailoringexpert.renderer.ThymeleafTemplateEngine;
 import io.github.cdimascio.dotenv.Dotenv;
 import lombok.extern.log4j.Log4j2;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-import org.thymeleaf.spring6.SpringTemplateEngine;
-import org.thymeleaf.templateresolver.FileTemplateResolver;
 import tools.jackson.databind.json.JsonMapper;
-
-import java.io.IOException;
-import java.io.InputStream;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Set;
-import java.util.function.BiFunction;
-
-import static java.util.Collections.emptySet;
-import static java.util.Map.entry;
-import static java.util.Map.ofEntries;
-import static java.util.Objects.nonNull;
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.BDDMockito.given;
-import static org.mockito.Mockito.mock;
-import static tools.jackson.databind.DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES;
 
 @Log4j2
 class DRDPDFDocumentCreatorTest {
@@ -82,9 +83,9 @@ class DRDPDFDocumentCreatorTest {
         this.templateHome = env.get("TEMPLATE_HOME", "src/test/resources/templates/");
 
         this.objectMapper = JsonMapper.builder()
-            .findAndAddModules()
-            .disable(FAIL_ON_UNKNOWN_PROPERTIES)
-            .build();
+                .findAndAddModules()
+                .disable(FAIL_ON_UNKNOWN_PROPERTIES)
+                .build();
 
         this.fileSaver = new FileSaver("target");
 
@@ -96,10 +97,10 @@ class DRDPDFDocumentCreatorTest {
         fileTemplateResolver.setOrder(1);
 
         RendererRequestConfigurationSupplier supplier = () -> RendererRequestConfiguration.builder()
-            .id("unittest")
-            .name("TailoringExpert")
-            .templateHome(this.templateHome)
-            .build();
+                .id("unittest")
+                .name("TailoringExpert")
+                .templateHome(this.templateHome)
+                .build();
 
         SpringTemplateEngine springTemplateEngine = new SpringTemplateEngine();
         springTemplateEngine.addTemplateResolver(fileTemplateResolver);
@@ -111,10 +112,9 @@ class DRDPDFDocumentCreatorTest {
         FSObjectDrawerFactory objectDrawerFactory = new DefaultObjectDrawerFactory();
 
         this.creator = new DRDPDFDocumentCreator(
-            drdProviderMock,
-            templateEngine,
-            new PDFEngine(domMutator, objectDrawerFactory, supplier)
-        );
+                drdProviderMock,
+                templateEngine,
+                new PDFEngine(domMutator, objectDrawerFactory, supplier));
     }
 
     @Test
@@ -124,15 +124,15 @@ class DRDPDFDocumentCreatorTest {
         try (InputStream is = this.getClass().getResourceAsStream("/tailoringcatalog.json")) {
             assert nonNull(is);
             catalog = objectMapper.readValue(
-                is,
-                objectMapper.getTypeFactory()
-                    .constructParametricType(Catalog.class, TailoringRequirement.class)
-            );
+                    is,
+                    objectMapper.getTypeFactory()
+                            .constructParametricType(Catalog.class, TailoringRequirement.class));
         }
 
         Tailoring tailoring = Tailoring.builder()
-            .catalog(catalog)
-            .build();
+                .catalog(catalog)
+                .issue("1")
+                .build();
 
         LocalDateTime now = LocalDateTime.now();
         Map<String, Object> platzhalter = new HashMap<>();
@@ -142,16 +142,13 @@ class DRDPDFDocumentCreatorTest {
         platzhalter.put("${DRD_DOCID}", "SAMPLE_DOC");
 
         given(drdProviderMock.apply(any(), any()))
-            .willReturn(ofEntries(
-                    entry(
-                        DRD.builder()
-                            .title("Non-Conformance Report (NCR)")
-                            .number("03.01")
-                            .build(),
-                        emptySet())
-                )
-            );
-
+                .willReturn(ofEntries(
+                        entry(
+                                DRD.builder()
+                                        .title("Non-Conformance Report (NCR)")
+                                        .number("03.01")
+                                        .build(),
+                                emptySet())));
 
         // act
         File actual = creator.createDocument("4711", tailoring, platzhalter);

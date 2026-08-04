@@ -22,6 +22,7 @@
 package eu.tailoringexpert.tailoring;
 
 import static java.util.Collections.emptyMap;
+import static java.util.Optional.of;
 
 import java.util.Collection;
 import java.util.HashMap;
@@ -89,7 +90,7 @@ public class CMPDFDocumentCreator extends AbstractPDFDocumentCreator implements 
         addDRD(catalog.getToc(), drds, tailoring.getPhases());
 
         String html = toHtml(catalog.getVersion() + "/cm", parameter);
-        File result = toFile(docId, html, tailoring.getCatalog().getVersion() + "/catalog");
+        File result = toFile(docId, of(tailoring.getIssue()), html, tailoring.getCatalog().getVersion() + "/catalog");
 
         log.traceExit();
         return result;

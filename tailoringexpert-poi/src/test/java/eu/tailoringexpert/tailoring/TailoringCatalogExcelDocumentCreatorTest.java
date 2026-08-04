@@ -21,20 +21,21 @@
  */
 package eu.tailoringexpert.tailoring;
 
-import eu.tailoringexpert.domain.BaseRequirement;
-import eu.tailoringexpert.domain.Catalog;
-import eu.tailoringexpert.domain.File;
-import eu.tailoringexpert.domain.Tailoring;
-import eu.tailoringexpert.domain.TailoringRequirement;
-import lombok.extern.log4j.Log4j2;
-import org.apache.poi.ss.usermodel.Row;
-import org.apache.poi.ss.usermodel.Sheet;
-import org.apache.poi.ss.usermodel.Workbook;
-import org.apache.poi.ss.usermodel.WorkbookFactory;
-import org.apache.poi.xssf.usermodel.XSSFWorkbook;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-import tools.jackson.databind.json.JsonMapper;
+import static eu.tailoringexpert.domain.Phase.A;
+import static eu.tailoringexpert.domain.Phase.B;
+import static eu.tailoringexpert.domain.Phase.C;
+import static eu.tailoringexpert.domain.Phase.D;
+import static eu.tailoringexpert.domain.Phase.E;
+import static eu.tailoringexpert.domain.Phase.F;
+import static eu.tailoringexpert.domain.Phase.ZERO;
+import static java.util.Collections.emptyList;
+import static java.util.Collections.emptyMap;
+import static java.util.Objects.nonNull;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.mock;
+import static tools.jackson.databind.DeserializationFeature.ACCEPT_EMPTY_ARRAY_AS_NULL_OBJECT;
+import static tools.jackson.databind.DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES;
 
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
@@ -49,15 +50,21 @@ import java.util.Optional;
 import java.util.function.BiConsumer;
 import java.util.function.Function;
 
-import static eu.tailoringexpert.domain.Phase.*;
-import static java.util.Collections.emptyList;
-import static java.util.Collections.emptyMap;
-import static java.util.Objects.nonNull;
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.BDDMockito.given;
-import static org.mockito.Mockito.mock;
-import static tools.jackson.databind.DeserializationFeature.ACCEPT_EMPTY_ARRAY_AS_NULL_OBJECT;
-import static tools.jackson.databind.DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES;
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.ss.usermodel.WorkbookFactory;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+
+import eu.tailoringexpert.domain.BaseRequirement;
+import eu.tailoringexpert.domain.Catalog;
+import eu.tailoringexpert.domain.File;
+import eu.tailoringexpert.domain.Tailoring;
+import eu.tailoringexpert.domain.TailoringRequirement;
+import lombok.extern.log4j.Log4j2;
+import tools.jackson.databind.json.JsonMapper;
 
 @Log4j2
 class TailoringCatalogExcelDocumentCreatorTest {
@@ -82,10 +89,10 @@ class TailoringCatalogExcelDocumentCreatorTest {
     @BeforeEach
     void beforeEach() {
         this.objectMapper = JsonMapper.builder()
-            .findAndAddModules()
-            .disable(FAIL_ON_UNKNOWN_PROPERTIES)
-            .disable(ACCEPT_EMPTY_ARRAY_AS_NULL_OBJECT)
-            .build();
+                .findAndAddModules()
+                .disable(FAIL_ON_UNKNOWN_PROPERTIES)
+                .disable(ACCEPT_EMPTY_ARRAY_AS_NULL_OBJECT)
+                .build();
 
         this.serviceRepositoryMock = mock(TailoringServiceRepository.class);
         this.baseRequirementsProviderRepositoryMock = mock(BaseRequirementsProviderRepository.class);
@@ -93,7 +100,6 @@ class TailoringCatalogExcelDocumentCreatorTest {
         this.creator = new TailoringCatalogExcelDocumentCreator(this.baseRequirementsProvider);
 
     }
-
 
     @Test
     void createDocument_TailoringCatalogNull_NullReturned() {
@@ -114,36 +120,35 @@ class TailoringCatalogExcelDocumentCreatorTest {
         try (InputStream is = this.getClass().getResourceAsStream("/tailoringkatalog.json")) {
             assert nonNull(is);
             catalog = objectMapper.readValue(
-                is,
-                objectMapper.getTypeFactory()
-                    .constructParametricType(Catalog.class, TailoringRequirement.class)
-            );
+                    is,
+                    objectMapper.getTypeFactory()
+                            .constructParametricType(Catalog.class, TailoringRequirement.class));
         }
 
         Catalog<BaseRequirement> baseCatalog;
         try (InputStream is = this.getClass().getResourceAsStream("/basecatalog.json")) {
             assert nonNull(is);
             baseCatalog = objectMapper.readValue(
-                is,
-                objectMapper.getTypeFactory()
-                    .constructParametricType(Catalog.class, BaseRequirement.class)
-            );
+                    is,
+                    objectMapper.getTypeFactory()
+                            .constructParametricType(Catalog.class, BaseRequirement.class));
         }
         given(baseRequirementsProviderRepositoryMock.getBaseCatalog("8.2.1")).willReturn(Optional.of(baseCatalog));
 
         Tailoring tailoring = Tailoring.builder()
-            .name("ut")
-            .catalog(catalog)
-            .signatures(emptyList())
-            .phases(Arrays.asList(ZERO, A, B, C, D, E, F))
-            .build();
+                .name("ut")
+                .issue("1")
+                .catalog(catalog)
+                .signatures(emptyList())
+                .phases(Arrays.asList(ZERO, A, B, C, D, E, F))
+                .build();
 
         // act
         File actual = creator.createDocument("42", tailoring, emptyMap());
 
         // assert
         assertThat(actual).isNotNull();
-        assertThat(actual.getName()).isEqualTo("42.xlsx");
+        assertThat(actual.getName()).isEqualTo("42_i1.xlsx");
         fileSaver.accept(actual.getName(), actual.getData());
     }
 
@@ -154,18 +159,17 @@ class TailoringCatalogExcelDocumentCreatorTest {
         try (InputStream is = this.getClass().getResourceAsStream("/tailoringkatalog.json")) {
             assert nonNull(is);
             catalog = objectMapper.readValue(
-                is,
-                objectMapper.getTypeFactory()
-                    .constructParametricType(Catalog.class, TailoringRequirement.class)
-            );
+                    is,
+                    objectMapper.getTypeFactory()
+                            .constructParametricType(Catalog.class, TailoringRequirement.class));
         }
 
         Tailoring tailoring = Tailoring.builder()
-            .name("ut")
-            .catalog(catalog)
-            .signatures(emptyList())
-            .phases(Arrays.asList(ZERO, A, B, C, D, E, F))
-            .build();
+                .name("ut")
+                .catalog(catalog)
+                .signatures(emptyList())
+                .phases(Arrays.asList(ZERO, A, B, C, D, E, F))
+                .build();
 
         // act
         File actual = creator.createDocument("42", tailoring, emptyMap());
@@ -173,7 +177,7 @@ class TailoringCatalogExcelDocumentCreatorTest {
         // assert
         assertThat(actual).isNotNull();
         try (ByteArrayInputStream is = new ByteArrayInputStream(actual.getData());
-             Workbook workbook = WorkbookFactory.create(is)) {
+                Workbook workbook = WorkbookFactory.create(is)) {
             assertThat(workbook.getNumberOfSheets()).isEqualTo(2);
             assertThat(workbook.getSheetAt(0).getSheetName()).isEqualTo("ut-8.2.1-IMPORT");
             assertThat(workbook.getSheetAt(1).getSheetName()).isEqualTo("ut-8.2.1-EXPORT");

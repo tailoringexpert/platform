@@ -21,12 +21,14 @@
  */
 package eu.tailoringexpert.renderer;
 
+import static java.util.Optional.empty;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.catchException;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mockStatic;
 
 import java.io.IOException;
+import java.util.Optional;
 
 import org.apache.pdfbox.io.IOUtils;
 import org.junit.jupiter.api.BeforeEach;
@@ -60,7 +62,7 @@ class PDFEngineTest {
         // arrange
 
         // act
-        Exception actual = catchException(() -> engine.process(null, "html", "suffix"));
+        Exception actual = catchException(() -> engine.process(null, empty(), "html", "suffix"));
 
         // assert
         assertThat(actual).isInstanceOf(NullPointerException.class);
@@ -71,7 +73,7 @@ class PDFEngineTest {
         // arrange
 
         // act
-        Exception actual = catchException(() -> engine.process("docid", null, "suffix"));
+        Exception actual = catchException(() -> engine.process("docid", empty(), null, "suffix"));
 
         // assert
         assertThat(actual).isInstanceOf(NullPointerException.class);
@@ -82,7 +84,7 @@ class PDFEngineTest {
         // arrange
 
         // act
-        Exception actual = catchException(() -> engine.process("docid", "html", null));
+        Exception actual = catchException(() -> engine.process("docid", empty(), "html", null));
 
         // assert
         assertThat(actual).isInstanceOf(NullPointerException.class);
@@ -96,10 +98,22 @@ class PDFEngineTest {
         File actual;
         try (MockedStatic<IOUtils> io = mockStatic(IOUtils.class)) {
             io.when(() -> IOUtils.toByteArray(any())).thenThrow(new IOException());
-            actual = engine.process("4711", "tailoring", "parameter");
+            actual = engine.process("4711", empty(), "html", "suffix");
         }
 
         // assert
         assertThat(actual).isNull();
+    }
+
+    @Test
+    void process_toByteArrayNoError_FileReturned() {
+        // arrange
+        String html = "<!DOCTYPE html><html xmlns:th=\"http://www.thymeleaf.org\"><head></head><body></body></html>";
+
+        File actual = engine.process("4711", Optional.of("1"), html, "suffix");
+
+        // assert
+        assertThat(actual).isNotNull();
+        assertThat(actual.getName()).isEqualTo("4711_i1.pdf");
     }
 }
