@@ -152,26 +152,25 @@ class TailoringCatalogPDFDocumentCreatorTest {
         try (InputStream is = this.getClass().getResourceAsStream("/tailoringcatalog.json")) {
             assert nonNull(is);
             catalog = objectMapper.readValue(
-                is,
-                objectMapper.getTypeFactory()
-                    .constructParametricType(Catalog.class, TailoringRequirement.class)
-            );
+                    is,
+                    objectMapper.getTypeFactory()
+                            .constructParametricType(Catalog.class, TailoringRequirement.class));
         }
 
         Collection<DocumentSignature> zeichnungen = of(
-            DocumentSignature.builder()
-                .applicable(true)
-                .faculty("Software")
-                .signee("Hans Dampf")
-                .state(DocumentSignatureState.AGREED)
-                .build()
-        );
+                DocumentSignature.builder()
+                        .applicable(true)
+                        .faculty("Software")
+                        .signee("Hans Dampf")
+                        .state(DocumentSignatureState.AGREED)
+                        .build());
 
         Tailoring tailoring = Tailoring.builder()
-            .catalog(catalog)
-            .signatures(zeichnungen)
-            .phases(of(ZERO, A, B, C, D, E, F))
-            .build();
+                .catalog(catalog)
+                .issue("1")
+                .signatures(zeichnungen)
+                .phases(of(ZERO, A, B, C, D, E, F))
+                .build();
 
         LocalDateTime now = LocalDateTime.now();
 

@@ -24,6 +24,7 @@ package eu.tailoringexpert.tailoring;
 import static java.util.Collections.emptyMap;
 import static java.util.Comparator.comparingInt;
 import static java.util.Objects.nonNull;
+import static java.util.Optional.of;
 
 import java.util.Collection;
 import java.util.HashMap;
@@ -115,7 +116,7 @@ public class TailoringCatalogPDFDocumentCreator extends AbstractPDFDocumentCreat
                 .toList());
 
         String html = toHtml(tailoring.getCatalog().getVersion() + "/tailoringcatalog", parameter);
-        File result = toFile(docId, html, tailoring.getCatalog().getVersion() + "/catalog");
+        File result = toFile(docId, of(tailoring.getIssue()), html, tailoring.getCatalog().getVersion() + "/catalog");
 
         log.traceExit();
         return result;

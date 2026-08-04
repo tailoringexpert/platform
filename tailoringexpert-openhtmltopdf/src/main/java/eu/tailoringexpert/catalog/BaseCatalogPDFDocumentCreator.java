@@ -41,6 +41,7 @@ import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.BiFunction;
@@ -124,7 +125,8 @@ public class BaseCatalogPDFDocumentCreator implements DocumentCreator {
             addDRD(catalog.getToc(), drds, phases);
 
             String html = templateEngine.process(catalog.getVersion() + "/basecatalog", parameter);
-            File result = pdfEngine.process(docId, html, catalog.getVersion() + "/catalog");
+            File result = pdfEngine.process(docId, Optional.of(catalog.getVersion()), html,
+                    catalog.getVersion() + "/catalog");
 
             log.traceExit();
             return result;

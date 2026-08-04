@@ -22,6 +22,7 @@
 package eu.tailoringexpert.tailoring;
 
 import java.util.Map;
+import java.util.Optional;
 
 import eu.tailoringexpert.domain.File;
 import eu.tailoringexpert.renderer.HTMLTemplateEngine;
@@ -69,7 +70,7 @@ public abstract class AbstractPDFDocumentCreator {
      *                   used for relative addressing of images
      * @return Die erzeugte "PA" File
      */
-    protected File toFile(String docId, String html, String pathSuffix) {
-        return pdfEngine.process(docId, html, pathSuffix);
+    protected File toFile(String docId, Optional<String> issue, String html, String pathSuffix) {
+        return pdfEngine.process(docId, issue, html, pathSuffix);
     }
 }

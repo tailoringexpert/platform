@@ -22,6 +22,7 @@
 package eu.tailoringexpert.tailoring;
 
 import static java.util.Comparator.comparing;
+import static java.util.Optional.of;
 
 import java.util.Collection;
 import java.util.HashMap;
@@ -83,7 +84,7 @@ public class DRDPDFDocumentCreator extends AbstractPDFDocumentCreator implements
         addDRD(catalog.getToc(), catalog.getVersion(), drds, tailoring.getPhases());
 
         String html = toHtml(catalog.getVersion() + "/drd", parameter);
-        File result = toFile(docId, html, tailoring.getCatalog().getVersion() + "/drd");
+        File result = toFile(docId, of(tailoring.getIssue()), html, tailoring.getCatalog().getVersion() + "/drd");
 
         log.traceExit();
         return result;

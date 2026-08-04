@@ -21,12 +21,12 @@
  */
 package eu.tailoringexpert.domain;
 
-import lombok.Builder;
-import lombok.Value;
+import static java.util.Objects.nonNull;
 
 import java.io.Serializable;
 
-import static java.util.Objects.nonNull;
+import lombok.Builder;
+import lombok.Value;
 
 @Value
 @Builder
@@ -47,7 +47,6 @@ public class File implements Serializable {
      * Checksum/Hash of the file.
      */
     String hash;
-
 
     /**
      * Returns length of file.

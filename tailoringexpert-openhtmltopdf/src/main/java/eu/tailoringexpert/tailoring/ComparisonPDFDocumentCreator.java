@@ -22,6 +22,7 @@
 package eu.tailoringexpert.tailoring;
 
 import static java.util.Collections.emptyMap;
+import static java.util.Optional.of;
 
 import java.util.Collection;
 import java.util.HashMap;
@@ -70,7 +71,8 @@ public class ComparisonPDFDocumentCreator extends AbstractPDFDocumentCreator imp
                 .forEach(chapter -> addChapter(chapter, requirements));
 
         String html = toHtml(tailoring.getCatalog().getVersion() + "/comparision", parameter);
-        File result = toFile(docId, html, tailoring.getCatalog().getVersion() + "/comparision");
+        File result = toFile(docId, of(tailoring.getIssue()), html,
+                tailoring.getCatalog().getVersion() + "/comparision");
 
         log.traceExit();
         return result;
