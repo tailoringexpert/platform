@@ -47,8 +47,8 @@ import lombok.extern.log4j.Log4j2;
 public class ComparisonPDFDocumentCreator extends AbstractPDFDocumentCreator implements DocumentCreator {
 
     public ComparisonPDFDocumentCreator(
-            @NonNull HTMLTemplateEngine templateEngine,
-            @NonNull PDFEngine pdfEngine) {
+            HTMLTemplateEngine templateEngine,
+            PDFEngine pdfEngine) {
         super(templateEngine, pdfEngine);
     }
 
