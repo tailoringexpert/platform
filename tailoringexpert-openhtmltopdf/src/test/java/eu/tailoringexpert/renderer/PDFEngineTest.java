@@ -25,6 +25,7 @@ import static java.util.Optional.empty;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.catchException;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.mockStatic;
 
 import java.io.IOException;
@@ -34,7 +35,6 @@ import org.apache.pdfbox.io.IOUtils;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.MockedStatic;
-import org.mockito.Mockito;
 
 import com.openhtmltopdf.extend.FSDOMMutator;
 import com.openhtmltopdf.extend.FSObjectDrawerFactory;
@@ -48,8 +48,8 @@ class PDFEngineTest {
     @BeforeEach
     void beforeEach() {
         this.engine = new PDFEngine(
-                Mockito.mock(FSDOMMutator.class),
-                Mockito.mock(FSObjectDrawerFactory.class),
+                mock(FSDOMMutator.class),
+                mock(FSObjectDrawerFactory.class),
                 () -> RendererRequestConfiguration.builder()
                         .id("platform")
                         .name("TailoringExpert")

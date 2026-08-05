@@ -21,48 +21,6 @@
  */
 package eu.tailoringexpert.catalog;
 
-import eu.tailoringexpert.domain.BaseCatalogVersionResource;
-import eu.tailoringexpert.domain.BaseRequirement;
-import eu.tailoringexpert.domain.Catalog;
-import eu.tailoringexpert.domain.CatalogVersion;
-import eu.tailoringexpert.domain.File;
-import eu.tailoringexpert.domain.PathContext;
-import eu.tailoringexpert.domain.PathContext.PathContextBuilder;
-import eu.tailoringexpert.domain.ResourceMapper;
-import lombok.extern.log4j.Log4j2;
-import org.assertj.core.api.Assertions;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-import org.mockito.ArgumentCaptor;
-import org.springframework.hateoas.Link;
-import org.springframework.hateoas.UriTemplate;
-import org.springframework.hateoas.mediatype.MessageResolver;
-import org.springframework.hateoas.mediatype.hal.CurieProvider;
-import org.springframework.hateoas.mediatype.hal.HalJacksonModule;
-import org.springframework.hateoas.server.core.EvoInflectorLinkRelationProvider;
-import org.springframework.http.ContentDisposition;
-import org.springframework.http.MediaType;
-import org.springframework.http.converter.ByteArrayHttpMessageConverter;
-import org.springframework.http.converter.json.JacksonJsonHttpMessageConverter;
-import org.springframework.mock.web.MockMultipartFile;
-import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.ResultActions;
-import tools.jackson.databind.DeserializationFeature;
-import tools.jackson.databind.JavaType;
-import tools.jackson.databind.SerializationFeature;
-import tools.jackson.databind.json.JsonMapper;
-
-import java.io.ByteArrayOutputStream;
-import java.io.InputStream;
-import java.nio.charset.StandardCharsets;
-import java.nio.file.Paths;
-import java.text.SimpleDateFormat;
-import java.time.LocalDate;
-import java.time.ZonedDateTime;
-import java.util.function.Function;
-import java.util.zip.ZipEntry;
-import java.util.zip.ZipOutputStream;
-
 import static eu.tailoringexpert.domain.MediaTypeProvider.ATTACHMENT;
 import static eu.tailoringexpert.domain.MediaTypeProvider.FORM_DATA;
 import static eu.tailoringexpert.domain.ResourceMapper.BASECATALOG_CONVERT_EXCEL;
@@ -72,6 +30,7 @@ import static java.lang.Boolean.TRUE;
 import static java.nio.charset.StandardCharsets.UTF_8;
 import static java.nio.file.Files.newInputStream;
 import static java.time.LocalTime.MIDNIGHT;
+import static java.time.Month.JANUARY;
 import static java.time.ZoneId.systemDefault;
 import static java.util.Arrays.asList;
 import static java.util.Collections.emptyMap;
@@ -104,6 +63,49 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.springframework.test.web.servlet.setup.MockMvcBuilders.standaloneSetup;
 
+import java.io.ByteArrayOutputStream;
+import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Paths;
+import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.ZonedDateTime;
+import java.util.function.Function;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipOutputStream;
+
+import org.assertj.core.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.mockito.ArgumentCaptor;
+import org.springframework.hateoas.Link;
+import org.springframework.hateoas.UriTemplate;
+import org.springframework.hateoas.mediatype.MessageResolver;
+import org.springframework.hateoas.mediatype.hal.CurieProvider;
+import org.springframework.hateoas.mediatype.hal.HalJacksonModule;
+import org.springframework.hateoas.server.core.EvoInflectorLinkRelationProvider;
+import org.springframework.http.ContentDisposition;
+import org.springframework.http.MediaType;
+import org.springframework.http.converter.ByteArrayHttpMessageConverter;
+import org.springframework.http.converter.json.JacksonJsonHttpMessageConverter;
+import org.springframework.mock.web.MockMultipartFile;
+import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.ResultActions;
+
+import eu.tailoringexpert.domain.BaseCatalogVersionResource;
+import eu.tailoringexpert.domain.BaseRequirement;
+import eu.tailoringexpert.domain.Catalog;
+import eu.tailoringexpert.domain.CatalogVersion;
+import eu.tailoringexpert.domain.File;
+import eu.tailoringexpert.domain.PathContext;
+import eu.tailoringexpert.domain.PathContext.PathContextBuilder;
+import eu.tailoringexpert.domain.ResourceMapper;
+import lombok.extern.log4j.Log4j2;
+import tools.jackson.databind.DeserializationFeature;
+import tools.jackson.databind.JavaType;
+import tools.jackson.databind.SerializationFeature;
+import tools.jackson.databind.json.JsonMapper;
+
 @Log4j2
 class CatalogControllerTest {
 
@@ -120,32 +122,31 @@ class CatalogControllerTest {
         this.mediaTypeProviderMock = mock(Function.class);
 
         this.objectMapper = JsonMapper.builder()
-            .defaultDateFormat(new SimpleDateFormat("yyyy-MM-dd", GERMANY))
-            .addModule(new HalJacksonModule())
-            .enable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES)
-            .disable(SerializationFeature.FAIL_ON_EMPTY_BEANS)
-            .handlerInstantiator(new HalJacksonModule.HalHandlerInstantiator(new EvoInflectorLinkRelationProvider(),
-                CurieProvider.NONE, MessageResolver.DEFAULTS_ONLY))
-            .build();
+                .defaultDateFormat(new SimpleDateFormat("yyyy-MM-dd", GERMANY))
+                .addModule(new HalJacksonModule())
+                .enable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES)
+                .disable(SerializationFeature.FAIL_ON_EMPTY_BEANS)
+                .handlerInstantiator(new HalJacksonModule.HalHandlerInstantiator(new EvoInflectorLinkRelationProvider(),
+                        CurieProvider.NONE, MessageResolver.DEFAULTS_ONLY))
+                .build();
 
         ByteArrayHttpMessageConverter byteArrayHttpMessageConverter = new ByteArrayHttpMessageConverter();
         byteArrayHttpMessageConverter.setSupportedMediaTypes(asList(
-            IMAGE_JPEG,
-            IMAGE_PNG,
-            APPLICATION_OCTET_STREAM,
-            APPLICATION_PDF,
-            new MediaType("application", "vnd.openxmlformats-officedocument.wordprocessingml.document")
-        ));
+                IMAGE_JPEG,
+                IMAGE_PNG,
+                APPLICATION_OCTET_STREAM,
+                APPLICATION_PDF,
+                new MediaType("application", "vnd.openxmlformats-officedocument.wordprocessingml.document")));
 
         this.mockMvc = standaloneSetup(new CatalogController(
-            mapperMock,
-            serviceMock,
-            mediaTypeProviderMock,
-            objectMapper))
-            .setMessageConverters(
-                new JacksonJsonHttpMessageConverter(objectMapper),
-                byteArrayHttpMessageConverter)
-            .build();
+                mapperMock,
+                serviceMock,
+                mediaTypeProviderMock,
+                objectMapper))
+                .setMessageConverters(
+                        new JacksonJsonHttpMessageConverter(objectMapper),
+                        byteArrayHttpMessageConverter)
+                .build();
     }
 
     @Test
@@ -156,11 +157,10 @@ class CatalogControllerTest {
 
         // act
         ResultActions actual = mockMvc.perform(post("/catalog")
-            .accept(HAL_JSON_VALUE)
-            .content(objectMapper.writeValueAsString(catalog))
-            .contentType(APPLICATION_JSON)
-            .characterEncoding(StandardCharsets.UTF_8.displayName())
-        );
+                .accept(HAL_JSON_VALUE)
+                .content(objectMapper.writeValueAsString(catalog))
+                .contentType(APPLICATION_JSON)
+                .characterEncoding(StandardCharsets.UTF_8.displayName()));
 
         // assert
         actual.andExpect(status().isCreated());
@@ -177,11 +177,10 @@ class CatalogControllerTest {
 
         // act
         ResultActions actual = mockMvc.perform(post("/catalog")
-            .accept(HAL_JSON_VALUE)
-            .content(objectMapper.writeValueAsString(catalog))
-            .contentType(APPLICATION_JSON)
-            .characterEncoding(StandardCharsets.UTF_8.displayName())
-        );
+                .accept(HAL_JSON_VALUE)
+                .content(objectMapper.writeValueAsString(catalog))
+                .contentType(APPLICATION_JSON)
+                .characterEncoding(StandardCharsets.UTF_8.displayName()));
 
         // assert
         actual.andExpect(status().isPreconditionFailed());
@@ -230,16 +229,14 @@ class CatalogControllerTest {
 
         ArgumentCaptor<PathContextBuilder> pathContextCaptor = ArgumentCaptor.forClass(PathContextBuilder.class);
         given(mapperMock.toResource(pathContextCaptor.capture(), catalogCaptor.capture()))
-            .willReturn(BaseCatalogVersionResource.builder().validFrom("01.01.2022").build());
+                .willReturn(BaseCatalogVersionResource.builder().validFrom("01.01.2022").build());
         given(mapperMock.createLink(REL_CONVERT, BASECATALOG_CONVERT_EXCEL, emptyMap()))
-            .willReturn(Link.of(UriTemplate.of("/catalog/excel/convert"), "convert"));
-
+                .willReturn(Link.of(UriTemplate.of("/catalog/excel/convert"), "convert"));
 
         // act
         ResultActions actual = mockMvc.perform(get("/catalog")
-            .accept(HAL_JSON_VALUE)
-            .contentType(APPLICATION_JSON)
-        );
+                .accept(HAL_JSON_VALUE)
+                .contentType(APPLICATION_JSON));
 
         // assert
         actual.andExpect(status().isOk());
@@ -257,11 +254,10 @@ class CatalogControllerTest {
 
         // act
         ResultActions actual = mockMvc.perform(get("/catalog/42")
-            .accept(APPLICATION_JSON)
-            .content(objectMapper.writeValueAsString(catalog))
-            .contentType(APPLICATION_JSON)
-            .characterEncoding(StandardCharsets.UTF_8.displayName())
-        );
+                .accept(APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(catalog))
+                .contentType(APPLICATION_JSON)
+                .characterEncoding(StandardCharsets.UTF_8.displayName()));
 
         // assert
         actual.andExpect(status().isOk());
@@ -276,11 +272,10 @@ class CatalogControllerTest {
 
         // act
         ResultActions actual = mockMvc.perform(get("/catalog/42")
-            .accept(APPLICATION_JSON)
-            .content(objectMapper.writeValueAsString(catalog))
-            .contentType(APPLICATION_JSON)
-            .characterEncoding(StandardCharsets.UTF_8.displayName())
-        );
+                .accept(APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(catalog))
+                .contentType(APPLICATION_JSON)
+                .characterEncoding(StandardCharsets.UTF_8.displayName()));
 
         // assert
         actual.andExpect(status().isNotFound());
@@ -310,23 +305,25 @@ class CatalogControllerTest {
             data = is.readAllBytes();
         }
         given(serviceMock.createCatalog("8.2.1"))
-            .willReturn(of(File.builder()
-                .name("DOC-CAT-001.pdf")
-                .data(data)
-                .build()));
+                .willReturn(of(File.builder()
+                        .name("DOC-CAT-001.pdf")
+                        .data(data)
+                        .build()));
 
         given(mediaTypeProviderMock.apply("pdf"))
-            .willReturn(APPLICATION_PDF);
+                .willReturn(APPLICATION_PDF);
 
         // act
         ResultActions actual = mockMvc.perform(get("/catalog/8.2.1/pdf"));
 
         // assert
         actual.andExpect(status().isOk())
-            .andExpect(header().string(CONTENT_DISPOSITION, ContentDisposition.builder(FORM_DATA).name(ATTACHMENT).filename("DOC-CAT-001.pdf").build().toString()))
-            .andExpect(header().string(ACCESS_CONTROL_EXPOSE_HEADERS, CONTENT_DISPOSITION))
-            .andExpect(content().contentType(APPLICATION_PDF))
-            .andExpect(content().bytes(data));
+                .andExpect(header().string(CONTENT_DISPOSITION,
+                        ContentDisposition.builder(FORM_DATA).name(ATTACHMENT).filename("DOC-CAT-001.pdf").build()
+                                .toString()))
+                .andExpect(header().string(ACCESS_CONTROL_EXPOSE_HEADERS, CONTENT_DISPOSITION))
+                .andExpect(content().contentType(APPLICATION_PDF))
+                .andExpect(content().bytes(data));
 
         verify(mediaTypeProviderMock, times(1)).apply("pdf");
     }
@@ -354,23 +351,25 @@ class CatalogControllerTest {
             data = is.readAllBytes();
         }
         given(serviceMock.createCatalogExcel("8.2.1"))
-            .willReturn(of(File.builder()
-                .name("8.2.1.xlsx")
-                .data(data)
-                .build()));
+                .willReturn(of(File.builder()
+                        .name("8.2.1.xlsx")
+                        .data(data)
+                        .build()));
 
         given(mediaTypeProviderMock.apply("xlsx"))
-            .willReturn(APPLICATION_OCTET_STREAM);
+                .willReturn(APPLICATION_OCTET_STREAM);
 
         // act
         ResultActions actual = mockMvc.perform(get("/catalog/8.2.1/excel"));
 
         // assert
         actual.andExpect(status().isOk())
-            .andExpect(header().string(CONTENT_DISPOSITION, ContentDisposition.builder(FORM_DATA).name(ATTACHMENT).filename("8.2.1.xlsx").build().toString()))
-            .andExpect(header().string(ACCESS_CONTROL_EXPOSE_HEADERS, CONTENT_DISPOSITION))
-            .andExpect(content().contentType(APPLICATION_OCTET_STREAM))
-            .andExpect(content().bytes(data));
+                .andExpect(header().string(CONTENT_DISPOSITION,
+                        ContentDisposition.builder(FORM_DATA).name(ATTACHMENT).filename("8.2.1.xlsx").build()
+                                .toString()))
+                .andExpect(header().string(ACCESS_CONTROL_EXPOSE_HEADERS, CONTENT_DISPOSITION))
+                .andExpect(content().contentType(APPLICATION_OCTET_STREAM))
+                .andExpect(content().bytes(data));
 
         verify(mediaTypeProviderMock, times(1)).apply("xlsx");
     }
@@ -379,7 +378,7 @@ class CatalogControllerTest {
     void getBaseCatalogJson_BaseCatalogNotExists_StateNotFound() throws Exception {
         // arrange
         given(serviceMock.getCatalog("8.2.1"))
-            .willReturn(empty());
+                .willReturn(empty());
 
         // act
         ResultActions actual = mockMvc.perform(get("/catalog/8.2.1/json"));
@@ -396,23 +395,25 @@ class CatalogControllerTest {
         try (InputStream is = newInputStream(Paths.get("src/test/resources/basecatalog.json"))) {
             assert nonNull(is);
             JavaType type = objectMapper.getTypeFactory()
-                .constructParametricType(Catalog.class, BaseRequirement.class);
+                    .constructParametricType(Catalog.class, BaseRequirement.class);
             catalog = objectMapper.readValue(is, type);
         }
         given(serviceMock.getCatalog("8.2.1"))
-            .willReturn(of(catalog));
+                .willReturn(of(catalog));
 
         given(mediaTypeProviderMock.apply("json"))
-            .willReturn(APPLICATION_JSON);
+                .willReturn(APPLICATION_JSON);
 
         // act
         ResultActions actual = mockMvc.perform(get("/catalog/8.2.1/json"));
 
         // assert
         actual.andExpect(status().isOk())
-            .andExpect(header().string(CONTENT_DISPOSITION, ContentDisposition.builder(FORM_DATA).name(ATTACHMENT).filename("catalog_v8.2.1.json").build().toString()))
-            .andExpect(header().string(ACCESS_CONTROL_EXPOSE_HEADERS, CONTENT_DISPOSITION))
-            .andExpect(content().contentType(APPLICATION_JSON));
+                .andExpect(header().string(CONTENT_DISPOSITION,
+                        ContentDisposition.builder(FORM_DATA).name(ATTACHMENT).filename("catalog_v8.2.1.json").build()
+                                .toString()))
+                .andExpect(header().string(ACCESS_CONTROL_EXPOSE_HEADERS, CONTENT_DISPOSITION))
+                .andExpect(content().contentType(APPLICATION_JSON));
 
         verify(mediaTypeProviderMock, times(1)).apply("json");
         assertThatNoException();
@@ -449,20 +450,22 @@ class CatalogControllerTest {
         zip.close();
 
         given(serviceMock.createDocuments("8.2.1"))
-            .willReturn(of(File.builder().data(os.toByteArray()).name("catalog_8.2.1.zip").build()));
+                .willReturn(of(File.builder().data(os.toByteArray()).name("catalog_8.2.1.zip").build()));
 
         given(mediaTypeProviderMock.apply("zip"))
-            .willReturn(APPLICATION_OCTET_STREAM);
+                .willReturn(APPLICATION_OCTET_STREAM);
 
         // act
         ResultActions actual = mockMvc.perform(get("/catalog/8.2.1/document"));
 
         // assert
         actual.andExpect(status().isOk())
-            .andExpect(header().string(CONTENT_DISPOSITION, ContentDisposition.builder(FORM_DATA).name(ATTACHMENT).filename("catalog_8.2.1.zip").build().toString()))
-            .andExpect(header().string(ACCESS_CONTROL_EXPOSE_HEADERS, CONTENT_DISPOSITION))
-            .andExpect(content().contentType(APPLICATION_OCTET_STREAM))
-            .andExpect(content().bytes(os.toByteArray()));
+                .andExpect(header().string(CONTENT_DISPOSITION,
+                        ContentDisposition.builder(FORM_DATA).name(ATTACHMENT).filename("catalog_8.2.1.zip").build()
+                                .toString()))
+                .andExpect(header().string(ACCESS_CONTROL_EXPOSE_HEADERS, CONTENT_DISPOSITION))
+                .andExpect(content().contentType(APPLICATION_OCTET_STREAM))
+                .andExpect(content().bytes(os.toByteArray()));
 
         verify(mediaTypeProviderMock, times(1)).apply("zip");
     }
@@ -470,16 +473,15 @@ class CatalogControllerTest {
     @Test
     void putCatalogValidUntil_VersionNotExist_StateNotFound() throws Exception {
         // arrange
-        LocalDate currentDate = LocalDate.of(2023, 1, 2);
+        LocalDate currentDate = LocalDate.of(2023, JANUARY, 2);
         ZonedDateTime validUntil = ZonedDateTime.of(currentDate, MIDNIGHT, systemDefault());
         given(serviceMock.limitValidity("8.2.1", validUntil)).willReturn(empty());
 
         // act
         ResultActions actual = mockMvc.perform(put("/catalog/{version}/validuntil/{validuntil}", "8.2.1", "2023-01-02")
-            .accept(HAL_JSON_VALUE)
-            //.contentType(APPLICATION_JSON)
-            .characterEncoding(StandardCharsets.UTF_8.displayName())
-        );
+                .accept(HAL_JSON_VALUE)
+                // .contentType(APPLICATION_JSON)
+                .characterEncoding(StandardCharsets.UTF_8.displayName()));
 
         // assert
         actual.andExpect(status().isNotFound());
@@ -491,19 +493,18 @@ class CatalogControllerTest {
     @Test
     void putCatalogValidUntil_VersionExist_StateOK() throws Exception {
         // arrange
-        LocalDate currentDate = LocalDate.of(2023, 1, 2);
+        LocalDate currentDate = LocalDate.of(2023, JANUARY, 2);
         ZonedDateTime validUntil = ZonedDateTime.of(currentDate, MIDNIGHT, systemDefault());
         given(serviceMock.limitValidity("8.2.1", validUntil))
-            .willReturn(of(CatalogVersion.builder().build()));
+                .willReturn(of(CatalogVersion.builder().build()));
         given(mapperMock.toResource(any(PathContextBuilder.class), any(CatalogVersion.class)))
-            .willReturn(BaseCatalogVersionResource.builder().build());
+                .willReturn(BaseCatalogVersionResource.builder().build());
 
         // act
         ResultActions actual = mockMvc.perform(put("/catalog/{version}/validuntil/{validuntil}", "8.2.1", "2023-01-02")
-            .accept(HAL_JSON_VALUE)
-            //.contentType(APPLICATION_JSON)
-            .characterEncoding(StandardCharsets.UTF_8.displayName())
-        );
+                .accept(HAL_JSON_VALUE)
+                // .contentType(APPLICATION_JSON)
+                .characterEncoding(StandardCharsets.UTF_8.displayName()));
 
         // assert
         actual.andExpect(status().isOk());
@@ -517,15 +518,14 @@ class CatalogControllerTest {
         // arrange
         byte[] data = "Excel Import File".getBytes(UTF_8);
         MockMultipartFile dokument = new MockMultipartFile("file", "basecatalog.xlsx",
-            "text/plain", data);
+                "text/plain", data);
 
         given(serviceMock.doConvert(data)).willReturn(Catalog.<BaseRequirement>builder().version("8.2.1").build());
 
         // act
         ResultActions actual = mockMvc.perform(multipart("/catalog/convert/excel")
-            .file(dokument)
-            .contentType(MULTIPART_FORM_DATA)
-        );
+                .file(dokument)
+                .contentType(MULTIPART_FORM_DATA));
 
         // assert
         actual.andExpect(status().isOk());
@@ -538,27 +538,28 @@ class CatalogControllerTest {
 
         Catalog<BaseRequirement> catalog = Catalog.<BaseRequirement>builder().version("8.3.0").build();
         given(serviceMock.createDocuments(catalog))
-            .willReturn(of(File.builder()
-                .name("preview.zip")
-                .data("dummy".getBytes(UTF_8))
-                .build()));
+                .willReturn(of(File.builder()
+                        .name("preview.zip")
+                        .data("dummy".getBytes(UTF_8))
+                        .build()));
 
         given(mediaTypeProviderMock.apply("zip"))
-            .willReturn(APPLICATION_OCTET_STREAM);
+                .willReturn(APPLICATION_OCTET_STREAM);
 
         // act
         ResultActions actual = mockMvc.perform(post("/catalog/preview")
-            .content(objectMapper.writeValueAsString(catalog))
-            .contentType(APPLICATION_JSON)
-            .characterEncoding(StandardCharsets.UTF_8.displayName())
-        );
+                .content(objectMapper.writeValueAsString(catalog))
+                .contentType(APPLICATION_JSON)
+                .characterEncoding(StandardCharsets.UTF_8.displayName()));
 
         // assert
         actual.andExpect(status().isOk())
-            .andExpect(header().string(CONTENT_DISPOSITION, ContentDisposition.builder(FORM_DATA).name(ATTACHMENT).filename("preview.zip").build().toString()))
-            .andExpect(header().string(ACCESS_CONTROL_EXPOSE_HEADERS, CONTENT_DISPOSITION))
-            .andExpect(content().contentType(APPLICATION_OCTET_STREAM))
-            .andExpect(content().bytes("dummy".getBytes(UTF_8)));
+                .andExpect(header().string(CONTENT_DISPOSITION,
+                        ContentDisposition.builder(FORM_DATA).name(ATTACHMENT).filename("preview.zip").build()
+                                .toString()))
+                .andExpect(header().string(ACCESS_CONTROL_EXPOSE_HEADERS, CONTENT_DISPOSITION))
+                .andExpect(content().contentType(APPLICATION_OCTET_STREAM))
+                .andExpect(content().bytes("dummy".getBytes(UTF_8)));
 
         verify(serviceMock, times(1)).createDocuments(catalog);
     }
@@ -616,27 +617,28 @@ class CatalogControllerTest {
             data = is.readAllBytes();
         }
         given(serviceMock.createCatalog("8.2.1", "9.0.0"))
-            .willReturn(of(File.builder()
-                .name("DOC-CAT-001.pdf")
-                .data(data)
-                .build()));
+                .willReturn(of(File.builder()
+                        .name("DOC-CAT-001.pdf")
+                        .data(data)
+                        .build()));
 
         given(mediaTypeProviderMock.apply("pdf"))
-            .willReturn(APPLICATION_PDF);
+                .willReturn(APPLICATION_PDF);
 
         // act
         ResultActions actual = mockMvc.perform(get("/catalog/8.2.1/compare/9.0.0"));
 
         // assert
         actual.andExpect(status().isOk())
-            .andExpect(header().string(CONTENT_DISPOSITION, ContentDisposition.builder(FORM_DATA).name(ATTACHMENT).filename("DOC-CAT-001.pdf").build().toString()))
-            .andExpect(header().string(ACCESS_CONTROL_EXPOSE_HEADERS, CONTENT_DISPOSITION))
-            .andExpect(content().contentType(APPLICATION_PDF))
-            .andExpect(content().bytes(data));
+                .andExpect(header().string(CONTENT_DISPOSITION,
+                        ContentDisposition.builder(FORM_DATA).name(ATTACHMENT).filename("DOC-CAT-001.pdf").build()
+                                .toString()))
+                .andExpect(header().string(ACCESS_CONTROL_EXPOSE_HEADERS, CONTENT_DISPOSITION))
+                .andExpect(content().contentType(APPLICATION_PDF))
+                .andExpect(content().bytes(data));
 
         verify(mediaTypeProviderMock, times(1)).apply("pdf");
     }
-
 
     @Test
     void postBaseCatalogPreviewComparePrint_RevisedNull_StateNotFound() throws Exception {
@@ -645,11 +647,10 @@ class CatalogControllerTest {
 
         // act
         ResultActions actual = mockMvc.perform(post("/catalog/8.2.1/compare")
-            .accept(APPLICATION_OCTET_STREAM)
-            .content((byte[]) null)
-            .contentType(APPLICATION_JSON)
-            .characterEncoding(StandardCharsets.UTF_8.displayName())
-        );
+                .accept(APPLICATION_OCTET_STREAM)
+                .content((byte[]) null)
+                .contentType(APPLICATION_JSON)
+                .characterEncoding(StandardCharsets.UTF_8.displayName()));
 
         // assert
         actual.andExpect(status().is4xxClientError());
@@ -667,32 +668,30 @@ class CatalogControllerTest {
             data = is.readAllBytes();
         }
         given(serviceMock.createCatalog("8.2.1", revised))
-            .willReturn(of(File.builder()
-                .name("DOC-CAT-001.pdf")
-                .data(data)
-                .build()));
+                .willReturn(of(File.builder()
+                        .name("DOC-CAT-001.pdf")
+                        .data(data)
+                        .build()));
 
         given(mediaTypeProviderMock.apply("pdf"))
-            .willReturn(APPLICATION_PDF);
+                .willReturn(APPLICATION_PDF);
 
         // act
         ResultActions actual = mockMvc.perform(post("/catalog/8.2.1/compare")
-            .accept(APPLICATION_OCTET_STREAM)
-            .content(objectMapper.writeValueAsString(revised))
-            .contentType(APPLICATION_JSON)
-            .characterEncoding(StandardCharsets.UTF_8.displayName())
-        );
-
+                .accept(APPLICATION_OCTET_STREAM)
+                .content(objectMapper.writeValueAsString(revised))
+                .contentType(APPLICATION_JSON)
+                .characterEncoding(StandardCharsets.UTF_8.displayName()));
 
         // assert
         actual.andExpect(status().isOk())
-            .andExpect(header().string(CONTENT_DISPOSITION, ContentDisposition.builder(FORM_DATA).name(ATTACHMENT).filename("DOC-CAT-001.pdf").build().toString()))
-            .andExpect(header().string(ACCESS_CONTROL_EXPOSE_HEADERS, CONTENT_DISPOSITION))
-            .andExpect(content().contentType(APPLICATION_PDF))
-            .andExpect(content().bytes(data));
-
+                .andExpect(header().string(CONTENT_DISPOSITION,
+                        ContentDisposition.builder(FORM_DATA).name(ATTACHMENT).filename("DOC-CAT-001.pdf").build()
+                                .toString()))
+                .andExpect(header().string(ACCESS_CONTROL_EXPOSE_HEADERS, CONTENT_DISPOSITION))
+                .andExpect(content().contentType(APPLICATION_PDF))
+                .andExpect(content().bytes(data));
 
         verify(mediaTypeProviderMock, times(1)).apply("pdf");
     }
 }
-

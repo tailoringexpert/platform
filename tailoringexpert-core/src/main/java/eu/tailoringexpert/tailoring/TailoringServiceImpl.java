@@ -31,6 +31,7 @@ import static java.util.function.Predicate.not;
 
 import java.io.ByteArrayOutputStream;
 import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.util.Collection;
 import java.util.List;
@@ -124,7 +125,7 @@ public class TailoringServiceImpl implements TailoringService {
                 .notes(nonNull(note) ? List.of(Note.builder()
                         .number(1)
                         .text(note)
-                        .creationTimestamp(ZonedDateTime.now())
+                        .creationTimestamp(ZonedDateTime.now(ZoneId.systemDefault()))
                         .build()) : null)
                 .build();
         log.traceExit();
@@ -140,7 +141,7 @@ public class TailoringServiceImpl implements TailoringService {
         log.traceEntry(() -> project, () -> tailoring);
 
         @SuppressWarnings("PMD.PrematureDeclaration")
-        final LocalDateTime creationTimestamp = LocalDateTime.now();
+        final LocalDateTime creationTimestamp = LocalDateTime.now(ZoneId.systemDefault());
 
         Optional<Tailoring> oTailoring = repository.getTailoring(project, tailoring);
         if (oTailoring.isEmpty()) {
@@ -161,7 +162,7 @@ public class TailoringServiceImpl implements TailoringService {
         log.traceEntry(() -> project, () -> tailoring);
 
         @SuppressWarnings("PMD.PrematureDeclaration")
-        final LocalDateTime creationTimestamp = LocalDateTime.now();
+        final LocalDateTime creationTimestamp = LocalDateTime.now(ZoneId.systemDefault());
 
         Optional<Tailoring> oTailoring = repository.getTailoring(project, tailoring);
         if (oTailoring.isEmpty()) {
@@ -378,7 +379,7 @@ public class TailoringServiceImpl implements TailoringService {
         Note noteToAdd = Note.builder()
                 .number(nonNull(notes) ? notes.size() + 1 : 1)
                 .text(note)
-                .creationTimestamp(ZonedDateTime.now())
+                .creationTimestamp(ZonedDateTime.now(ZoneId.systemDefault()))
                 .build();
 
         Optional<Tailoring> updatedTailoring = repository.addNote(project, tailoring, noteToAdd);
@@ -462,7 +463,7 @@ public class TailoringServiceImpl implements TailoringService {
         log.traceEntry(() -> project, () -> tailoring);
 
         @SuppressWarnings("PMD.PrematureDeclaration")
-        final LocalDateTime erstellungsZeitpunkt = LocalDateTime.now();
+        final LocalDateTime erstellungsZeitpunkt = LocalDateTime.now(ZoneId.systemDefault());
 
         Optional<Tailoring> oTailoring = repository.getTailoring(project, tailoring);
         if (oTailoring.isEmpty()) {
@@ -536,7 +537,7 @@ public class TailoringServiceImpl implements TailoringService {
         log.traceEntry(() -> baseProject, () -> baseTailoring);
 
         @SuppressWarnings("PMD.PrematureDeclaration")
-        final LocalDateTime creationTimestamp = LocalDateTime.now();
+        final LocalDateTime creationTimestamp = LocalDateTime.now(ZoneId.systemDefault());
 
         Optional<Tailoring> oBaseTailoring = repository.getTailoring(baseProject, baseTailoring);
         if (oBaseTailoring.isEmpty()) {

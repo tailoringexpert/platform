@@ -21,15 +21,6 @@
  */
 package eu.tailoringexpert.catalog;
 
-import com.github.difflib.text.DiffRowGenerator;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-import org.mockito.Mockito;
-
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-
 import static eu.tailoringexpert.catalog.ToRevisedBaseCatalogFunction.REPLACEMENT_ORIGINAL_VERSION;
 import static eu.tailoringexpert.catalog.ToRevisedBaseCatalogFunction.REPLACEMENT_REVISED_VERSION;
 import static java.util.Map.of;
@@ -37,6 +28,16 @@ import static java.util.function.Function.identity;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.mock;
+
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+
+import com.github.difflib.text.DiffRowGenerator;
 
 class DifflibTextDiffTest {
 
@@ -45,16 +46,15 @@ class DifflibTextDiffTest {
     @BeforeEach
     void beforeEach() {
         this.text = new DifflibTextDiff(DiffRowGenerator.create()
-            .reportLinesUnchanged(false)
-            .showInlineDiffs(true)
-            .mergeOriginalRevised(true)
-            .inlineDiffByWord(true)
-            .ignoreWhiteSpaces(true)
-            .lineNormalizer(identity())
-            .oldTag((tag, f) -> f ? "<span class='old'>" : "</span>")
-            .newTag((tag, f) -> f ? "<span class='new'>" : "</span>")
-            .build()
-        );
+                .reportLinesUnchanged(false)
+                .showInlineDiffs(true)
+                .mergeOriginalRevised(true)
+                .inlineDiffByWord(true)
+                .ignoreWhiteSpaces(true)
+                .lineNormalizer(identity())
+                .oldTag((tag, f) -> f ? "<span class='old'>" : "</span>")
+                .newTag((tag, f) -> f ? "<span class='new'>" : "</span>")
+                .build());
     }
 
     @Test
@@ -63,15 +63,14 @@ class DifflibTextDiffTest {
         String base = "This is the requirement of catalog 8.2.2";
         String revised = "This is the requirement of catalog 8.2.2";
         Map<String, String> replacements = of(
-            "/assets/" + REPLACEMENT_ORIGINAL_VERSION, "/assets/" + REPLACEMENT_REVISED_VERSION
-        );
+                "/assets/" + REPLACEMENT_ORIGINAL_VERSION, "/assets/" + REPLACEMENT_REVISED_VERSION);
 
         // act
         Optional<String> actual = text.diff(base, revised, replacements);
 
         // assert
         assertThat(actual)
-            .isEmpty();
+                .isEmpty();
     }
 
     @Test
@@ -80,16 +79,16 @@ class DifflibTextDiffTest {
         String base = "This is the requirement of catalog 8.2.2";
         String revised = "This is the requirement of catalog 9.0.0";
         Map<String, String> replacements = of(
-            "/assets/8.2.2", "/assets/9.0.0"
-        );
+                "/assets/8.2.2", "/assets/9.0.0");
 
         // act
         Optional<String> actual = text.diff(base, revised, replacements);
 
         // assert
         assertThat(actual)
-            .isNotEmpty()
-            .hasValue("This is the requirement of catalog <span class='old'>8</span><span class='new'>9</span>.<span class='old'>2</span><span class='new'>0</span>.<span class='old'>2</span><span class='new'>0</span>");
+                .isNotEmpty()
+                .hasValue(
+                        "This is the requirement of catalog <span class='old'>8</span><span class='new'>9</span>.<span class='old'>2</span><span class='new'>0</span>.<span class='old'>2</span><span class='new'>0</span>");
     }
 
     @Test
@@ -98,15 +97,14 @@ class DifflibTextDiffTest {
         String base = "This is the requirement of catalog 8.2.2";
         String revised = "This is the requirement of catalog 9.0.0";
         Map<String, String> replacements = of(
-            "8.2.2", "9.0.0"
-        );
+                "8.2.2", "9.0.0");
 
         // act
         Optional<String> actual = text.diff(base, revised, replacements);
 
         // assert
         assertThat(actual)
-            .isEmpty();
+                .isEmpty();
     }
 
     @Test
@@ -121,7 +119,7 @@ class DifflibTextDiffTest {
 
         // assert
         assertThat(actual)
-            .isEmpty();
+                .isEmpty();
     }
 
     @Test
@@ -130,22 +128,21 @@ class DifflibTextDiffTest {
         String base = null;
         String revised = "This is the requirement of catalog 9.0.0";
         Map<String, String> replacements = of(
-            "8.2.2", "9.0.0"
-        );
+                "8.2.2", "9.0.0");
 
         // act
         Optional<String> actual = text.diff(base, revised, replacements);
 
         // assert
         assertThat(actual)
-            .isNotEmpty()
-            .hasValue("<span class='new'>This is the requirement of catalog 9.0.0</span>");
+                .isNotEmpty()
+                .hasValue("<span class='new'>This is the requirement of catalog 9.0.0</span>");
     }
 
     @Test
     void diff_DiffRowEmpty_EmptyReturned() {
         // arrange
-        DiffRowGenerator rowGeneratorMock = Mockito.mock(DiffRowGenerator.class);
+        DiffRowGenerator rowGeneratorMock = mock(DiffRowGenerator.class);
         TextDiff difflib = new DifflibTextDiff(rowGeneratorMock);
 
         String base = "This is the requirement of catalog 9.0.0";
@@ -153,15 +150,14 @@ class DifflibTextDiffTest {
         Map<String, String> replacements = of();
 
         given(rowGeneratorMock.generateDiffRows(List.of(anyString()), List.of(anyString())))
-            .willReturn(List.of());
+                .willReturn(List.of());
 
         // act
         Optional<String> actual = difflib.diff(base, revised, replacements);
 
         // assert
         assertThat(actual)
-            .isEmpty();
+                .isEmpty();
     }
-
 
 }
