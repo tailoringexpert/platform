@@ -21,6 +21,20 @@
  */
 package eu.tailoringexpert.catalog;
 
+import static java.util.Optional.empty;
+import static java.util.Optional.of;
+import static java.util.Optional.ofNullable;
+
+import java.io.ByteArrayOutputStream;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
+import java.util.Collection;
+import java.util.Optional;
+import java.util.function.Function;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipOutputStream;
+
 import eu.tailoringexpert.TailoringexpertException;
 import eu.tailoringexpert.domain.BaseRequirement;
 import eu.tailoringexpert.domain.Catalog;
@@ -30,19 +44,6 @@ import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import lombok.extern.log4j.Log4j2;
-
-import java.io.ByteArrayOutputStream;
-import java.time.LocalDateTime;
-import java.time.ZonedDateTime;
-import java.util.Collection;
-import java.util.Optional;
-import java.util.function.Function;
-import java.util.zip.ZipEntry;
-import java.util.zip.ZipOutputStream;
-
-import static java.util.Optional.empty;
-import static java.util.Optional.of;
-import static java.util.Optional.ofNullable;
 
 /**
  * Implementation of {@link CatalogService}.
@@ -71,7 +72,8 @@ public class CatalogServiceImpl implements CatalogService {
     @Override
     public boolean doImport(@NonNull Catalog<BaseRequirement> catalog) {
         log.traceEntry(catalog::getVersion);
-        @SuppressWarnings("PMD.PrematureDeclaration") final ZonedDateTime now = ZonedDateTime.now();
+        @SuppressWarnings("PMD.PrematureDeclaration")
+        final ZonedDateTime now = ZonedDateTime.now(ZoneId.systemDefault());
 
         if (repository.existsCatalog(catalog.getVersion())) {
             log.error("Catalog version {} NOT imported because it already exists.", catalog.getVersion());
@@ -107,7 +109,8 @@ public class CatalogServiceImpl implements CatalogService {
     @Override
     public Optional<File> createCatalog(String original) {
         log.traceEntry(() -> original);
-        @SuppressWarnings("PMD.PrematureDeclaration") final LocalDateTime creationTimestamp = LocalDateTime.now();
+        @SuppressWarnings("PMD.PrematureDeclaration")
+        final LocalDateTime creationTimestamp = LocalDateTime.now(ZoneId.systemDefault());
 
         Optional<Catalog<BaseRequirement>> catalog = repository.getCatalog(original);
         if (catalog.isEmpty()) {
@@ -124,7 +127,8 @@ public class CatalogServiceImpl implements CatalogService {
     @Override
     public Optional<File> createDocuments(Catalog<BaseRequirement> catalog) {
         log.traceEntry();
-        @SuppressWarnings("PMD.PrematureDeclaration") final LocalDateTime creationTimestamp = LocalDateTime.now();
+        @SuppressWarnings("PMD.PrematureDeclaration")
+        final LocalDateTime creationTimestamp = LocalDateTime.now(ZoneId.systemDefault());
 
         if (ofNullable(catalog).isEmpty()) {
             log.error(MSG_CATALOGDOCUMENT_NOT_CREATED);
@@ -133,12 +137,12 @@ public class CatalogServiceImpl implements CatalogService {
         }
 
         Collection<File> documents = documentService.createAll(catalog, creationTimestamp);
-        ByteArrayOutputStream os = createZip(documents);
+        ByteArrayOutputStream os = createZip(documents, creationTimestamp);
 
         File result = File.builder()
-            .name("catalog_" + catalog.getVersion()+ ".zip")
-            .data(os.toByteArray())
-            .build();
+                .name("catalog_" + catalog.getVersion() + ".zip")
+                .data(os.toByteArray())
+                .build();
         log.traceExit(result.getName());
         return of(result);
     }
@@ -146,7 +150,8 @@ public class CatalogServiceImpl implements CatalogService {
     @Override
     public Optional<File> createCatalogExcel(String version) {
         log.traceEntry(() -> version);
-        @SuppressWarnings("PMD.PrematureDeclaration") final LocalDateTime creationTimestamp = LocalDateTime.now();
+        @SuppressWarnings("PMD.PrematureDeclaration")
+        final LocalDateTime creationTimestamp = LocalDateTime.now(ZoneId.systemDefault());
 
         Optional<Catalog<BaseRequirement>> catalog = repository.getCatalog(version);
         if (catalog.isEmpty()) {
@@ -203,11 +208,11 @@ public class CatalogServiceImpl implements CatalogService {
     @Override
     public Optional<Boolean> deleteCatalog(String version) {
         log.traceEntry(() -> version);
-        if (!repository.existsCatalog(version)){
+        if (!repository.existsCatalog(version)) {
             return log.traceExit("base catalog " + version + " does not exists", empty());
         }
 
-        if(repository.isCatalogUsed(version)) {
+        if (repository.isCatalogUsed(version)) {
             log.traceExit();
             throw log.throwing(new TailoringexpertException("Base catalog version is already used in projects"));
         }
@@ -221,7 +226,8 @@ public class CatalogServiceImpl implements CatalogService {
     @Override
     public Optional<File> createCatalog(String base, String compare) {
         log.traceEntry(() -> base, () -> compare);
-        @SuppressWarnings("PMD.PrematureDeclaration") final LocalDateTime creationTimestamp = LocalDateTime.now();
+        @SuppressWarnings("PMD.PrematureDeclaration")
+        final LocalDateTime creationTimestamp = LocalDateTime.now(ZoneId.systemDefault());
 
         Optional<Catalog<BaseRequirement>> originalCatalog = repository.getCatalog(base);
         if (originalCatalog.isEmpty()) {
@@ -237,7 +243,8 @@ public class CatalogServiceImpl implements CatalogService {
             return empty();
         }
 
-        Optional<File> result = documentService.createCatalog(originalCatalog.get(), revisedCatalog.get(), creationTimestamp);
+        Optional<File> result = documentService.createCatalog(originalCatalog.get(), revisedCatalog.get(),
+                creationTimestamp);
         log.traceExit();
         return result;
     }
@@ -245,10 +252,11 @@ public class CatalogServiceImpl implements CatalogService {
     /**
      * {@inheritDoc}
      */
-    //@Override
+    // @Override
     public Optional<File> createCatalog(String base, Catalog<BaseRequirement> compare) {
         log.traceEntry(() -> base, () -> compare);
-        @SuppressWarnings("PMD.PrematureDeclaration") final LocalDateTime creationTimestamp = LocalDateTime.now();
+        @SuppressWarnings("PMD.PrematureDeclaration")
+        final LocalDateTime creationTimestamp = LocalDateTime.now(ZoneId.systemDefault());
 
         Optional<Catalog<BaseRequirement>> revisedCatalog = ofNullable(compare);
         if (revisedCatalog.isEmpty()) {
@@ -264,11 +272,11 @@ public class CatalogServiceImpl implements CatalogService {
             return empty();
         }
 
-        Optional<File> result = documentService.createCatalog(originalCatalog.get(), revisedCatalog.get(), creationTimestamp);
+        Optional<File> result = documentService.createCatalog(originalCatalog.get(), revisedCatalog.get(),
+                creationTimestamp);
         log.traceExit();
         return result;
     }
-
 
     /**
      * Create zip containing provided files.
@@ -277,10 +285,10 @@ public class CatalogServiceImpl implements CatalogService {
      * @return created zip
      */
     @SneakyThrows
-    ByteArrayOutputStream createZip(Collection<File> documents) {
+    ByteArrayOutputStream createZip(Collection<File> documents, LocalDateTime now) {
         try (ByteArrayOutputStream result = new ByteArrayOutputStream();
-             ZipOutputStream zip = new ZipOutputStream(result)) {
-            documents.forEach(file -> addToZip(file, zip));
+                ZipOutputStream zip = new ZipOutputStream(result)) {
+            documents.forEach(file -> addToZip(file, zip, now));
             return result;
         }
     }
@@ -290,10 +298,12 @@ public class CatalogServiceImpl implements CatalogService {
      *
      * @param file file to add
      * @param zip  Zip, to add file to
+     * @param now  current timestamp
      */
     @SneakyThrows
-    void addToZip(File file, ZipOutputStream zip) {
+    void addToZip(File file, ZipOutputStream zip, LocalDateTime now) {
         ZipEntry zipEntry = new ZipEntry(file.getName());
+        zipEntry.setTimeLocal(now);
         zip.putNextEntry(zipEntry);
         zip.write(file.getData(), 0, file.getData().length);
         zip.closeEntry();

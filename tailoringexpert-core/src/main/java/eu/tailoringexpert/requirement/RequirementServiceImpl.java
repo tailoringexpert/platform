@@ -21,6 +21,21 @@
  */
 package eu.tailoringexpert.requirement;
 
+import static java.lang.Boolean.TRUE;
+import static java.lang.Integer.parseInt;
+import static java.util.Comparator.comparing;
+import static java.util.Objects.isNull;
+import static java.util.Objects.nonNull;
+import static java.util.Optional.empty;
+
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
+import java.util.Collection;
+import java.util.List;
+import java.util.Optional;
+import java.util.OptionalInt;
+import java.util.Scanner;
+
 import eu.tailoringexpert.domain.Chapter;
 import eu.tailoringexpert.domain.RequirementChange;
 import eu.tailoringexpert.domain.TailoringRequirement;
@@ -28,16 +43,6 @@ import eu.tailoringexpert.domain.TailoringRequirement.TailoringRequirementBuilde
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
-
-import java.time.ZonedDateTime;
-import java.util.*;
-
-import static java.lang.Boolean.TRUE;
-import static java.lang.Integer.parseInt;
-import static java.util.Comparator.comparing;
-import static java.util.Objects.isNull;
-import static java.util.Objects.nonNull;
-import static java.util.Optional.empty;
 
 /**
  * Implementation of {@link RequirementService}.
@@ -73,7 +78,7 @@ public class RequirementServiceImpl implements RequirementService {
         if (tailoringRequirement.isPresent()) {
             if (!tailoringRequirement.get().getSelected().equals(selected)) {
                 TailoringRequirement requirement = handleSelected(tailoringRequirement.get(), selected,
-                        ZonedDateTime.now());
+                        ZonedDateTime.now(ZoneId.systemDefault()));
                 Optional<TailoringRequirement> result = repository.updateRequirement(project, tailoring, chapter,
                         requirement);
                 log.traceExit();
@@ -100,7 +105,7 @@ public class RequirementServiceImpl implements RequirementService {
             return empty();
         }
 
-        final ZonedDateTime now = ZonedDateTime.now();
+        final ZonedDateTime now = ZonedDateTime.now(ZoneId.systemDefault());
         Optional<Chapter<TailoringRequirement>> tailoringChapter = repository.getChapter(project, tailoring, chapter);
         if (tailoringChapter.isPresent()) {
             tailoringChapter.get().allChapters()
@@ -145,7 +150,7 @@ public class RequirementServiceImpl implements RequirementService {
             if (nonNull(tailoringRequirement.getReference())) {
                 tailoringRequirement.getReference().setChanged(true);
             }
-            tailoringRequirement.setTextChanged(ZonedDateTime.now());
+            tailoringRequirement.setTextChanged(ZonedDateTime.now(ZoneId.systemDefault()));
             log.traceExit();
             return repository.updateRequirement(project, tailoring, chapter, tailoringRequirement);
         }

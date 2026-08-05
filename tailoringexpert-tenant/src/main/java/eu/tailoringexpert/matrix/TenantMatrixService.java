@@ -32,6 +32,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.security.MessageDigest;
+import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.util.Collection;
 import java.util.Optional;
@@ -139,7 +140,7 @@ public class TenantMatrixService implements MatrixService {
                             .name(file.getName())
                             .catalogueVersion(file.getCatalogueVersion())
                             .hash(hash(file.getData()))
-                            .creationTimestamp(ZonedDateTime.now())
+                            .creationTimestamp(ZonedDateTime.now(ZoneId.systemDefault()))
                             .build()));
         } catch (IOException e) {
             throw log.throwing(new RuntimeException(e));
