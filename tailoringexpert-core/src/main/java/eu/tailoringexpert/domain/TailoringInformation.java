@@ -21,11 +21,11 @@
  */
 package eu.tailoringexpert.domain;
 
-import lombok.Builder;
-import lombok.Value;
-
 import java.io.Serializable;
 import java.util.Collection;
+
+import lombok.Builder;
+import lombok.Value;
 
 @Value
 @Builder
@@ -36,6 +36,11 @@ public class TailoringInformation implements Serializable {
      * Name of the tailoring.
      */
     private String name;
+
+    /**
+     * Issue if Tailoring.
+     */
+    private String issue;
 
     /**
      * Phases of tailoring.

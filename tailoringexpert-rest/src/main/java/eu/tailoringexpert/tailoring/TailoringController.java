@@ -31,6 +31,7 @@ import static eu.tailoringexpert.domain.ResourceMapper.TAILORING_COMPARE;
 import static eu.tailoringexpert.domain.ResourceMapper.TAILORING_DIFF;
 import static eu.tailoringexpert.domain.ResourceMapper.TAILORING_DOCUMENT;
 import static eu.tailoringexpert.domain.ResourceMapper.TAILORING_DOCUMENT_CATALOG;
+import static eu.tailoringexpert.domain.ResourceMapper.TAILORING_ISSUE;
 import static eu.tailoringexpert.domain.ResourceMapper.TAILORING_NAME;
 import static eu.tailoringexpert.domain.ResourceMapper.TAILORING_NOTE;
 import static eu.tailoringexpert.domain.ResourceMapper.TAILORING_NOTES;
@@ -107,7 +108,6 @@ import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 
-
 /**
  * REST-Controller for management of tailorings.
  *
@@ -136,27 +136,23 @@ public class TailoringController {
 
     @Operation(summary = "Load tailoring requirements catalog")
     @ApiResponses(value = {
-        @ApiResponse(
-            responseCode = "200", description = "Catalog loaded",
-            content = @Content(mediaType = "application/json+hal", schema = @Schema(implementation = TailoringCatalogResource.class))),
-        @ApiResponse(
-            responseCode = "404", description = "Catalog not be loaded",
-            content = @Content)
+            @ApiResponse(responseCode = "200", description = "Catalog loaded", content = @Content(mediaType = "application/json+hal", schema = @Schema(implementation = TailoringCatalogResource.class))),
+            @ApiResponse(responseCode = "404", description = "Catalog not be loaded", content = @Content)
     })
-    @GetMapping(value = TAILORING_CATALOG, produces = {"application/hal+json"})
+    @GetMapping(value = TAILORING_CATALOG, produces = { "application/hal+json" })
     public ResponseEntity<EntityModel<TailoringCatalogResource>> getCatalog(
-        @Parameter(description = "Project identifier") @PathVariable String project,
-        @Parameter(description = "Tailoring name") @PathVariable String tailoring) {
+            @Parameter(description = "Project identifier") @PathVariable String project,
+            @Parameter(description = "Tailoring name") @PathVariable String tailoring) {
         log.traceEntry();
 
         PathContextBuilder pathContext = PathContext.builder()
-            .project(project)
-            .tailoring(tailoring);
+                .project(project)
+                .tailoring(tailoring);
 
         ResponseEntity<EntityModel<TailoringCatalogResource>> result = tailoringService.getCatalog(project, tailoring)
-            .map(serviceResult -> ok()
-                .body(of(mapper.toResource(pathContext, serviceResult))))
-            .orElseGet(() -> notFound().build());
+                .map(serviceResult -> ok()
+                        .body(of(mapper.toResource(pathContext, serviceResult))))
+                .orElseGet(() -> notFound().build());
 
         log.traceExit();
         return result;
@@ -164,28 +160,25 @@ public class TailoringController {
 
     @Operation(summary = "Load all chapter with all contained requirements")
     @ApiResponses(value = {
-        @ApiResponse(
-            responseCode = "200", description = "Chapter loaded",
-            content = @Content(mediaType = "application/json+hal", schema = @Schema(implementation = TailoringCatalogChapterResource.class))),
-        @ApiResponse(
-            responseCode = "404", description = "Chapter does not exits",
-            content = @Content)
+            @ApiResponse(responseCode = "200", description = "Chapter loaded", content = @Content(mediaType = "application/json+hal", schema = @Schema(implementation = TailoringCatalogChapterResource.class))),
+            @ApiResponse(responseCode = "404", description = "Chapter does not exits", content = @Content)
     })
-    @GetMapping(value = TAILORING_CATALOG_CHAPTER, produces = {"application/hal+json"})
+    @GetMapping(value = TAILORING_CATALOG_CHAPTER, produces = { "application/hal+json" })
     public ResponseEntity<EntityModel<TailoringCatalogChapterResource>> getChapter(
-        @Parameter(description = "Project identifier") @PathVariable String project,
-        @Parameter(description = "Tailoring name") @PathVariable String tailoring,
-        @Parameter(description = "Chapter number") @PathVariable String chapter) {
+            @Parameter(description = "Project identifier") @PathVariable String project,
+            @Parameter(description = "Tailoring name") @PathVariable String tailoring,
+            @Parameter(description = "Chapter number") @PathVariable String chapter) {
         log.traceEntry();
 
         PathContextBuilder pathContext = PathContext.builder()
-            .project(project)
-            .tailoring(tailoring);
+                .project(project)
+                .tailoring(tailoring);
 
-        ResponseEntity<EntityModel<TailoringCatalogChapterResource>> result = tailoringService.getChapter(project, tailoring, chapter)
-            .map(c -> ok()
-                .body(of(mapper.toResource(pathContext, c))))
-            .orElseGet(() -> notFound().build());
+        ResponseEntity<EntityModel<TailoringCatalogChapterResource>> result = tailoringService
+                .getChapter(project, tailoring, chapter)
+                .map(c -> ok()
+                        .body(of(mapper.toResource(pathContext, c))))
+                .orElseGet(() -> notFound().build());
 
         log.traceExit();
         return result;
@@ -193,27 +186,24 @@ public class TailoringController {
 
     @Operation(summary = "Load screeningsheet data of tailoring")
     @ApiResponses(value = {
-        @ApiResponse(
-            responseCode = "200", description = "Screeningsheet loaded",
-            content = @Content(mediaType = "application/json+hal", schema = @Schema(implementation = ScreeningSheetResource.class))),
-        @ApiResponse(
-            responseCode = "404", description = "Screeningsheet does not exist",
-            content = @Content)
+            @ApiResponse(responseCode = "200", description = "Screeningsheet loaded", content = @Content(mediaType = "application/json+hal", schema = @Schema(implementation = ScreeningSheetResource.class))),
+            @ApiResponse(responseCode = "404", description = "Screeningsheet does not exist", content = @Content)
     })
-    @GetMapping(value = TAILORING_SCREENINGSHEET, produces = {"application/hal+json"})
+    @GetMapping(value = TAILORING_SCREENINGSHEET, produces = { "application/hal+json" })
     public ResponseEntity<EntityModel<ScreeningSheetResource>> getScreeningSheet(
-        @Parameter(description = "Project identifier") @PathVariable String project,
-        @Parameter(description = "Tailoring name") @PathVariable String tailoring) {
+            @Parameter(description = "Project identifier") @PathVariable String project,
+            @Parameter(description = "Tailoring name") @PathVariable String tailoring) {
         log.traceEntry();
 
         PathContextBuilder pathContext = PathContext.builder()
-            .project(project)
-            .tailoring(tailoring);
+                .project(project)
+                .tailoring(tailoring);
 
-        ResponseEntity<EntityModel<ScreeningSheetResource>> result = tailoringService.getScreeningSheet(project, tailoring)
-            .map(screeningSheet -> ok()
-                .body(of(mapper.toResource(pathContext, screeningSheet))))
-            .orElseGet(() -> notFound().build());
+        ResponseEntity<EntityModel<ScreeningSheetResource>> result = tailoringService
+                .getScreeningSheet(project, tailoring)
+                .map(screeningSheet -> ok()
+                        .body(of(mapper.toResource(pathContext, screeningSheet))))
+                .orElseGet(() -> notFound().build());
 
         log.traceExit();
         return result;
@@ -221,27 +211,24 @@ public class TailoringController {
 
     @Operation(summary = "Load screeningsheet file of tailoring")
     @ApiResponses(value = {
-        @ApiResponse(
-            responseCode = "200", description = "Screeningsheet file loaded",
-            content = @Content(mediaType = "application/json+hal", schema = @Schema(implementation = byte[].class))),
-        @ApiResponse(
-            responseCode = "404", description = "Screeningsheet file does not exist",
-            content = @Content)
+            @ApiResponse(responseCode = "200", description = "Screeningsheet file loaded", content = @Content(mediaType = "application/json+hal", schema = @Schema(implementation = byte[].class))),
+            @ApiResponse(responseCode = "404", description = "Screeningsheet file does not exist", content = @Content)
     })
     @GetMapping(TAILORING_SCREENINGSHEET_PDF)
     public ResponseEntity<byte[]> getScreeningSheetFile(
-        @Parameter(description = "Project identifier") @PathVariable String project,
-        @Parameter(description = "Tailoring name") @PathVariable String tailoring) {
+            @Parameter(description = "Project identifier") @PathVariable String project,
+            @Parameter(description = "Tailoring name") @PathVariable String tailoring) {
         log.traceEntry();
 
         ResponseEntity<byte[]> result = tailoringServiceRepository.getScreeningSheetFile(project, tailoring)
-            .map(daten -> ok()
-                .header(CONTENT_DISPOSITION, ContentDisposition.builder(MediaTypeProvider.FORM_DATA).name(MediaTypeProvider.ATTACHMENT).filename("screeningsheet.pdf").build().toString())
-                .header(ACCESS_CONTROL_EXPOSE_HEADERS, CONTENT_DISPOSITION)
-                .contentType(MediaType.APPLICATION_PDF)
-                .contentLength(daten.length)
-                .body(daten))
-            .orElseGet(() -> notFound().build());
+                .map(daten -> ok()
+                        .header(CONTENT_DISPOSITION, ContentDisposition.builder(MediaTypeProvider.FORM_DATA)
+                                .name(MediaTypeProvider.ATTACHMENT).filename("screeningsheet.pdf").build().toString())
+                        .header(ACCESS_CONTROL_EXPOSE_HEADERS, CONTENT_DISPOSITION)
+                        .contentType(MediaType.APPLICATION_PDF)
+                        .contentLength(daten.length)
+                        .body(daten))
+                .orElseGet(() -> notFound().build());
 
         log.traceExit();
         return result;
@@ -249,27 +236,24 @@ public class TailoringController {
 
     @Operation(summary = "Load sectionvector applied to tailoring")
     @ApiResponses(value = {
-        @ApiResponse(
-            responseCode = "200", description = "Applied selectionvector loaded",
-            content = @Content(mediaType = "application/json+hal", schema = @Schema(implementation = byte[].class))),
-        @ApiResponse(
-            responseCode = "404", description = "Selectioncvector does not exist",
-            content = @Content)
+            @ApiResponse(responseCode = "200", description = "Applied selectionvector loaded", content = @Content(mediaType = "application/json+hal", schema = @Schema(implementation = byte[].class))),
+            @ApiResponse(responseCode = "404", description = "Selectioncvector does not exist", content = @Content)
     })
-    @GetMapping(value = TAILORING_SELECTIONVECTOR, produces = {"application/hal+json"})
+    @GetMapping(value = TAILORING_SELECTIONVECTOR, produces = { "application/hal+json" })
     public ResponseEntity<EntityModel<SelectionVectorResource>> getSelectionVector(
-        @Parameter(description = "Project identifier") @PathVariable String project,
-        @Parameter(description = "Tailoring name") @PathVariable String tailoring) {
+            @Parameter(description = "Project identifier") @PathVariable String project,
+            @Parameter(description = "Tailoring name") @PathVariable String tailoring) {
         log.traceEntry();
 
         PathContextBuilder pathContext = PathContext.builder()
-            .project(project)
-            .tailoring(tailoring);
+                .project(project)
+                .tailoring(tailoring);
 
-        ResponseEntity<EntityModel<SelectionVectorResource>> result = tailoringService.getSelectionVector(project, tailoring)
-            .map(selektionsVektor -> ok()
-                .body(of(mapper.toResource(pathContext, selektionsVektor))))
-            .orElseGet(() -> notFound().build());
+        ResponseEntity<EntityModel<SelectionVectorResource>> result = tailoringService
+                .getSelectionVector(project, tailoring)
+                .map(selektionsVektor -> ok()
+                        .body(of(mapper.toResource(pathContext, selektionsVektor))))
+                .orElseGet(() -> notFound().build());
 
         log.traceExit();
         return result;
@@ -277,27 +261,24 @@ public class TailoringController {
 
     @Operation(summary = "Load all tailoring data")
     @ApiResponses(value = {
-        @ApiResponse(
-            responseCode = "200", description = "Tailoring loaded",
-            content = @Content(mediaType = "application/json+hal", schema = @Schema(implementation = TailoringResource.class))),
-        @ApiResponse(
-            responseCode = "404", description = "Tailoring does not exist",
-            content = @Content)
+            @ApiResponse(responseCode = "200", description = "Tailoring loaded", content = @Content(mediaType = "application/json+hal", schema = @Schema(implementation = TailoringResource.class))),
+            @ApiResponse(responseCode = "404", description = "Tailoring does not exist", content = @Content)
     })
-    @GetMapping(value = TAILORING, produces = {"application/hal+json"})
+    @GetMapping(value = TAILORING, produces = { "application/hal+json" })
     public ResponseEntity<EntityModel<TailoringResource>> getTailoring(
-        @Parameter(description = "Project identifier") @PathVariable String project,
-        @Parameter(description = "Tailoring name") @PathVariable String tailoring) {
+            @Parameter(description = "Project identifier") @PathVariable String project,
+            @Parameter(description = "Tailoring name") @PathVariable String tailoring) {
         log.traceEntry();
 
         PathContextBuilder pathContext = PathContext.builder()
-            .project(project)
-            .tailoring(tailoring);
+                .project(project)
+                .tailoring(tailoring);
 
-        ResponseEntity<EntityModel<TailoringResource>> result = tailoringServiceRepository.getTailoring(project, tailoring)
-            .map(loaded -> ok()
-                .body(of(mapper.toResource(pathContext, loaded))))
-            .orElseGet(() -> notFound().build());
+        ResponseEntity<EntityModel<TailoringResource>> result = tailoringServiceRepository
+                .getTailoring(project, tailoring)
+                .map(loaded -> ok()
+                        .body(of(mapper.toResource(pathContext, loaded))))
+                .orElseGet(() -> notFound().build());
 
         log.traceExit();
         return result;
@@ -305,18 +286,15 @@ public class TailoringController {
 
     @Operation(summary = "Add file to tailoring")
     @ApiResponses(value = {
-        @ApiResponse(
-            responseCode = "201", description = "File added to tailoring",
-            content = @Content(mediaType = "application/json+hal", schema = @Schema(implementation = Void.class))),
-        @ApiResponse(
-            responseCode = "404", description = "Tailoring does not exist",
-            content = @Content)
+            @ApiResponse(responseCode = "201", description = "File added to tailoring", content = @Content(mediaType = "application/json+hal", schema = @Schema(implementation = Void.class))),
+            @ApiResponse(responseCode = "404", description = "Tailoring does not exist", content = @Content)
     })
-    @PostMapping(value = TAILORING_ATTACHMENTS, consumes = {MediaType.MULTIPART_FORM_DATA_VALUE}, produces = {"application/hal+json"})
+    @PostMapping(value = TAILORING_ATTACHMENTS, consumes = { MediaType.MULTIPART_FORM_DATA_VALUE }, produces = {
+            "application/hal+json" })
     public ResponseEntity<EntityModel<Void>> postFile(
-        @Parameter(description = "Project identifier") @PathVariable String project,
-        @Parameter(description = "Tailoring name") @PathVariable String tailoring,
-        @Parameter(description = "File to add") MultipartFile file) throws IOException {
+            @Parameter(description = "Project identifier") @PathVariable String project,
+            @Parameter(description = "Tailoring name") @PathVariable String tailoring,
+            @Parameter(description = "File to add") MultipartFile file) throws IOException {
         log.traceEntry();
 
         File toSave = File.builder().name(file.getOriginalFilename()).data(file.getBytes()).build();
@@ -328,13 +306,14 @@ public class TailoringController {
         }
 
         Map<String, String> parameters = PathContext.builder()
-            .project(project)
-            .tailoring(tailoring)
-            .build()
-            .parameter();
+                .project(project)
+                .tailoring(tailoring)
+                .build()
+                .parameter();
         parameters.put("name", file.getOriginalFilename());
-        ResponseEntity<EntityModel<Void>> result = created(UriTemplate.of("/" + TAILORING_ATTACHMENT).expand(parameters))
-            .build();
+        ResponseEntity<EntityModel<Void>> result = created(
+                UriTemplate.of("/" + TAILORING_ATTACHMENT).expand(parameters))
+                .build();
 
         log.traceExit();
         return result;
@@ -342,27 +321,24 @@ public class TailoringController {
 
     @Operation(summary = "Generate all (tenant) documents of a specified tailoring.")
     @ApiResponses(value = {
-        @ApiResponse(
-            responseCode = "200", description = "Documents created",
-            content = @Content(mediaType = "application/json+hal", schema = @Schema(implementation = byte[].class))),
-        @ApiResponse(
-            responseCode = "404", description = "Tailoring does not exist",
-            content = @Content)
+            @ApiResponse(responseCode = "200", description = "Documents created", content = @Content(mediaType = "application/json+hal", schema = @Schema(implementation = byte[].class))),
+            @ApiResponse(responseCode = "404", description = "Tailoring does not exist", content = @Content)
     })
     @GetMapping(TAILORING_DOCUMENT)
     public ResponseEntity<byte[]> getDocuments(
-        @Parameter(description = "Project identifier") @PathVariable String project,
-        @Parameter(description = "Tailoring name") @PathVariable String tailoring) {
+            @Parameter(description = "Project identifier") @PathVariable String project,
+            @Parameter(description = "Tailoring name") @PathVariable String tailoring) {
         log.traceEntry();
 
         ResponseEntity<byte[]> result = tailoringService.createDocuments(project, tailoring)
-            .map(dokument -> ok()
-                .header(CONTENT_DISPOSITION, ContentDisposition.builder(MediaTypeProvider.FORM_DATA).name(MediaTypeProvider.ATTACHMENT).filename(dokument.getName()).build().toString())
-                .header(ACCESS_CONTROL_EXPOSE_HEADERS, CONTENT_DISPOSITION)
-                .contentType(mediaTypeProvider.apply(dokument.getType()))
-                .contentLength(dokument.getLength())
-                .body(dokument.getData()))
-            .orElseGet(() -> notFound().build());
+                .map(dokument -> ok()
+                        .header(CONTENT_DISPOSITION, ContentDisposition.builder(MediaTypeProvider.FORM_DATA)
+                                .name(MediaTypeProvider.ATTACHMENT).filename(dokument.getName()).build().toString())
+                        .header(ACCESS_CONTROL_EXPOSE_HEADERS, CONTENT_DISPOSITION)
+                        .contentType(mediaTypeProvider.apply(dokument.getType()))
+                        .contentLength(dokument.getLength())
+                        .body(dokument.getData()))
+                .orElseGet(() -> notFound().build());
 
         log.traceExit();
         return result;
@@ -370,27 +346,24 @@ public class TailoringController {
 
     @Operation(summary = "Generate tailoring requirement document")
     @ApiResponses(value = {
-        @ApiResponse(
-            responseCode = "200", description = "File created",
-            content = @Content(mediaType = "application/json+hal", schema = @Schema(implementation = byte[].class))),
-        @ApiResponse(
-            responseCode = "404", description = "Tailoring does not exist",
-            content = @Content)
+            @ApiResponse(responseCode = "200", description = "File created", content = @Content(mediaType = "application/json+hal", schema = @Schema(implementation = byte[].class))),
+            @ApiResponse(responseCode = "404", description = "Tailoring does not exist", content = @Content)
     })
     @GetMapping(TAILORING_DOCUMENT_CATALOG)
     public ResponseEntity<byte[]> getRequirementFile(
-        @Parameter(description = "Project identifier") @PathVariable String project,
-        @Parameter(description = "Tailoring name") @PathVariable String tailoring) {
+            @Parameter(description = "Project identifier") @PathVariable String project,
+            @Parameter(description = "Tailoring name") @PathVariable String tailoring) {
         log.traceEntry();
 
         ResponseEntity<byte[]> result = tailoringService.createRequirementDocument(project, tailoring)
-            .map(dokument -> ok()
-                .header(CONTENT_DISPOSITION, ContentDisposition.builder(MediaTypeProvider.FORM_DATA).name(MediaTypeProvider.ATTACHMENT).filename(dokument.getName()).build().toString())
-                .header(ACCESS_CONTROL_EXPOSE_HEADERS, CONTENT_DISPOSITION)
-                .contentType(mediaTypeProvider.apply(dokument.getType()))
-                .contentLength(dokument.getLength())
-                .body(dokument.getData()))
-            .orElseGet(() -> notFound().build());
+                .map(dokument -> ok()
+                        .header(CONTENT_DISPOSITION, ContentDisposition.builder(MediaTypeProvider.FORM_DATA)
+                                .name(MediaTypeProvider.ATTACHMENT).filename(dokument.getName()).build().toString())
+                        .header(ACCESS_CONTROL_EXPOSE_HEADERS, CONTENT_DISPOSITION)
+                        .contentType(mediaTypeProvider.apply(dokument.getType()))
+                        .contentLength(dokument.getLength())
+                        .body(dokument.getData()))
+                .orElseGet(() -> notFound().build());
 
         log.traceExit();
         return result;
@@ -398,32 +371,28 @@ public class TailoringController {
 
     @Operation(summary = "Load all requirements of requested chpater")
     @ApiResponses(value = {
-        @ApiResponse(
-            responseCode = "200", description = "Requirements of chapter loaded",
-            content = @Content(mediaType = "application/json+hal", schema = @Schema(implementation = TailoringRequirementResource.class))),
-        @ApiResponse(
-            responseCode = "404", description = "Chapter does not exist",
-            content = @Content)
+            @ApiResponse(responseCode = "200", description = "Requirements of chapter loaded", content = @Content(mediaType = "application/json+hal", schema = @Schema(implementation = TailoringRequirementResource.class))),
+            @ApiResponse(responseCode = "404", description = "Chapter does not exist", content = @Content)
     })
     @GetMapping(TAILORING_CATALOG_CHAPTER_REQUIREMENT)
     public ResponseEntity<CollectionModel<EntityModel<TailoringRequirementResource>>> getRequirements(
-        @Parameter(description = "Project identifier") @PathVariable String project,
-        @Parameter(description = "Tailoring name") @PathVariable String tailoring,
-        @Parameter(description = "Chapter number") @PathVariable String chapter) {
+            @Parameter(description = "Project identifier") @PathVariable String project,
+            @Parameter(description = "Tailoring name") @PathVariable String tailoring,
+            @Parameter(description = "Chapter number") @PathVariable String chapter) {
         log.traceEntry();
 
         PathContextBuilder pathContext = PathContext.builder()
-            .project(project)
-            .tailoring(tailoring)
-            .chapter(chapter);
+                .project(project)
+                .tailoring(tailoring)
+                .chapter(chapter);
 
         ResponseEntity<CollectionModel<EntityModel<TailoringRequirementResource>>> result = ok()
-            .body(CollectionModel.of(
-                tailoringService.getRequirements(project, tailoring, chapter)
-                    .stream()
-                    .flatMap(Collection::stream)
-                    .map(domain -> of(mapper.toResource(pathContext, domain)))
-                    .toList()));
+                .body(CollectionModel.of(
+                        tailoringService.getRequirements(project, tailoring, chapter)
+                                .stream()
+                                .flatMap(Collection::stream)
+                                .map(domain -> of(mapper.toResource(pathContext, domain)))
+                                .toList()));
 
         log.traceExit();
         return result;
@@ -431,30 +400,26 @@ public class TailoringController {
 
     @Operation(summary = "Ermittlung aller für eine Projektphase definierten Zeichnungen für Anforderungsdokumente")
     @ApiResponses(value = {
-        @ApiResponse(
-            responseCode = "200", description = "Dokumentzeichnungen wurden geladen",
-            content = @Content(mediaType = "application/json+hal", schema = @Schema(implementation = DocumentSignatureResource.class))),
-        @ApiResponse(
-            responseCode = "404", description = "Zeichnungen des Tailorings nicht vorhanden",
-            content = @Content)
+            @ApiResponse(responseCode = "200", description = "Dokumentzeichnungen wurden geladen", content = @Content(mediaType = "application/json+hal", schema = @Schema(implementation = DocumentSignatureResource.class))),
+            @ApiResponse(responseCode = "404", description = "Zeichnungen des Tailorings nicht vorhanden", content = @Content)
     })
-    @GetMapping(value = TAILORING_SIGNATURE, produces = {"application/hal+json"})
+    @GetMapping(value = TAILORING_SIGNATURE, produces = { "application/hal+json" })
     public ResponseEntity<CollectionModel<DocumentSignatureResource>> getSigntures(
-        @Parameter(description = "fachlicher Projektschlüssel") @PathVariable String project,
-        @Parameter(description = "Identifier des Tailorings") @PathVariable String tailoring) {
+            @Parameter(description = "fachlicher Projektschlüssel") @PathVariable String project,
+            @Parameter(description = "Identifier des Tailorings") @PathVariable String tailoring) {
         log.traceEntry();
 
         PathContextBuilder pathContext = PathContext.builder()
-            .project(project)
-            .tailoring(tailoring);
+                .project(project)
+                .tailoring(tailoring);
 
         ResponseEntity<CollectionModel<DocumentSignatureResource>> result = ok()
-            .body(CollectionModel.of(
-                tailoringService.getDocumentSignatures(project, tailoring)
-                    .stream()
-                    .flatMap(Collection::stream)
-                    .map(domain -> mapper.toResource(pathContext, domain))
-                    .toList()));
+                .body(CollectionModel.of(
+                        tailoringService.getDocumentSignatures(project, tailoring)
+                                .stream()
+                                .flatMap(Collection::stream)
+                                .map(domain -> mapper.toResource(pathContext, domain))
+                                .toList()));
 
         log.traceExit();
         return result;
@@ -462,29 +427,26 @@ public class TailoringController {
 
     @Operation(summary = "Update signature of tailoring")
     @ApiResponses(value = {
-        @ApiResponse(
-            responseCode = "200", description = "Signature updated",
-            content = @Content(mediaType = "application/json+hal", schema = @Schema(implementation = DocumentSignatureResource.class))),
-        @ApiResponse(
-            responseCode = "404", description = "Signature does not exist",
-            content = @Content)
+            @ApiResponse(responseCode = "200", description = "Signature updated", content = @Content(mediaType = "application/json+hal", schema = @Schema(implementation = DocumentSignatureResource.class))),
+            @ApiResponse(responseCode = "404", description = "Signature does not exist", content = @Content)
     })
-    @PutMapping(value = TAILORING_SIGNATURE_FACULTY, produces = {"application/hal+json"})
+    @PutMapping(value = TAILORING_SIGNATURE_FACULTY, produces = { "application/hal+json" })
     public ResponseEntity<EntityModel<DocumentSignatureResource>> updateDocumentSignature(
-        @Parameter(description = "Project identifier") @PathVariable String project,
-        @Parameter(description = "Tailoring name") @PathVariable String tailoring,
-        @Parameter(description = "Faculty of signature") @PathVariable String faculty,
-        @Parameter(description = "Signature data to use") @RequestBody DocumentSignature signature) {
+            @Parameter(description = "Project identifier") @PathVariable String project,
+            @Parameter(description = "Tailoring name") @PathVariable String tailoring,
+            @Parameter(description = "Faculty of signature") @PathVariable String faculty,
+            @Parameter(description = "Signature data to use") @RequestBody DocumentSignature signature) {
         log.traceEntry();
 
         PathContextBuilder pathContext = PathContext.builder()
-            .project(project)
-            .tailoring(tailoring);
+                .project(project)
+                .tailoring(tailoring);
 
-        ResponseEntity<EntityModel<DocumentSignatureResource>> result = tailoringService.updateDocumentSignature(project, tailoring, signature)
-            .map(zeichnung -> ok()
-                .body(of(mapper.toResource(pathContext, zeichnung))))
-            .orElseGet(() -> notFound().build());
+        ResponseEntity<EntityModel<DocumentSignatureResource>> result = tailoringService
+                .updateDocumentSignature(project, tailoring, signature)
+                .map(zeichnung -> ok()
+                        .body(of(mapper.toResource(pathContext, zeichnung))))
+                .orElseGet(() -> notFound().build());
 
         log.traceExit();
         return result;
@@ -492,28 +454,24 @@ public class TailoringController {
 
     @Operation(summary = "Update name of tailoring")
     @ApiResponses(value = {
-        @ApiResponse(
-            responseCode = "200", description = "Name updated",
-            content = @Content(mediaType = "application/json+hal", schema = @Schema(implementation = DocumentSignatureResource.class))),
-        @ApiResponse(
-            responseCode = "404", description = "Tailoring does not exist",
-            content = @Content)
+            @ApiResponse(responseCode = "200", description = "Name updated", content = @Content(mediaType = "application/json+hal", schema = @Schema(implementation = DocumentSignatureResource.class))),
+            @ApiResponse(responseCode = "404", description = "Tailoring does not exist", content = @Content)
     })
-    @PutMapping(value = TAILORING_NAME, produces = {"application/hal+json"})
+    @PutMapping(value = TAILORING_NAME, produces = { "application/hal+json" })
     public ResponseEntity<EntityModel<TailoringResource>> putName(
-        @Parameter(description = "Project identifier") @PathVariable String project,
-        @Parameter(description = "Tailoring name") @PathVariable String tailoring,
-        @Parameter(description = "New tailoring name") @RequestParam String name) {
+            @Parameter(description = "Project identifier") @PathVariable String project,
+            @Parameter(description = "Tailoring name") @PathVariable String tailoring,
+            @Parameter(description = "New tailoring name") @RequestParam String name) {
         log.traceEntry();
 
         PathContextBuilder pathContext = PathContext.builder()
-            .project(project)
-            .tailoring(name);
+                .project(project)
+                .tailoring(name);
 
         ResponseEntity<EntityModel<TailoringResource>> result = tailoringService.updateName(project, tailoring, name)
-            .map(projektPhase -> ok()
-                .body(of(mapper.toResource(pathContext, projektPhase))))
-            .orElseThrow(() -> new ResourceException(PRECONDITION_FAILED, "Name could not be updated"));
+                .map(projektPhase -> ok()
+                        .body(of(mapper.toResource(pathContext, projektPhase))))
+                .orElseThrow(() -> new ResourceException(PRECONDITION_FAILED, "Name could not be updated"));
 
         log.traceExit();
         return result;
@@ -521,29 +479,24 @@ public class TailoringController {
 
     @Operation(summary = "Load list of all attachment of tailoring")
     @ApiResponses(value = {
-        @ApiResponse(
-            responseCode = "200", description = "???",
-            content = @Content(mediaType = "application/json+hal", schema = @Schema(implementation = FileResource.class))),
-        @ApiResponse(
-            responseCode = "404", description = "Tailoring does not exist",
-            content = @Content)
+            @ApiResponse(responseCode = "200", description = "???", content = @Content(mediaType = "application/json+hal", schema = @Schema(implementation = FileResource.class))),
+            @ApiResponse(responseCode = "404", description = "Tailoring does not exist", content = @Content)
     })
-    @GetMapping(value = TAILORING_ATTACHMENTS, produces = {"application/hal+json"})
+    @GetMapping(value = TAILORING_ATTACHMENTS, produces = { "application/hal+json" })
     public ResponseEntity<CollectionModel<FileResource>> getAttachmentList(
-        @Parameter(description = "Project identifier") @PathVariable String project,
-        @Parameter(description = "Tailoring name") @PathVariable String tailoring) {
+            @Parameter(description = "Project identifier") @PathVariable String project,
+            @Parameter(description = "Tailoring name") @PathVariable String tailoring) {
         log.traceEntry();
 
         PathContextBuilder pathContext = PathContext.builder()
-            .project(project)
-            .tailoring(tailoring);
+                .project(project)
+                .tailoring(tailoring);
 
         Collection<File> files = attachmentService.list(project, tailoring);
         ResponseEntity<CollectionModel<FileResource>> result = ok().body(CollectionModel.of(
-            files.stream()
-                .map(domain -> mapper.toResource(pathContext, domain))
-                .toList()
-        ));
+                files.stream()
+                        .map(domain -> mapper.toResource(pathContext, domain))
+                        .toList()));
 
         log.traceExit();
         return result;
@@ -551,19 +504,21 @@ public class TailoringController {
 
     @GetMapping(TAILORING_ATTACHMENT)
     public ResponseEntity<byte[]> getAttachment(
-        @Parameter(description = "Project identifier") @PathVariable String project,
-        @Parameter(description = "Tailoring name") @PathVariable String tailoring,
-        @Parameter(description = "Name of File") @PathVariable String name) {
+            @Parameter(description = "Project identifier") @PathVariable String project,
+            @Parameter(description = "Tailoring name") @PathVariable String tailoring,
+            @Parameter(description = "Name of File") @PathVariable String name) {
         log.traceEntry();
 
         ResponseEntity<byte[]> result = attachmentService.load(project, tailoring, name)
-            .map(daten -> ok()
-                .header(CONTENT_DISPOSITION, ContentDisposition.builder(MediaTypeProvider.FORM_DATA).name(MediaTypeProvider.ATTACHMENT).filename(name).build().toString())
-                .header(ACCESS_CONTROL_EXPOSE_HEADERS, CONTENT_DISPOSITION)
-                .contentType(mediaTypeProvider.apply(daten.getType()))
-                .contentLength(daten.getData().length)
-                .body(daten.getData()))
-            .orElseGet(() -> notFound().build());
+                .map(daten -> ok()
+                        .header(CONTENT_DISPOSITION,
+                                ContentDisposition.builder(MediaTypeProvider.FORM_DATA)
+                                        .name(MediaTypeProvider.ATTACHMENT).filename(name).build().toString())
+                        .header(ACCESS_CONTROL_EXPOSE_HEADERS, CONTENT_DISPOSITION)
+                        .contentType(mediaTypeProvider.apply(daten.getType()))
+                        .contentLength(daten.getData().length)
+                        .body(daten.getData()))
+                .orElseGet(() -> notFound().build());
 
         log.traceExit();
         return result;
@@ -571,23 +526,18 @@ public class TailoringController {
 
     @Operation(summary = "Get file attached to tailoring")
     @ApiResponses(value = {
-        @ApiResponse(
-            responseCode = "200", description = "File loaded",
-            content = @Content(mediaType = "application/json+hal", schema = @Schema(implementation = DocumentSignatureResource.class))),
-        @ApiResponse(
-            responseCode = "404", description = "File does not exist",
-            content = @Content)
+            @ApiResponse(responseCode = "200", description = "File loaded", content = @Content(mediaType = "application/json+hal", schema = @Schema(implementation = DocumentSignatureResource.class))),
+            @ApiResponse(responseCode = "404", description = "File does not exist", content = @Content)
     })
     @DeleteMapping(TAILORING_ATTACHMENT)
     public ResponseEntity<Void> deleteAttachment(
-        @Parameter(description = "Project identifier") @PathVariable String project,
-        @Parameter(description = "Tailoring name") @PathVariable String tailoring,
-        @Parameter(description = "Filename") @PathVariable("name") String name) {
+            @Parameter(description = "Project identifier") @PathVariable String project,
+            @Parameter(description = "Tailoring name") @PathVariable String tailoring,
+            @Parameter(description = "Filename") @PathVariable("name") String name) {
         log.traceEntry();
 
-        ResponseEntity<Void> result = attachmentService.delete(project, tailoring, name) ?
-            ok().build() :
-            notFound().build();
+        ResponseEntity<Void> result = attachmentService.delete(project, tailoring, name) ? ok().build()
+                : notFound().build();
 
         log.traceExit();
         return result;
@@ -595,27 +545,24 @@ public class TailoringController {
 
     @Operation(summary = "Get document containg diffeences between automatic tailoring and current tailoring")
     @ApiResponses(value = {
-        @ApiResponse(
-            responseCode = "200", description = "Comparsion document created",
-            content = @Content(mediaType = "application/json+hal", schema = @Schema(implementation = byte[].class))),
-        @ApiResponse(
-            responseCode = "404", description = "Tailoring does not exist",
-            content = @Content)
+            @ApiResponse(responseCode = "200", description = "Comparsion document created", content = @Content(mediaType = "application/json+hal", schema = @Schema(implementation = byte[].class))),
+            @ApiResponse(responseCode = "404", description = "Tailoring does not exist", content = @Content)
     })
     @GetMapping(TAILORING_COMPARE)
     public ResponseEntity<byte[]> getComparisonDocument(
-        @Parameter(description = "Project identifier") @PathVariable String project,
-        @Parameter(description = "Tailoring name") @PathVariable String tailoring) {
+            @Parameter(description = "Project identifier") @PathVariable String project,
+            @Parameter(description = "Tailoring name") @PathVariable String tailoring) {
         log.traceEntry();
 
         ResponseEntity<byte[]> result = tailoringService.createComparisonDocument(project, tailoring)
-            .map(dokument -> ok()
-                .header(CONTENT_DISPOSITION, ContentDisposition.builder(MediaTypeProvider.FORM_DATA).name(MediaTypeProvider.ATTACHMENT).filename(dokument.getName()).build().toString())
-                .header(ACCESS_CONTROL_EXPOSE_HEADERS, CONTENT_DISPOSITION)
-                .contentType(mediaTypeProvider.apply(dokument.getType()))
-                .contentLength(dokument.getLength())
-                .body(dokument.getData()))
-            .orElseGet(() -> notFound().build());
+                .map(dokument -> ok()
+                        .header(CONTENT_DISPOSITION, ContentDisposition.builder(MediaTypeProvider.FORM_DATA)
+                                .name(MediaTypeProvider.ATTACHMENT).filename(dokument.getName()).build().toString())
+                        .header(ACCESS_CONTROL_EXPOSE_HEADERS, CONTENT_DISPOSITION)
+                        .contentType(mediaTypeProvider.apply(dokument.getType()))
+                        .contentLength(dokument.getLength())
+                        .body(dokument.getData()))
+                .orElseGet(() -> notFound().build());
 
         log.traceExit();
         return result;
@@ -623,25 +570,22 @@ public class TailoringController {
 
     @Operation(summary = "Get all definded selectionvector profiles")
     @ApiResponses(value = {
-        @ApiResponse(
-            responseCode = "200", description = "Profiles loaded",
-            content = @Content(mediaType = "application/json+hal", schema = @Schema(implementation = SelectionVectorProfileResource.class))),
-        @ApiResponse(
-            responseCode = "404", description = "Profiles do not exist",
-            content = @Content)
+            @ApiResponse(responseCode = "200", description = "Profiles loaded", content = @Content(mediaType = "application/json+hal", schema = @Schema(implementation = SelectionVectorProfileResource.class))),
+            @ApiResponse(responseCode = "404", description = "Profiles do not exist", content = @Content)
     })
-    @GetMapping(value = ResourceMapper.SELECTIONVECTOR_PROFILE, produces = {"application/hal+json"})
+    @GetMapping(value = ResourceMapper.SELECTIONVECTOR_PROFILE, produces = { "application/hal+json" })
     public ResponseEntity<CollectionModel<EntityModel<SelectionVectorProfileResource>>> getProfiles() {
         log.traceEntry();
 
         PathContextBuilder pathContext = PathContext.builder();
-        List<EntityModel<SelectionVectorProfileResource>> profile = tailoringServiceRepository.getSelectionVectorProfile()
-            .stream()
-            .map(profil -> of(mapper.toResource(pathContext, profil)))
-            .toList();
+        List<EntityModel<SelectionVectorProfileResource>> profile = tailoringServiceRepository
+                .getSelectionVectorProfile()
+                .stream()
+                .map(profil -> of(mapper.toResource(pathContext, profil)))
+                .toList();
 
         ResponseEntity<CollectionModel<EntityModel<SelectionVectorProfileResource>>> result = ok()
-            .body(CollectionModel.of(profile));
+                .body(CollectionModel.of(profile));
 
         log.traceExit();
         return result;
@@ -651,9 +595,9 @@ public class TailoringController {
     @ApiResponse(responseCode = "202", description = "File evaluates")
     @PostMapping(TAILORING_REQUIREMENT_IMPORT)
     public ResponseEntity<EntityModel<Void>> postRequirements(
-        @Parameter(description = "Project identifier") @PathVariable String project,
-        @Parameter(description = "Tailoring name") @PathVariable String tailoring,
-        MultipartFile file) throws IOException {
+            @Parameter(description = "Project identifier") @PathVariable String project,
+            @Parameter(description = "Tailoring name") @PathVariable String tailoring,
+            MultipartFile file) throws IOException {
         log.traceEntry();
 
         tailoringService.updateImportedRequirements(project, tailoring, file.getBytes());
@@ -665,17 +609,13 @@ public class TailoringController {
 
     @Operation(summary = "Delete a tailoring")
     @ApiResponses(value = {
-        @ApiResponse(
-            responseCode = "200", description = "Tailoring deleted",
-            content = @Content(mediaType = "application/json+hal", schema = @Schema(implementation = Void.class))),
-        @ApiResponse(
-            responseCode = "404", description = "Tailoring does not exist",
-            content = @Content)
+            @ApiResponse(responseCode = "200", description = "Tailoring deleted", content = @Content(mediaType = "application/json+hal", schema = @Schema(implementation = Void.class))),
+            @ApiResponse(responseCode = "404", description = "Tailoring does not exist", content = @Content)
     })
     @DeleteMapping(TAILORING)
     public ResponseEntity<EntityModel<Void>> deleteTailoring(
-        @Parameter(description = "Project identifier") @PathVariable String project,
-        @Parameter(description = "Tailoring name") @PathVariable String tailoring) {
+            @Parameter(description = "Project identifier") @PathVariable String project,
+            @Parameter(description = "Tailoring name") @PathVariable String tailoring) {
         log.traceEntry();
 
         Optional<Boolean> deleted = tailoringService.deleteTailoring(project, tailoring);
@@ -691,32 +631,26 @@ public class TailoringController {
 
     @Operation(summary = "Load notes of a tailoring")
     @ApiResponses(value = {
-        @ApiResponse(
-            responseCode = "200", description = "Tailoring loaded",
-            content = @Content(mediaType = "application/json+hal", schema = @Schema(implementation = NoteResource.class))),
-        @ApiResponse(
-            responseCode = "404", description = "Tailoring does not exist",
-            content = @Content)
+            @ApiResponse(responseCode = "200", description = "Tailoring loaded", content = @Content(mediaType = "application/json+hal", schema = @Schema(implementation = NoteResource.class))),
+            @ApiResponse(responseCode = "404", description = "Tailoring does not exist", content = @Content)
     })
-    @GetMapping(value = TAILORING_NOTES, produces = {"application/hal+json"})
+    @GetMapping(value = TAILORING_NOTES, produces = { "application/hal+json" })
     public ResponseEntity<CollectionModel<NoteResource>> getNotes(
-        @Parameter(description = "Project identifier") @PathVariable String project,
-        @Parameter(description = "Tailoring name") @PathVariable String tailoring) {
+            @Parameter(description = "Project identifier") @PathVariable String project,
+            @Parameter(description = "Tailoring name") @PathVariable String tailoring) {
         log.traceEntry();
 
         PathContextBuilder pathContext = PathContext.builder()
-            .project(project)
-            .tailoring(tailoring);
+                .project(project)
+                .tailoring(tailoring);
 
         ResponseEntity<CollectionModel<NoteResource>> result = tailoringService.getNotes(project, tailoring)
-            .map(data -> ok()
-                .body(CollectionModel.of(
-                    data.stream()
-                        .map(domain -> mapper.toResource(pathContext, domain))
-                        .toList()
-                ))
-            )
-            .orElseGet(() -> notFound().build());
+                .map(data -> ok()
+                        .body(CollectionModel.of(
+                                data.stream()
+                                        .map(domain -> mapper.toResource(pathContext, domain))
+                                        .toList())))
+                .orElseGet(() -> notFound().build());
 
         log.traceExit();
         return result;
@@ -724,29 +658,25 @@ public class TailoringController {
 
     @Operation(summary = "Load note of a tailoring")
     @ApiResponses(value = {
-        @ApiResponse(
-            responseCode = "200", description = "Tailoring loaded",
-            content = @Content(mediaType = "application/json+hal", schema = @Schema(implementation = NoteResource.class))),
-        @ApiResponse(
-            responseCode = "404", description = "Note does not exist",
-            content = @Content)
+            @ApiResponse(responseCode = "200", description = "Tailoring loaded", content = @Content(mediaType = "application/json+hal", schema = @Schema(implementation = NoteResource.class))),
+            @ApiResponse(responseCode = "404", description = "Note does not exist", content = @Content)
     })
-    @GetMapping(value = TAILORING_NOTE, produces = {"application/hal+json"})
+    @GetMapping(value = TAILORING_NOTE, produces = { "application/hal+json" })
     public ResponseEntity<EntityModel<NoteResource>> getNote(
-        @Parameter(description = "Project identifier") @PathVariable String project,
-        @Parameter(description = "Tailoring name") @PathVariable String tailoring,
-        @Parameter(description = "Number of note") @PathVariable Integer note) {
+            @Parameter(description = "Project identifier") @PathVariable String project,
+            @Parameter(description = "Tailoring name") @PathVariable String tailoring,
+            @Parameter(description = "Number of note") @PathVariable Integer note) {
         log.traceEntry();
 
         PathContextBuilder pathContext = PathContext.builder()
-            .project(project)
-            .tailoring(tailoring)
-            .note(note.toString());
+                .project(project)
+                .tailoring(tailoring)
+                .note(note.toString());
 
         ResponseEntity<EntityModel<NoteResource>> result = tailoringService.getNote(project, tailoring, note)
-            .map(loaded -> ok()
-                .body(of(mapper.toResource(pathContext, loaded))))
-            .orElseGet(() -> notFound().build());
+                .map(loaded -> ok()
+                        .body(of(mapper.toResource(pathContext, loaded))))
+                .orElseGet(() -> notFound().build());
 
         log.traceExit();
         return result;
@@ -754,18 +684,14 @@ public class TailoringController {
 
     @Operation(summary = "Add a new note to tailoring")
     @ApiResponses(value = {
-        @ApiResponse(
-            responseCode = "201", description = "Note added",
-            content = @Content(mediaType = "application/json+hal", schema = @Schema(implementation = Void.class))),
-        @ApiResponse(
-            responseCode = "404", description = "Tailoring does not exist",
-            content = @Content)
+            @ApiResponse(responseCode = "201", description = "Note added", content = @Content(mediaType = "application/json+hal", schema = @Schema(implementation = Void.class))),
+            @ApiResponse(responseCode = "404", description = "Tailoring does not exist", content = @Content)
     })
     @PostMapping(value = TAILORING_NOTES, consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE)
     public ResponseEntity<EntityModel<Void>> postNote(
-        @Parameter(description = "Project identifier") @PathVariable String project,
-        @Parameter(description = "Tailoring name") @PathVariable String tailoring,
-        @Parameter(description = "Text of note to add") @RequestParam String note) {
+            @Parameter(description = "Project identifier") @PathVariable String project,
+            @Parameter(description = "Tailoring name") @PathVariable String tailoring,
+            @Parameter(description = "Text of note to add") @RequestParam String note) {
         log.traceEntry();
 
         Optional<Note> addedNote = tailoringService.addNote(project, tailoring, note);
@@ -775,14 +701,14 @@ public class TailoringController {
         }
 
         PathContextBuilder pathContext = PathContext.builder()
-            .project(project)
-            .tailoring(tailoring);
+                .project(project)
+                .tailoring(tailoring);
 
         ResponseEntity<EntityModel<Void>> result = created(mapper.createLink(ResourceMapper.REL_SELF,
                 TAILORING_NOTE,
                 pathContext.note(addedNote.get().getNumber().toString()).build().parameter())
-            .toUri())
-            .build();
+                .toUri())
+                .build();
 
         log.traceExit();
         return result;
@@ -790,28 +716,24 @@ public class TailoringController {
 
     @Operation(summary = "Set state of tailoring")
     @ApiResponses(value = {
-        @ApiResponse(
-            responseCode = "200", description = "State changed",
-            content = @Content(mediaType = "application/json+hal", schema = @Schema(implementation = TailoringResource.class))),
-        @ApiResponse(
-            responseCode = "404", description = "Tailoring does not exist",
-            content = @Content)
+            @ApiResponse(responseCode = "200", description = "State changed", content = @Content(mediaType = "application/json+hal", schema = @Schema(implementation = TailoringResource.class))),
+            @ApiResponse(responseCode = "404", description = "Tailoring does not exist", content = @Content)
     })
     @PutMapping(TAILORING_STATE)
     public ResponseEntity<EntityModel<TailoringResource>> putState(
-        @Parameter(description = "Project identifier") @PathVariable String project,
-        @Parameter(description = "Tailoring name") @PathVariable String tailoring,
-        @Parameter(description = "State to set") @PathVariable TailoringState state) {
+            @Parameter(description = "Project identifier") @PathVariable String project,
+            @Parameter(description = "Tailoring name") @PathVariable String tailoring,
+            @Parameter(description = "State to set") @PathVariable TailoringState state) {
         log.traceEntry();
 
         PathContextBuilder pathContext = PathContext.builder()
-            .project(project)
-            .tailoring(tailoring);
+                .project(project)
+                .tailoring(tailoring);
 
         ResponseEntity<EntityModel<TailoringResource>> result = tailoringService.updateState(project, tailoring, state)
-            .map(updatedTailoring -> ok()
-                .body(of(mapper.toResource(pathContext, updatedTailoring))))
-            .orElseGet(() -> notFound().build());
+                .map(updatedTailoring -> ok()
+                        .body(of(mapper.toResource(pathContext, updatedTailoring))))
+                .orElseGet(() -> notFound().build());
 
         log.traceExit();
         return result;
@@ -819,25 +741,20 @@ public class TailoringController {
 
     @Operation(summary = "Unselect requirements according to phase applicability")
     @ApiResponses(value = {
-        @ApiResponse(
-            responseCode = "200", description = "Update performed without error",
-            content = @Content(mediaType = "application/json+hal")),
-        @ApiResponse(
-            responseCode = "404", description = "Tailoring or base catalogue does not exist",
-            content = @Content)
+            @ApiResponse(responseCode = "200", description = "Update performed without error", content = @Content(mediaType = "application/json+hal")),
+            @ApiResponse(responseCode = "404", description = "Tailoring or base catalogue does not exist", content = @Content)
     })
-    @PutMapping(value = TAILORING_REQUIREMENTSAPPLICABILITY, produces = {"application/hal+json"})
+    @PutMapping(value = TAILORING_REQUIREMENTSAPPLICABILITY, produces = { "application/hal+json" })
     public ResponseEntity<Boolean> putUnselectRequirementsAccordingToPhases(
-        @Parameter(description = "Project identifier") @PathVariable String project,
-        @Parameter(description = "Tailoring name") @PathVariable String tailoring) {
+            @Parameter(description = "Project identifier") @PathVariable String project,
+            @Parameter(description = "Tailoring name") @PathVariable String tailoring) {
         log.traceEntry();
 
         ResponseEntity<Boolean> result = tailoringService.unselectRequirementsAccordingToPhases(
                 project,
-                tailoring
-            )
-            .map(state -> status(state ? OK : PRECONDITION_FAILED).body(state))
-            .orElseGet(() -> notFound().build());
+                tailoring)
+                .map(state -> status(state ? OK : PRECONDITION_FAILED).body(state))
+                .orElseGet(() -> notFound().build());
 
         log.traceExit();
         return result;
@@ -845,20 +762,47 @@ public class TailoringController {
 
     @GetMapping(TAILORING_DIFF)
     public ResponseEntity<byte[]> getDiffDocument(
-        @Parameter(description = "Baselinbe project identifier") @PathVariable String project,
-        @Parameter(description = "Baseline tailoring name") @PathVariable String tailoring,
-        @Parameter(description = "Compare project identifier") @PathVariable String cproject,
-        @Parameter(description = "Compare tailoring name") @PathVariable String ctailoring) {
+            @Parameter(description = "Baselinbe project identifier") @PathVariable String project,
+            @Parameter(description = "Baseline tailoring name") @PathVariable String tailoring,
+            @Parameter(description = "Compare project identifier") @PathVariable String cproject,
+            @Parameter(description = "Compare tailoring name") @PathVariable String ctailoring) {
         log.traceEntry();
 
-        ResponseEntity<byte[]> result = tailoringService.createTailoringsDiffDocument(project, tailoring, cproject, ctailoring)
-            .map(dokument -> ok()
-                .header(CONTENT_DISPOSITION, ContentDisposition.builder(MediaTypeProvider.FORM_DATA).name(MediaTypeProvider.ATTACHMENT).filename(dokument.getName()).build().toString())
-                .header(ACCESS_CONTROL_EXPOSE_HEADERS, CONTENT_DISPOSITION)
-                .contentType(mediaTypeProvider.apply(dokument.getType()))
-                .contentLength(dokument.getLength())
-                .body(dokument.getData()))
-            .orElseGet(() -> notFound().build());
+        ResponseEntity<byte[]> result = tailoringService
+                .createTailoringsDiffDocument(project, tailoring, cproject, ctailoring)
+                .map(dokument -> ok()
+                        .header(CONTENT_DISPOSITION, ContentDisposition.builder(MediaTypeProvider.FORM_DATA)
+                                .name(MediaTypeProvider.ATTACHMENT).filename(dokument.getName()).build().toString())
+                        .header(ACCESS_CONTROL_EXPOSE_HEADERS, CONTENT_DISPOSITION)
+                        .contentType(mediaTypeProvider.apply(dokument.getType()))
+                        .contentLength(dokument.getLength())
+                        .body(dokument.getData()))
+                .orElseGet(() -> notFound().build());
+
+        log.traceExit();
+        return result;
+    }
+
+    @Operation(summary = "Update signature of tailoring")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Signature updated", content = @Content(mediaType = "application/json+hal", schema = @Schema(implementation = DocumentSignatureResource.class))),
+            @ApiResponse(responseCode = "404", description = "Signature does not exist", content = @Content)
+    })
+    @PutMapping(value = TAILORING_ISSUE, produces = { "application/hal+json" })
+    public ResponseEntity<EntityModel<TailoringResource>> updateTailoringIssue(
+            @Parameter(description = "Project identifier") @PathVariable String project,
+            @Parameter(description = "Tailoring name") @PathVariable String tailoring,
+            @Parameter(description = "New issue of tailoring") @PathVariable String issue) {
+        log.traceEntry();
+
+        PathContextBuilder pathContext = PathContext.builder()
+                .project(project)
+                .tailoring(tailoring);
+
+        ResponseEntity<EntityModel<TailoringResource>> result = tailoringService.updateIssue(project, tailoring, issue)
+                .map(projektPhase -> ok()
+                        .body(of(mapper.toResource(pathContext, projektPhase))))
+                .orElseThrow(() -> new ResourceException(NOT_FOUND, "Issue could not be updated"));
 
         log.traceExit();
         return result;

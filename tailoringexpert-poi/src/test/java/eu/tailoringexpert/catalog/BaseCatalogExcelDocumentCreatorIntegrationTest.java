@@ -21,23 +21,27 @@
  */
 package eu.tailoringexpert.catalog;
 
-
-import eu.tailoringexpert.FileSaver;
-import eu.tailoringexpert.domain.*;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-import tools.jackson.databind.json.JsonMapper;
+import static java.util.Objects.nonNull;
+import static org.assertj.core.api.Assertions.assertThat;
+import static tools.jackson.databind.DeserializationFeature.ACCEPT_EMPTY_ARRAY_AS_NULL_OBJECT;
+import static tools.jackson.databind.DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.HashMap;
 import java.util.Map;
 
-import static java.util.Objects.nonNull;
-import static org.assertj.core.api.Assertions.assertThat;
-import static tools.jackson.databind.DeserializationFeature.ACCEPT_EMPTY_ARRAY_AS_NULL_OBJECT;
-import static tools.jackson.databind.DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
+import eu.tailoringexpert.FileSaver;
+import eu.tailoringexpert.domain.ApplicableDocumentProvider;
+import eu.tailoringexpert.domain.BaseRequirement;
+import eu.tailoringexpert.domain.Catalog;
+import eu.tailoringexpert.domain.DocumentNumberComparator;
+import eu.tailoringexpert.domain.File;
+import eu.tailoringexpert.renderer.RendererRequestConfiguration;
+import tools.jackson.databind.json.JsonMapper;
 
 class BaseCatalogExcelDocumentCreatorIntegrationTest {
 
@@ -49,23 +53,26 @@ class BaseCatalogExcelDocumentCreatorIntegrationTest {
     @BeforeEach
     void setup() {
         this.objectMapper = JsonMapper.builder()
-            .findAndAddModules()
-            .disable(FAIL_ON_UNKNOWN_PROPERTIES)
-            .disable(ACCEPT_EMPTY_ARRAY_AS_NULL_OBJECT)
-            .build();
+                .findAndAddModules()
+                .disable(FAIL_ON_UNKNOWN_PROPERTIES)
+                .disable(ACCEPT_EMPTY_ARRAY_AS_NULL_OBJECT)
+                .build();
 
         this.fileSaver = new FileSaver("target");
 
         this.creator = new BaseCatalogExcelDocumentCreator(
-            new RequirementSheetCreator(),
-            new DRDSheetCreator(),
-            new DocumentSheetCreator(new ApplicableDocumentProvider<BaseRequirement>(
-                new RequirementAlwaysSelectedPredicate<BaseRequirement>(), new DocumentNumberComparator())),
-            new LogoSheetCreator(),
-            new ApplicableDocumentSheetCreator()
-        );
+                () -> RendererRequestConfiguration.builder()
+                        .id("unittest")
+                        .name("unittest")
+                        .templateHome("src/test/resources/")
+                        .build(),
+                new RequirementSheetCreator(),
+                new DRDSheetCreator(),
+                new DocumentSheetCreator(new ApplicableDocumentProvider<BaseRequirement>(
+                        new RequirementAlwaysSelectedPredicate<BaseRequirement>(), new DocumentNumberComparator())),
+                new LogoSheetCreator(),
+                new ApplicableDocumentSheetCreator());
     }
-
 
     @Test
     void createDocument_validInput_FileCreated() throws IOException {
@@ -74,10 +81,9 @@ class BaseCatalogExcelDocumentCreatorIntegrationTest {
         try (InputStream is = this.getClass().getResourceAsStream("/basecatalog.json")) {
             assert nonNull(is);
             catalog = objectMapper.readValue(
-                is,
-                objectMapper.getTypeFactory()
-                    .constructParametricType(Catalog.class, BaseRequirement.class)
-            );
+                    is,
+                    objectMapper.getTypeFactory()
+                            .constructParametricType(Catalog.class, BaseRequirement.class));
         }
 
         Map<String, Object> parameter = new HashMap<>();
@@ -87,6 +93,6 @@ class BaseCatalogExcelDocumentCreatorIntegrationTest {
 
         // assert
         assertThat(actual).isNotNull();
-        fileSaver.accept("basecatalog.xlsx", actual.getData());
+        fileSaver.accept("basecatalogue.xlsm", actual.getData());
     }
 }

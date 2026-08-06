@@ -22,6 +22,7 @@
 package eu.tailoringexpert.tailoring;
 
 import static java.util.Objects.nonNull;
+import static java.util.Optional.empty;
 import static java.util.Optional.ofNullable;
 
 import java.util.ArrayList;
@@ -79,7 +80,8 @@ public class TailoringsDiffPDFDocumentCreator implements DiffDocumentCreator {
         // dokument generieren
         String html = templateEngine.process(base.getCatalog().getVersion() + "/tailoringdiffs", parameter);
 
-        File result = pdfEngine.process("docId", html, base.getCatalog().getVersion() + "/tailoringdiffs");
+        File result = pdfEngine.process("docId", empty(), html,
+                base.getCatalog().getVersion() + "/tailoringdiffs");
 
         log.traceExit();
         return result;

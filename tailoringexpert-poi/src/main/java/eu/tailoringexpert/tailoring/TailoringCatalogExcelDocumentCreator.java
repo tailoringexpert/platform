@@ -21,14 +21,23 @@
  */
 package eu.tailoringexpert.tailoring;
 
-import eu.tailoringexpert.domain.BaseRequirement;
-import eu.tailoringexpert.domain.Chapter;
-import eu.tailoringexpert.domain.File;
-import eu.tailoringexpert.domain.Tailoring;
-import eu.tailoringexpert.domain.TailoringRequirement;
-import lombok.NonNull;
-import lombok.RequiredArgsConstructor;
-import lombok.extern.log4j.Log4j2;
+import static eu.tailoringexpert.domain.Phase.A;
+import static eu.tailoringexpert.domain.Phase.B;
+import static eu.tailoringexpert.domain.Phase.C;
+import static eu.tailoringexpert.domain.Phase.D;
+import static eu.tailoringexpert.domain.Phase.E;
+import static eu.tailoringexpert.domain.Phase.F;
+import static eu.tailoringexpert.domain.Phase.ZERO;
+import static java.util.Objects.nonNull;
+import static java.util.Optional.ofNullable;
+import static java.util.stream.IntStream.of;
+
+import java.io.ByteArrayOutputStream;
+import java.util.Arrays;
+import java.util.Map;
+import java.util.function.Function;
+import java.util.stream.StreamSupport;
+
 import org.apache.poi.ss.usermodel.CellStyle;
 import org.apache.poi.ss.usermodel.DataValidation;
 import org.apache.poi.ss.usermodel.DataValidationConstraint;
@@ -43,22 +52,14 @@ import org.apache.poi.ss.util.CellRangeAddress;
 import org.apache.poi.ss.util.CellRangeAddressList;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
-import java.io.ByteArrayOutputStream;
-import java.util.Arrays;
-import java.util.Map;
-import java.util.function.Function;
-import java.util.stream.StreamSupport;
-
-import static eu.tailoringexpert.domain.Phase.A;
-import static eu.tailoringexpert.domain.Phase.B;
-import static eu.tailoringexpert.domain.Phase.C;
-import static eu.tailoringexpert.domain.Phase.D;
-import static eu.tailoringexpert.domain.Phase.E;
-import static eu.tailoringexpert.domain.Phase.F;
-import static eu.tailoringexpert.domain.Phase.ZERO;
-import static java.util.Objects.nonNull;
-import static java.util.Optional.ofNullable;
-import static java.util.stream.IntStream.of;
+import eu.tailoringexpert.domain.BaseRequirement;
+import eu.tailoringexpert.domain.Chapter;
+import eu.tailoringexpert.domain.File;
+import eu.tailoringexpert.domain.Tailoring;
+import eu.tailoringexpert.domain.TailoringRequirement;
+import lombok.NonNull;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.log4j.Log4j2;
 
 /**
  * Create Excel requirement catalog file.
@@ -82,13 +83,15 @@ public class TailoringCatalogExcelDocumentCreator implements DocumentCreator {
         try (Workbook wb = new XSSFWorkbook()) {
             Sheet sheet = createSheet(wb, tailoring);
 
-            Map<String, BaseRequirement> baseRequirements = baseRequirementsProvider.apply(tailoring.getCatalog().getVersion());
-            tailoring.getCatalog().getToc().getChapters().forEach(gruppe -> addChapter(gruppe, baseRequirements, sheet));
+            Map<String, BaseRequirement> baseRequirements = baseRequirementsProvider
+                    .apply(tailoring.getCatalog().getVersion());
+            tailoring.getCatalog().getToc().getChapters()
+                    .forEach(gruppe -> addChapter(gruppe, baseRequirements, sheet));
 
             applyTextStyle(sheet);
             applyValidationToColumn(sheet, 2);
-            Arrays.stream(new int[]{2, 4, 5}).forEach(column -> applyValidationToColumn(sheet, column));
-            Arrays.stream(new int[]{1, 2, 4, 5}).forEach(sheet::autoSizeColumn);
+            Arrays.stream(new int[] { 2, 4, 5 }).forEach(column -> applyValidationToColumn(sheet, column));
+            Arrays.stream(new int[] { 1, 2, 4, 5 }).forEach(sheet::autoSizeColumn);
 
             copySheet(wb, 0);
             deleteColumnsNotUsedForImportSheet(wb.getSheetAt(0));
@@ -99,7 +102,7 @@ public class TailoringCatalogExcelDocumentCreator implements DocumentCreator {
                 content = os.toByteArray();
             }
 
-            File result = File.builder().name(docId + ".xlsx").data(content).build();
+            File result = File.builder().name(docId + "_i" + tailoring.getIssue() + ".xlsx").data(content).build();
             log.traceExit();
             return result;
         } catch (Exception e) {
@@ -116,9 +119,11 @@ public class TailoringCatalogExcelDocumentCreator implements DocumentCreator {
      * @param chapter chapter evaluate
      * @param sheet   sheet to add elements to
      */
-    private void addChapter(Chapter<TailoringRequirement> chapter, Map<String, BaseRequirement> baseRequirements, Sheet sheet) {
+    private void addChapter(Chapter<TailoringRequirement> chapter, Map<String, BaseRequirement> baseRequirements,
+            Sheet sheet) {
         addRow(sheet, chapter.getName(), chapter.getNumber());
-        chapter.getRequirements().forEach(requirement -> addRow(sheet, requirement, chapter.getNumber(), baseRequirements));
+        chapter.getRequirements()
+                .forEach(requirement -> addRow(sheet, requirement, chapter.getNumber(), baseRequirements));
 
         chapter.getChapters().forEach(subChapter -> addChapter(subChapter, baseRequirements, sheet));
     }
@@ -194,7 +199,8 @@ public class TailoringCatalogExcelDocumentCreator implements DocumentCreator {
      * @param sheet       sheet to add row to
      * @param requirement tailoring requirement to be displayed in row
      */
-    private void addRow(Sheet sheet, TailoringRequirement requirement, String chapter, Map<String, BaseRequirement> baseRequirements) {
+    private void addRow(Sheet sheet, TailoringRequirement requirement, String chapter,
+            Map<String, BaseRequirement> baseRequirements) {
         Row row = sheet.createRow((short) sheet.getLastRowNum() + 1);
         row.createCell(0).setCellValue("");
         row.createCell(1).setCellValue(requirement.getPosition());
@@ -212,17 +218,16 @@ public class TailoringCatalogExcelDocumentCreator implements DocumentCreator {
         row.createCell(11);
         row.createCell(12);
         ofNullable(baseRequirements.get(chapter + "." + requirement.getPosition()))
-            .ifPresent(baseRequirement -> {
-                row.getCell(6).setCellValue(baseRequirement.getPhases().contains(ZERO));
-                row.getCell(7).setCellValue(baseRequirement.getPhases().contains(A));
-                row.getCell(8).setCellValue(baseRequirement.getPhases().contains(B));
-                row.getCell(9).setCellValue(baseRequirement.getPhases().contains(C));
-                row.getCell(10).setCellValue(baseRequirement.getPhases().contains(D));
-                row.getCell(11).setCellValue(baseRequirement.getPhases().contains(E));
-                row.getCell(12).setCellValue(baseRequirement.getPhases().contains(F));
-            });
+                .ifPresent(baseRequirement -> {
+                    row.getCell(6).setCellValue(baseRequirement.getPhases().contains(ZERO));
+                    row.getCell(7).setCellValue(baseRequirement.getPhases().contains(A));
+                    row.getCell(8).setCellValue(baseRequirement.getPhases().contains(B));
+                    row.getCell(9).setCellValue(baseRequirement.getPhases().contains(C));
+                    row.getCell(10).setCellValue(baseRequirement.getPhases().contains(D));
+                    row.getCell(11).setCellValue(baseRequirement.getPhases().contains(E));
+                    row.getCell(12).setCellValue(baseRequirement.getPhases().contains(F));
+                });
     }
-
 
     /**
      * Copies the sheet with the provided index.
@@ -247,9 +252,10 @@ public class TailoringCatalogExcelDocumentCreator implements DocumentCreator {
         of(4, 5, 6, 7, 8, 9, 10, 11, 12).forEach(index -> header.removeCell(header.getCell(index)));
 
         StreamSupport.stream(sheet.spliterator(), false)
-            .skip(1)
-            .filter(row -> nonNull(row.getCell(3)))
-            .forEach(row -> of(3, 4, 5, 6, 7, 8, 9, 10, 11, 12).forEach(index -> row.removeCell(row.getCell(index))));
+                .skip(1)
+                .filter(row -> nonNull(row.getCell(3)))
+                .forEach(row -> of(3, 4, 5, 6, 7, 8, 9, 10, 11, 12)
+                        .forEach(index -> row.removeCell(row.getCell(index))));
         sheet.setAutoFilter(new CellRangeAddress(0, 0, 0, 3));
     }
 
@@ -258,14 +264,14 @@ public class TailoringCatalogExcelDocumentCreator implements DocumentCreator {
         wrapStyle.setWrapText(true);
         wrapStyle.setVerticalAlignment(VerticalAlignment.TOP);
         StreamSupport.stream(sheet.spliterator(), false)
-            .skip(1)
-            .filter(row -> nonNull(row.getCell(3)))
-            .forEach(row -> row.getCell(3).setCellStyle(wrapStyle));
+                .skip(1)
+                .filter(row -> nonNull(row.getCell(3)))
+                .forEach(row -> row.getCell(3).setCellStyle(wrapStyle));
     }
 
     void applyValidationToColumn(Sheet sheet, int column) {
         DataValidationHelper dvHelper = sheet.getDataValidationHelper();
-        DataValidationConstraint dvConstraint = dvHelper.createExplicitListConstraint(new String[]{"YES", "NO"});
+        DataValidationConstraint dvConstraint = dvHelper.createExplicitListConstraint(new String[] { "YES", "NO" });
 
         CellRangeAddressList addressList = new CellRangeAddressList(1, sheet.getLastRowNum(), column, column);
         DataValidation validation = dvHelper.createValidation(dvConstraint, addressList);

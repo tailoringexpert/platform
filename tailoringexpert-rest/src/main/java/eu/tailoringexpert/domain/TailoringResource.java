@@ -21,17 +21,18 @@
  */
 package eu.tailoringexpert.domain;
 
-import lombok.Builder;
-import lombok.EqualsAndHashCode;
-import lombok.Value;
-import org.springframework.hateoas.Link;
-import org.springframework.hateoas.RepresentationModel;
-import org.springframework.hateoas.server.core.Relation;
+import static java.util.Objects.nonNull;
 
 import java.util.Collection;
 import java.util.List;
 
-import static java.util.Objects.nonNull;
+import org.springframework.hateoas.Link;
+import org.springframework.hateoas.RepresentationModel;
+import org.springframework.hateoas.server.core.Relation;
+
+import lombok.Builder;
+import lombok.EqualsAndHashCode;
+import lombok.Value;
 
 @Value
 @EqualsAndHashCode(callSuper = false)
@@ -53,13 +54,23 @@ public class TailoringResource extends RepresentationModel<TailoringResource> {
      */
     private String catalogVersion;
 
+    /**
+     * State of tailoring.
+     */
     private TailoringState state;
 
+    /**
+     * Issue of tailoring.
+     */
+    private String issue;
+
     @Builder
-    public TailoringResource(String name, Collection<Phase> phases, String catalogVersion, TailoringState state, List<Link> links) {
+    public TailoringResource(String name, String issue, Collection<Phase> phases, String catalogVersion,
+            TailoringState state, List<Link> links) {
         super();
 
         this.name = name;
+        this.issue = issue;
         this.phases = phases;
         this.catalogVersion = catalogVersion;
         this.state = state;
@@ -68,4 +79,3 @@ public class TailoringResource extends RepresentationModel<TailoringResource> {
         }
     }
 }
-

@@ -93,7 +93,6 @@ public class JPATailoringServiceRepository implements TailoringServiceRepository
         return tailoring;
     }
 
-
     /**
      * {@inheritDoc}
      */
@@ -151,7 +150,8 @@ public class JPATailoringServiceRepository implements TailoringServiceRepository
      * {@inheritDoc}
      */
     @Override
-    public Optional<DocumentSignature> updateDocumentSignature(String project, String tailoring, DocumentSignature signature) {
+    public Optional<DocumentSignature> updateDocumentSignature(String project, String tailoring,
+            DocumentSignature signature) {
         log.traceEntry(() -> project, () -> tailoring, () -> signature);
 
         TailoringEntity eTailoring = projectRepository.findTailoring(project, tailoring);
@@ -161,9 +161,9 @@ public class JPATailoringServiceRepository implements TailoringServiceRepository
         }
 
         Optional<DocumentSignatureEntity> toUpdate = eTailoring.getSignatures()
-            .stream()
-            .filter(z -> z.getFaculty().equals(signature.getFaculty()))
-            .findFirst();
+                .stream()
+                .filter(z -> z.getFaculty().equals(signature.getFaculty()))
+                .findFirst();
 
         if (toUpdate.isEmpty()) {
             log.traceExit();
@@ -205,9 +205,9 @@ public class JPATailoringServiceRepository implements TailoringServiceRepository
         log.traceEntry();
 
         List<SelectionVectorProfile> result = selectionVectorProfileRepository.findAll()
-            .stream()
-            .map(mapper::toDomain)
-            .toList();
+                .stream()
+                .map(mapper::toDomain)
+                .toList();
 
         log.traceExit();
         return result;
@@ -221,9 +221,9 @@ public class JPATailoringServiceRepository implements TailoringServiceRepository
         log.traceEntry();
 
         List<DocumentSignature> result = dokumentSigneeRepository.findAll()
-            .stream()
-            .map(mapper::getDefaultSignatures)
-            .toList();
+                .stream()
+                .map(mapper::getDefaultSignatures)
+                .toList();
 
         log.traceExit();
         return result;
@@ -294,6 +294,26 @@ public class JPATailoringServiceRepository implements TailoringServiceRepository
         log.traceExit();
         return result;
 
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public Optional<Tailoring> setIssue(String project, String tailoring, String issue) {
+        log.traceEntry(() -> project, () -> tailoring, () -> issue);
+
+        Optional<TailoringEntity> oTailoring = findTailoring(project, tailoring);
+        if (oTailoring.isEmpty()) {
+            log.traceExit();
+            return empty();
+        }
+
+        oTailoring.get().setIssue(issue);
+        Optional<Tailoring> result = of(mapper.toDomain(oTailoring.get()));
+
+        log.traceExit();
+        return result;
     }
 
     /**

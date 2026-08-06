@@ -172,6 +172,7 @@ class ComparisonPDFDocumentCreatorTest {
 
         Tailoring tailoring = Tailoring.builder()
                 .catalog(catalog)
+                .issue("1")
                 .screeningSheet(screeningSheet)
                 .build();
         // act

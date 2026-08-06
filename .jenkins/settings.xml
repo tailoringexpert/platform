@@ -28,7 +28,7 @@
         <profile>
             <id>tailoringexpert-maven</id>
             <activation>
-                <activeByDefault>false</activeByDefault>
+                <activeByDefault>true</activeByDefault>
             </activation>
             <properties>
                 <server.snapshot>tailoringexpert-maven</server.snapshot>

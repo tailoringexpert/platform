@@ -21,18 +21,20 @@
  */
 package eu.tailoringexpert.requirement;
 
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
+import java.util.function.BiConsumer;
+import java.util.function.Supplier;
+
 import eu.tailoringexpert.domain.TailoringRequirementChangeEntity;
 import eu.tailoringexpert.domain.TailoringRequirementEntity;
 import eu.tailoringexpert.repository.TailoringRequirementChangeRepository;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 
-import java.time.ZonedDateTime;
-import java.util.function.BiConsumer;
-import java.util.function.Supplier;
-
 /**
- * Handler for logging text and applicibility changes of a tailoring requirement {@link TailoringRequirementEntity}.
+ * Handler for logging text and applicibility changes of a tailoring requirement
+ * {@link TailoringRequirementEntity}.
  *
  * @author Michael Bädorf
  */
@@ -52,28 +54,26 @@ public class RequirementChangeLogHandler implements BiConsumer<TailoringRequirem
     public void accept(TailoringRequirementEntity original, TailoringRequirementEntity revised) {
         if (!original.getSelected().equals(revised.getSelected())) {
             repository.save(
-                TailoringRequirementChangeEntity.builder()
-                    .changeType(CHANGETYPE_APPLICABILITY)
-                    .user(username.get())
-                    .requirementId(original.getId())
-                    .old(String.valueOf(original.getSelected()))
-                    .changed(String.valueOf(revised.getSelected()))
-                    .modificationTimestamp(ZonedDateTime.now())
-                    .build()
-            );
+                    TailoringRequirementChangeEntity.builder()
+                            .changeType(CHANGETYPE_APPLICABILITY)
+                            .user(username.get())
+                            .requirementId(original.getId())
+                            .old(String.valueOf(original.getSelected()))
+                            .changed(String.valueOf(revised.getSelected()))
+                            .modificationTimestamp(ZonedDateTime.now(ZoneId.systemDefault()))
+                            .build());
         }
 
         if (!original.getText().equals(revised.getText())) {
             repository.save(
-                TailoringRequirementChangeEntity.builder()
-                    .changeType(CHANGETYPE_TEXT)
-                    .user(username.get())
-                    .requirementId(original.getId())
-                    .old(original.getText())
-                    .changed(revised.getText())
-                    .modificationTimestamp(ZonedDateTime.now())
-                    .build()
-            );
+                    TailoringRequirementChangeEntity.builder()
+                            .changeType(CHANGETYPE_TEXT)
+                            .user(username.get())
+                            .requirementId(original.getId())
+                            .old(original.getText())
+                            .changed(revised.getText())
+                            .modificationTimestamp(ZonedDateTime.now(ZoneId.systemDefault()))
+                            .build());
         }
     }
 }

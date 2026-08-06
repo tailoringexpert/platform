@@ -250,4 +250,14 @@ public interface TailoringService {
      */
     Optional<File> createTailoringsDiffDocument(String baseProject, String baseTailoring, String compareProject,
             String compareTailoring);
+
+    /**
+     * Change issue of tailoring.
+     *
+     * @param project   project identidier
+     * @param tailoring current name of tailoring
+     * @param issue     new issue of tailoring
+     * @return in case of successful change new tailoring, otherwise empty
+     */
+    Optional<TailoringInformation> updateIssue(String project, String tailoring, String issue);
 }

@@ -1,6 +1,16 @@
 # Changelog
 
-## [v0.2.7](https://github.com/tailoringexpert/platform/tree/v0.2.7) (07.13.2026)
+## [v0.2.8](https://github.com/tailoringexpert/platform/tree/v0.2.8) (08.06.2026)
+
+[Full Changelog](https://github.com/tailoringexpert/platform/compare/v0.2.7...v0.2.8)
+
+**Implemented enhancements:**
+
+- Add makro to basecatalogue export for replacing requirement text [\#521](https://github.com/tailoringexpert/platform/issues/521)
+- Add issue to generated documents [\#519](https://github.com/tailoringexpert/platform/issues/519)
+- Add tailoring issue [\#516](https://github.com/tailoringexpert/platform/issues/516)
+
+## [v0.2.7](https://github.com/tailoringexpert/platform/tree/v0.2.7) (07.17.2026)
 
 [Full Changelog](https://github.com/tailoringexpert/platform/compare/v0.2.6...v0.2.7)
 
