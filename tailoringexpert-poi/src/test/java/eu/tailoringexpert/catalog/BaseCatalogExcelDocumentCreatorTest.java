@@ -21,24 +21,6 @@
  */
 package eu.tailoringexpert.catalog;
 
-
-import com.fasterxml.jackson.annotation.JsonSetter;
-import com.fasterxml.jackson.annotation.Nulls;
-import eu.tailoringexpert.domain.BaseRequirement;
-import eu.tailoringexpert.domain.Catalog;
-import eu.tailoringexpert.domain.File;
-import org.apache.poi.ss.usermodel.Sheet;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-import tools.jackson.databind.json.JsonMapper;
-
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.function.BiConsumer;
-
 import static java.util.Objects.nonNull;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
@@ -50,6 +32,25 @@ import static org.mockito.Mockito.verify;
 import static tools.jackson.databind.DeserializationFeature.ACCEPT_EMPTY_ARRAY_AS_NULL_OBJECT;
 import static tools.jackson.databind.DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.function.BiConsumer;
+
+import org.apache.poi.ss.usermodel.Sheet;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+
+import com.fasterxml.jackson.annotation.JsonSetter;
+import com.fasterxml.jackson.annotation.Nulls;
+
+import eu.tailoringexpert.domain.BaseRequirement;
+import eu.tailoringexpert.domain.Catalog;
+import eu.tailoringexpert.domain.File;
+import eu.tailoringexpert.renderer.RendererRequestConfiguration;
+import tools.jackson.databind.json.JsonMapper;
 
 class BaseCatalogExcelDocumentCreatorTest {
 
@@ -66,13 +67,12 @@ class BaseCatalogExcelDocumentCreatorTest {
     @BeforeEach
     void setup() {
         this.objectMapper = JsonMapper.builder()
-            .findAndAddModules()
-            .disable(FAIL_ON_UNKNOWN_PROPERTIES)
-            .disable(ACCEPT_EMPTY_ARRAY_AS_NULL_OBJECT)
-            .withConfigOverride(List.class, cfg ->
-                cfg.setNullHandling(JsonSetter.Value.forValueNulls(Nulls.AS_EMPTY))
-            )
-            .build();
+                .findAndAddModules()
+                .disable(FAIL_ON_UNKNOWN_PROPERTIES)
+                .disable(ACCEPT_EMPTY_ARRAY_AS_NULL_OBJECT)
+                .withConfigOverride(List.class,
+                        cfg -> cfg.setNullHandling(JsonSetter.Value.forValueNulls(Nulls.AS_EMPTY)))
+                .build();
 
         this.requirementSheetCreatorMock = mock(BiConsumer.class);
         this.drdSheetCreator = mock(BiConsumer.class);
@@ -81,12 +81,16 @@ class BaseCatalogExcelDocumentCreatorTest {
         this.applicableDocumentRequirementsSheetCreator = mock(BiConsumer.class);
 
         this.creator = new BaseCatalogExcelDocumentCreator(
-            this.requirementSheetCreatorMock,
-            this.drdSheetCreator,
-            this.documentSheetCreator,
-            this.logoSheetCreator,
-            this.applicableDocumentRequirementsSheetCreator
-        );
+                () -> RendererRequestConfiguration.builder()
+                        .id("unittest")
+                        .name("unittest")
+                        .templateHome("src/test/resources/")
+                        .build(),
+                this.requirementSheetCreatorMock,
+                this.drdSheetCreator,
+                this.documentSheetCreator,
+                this.logoSheetCreator,
+                this.applicableDocumentRequirementsSheetCreator);
     }
 
     @Test
@@ -96,14 +100,13 @@ class BaseCatalogExcelDocumentCreatorTest {
         try (InputStream is = this.getClass().getResourceAsStream("/basecatalog.json")) {
             assert nonNull(is);
             catalog = objectMapper.readValue(
-                is,
-                objectMapper.getTypeFactory()
-                    .constructParametricType(Catalog.class, BaseRequirement.class)
-            );
+                    is,
+                    objectMapper.getTypeFactory()
+                            .constructParametricType(Catalog.class, BaseRequirement.class));
         }
 
         doThrow(new RuntimeException())
-            .when(requirementSheetCreatorMock).accept(eq(catalog), any(Sheet.class));
+                .when(requirementSheetCreatorMock).accept(eq(catalog), any(Sheet.class));
 
         Map<String, Object> parameter = new HashMap<>();
 
@@ -126,10 +129,9 @@ class BaseCatalogExcelDocumentCreatorTest {
         try (InputStream is = this.getClass().getResourceAsStream("/basecatalog.json")) {
             assert nonNull(is);
             catalog = objectMapper.readValue(
-                is,
-                objectMapper.getTypeFactory()
-                    .constructParametricType(Catalog.class, BaseRequirement.class)
-            );
+                    is,
+                    objectMapper.getTypeFactory()
+                            .constructParametricType(Catalog.class, BaseRequirement.class));
         }
 
         Map<String, Object> parameter = new HashMap<>();

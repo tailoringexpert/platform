@@ -25,6 +25,7 @@ import static java.lang.String.format;
 
 import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
+import java.util.Optional;
 
 import org.apache.pdfbox.io.IOUtils;
 import org.apache.pdfbox.pdmodel.PDDocument;
@@ -50,7 +51,7 @@ public class PDFEngine {
 
     @NonNull
     FSDOMMutator domMutator;
-    
+
     @NonNull
     private FSObjectDrawerFactory drawerFactory;
 
@@ -66,7 +67,8 @@ public class PDFEngine {
      *                   used for relative addressing of images
      * @return Die erzeugte "PA" File
      */
-    public File process(@NonNull String docId, @NonNull String html, @NonNull String pathSuffix) {
+    public File process(@NonNull String docId, Optional<String> issue, @NonNull String html,
+            @NonNull String pathSuffix) {
         log.traceEntry(() -> docId);
 
         try (PDDocument document = new PDDocument()) {
@@ -95,7 +97,7 @@ public class PDFEngine {
                     .run();
 
             File result = File.builder()
-                    .name(docId + ".pdf")
+                    .name(docId + issue.map(i -> "_i" + i).orElse("") + ".pdf")
                     .data(os.toByteArray())
                     .build();
 

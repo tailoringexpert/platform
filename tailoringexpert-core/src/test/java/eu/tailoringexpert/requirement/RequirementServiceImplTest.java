@@ -21,22 +21,6 @@
  */
 package eu.tailoringexpert.requirement;
 
-import eu.tailoringexpert.domain.Chapter;
-import eu.tailoringexpert.domain.Reference;
-import eu.tailoringexpert.domain.RequirementChange;
-import eu.tailoringexpert.domain.TailoringRequirement;
-import lombok.extern.log4j.Log4j2;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-
-import java.time.ZonedDateTime;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
-
 import static java.lang.Boolean.FALSE;
 import static java.lang.Boolean.TRUE;
 import static java.util.Arrays.asList;
@@ -51,6 +35,24 @@ import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
+
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
+
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+
+import eu.tailoringexpert.domain.Chapter;
+import eu.tailoringexpert.domain.Reference;
+import eu.tailoringexpert.domain.RequirementChange;
+import eu.tailoringexpert.domain.TailoringRequirement;
+import lombok.extern.log4j.Log4j2;
 
 @Log4j2
 class RequirementServiceImplTest {
@@ -141,7 +143,7 @@ class RequirementServiceImplTest {
         given(repositoryMock.getRequirement("SAMPLE", "master", "1.1", "a")).willReturn(of(
                 TailoringRequirement.builder()
                         .selected(FALSE)
-                        .selectionChanged(ZonedDateTime.now())
+                        .selectionChanged(ZonedDateTime.now(ZoneId.systemDefault()))
                         .build()));
         given(repositoryMock.updateRequirement(anyString(), anyString(), anyString(), any()))
                 .willAnswer(invocation -> of(invocation.getArgument(3)));

@@ -21,16 +21,23 @@
  */
 package eu.tailoringexpert.catalog;
 
-import eu.tailoringexpert.TailoringexpertException;
-import eu.tailoringexpert.domain.BaseRequirement;
-import eu.tailoringexpert.domain.Catalog;
-import eu.tailoringexpert.domain.CatalogVersion;
-import eu.tailoringexpert.domain.File;
-import lombok.extern.log4j.Log4j2;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-import org.mockito.MockedStatic;
-import org.mockito.Mockito;
+import static java.nio.charset.StandardCharsets.UTF_8;
+import static java.time.Month.DECEMBER;
+import static java.util.Arrays.asList;
+import static java.util.Objects.nonNull;
+import static java.util.Optional.empty;
+import static java.util.Optional.of;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.catchThrowable;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.doThrow;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.mockStatic;
+import static org.mockito.Mockito.spy;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
@@ -46,21 +53,16 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 import java.util.zip.ZipOutputStream;
 
-import static java.nio.charset.StandardCharsets.UTF_8;
-import static java.util.Arrays.asList;
-import static java.util.Objects.nonNull;
-import static java.util.Optional.empty;
-import static java.util.Optional.of;
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.catchThrowable;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.BDDMockito.given;
-import static org.mockito.Mockito.doThrow;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.mockStatic;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.mockito.MockedStatic;
+
+import eu.tailoringexpert.TailoringexpertException;
+import eu.tailoringexpert.domain.BaseRequirement;
+import eu.tailoringexpert.domain.Catalog;
+import eu.tailoringexpert.domain.CatalogVersion;
+import eu.tailoringexpert.domain.File;
+import lombok.extern.log4j.Log4j2;
 
 @Log4j2
 class CatalogServiceImplTest {
@@ -76,10 +78,9 @@ class CatalogServiceImplTest {
         this.documentServiceMock = mock(DocumentService.class);
         this.file2CatalogConverterMock = mock(Function.class);
         this.service = new CatalogServiceImpl(
-            repositoryMock,
-            documentServiceMock,
-            file2CatalogConverterMock
-        );
+                repositoryMock,
+                documentServiceMock,
+                file2CatalogConverterMock);
     }
 
     @Test
@@ -89,14 +90,13 @@ class CatalogServiceImplTest {
         given(repositoryMock.existsCatalog("8.2.1")).willReturn(true);
 
         ZonedDateTime now = ZonedDateTime.of(
-            LocalDateTime.of(2020, 12, 1, 8, 0, 0),
-            ZoneId.systemDefault()
-        );
+                LocalDateTime.of(2020, DECEMBER, 1, 8, 0, 0),
+                ZoneId.systemDefault());
 
         // act
         Boolean actual;
         try (MockedStatic<ZonedDateTime> dateTimeMock = mockStatic(ZonedDateTime.class)) {
-            dateTimeMock.when(ZonedDateTime::now).thenReturn(now);
+            dateTimeMock.when(() -> ZonedDateTime.now(ZoneId.systemDefault())).thenReturn(now);
             actual = service.doImport(catalog);
         }
 
@@ -114,14 +114,13 @@ class CatalogServiceImplTest {
         given(repositoryMock.existsCatalog("8.2.1")).willReturn(false);
 
         ZonedDateTime now = ZonedDateTime.of(
-            LocalDateTime.of(2020, 12, 1, 8, 0, 0),
-            ZoneId.systemDefault()
-        );
+                LocalDateTime.of(2020, DECEMBER, 1, 8, 0, 0),
+                ZoneId.systemDefault());
 
         // act
         Boolean actual;
         try (MockedStatic<ZonedDateTime> dateTimeMock = mockStatic(ZonedDateTime.class)) {
-            dateTimeMock.when(ZonedDateTime::now).thenReturn(now);
+            dateTimeMock.when(() -> ZonedDateTime.now(ZoneId.systemDefault())).thenReturn(now);
             actual = service.doImport(catalog);
         }
 
@@ -139,14 +138,13 @@ class CatalogServiceImplTest {
         given(repositoryMock.existsCatalog("8.2.1")).willReturn(false);
 
         ZonedDateTime now = ZonedDateTime.of(
-            LocalDateTime.of(2020, 12, 1, 8, 0, 0),
-            ZoneId.systemDefault()
-        );
+                LocalDateTime.of(2020, DECEMBER, 1, 8, 0, 0),
+                ZoneId.systemDefault());
 
         // act
         Boolean actual;
         try (MockedStatic<ZonedDateTime> dateTimeMock = mockStatic(ZonedDateTime.class)) {
-            dateTimeMock.when(ZonedDateTime::now).thenReturn(now);
+            dateTimeMock.when(() -> ZonedDateTime.now(ZoneId.systemDefault())).thenReturn(now);
             actual = service.doImport(catalog);
         }
 
@@ -279,7 +277,6 @@ class CatalogServiceImplTest {
         verify(documentServiceMock, times(1)).createCatalogExcel(any(), any());
     }
 
-
     @Test
     void createDocuments_CatalogNotExisting_EmptyReturned() {
         // arrange
@@ -297,14 +294,13 @@ class CatalogServiceImplTest {
         // arrange
         Catalog<BaseRequirement> catalog = Catalog.<BaseRequirement>builder().version("8.2.1").build();
         given(repositoryMock.getCatalog("8.2.1"))
-            .willReturn(of(catalog));
+                .willReturn(of(catalog));
 
         List<File> dokumente = asList(
-            File.builder()
-                .name("DUMMY-KATALOG.pdf")
-                .data("Testdokument".getBytes(UTF_8))
-                .build()
-        );
+                File.builder()
+                        .name("DUMMY-KATALOG.pdf")
+                        .data("Testdokument".getBytes(UTF_8))
+                        .build());
         given(documentServiceMock.createAll(eq(catalog), any())).willReturn(dokumente);
 
         // act
@@ -317,8 +313,8 @@ class CatalogServiceImplTest {
 
         Collection<String> zipDateien = fileNameInZip(actual.get().getData());
         assertThat(zipDateien)
-            .hasSize(1)
-            .containsExactly("DUMMY-KATALOG.pdf");
+                .hasSize(1)
+                .containsExactly("DUMMY-KATALOG.pdf");
     }
 
     Collection<String> fileNameInZip(byte[] zip) throws IOException {
@@ -338,21 +334,27 @@ class CatalogServiceImplTest {
         // arrange
         Catalog<BaseRequirement> catalog = Catalog.<BaseRequirement>builder().version("8.2.1").build();
         given(repositoryMock.getCatalog("8.2.1"))
-            .willReturn(of(catalog));
+                .willReturn(of(catalog));
 
         List<File> dokumente = asList(
-            File.builder()
-                .name("DUMMY-KATALOG.pdf")
-                .data("Testdokument".getBytes(UTF_8))
-                .build()
-        );
-        given(documentServiceMock.createAll(eq(catalog), any())).willReturn(dokumente);
+                File.builder()
+                        .name("DUMMY-KATALOG.pdf")
+                        .data("Testdokument".getBytes(UTF_8))
+                        .build());
+        LocalDateTime now = LocalDateTime.of(2020, DECEMBER, 1, 8, 0, 0);
 
-        CatalogServiceImpl serviceSpy = Mockito.spy(service);
-        given(serviceSpy.createZip(dokumente)).willThrow(new RuntimeException());
+        given(documentServiceMock.createAll(catalog, now)).willReturn(dokumente);
+
+        CatalogServiceImpl serviceSpy = spy(service);
+        given(serviceSpy.createZip(dokumente, now))
+                .willThrow(new RuntimeException());
 
         // act
-        Throwable actual = catchThrowable(() -> serviceSpy.createDocuments("8.2.1"));
+        Throwable actual;
+        try (MockedStatic<LocalDateTime> dateTimeMock = mockStatic(LocalDateTime.class)) {
+            dateTimeMock.when(() -> LocalDateTime.now(ZoneId.systemDefault())).thenReturn(now);
+            actual = catchThrowable(() -> serviceSpy.createDocuments("8.2.1"));
+        }
 
         // assert
         assertThat(actual).isInstanceOf(RuntimeException.class);
@@ -362,17 +364,17 @@ class CatalogServiceImplTest {
     void createZip_addToZipSimulatedException_ExceptionThrown() {
         // arrange
         List<File> files = List.of(
-            File.builder()
-                .name("DUMMY-KATALOG.pdf")
-                .data("Testdokument".getBytes(UTF_8))
-                .build()
-        );
+                File.builder()
+                        .name("DUMMY-KATALOG.pdf")
+                        .data("Testdokument".getBytes(UTF_8))
+                        .build());
 
-        CatalogServiceImpl serviceSpy = Mockito.spy(service);
-        doThrow(new RuntimeException()).when(serviceSpy).addToZip(any(File.class), any(ZipOutputStream.class));
+        CatalogServiceImpl serviceSpy = spy(service);
+        doThrow(new RuntimeException()).when(serviceSpy).addToZip(any(File.class), any(ZipOutputStream.class),
+                any(LocalDateTime.class));
 
         // act
-        Throwable actual = catchThrowable(() -> serviceSpy.createZip(files));
+        Throwable actual = catchThrowable(() -> serviceSpy.createZip(files, LocalDateTime.now(ZoneId.systemDefault())));
 
         // assert
         assertThat(actual).isInstanceOf(RuntimeException.class);
@@ -387,7 +389,7 @@ class CatalogServiceImplTest {
             doThrow(new IOException()).when(zipMock).putNextEntry(any());
 
             // act
-            actual = catchThrowable(() -> service.addToZip(file, zipMock));
+            actual = catchThrowable(() -> service.addToZip(file, zipMock, LocalDateTime.now(ZoneId.systemDefault())));
         }
 
         // assert
@@ -411,9 +413,8 @@ class CatalogServiceImplTest {
     void getCatalogVersions_2CatalogExist_CollectionWith2ElementsReturned() {
         // arrange
         given(repositoryMock.getCatalogVersions()).willReturn(List.of(
-            CatalogVersion.builder().version("7.2.1").build(),
-            CatalogVersion.builder().version("8.2.1").build()
-        ));
+                CatalogVersion.builder().version("7.2.1").build(),
+                CatalogVersion.builder().version("8.2.1").build()));
 
         // act
         Collection<CatalogVersion> actual = service.getCatalogVersions();
@@ -442,10 +443,10 @@ class CatalogServiceImplTest {
         // arrange
         ZonedDateTime now = ZonedDateTime.now();
         given(repositoryMock.existsCatalog("8.2.1"))
-            .willReturn(true);
+                .willReturn(true);
 
         given(repositoryMock.limitCatalogValidity("8.2.1", now))
-            .willReturn(of(CatalogVersion.builder().build()));
+                .willReturn(of(CatalogVersion.builder().build()));
 
         // act
         Optional<CatalogVersion> actual = service.limitValidity("8.2.1", now);
@@ -461,7 +462,7 @@ class CatalogServiceImplTest {
         String dummyContent = "dummy";
 
         given(file2CatalogConverterMock.apply(dummyContent.getBytes(UTF_8)))
-            .willReturn(Catalog.<BaseRequirement>builder().build());
+                .willReturn(Catalog.<BaseRequirement>builder().build());
 
         // act
         Catalog<BaseRequirement> actual = service.doConvert(dummyContent.getBytes(UTF_8));
@@ -476,13 +477,12 @@ class CatalogServiceImplTest {
         // arrange
         Catalog<BaseRequirement> catalog = null;
 
-        LocalDateTime now =
-            LocalDateTime.of(2020, 12, 1, 8, 0, 0);
+        LocalDateTime now = LocalDateTime.of(2020, DECEMBER, 1, 8, 0, 0);
 
         // act
         Optional<File> actual = null;
         try (MockedStatic<LocalDateTime> dateTimeMock = mockStatic(LocalDateTime.class)) {
-            dateTimeMock.when(LocalDateTime::now).thenReturn(now);
+            dateTimeMock.when(() -> LocalDateTime.now(ZoneId.systemDefault())).thenReturn(now);
             actual = service.createDocuments(catalog);
         }
 
@@ -496,17 +496,15 @@ class CatalogServiceImplTest {
         // arrange
         Catalog<BaseRequirement> catalog = Catalog.<BaseRequirement>builder().build();
 
-        LocalDateTime now =
-            LocalDateTime.of(2020, 12, 1, 8, 0, 0);
+        LocalDateTime now = LocalDateTime.of(2020, DECEMBER, 1, 8, 0, 0);
 
         given(documentServiceMock.createAll(eq(catalog), any()))
-            .willReturn(List.of(File.builder().name("preview.pdf").data("dummy".getBytes(UTF_8)).build()));
+                .willReturn(List.of(File.builder().name("preview.pdf").data("dummy".getBytes(UTF_8)).build()));
 
         // act
         Optional<File> actual = null;
         try (MockedStatic<LocalDateTime> dateTimeMock = mockStatic(LocalDateTime.class)) {
-            dateTimeMock.when(LocalDateTime::now).thenReturn(now);
-            dateTimeMock.when(() -> LocalDateTime.ofInstant(any(), any())).thenReturn(now);
+            dateTimeMock.when(() -> LocalDateTime.now(ZoneId.systemDefault())).thenReturn(now);
             actual = service.createDocuments(catalog);
         }
 
@@ -519,7 +517,7 @@ class CatalogServiceImplTest {
     void deleteCatalog_NonExistingCatalog_EmptyReturned() {
         // arrange
         given(repositoryMock.existsCatalog("8.3.0"))
-            .willReturn(false);
+                .willReturn(false);
 
         // act
         Optional<Boolean> actual = service.deleteCatalog("8.3.0");
@@ -533,9 +531,9 @@ class CatalogServiceImplTest {
     void deleteCatalog_ExistingCatalogUsedInProjects_ExceptiomThrown() {
         // arrange
         given(repositoryMock.existsCatalog("8.3.0"))
-            .willReturn(true);
+                .willReturn(true);
         given(repositoryMock.isCatalogUsed("8.3.0"))
-            .willReturn(true);
+                .willReturn(true);
 
         // act
         Throwable actual = catchThrowable(() -> service.deleteCatalog("8.3.0"));
@@ -549,9 +547,9 @@ class CatalogServiceImplTest {
     void deleteCatalog_ExistingCatalogNotDeleted_FalseReturned() {
         // arrange
         given(repositoryMock.existsCatalog("8.3.0"))
-            .willReturn(true);
+                .willReturn(true);
         given(repositoryMock.deleteCatalog("8.3.0"))
-            .willReturn(false);
+                .willReturn(false);
 
         // act
         Optional<Boolean> actual = service.deleteCatalog("8.3.0");
@@ -566,9 +564,9 @@ class CatalogServiceImplTest {
     void deleteCatalog_ExistingCatalogDeletable_TrueReturned() {
         // arrange
         given(repositoryMock.existsCatalog("8.3.0"))
-            .willReturn(true);
+                .willReturn(true);
         given(repositoryMock.deleteCatalog("8.3.0"))
-            .willReturn(true);
+                .willReturn(true);
 
         // act
         Optional<Boolean> actual = service.deleteCatalog("8.3.0");
@@ -583,7 +581,7 @@ class CatalogServiceImplTest {
     void createCatalog_OriginalNotExists_EmptyReturned() {
         // arrange
         given(repositoryMock.getCatalog("8.3.0"))
-            .willReturn(empty());
+                .willReturn(empty());
 
         // act
         Optional<File> actual = service.createCatalog("8.3.0", "9.0.0");
@@ -598,9 +596,9 @@ class CatalogServiceImplTest {
     void createCatalog_RevisedNotExists_EmptyReturned() {
         // arrange
         given(repositoryMock.getCatalog("8.3.0"))
-            .willReturn(of(Catalog.<BaseRequirement>builder().build()));
+                .willReturn(of(Catalog.<BaseRequirement>builder().build()));
         given(repositoryMock.getCatalog("9.0.0"))
-            .willReturn(empty());
+                .willReturn(empty());
 
         // act
         Optional<File> actual = service.createCatalog("8.3.0", "9.0.0");
@@ -615,12 +613,11 @@ class CatalogServiceImplTest {
     void createCatalog_CatalogsExists_FileReturned() {
         // arrange
         given(repositoryMock.getCatalog("8.3.0"))
-            .willReturn(of(Catalog.<BaseRequirement>builder().build()));
+                .willReturn(of(Catalog.<BaseRequirement>builder().build()));
         given(repositoryMock.getCatalog("9.0.0"))
-            .willReturn(of(Catalog.<BaseRequirement>builder().build()));
+                .willReturn(of(Catalog.<BaseRequirement>builder().build()));
         given(documentServiceMock.createCatalog(any(), any(), any()))
-            .willReturn(of(File.builder().build()));
-
+                .willReturn(of(File.builder().build()));
 
         // act
         Optional<File> actual = service.createCatalog("8.3.0", "9.0.0");
@@ -651,7 +648,7 @@ class CatalogServiceImplTest {
         String base = "8.3.0";
 
         given(repositoryMock.getCatalog("8.3.0"))
-            .willReturn(empty());
+                .willReturn(empty());
 
         // act
         Optional<File> actual = service.createCatalog(base, "9.0.0");
@@ -668,10 +665,9 @@ class CatalogServiceImplTest {
         Catalog<BaseRequirement> revised = Catalog.<BaseRequirement>builder().build();
 
         given(repositoryMock.getCatalog(base))
-            .willReturn(of(Catalog.<BaseRequirement>builder().build()));
+                .willReturn(of(Catalog.<BaseRequirement>builder().build()));
         given(documentServiceMock.createCatalog(any(), any(), any()))
-            .willReturn(of(File.builder().build()));
-
+                .willReturn(of(File.builder().build()));
 
         // act
         Optional<File> actual = service.createCatalog(base, revised);

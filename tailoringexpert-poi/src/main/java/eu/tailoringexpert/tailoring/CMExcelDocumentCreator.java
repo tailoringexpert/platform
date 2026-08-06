@@ -21,18 +21,24 @@
  */
 package eu.tailoringexpert.tailoring;
 
-import eu.tailoringexpert.domain.Chapter;
-import eu.tailoringexpert.domain.DRD;
-import eu.tailoringexpert.domain.File;
-import eu.tailoringexpert.domain.Catalog;
-import eu.tailoringexpert.domain.Phase;
-import eu.tailoringexpert.domain.Tailoring;
-import eu.tailoringexpert.domain.TailoringRequirement;
-import eu.tailoringexpert.renderer.RendererRequestConfiguration;
-import eu.tailoringexpert.renderer.RendererRequestConfigurationSupplier;
-import lombok.NonNull;
-import lombok.RequiredArgsConstructor;
-import lombok.extern.log4j.Log4j2;
+import static eu.tailoringexpert.domain.File.builder;
+import static java.nio.file.Files.newInputStream;
+import static java.util.Objects.nonNull;
+import static java.util.stream.Collectors.joining;
+import static java.util.stream.IntStream.range;
+import static org.apache.poi.ss.usermodel.FillPatternType.SOLID_FOREGROUND;
+import static org.apache.poi.ss.usermodel.IndexedColors.GREY_25_PERCENT;
+
+import java.io.ByteArrayOutputStream;
+import java.nio.file.Paths;
+import java.util.Collection;
+import java.util.LinkedList;
+import java.util.Map;
+import java.util.Set;
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.atomic.AtomicReference;
+import java.util.function.BiFunction;
+
 import org.apache.poi.ss.usermodel.CellStyle;
 import org.apache.poi.ss.usermodel.IndexedColors;
 import org.apache.poi.ss.usermodel.Row;
@@ -45,27 +51,23 @@ import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Entities;
 
-import java.io.ByteArrayOutputStream;
-import java.nio.file.Paths;
-import java.util.Collection;
-import java.util.LinkedList;
-import java.util.Map;
-import java.util.Set;
-import java.util.concurrent.atomic.AtomicInteger;
-import java.util.concurrent.atomic.AtomicReference;
-import java.util.function.BiFunction;
-
-import static eu.tailoringexpert.domain.File.FileBuilder;
-import static eu.tailoringexpert.domain.File.builder;
-import static java.nio.file.Files.newInputStream;
-import static java.util.Objects.nonNull;
-import static java.util.stream.Collectors.joining;
-import static java.util.stream.IntStream.range;
-import static org.apache.poi.ss.usermodel.FillPatternType.SOLID_FOREGROUND;
-import static org.apache.poi.ss.usermodel.IndexedColors.GREY_25_PERCENT;
+import eu.tailoringexpert.domain.Catalog;
+import eu.tailoringexpert.domain.Chapter;
+import eu.tailoringexpert.domain.DRD;
+import eu.tailoringexpert.domain.File;
+import eu.tailoringexpert.domain.File.FileBuilder;
+import eu.tailoringexpert.domain.Phase;
+import eu.tailoringexpert.domain.Tailoring;
+import eu.tailoringexpert.domain.TailoringRequirement;
+import eu.tailoringexpert.renderer.RendererRequestConfiguration;
+import eu.tailoringexpert.renderer.RendererRequestConfigurationSupplier;
+import lombok.NonNull;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.log4j.Log4j2;
 
 /**
- * Create Excel Compliance Matrix file. <p>
+ * Create Excel Compliance Matrix file.
+ * <p>
  * Only chapters will be considered while generating the file.
  *
  * @author Michael Bädorf
@@ -87,30 +89,32 @@ public class CMExcelDocumentCreator implements DocumentCreator {
      */
     @Override
     public File createDocument(String docId,
-                               Tailoring tailoring,
-                               Map<String, Object> placeholders) {
+            Tailoring tailoring,
+            Map<String, Object> placeholders) {
         log.traceEntry(() -> docId, () -> tailoring.getCatalog().getVersion(), () -> placeholders);
 
         try {
-            FileBuilder builder = builder().name(docId + ".xlsx");
+            FileBuilder builder = builder().name(docId + "_i" + tailoring.getIssue() + ".xlsx");
             RendererRequestConfiguration configuration = requestConfigurationSupplier.get();
-            java.io.File template = Paths.get(configuration.getTemplateHome() + "/" + tailoring.getCatalog().getVersion() + "/cm.xlsx").toFile();
+            java.io.File template = Paths
+                    .get(configuration.getTemplateHome() + "/" + tailoring.getCatalog().getVersion() + "/cm.xlsx")
+                    .toFile();
             try (Workbook wb = new XSSFWorkbook(newInputStream(template.toPath()))) {
                 Sheet cmSheet = createCMSheet(wb);
 
                 Catalog<TailoringRequirement> catalog = tailoring.getCatalog();
                 catalog.getToc().getChapters()
-                    .forEach(chapter -> addChapter(chapter, 1, cmSheet, placeholders));
+                        .forEach(chapter -> addChapter(chapter, 1, cmSheet, placeholders));
 
                 Collection<DRDElement> drds = new LinkedList<>();
                 addDRD(catalog.getToc(), drds, tailoring.getPhases());
 
                 range(0, cmSheet.getRow(0).getPhysicalNumberOfCells())
-                    .forEach(cmSheet::autoSizeColumn);
+                        .forEach(cmSheet::autoSizeColumn);
 
                 Sheet drdSheet = createDRDSheet(wb, drds);
                 range(0, drdSheet.getRow(0).getPhysicalNumberOfCells())
-                    .forEach(drdSheet::autoSizeColumn);
+                        .forEach(drdSheet::autoSizeColumn);
 
                 try (ByteArrayOutputStream os = new ByteArrayOutputStream()) {
                     wb.write(os);
@@ -129,7 +133,8 @@ public class CMExcelDocumentCreator implements DocumentCreator {
     }
 
     /**
-     * Evaluate all applicable DRD in chapter for given phases and add them to row object.
+     * Evaluate all applicable DRD in chapter for given phases and add them to row
+     * object.
      *
      * @param chapter chapter to retrieve requirements DRDs of
      * @param rows    object to add DRDs to
@@ -137,14 +142,14 @@ public class CMExcelDocumentCreator implements DocumentCreator {
      */
     void addDRD(Chapter<TailoringRequirement> chapter, Collection<DRDElement> rows, Collection<Phase> phases) {
         drdProvider.apply(chapter, phases)
-            .entrySet()
-            .forEach(entry -> rows.add(DRDElement.builder()
-                .title(entry.getKey().getTitle())
-                .deliveryDate(entry.getKey().getDeliveryDate())
-                .requirements(entry.getValue())
-                .number(entry.getKey().getNumber())
-                .action(entry.getKey().getAction())
-                .build()));
+                .entrySet()
+                .forEach(entry -> rows.add(DRDElement.builder()
+                        .title(entry.getKey().getTitle())
+                        .deliveryDate(entry.getKey().getDeliveryDate())
+                        .requirements(entry.getValue())
+                        .number(entry.getKey().getNumber())
+                        .action(entry.getKey().getAction())
+                        .build()));
     }
 
     /**
@@ -221,20 +226,21 @@ public class CMExcelDocumentCreator implements DocumentCreator {
      * @param sheet   sheet to add elements to
      */
     protected void addChapter(Chapter<TailoringRequirement> chapter,
-                            int level,
-                            Sheet sheet,
-                            Map<String, Object> placeholders) {
+            int level,
+            Sheet sheet,
+            Map<String, Object> placeholders) {
 
         boolean applicable = chapter.getRequirements().stream().anyMatch(TailoringRequirement::getSelected);
         addRow(sheet, level, chapter.getNumber(), chapter.getName(), applicable, placeholders);
         AtomicInteger nextLevel = new AtomicInteger(level + 1);
         chapter.getChapters()
-            .forEach(subChapter -> addChapter(subChapter, nextLevel.get(), sheet, placeholders));
+                .forEach(subChapter -> addChapter(subChapter, nextLevel.get(), sheet, placeholders));
         addRequirements(chapter.getRequirements(), nextLevel.get(), sheet, placeholders);
     }
 
     /**
-     * Hook fpr adding also requirements to CM instead of only adding chapters.<p>
+     * Hook fpr adding also requirements to CM instead of only adding chapters.
+     * <p>
      * The hook itself doesn't add requirements to CM.
      *
      * @param requirements requirements to add
@@ -243,9 +249,9 @@ public class CMExcelDocumentCreator implements DocumentCreator {
      * @param placeholders placeholder to use
      */
     protected void addRequirements(Collection<TailoringRequirement> requirements,
-                                   int level,
-                                   Sheet sheet,
-                                   Map<String, Object> placeholders) {
+            int level,
+            Sheet sheet,
+            Map<String, Object> placeholders) {
         // hook for adding also requirements to cm instead of "only" chapters
     }
 
@@ -282,19 +288,19 @@ public class CMExcelDocumentCreator implements DocumentCreator {
     /**
      * Add chapter row to provided sheet.
      *
-     * @param sheet   sheet to add row to
-     * @param level   chapter hierarchy
-     * @param chapter number of chapter
-     * @param title   title of chapter
-     * @param applicable state if statement is required
+     * @param sheet        sheet to add row to
+     * @param level        chapter hierarchy
+     * @param chapter      number of chapter
+     * @param title        title of chapter
+     * @param applicable   state if statement is required
      * @param placeholders placeholders to use
      */
     protected void addRow(Sheet sheet,
-                          int level,
-                          String chapter,
-                          String title,
-                          boolean applicable,
-                          Map<String, Object> placeholders) {
+            int level,
+            String chapter,
+            String title,
+            boolean applicable,
+            Map<String, Object> placeholders) {
         Row row = sheet.createRow((short) sheet.getLastRowNum() + 1);
 
         CellStyle cellStyle;
@@ -344,10 +350,9 @@ public class CMExcelDocumentCreator implements DocumentCreator {
     private String text(String text, Map<String, Object> placeholders) {
         AtomicReference<String> updatedText = new AtomicReference<>(text);
         placeholders.entrySet()
-            .forEach(entry -> updatedText.set(updatedText.get().replace(
-                entry.getKey(),
-                nonNull(entry.getValue()) ? entry.getValue().toString() : entry.getKey())
-            ));
+                .forEach(entry -> updatedText.set(updatedText.get().replace(
+                        entry.getKey(),
+                        nonNull(entry.getValue()) ? entry.getValue().toString() : entry.getKey())));
         Document document = Jsoup.parseBodyFragment(updatedText.get());
         document.outputSettings().escapeMode(Entities.EscapeMode.xhtml);
         document.outputSettings().syntax(Document.OutputSettings.Syntax.xml);

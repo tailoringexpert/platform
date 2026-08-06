@@ -25,6 +25,7 @@ package tailoring {
         deleteTailoring(project : String, tailoring : String)
         addNote(project : String, tailoring : String, note : Note) : Optional<Tailoring>
         existsTailoring(project : String, tailoring : String) : boolean
+        setIssue(project : String, tailoring : String, issue : String) : Optional<Tailoring>
     }
 
     abstract class JPATailoringServiceRepositoryMapper {

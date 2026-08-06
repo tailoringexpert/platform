@@ -21,24 +21,25 @@
  */
 package eu.tailoringexpert.domain;
 
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-import org.mockito.Mockito;
-import tools.jackson.databind.json.JsonMapper;
-
-import java.lang.reflect.Field;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.List;
-
 import static eu.tailoringexpert.domain.Phase.A;
 import static eu.tailoringexpert.domain.Phase.B;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.catchThrowable;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.mock;
 
-@SuppressWarnings({"PMD.AvoidAccessibilityAlteration"})
+import java.lang.reflect.Field;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.List;
+
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+
+import tools.jackson.databind.json.JsonMapper;
+
+@SuppressWarnings({ "PMD.AvoidAccessibilityAlteration" })
 class ScreeningSheetParameterValueAttributeConverterTest {
 
     private ScreeningSheetParameterValueAttributeConverter converter;
@@ -58,8 +59,8 @@ class ScreeningSheetParameterValueAttributeConverterTest {
 
         // assert
         assertThat(actual)
-            .isNotNull()
-            .isEqualTo("[\"A\",\"B\"]");
+                .isNotNull()
+                .isEqualTo("[\"A\",\"B\"]");
     }
 
     @Test
@@ -72,8 +73,8 @@ class ScreeningSheetParameterValueAttributeConverterTest {
 
         // assert
         assertThat(actual)
-            .isNotNull()
-            .isEqualTo("\"Ein Beispielwert\"");
+                .isNotNull()
+                .isEqualTo("\"Ein Beispielwert\"");
     }
 
     @Test
@@ -81,7 +82,7 @@ class ScreeningSheetParameterValueAttributeConverterTest {
         // arrange
         String wert = "Ein Beispielwert";
 
-        JsonMapper objectMapperMock = Mockito.mock(JsonMapper.class);
+        JsonMapper objectMapperMock = mock(JsonMapper.class);
         Field mapperField = converter.getClass().getDeclaredField("mapper");
         mapperField.setAccessible(true);
         mapperField.set(converter, objectMapperMock);
@@ -105,8 +106,8 @@ class ScreeningSheetParameterValueAttributeConverterTest {
 
         // assert
         assertThat(actual)
-            .isNotNull()
-            .isInstanceOf(String.class);
+                .isNotNull()
+                .isInstanceOf(String.class);
     }
 
     @Test
@@ -119,8 +120,8 @@ class ScreeningSheetParameterValueAttributeConverterTest {
 
         // assert
         assertThat(actual)
-            .isNotNull()
-            .isInstanceOf(Collection.class);
+                .isNotNull()
+                .isInstanceOf(Collection.class);
     }
 
     @Test
@@ -128,7 +129,7 @@ class ScreeningSheetParameterValueAttributeConverterTest {
         // arrange
         String wert = "[\"A\",\"B\"]";
 
-        JsonMapper objectMapperMock = Mockito.mock(JsonMapper.class);
+        JsonMapper objectMapperMock = mock(JsonMapper.class);
         Field mapperField = converter.getClass().getDeclaredField("mapper");
         mapperField.setAccessible(true);
         mapperField.set(converter, objectMapperMock);

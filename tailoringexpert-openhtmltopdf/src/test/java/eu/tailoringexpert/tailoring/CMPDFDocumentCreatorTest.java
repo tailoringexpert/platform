@@ -159,6 +159,7 @@ class CMPDFDocumentCreatorTest {
 
         Tailoring tailoring = Tailoring.builder()
                 .catalog(catalog)
+                .issue("1")
                 .signatures(zeichnungen)
                 .phases(of(ZERO, A, B, C, D, E, F))
                 .build();

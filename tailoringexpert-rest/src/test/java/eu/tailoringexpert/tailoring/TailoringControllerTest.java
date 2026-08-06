@@ -1210,9 +1210,10 @@ class TailoringControllerTest {
         given(serviceMock.createTailoringsDiffDocument("SAMPLE", "master", "SAMPLE2", "master")).willReturn(empty());
 
         // act
-        ResultActions actual = mockMvc.perform(get("/project/{project}/tailoring/{tailoring}/compare/{cproject}/{ctailoring}",
-                "SAMPLE", "master", "SAMPLE2", "master")
-                .accept("application/pdf"));
+        ResultActions actual = mockMvc
+                .perform(get("/project/{project}/tailoring/{tailoring}/compare/{cproject}/{ctailoring}",
+                        "SAMPLE", "master", "SAMPLE2", "master")
+                        .accept("application/pdf"));
 
         // assert
         actual.andExpect(status().isNotFound());
@@ -1249,5 +1250,39 @@ class TailoringControllerTest {
                 .andExpect(header().string("Access-Control-Expose-Headers", "Content-Disposition"));
 
         assertThatNoException();
+    }
+
+    @Test
+    void putIssue_TailoringNotExists_StateNotFound() throws Exception {
+        // arrange
+        given(serviceMock.updateIssue("SAMPLE", "master", "2")).willReturn(empty());
+
+        // act
+        ResultActions actual = mockMvc.perform(put("/project/{project}/tailoring/{tailoring}/issue/{issue}", "SAMPLE",
+                "master", "2"));
+
+        // assert
+        actual.andExpect(status().isNotFound());
+        assertThatNoException();
+    }
+
+    @Test
+    void putIssue_TailoringExists_IssueCreated() throws Exception {
+        // arrange
+        TailoringInformation tailoringInformation = TailoringInformation.builder().build();
+        given(serviceMock.updateIssue("SAMPLE", "master", "2"))
+                .willReturn(Optional.of(tailoringInformation));
+
+        ArgumentCaptor<PathContextBuilder> pathContextCaptor = forClass(PathContextBuilder.class);
+        given(mapperMock.toResource(pathContextCaptor.capture(), eq(tailoringInformation)))
+                .willReturn(TailoringResource.builder().build());
+
+        // act
+        ResultActions actual = mockMvc.perform(put("/project/{project}/tailoring/{tailoring}/issue/{issue}", "SAMPLE",
+                "master", "2"));
+
+        // assert
+        actual.andExpect(status().isOk());
+        verify(serviceMock, times(1)).updateIssue("SAMPLE", "master", "2");
     }
 }

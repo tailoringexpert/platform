@@ -21,6 +21,25 @@
  */
 package eu.tailoringexpert.tailoring;
 
+import static java.nio.charset.StandardCharsets.UTF_8;
+import static java.util.Arrays.asList;
+import static java.util.List.copyOf;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+import java.util.Optional;
+
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+
 import eu.tailoringexpert.domain.DocumentSignature;
 import eu.tailoringexpert.domain.DocumentSignatureEntity;
 import eu.tailoringexpert.domain.DocumentSignatureState;
@@ -40,22 +59,6 @@ import eu.tailoringexpert.repository.DokumentSigneeRepository;
 import eu.tailoringexpert.repository.ProjectRepository;
 import eu.tailoringexpert.repository.SelectionVectorProfileRepository;
 import eu.tailoringexpert.repository.TailoringRepository;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-import java.util.Optional;
-
-import static java.nio.charset.StandardCharsets.UTF_8;
-import static java.util.Arrays.asList;
-import static java.util.List.copyOf;
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.BDDMockito.given;
-import static org.mockito.Mockito.*;
 
 class JPATailoringServiceRepositoryTest {
 
@@ -74,12 +77,11 @@ class JPATailoringServiceRepositoryTest {
         this.selectionVectorProfileRepositoryMock = mock(SelectionVectorProfileRepository.class);
         this.dokumentSigneeRepositoryMock = mock(DokumentSigneeRepository.class);
         this.repository = new JPATailoringServiceRepository(
-            mapperMock,
-            projectRepositoryMock,
-            tailoringRepositoryMock,
-            selectionVectorProfileRepositoryMock,
-            dokumentSigneeRepositoryMock
-        );
+                mapperMock,
+                projectRepositoryMock,
+                tailoringRepositoryMock,
+                selectionVectorProfileRepositoryMock,
+                dokumentSigneeRepositoryMock);
     }
 
     @Test
@@ -115,8 +117,8 @@ class JPATailoringServiceRepositoryTest {
         given(projectRepositoryMock.findTailoring("SAMPLE", "master2")).willReturn(null);
 
         Tailoring tailoring = Tailoring.builder()
-            .name("master2")
-            .build();
+                .name("master2")
+                .build();
 
         // act
         Tailoring actual = repository.updateTailoring("SAMPLE", tailoring);
@@ -130,14 +132,14 @@ class JPATailoringServiceRepositoryTest {
     void updateTailoring_TailoringExists_TailoringUpdated() {
         // arrange
         TailoringEntity tailoringToUpdate = TailoringEntity.builder()
-            .name("master")
-            .build();
+                .name("master")
+                .build();
 
         given(projectRepositoryMock.findTailoring("SAMPLE", "master")).willReturn(tailoringToUpdate);
 
         Tailoring tailoring = Tailoring.builder()
-            .name("master")
-            .build();
+                .name("master")
+                .build();
 
         given(mapperMock.toDomain(tailoringToUpdate)).willReturn(tailoring);
 
@@ -153,7 +155,7 @@ class JPATailoringServiceRepositoryTest {
     void updateName_ProjectNull_NameNotUpdated() {
         // arrange
         given(projectRepositoryMock.findTailoring(null, "master"))
-            .willReturn(null);
+                .willReturn(null);
 
         // act
         Optional<Tailoring> actual = repository.updateName(null, "master1", "test");
@@ -181,9 +183,9 @@ class JPATailoringServiceRepositoryTest {
         given(projectRepositoryMock.findTailoring("DUMMY", "master")).willReturn(tailoring);
 
         given(mapperMock.toDomain(tailoring))
-            .willAnswer(invocation -> Tailoring.builder()
-                .name(((TailoringEntity) invocation.getArgument(0)).getName())
-                .build());
+                .willAnswer(invocation -> Tailoring.builder()
+                        .name(((TailoringEntity) invocation.getArgument(0)).getName())
+                        .build());
 
         // act
         Optional<Tailoring> actual = repository.updateName("DUMMY", "master", "test");
@@ -199,7 +201,8 @@ class JPATailoringServiceRepositoryTest {
         given(projectRepositoryMock.findTailoring("DUMMY", "master")).willReturn(null);
 
         // act
-        Optional<DocumentSignature> actual = repository.updateDocumentSignature("DUMMY", "master", DocumentSignature.builder().build());
+        Optional<DocumentSignature> actual = repository.updateDocumentSignature("DUMMY", "master",
+                DocumentSignature.builder().build());
 
         // assert
         assertThat(actual).isEmpty();
@@ -209,26 +212,24 @@ class JPATailoringServiceRepositoryTest {
     void updateDocumentSignature_FacultyNotExists_EmptyReturned() {
         // arrange
         DocumentSignatureEntity signatureEntity = DocumentSignatureEntity.builder()
-            .state(DocumentSignatureState.AGREED)
-            .faculty("SW")
-            .signee("Hans Dampf")
-            .applicable(true)
-            .build();
+                .state(DocumentSignatureState.AGREED)
+                .faculty("SW")
+                .signee("Hans Dampf")
+                .applicable(true)
+                .build();
         given(projectRepositoryMock.findTailoring("DUMMY", "master"))
-            .willReturn(TailoringEntity.builder()
-                .signatures(asList(
-                    signatureEntity
-                ))
-                .build()
-            );
+                .willReturn(TailoringEntity.builder()
+                        .signatures(asList(
+                                signatureEntity))
+                        .build());
 
         given(mapperMock.toDomain(signatureEntity)).willReturn(DocumentSignature.builder().build());
         DocumentSignature zeichnung = DocumentSignature.builder()
-            .state(DocumentSignatureState.RELEASED)
-            .faculty("Safety")
-            .signee("Hans Dampf")
-            .applicable(false)
-            .build();
+                .state(DocumentSignatureState.RELEASED)
+                .faculty("Safety")
+                .signee("Hans Dampf")
+                .applicable(false)
+                .build();
 
         // act
         Optional<DocumentSignature> actual = repository.updateDocumentSignature("DUMMY", "master", zeichnung);
@@ -243,26 +244,24 @@ class JPATailoringServiceRepositoryTest {
     void updateDocumentSignature_SignaturesExists_NeueZeichnungWirdZurueckGegeben() {
         // arrange
         DocumentSignatureEntity signatureEntity = DocumentSignatureEntity.builder()
-            .state(DocumentSignatureState.AGREED)
-            .faculty("SW")
-            .signee("Hans Dampf")
-            .applicable(true)
-            .build();
+                .state(DocumentSignatureState.AGREED)
+                .faculty("SW")
+                .signee("Hans Dampf")
+                .applicable(true)
+                .build();
         given(projectRepositoryMock.findTailoring("DUMMY", "master"))
-            .willReturn(TailoringEntity.builder()
-                .signatures(asList(
-                    signatureEntity
-                ))
-                .build()
-            );
+                .willReturn(TailoringEntity.builder()
+                        .signatures(asList(
+                                signatureEntity))
+                        .build());
 
         given(mapperMock.toDomain(signatureEntity)).willReturn(DocumentSignature.builder().build());
         DocumentSignature signature = DocumentSignature.builder()
-            .state(DocumentSignatureState.RELEASED)
-            .faculty("SW")
-            .signee("Hans Dampf")
-            .applicable(false)
-            .build();
+                .state(DocumentSignatureState.RELEASED)
+                .faculty("SW")
+                .signee("Hans Dampf")
+                .applicable(false)
+                .build();
 
         // act
         Optional<DocumentSignature> actual = repository.updateDocumentSignature("DUMMY", "master", signature);
@@ -277,10 +276,10 @@ class JPATailoringServiceRepositoryTest {
     void getDefaultSignatures_NoInputNeede_SignaturesReturned() {
         // arrange
         DocumentSigneeEntity signee = DocumentSigneeEntity.builder()
-            .state(DocumentSignatureState.AGREED)
-            .faculty("SW")
-            .signee("Hans Dampf")
-            .build();
+                .state(DocumentSignatureState.AGREED)
+                .faculty("SW")
+                .signee("Hans Dampf")
+                .build();
         given(dokumentSigneeRepositoryMock.findAll()).willReturn(asList(signee));
         given(mapperMock.getDefaultSignatures(signee)).willReturn(DocumentSignature.builder().build());
 
@@ -289,8 +288,8 @@ class JPATailoringServiceRepositoryTest {
 
         // assert
         assertThat(actual)
-            .isNotNull()
-            .hasSize(1);
+                .isNotNull()
+                .hasSize(1);
 
     }
 
@@ -298,8 +297,8 @@ class JPATailoringServiceRepositoryTest {
     void getSelectionVectorProfile_NoParameterNeeded_ProfilesReturned() {
         // arrange
         SelectionVectorProfileEntity selectionVectorProfile = SelectionVectorProfileEntity.builder()
-            .name("Test1")
-            .build();
+                .name("Test1")
+                .build();
         given(selectionVectorProfileRepositoryMock.findAll()).willReturn(asList(selectionVectorProfile));
 
         given(mapperMock.toDomain(selectionVectorProfile)).willReturn(SelectionVectorProfile.builder().build());
@@ -309,8 +308,8 @@ class JPATailoringServiceRepositoryTest {
 
         // assert
         assertThat(actual)
-            .isNotNull()
-            .hasSize(1);
+                .isNotNull()
+                .hasSize(1);
     }
 
     @Test
@@ -329,10 +328,10 @@ class JPATailoringServiceRepositoryTest {
     void getScreeningSheetFile_ScreeningSheetWithoutFile_EmptyReturned() {
         // arrange
         TailoringEntity tailoring = TailoringEntity.builder()
-            .screeningSheet(ScreeningSheetEntity.builder()
-                .data(null)
-                .build())
-            .build();
+                .screeningSheet(ScreeningSheetEntity.builder()
+                        .data(null)
+                        .build())
+                .build();
         given(projectRepositoryMock.findTailoring("DUMMY", "master")).willReturn(tailoring);
 
         // act
@@ -346,10 +345,10 @@ class JPATailoringServiceRepositoryTest {
     void getScreeningSheetFile_ScreeningSheetFileExists_ByteArrayReturned() {
         // arrange
         TailoringEntity tailoring = TailoringEntity.builder()
-            .screeningSheet(ScreeningSheetEntity.builder()
-                .data("ScreeningSheet".getBytes(UTF_8))
-                .build())
-            .build();
+                .screeningSheet(ScreeningSheetEntity.builder()
+                        .data("ScreeningSheet".getBytes(UTF_8))
+                        .build())
+                .build();
         given(projectRepositoryMock.findTailoring("DUMMY", "master")).willReturn(tailoring);
 
         // act
@@ -375,9 +374,9 @@ class JPATailoringServiceRepositoryTest {
     void getScreeningSheet_ScreeningSheetVorhandenNull_EmptyReturned() {
         // arrange
         TailoringEntity tailoring = TailoringEntity.builder()
-            .screeningSheet(ScreeningSheetEntity.builder()
-                .build())
-            .build();
+                .screeningSheet(ScreeningSheetEntity.builder()
+                        .build())
+                .build();
         given(projectRepositoryMock.findTailoring("DUMMY", "master")).willReturn(tailoring);
         given(mapperMock.toScreeningSheetParameters(tailoring.getScreeningSheet())).willReturn(null);
 
@@ -393,11 +392,12 @@ class JPATailoringServiceRepositoryTest {
     void getScreeningSheet_ScreeningSheetExists_ScreeningSheetReturnd() {
         // arrange
         TailoringEntity projektPhase = TailoringEntity.builder()
-            .screeningSheet(ScreeningSheetEntity.builder()
-                .build())
-            .build();
+                .screeningSheet(ScreeningSheetEntity.builder()
+                        .build())
+                .build();
         given(projectRepositoryMock.findTailoring("DUMMY", "master")).willReturn(projektPhase);
-        given(mapperMock.toScreeningSheetParameters(projektPhase.getScreeningSheet())).willReturn(ScreeningSheet.builder().build());
+        given(mapperMock.toScreeningSheetParameters(projektPhase.getScreeningSheet()))
+                .willReturn(ScreeningSheet.builder().build());
 
         // act
         Optional<ScreeningSheet> actual = repository.getScreeningSheet("DUMMY", "master");
@@ -433,9 +433,9 @@ class JPATailoringServiceRepositoryTest {
     void getTailoring_TailoringExists_TailoringReturned() {
         // arrange
         TailoringEntity tailoring = TailoringEntity.builder()
-            .screeningSheet(ScreeningSheetEntity.builder()
-                .build())
-            .build();
+                .screeningSheet(ScreeningSheetEntity.builder()
+                        .build())
+                .build();
         given(projectRepositoryMock.findTailoring("DUMMY", "master")).willReturn(tailoring);
 
         given(mapperMock.toDomain(tailoring)).willReturn(Tailoring.builder().build());
@@ -480,7 +480,7 @@ class JPATailoringServiceRepositoryTest {
         // arrange
         Note note = Note.builder().build();
         given(projectRepositoryMock.findTailoring("SAMPLE", "master"))
-            .willReturn(null);
+                .willReturn(null);
 
         // act
         Optional<Tailoring> actual = repository.addNote("SAMPLE", "master", note);
@@ -520,7 +520,7 @@ class JPATailoringServiceRepositoryTest {
     void setState_TailoringNotExists_EmptyReturned() {
         // arrange
         given(projectRepositoryMock.findTailoring("SAMPLE", "master"))
-            .willReturn(null);
+                .willReturn(null);
 
         // act
         Optional<Tailoring> actual = repository.setState("SAMPLE", "master", TailoringState.CREATED);
@@ -534,7 +534,7 @@ class JPATailoringServiceRepositoryTest {
         // arrange
         TailoringEntity entity = TailoringEntity.builder().state(TailoringState.CREATED).build();
         given(projectRepositoryMock.findTailoring("SAMPLE", "master"))
-            .willReturn(entity);
+                .willReturn(entity);
 
         given(mapperMock.toDomain(entity)).willAnswer(invocation -> {
             TailoringEntity te = invocation.getArgument(0);
@@ -559,5 +559,38 @@ class JPATailoringServiceRepositoryTest {
 
         // assert
         verify(projectRepositoryMock, times(1)).existsTailoring("SAMPLE", "master");
+    }
+
+    @Test
+    void setIssue_TailoringNotExists_EmptyReturned() {
+        // arrange
+        given(projectRepositoryMock.findTailoring("SAMPLE", "master"))
+                .willReturn(null);
+
+        // act
+        Optional<Tailoring> actual = repository.setIssue("SAMPLE", "master", "2");
+
+        // assert
+        assertThat(actual).isEmpty();
+    }
+
+    @Test
+    void setIssue_TailoringExists_UpdatedTailoringReturned() {
+        // arrange
+        TailoringEntity entity = TailoringEntity.builder().state(TailoringState.CREATED).build();
+        given(projectRepositoryMock.findTailoring("SAMPLE", "master"))
+                .willReturn(entity);
+
+        given(mapperMock.toDomain(entity)).willAnswer(invocation -> {
+            TailoringEntity te = invocation.getArgument(0);
+            return Tailoring.builder().issue(te.getIssue()).build();
+        });
+
+        // act
+        Optional<Tailoring> actual = repository.setIssue("SAMPLE", "master", "2");
+
+        // assert
+        assertThat(actual).isPresent();
+        assertThat(actual.get().getIssue()).isEqualTo("2");
     }
 }

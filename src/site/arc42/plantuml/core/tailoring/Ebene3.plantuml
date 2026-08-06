@@ -66,6 +66,7 @@ package tailoring {
         getNote(project : String, tailoring : String, note : Integer) : Optional<Note>
         unselectSelectedRequirementsAccordingToPhases(project : String, tailoring : String) : Optional<Boolean>
         createTailoringsDiffDocument(baseProject : String, baseTailoring : String, compareProject : String, compareTailoring  String) : Optional<File>
+        updateIssue(project : String, tailoring : String, issue : String) : Optional<TailoringInformation>
     }
 
     interface AttachmentService {
@@ -100,6 +101,7 @@ package tailoring {
         addNote(project : String, tailoring : String, note : Note) : Optional<Tailoring>
         existsTailoring(project : String, tailoring : String) : boolean
         getBaseCatalog(version : String) : Optional<Catalog<BaseRequirement>>
+        setIssue(project : String, tailoring : String, issue : String) : Optional<Tailoring>
     }
 
     interface DocumentService {

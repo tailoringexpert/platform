@@ -21,6 +21,24 @@
  */
 package eu.tailoringexpert.catalog;
 
+import static eu.tailoringexpert.domain.Phase.A;
+import static eu.tailoringexpert.domain.Phase.B;
+import static eu.tailoringexpert.domain.Phase.C;
+import static eu.tailoringexpert.domain.Phase.D;
+import static eu.tailoringexpert.domain.Phase.E;
+import static eu.tailoringexpert.domain.Phase.F;
+import static eu.tailoringexpert.domain.Phase.ZERO;
+import static java.util.Comparator.comparing;
+import static java.util.List.of;
+
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.Map;
+import java.util.Optional;
+import java.util.Set;
+import java.util.function.BiFunction;
+
 import eu.tailoringexpert.domain.BaseRequirement;
 import eu.tailoringexpert.domain.Catalog;
 import eu.tailoringexpert.domain.Chapter;
@@ -33,23 +51,6 @@ import eu.tailoringexpert.renderer.PDFEngine;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
-
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.Map;
-import java.util.Set;
-import java.util.function.BiFunction;
-
-import static eu.tailoringexpert.domain.Phase.A;
-import static eu.tailoringexpert.domain.Phase.B;
-import static eu.tailoringexpert.domain.Phase.C;
-import static eu.tailoringexpert.domain.Phase.D;
-import static eu.tailoringexpert.domain.Phase.E;
-import static eu.tailoringexpert.domain.Phase.F;
-import static eu.tailoringexpert.domain.Phase.ZERO;
-import static java.util.Comparator.comparing;
-import static java.util.List.of;
 
 /**
  * Create a base PDF with all in base catalog defined catalog.
@@ -69,7 +70,6 @@ public class BaseDRDPDFDocumentCreator implements DocumentCreator {
     @NonNull
     private PDFEngine pdfEngine;
 
-
     /**
      * {@inheritDoc}
      */
@@ -86,7 +86,7 @@ public class BaseDRDPDFDocumentCreator implements DocumentCreator {
         addDRD(catalog.getToc(), catalog.getVersion(), drds);
 
         String html = templateEngine.process(catalog.getVersion() + "/basedrd", parameter);
-        File result = pdfEngine.process(docId, html, catalog.getVersion() + "/drd");
+        File result = pdfEngine.process(docId, Optional.of(catalog.getVersion()), html, catalog.getVersion() + "/drd");
 
         log.traceExit();
         return result;
@@ -99,13 +99,13 @@ public class BaseDRDPDFDocumentCreator implements DocumentCreator {
      */
     void addDRD(Chapter<BaseRequirement> chapter, String catalogVersion, Collection<DRDFragment> rows) {
         drdProvider.apply(chapter, of(ZERO, A, B, C, D, E, F)).keySet()
-            .stream()
-            .sorted(comparing(DRD::getNumber))
-            .map(drd -> DRDFragment.builder()
-                .name(drd.getTitle())
-                .number(drd.getNumber())
-                .fragment(catalogVersion + "/drd/drd-" + drd.getNumber())
-                .build())
-            .forEachOrdered(rows::add);
+                .stream()
+                .sorted(comparing(DRD::getNumber))
+                .map(drd -> DRDFragment.builder()
+                        .name(drd.getTitle())
+                        .number(drd.getNumber())
+                        .fragment(catalogVersion + "/drd/drd-" + drd.getNumber())
+                        .build())
+                .forEachOrdered(rows::add);
     }
 }

@@ -21,24 +21,25 @@
  */
 package eu.tailoringexpert.requirement;
 
-import eu.tailoringexpert.domain.TailoringRequirementChangeEntity;
-import eu.tailoringexpert.domain.TailoringRequirementEntity;
-import eu.tailoringexpert.repository.TailoringRequirementChangeRepository;
-import lombok.extern.log4j.Log4j2;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-import org.mockito.MockedStatic;
-
-import java.time.ZoneId;
-import java.time.ZonedDateTime;
-import java.util.function.Supplier;
-
 import static java.lang.Boolean.FALSE;
 import static java.lang.Boolean.TRUE;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.mockStatic;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
+
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
+import java.util.function.Supplier;
+
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.mockito.MockedStatic;
+
+import eu.tailoringexpert.domain.TailoringRequirementChangeEntity;
+import eu.tailoringexpert.domain.TailoringRequirementEntity;
+import eu.tailoringexpert.repository.TailoringRequirementChangeRepository;
+import lombok.extern.log4j.Log4j2;
 
 @Log4j2
 class RequirementChangeLogHandlerTest {
@@ -53,76 +54,71 @@ class RequirementChangeLogHandlerTest {
         this.tailoringRequirementRepositoryMock = mock(TailoringRequirementChangeRepository.class);
 
         this.logHandler = new RequirementChangeLogHandler(
-            this.usernameMock,
-            this.tailoringRequirementRepositoryMock
-        );
+                this.usernameMock,
+                this.tailoringRequirementRepositoryMock);
     }
 
     @Test
     void accept_TextChanged_TailoringRequirementTextChangeCreated() {
         // arrange
         TailoringRequirementEntity original = TailoringRequirementEntity.builder()
-            .id(1L)
-            .text("old")
-            .selected(FALSE)
-            .build();
+                .id(1L)
+                .text("old")
+                .selected(FALSE)
+                .build();
         TailoringRequirementEntity revised = TailoringRequirementEntity.builder()
-            .id(1L)
-            .text("new")
-            .selected(FALSE)
-            .build();
+                .id(1L)
+                .text("new")
+                .selected(FALSE)
+                .build();
 
-        ZonedDateTime now =
-            ZonedDateTime.of(2020, 12, 1, 8, 0, 0, 0, ZoneId.systemDefault());
+        ZonedDateTime now = ZonedDateTime.of(2020, 12, 1, 8, 0, 0, 0, ZoneId.systemDefault());
 
         // act
         try (MockedStatic<ZonedDateTime> dateTimeMock = mockStatic(ZonedDateTime.class)) {
-            dateTimeMock.when(ZonedDateTime::now).thenReturn(now);
+            dateTimeMock.when(() -> ZonedDateTime.now(ZoneId.systemDefault())).thenReturn(now);
             logHandler.accept(original, revised);
         }
 
         // assert
         verify(tailoringRequirementRepositoryMock, times(1)).save(TailoringRequirementChangeEntity.builder()
-            .changeType("TEXT")
-            .requirementId(1L)
-            .modificationTimestamp(now)
-            .old("old")
-            .changed("new")
-            .build()
-        );
+                .changeType("TEXT")
+                .requirementId(1L)
+                .modificationTimestamp(now)
+                .old("old")
+                .changed("new")
+                .build());
     }
 
     @Test
     void accept_StatetChanged_TailoringRequirementStateChangeCreated() {
         // arrange
         TailoringRequirementEntity original = TailoringRequirementEntity.builder()
-            .id(1L)
-            .text("old")
-            .selected(FALSE)
-            .build();
+                .id(1L)
+                .text("old")
+                .selected(FALSE)
+                .build();
         TailoringRequirementEntity revised = TailoringRequirementEntity.builder()
-            .id(1L)
-            .text("old")
-            .selected(TRUE)
-            .build();
+                .id(1L)
+                .text("old")
+                .selected(TRUE)
+                .build();
 
-        ZonedDateTime now =
-            ZonedDateTime.of(2020, 12, 1, 8, 0, 0, 0, ZoneId.systemDefault());
+        ZonedDateTime now = ZonedDateTime.of(2020, 12, 1, 8, 0, 0, 0, ZoneId.systemDefault());
 
         // act
         try (MockedStatic<ZonedDateTime> dateTimeMock = mockStatic(ZonedDateTime.class)) {
-            dateTimeMock.when(ZonedDateTime::now).thenReturn(now);
+            dateTimeMock.when(() -> ZonedDateTime.now(ZoneId.systemDefault())).thenReturn(now);
             logHandler.accept(original, revised);
         }
 
         // assert
         verify(tailoringRequirementRepositoryMock, times(1)).save(TailoringRequirementChangeEntity.builder()
-            .requirementId(1L)
-            .changeType("SELECTED")
-            .modificationTimestamp(now)
-            .old(String.valueOf(FALSE))
-            .changed(String.valueOf(TRUE))
-            .build()
-        );
+                .requirementId(1L)
+                .changeType("SELECTED")
+                .modificationTimestamp(now)
+                .old(String.valueOf(FALSE))
+                .changed(String.valueOf(TRUE))
+                .build());
     }
 }

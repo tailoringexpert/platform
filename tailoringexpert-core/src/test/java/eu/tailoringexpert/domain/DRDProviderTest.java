@@ -21,9 +21,14 @@
  */
 package eu.tailoringexpert.domain;
 
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-import org.mockito.Mockito;
+import static java.util.List.of;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 
 import java.util.Collection;
 import java.util.Collections;
@@ -33,13 +38,8 @@ import java.util.Set;
 import java.util.function.BiPredicate;
 import java.util.function.Predicate;
 
-import static java.util.List.of;
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.BDDMockito.given;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 class DRDProviderTest {
 
@@ -49,13 +49,11 @@ class DRDProviderTest {
 
     @BeforeEach
     void beforeEach() {
-        this.predicateMock = Mockito.mock(BiPredicate.class);
+        this.predicateMock = mock(BiPredicate.class);
         this.provider = new DRDProvider(
-            (Predicate<TailoringRequirement>) requirement -> ((TailoringRequirement) requirement).getSelected(),
-            predicateMock
-        );
+                (Predicate<TailoringRequirement>) requirement -> ((TailoringRequirement) requirement).getSelected(),
+                predicateMock);
     }
-
 
     @Test
     void apply_DRDNotInPhases_EmptyMapReturned() {
@@ -64,49 +62,44 @@ class DRDProviderTest {
         DRD drd0101 = createDRD("01.01", "CDR");
         DRD drd0102 = createDRD("01.02", "PDR");
         TailoringRequirement requirement0101 = TailoringRequirement.builder()
-            .selected(true)
-            .drds(of(drd0101, drd0102))
-            .build();
+                .selected(true)
+                .drds(of(drd0101, drd0102))
+                .build();
 
         DRD drd0103 = createDRD("01.03", "CRR");
         TailoringRequirement requirement0102 = TailoringRequirement.builder()
-            .selected(false)
-            .drds(of(drd0103))
-            .build();
+                .selected(false)
+                .drds(of(drd0103))
+                .build();
 
         DRD drd1101 = createDRD("11.01", "FAR");
         TailoringRequirement requirement1101 = TailoringRequirement.builder()
-            .selected(true)
-            .drds(of(drd1101))
-            .build();
+                .selected(true)
+                .drds(of(drd1101))
+                .build();
 
         Catalog<TailoringRequirement> catalog = Catalog.<TailoringRequirement>builder()
-            .toc(Chapter.<TailoringRequirement>builder()
-                .name("/")
-                .chapters(of(
-                        Chapter.<TailoringRequirement>builder()
-                            .number("1")
-                            .requirements(of(
-                                requirement0101,
-                                requirement0102
-                            ))
-                            .chapters(of(
+                .toc(Chapter.<TailoringRequirement>builder()
+                        .name("/")
+                        .chapters(of(
                                 Chapter.<TailoringRequirement>builder()
-                                    .number("1.1")
-                                    .requirements(of(
-                                        requirement1101
-                                    ))
-                                    .build()
+                                        .number("1")
+                                        .requirements(of(
+                                                requirement0101,
+                                                requirement0102))
+                                        .chapters(of(
+                                                Chapter.<TailoringRequirement>builder()
+                                                        .number("1.1")
+                                                        .requirements(of(
+                                                                requirement1101))
+                                                        .build()
 
-                            ))
-                            .build()
-                    )
-                ).build()
-            )
-            .build();
+                                        ))
+                                        .build()))
+                        .build())
+                .build();
 
         List<Phase> phases = Collections.emptyList();
-
 
         // act
         Map<DRD, Set<String>> actual = provider.apply(catalog.getChapter("1").get(), phases);
@@ -122,68 +115,62 @@ class DRDProviderTest {
         DRD drd0101 = createDRD("01.01", "CDR");
         DRD drd0102 = createDRD("01.02", "PDR");
         TailoringRequirement requirement0101 = TailoringRequirement.builder()
-            .selected(true)
-            .drds(of(drd0101, drd0102))
-            .build();
+                .selected(true)
+                .drds(of(drd0101, drd0102))
+                .build();
 
         DRD drd0103 = createDRD("01.03", "CRR");
         TailoringRequirement requirement0102 = TailoringRequirement.builder()
-            .selected(false)
-            .drds(of(drd0103))
-            .build();
+                .selected(false)
+                .drds(of(drd0103))
+                .build();
 
         DRD drd1101 = createDRD("11.01", "FAR");
         TailoringRequirement requirement1101 = TailoringRequirement.builder()
-            .selected(true)
-            .drds(of(drd1101))
-            .build();
+                .selected(true)
+                .drds(of(drd1101))
+                .build();
 
         Catalog<TailoringRequirement> catalog = Catalog.<TailoringRequirement>builder()
-            .toc(Chapter.<TailoringRequirement>builder()
-                .name("/")
-                .chapters(of(
-                        Chapter.<TailoringRequirement>builder()
-                            .number("1")
-                            .requirements(of(
-                                requirement0101,
-                                requirement0102
-                            ))
-                            .chapters(of(
+                .toc(Chapter.<TailoringRequirement>builder()
+                        .name("/")
+                        .chapters(of(
                                 Chapter.<TailoringRequirement>builder()
-                                    .number("1.1")
-                                    .requirements(of(
-                                        requirement1101
-                                    ))
-                                    .build()
+                                        .number("1")
+                                        .requirements(of(
+                                                requirement0101,
+                                                requirement0102))
+                                        .chapters(of(
+                                                Chapter.<TailoringRequirement>builder()
+                                                        .number("1.1")
+                                                        .requirements(of(
+                                                                requirement1101))
+                                                        .build()
 
-                            ))
-                            .build()
-                    )
-                ).build()
-            )
-            .build();
+                                        ))
+                                        .build()))
+                        .build())
+                .build();
 
         List<Phase> phases = of(
-            Phase.ZERO,
-            Phase.A,
-            Phase.B,
-            Phase.C,
-            Phase.D,
-            Phase.E,
-            Phase.F
-        );
+                Phase.ZERO,
+                Phase.A,
+                Phase.B,
+                Phase.C,
+                Phase.D,
+                Phase.E,
+                Phase.F);
         given(predicateMock.test("CDR", phases)).willReturn(true);
         given(predicateMock.test("PDR", phases)).willReturn(true);
         given(predicateMock.test("FAR", phases)).willReturn(true);
-
 
         // act
         Map<DRD, Set<String>> actual = provider.apply(catalog.getChapter("1").get(), phases);
 
         // assert
         assertThat(actual)
-            .hasSize(3)
-            .containsOnlyKeys(drd0101, drd0102, drd1101);
+                .hasSize(3)
+                .containsOnlyKeys(drd0101, drd0102, drd1101);
 
         verify(predicateMock, times(3)).test(anyString(), eq(phases));
     }
@@ -194,68 +181,62 @@ class DRDProviderTest {
         DRD drd0101 = createDRD("01.01", "CDR");
         DRD drd0102 = createDRD("01.02", "PDR");
         TailoringRequirement requirement0101 = TailoringRequirement.builder()
-            .selected(true)
-            .drds(of(drd0101, drd0102))
-            .build();
+                .selected(true)
+                .drds(of(drd0101, drd0102))
+                .build();
 
         DRD drd0103 = createDRD("01.03", "CRR");
         TailoringRequirement requirement0102 = TailoringRequirement.builder()
-            .selected(false)
-            .drds(of(drd0103))
-            .build();
+                .selected(false)
+                .drds(of(drd0103))
+                .build();
 
         DRD drd1101 = createDRD("11.01", "FAR");
         TailoringRequirement requirement1101 = TailoringRequirement.builder()
-            .selected(true)
-            .drds(of(drd1101))
-            .build();
+                .selected(true)
+                .drds(of(drd1101))
+                .build();
 
         Catalog<TailoringRequirement> catalog = Catalog.<TailoringRequirement>builder()
-            .toc(Chapter.<TailoringRequirement>builder()
-                .name("/")
-                .chapters(of(
-                        Chapter.<TailoringRequirement>builder()
-                            .number("1")
-                            .requirements(of(
-                                requirement0101,
-                                requirement0102
-                            ))
-                            .chapters(of(
+                .toc(Chapter.<TailoringRequirement>builder()
+                        .name("/")
+                        .chapters(of(
                                 Chapter.<TailoringRequirement>builder()
-                                    .number("1.1")
-                                    .requirements(of(
-                                        requirement1101
-                                    ))
-                                    .build()
+                                        .number("1")
+                                        .requirements(of(
+                                                requirement0101,
+                                                requirement0102))
+                                        .chapters(of(
+                                                Chapter.<TailoringRequirement>builder()
+                                                        .number("1.1")
+                                                        .requirements(of(
+                                                                requirement1101))
+                                                        .build()
 
-                            ))
-                            .build()
-                    )
-                ).build()
-            )
-            .build();
+                                        ))
+                                        .build()))
+                        .build())
+                .build();
 
         List<Phase> phases = of(
-            Phase.ZERO,
-            Phase.A,
-            Phase.B,
-            Phase.C,
-            Phase.D,
-            Phase.E,
-            Phase.F
-        );
+                Phase.ZERO,
+                Phase.A,
+                Phase.B,
+                Phase.C,
+                Phase.D,
+                Phase.E,
+                Phase.F);
         given(predicateMock.test("CDR", phases)).willReturn(true);
         given(predicateMock.test("PDR", phases)).willReturn(true);
         given(predicateMock.test("FAR", phases)).willReturn(false);
-
 
         // act
         Map<DRD, Set<String>> actual = provider.apply(catalog.getChapter("1").get(), phases);
 
         // assert
         assertThat(actual)
-            .hasSize(2)
-            .containsOnlyKeys(drd0101, drd0102);
+                .hasSize(2)
+                .containsOnlyKeys(drd0101, drd0102);
 
         verify(predicateMock, times(3)).test(anyString(), eq(phases));
     }
@@ -265,60 +246,55 @@ class DRDProviderTest {
         // arrange
         DRD drd0101 = createDRD("01.01", "CDR");
         TailoringRequirement requirement0101 = TailoringRequirement.builder()
-            .selected(true)
-            .drds(of(drd0101))
-            .build();
+                .selected(true)
+                .drds(of(drd0101))
+                .build();
 
         TailoringRequirement requirement0102 = TailoringRequirement.builder()
-            .selected(true)
-            .drds(of(drd0101))
-            .build();
+                .selected(true)
+                .drds(of(drd0101))
+                .build();
 
         Catalog<TailoringRequirement> catalog = Catalog.<TailoringRequirement>builder()
-            .toc(Chapter.<TailoringRequirement>builder()
-                .name("/")
-                .chapters(of(
-                        Chapter.<TailoringRequirement>builder()
-                            .number("1")
-                            .requirements(of(
-                                requirement0101,
-                                requirement0102
-                            ))
-                            .build()
-                    )
-                ).build()
-            )
-            .build();
+                .toc(Chapter.<TailoringRequirement>builder()
+                        .name("/")
+                        .chapters(of(
+                                Chapter.<TailoringRequirement>builder()
+                                        .number("1")
+                                        .requirements(of(
+                                                requirement0101,
+                                                requirement0102))
+                                        .build()))
+                        .build())
+                .build();
 
         List<Phase> phases = of(
-            Phase.ZERO,
-            Phase.A,
-            Phase.B,
-            Phase.C,
-            Phase.D,
-            Phase.E,
-            Phase.F
-        );
+                Phase.ZERO,
+                Phase.A,
+                Phase.B,
+                Phase.C,
+                Phase.D,
+                Phase.E,
+                Phase.F);
         given(predicateMock.test("CDR", phases)).willReturn(true);
-
 
         // act
         Map<DRD, Set<String>> actual = provider.apply(catalog.getChapter("1").get(), phases);
 
         // assert
         assertThat(actual)
-            .hasSize(1)
-            .containsOnlyKeys(drd0101);
+                .hasSize(1)
+                .containsOnlyKeys(drd0101);
 
         verify(predicateMock, times(2)).test(anyString(), eq(phases));
     }
 
     private DRD createDRD(String number, String deliveryDate) {
         return DRD.builder()
-            .title("DRD " + number)
-            .number(number)
-            .deliveryDate(deliveryDate)
-            .build();
+                .title("DRD " + number)
+                .number(number)
+                .deliveryDate(deliveryDate)
+                .build();
     }
 
 }

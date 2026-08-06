@@ -22,8 +22,6 @@
 package eu.tailoringexpert.project;
 
 import static eu.tailoringexpert.domain.ProjectState.ONGOING;
-import static java.lang.Integer.parseInt;
-import static java.util.Comparator.comparingInt;
 import static java.util.Objects.isNull;
 import static java.util.Optional.empty;
 import static java.util.Optional.of;
@@ -161,16 +159,9 @@ public class ProjectServiceImpl implements ProjectService {
             tailoringName.append(addTo.getTailorings().size());
         }
 
-        Optional<String> identifier = oProject.get()
-                .getTailorings()
-                .stream()
-                .map(p -> parseInt(p.getIdentifier()))
-                .max(comparingInt(Integer::intValue))
-                .map(max -> String.valueOf(max + 1));
-
         Tailoring tailoring = tailoringService.createTailoring(
                 tailoringName.toString(),
-                identifier.orElse("1000"),
+                "1000",
                 screeningSheet,
                 applicableSelectionVector,
                 note,

@@ -21,6 +21,16 @@
  */
 package eu.tailoringexpert.tailoring;
 
+import static java.util.Comparator.comparing;
+import static java.util.Optional.of;
+
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.Map;
+import java.util.Set;
+import java.util.function.BiFunction;
+
 import eu.tailoringexpert.domain.Catalog;
 import eu.tailoringexpert.domain.Chapter;
 import eu.tailoringexpert.domain.DRD;
@@ -32,48 +42,40 @@ import eu.tailoringexpert.renderer.DRDFragment;
 import eu.tailoringexpert.renderer.HTMLTemplateEngine;
 import eu.tailoringexpert.renderer.PDFEngine;
 import lombok.NonNull;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
-
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.Map;
-import java.util.Set;
-import java.util.function.BiFunction;
-
-import static java.util.Comparator.comparing;
 
 /**
  * Create a DRD PDF file.
  *
  * @author Michael Bädorf
  */
-@RequiredArgsConstructor
 @Log4j2
-public class DRDPDFDocumentCreator implements DocumentCreator {
+public class DRDPDFDocumentCreator extends AbstractPDFDocumentCreator implements DocumentCreator {
 
     @NonNull
     private BiFunction<Chapter<TailoringRequirement>, Collection<Phase>, Map<DRD, Set<String>>> drdProvider;
 
-    @NonNull
-    private HTMLTemplateEngine templateEngine;
-
-    @NonNull
-    private PDFEngine pdfEngine;
-
+    public DRDPDFDocumentCreator(
+            BiFunction<Chapter<TailoringRequirement>, Collection<Phase>, Map<DRD, Set<String>>> drdProvider,
+            HTMLTemplateEngine templateEngine,
+            PDFEngine pdfEngine) {
+        super(templateEngine, pdfEngine);
+        this.drdProvider = drdProvider;
+    }
 
     /**
      * {@inheritDoc}
      */
     @Override
     public File createDocument(String docId,
-                               Tailoring tailoring,
-                               Map<String, Object> placeholders) {
+            Tailoring tailoring,
+            Map<String, Object> placeholders) {
         log.traceEntry(() -> docId, () -> tailoring.getCatalog().getVersion(), () -> placeholders);
 
         Map<String, Object> parameter = new HashMap<>(placeholders);
         parameter.put("catalogVersion", tailoring.getCatalog().getVersion());
+
+        parameter.put("issue", tailoring.getIssue());
 
         Collection<DRDFragment> drds = new LinkedList<>();
         parameter.put("drds", drds);
@@ -81,13 +83,12 @@ public class DRDPDFDocumentCreator implements DocumentCreator {
         Catalog<TailoringRequirement> catalog = tailoring.getCatalog();
         addDRD(catalog.getToc(), catalog.getVersion(), drds, tailoring.getPhases());
 
-        String html = templateEngine.process(catalog.getVersion() + "/drd", parameter);
-        File result = pdfEngine.process(docId, html, catalog.getVersion() + "/drd");
+        String html = toHtml(catalog.getVersion() + "/drd", parameter);
+        File result = toFile(docId, of(tailoring.getIssue()), html, tailoring.getCatalog().getVersion() + "/drd");
 
         log.traceExit();
         return result;
     }
-
 
     /**
      * @param chapter
@@ -95,16 +96,17 @@ public class DRDPDFDocumentCreator implements DocumentCreator {
      * @param rows           collection to add drd fragments to
      * @param phases         phase of tailoring to use of applicabilty check
      */
-    void addDRD(Chapter<TailoringRequirement> chapter, String catalogVersion, Collection<DRDFragment> rows, Collection<Phase> phases) {
+    void addDRD(Chapter<TailoringRequirement> chapter, String catalogVersion, Collection<DRDFragment> rows,
+            Collection<Phase> phases) {
         drdProvider.apply(chapter, phases)
-            .keySet()
-            .stream()
-            .sorted(comparing(DRD::getNumber))
-            .map(drd -> DRDFragment.builder()
-                .name(drd.getTitle())
-                .number(drd.getNumber())
-                .fragment(catalogVersion + "/drd/drd-" + drd.getNumber())
-                .build())
-            .forEachOrdered(rows::add);
+                .keySet()
+                .stream()
+                .sorted(comparing(DRD::getNumber))
+                .map(drd -> DRDFragment.builder()
+                        .name(drd.getTitle())
+                        .number(drd.getNumber())
+                        .fragment(catalogVersion + "/drd/drd-" + drd.getNumber())
+                        .build())
+                .forEachOrdered(rows::add);
     }
 }
