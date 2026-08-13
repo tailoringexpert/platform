@@ -21,12 +21,13 @@
  */
 package eu.tailoringexpert.tailoring;
 
-import eu.tailoringexpert.domain.MediaTypeProvider;
+import static org.assertj.core.api.Assertions.assertThat;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.MediaType;
 
-import static org.assertj.core.api.Assertions.assertThat;
+import eu.tailoringexpert.domain.MediaTypeProvider;
 
 class MediaTypeProviderTest {
 
@@ -57,5 +58,16 @@ class MediaTypeProviderTest {
 
         // assert
         assertThat(actual).isEqualTo(MediaType.valueOf("application/pdf"));
+    }
+
+    @Test
+    void apply_XSLM_MediatypeKorrektErmittelt() {
+        // arrange
+
+        // act
+        MediaType actual = provider.apply("XLSM");
+
+        // assert
+        assertThat(actual).isEqualTo(MediaType.valueOf("application/vnd.ms-excel.sheet.macroEnabled.12"));
     }
 }
