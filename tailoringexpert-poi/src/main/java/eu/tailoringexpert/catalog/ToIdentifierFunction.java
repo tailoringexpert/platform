@@ -21,15 +21,17 @@
  */
 package eu.tailoringexpert.catalog;
 
-import eu.tailoringexpert.domain.Identifier;
-import eu.tailoringexpert.domain.Identifier.IdentifierBuilder;
+import static eu.tailoringexpert.domain.LevelType.DEFAULT;
+import static java.lang.Integer.parseInt;
 
 import java.util.Collection;
 import java.util.LinkedList;
 import java.util.StringTokenizer;
 import java.util.function.Function;
 
-import static java.lang.Integer.parseInt;
+import eu.tailoringexpert.domain.Identifier;
+import eu.tailoringexpert.domain.Identifier.IdentifierBuilder;
+import eu.tailoringexpert.domain.LevelType;
 
 /**
  * Class for creating a identifier of a string.
@@ -47,15 +49,23 @@ public class ToIdentifierFunction implements Function<String, Identifier> {
     @Override
     public Identifier apply(String identifier) {
         String trimed = identifier.trim();
+
+        // get level as first char
+        LevelType levelType = LevelType.fromString(trimed.substring(0, 1));
+
         IdentifierBuilder builder = Identifier.builder()
-            .type(trimed.substring(0, 1));
+                .levelType(levelType);
+
+        // get "startposition" after evaluating leveltype
+        int startIndex = DEFAULT == levelType ? 0 : 1; // test: no level
+        builder.type(trimed.substring(startIndex, startIndex + 1));
 
         // check if limitation exists. a limitation starts with '('
         if (!containsLimitation(trimed)) {
-            builder.level(parseInt(trimed.substring(1).trim()));
+            builder.level(parseInt(trimed.substring(startIndex + 1).trim()));
         } else {
             // get limitation part of trimed
-            builder.level(parseInt(trimed.substring(1, trimed.indexOf('(')).trim()));
+            builder.level(parseInt(trimed.substring(startIndex + 1, trimed.indexOf('(')).trim()));
             Collection<String> limitations = new LinkedList<>();
             builder.limitations(limitations);
 
@@ -71,4 +81,5 @@ public class ToIdentifierFunction implements Function<String, Identifier> {
     boolean containsLimitation(String s) {
         return s.indexOf('(') > -1;
     }
+
 }

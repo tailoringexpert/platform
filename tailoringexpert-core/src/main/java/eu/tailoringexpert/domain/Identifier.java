@@ -21,14 +21,14 @@
  */
 package eu.tailoringexpert.domain;
 
+import java.io.Serializable;
+import java.util.Collection;
+import java.util.Objects;
+
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-
-import java.io.Serializable;
-import java.util.Collection;
-import java.util.Objects;
 
 @Data
 @Builder
@@ -41,6 +41,11 @@ public class Identifier implements Serializable {
      * Type of requirement.
      */
     private String type;
+
+    /**
+     * Type how level shall be handled/evaluated.
+     */
+    private LevelType levelType;
 
     /**
      * Level to select requirement on.

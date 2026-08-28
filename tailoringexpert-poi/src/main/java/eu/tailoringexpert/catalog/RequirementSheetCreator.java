@@ -21,22 +21,27 @@
  */
 package eu.tailoringexpert.catalog;
 
+import static java.util.Objects.nonNull;
+import static java.util.stream.Collectors.joining;
+import static java.util.stream.IntStream.range;
+
+import java.util.Optional;
+import java.util.function.BiConsumer;
+import java.util.function.Function;
+
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.ss.util.CellRangeAddress;
+
 import eu.tailoringexpert.domain.BaseRequirement;
 import eu.tailoringexpert.domain.Catalog;
 import eu.tailoringexpert.domain.Chapter;
 import eu.tailoringexpert.domain.DRD;
 import eu.tailoringexpert.domain.Document;
+import eu.tailoringexpert.domain.Identifier;
+import eu.tailoringexpert.domain.LevelType;
 import eu.tailoringexpert.domain.Phase;
 import lombok.extern.log4j.Log4j2;
-import org.apache.poi.ss.usermodel.Row;
-import org.apache.poi.ss.usermodel.Sheet;
-import org.apache.poi.ss.util.CellRangeAddress;
-
-import java.util.function.BiConsumer;
-
-import static java.util.Objects.nonNull;
-import static java.util.stream.Collectors.joining;
-import static java.util.stream.IntStream.range;
 
 /**
  * Creates an Excel sheet of requirements contained in basecatalog.
@@ -54,12 +59,12 @@ public class RequirementSheetCreator implements BiConsumer<Catalog<BaseRequireme
 
         addHeader(sheet, styles);
         catalog.getToc().getChapters()
-            .forEach(chapter -> addChapter(chapter, sheet, styles));
+                .forEach(chapter -> addChapter(chapter, sheet, styles));
 
         sheet.createFreezePane(0, 1);
         sheet.setAutoFilter(new CellRangeAddress(0, 0, 0, 7));
         range(0, sheet.getRow(0).getPhysicalNumberOfCells())
-            .forEach(sheet::autoSizeColumn);
+                .forEach(sheet::autoSizeColumn);
 
         log.traceExit();
     }
@@ -81,8 +86,8 @@ public class RequirementSheetCreator implements BiConsumer<Catalog<BaseRequireme
     /**
      * Add a row to provided sheet with provided parameters.
      *
-     * @param sheet  sheet to add row to
-
+     * @param sheet sheet to add row to
+     * 
      */
     private void addHeader(Sheet sheet, Styles styles) {
         Row row = sheet.createRow((short) sheet.getLastRowNum() + 1);
@@ -125,21 +130,20 @@ public class RequirementSheetCreator implements BiConsumer<Catalog<BaseRequireme
         row.createCell(1).setCellValue(requirement.getText());
 
         row.createCell(2).setCellValue(requirement.getPhases()
-            .stream()
-            .map(Phase::getValue)
-            .collect(joining("\n")));
+                .stream()
+                .map(Phase::getValue)
+                .collect(joining("\n")));
 
         row.createCell(3).setCellValue(requirement.getIdentifiers()
-            .stream()
-            .map(identifier -> identifier.getType() + identifier.getLevel() +
-                (nonNull(identifier.getLimitations()) ?
-                    identifier.getLimitations()
-                        .stream()
-                        .map(limitation -> "(" + limitation + ")")
-                        .collect(joining()) :
-                    "")
-            )
-            .collect(joining("\n")));
+                .stream()
+                // mapper anpassen: + ->, - ->, -> DEFAULT
+                .map(identifier -> Optional.ofNullable(identifier.getLevelType()).orElse(LevelType.DEFAULT).getValue()
+                        + identifier.getType() + identifier.getLevel() +
+                        (nonNull(identifier.getLimitations()) ? identifier.getLimitations()
+                                .stream()
+                                .map(limitation -> "(" + limitation + ")")
+                                .collect(joining()) : ""))
+                .collect(joining("\n")));
 
         String reference = "";
         if (nonNull(requirement.getReference())) {
@@ -150,30 +154,29 @@ public class RequirementSheetCreator implements BiConsumer<Catalog<BaseRequireme
         }
         row.createCell(4).setCellValue(reference);
 
-        String logo = !reference.isBlank() && nonNull(requirement.getReference().getLogo()) ?
-            requirement.getReference().getLogo().getName() :
-            "";
+        String logo = !reference.isBlank() && nonNull(requirement.getReference().getLogo())
+                ? requirement.getReference().getLogo().getName()
+                : "";
         row.createCell(5).setCellValue(logo);
 
-
         row.createCell(6).setCellValue(
-            nonNull(requirement.getDrds()) ?
-                requirement.getDrds()
-                    .stream()
-                    .map(DRD::getNumber)
-                    .collect(joining("\n")) :
-                ""
-        );
+                nonNull(requirement.getDrds()) ? requirement.getDrds()
+                        .stream()
+                        .map(DRD::getNumber)
+                        .collect(joining("\n")) : "");
 
         row.createCell(7).setCellValue(
-            nonNull(requirement.getApplicableDocuments()) ?
-                requirement.getApplicableDocuments()
-                    .stream()
-                    .map(Document::getTitle)
-                    .collect(joining("\n")) :
-                ""
-        );
+                nonNull(requirement.getApplicableDocuments()) ? requirement.getApplicableDocuments()
+                        .stream()
+                        .map(Document::getTitle)
+                        .collect(joining("\n")) : "");
 
         range(0, 8).forEach(i -> row.getCell(i).setCellStyle(styles.getDefaultStyle()));
     }
+
+    Function<Identifier, String> a = identifier -> switch (identifier.getLevelType()) {
+        case EXCLUDE -> "-";
+        case EQUAL -> "+";
+        default -> "";
+    };
 }

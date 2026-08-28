@@ -21,27 +21,36 @@
  */
 package eu.tailoringexpert.catalog;
 
-import com.fasterxml.jackson.annotation.JsonSetter;
-import com.fasterxml.jackson.annotation.Nulls;
-import eu.tailoringexpert.FileSaver;
-import eu.tailoringexpert.domain.BaseRequirement;
-import eu.tailoringexpert.domain.Catalog;
-import org.apache.poi.ss.usermodel.Sheet;
-import org.apache.poi.xssf.usermodel.XSSFWorkbook;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-import tools.jackson.databind.json.JsonMapper;
+import static eu.tailoringexpert.domain.Phase.A;
+import static eu.tailoringexpert.domain.Phase.B;
+import static eu.tailoringexpert.domain.Phase.C;
+import static eu.tailoringexpert.domain.Phase.D;
+import static eu.tailoringexpert.domain.Phase.ZERO;
+import static java.util.Objects.nonNull;
+import static org.assertj.core.api.Assertions.assertThat;
+import static tools.jackson.databind.DeserializationFeature.ACCEPT_EMPTY_ARRAY_AS_NULL_OBJECT;
+import static tools.jackson.databind.DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.List;
 
-import static java.util.Objects.nonNull;
-import static org.assertj.core.api.Assertions.assertThat;
-import static tools.jackson.databind.DeserializationFeature.ACCEPT_EMPTY_ARRAY_AS_NULL_OBJECT;
-import static tools.jackson.databind.DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES;
+import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
+import com.fasterxml.jackson.annotation.JsonSetter;
+import com.fasterxml.jackson.annotation.Nulls;
+
+import eu.tailoringexpert.FileSaver;
+import eu.tailoringexpert.domain.BaseRequirement;
+import eu.tailoringexpert.domain.Catalog;
+import eu.tailoringexpert.domain.Chapter;
+import eu.tailoringexpert.domain.Identifier;
+import eu.tailoringexpert.domain.LevelType;
+import tools.jackson.databind.json.JsonMapper;
 
 class RequirementsSheetCreatorTest {
 
@@ -53,13 +62,12 @@ class RequirementsSheetCreatorTest {
     @BeforeEach
     void setup() {
         this.objectMapper = JsonMapper.builder()
-            .findAndAddModules()
-            .disable(FAIL_ON_UNKNOWN_PROPERTIES)
-            .disable(ACCEPT_EMPTY_ARRAY_AS_NULL_OBJECT)
-            .withConfigOverride(List.class, cfg ->
-                cfg.setNullHandling(JsonSetter.Value.forValueNulls(Nulls.AS_EMPTY))
-            )
-            .build();
+                .findAndAddModules()
+                .disable(FAIL_ON_UNKNOWN_PROPERTIES)
+                .disable(ACCEPT_EMPTY_ARRAY_AS_NULL_OBJECT)
+                .withConfigOverride(List.class,
+                        cfg -> cfg.setNullHandling(JsonSetter.Value.forValueNulls(Nulls.AS_EMPTY)))
+                .build();
 
         this.fileSaver = new FileSaver("target");
 
@@ -75,10 +83,9 @@ class RequirementsSheetCreatorTest {
         try (InputStream is = this.getClass().getResourceAsStream("/basecatalog.json")) {
             assert nonNull(is);
             catalog = objectMapper.readValue(
-                is,
-                objectMapper.getTypeFactory()
-                    .constructParametricType(Catalog.class, BaseRequirement.class)
-            );
+                    is,
+                    objectMapper.getTypeFactory()
+                            .constructParametricType(Catalog.class, BaseRequirement.class));
         }
 
         // act
@@ -94,4 +101,64 @@ class RequirementsSheetCreatorTest {
         assertThat(sheet.getLastRowNum()).isPositive();
         assertThat(sheet.getRow(0).getPhysicalNumberOfCells()).isEqualTo(8);
     }
+
+    @Test
+    void od() throws Exception {
+        // arrange
+        Catalog<BaseRequirement> catalog = Catalog.<BaseRequirement>builder()
+                .version("9.0.0")
+                .toc(Chapter.<BaseRequirement>builder()
+                        .name("/")
+                        .chapters(List.of(
+                                Chapter.<BaseRequirement>builder()
+                                        .number("1")
+                                        .requirements(List.of(
+                                                BaseRequirement.builder()
+                                                        .position("a")
+                                                        .text("This is the requirement of catalog 9.0.0")
+                                                        .phases(List.of(ZERO, A, B, C, D))
+                                                        .identifiers(List.of(
+                                                                Identifier.builder()
+                                                                        .type("Q")
+                                                                        .level(6)
+                                                                        .levelType(LevelType.EXCLUDE)
+                                                                        .build()))
+                                                        .build(),
+                                                BaseRequirement.builder()
+                                                        .position("b")
+                                                        .text("New requirement of catalog 9.0.0")
+                                                        .phases(List.of(ZERO, A, B, C, D))
+                                                        .identifiers(List.of(
+                                                                Identifier.builder()
+                                                                        .type("Q")
+                                                                        .level(6)
+                                                                        .levelType(LevelType.EQUAL)
+                                                                        .build()))
+                                                        .build(),
+                                                BaseRequirement.builder()
+                                                        .position("c")
+                                                        .text("This is the requirement of catalog 9.0.0")
+                                                        .phases(List.of(ZERO, A, B, C, D))
+                                                        .identifiers(List.of(
+                                                                Identifier.builder()
+                                                                        .type("Q")
+                                                                        .level(6)
+                                                                        .levelType(LevelType.DEFAULT)
+                                                                        .build()))
+                                                        .build()))
+                                        .chapters(List.of())
+                                        .build()))
+                        .build())
+                .build();
+
+        // act
+        creator.accept(catalog, sheet);
+
+        // assert
+        try (ByteArrayOutputStream os = new ByteArrayOutputStream()) {
+            sheet.getWorkbook().write(os);
+            fileSaver.accept("requirements_.xlsx", os.toByteArray());
+        }
+    }
+
 }

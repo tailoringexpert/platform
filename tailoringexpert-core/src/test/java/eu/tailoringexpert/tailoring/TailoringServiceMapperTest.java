@@ -44,6 +44,7 @@ import eu.tailoringexpert.domain.BaseRequirement;
 import eu.tailoringexpert.domain.Catalog;
 import eu.tailoringexpert.domain.Chapter;
 import eu.tailoringexpert.domain.Identifier;
+import eu.tailoringexpert.domain.LevelType;
 import eu.tailoringexpert.domain.ScreeningSheet;
 import eu.tailoringexpert.domain.ScreeningSheetParameter;
 import eu.tailoringexpert.domain.SelectionVector;
@@ -83,35 +84,43 @@ class TailoringServiceMapperTest {
         ScreeningSheet screeningSheet = ScreeningSheet.builder()
                 .parameters(asList(
                         ScreeningSheetParameter.builder()
-                                .category(ScreeningSheetDataProviderSupplier.Identifier.getName())
+                                .category(ScreeningSheetDataProviderSupplier.Identifier
+                                        .getName())
                                 .name("SAMPLE")
                                 .build(),
                         ScreeningSheetParameter.builder()
-                                .category(ScreeningSheetDataProviderSupplier.Produkttyp.getName())
+                                .category(ScreeningSheetDataProviderSupplier.Produkttyp
+                                        .getName())
                                 .name("SAT")
                                 .build(),
                         ScreeningSheetParameter.builder()
-                                .category(ScreeningSheetDataProviderSupplier.Einsatzzweck.getName())
+                                .category(ScreeningSheetDataProviderSupplier.Einsatzzweck
+                                        .getName())
                                 .name("Erdbeobachtung")
                                 .build(),
                         ScreeningSheetParameter.builder()
-                                .category(ScreeningSheetDataProviderSupplier.Einsatzort.getName())
+                                .category(ScreeningSheetDataProviderSupplier.Einsatzort
+                                        .getName())
                                 .name("LEO")
                                 .build(),
                         ScreeningSheetParameter.builder()
-                                .category(ScreeningSheetDataProviderSupplier.Anwendungscharakter.getName())
+                                .category(ScreeningSheetDataProviderSupplier.Anwendungscharakter
+                                        .getName())
                                 .name("wissenschaftlich")
                                 .build(),
                         ScreeningSheetParameter.builder()
-                                .category(ScreeningSheetDataProviderSupplier.Kostenorientierug.getName())
+                                .category(ScreeningSheetDataProviderSupplier.Kostenorientierug
+                                        .getName())
                                 .name("150 <= k")
                                 .build(),
                         ScreeningSheetParameter.builder()
-                                .category(ScreeningSheetDataProviderSupplier.Lebensdauer.getName())
+                                .category(ScreeningSheetDataProviderSupplier.Lebensdauer
+                                        .getName())
                                 .name("15 Jahre < t")
                                 .build(),
                         ScreeningSheetParameter.builder()
-                                .category(ScreeningSheetDataProviderSupplier.ProgrammatischeBewertung.getName())
+                                .category(ScreeningSheetDataProviderSupplier.ProgrammatischeBewertung
+                                        .getName())
                                 .value("erforderlich")
                                 .build()))
                 .build();
@@ -163,35 +172,43 @@ class TailoringServiceMapperTest {
         ScreeningSheet screeningSheet = ScreeningSheet.builder()
                 .parameters(asList(
                         ScreeningSheetParameter.builder()
-                                .category(ScreeningSheetDataProviderSupplier.Identifier.getName())
+                                .category(ScreeningSheetDataProviderSupplier.Identifier
+                                        .getName())
                                 .name("SAMPLE")
                                 .build(),
                         ScreeningSheetParameter.builder()
-                                .category(ScreeningSheetDataProviderSupplier.Produkttyp.getName())
+                                .category(ScreeningSheetDataProviderSupplier.Produkttyp
+                                        .getName())
                                 .name("SAT")
                                 .build(),
                         ScreeningSheetParameter.builder()
-                                .category(ScreeningSheetDataProviderSupplier.Einsatzzweck.getName())
+                                .category(ScreeningSheetDataProviderSupplier.Einsatzzweck
+                                        .getName())
                                 .name("Erdbeobachtung")
                                 .build(),
                         ScreeningSheetParameter.builder()
-                                .category(ScreeningSheetDataProviderSupplier.Einsatzort.getName())
+                                .category(ScreeningSheetDataProviderSupplier.Einsatzort
+                                        .getName())
                                 .name("LEO")
                                 .build(),
                         ScreeningSheetParameter.builder()
-                                .category(ScreeningSheetDataProviderSupplier.Anwendungscharakter.getName())
+                                .category(ScreeningSheetDataProviderSupplier.Anwendungscharakter
+                                        .getName())
                                 .name("wissenschaftlich")
                                 .build(),
                         ScreeningSheetParameter.builder()
-                                .category(ScreeningSheetDataProviderSupplier.Kostenorientierug.getName())
+                                .category(ScreeningSheetDataProviderSupplier.Kostenorientierug
+                                        .getName())
                                 .name("150 <= k")
                                 .build(),
                         ScreeningSheetParameter.builder()
-                                .category(ScreeningSheetDataProviderSupplier.Lebensdauer.getName())
+                                .category(ScreeningSheetDataProviderSupplier.Lebensdauer
+                                        .getName())
                                 .name("15 Jahre < t")
                                 .build(),
                         ScreeningSheetParameter.builder()
-                                .category(ScreeningSheetDataProviderSupplier.ProgrammatischeBewertung.getName())
+                                .category(ScreeningSheetDataProviderSupplier.ProgrammatischeBewertung
+                                        .getName())
                                 .name("erforderlich")
                                 .build()))
                 .build();
@@ -244,35 +261,43 @@ class TailoringServiceMapperTest {
                 .phases(List.of(E, F))
                 .parameters(asList(
                         ScreeningSheetParameter.builder()
-                                .category(ScreeningSheetDataProviderSupplier.Identifier.getName())
+                                .category(ScreeningSheetDataProviderSupplier.Identifier
+                                        .getName())
                                 .name("SAMPLE")
                                 .build(),
                         ScreeningSheetParameter.builder()
-                                .category(ScreeningSheetDataProviderSupplier.Produkttyp.getName())
+                                .category(ScreeningSheetDataProviderSupplier.Produkttyp
+                                        .getName())
                                 .name("SAT")
                                 .build(),
                         ScreeningSheetParameter.builder()
-                                .category(ScreeningSheetDataProviderSupplier.Einsatzzweck.getName())
+                                .category(ScreeningSheetDataProviderSupplier.Einsatzzweck
+                                        .getName())
                                 .name("Erdbeobachtungssatellit")
                                 .build(),
                         ScreeningSheetParameter.builder()
-                                .category(ScreeningSheetDataProviderSupplier.Einsatzort.getName())
+                                .category(ScreeningSheetDataProviderSupplier.Einsatzort
+                                        .getName())
                                 .name("LEO")
                                 .build(),
                         ScreeningSheetParameter.builder()
-                                .category(ScreeningSheetDataProviderSupplier.Anwendungscharakter.getName())
+                                .category(ScreeningSheetDataProviderSupplier.Anwendungscharakter
+                                        .getName())
                                 .name("wissenschaftlich")
                                 .build(),
                         ScreeningSheetParameter.builder()
-                                .category(ScreeningSheetDataProviderSupplier.Kostenorientierug.getName())
+                                .category(ScreeningSheetDataProviderSupplier.Kostenorientierug
+                                        .getName())
                                 .name("150 <= k")
                                 .build(),
                         ScreeningSheetParameter.builder()
-                                .category(ScreeningSheetDataProviderSupplier.Lebensdauer.getName())
+                                .category(ScreeningSheetDataProviderSupplier.Lebensdauer
+                                        .getName())
                                 .name("15 Jahre < t")
                                 .build(),
                         ScreeningSheetParameter.builder()
-                                .category(ScreeningSheetDataProviderSupplier.ProgrammatischeBewertung.getName())
+                                .category(ScreeningSheetDataProviderSupplier.ProgrammatischeBewertung
+                                        .getName())
                                 .name("erforderlich")
                                 .build()))
                 .build();
@@ -325,39 +350,48 @@ class TailoringServiceMapperTest {
                 .phases(List.of(B))
                 .parameters(asList(
                         ScreeningSheetParameter.builder()
-                                .category(ScreeningSheetDataProviderSupplier.Identifier.getName())
+                                .category(ScreeningSheetDataProviderSupplier.Identifier
+                                        .getName())
                                 .value("SAMPLE")
                                 .build(),
                         ScreeningSheetParameter.builder()
-                                .category(ScreeningSheetDataProviderSupplier.Produkttyp.getName())
+                                .category(ScreeningSheetDataProviderSupplier.Produkttyp
+                                        .getName())
                                 .value("SAT1")
                                 .build(),
                         ScreeningSheetParameter.builder()
-                                .category(ScreeningSheetDataProviderSupplier.Einsatzzweck.getName())
+                                .category(ScreeningSheetDataProviderSupplier.Einsatzzweck
+                                        .getName())
                                 .value("Erdbeobachtungssatellit")
                                 .build(),
                         ScreeningSheetParameter.builder()
-                                .category(ScreeningSheetDataProviderSupplier.Phase.getName())
+                                .category(ScreeningSheetDataProviderSupplier.Phase
+                                        .getName())
                                 .value(asList(B))
                                 .build(),
                         ScreeningSheetParameter.builder()
-                                .category(ScreeningSheetDataProviderSupplier.Einsatzort.getName())
+                                .category(ScreeningSheetDataProviderSupplier.Einsatzort
+                                        .getName())
                                 .value("LEO")
                                 .build(),
                         ScreeningSheetParameter.builder()
-                                .category(ScreeningSheetDataProviderSupplier.Anwendungscharakter.getName())
+                                .category(ScreeningSheetDataProviderSupplier.Anwendungscharakter
+                                        .getName())
                                 .value("wissenschaftlich")
                                 .build(),
                         ScreeningSheetParameter.builder()
-                                .category(ScreeningSheetDataProviderSupplier.Kostenorientierug.getName())
+                                .category(ScreeningSheetDataProviderSupplier.Kostenorientierug
+                                        .getName())
                                 .value("150 <= k")
                                 .build(),
                         ScreeningSheetParameter.builder()
-                                .category(ScreeningSheetDataProviderSupplier.Lebensdauer.getName())
+                                .category(ScreeningSheetDataProviderSupplier.Lebensdauer
+                                        .getName())
                                 .value("15 Jahre < t")
                                 .build(),
                         ScreeningSheetParameter.builder()
-                                .category(ScreeningSheetDataProviderSupplier.ProgrammatischeBewertung.getName())
+                                .category(ScreeningSheetDataProviderSupplier.ProgrammatischeBewertung
+                                        .getName())
                                 .value("erforderlich")
                                 .build()))
                 .build();
@@ -410,35 +444,43 @@ class TailoringServiceMapperTest {
                 .phases(List.of(E, F))
                 .parameters(asList(
                         ScreeningSheetParameter.builder()
-                                .category(ScreeningSheetDataProviderSupplier.Identifier.getName())
+                                .category(ScreeningSheetDataProviderSupplier.Identifier
+                                        .getName())
                                 .name("SAMPLE")
                                 .build(),
                         ScreeningSheetParameter.builder()
-                                .category(ScreeningSheetDataProviderSupplier.Produkttyp.getName())
+                                .category(ScreeningSheetDataProviderSupplier.Produkttyp
+                                        .getName())
                                 .name("SAT")
                                 .build(),
                         ScreeningSheetParameter.builder()
-                                .category(ScreeningSheetDataProviderSupplier.Einsatzzweck.getName())
+                                .category(ScreeningSheetDataProviderSupplier.Einsatzzweck
+                                        .getName())
                                 .name("Erdbeobachtungssatellit")
                                 .build(),
                         ScreeningSheetParameter.builder()
-                                .category(ScreeningSheetDataProviderSupplier.Einsatzort.getName())
+                                .category(ScreeningSheetDataProviderSupplier.Einsatzort
+                                        .getName())
                                 .name("LEO")
                                 .build(),
                         ScreeningSheetParameter.builder()
-                                .category(ScreeningSheetDataProviderSupplier.Anwendungscharakter.getName())
+                                .category(ScreeningSheetDataProviderSupplier.Anwendungscharakter
+                                        .getName())
                                 .name("wissenschaftlich")
                                 .build(),
                         ScreeningSheetParameter.builder()
-                                .category(ScreeningSheetDataProviderSupplier.Kostenorientierug.getName())
+                                .category(ScreeningSheetDataProviderSupplier.Kostenorientierug
+                                        .getName())
                                 .name("150 <= k")
                                 .build(),
                         ScreeningSheetParameter.builder()
-                                .category(ScreeningSheetDataProviderSupplier.Lebensdauer.getName())
+                                .category(ScreeningSheetDataProviderSupplier.Lebensdauer
+                                        .getName())
                                 .name("15 Jahre < t")
                                 .build(),
                         ScreeningSheetParameter.builder()
-                                .category(ScreeningSheetDataProviderSupplier.ProgrammatischeBewertung.getName())
+                                .category(ScreeningSheetDataProviderSupplier.ProgrammatischeBewertung
+                                        .getName())
                                 .name("erforderlich")
                                 .build()))
                 .build();
@@ -496,35 +538,43 @@ class TailoringServiceMapperTest {
                 .phases(List.of(E, F))
                 .parameters(asList(
                         ScreeningSheetParameter.builder()
-                                .category(ScreeningSheetDataProviderSupplier.Identifier.getName())
+                                .category(ScreeningSheetDataProviderSupplier.Identifier
+                                        .getName())
                                 .name("SAMPLE")
                                 .build(),
                         ScreeningSheetParameter.builder()
-                                .category(ScreeningSheetDataProviderSupplier.Produkttyp.getName())
+                                .category(ScreeningSheetDataProviderSupplier.Produkttyp
+                                        .getName())
                                 .name("SAT")
                                 .build(),
                         ScreeningSheetParameter.builder()
-                                .category(ScreeningSheetDataProviderSupplier.Einsatzzweck.getName())
+                                .category(ScreeningSheetDataProviderSupplier.Einsatzzweck
+                                        .getName())
                                 .name("Erdbeobachtungssatellit")
                                 .build(),
                         ScreeningSheetParameter.builder()
-                                .category(ScreeningSheetDataProviderSupplier.Einsatzort.getName())
+                                .category(ScreeningSheetDataProviderSupplier.Einsatzort
+                                        .getName())
                                 .name("LEO")
                                 .build(),
                         ScreeningSheetParameter.builder()
-                                .category(ScreeningSheetDataProviderSupplier.Anwendungscharakter.getName())
+                                .category(ScreeningSheetDataProviderSupplier.Anwendungscharakter
+                                        .getName())
                                 .name("wissenschaftlich")
                                 .build(),
                         ScreeningSheetParameter.builder()
-                                .category(ScreeningSheetDataProviderSupplier.Kostenorientierug.getName())
+                                .category(ScreeningSheetDataProviderSupplier.Kostenorientierug
+                                        .getName())
                                 .name("150 <= k")
                                 .build(),
                         ScreeningSheetParameter.builder()
-                                .category(ScreeningSheetDataProviderSupplier.Lebensdauer.getName())
+                                .category(ScreeningSheetDataProviderSupplier.Lebensdauer
+                                        .getName())
                                 .name("15 Jahre < t")
                                 .build(),
                         ScreeningSheetParameter.builder()
-                                .category(ScreeningSheetDataProviderSupplier.ProgrammatischeBewertung.getName())
+                                .category(ScreeningSheetDataProviderSupplier.ProgrammatischeBewertung
+                                        .getName())
                                 .name("erforderlich")
                                 .build()))
                 .build();
@@ -577,39 +627,48 @@ class TailoringServiceMapperTest {
                 .phases(List.of(ZERO))
                 .parameters(asList(
                         ScreeningSheetParameter.builder()
-                                .category(ScreeningSheetDataProviderSupplier.Identifier.getName())
+                                .category(ScreeningSheetDataProviderSupplier.Identifier
+                                        .getName())
                                 .value("SAMPLE")
                                 .build(),
                         ScreeningSheetParameter.builder()
-                                .category(ScreeningSheetDataProviderSupplier.Produkttyp.getName())
+                                .category(ScreeningSheetDataProviderSupplier.Produkttyp
+                                        .getName())
                                 .value("SAT")
                                 .build(),
                         ScreeningSheetParameter.builder()
-                                .category(ScreeningSheetDataProviderSupplier.Einsatzzweck.getName())
+                                .category(ScreeningSheetDataProviderSupplier.Einsatzzweck
+                                        .getName())
                                 .value("Erdbeobachtungssatellit")
                                 .build(),
                         ScreeningSheetParameter.builder()
-                                .category(ScreeningSheetDataProviderSupplier.Phase.getName())
+                                .category(ScreeningSheetDataProviderSupplier.Phase
+                                        .getName())
                                 .value(asList(ZERO))
                                 .build(),
                         ScreeningSheetParameter.builder()
-                                .category(ScreeningSheetDataProviderSupplier.Einsatzort.getName())
+                                .category(ScreeningSheetDataProviderSupplier.Einsatzort
+                                        .getName())
                                 .value("LEO")
                                 .build(),
                         ScreeningSheetParameter.builder()
-                                .category(ScreeningSheetDataProviderSupplier.Anwendungscharakter.getName())
+                                .category(ScreeningSheetDataProviderSupplier.Anwendungscharakter
+                                        .getName())
                                 .value("wissenschaftlich")
                                 .build(),
                         ScreeningSheetParameter.builder()
-                                .category(ScreeningSheetDataProviderSupplier.Kostenorientierug.getName())
+                                .category(ScreeningSheetDataProviderSupplier.Kostenorientierug
+                                        .getName())
                                 .value("150 <= k")
                                 .build(),
                         ScreeningSheetParameter.builder()
-                                .category(ScreeningSheetDataProviderSupplier.Lebensdauer.getName())
+                                .category(ScreeningSheetDataProviderSupplier.Lebensdauer
+                                        .getName())
                                 .value("15 Jahre < t")
                                 .build(),
                         ScreeningSheetParameter.builder()
-                                .category(ScreeningSheetDataProviderSupplier.ProgrammatischeBewertung.getName())
+                                .category(ScreeningSheetDataProviderSupplier.ProgrammatischeBewertung
+                                        .getName())
                                 .value("erforderlich")
                                 .build()))
                 .build();
@@ -660,39 +719,48 @@ class TailoringServiceMapperTest {
         ScreeningSheet screeningSheet = ScreeningSheet.builder()
                 .parameters(asList(
                         ScreeningSheetParameter.builder()
-                                .category(ScreeningSheetDataProviderSupplier.Identifier.getName())
+                                .category(ScreeningSheetDataProviderSupplier.Identifier
+                                        .getName())
                                 .value("SAMPLE")
                                 .build(),
                         ScreeningSheetParameter.builder()
-                                .category(ScreeningSheetDataProviderSupplier.Produkttyp.getName())
+                                .category(ScreeningSheetDataProviderSupplier.Produkttyp
+                                        .getName())
                                 .value("SAT")
                                 .build(),
                         ScreeningSheetParameter.builder()
-                                .category(ScreeningSheetDataProviderSupplier.Einsatzzweck.getName())
+                                .category(ScreeningSheetDataProviderSupplier.Einsatzzweck
+                                        .getName())
                                 .value("Erdbeobachtungssatellit")
                                 .build(),
                         ScreeningSheetParameter.builder()
-                                .category(ScreeningSheetDataProviderSupplier.Phase.getName())
+                                .category(ScreeningSheetDataProviderSupplier.Phase
+                                        .getName())
                                 .value(asList(E, F))
                                 .build(),
                         ScreeningSheetParameter.builder()
-                                .category(ScreeningSheetDataProviderSupplier.Einsatzort.getName())
+                                .category(ScreeningSheetDataProviderSupplier.Einsatzort
+                                        .getName())
                                 .value("LEO")
                                 .build(),
                         ScreeningSheetParameter.builder()
-                                .category(ScreeningSheetDataProviderSupplier.Anwendungscharakter.getName())
+                                .category(ScreeningSheetDataProviderSupplier.Anwendungscharakter
+                                        .getName())
                                 .value("wissenschaftlich")
                                 .build(),
                         ScreeningSheetParameter.builder()
-                                .category(ScreeningSheetDataProviderSupplier.Kostenorientierug.getName())
+                                .category(ScreeningSheetDataProviderSupplier.Kostenorientierug
+                                        .getName())
                                 .value("150 <= k")
                                 .build(),
                         ScreeningSheetParameter.builder()
-                                .category(ScreeningSheetDataProviderSupplier.Lebensdauer.getName())
+                                .category(ScreeningSheetDataProviderSupplier.Lebensdauer
+                                        .getName())
                                 .value("15 Jahre < t")
                                 .build(),
                         ScreeningSheetParameter.builder()
-                                .category(ScreeningSheetDataProviderSupplier.ProgrammatischeBewertung.getName())
+                                .category(ScreeningSheetDataProviderSupplier.ProgrammatischeBewertung
+                                        .getName())
                                 .value("erforderlich")
                                 .build()))
                 .build();
@@ -744,39 +812,48 @@ class TailoringServiceMapperTest {
         ScreeningSheet screeningSheet = ScreeningSheet.builder()
                 .parameters(asList(
                         ScreeningSheetParameter.builder()
-                                .category(ScreeningSheetDataProviderSupplier.Identifier.getName())
+                                .category(ScreeningSheetDataProviderSupplier.Identifier
+                                        .getName())
                                 .value("SAMPLE")
                                 .build(),
                         ScreeningSheetParameter.builder()
-                                .category(ScreeningSheetDataProviderSupplier.Produkttyp.getName())
+                                .category(ScreeningSheetDataProviderSupplier.Produkttyp
+                                        .getName())
                                 .value("SAT")
                                 .build(),
                         ScreeningSheetParameter.builder()
-                                .category(ScreeningSheetDataProviderSupplier.Einsatzzweck.getName())
+                                .category(ScreeningSheetDataProviderSupplier.Einsatzzweck
+                                        .getName())
                                 .value("Erdbeobachtungssatellit")
                                 .build(),
                         ScreeningSheetParameter.builder()
-                                .category(ScreeningSheetDataProviderSupplier.Phase.getName())
+                                .category(ScreeningSheetDataProviderSupplier.Phase
+                                        .getName())
                                 .value(asList(E, F))
                                 .build(),
                         ScreeningSheetParameter.builder()
-                                .category(ScreeningSheetDataProviderSupplier.Einsatzort.getName())
+                                .category(ScreeningSheetDataProviderSupplier.Einsatzort
+                                        .getName())
                                 .value("LEO")
                                 .build(),
                         ScreeningSheetParameter.builder()
-                                .category(ScreeningSheetDataProviderSupplier.Anwendungscharakter.getName())
+                                .category(ScreeningSheetDataProviderSupplier.Anwendungscharakter
+                                        .getName())
                                 .value("wissenschaftlich")
                                 .build(),
                         ScreeningSheetParameter.builder()
-                                .category(ScreeningSheetDataProviderSupplier.Kostenorientierug.getName())
+                                .category(ScreeningSheetDataProviderSupplier.Kostenorientierug
+                                        .getName())
                                 .value("150 <= k")
                                 .build(),
                         ScreeningSheetParameter.builder()
-                                .category(ScreeningSheetDataProviderSupplier.Lebensdauer.getName())
+                                .category(ScreeningSheetDataProviderSupplier.Lebensdauer
+                                        .getName())
                                 .value("15 Jahre < t")
                                 .build(),
                         ScreeningSheetParameter.builder()
-                                .category(ScreeningSheetDataProviderSupplier.ProgrammatischeBewertung.getName())
+                                .category(ScreeningSheetDataProviderSupplier.ProgrammatischeBewertung
+                                        .getName())
                                 .value("erforderlich")
                                 .build()))
                 .build();
@@ -828,35 +905,43 @@ class TailoringServiceMapperTest {
         ScreeningSheet screeningSheet = ScreeningSheet.builder()
                 .parameters(asList(
                         ScreeningSheetParameter.builder()
-                                .category(ScreeningSheetDataProviderSupplier.Identifier.getName())
+                                .category(ScreeningSheetDataProviderSupplier.Identifier
+                                        .getName())
                                 .name("SAMPLE")
                                 .build(),
                         ScreeningSheetParameter.builder()
-                                .category(ScreeningSheetDataProviderSupplier.Produkttyp.getName())
+                                .category(ScreeningSheetDataProviderSupplier.Produkttyp
+                                        .getName())
                                 .name("SAT")
                                 .build(),
                         ScreeningSheetParameter.builder()
-                                .category(ScreeningSheetDataProviderSupplier.Einsatzzweck.getName())
+                                .category(ScreeningSheetDataProviderSupplier.Einsatzzweck
+                                        .getName())
                                 .name("Erdbeobachtungssatellit")
                                 .build(),
                         ScreeningSheetParameter.builder()
-                                .category(ScreeningSheetDataProviderSupplier.Einsatzort.getName())
+                                .category(ScreeningSheetDataProviderSupplier.Einsatzort
+                                        .getName())
                                 .name("LEO")
                                 .build(),
                         ScreeningSheetParameter.builder()
-                                .category(ScreeningSheetDataProviderSupplier.Anwendungscharakter.getName())
+                                .category(ScreeningSheetDataProviderSupplier.Anwendungscharakter
+                                        .getName())
                                 .name("wissenschaftlich")
                                 .build(),
                         ScreeningSheetParameter.builder()
-                                .category(ScreeningSheetDataProviderSupplier.Kostenorientierug.getName())
+                                .category(ScreeningSheetDataProviderSupplier.Kostenorientierug
+                                        .getName())
                                 .name("150 <= k")
                                 .build(),
                         ScreeningSheetParameter.builder()
-                                .category(ScreeningSheetDataProviderSupplier.Lebensdauer.getName())
+                                .category(ScreeningSheetDataProviderSupplier.Lebensdauer
+                                        .getName())
                                 .name("15 Jahre < t")
                                 .build(),
                         ScreeningSheetParameter.builder()
-                                .category(ScreeningSheetDataProviderSupplier.ProgrammatischeBewertung.getName())
+                                .category(ScreeningSheetDataProviderSupplier.ProgrammatischeBewertung
+                                        .getName())
                                 .name("erforderlich")
                                 .build()))
                 .build();
@@ -908,39 +993,48 @@ class TailoringServiceMapperTest {
         ScreeningSheet screeningSheet = ScreeningSheet.builder()
                 .parameters(asList(
                         ScreeningSheetParameter.builder()
-                                .category(ScreeningSheetDataProviderSupplier.Identifier.getName())
+                                .category(ScreeningSheetDataProviderSupplier.Identifier
+                                        .getName())
                                 .value("SAMPLE")
                                 .build(),
                         ScreeningSheetParameter.builder()
-                                .category(ScreeningSheetDataProviderSupplier.Produkttyp.getName())
+                                .category(ScreeningSheetDataProviderSupplier.Produkttyp
+                                        .getName())
                                 .value("SAT")
                                 .build(),
                         ScreeningSheetParameter.builder()
-                                .category(ScreeningSheetDataProviderSupplier.Einsatzzweck.getName())
+                                .category(ScreeningSheetDataProviderSupplier.Einsatzzweck
+                                        .getName())
                                 .value("Erdbeobachtungssatellit")
                                 .build(),
                         ScreeningSheetParameter.builder()
-                                .category(ScreeningSheetDataProviderSupplier.Phase.getName())
+                                .category(ScreeningSheetDataProviderSupplier.Phase
+                                        .getName())
                                 .value(asList(E, F))
                                 .build(),
                         ScreeningSheetParameter.builder()
-                                .category(ScreeningSheetDataProviderSupplier.Einsatzort.getName())
+                                .category(ScreeningSheetDataProviderSupplier.Einsatzort
+                                        .getName())
                                 .value("LEO")
                                 .build(),
                         ScreeningSheetParameter.builder()
-                                .category(ScreeningSheetDataProviderSupplier.Anwendungscharakter.getName())
+                                .category(ScreeningSheetDataProviderSupplier.Anwendungscharakter
+                                        .getName())
                                 .value("wissenschaftlich")
                                 .build(),
                         ScreeningSheetParameter.builder()
-                                .category(ScreeningSheetDataProviderSupplier.Kostenorientierug.getName())
+                                .category(ScreeningSheetDataProviderSupplier.Kostenorientierug
+                                        .getName())
                                 .value("150 <= k")
                                 .build(),
                         ScreeningSheetParameter.builder()
-                                .category(ScreeningSheetDataProviderSupplier.Lebensdauer.getName())
+                                .category(ScreeningSheetDataProviderSupplier.Lebensdauer
+                                        .getName())
                                 .value("15 Jahre < t")
                                 .build(),
                         ScreeningSheetParameter.builder()
-                                .category(ScreeningSheetDataProviderSupplier.ProgrammatischeBewertung.getName())
+                                .category(ScreeningSheetDataProviderSupplier.ProgrammatischeBewertung
+                                        .getName())
                                 .value("erforderlich")
                                 .build()))
                 .build();
@@ -1006,35 +1100,43 @@ class TailoringServiceMapperTest {
                 .phases(List.of(E, F))
                 .parameters(asList(
                         ScreeningSheetParameter.builder()
-                                .category(ScreeningSheetDataProviderSupplier.Identifier.getName())
+                                .category(ScreeningSheetDataProviderSupplier.Identifier
+                                        .getName())
                                 .name("SAMPLE")
                                 .build(),
                         ScreeningSheetParameter.builder()
-                                .category(ScreeningSheetDataProviderSupplier.Produkttyp.getName())
+                                .category(ScreeningSheetDataProviderSupplier.Produkttyp
+                                        .getName())
                                 .name("SAT")
                                 .build(),
                         ScreeningSheetParameter.builder()
-                                .category(ScreeningSheetDataProviderSupplier.Einsatzzweck.getName())
+                                .category(ScreeningSheetDataProviderSupplier.Einsatzzweck
+                                        .getName())
                                 .name("Erdbeobachtungssatellit")
                                 .build(),
                         ScreeningSheetParameter.builder()
-                                .category(ScreeningSheetDataProviderSupplier.Einsatzort.getName())
+                                .category(ScreeningSheetDataProviderSupplier.Einsatzort
+                                        .getName())
                                 .name("LEO")
                                 .build(),
                         ScreeningSheetParameter.builder()
-                                .category(ScreeningSheetDataProviderSupplier.Anwendungscharakter.getName())
+                                .category(ScreeningSheetDataProviderSupplier.Anwendungscharakter
+                                        .getName())
                                 .name("wissenschaftlich")
                                 .build(),
                         ScreeningSheetParameter.builder()
-                                .category(ScreeningSheetDataProviderSupplier.Kostenorientierug.getName())
+                                .category(ScreeningSheetDataProviderSupplier.Kostenorientierug
+                                        .getName())
                                 .name("150 <= k")
                                 .build(),
                         ScreeningSheetParameter.builder()
-                                .category(ScreeningSheetDataProviderSupplier.Lebensdauer.getName())
+                                .category(ScreeningSheetDataProviderSupplier.Lebensdauer
+                                        .getName())
                                 .name("15 Jahre < t")
                                 .build(),
                         ScreeningSheetParameter.builder()
-                                .category(ScreeningSheetDataProviderSupplier.ProgrammatischeBewertung.getName())
+                                .category(ScreeningSheetDataProviderSupplier.ProgrammatischeBewertung
+                                        .getName())
                                 .name("erforderlich")
                                 .build()))
                 .build();
@@ -1053,7 +1155,8 @@ class TailoringServiceMapperTest {
                 .build();
 
         // act
-        Catalog<TailoringRequirement> actual = mapper.toTailoringCatalog(catalog, screeningSheet, selectionVector,
+        Catalog<TailoringRequirement> actual = mapper.toTailoringCatalog(catalog, screeningSheet,
+                selectionVector,
                 empty());
 
         // assert
@@ -1083,35 +1186,43 @@ class TailoringServiceMapperTest {
                 .phases(List.of(ZERO))
                 .parameters(asList(
                         ScreeningSheetParameter.builder()
-                                .category(ScreeningSheetDataProviderSupplier.Identifier.getName())
+                                .category(ScreeningSheetDataProviderSupplier.Identifier
+                                        .getName())
                                 .name("SAMPLE")
                                 .build(),
                         ScreeningSheetParameter.builder()
-                                .category(ScreeningSheetDataProviderSupplier.Produkttyp.getName())
+                                .category(ScreeningSheetDataProviderSupplier.Produkttyp
+                                        .getName())
                                 .name("SAT")
                                 .build(),
                         ScreeningSheetParameter.builder()
-                                .category(ScreeningSheetDataProviderSupplier.Einsatzzweck.getName())
+                                .category(ScreeningSheetDataProviderSupplier.Einsatzzweck
+                                        .getName())
                                 .name("Erdbeobachtungssatellit")
                                 .build(),
                         ScreeningSheetParameter.builder()
-                                .category(ScreeningSheetDataProviderSupplier.Einsatzort.getName())
+                                .category(ScreeningSheetDataProviderSupplier.Einsatzort
+                                        .getName())
                                 .name("LEO")
                                 .build(),
                         ScreeningSheetParameter.builder()
-                                .category(ScreeningSheetDataProviderSupplier.Anwendungscharakter.getName())
+                                .category(ScreeningSheetDataProviderSupplier.Anwendungscharakter
+                                        .getName())
                                 .name("wissenschaftlich")
                                 .build(),
                         ScreeningSheetParameter.builder()
-                                .category(ScreeningSheetDataProviderSupplier.Kostenorientierug.getName())
+                                .category(ScreeningSheetDataProviderSupplier.Kostenorientierug
+                                        .getName())
                                 .name("150 <= k")
                                 .build(),
                         ScreeningSheetParameter.builder()
-                                .category(ScreeningSheetDataProviderSupplier.Lebensdauer.getName())
+                                .category(ScreeningSheetDataProviderSupplier.Lebensdauer
+                                        .getName())
                                 .name("15 Jahre < t")
                                 .build(),
                         ScreeningSheetParameter.builder()
-                                .category(ScreeningSheetDataProviderSupplier.ProgrammatischeBewertung.getName())
+                                .category(ScreeningSheetDataProviderSupplier.ProgrammatischeBewertung
+                                        .getName())
                                 .name("erforderlich")
                                 .build()))
                 .build();
@@ -1161,7 +1272,8 @@ class TailoringServiceMapperTest {
 
         Optional<Map<String, Collection<ImportRequirement>>> matrix = Optional.of(Map.ofEntries(
                 entry("1", List.of(
-                        ImportRequirement.builder().position("a").applicable("FALSE").build()))));
+                        ImportRequirement.builder().position("a").applicable("FALSE")
+                                .build()))));
 
         ScreeningSheet screeningSheet = ScreeningSheet.builder()
                 .phases(List.of(ZERO))
@@ -1202,41 +1314,50 @@ class TailoringServiceMapperTest {
 
         Optional<Map<String, Collection<ImportRequirement>>> matrix = Optional.of(Map.ofEntries(
                 entry("1", List.of(
-                        ImportRequirement.builder().position("a").applicable("FALSE").build()))));
+                        ImportRequirement.builder().position("a").applicable("FALSE")
+                                .build()))));
 
         ScreeningSheet screeningSheet = ScreeningSheet.builder()
                 .phases(List.of(ZERO))
                 .parameters(asList(
                         ScreeningSheetParameter.builder()
-                                .category(ScreeningSheetDataProviderSupplier.Identifier.getName())
+                                .category(ScreeningSheetDataProviderSupplier.Identifier
+                                        .getName())
                                 .name("SAMPLE")
                                 .build(),
                         ScreeningSheetParameter.builder()
-                                .category(ScreeningSheetDataProviderSupplier.Produkttyp.getName())
+                                .category(ScreeningSheetDataProviderSupplier.Produkttyp
+                                        .getName())
                                 .name("SAT")
                                 .build(),
                         ScreeningSheetParameter.builder()
-                                .category(ScreeningSheetDataProviderSupplier.Einsatzzweck.getName())
+                                .category(ScreeningSheetDataProviderSupplier.Einsatzzweck
+                                        .getName())
                                 .name("Erdbeobachtungssatellit")
                                 .build(),
                         ScreeningSheetParameter.builder()
-                                .category(ScreeningSheetDataProviderSupplier.Einsatzort.getName())
+                                .category(ScreeningSheetDataProviderSupplier.Einsatzort
+                                        .getName())
                                 .name("LEO")
                                 .build(),
                         ScreeningSheetParameter.builder()
-                                .category(ScreeningSheetDataProviderSupplier.Anwendungscharakter.getName())
+                                .category(ScreeningSheetDataProviderSupplier.Anwendungscharakter
+                                        .getName())
                                 .name("wissenschaftlich")
                                 .build(),
                         ScreeningSheetParameter.builder()
-                                .category(ScreeningSheetDataProviderSupplier.Kostenorientierug.getName())
+                                .category(ScreeningSheetDataProviderSupplier.Kostenorientierug
+                                        .getName())
                                 .name("150 <= k")
                                 .build(),
                         ScreeningSheetParameter.builder()
-                                .category(ScreeningSheetDataProviderSupplier.Lebensdauer.getName())
+                                .category(ScreeningSheetDataProviderSupplier.Lebensdauer
+                                        .getName())
                                 .name("15 Jahre < t")
                                 .build(),
                         ScreeningSheetParameter.builder()
-                                .category(ScreeningSheetDataProviderSupplier.ProgrammatischeBewertung.getName())
+                                .category(ScreeningSheetDataProviderSupplier.ProgrammatischeBewertung
+                                        .getName())
                                 .name("erforderlich")
                                 .build()))
                 .build();
@@ -1286,41 +1407,50 @@ class TailoringServiceMapperTest {
 
         Optional<Map<String, Collection<ImportRequirement>>> matrix = Optional.of(Map.ofEntries(
                 entry("2", List.of(
-                        ImportRequirement.builder().position("a").applicable("FALSE").build()))));
+                        ImportRequirement.builder().position("a").applicable("FALSE")
+                                .build()))));
 
         ScreeningSheet screeningSheet = ScreeningSheet.builder()
                 .phases(List.of(ZERO))
                 .parameters(asList(
                         ScreeningSheetParameter.builder()
-                                .category(ScreeningSheetDataProviderSupplier.Identifier.getName())
+                                .category(ScreeningSheetDataProviderSupplier.Identifier
+                                        .getName())
                                 .name("SAMPLE")
                                 .build(),
                         ScreeningSheetParameter.builder()
-                                .category(ScreeningSheetDataProviderSupplier.Produkttyp.getName())
+                                .category(ScreeningSheetDataProviderSupplier.Produkttyp
+                                        .getName())
                                 .name("SAT")
                                 .build(),
                         ScreeningSheetParameter.builder()
-                                .category(ScreeningSheetDataProviderSupplier.Einsatzzweck.getName())
+                                .category(ScreeningSheetDataProviderSupplier.Einsatzzweck
+                                        .getName())
                                 .name("Erdbeobachtungssatellit")
                                 .build(),
                         ScreeningSheetParameter.builder()
-                                .category(ScreeningSheetDataProviderSupplier.Einsatzort.getName())
+                                .category(ScreeningSheetDataProviderSupplier.Einsatzort
+                                        .getName())
                                 .name("LEO")
                                 .build(),
                         ScreeningSheetParameter.builder()
-                                .category(ScreeningSheetDataProviderSupplier.Anwendungscharakter.getName())
+                                .category(ScreeningSheetDataProviderSupplier.Anwendungscharakter
+                                        .getName())
                                 .name("wissenschaftlich")
                                 .build(),
                         ScreeningSheetParameter.builder()
-                                .category(ScreeningSheetDataProviderSupplier.Kostenorientierug.getName())
+                                .category(ScreeningSheetDataProviderSupplier.Kostenorientierug
+                                        .getName())
                                 .name("150 <= k")
                                 .build(),
                         ScreeningSheetParameter.builder()
-                                .category(ScreeningSheetDataProviderSupplier.Lebensdauer.getName())
+                                .category(ScreeningSheetDataProviderSupplier.Lebensdauer
+                                        .getName())
                                 .name("15 Jahre < t")
                                 .build(),
                         ScreeningSheetParameter.builder()
-                                .category(ScreeningSheetDataProviderSupplier.ProgrammatischeBewertung.getName())
+                                .category(ScreeningSheetDataProviderSupplier.ProgrammatischeBewertung
+                                        .getName())
                                 .name("erforderlich")
                                 .build()))
                 .build();
@@ -1404,5 +1534,107 @@ class TailoringServiceMapperTest {
         // assert
         assertThat(actual).isNotNull();
         assertThat(actual.getToc().getRequirements()).isEmpty();
+    }
+
+    @Test
+    void convert_1FulfilledPhaseLimitationNoMatrix_RequirementSelected() {
+        // arrange
+        BaseRequirement requirement = BaseRequirement.builder()
+                .text("Die erste Requirement")
+                .position("a")
+                .phases(asList(B, F))
+                .identifiers(asList(
+                        Identifier.builder()
+                                .type("Q")
+                                .level(6)
+                                .levelType(LevelType.EQUAL)
+                                .limitations(asList("SAT", "LEO"))
+                                .build()))
+                .build();
+
+        Chapter<BaseRequirement> chapter = Chapter.<BaseRequirement>builder().number("1.1")
+                .requirements(List.of(
+                        requirement))
+                .build();
+
+        ScreeningSheet screeningSheet = ScreeningSheet.builder()
+                .phases(List.of(E, F))
+                .parameters(asList(
+                        ScreeningSheetParameter.builder()
+                                .category(ScreeningSheetDataProviderSupplier.Produkttyp
+                                        .getName())
+                                .name("SAT")
+                                .build(),
+                        ScreeningSheetParameter.builder()
+                                .category(ScreeningSheetDataProviderSupplier.Einsatzort
+                                        .getName())
+                                .name("LEO")
+                                .build()))
+                .build();
+
+        SelectionVector selectionVector = SelectionVector.builder()
+                .level("Q", 6)
+                .build();
+
+        TailoringRequirementBuilder tailoringRequirementBuilder = TailoringRequirement.builder();
+
+        // act
+        mapper.toTailoringRequirement(requirement, screeningSheet, selectionVector, chapter, empty(),
+                tailoringRequirementBuilder);
+        TailoringRequirement actual = tailoringRequirementBuilder.build();
+
+        // assert
+        assertThat(actual.getSelected()).isTrue();
+    }
+
+    @Test
+    void convert_ExcludeLevelType_RequirementNotSelected() {
+        // arrange
+        BaseRequirement requirement = BaseRequirement.builder()
+                .text("Die erste Requirement")
+                .position("a")
+                .phases(asList(B, F))
+                .identifiers(asList(
+                        Identifier.builder()
+                                .type("Q")
+                                .level(6)
+                                .levelType(LevelType.EXCLUDE)
+                                .limitations(asList("SAT", "LEO"))
+                                .build()))
+                .build();
+
+        Chapter<BaseRequirement> chapter = Chapter.<BaseRequirement>builder().number("1.1")
+                .requirements(List.of(
+                        requirement))
+                .build();
+
+        ScreeningSheet screeningSheet = ScreeningSheet.builder()
+                .phases(List.of(E, F))
+                .parameters(asList(
+                        ScreeningSheetParameter.builder()
+                                .category(ScreeningSheetDataProviderSupplier.Produkttyp
+                                        .getName())
+                                .name("SAT")
+                                .build(),
+                        ScreeningSheetParameter.builder()
+                                .category(ScreeningSheetDataProviderSupplier.Einsatzort
+                                        .getName())
+                                .name("LEO")
+                                .build()))
+                .build();
+
+        SelectionVector selectionVector = SelectionVector.builder()
+                .level("Q", 6)
+                .build();
+
+        TailoringRequirementBuilder tailoringRequirementBuilder = TailoringRequirement.builder();
+
+        // act
+        mapper.toTailoringRequirement(requirement, screeningSheet, selectionVector, chapter, empty(),
+                tailoringRequirementBuilder);
+        TailoringRequirement actual = tailoringRequirementBuilder.build();
+
+        // assert
+        assertThat(actual.getSelected()).isFalse();
     }
 }

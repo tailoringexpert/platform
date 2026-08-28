@@ -21,21 +21,20 @@
  */
 package eu.tailoringexpert.tailoring;
 
-import eu.tailoringexpert.domain.Document;
-import eu.tailoringexpert.domain.DocumentNumberComparator;
-import lombok.extern.log4j.Log4j2;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
+import static java.util.List.of;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.catchThrowable;
 
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 
-import static java.util.List.of;
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.catchThrowable;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
-@Log4j2
+import eu.tailoringexpert.domain.Document;
+import eu.tailoringexpert.domain.DocumentNumberComparator;
+
 class DocumentNumberComparatorTest {
 
     private Comparator<Document> comparator;
@@ -73,13 +72,11 @@ class DocumentNumberComparatorTest {
 
         // act
         int actual = comparator.compare(
-            Document.builder().number("a").build(),
-            Document.builder().number("a").build()
-        );
+                Document.builder().number("a").build(),
+                Document.builder().number("a").build());
 
         // assert
         assertThat(actual).isZero();
-
 
     }
 
@@ -89,14 +86,11 @@ class DocumentNumberComparatorTest {
 
         // act
         int actual = comparator.compare(
-            Document.builder().number("a").build(),
-            Document.builder().number("b").build()
-        );
+                Document.builder().number("a").build(),
+                Document.builder().number("b").build());
 
         // assert
-        log.debug(actual);
         assertThat(actual).isEqualTo(-1);
-
     }
 
     @Test
@@ -105,12 +99,10 @@ class DocumentNumberComparatorTest {
 
         // act
         int actual = comparator.compare(
-            Document.builder().number("b").build(),
-            Document.builder().number("a").build()
-        );
+                Document.builder().number("b").build(),
+                Document.builder().number("a").build());
 
         // assert
-        log.debug(actual);
         assertThat(actual).isOne();
 
     }
@@ -121,12 +113,10 @@ class DocumentNumberComparatorTest {
 
         // act
         int actual = comparator.compare(
-            Document.builder().number("aa").build(),
-            Document.builder().number("aa").build()
-        );
+                Document.builder().number("aa").build(),
+                Document.builder().number("aa").build());
 
         // assert
-        log.debug(actual);
         assertThat(actual).isZero();
 
     }
@@ -137,14 +127,11 @@ class DocumentNumberComparatorTest {
 
         // act
         int actual = comparator.compare(
-            Document.builder().number("ab").build(),
-            Document.builder().number("aa").build()
-        );
+                Document.builder().number("ab").build(),
+                Document.builder().number("aa").build());
 
         // assert
-        log.debug(actual);
         assertThat(actual).isEqualTo(1);
-
     }
 
     @Test
@@ -153,12 +140,10 @@ class DocumentNumberComparatorTest {
 
         // act
         int actual = comparator.compare(
-            Document.builder().number("aa").build(),
-            Document.builder().number("ab").build()
-        );
+                Document.builder().number("aa").build(),
+                Document.builder().number("ab").build());
 
         // assert
-        log.debug(actual);
         assertThat(actual).isEqualTo(-1);
 
     }
@@ -177,11 +162,10 @@ class DocumentNumberComparatorTest {
 
         // assert
         assertThat(positions).containsExactlyElementsOf(of(
-            Document.builder().number("a").build(),
-            Document.builder().number("b").build(),
-            Document.builder().number("e").build(),
-            Document.builder().number("aa").build()
-        ));
+                Document.builder().number("a").build(),
+                Document.builder().number("b").build(),
+                Document.builder().number("e").build(),
+                Document.builder().number("aa").build()));
     }
 
     @Test

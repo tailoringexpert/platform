@@ -31,6 +31,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 
@@ -45,6 +46,7 @@ import eu.tailoringexpert.TailoringexpertMapperConfig;
 import eu.tailoringexpert.domain.BaseRequirement;
 import eu.tailoringexpert.domain.Catalog;
 import eu.tailoringexpert.domain.Chapter;
+import eu.tailoringexpert.domain.Identifier;
 import eu.tailoringexpert.domain.Phase;
 import eu.tailoringexpert.domain.ScreeningSheet;
 import eu.tailoringexpert.domain.ScreeningSheetParameter;
@@ -138,14 +140,12 @@ public abstract class TailoringServiceMapper {
                 .filter(identifier -> isRelevantPhase)
                 .anyMatch(identifier -> {
                     int level = selectionVector.getLevel(identifier.getType());
-                    // prüfen, ob abwendbarkeit ohne einschränkung
-                    if (!identifier.hasLimitations() && level >= identifier.getLevel()) {
-                        return true;
+                    if (!identifier.hasLimitations()) {
+                        return isLevelAccepted(identifier, level);
                     }
-
                     // sind alle limitierungen enthalten und ist der level gleich
                     return containsAllLimitations(parameterValues, identifier.getLimitations())
-                            && level == identifier.getLevel();
+                            && isLevelAccepted(identifier, level);
                 });
 
         return log.traceExit(applicable);
@@ -177,4 +177,21 @@ public abstract class TailoringServiceMapper {
         return screeningParameter.containsAll(requirement);
     }
 
+    private boolean isLevelAccepted(Identifier identifier, int level) {
+        if (Objects.isNull(identifier.getLevelType())) {
+            return level >= identifier.getLevel();
+        }
+
+        // prüfen, ob +/-/
+        switch (identifier.getLevelType()) {
+            case DEFAULT:
+                return level >= identifier.getLevel();
+            case EQUAL:
+                return level == identifier.getLevel();
+            case EXCLUDE:
+                return level != identifier.getLevel();
+            default:
+                return false;
+        }
+    }
 }
