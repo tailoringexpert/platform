@@ -21,15 +21,6 @@
  */
 package eu.tailoringexpert.requirement;
 
-import eu.tailoringexpert.domain.DRD;
-import eu.tailoringexpert.domain.DRDEntity;
-import eu.tailoringexpert.domain.Logo;
-import eu.tailoringexpert.domain.LogoEntity;
-import eu.tailoringexpert.repository.DRDRepository;
-import eu.tailoringexpert.repository.LogoRepository;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
@@ -37,11 +28,26 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+
+import eu.tailoringexpert.domain.ApplicableDocumentEntity;
+import eu.tailoringexpert.domain.DRD;
+import eu.tailoringexpert.domain.DRDEntity;
+import eu.tailoringexpert.domain.Document;
+import eu.tailoringexpert.domain.Logo;
+import eu.tailoringexpert.domain.LogoEntity;
+import eu.tailoringexpert.repository.ApplicableDocumentRepository;
+import eu.tailoringexpert.repository.DRDRepository;
+import eu.tailoringexpert.repository.LogoRepository;
+
 class JPARequirementServiceRepositoryMapperTest {
 
     private LogoRepository logoRepositoryMock;
 
     private DRDRepository drdRepositoryMock;
+
+    private ApplicableDocumentRepository applicableDocumentRepositoryMock;
 
     private JPARequirementServiceRepositoryMapper mapper;
 
@@ -51,8 +57,11 @@ class JPARequirementServiceRepositoryMapperTest {
 
         this.logoRepositoryMock = mock(LogoRepository.class);
         this.drdRepositoryMock = mock(DRDRepository.class);
+        this.applicableDocumentRepositoryMock = mock(ApplicableDocumentRepository.class);
+
         this.mapper.setLogoRepository(logoRepositoryMock);
         this.mapper.setDrdRepository(drdRepositoryMock);
+        this.mapper.setApplicableDocumentRepository(applicableDocumentRepositoryMock);
     }
 
     @Test
@@ -113,5 +122,36 @@ class JPARequirementServiceRepositoryMapperTest {
         assertThat(actual).isNotNull();
         assertThat(actual.getNumber()).isEqualTo("01");
         verify(drdRepositoryMock, times(1)).findByNumber("01");
+    }
+
+    @Test
+    void resolve_DocumentNull_NullReturned() {
+        // arrange
+        Document document = null;
+
+        // act
+        ApplicableDocumentEntity actual = mapper.resolve(document);
+
+        // assert
+        assertThat(actual).isNull();
+        verify(applicableDocumentRepositoryMock, times(0)).findByTitleAndIssueAndRevision(any(), any(), any());
+    }
+
+    @Test
+    void resolve_DocumentNotNull_ApplicableDocumentEntityReturned() {
+        // arrange
+        Document document = Document.builder().title("Sample Document").issue("1").revision("").build();
+
+        ApplicableDocumentEntity applicableDocumentEntity = ApplicableDocumentEntity.builder().issue("1").revision("")
+                .build();
+        given(applicableDocumentRepositoryMock.findByTitleAndIssueAndRevision("Sample Document", "1", ""))
+                .willReturn(applicableDocumentEntity);
+
+        // act
+        ApplicableDocumentEntity actual = mapper.resolve(document);
+
+        // assert
+        assertThat(actual).isNotNull();
+        verify(applicableDocumentRepositoryMock, times(1)).findByTitleAndIssueAndRevision("Sample Document", "1", "");
     }
 }

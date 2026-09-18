@@ -21,24 +21,26 @@
  */
 package eu.tailoringexpert.domain;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import static jakarta.persistence.EnumType.STRING;
+import static jakarta.persistence.GenerationType.TABLE;
+
+import java.io.Serializable;
+import java.util.Set;
 
 import jakarta.persistence.CollectionTable;
 import jakarta.persistence.Column;
 import jakarta.persistence.ElementCollection;
 import jakarta.persistence.Entity;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.Table;
 import jakarta.persistence.TableGenerator;
-import java.io.Serializable;
-import java.util.Set;
-
-import static jakarta.persistence.GenerationType.TABLE;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Data
 @NoArgsConstructor
@@ -53,8 +55,7 @@ public class IdentifierEntity implements Serializable {
      * Technical ID.
      */
     @Id
-    @TableGenerator(name = "SEQ_IDENTIFIER", table = "SEQUENCE", pkColumnName = "SEQ_NAME",
-        valueColumnName = "SEQ_COUNT", pkColumnValue = "SEQ_IDENTIFIER", initialValue = 1)
+    @TableGenerator(name = "SEQ_IDENTIFIER", table = "SEQUENCE", pkColumnName = "SEQ_NAME", valueColumnName = "SEQ_COUNT", pkColumnValue = "SEQ_IDENTIFIER", initialValue = 1)
     @GeneratedValue(strategy = TABLE, generator = "SEQ_IDENTIFIER")
     @Column(name = "IDENTIFIER_ID")
     private Long id;
@@ -66,6 +67,13 @@ public class IdentifierEntity implements Serializable {
     private String type;
 
     /**
+     * Type how level shall be handled/evaluated.
+     */
+    @Column(name = "LEVELTYPE")
+    @Enumerated(STRING)
+    private LevelType levelType;
+
+    /**
      * Level to select requirement on.
      */
     @Column(name = "LEVEL")
@@ -75,10 +83,7 @@ public class IdentifierEntity implements Serializable {
      * List of strings identicating that a requirement shall be selected, e.g SAT.
      */
     @ElementCollection
-    @CollectionTable(
-        name = "IDENTIFIER_LIMITATION",
-        joinColumns = @JoinColumn(name = "IDENTIFIER_ID")
-    )
+    @CollectionTable(name = "IDENTIFIER_LIMITATION", joinColumns = @JoinColumn(name = "IDENTIFIER_ID"))
     @Column(name = "LIMITATION")
     private Set<String> limitations;
 }
