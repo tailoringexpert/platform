@@ -25,6 +25,7 @@ import static java.util.Collections.emptyMap;
 import static java.util.Comparator.comparingInt;
 import static java.util.Objects.nonNull;
 import static java.util.Optional.of;
+import static java.util.stream.Collectors.toCollection;
 
 import java.util.Collection;
 import java.util.HashMap;
@@ -172,8 +173,21 @@ public class TailoringCatalogPDFDocumentCreator extends AbstractPDFDocumentCreat
             }
         }
 
+        Collection<DRDElement> drds = new LinkedList<>();
+        if (nonNull(requirement.getDrds())) {
+            requirement.getDrds()
+                    .stream()
+                    .map(drd -> DRDElement.builder()
+                            .number(drd.getNumber())
+                            .title(toXhtml(drd.getTitle(), emptyMap()))
+                            .subtitle(drd.getSubtitle())
+                            .build())
+                    .collect(toCollection(() -> drds));
+        }
+
         rows.add(builder
                 .applicable(requirement.getSelected().booleanValue())
+                .drds(drds)
                 .position(toXhtml(requirement.getPosition(), emptyMap()))
                 .text(toXhtml(requirement.getText(), placeholders))
                 .chapter(null)

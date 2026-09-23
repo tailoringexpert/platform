@@ -85,8 +85,6 @@ public class BaseCatalogPDFDocumentCreator implements DocumentCreator {
     @NonNull
     private PDFEngine pdfEngine;
 
-    private static final String REFERENZ_LOGO_LINK = "<img src=\"%s\" alt=\"%s\"></img><br/>";
-
     /**
      * {@inheritDoc}
      */
@@ -209,14 +207,11 @@ public class BaseCatalogPDFDocumentCreator implements DocumentCreator {
                     .forEach(identifier -> identifiers.addAll(buildLimitations(identifier)));
         }
 
-        Collection<String> phases = new ArrayList<>();
-        if (nonNull(requirement.getPhases())) {
-            requirement.getPhases()
-                    .stream()
-                    .sorted(Comparator.comparing(Phase::ordinal))
-                    .map(Phase::getValue)
-                    .collect(toCollection(() -> phases));
-        }
+        Collection<String> phases = requirement.getPhases()
+                .stream()
+                .sorted(Comparator.comparing(Phase::ordinal))
+                .map(Phase::getValue)
+                .toList();
 
         Collection<DRDElement> drds = new LinkedList<>();
         if (nonNull(requirement.getDrds())) {

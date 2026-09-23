@@ -21,14 +21,16 @@
  */
 package eu.tailoringexpert;
 
-import lombok.extern.log4j.Log4j2;
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-import org.mockito.MockedStatic;
-import org.springframework.jdbc.datasource.DriverManagerDataSource;
+import static java.nio.file.Files.newInputStream;
+import static java.nio.file.Files.walk;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.catchThrowable;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.mockStatic;
+import static org.mockito.Mockito.spy;
 
-import javax.sql.DataSource;
 import java.io.File;
 import java.io.IOException;
 import java.io.OutputStream;
@@ -41,12 +43,15 @@ import java.util.Map;
 import java.util.Properties;
 import java.util.stream.Stream;
 
-import static java.nio.file.Files.newInputStream;
-import static java.nio.file.Files.walk;
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.catchThrowable;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.*;
+import javax.sql.DataSource;
+
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.mockito.MockedStatic;
+import org.springframework.jdbc.datasource.DriverManagerDataSource;
+
+import lombok.extern.log4j.Log4j2;
 
 @Log4j2
 class TenantFactoryTest {
@@ -65,7 +70,7 @@ class TenantFactoryTest {
     @AfterEach
     void afterEach() throws Exception {
         Field field = TenantContext.class.getDeclaredField("registeredTenants");
-        field.setAccessible(true); //NOPMD - suppressed AvoidAccessibilityAlteration
+        field.setAccessible(true); // NOPMD - suppressed AvoidAccessibilityAlteration
         field.set(null, new HashMap<>());
         field.setAccessible(false);
     }
@@ -76,7 +81,7 @@ class TenantFactoryTest {
         String tenantConfigRoot = Paths.get("tenants").toAbsolutePath().toString();
 
         doReturn(Stream.<Path>empty())
-            .when(factory).findByFileExtension(Paths.get(tenantConfigRoot), ".properties");
+                .when(factory).findByFileExtension(Paths.get(tenantConfigRoot), ".properties");
 
         // act
         Map<String, String> actual = factory.tenants();
@@ -93,9 +98,9 @@ class TenantFactoryTest {
         Properties properties = createProperties();
 
         doReturn(Stream.of(file.toPath()))
-            .when(factory).findByFileExtension(Paths.get(tenantConfigRoot), ".properties");
+                .when(factory).findByFileExtension(Paths.get(tenantConfigRoot), ".properties");
         doReturn(properties)
-            .when(factory).loadProperties(file);
+                .when(factory).loadProperties(file);
 
         // act
         Map<String, String> actual = factory.tenants();
@@ -113,22 +118,22 @@ class TenantFactoryTest {
         Properties properties = createProperties();
 
         doReturn(Stream.of(file.toPath()))
-            .when(factory).findByFileExtension(Paths.get(tenantConfigRoot), ".properties");
+                .when(factory).findByFileExtension(Paths.get(tenantConfigRoot), ".properties");
         doReturn(properties)
-            .when(factory).loadProperties(file);
+                .when(factory).loadProperties(file);
         doReturn(createDefaultDataSource())
-            .when(factory).buildDataSource(properties);
+                .when(factory).buildDataSource(properties);
 
         // act
         DataSource actual = factory.dataSource();
 
         // assert
         assertThat(actual)
-            .isNotNull()
-            .isInstanceOf(TenantDataSource.class);
+                .isNotNull()
+                .isInstanceOf(TenantDataSource.class);
         assertThat(((TenantDataSource) actual).getResolvedDataSources())
-            .hasSize(1)
-            .containsKey("demo");
+                .hasSize(1)
+                .containsKey("demo");
     }
 
     @Test
@@ -141,8 +146,8 @@ class TenantFactoryTest {
 
         // assert
         assertThat(actual)
-            .isNotNull()
-            .isInstanceOf(DriverManagerDataSource.class);
+                .isNotNull()
+                .isInstanceOf(DriverManagerDataSource.class);
     }
 
     @Test
@@ -172,8 +177,8 @@ class TenantFactoryTest {
         // assert
         assertThat(actual).isNotNull();
         assertThat(actual.getProperty("ENV"))
-            .isNotBlank()
-            .isNotEqualTo("${PATH}");
+                .isNotBlank()
+                .isNotEqualTo("${PATH}");
     }
 
     @Test
@@ -189,10 +194,9 @@ class TenantFactoryTest {
         // assert
         assertThat(actual).isNotNull();
         assertThat(actual.getProperty("SYSTEM"))
-            .isNotBlank()
-            .isEqualTo("ENC(4qBa1ScLN/2lSdLpjRcdqnBtlN5zQrVW54n04C3f90U=");
+                .isNotBlank()
+                .isEqualTo("ENC(4qBa1ScLN/2lSdLpjRcdqnBtlN5zQrVW54n04C3f90U=");
     }
-
 
     @Test
     void findByFileExtension_FileExceptionMocked_ExceptionThrown() {
@@ -224,6 +228,45 @@ class TenantFactoryTest {
 
         // assert
         assertThat(actual).isInstanceOf(IOException.class);
+    }
+
+    @Test
+    void resolveEnvVar_NoVar_InputReturned() {
+        // arrnage
+        String input = "NoEnvVar";
+
+        // act
+        String actual = factory.resolveEnvVar(input);
+
+        // assert
+        assertThat(actual).isEqualTo("NoEnvVar");
+    }
+
+    @Test
+    void resolveEnvVar_WithSystemProperty_SystemVarReturned() {
+        // arrnage
+        String input = "${TEST_VAR}";
+        System.setProperty("TEST_VAR", "test1234");
+
+        // act
+        String actual = factory.resolveEnvVar(input);
+
+        // assert
+        assertThat(actual).isEqualTo("test1234");
+
+        System.clearProperty("TEST_VAR");
+    }
+
+    @Test
+    void resolveEnvVar_WithEnvironmentVariable_EnvVarReturned() {
+        // arrnage
+        String input = "$PATH";
+
+        // act
+        String actual = factory.resolveEnvVar(input);
+
+        // assert
+        assertThat(actual).isEqualTo(System.getenv("PATH"));
     }
 
     private File createFile() throws Exception {
