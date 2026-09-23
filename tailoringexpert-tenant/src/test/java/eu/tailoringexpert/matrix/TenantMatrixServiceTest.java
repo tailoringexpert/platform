@@ -26,6 +26,7 @@ import static java.nio.file.Paths.get;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.catchThrowable;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.argThat;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.mock;
@@ -150,6 +151,7 @@ class TenantMatrixServiceTest {
                 .hasSize(2);
     }
 
+    @Test
     void save_CreateDirectoryMockedExcepion_RuntimeExceptionIsThrown() {
         // arrange
         MatrixFile toSave = MatrixFile.builder().build();
@@ -159,7 +161,7 @@ class TenantMatrixServiceTest {
         try (MockedStatic<TenantContext> tc = mockStatic(TenantContext.class);
                 MockedStatic<Files> files = mockStatic(Files.class)) {
             tc.when(TenantContext::getCurrentTenant).thenReturn("platform");
-            files.when(() -> Files.createDirectories(Path.of(this.basedir + "/platform")))
+            files.when(() -> Files.createDirectories(Paths.get(this.basedir, "platform").toAbsolutePath()))
                     .thenThrow(new IOException("Mocked createDirectories Exception"));
             actual = catchThrowable(() -> service.save(toSave));
 
@@ -191,8 +193,11 @@ class TenantMatrixServiceTest {
 
         // act
         Throwable actual = null;
-        try (MockedStatic<Files> files = mockStatic(Files.class)) {
-            files.when(() -> Files.writeString(eq(Path.of(this.basedir + "/platform/MATRIX01.xlsx.json")), any()))
+        try (MockedStatic<TenantContext> tc = mockStatic(TenantContext.class);
+                MockedStatic<Files> files = mockStatic(Files.class)) {
+            tc.when(TenantContext::getCurrentTenant).thenReturn("platform");
+            files.when(() -> Files
+                    .writeString(eq(Path.of(this.basedir + "/platform/MATRIX01.xlsx.json").toAbsolutePath()), any()))
                     .thenThrow(new IOException("Mocked writeString Exception"));
             actual = catchThrowable(() -> service.save(toSave));
 
@@ -334,6 +339,50 @@ class TenantMatrixServiceTest {
         // assert
         assertThat(actual).isInstanceOf(IOException.class);
 
+    }
+
+    @Test
+    void delete_FileStillExists_FalseReturned() throws Exception {
+        // arrange
+        Files.createDirectories(get(this.basedir, "platform"));
+
+        // act
+        boolean actual = true;
+        try (MockedStatic<TenantContext> tc = mockStatic(TenantContext.class);
+                MockedStatic<Files> files = mockStatic(Files.class)) {
+            tc.when(TenantContext::getCurrentTenant).thenReturn("platform");
+            files.when(() -> Files.exists(argThat(path -> path.toString().endsWith("matrix01.xlsx"))))
+                    .thenReturn(true);
+            files.when(() -> Files.exists(argThat(path -> path.toString().endsWith("matrix01.xlsx.json"))))
+                    .thenReturn(false);
+
+            actual = service.delete("matrix01.xlsx");
+        }
+
+        // assert
+        assertThat(actual).isFalse();
+    }
+
+    @Test
+    void delete_MetaFileStillExists_FalseReturned() throws Exception {
+        // arrange
+        Files.createDirectories(get(this.basedir, "platform"));
+
+        // act
+        boolean actual = true;
+        try (MockedStatic<TenantContext> tc = mockStatic(TenantContext.class);
+                MockedStatic<Files> files = mockStatic(Files.class)) {
+            tc.when(TenantContext::getCurrentTenant).thenReturn("platform");
+            files.when(() -> Files.exists(argThat(path -> path.toString().endsWith("matrix01.xlsx"))))
+                    .thenReturn(false);
+            files.when(() -> Files.exists(argThat(path -> path.toString().endsWith("matrix01.xlsx.json"))))
+                    .thenReturn(true);
+
+            actual = service.delete("matrix01.xlsx");
+        }
+
+        // assert
+        assertThat(actual).isFalse();
     }
 
     @Test
