@@ -54,7 +54,7 @@ public class TenantMatrixDownloadProvider implements Function<String, Optional<F
         return download(fqn);
     }
 
-    private Optional<File> download(@NonNull Path fqn) {
+    private Optional<File> download(Path fqn) {
         log.traceEntry(() -> fqn);
 
         byte[] data = null;

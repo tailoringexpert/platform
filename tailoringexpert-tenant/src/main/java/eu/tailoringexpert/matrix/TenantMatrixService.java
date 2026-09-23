@@ -162,7 +162,7 @@ public class TenantMatrixService implements MatrixService {
         Files.deleteIfExists(dir.resolve(name));
         Files.deleteIfExists(dir.resolve(name + SUFFIX_METAFILE));
 
-        boolean result = !dir.resolve(name).toFile().exists() && !dir.resolve(name + SUFFIX_METAFILE).toFile().exists();
+        boolean result = !Files.exists(dir.resolve(name)) && !Files.exists(dir.resolve(name + SUFFIX_METAFILE));
 
         return log.traceExit(result);
     }
