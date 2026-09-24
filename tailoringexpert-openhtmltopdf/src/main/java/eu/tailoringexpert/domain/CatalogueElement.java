@@ -21,7 +21,10 @@
  */
 package eu.tailoringexpert.domain;
 
+import java.util.Collection;
+
 import lombok.Getter;
+import lombok.Singular;
 import lombok.experimental.SuperBuilder;
 
 /**
@@ -63,5 +66,11 @@ public abstract class CatalogueElement {
      * Level of element in chapter tree.
      */
     private int level;
+
+    /**
+     * Referenced DRDs.
+     */
+    @Singular
+    private Collection<DRDElement> drds;
 
 }

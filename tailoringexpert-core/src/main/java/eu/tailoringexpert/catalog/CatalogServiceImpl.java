@@ -252,7 +252,7 @@ public class CatalogServiceImpl implements CatalogService {
     /**
      * {@inheritDoc}
      */
-    // @Override
+    @Override
     public Optional<File> createCatalog(String base, Catalog<BaseRequirement> compare) {
         log.traceEntry(() -> base, () -> compare);
         @SuppressWarnings("PMD.PrematureDeclaration")

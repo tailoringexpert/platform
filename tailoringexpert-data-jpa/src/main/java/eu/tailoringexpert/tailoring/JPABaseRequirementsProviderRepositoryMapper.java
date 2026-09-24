@@ -21,24 +21,21 @@
  */
 package eu.tailoringexpert.tailoring;
 
+import org.mapstruct.Mapper;
+
 import eu.tailoringexpert.TailoringexpertMapperConfig;
 import eu.tailoringexpert.domain.BaseCatalogEntity;
 import eu.tailoringexpert.domain.BaseRequirement;
 import eu.tailoringexpert.domain.Catalog;
-import eu.tailoringexpert.repository.BaseCatalogRepository;
-import lombok.Setter;
-import org.mapstruct.Mapper;
 
 /**
- * Mapper used by {@link JPABaseRequirementsProviderRepository} to convert domain and entity objects.
+ * Mapper used by {@link JPABaseRequirementsProviderRepository} to convert
+ * domain and entity objects.
  *
  * @author Michael Bädorf
  */
 @Mapper(config = TailoringexpertMapperConfig.class)
 public abstract class JPABaseRequirementsProviderRepositoryMapper {
-
-    @Setter
-    private BaseCatalogRepository baseCatalogRepository;
 
     abstract Catalog<BaseRequirement> getBaseCatalog(BaseCatalogEntity entity);
 
