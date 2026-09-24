@@ -39,5 +39,4 @@ public class TailoringCatalogueElement extends CatalogueElement {
      * State if element shall be shown.
      */
     private boolean applicable;
-
 }

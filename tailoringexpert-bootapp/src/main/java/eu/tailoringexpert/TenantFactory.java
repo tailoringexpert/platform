@@ -21,26 +21,30 @@
  */
 package eu.tailoringexpert;
 
-import lombok.AllArgsConstructor;
-import lombok.NonNull;
-import lombok.SneakyThrows;
-import lombok.extern.log4j.Log4j2;
-import org.springframework.jdbc.datasource.DriverManagerDataSource;
+import static java.nio.file.Files.newInputStream;
+import static java.util.Objects.isNull;
+import static java.util.Optional.ofNullable;
 
-import javax.sql.DataSource;
 import java.io.File;
 import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.*;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Properties;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Stream;
 
-import static java.nio.file.Files.newInputStream;
-import static java.util.Objects.isNull;
-import static java.util.Optional.ofNullable;
+import javax.sql.DataSource;
+
+import org.springframework.jdbc.datasource.DriverManagerDataSource;
+
+import lombok.AllArgsConstructor;
+import lombok.NonNull;
+import lombok.SneakyThrows;
+import lombok.extern.log4j.Log4j2;
 
 @Log4j2
 @AllArgsConstructor
@@ -57,12 +61,12 @@ public class TenantFactory {
 
         try (Stream<Path> files = findByFileExtension(Paths.get(tenantConfigRoot), ".properties")) {
             files.map(Path::toFile)
-                .forEach(propertyFile -> {
-                    final Properties tenantProperties = loadProperties(propertyFile);
-                    final String tenantId = tenantProperties.getProperty("id");
-                    final String tenantName = tenantProperties.getProperty("name");
-                    TenantContext.registerTenant(tenantId, tenantName);
-                });
+                    .forEach(propertyFile -> {
+                        final Properties tenantProperties = loadProperties(propertyFile);
+                        final String tenantId = tenantProperties.getProperty("id");
+                        final String tenantName = tenantProperties.getProperty("name");
+                        TenantContext.registerTenant(tenantId, tenantName);
+                    });
         }
         return TenantContext.getRegisteredTenants();
     }
@@ -78,13 +82,13 @@ public class TenantFactory {
         final Map<Object, Object> resolvedDataSources = new HashMap<>();
         try (Stream<Path> files = findByFileExtension(Paths.get(tenantConfigRoot), ".properties")) {
             files.map(Path::toFile)
-                .forEach(propertyFile -> {
-                    log.debug(propertyFile.getAbsolutePath());
-                    final Properties tenantProperties = loadProperties(propertyFile);
-                    final String tenantId = tenantProperties.getProperty("id");
-                    final DataSource tenantDataSource = buildDataSource(tenantProperties);
-                    resolvedDataSources.put(tenantId, tenantDataSource);
-                });
+                    .forEach(propertyFile -> {
+                        log.debug(propertyFile.getAbsolutePath());
+                        final Properties tenantProperties = loadProperties(propertyFile);
+                        final String tenantId = tenantProperties.getProperty("id");
+                        final DataSource tenantDataSource = buildDataSource(tenantProperties);
+                        resolvedDataSources.put(tenantId, tenantDataSource);
+                    });
         }
         if (resolvedDataSources.isEmpty()) {
             log.error("No tenant datasources are available!!!");
@@ -113,7 +117,6 @@ public class TenantFactory {
         return result;
     }
 
-
     /**
      * Load propertyfile and replaces placeholder.
      *
@@ -135,7 +138,7 @@ public class TenantFactory {
     @SneakyThrows
     Stream<Path> findByFileExtension(Path path, String fileExtension) {
         return Files.walk(path, 1)
-            .filter(p -> p.getFileName().toString().endsWith(fileExtension));
+                .filter(p -> p.getFileName().toString().endsWith(fileExtension));
     }
 
     String resolveEnvVar(String key) {
@@ -150,4 +153,5 @@ public class TenantFactory {
         m.appendTail(sb);
         return sb.toString();
     }
+
 }
