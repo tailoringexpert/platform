@@ -1006,4 +1006,24 @@ class ResourceMapperTest {
 
         assertThat(actual.getLinks()).isEmpty();
     }
+
+    @Test
+    void toResource_MatrixFile_DatenUndLinksOK() {
+        // arrange
+        PathContextBuilder pathContext = PathContext.builder();
+
+        MatrixFileMeta domain = MatrixFileMeta.builder()
+                .name("demo.xlsx")
+                .description("demo matrix")
+                .catalogueVersion("9.0.0")
+                .build();
+
+        // act
+        MatrixFileResource actual = mapper.toResource(pathContext, domain);
+
+        // assert
+        assertThat(actual).isNotNull();
+        assertThat(actual.getLinks()).containsExactlyInAnyOrder(
+                Link.of(this.host + "/matrixfile/demo.xlsx", "self"));
+    }
 }

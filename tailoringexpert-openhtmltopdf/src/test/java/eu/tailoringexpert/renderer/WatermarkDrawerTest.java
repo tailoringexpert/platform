@@ -49,6 +49,7 @@ import com.openhtmltopdf.pdfboxout.PdfBoxFastOutputDevice;
 import com.openhtmltopdf.pdfboxout.PdfRendererBuilder;
 import com.openhtmltopdf.pdfboxout.visualtester.PdfVisualTester;
 import com.openhtmltopdf.pdfboxout.visualtester.PdfVisualTester.PdfCompareResult;
+import com.openhtmltopdf.pdfboxout.visualtester.PdfVisualTester.ProblemType;
 import com.openhtmltopdf.render.DefaultObjectDrawerFactory;
 import com.openhtmltopdf.render.RenderingContext;
 
@@ -139,8 +140,8 @@ class WatermarkDrawerTest {
 
         byte[] expected = WatermarkDrawerTest.class.getResourceAsStream("/watermark.pdf").readAllBytes();
         List<PdfCompareResult> problems = PdfVisualTester.comparePdfDocuments(expected, actual,
-                "drawObject_TextGiven_CorrectFileGenerated", false);
-        assertThat(problems).isEmpty();
+                "drawObject_TextGiven_CorrectFileGenerated", true);
+        assertThat(problems.isEmpty() || problems.stream().allMatch(r -> r.type == ProblemType.PAGE_GOOD)).isTrue();
 
     }
 }

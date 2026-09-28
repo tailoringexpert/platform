@@ -753,7 +753,7 @@ public class TailoringController {
         ResponseEntity<Boolean> result = tailoringService.unselectRequirementsAccordingToPhases(
                 project,
                 tailoring)
-                .map(state -> status(state ? OK : PRECONDITION_FAILED).body(state))
+                .map(state -> status(OK).body(state))
                 .orElseGet(() -> notFound().build());
 
         log.traceExit();

@@ -65,6 +65,7 @@ package domain {
         level : int
         limitations : Set<String>
     }
+    IdentifierEntity --> "1" LevelType : levelType
 
     class ApplicableDocumentEntity {
         id : Long <<PK>>

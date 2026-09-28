@@ -21,18 +21,6 @@
  */
 package eu.tailoringexpert.catalog;
 
-import eu.tailoringexpert.TenantContext;
-import eu.tailoringexpert.domain.BaseRequirement;
-import eu.tailoringexpert.domain.Catalog;
-import eu.tailoringexpert.domain.File;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-
-import java.time.LocalDateTime;
-import java.util.AbstractMap.SimpleEntry;
-import java.util.List;
-import java.util.Optional;
-
 import static java.util.Map.ofEntries;
 import static java.util.Optional.of;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -41,6 +29,19 @@ import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
+
+import java.time.LocalDateTime;
+import java.util.AbstractMap.SimpleEntry;
+import java.util.List;
+import java.util.Optional;
+
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+
+import eu.tailoringexpert.TenantContext;
+import eu.tailoringexpert.domain.BaseRequirement;
+import eu.tailoringexpert.domain.Catalog;
+import eu.tailoringexpert.domain.File;
 
 class TenantDocumentServiceTest {
 
@@ -51,8 +52,7 @@ class TenantDocumentServiceTest {
     void beforeEach() {
         this.tenentDocumentServiceMock = mock(DocumentService.class);
         this.service = new TenantDocumentService(ofEntries(
-            new SimpleEntry("TENANT", tenentDocumentServiceMock)
-        ));
+                new SimpleEntry("TENANT", tenentDocumentServiceMock)));
     }
 
     @Test
@@ -78,7 +78,7 @@ class TenantDocumentServiceTest {
         LocalDateTime erstellungsZeitpunt = LocalDateTime.now();
 
         given(tenentDocumentServiceMock.createCatalog(catalog, erstellungsZeitpunt))
-            .willReturn(of(File.builder().build()));
+                .willReturn(of(File.builder().build()));
 
         // act
         Optional<File> actual = service.createCatalog(catalog, erstellungsZeitpunt);
@@ -111,7 +111,7 @@ class TenantDocumentServiceTest {
         LocalDateTime erstellungsZeitpunt = LocalDateTime.now();
 
         given(tenentDocumentServiceMock.createCatalogExcel(catalog, erstellungsZeitpunt))
-            .willReturn(of(File.builder().build()));
+                .willReturn(of(File.builder().build()));
 
         // act
         Optional<File> actual = service.createCatalogExcel(catalog, erstellungsZeitpunt);
@@ -144,7 +144,7 @@ class TenantDocumentServiceTest {
         LocalDateTime erstellungsZeitpunt = LocalDateTime.now();
 
         given(tenentDocumentServiceMock.createAll(catalog, erstellungsZeitpunt))
-            .willReturn(List.of());
+                .willReturn(List.of());
 
         // act
         service.createAll(catalog, erstellungsZeitpunt);
@@ -166,5 +166,23 @@ class TenantDocumentServiceTest {
         // assert
         assertThat(actual).isInstanceOf(NoSuchMethodException.class);
         verify(tenentDocumentServiceMock, times(0)).createCatalog(catalog, catalog, erstellungsZeitpunt);
+    }
+
+    @Test
+    void createCatalog_TenantForCompareExists_TenantImplementationReturned() {
+        // arrange
+        TenantContext.setCurrentTenant("TENANT");
+        Catalog<BaseRequirement> catalog = Catalog.<BaseRequirement>builder().build();
+        LocalDateTime erstellungsZeitpunt = LocalDateTime.now();
+
+        given(tenentDocumentServiceMock.createCatalog(catalog, catalog, erstellungsZeitpunt))
+                .willReturn(of(File.builder().build()));
+
+        // act
+        Optional<File> actual = service.createCatalog(catalog, catalog, erstellungsZeitpunt);
+
+        // assert
+        verify(tenentDocumentServiceMock, times(1)).createCatalog(catalog, catalog, erstellungsZeitpunt);
+        assertThat(actual).isPresent();
     }
 }

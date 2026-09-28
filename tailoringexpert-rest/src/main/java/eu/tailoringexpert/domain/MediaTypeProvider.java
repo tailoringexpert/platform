@@ -39,6 +39,7 @@ public class MediaTypeProvider implements Function<String, MediaType> {
     private static final Map<String, MediaType> contentTypes = ofEntries(
             new SimpleEntry<>("pdf", valueOf("application/pdf")),
             new SimpleEntry<>("xlsx", valueOf("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet")),
+            new SimpleEntry<>("xlsm", valueOf("application/vnd.ms-excel.sheet.macroEnabled.12")),
             new SimpleEntry<>("zip", valueOf("application/zip")),
             new SimpleEntry<>("json", valueOf("application/json")));
 

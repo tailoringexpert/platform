@@ -45,6 +45,8 @@ import eu.tailoringexpert.TailoringexpertMapperConfig;
 import eu.tailoringexpert.domain.BaseRequirement;
 import eu.tailoringexpert.domain.Catalog;
 import eu.tailoringexpert.domain.Chapter;
+import eu.tailoringexpert.domain.Identifier;
+import eu.tailoringexpert.domain.LevelType;
 import eu.tailoringexpert.domain.Phase;
 import eu.tailoringexpert.domain.ScreeningSheet;
 import eu.tailoringexpert.domain.ScreeningSheetParameter;
@@ -138,14 +140,12 @@ public abstract class TailoringServiceMapper {
                 .filter(identifier -> isRelevantPhase)
                 .anyMatch(identifier -> {
                     int level = selectionVector.getLevel(identifier.getType());
-                    // prüfen, ob abwendbarkeit ohne einschränkung
-                    if (!identifier.hasLimitations() && level >= identifier.getLevel()) {
-                        return true;
+                    if (!identifier.hasLimitations()) {
+                        return isLevelAccepted(identifier, level);
                     }
-
                     // sind alle limitierungen enthalten und ist der level gleich
                     return containsAllLimitations(parameterValues, identifier.getLimitations())
-                            && level == identifier.getLevel();
+                            && isLevelAccepted(identifier, level);
                 });
 
         return log.traceExit(applicable);
@@ -177,4 +177,20 @@ public abstract class TailoringServiceMapper {
         return screeningParameter.containsAll(requirement);
     }
 
+    /**
+     * Checks, if provided level fullfils identifier level.
+     * 
+     * @param identifier identifier to use for level check
+     * @param level      provided level
+     * @return true, if provided level fullfils leveltype rule of identifier>
+     */
+    private boolean isLevelAccepted(Identifier identifier, int level) {
+        LevelType levelType = Optional.ofNullable(identifier.getLevelType()).orElseGet(() -> LevelType.DEFAULT);
+
+        return switch (levelType) {
+            case DEFAULT -> level >= identifier.getLevel();
+            case EQUAL -> level == identifier.getLevel();
+            case EXCLUDE -> level != identifier.getLevel();
+        };
+    }
 }
