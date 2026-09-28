@@ -21,12 +21,13 @@
  */
 package eu.tailoringexpert.catalog;
 
-import eu.tailoringexpert.domain.Identifier;
+import static org.assertj.core.api.Assertions.assertThat;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-
-import static org.assertj.core.api.Assertions.assertThat;
+import eu.tailoringexpert.domain.Identifier;
+import eu.tailoringexpert.domain.LevelType;
 
 class IdentifierParserTest {
 
@@ -47,6 +48,7 @@ class IdentifierParserTest {
 
         // assert
         assertThat(actual).isNotNull();
+        assertThat(actual.getLevelType()).isEqualTo(LevelType.DEFAULT);
         assertThat(actual.getType()).isEqualTo("Q");
         assertThat(actual.getLevel()).isEqualTo(5);
         assertThat(actual.getLimitations()).isNull();
@@ -62,10 +64,12 @@ class IdentifierParserTest {
 
         // assert
         assertThat(actual).isNotNull();
+        assertThat(actual.getLevelType()).isEqualTo(LevelType.DEFAULT);
         assertThat(actual.getType()).isEqualTo("Q");
         assertThat(actual.getLevel()).isEqualTo(5);
         assertThat(actual.getLimitations()).isNull();
     }
+
     @Test
     void apply_IdentifierStringWith2Limitations_IdentifierReturned() {
         // arrange
@@ -76,10 +80,47 @@ class IdentifierParserTest {
 
         // assert
         assertThat(actual).isNotNull();
+        assertThat(actual.getLevelType()).isEqualTo(LevelType.DEFAULT);
         assertThat(actual.getType()).isEqualTo("Q");
         assertThat(actual.getLevel()).isEqualTo(5);
         assertThat(actual.getLimitations())
-            .hasSize(2)
-            .containsExactly("ISS", "ESA");
+                .hasSize(2)
+                .containsExactly("ISS", "ESA");
+    }
+
+    @Test
+    void apply_ExcludingIdentifierString_IdentifierReturned() {
+        // arrange
+        String identifier = "-Q5 (ISS)(ESA)";
+
+        // act
+        Identifier actual = parser.apply(identifier);
+
+        // assert
+        assertThat(actual).isNotNull();
+        assertThat(actual.getLevelType()).isEqualTo(LevelType.EXCLUDE);
+        assertThat(actual.getType()).isEqualTo("Q");
+        assertThat(actual.getLevel()).isEqualTo(5);
+        assertThat(actual.getLimitations())
+                .hasSize(2)
+                .containsExactly("ISS", "ESA");
+    }
+
+    @Test
+    void apply_IncludingIdentifierString_IdentifierReturned() {
+        // arrange
+        String identifier = "+Q5 (ISS)(ESA)";
+
+        // act
+        Identifier actual = parser.apply(identifier);
+
+        // assert
+        assertThat(actual).isNotNull();
+        assertThat(actual.getLevelType()).isEqualTo(LevelType.EQUAL);
+        assertThat(actual.getType()).isEqualTo("Q");
+        assertThat(actual.getLevel()).isEqualTo(5);
+        assertThat(actual.getLimitations())
+                .hasSize(2)
+                .containsExactly("ISS", "ESA");
     }
 }

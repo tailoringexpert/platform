@@ -51,11 +51,20 @@ package domain {
         deliveryDate : String
         action : String
     }
+
+    enum LevelType {
+        DEFAULT("")
+        EXCLUDE("-")
+        EQUAL(+)
+        {static} fromString(id : String) : LevelType
+    }
+
     class Identifier {
         type : String
         level : int
         limitations : Collection<String>
     }
+    Identifier --> "1" LevelType : levelType
 
     enum Phase {
         ZERO("0")

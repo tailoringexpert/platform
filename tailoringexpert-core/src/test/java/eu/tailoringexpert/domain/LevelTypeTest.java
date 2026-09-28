@@ -19,24 +19,33 @@
  * <http://www.gnu.org/licenses/gpl-3.0.html>.
  * #L%
  */
-package eu.tailoringexpert.tailoring;
+package eu.tailoringexpert.domain;
 
-import org.mapstruct.Mapper;
+import static org.assertj.core.api.Assertions.assertThat;
 
-import eu.tailoringexpert.TailoringexpertMapperConfig;
-import eu.tailoringexpert.domain.BaseCatalogEntity;
-import eu.tailoringexpert.domain.BaseRequirement;
-import eu.tailoringexpert.domain.Catalog;
+import org.junit.jupiter.api.Test;
 
-/**
- * Mapper used by {@link JPABaseRequirementsProviderRepository} to convert
- * domain and entity objects.
- *
- * @author Michael Bädorf
- */
-@Mapper(config = TailoringexpertMapperConfig.class)
-public abstract class JPABaseRequirementsProviderRepositoryMapper {
+class LevelTypeTest {
 
-    abstract Catalog<BaseRequirement> getBaseCatalog(BaseCatalogEntity entity);
+    @Test
+    void fromString_ValidId_EnumReturned() {
+        // arrange
 
+        // act
+        LevelType actual = LevelType.fromString("+");
+
+        // assert
+        assertThat(actual).isEqualTo(LevelType.EQUAL);
+    }
+
+    @Test
+    void fromString_InValidId_DefaultEnumReturned() {
+        // arrange
+
+        // act
+        LevelType actual = LevelType.fromString("tdteuwvdewvdew");
+
+        // assert
+        assertThat(actual).isEqualTo(LevelType.DEFAULT);
+    }
 }

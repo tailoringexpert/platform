@@ -1,5 +1,18 @@
 # Changelog
 
+## [v0.2.9](https://github.com/tailoringexpert/platform/tree/v0.2.9) (09.24.2026)
+
+[Full Changelog](https://github.com/tailoringexpert/platform/compare/v0.2.8...v0.2.9)
+
+**Implemented enhancements:**
+
+- Add leveltype to Identifier [\#526](https://github.com/tailoringexpert/platform/issues/526)
+- Provide drds to requirement for pdf document generation [\#535](https://github.com/tailoringexpert/platform/issues/535)
+
+**Fixed bugs:**
+
+- Missing content type for xlsm [\#523](https://github.com/tailoringexpert/platform/issues/523)
+
 ## [v0.2.8](https://github.com/tailoringexpert/platform/tree/v0.2.8) (08.06.2026)
 
 [Full Changelog](https://github.com/tailoringexpert/platform/compare/v0.2.7...v0.2.8)

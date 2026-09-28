@@ -21,6 +21,32 @@
  */
 package eu.tailoringexpert.catalog;
 
+import static eu.tailoringexpert.domain.Phase.A;
+import static eu.tailoringexpert.domain.Phase.B;
+import static eu.tailoringexpert.domain.Phase.C;
+import static eu.tailoringexpert.domain.Phase.D;
+import static eu.tailoringexpert.domain.Phase.E;
+import static eu.tailoringexpert.domain.Phase.F;
+import static eu.tailoringexpert.domain.Phase.ZERO;
+import static java.util.Arrays.asList;
+import static java.util.Collections.unmodifiableCollection;
+import static java.util.Objects.nonNull;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.catchThrowable;
+
+import java.io.InputStream;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.AbstractMap.SimpleEntry;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.function.Predicate;
+
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.thymeleaf.spring6.SpringTemplateEngine;
+import org.thymeleaf.templateresolver.FileTemplateResolver;
+
 import com.openhtmltopdf.extend.FSDOMMutator;
 import com.openhtmltopdf.extend.FSObjectDrawerFactory;
 import com.openhtmltopdf.render.DefaultObjectDrawerFactory;
@@ -41,34 +67,8 @@ import eu.tailoringexpert.renderer.ThymeleafTemplateEngine;
 import eu.tailoringexpert.tailoring.DRDApplicablePredicate;
 import io.github.cdimascio.dotenv.Dotenv;
 import lombok.extern.log4j.Log4j2;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-import org.thymeleaf.spring6.SpringTemplateEngine;
-import org.thymeleaf.templateresolver.FileTemplateResolver;
 import tools.jackson.databind.DeserializationFeature;
-import tools.jackson.databind.JavaType;
 import tools.jackson.databind.json.JsonMapper;
-
-import java.io.InputStream;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
-import java.util.AbstractMap.SimpleEntry;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.function.Predicate;
-
-import static eu.tailoringexpert.domain.Phase.A;
-import static eu.tailoringexpert.domain.Phase.B;
-import static eu.tailoringexpert.domain.Phase.C;
-import static eu.tailoringexpert.domain.Phase.D;
-import static eu.tailoringexpert.domain.Phase.E;
-import static eu.tailoringexpert.domain.Phase.F;
-import static eu.tailoringexpert.domain.Phase.ZERO;
-import static java.util.Arrays.asList;
-import static java.util.Collections.unmodifiableCollection;
-import static java.util.Objects.nonNull;
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.catchThrowable;
 
 @Log4j2
 class BaseCatalogPDFDocumentCreatorTest {
@@ -85,9 +85,9 @@ class BaseCatalogPDFDocumentCreatorTest {
         this.templateHome = env.get("TEMPLATE_HOME", "src/test/resources/templates/");
 
         this.objectMapper = JsonMapper.builder()
-            .findAndAddModules()
-            .disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES)
-            .build();
+                .findAndAddModules()
+                .disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES)
+                .build();
 
         this.fileSaver = new FileSaver("target");
 
@@ -102,36 +102,36 @@ class BaseCatalogPDFDocumentCreatorTest {
         springTemplateEngine.addTemplateResolver(fileTemplateResolver);
 
         RendererRequestConfigurationSupplier supplier = () -> RendererRequestConfiguration.builder()
-            .id("unittest")
-            .name("platform")
-            .templateHome(this.templateHome)
-            .build();
+                .id("unittest")
+                .name("platform")
+                .templateHome(this.templateHome)
+                .build();
 
         HTMLTemplateEngine templateEngine = new ThymeleafTemplateEngine(
-            springTemplateEngine, supplier
-        );
+                springTemplateEngine, supplier);
 
         FSDOMMutator domMutator = new TailoringexpertDOMMutator();
         FSObjectDrawerFactory objectDrawerFactory = new DefaultObjectDrawerFactory();
 
-
         this.creator = new BaseCatalogPDFDocumentCreator(
-            new ApplicableDocumentProvider<BaseRequirement>(new RequirementAlwaysSelectedPredicate<BaseRequirement>(), new DocumentNumberComparator()),
-            new DRDProvider<>(
-                (Predicate<BaseRequirement>) requirement -> true,
-                new DRDApplicablePredicate(Map.ofEntries(
-                    new SimpleEntry<>(ZERO, unmodifiableCollection(asList("MDR"))),
-                    new SimpleEntry<>(A, unmodifiableCollection(asList("PRR", "SRR"))),
-                    new SimpleEntry<>(B, unmodifiableCollection(asList("PDR"))),
-                    new SimpleEntry<>(C, unmodifiableCollection(asList("CDR"))),
-                    new SimpleEntry<>(D, unmodifiableCollection(asList("MRR", "TRR", "QR", "CCB", "MPCB", "AR", "DRB", "DAR", "FRR", "LRR"))),
-                    new SimpleEntry<>(E, unmodifiableCollection(asList("AR", "ORR", "GS upgrades", "SW upgrades", "CRR", "ELR"))),
-                    new SimpleEntry<>(F, unmodifiableCollection(asList("EOM", "MCR")))
-                ))
-            ),
-            templateEngine,
-            new PDFEngine(domMutator, objectDrawerFactory, supplier)
-        );
+                new ApplicableDocumentProvider<BaseRequirement>(
+                        new RequirementAlwaysSelectedPredicate<BaseRequirement>(), new DocumentNumberComparator()),
+                new DRDProvider<>(
+                        (Predicate<BaseRequirement>) requirement -> true,
+                        new DRDApplicablePredicate(Map.ofEntries(
+                                new SimpleEntry<>(ZERO, unmodifiableCollection(asList("MDR"))),
+                                new SimpleEntry<>(A, unmodifiableCollection(asList("PRR", "SRR"))),
+                                new SimpleEntry<>(B, unmodifiableCollection(asList("PDR"))),
+                                new SimpleEntry<>(C, unmodifiableCollection(asList("CDR"))),
+                                new SimpleEntry<>(D,
+                                        unmodifiableCollection(asList("MRR", "TRR", "QR", "CCB", "MPCB", "AR", "DRB",
+                                                "DAR", "FRR", "LRR"))),
+                                new SimpleEntry<>(E,
+                                        unmodifiableCollection(
+                                                asList("AR", "ORR", "GS upgrades", "SW upgrades", "CRR", "ELR"))),
+                                new SimpleEntry<>(F, unmodifiableCollection(asList("EOM", "MCR")))))),
+                templateEngine,
+                new PDFEngine(domMutator, objectDrawerFactory, supplier));
     }
 
     @Test
@@ -142,10 +142,9 @@ class BaseCatalogPDFDocumentCreatorTest {
             assert nonNull(is);
 
             catalog = objectMapper.readValue(
-                is,
-                objectMapper.getTypeFactory()
-                    .constructParametricType(Catalog.class, BaseRequirement.class)
-            );
+                    is,
+                    objectMapper.getTypeFactory()
+                            .constructParametricType(Catalog.class, BaseRequirement.class));
         }
 
         LocalDateTime now = LocalDateTime.now();
@@ -154,7 +153,6 @@ class BaseCatalogPDFDocumentCreatorTest {
         ctx.put("DATUM", now.format(DateTimeFormatter.ofPattern("dd.MM.YYYY")));
         ctx.put("DOKUMENT", "DUMMY-XY-Z-1940/DV7");
         ctx.put("${DRD_DOCID}", "DUMMY_DOC");
-
 
         // act
         File actual = creator.createDocument("4711", catalog, ctx);
@@ -176,7 +174,6 @@ class BaseCatalogPDFDocumentCreatorTest {
         ctx.put("DOKUMENT", "DUMMY-XY-Z-1940/DV7");
         ctx.put("${DRD_DOCID}", "DUMMY_DOC");
 
-
         // act
         File actual = creator.createDocument("4711", catalog, ctx);
 
@@ -192,10 +189,9 @@ class BaseCatalogPDFDocumentCreatorTest {
             assert nonNull(is);
 
             catalog = objectMapper.readValue(
-                is,
-                objectMapper.getTypeFactory()
-                    .constructParametricType(Catalog.class, BaseRequirement.class)
-            );
+                    is,
+                    objectMapper.getTypeFactory()
+                            .constructParametricType(Catalog.class, BaseRequirement.class));
         }
 
         Map<String, Object> platzhalter = new HashMap<>();
@@ -227,10 +223,9 @@ class BaseCatalogPDFDocumentCreatorTest {
             assert nonNull(is);
 
             catalog = objectMapper.readValue(
-                is,
-                objectMapper.getTypeFactory()
-                    .constructParametricType(Catalog.class, BaseRequirement.class)
-            );
+                    is,
+                    objectMapper.getTypeFactory()
+                            .constructParametricType(Catalog.class, BaseRequirement.class));
         }
 
         // act

@@ -643,6 +643,22 @@ class CatalogServiceImplTest {
     }
 
     @Test
+    void createCatalog_BaseNotExistingRevisedNotUploaded_EmptyReturned() {
+        // arrange
+        Catalog<BaseRequirement> compare = Catalog.<BaseRequirement>builder().version("9.0.0").build();
+
+        given(repositoryMock.getCatalog("9.0.0"))
+                .willReturn(empty());
+
+        // act
+        Optional<File> actual = service.createCatalog("9.0.0", compare);
+
+        // assert
+        assertThat(actual).isEmpty();
+        verify(repositoryMock, times(1)).getCatalog("9.0.0");
+    }
+
+    @Test
     void createCatalog_OriginalNotExistsRevisedUploaded_EmptyReturned() {
         // arrange
         String base = "8.3.0";

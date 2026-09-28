@@ -54,6 +54,4 @@ public class BaseCatalogueElement extends CatalogueElement {
 
     private boolean changed;
 
-    @Singular
-    private Collection<DRDElement> drds;
 }

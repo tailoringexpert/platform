@@ -19,24 +19,32 @@
  * <http://www.gnu.org/licenses/gpl-3.0.html>.
  * #L%
  */
-package eu.tailoringexpert.tailoring;
+package eu.tailoringexpert.domain;
 
-import org.mapstruct.Mapper;
+import static java.util.Arrays.stream;
+import static java.util.stream.Collectors.toMap;
 
-import eu.tailoringexpert.TailoringexpertMapperConfig;
-import eu.tailoringexpert.domain.BaseCatalogEntity;
-import eu.tailoringexpert.domain.BaseRequirement;
-import eu.tailoringexpert.domain.Catalog;
+import java.util.Map;
+import java.util.function.Function;
 
-/**
- * Mapper used by {@link JPABaseRequirementsProviderRepository} to convert
- * domain and entity objects.
- *
- * @author Michael Bädorf
- */
-@Mapper(config = TailoringexpertMapperConfig.class)
-public abstract class JPABaseRequirementsProviderRepositoryMapper {
+import lombok.Getter;
 
-    abstract Catalog<BaseRequirement> getBaseCatalog(BaseCatalogEntity entity);
+public enum LevelType {
+    EXCLUDE("-"),
+    EQUAL("+"),
+    DEFAULT("");
 
+    @Getter
+    private String value;
+
+    LevelType(String value) {
+        this.value = value;
+    }
+
+    private static Map<String, LevelType> reverseLookup = stream(values())
+            .collect(toMap(e -> e.value, Function.identity()));
+
+    public static LevelType fromString(final String id) {
+        return reverseLookup.getOrDefault(id, DEFAULT);
+    }
 }
