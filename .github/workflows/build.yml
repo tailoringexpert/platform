@@ -5,7 +5,7 @@
 # be able to push to it. By storing the badges in a dedicated branch, this is not
 # an issue (just don't put any required checks or required reviews on the badges
 # branch). Note that since we won't be storing anything else in the badges branch,
-# we just put them in the root of that branch.
+# we just put them in the root of that branch. 
 #
 # IMPORTANT: Take note of the 2 checkout steps that are necessary for this variation.
 # The first is the usual checkout step. The second checks out the dedicated badges branch
@@ -20,7 +20,7 @@
 # It performs the following steps:
 # 1) It starts with the usual checkout.
 # 2) It does a second checkout of the badges branch, nesting it inside of the
-#    other within the path badges. So locally within the rest of this workflow run,
+#    other within the path badges. So locally within the rest of this workflow run, 
 #    we'll have access to the badges branch within a badges directory.
 # 3) Sets up Java for JDK 17 (change details if you
 #    use a different Java version).
@@ -29,7 +29,7 @@
 #    then change package to test. Jacoco is configured to run
 #    during the test phase, so either one is sufficient for the
 #    purposes of this example.
-# 5) Runs the jacoco-badge-generator to generate both the
+# 5) Runs the jacoco-badge-generator to generate both the 
 #    coverage and branches coverage badges, storing them in the
 #    directory, badges, rather than in the action's default. The way
 #    we nested the checkout steps, this is equivalent to the root of
@@ -41,13 +41,13 @@
 #    can use for this step instead if you wish. In this example, we just
 #    use a simple command line script. It sets the committer to the
 #    GitHub Actions bot. Also notice that this step is conditional and
-#    only runs if the workflow was triggered by a push or workflow_dispatch,
-#    and not by a pull request. Why?  Well, for one, the workflow will be
-#    in a detached head state if triggered by a pull request.  Additionally,
-#    you may or may not choose to merge a pull request, and should only really
-#    update the coverage badges if you choose to accept the changes by merging
-#    the pull request, at which point this will be handled by the push that
-#    occurs with the merge.
+#    only runs if the workflow was triggered by a push or workflow_dispatch, 
+#    and not by a pull request. Why?  Well, for one, the workflow will be 
+#    in a detached head state if triggered by a pull request.  Additionally, 
+#    you may or may not choose to merge a pull request, and should only really 
+#    update the coverage badges if you choose to accept the changes by merging 
+#    the pull request, at which point this will be handled by the push that 
+#    occurs with the merge. 
 # 8) The last step uploads the JaCoCo reports as a workflow artifact.
 #    In this way, if you want to inspect the details, you can do so
 #    via the actions tab of your repository. That step essentially attaches
@@ -67,57 +67,58 @@ on:
 
 jobs:
   build:
+
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout
-        uses: actions/checkout@v7
+    - name: Checkout
+      uses: actions/checkout@v7
 
-      - name: Branch name
-        run: echo running on branch ${GITHUB_REF##*/}
+    - name: Branch name
+      run: echo running on branch ${GITHUB_REF##*/}
 
-      - name: Checkout badges branch dedicated to storing badges only
-        uses: actions/checkout@v7
-        with:
-          ref: badges
-          path: badges
+    - name: Checkout badges branch dedicated to storing badges only
+      uses: actions/checkout@v7
+      with:
+        ref: badges
+        path: badges
 
-      - name: Set up JDK 25
-        uses: actions/setup-java@v6
-        with:
-          distribution: "temurin"
-          java-version: "25"
+    - name: Set up JDK 17
+      uses: actions/setup-java@v6.0.1
+      with:
+        distribution: 'adopt'
+        java-version: '17'
 
-      - name: Build with Maven
-        run: mvn -B package
+    - name: Build with Maven
+      run: mvn -B package
 
-      - name: Generate Jacoco Badge
-        id: jacoco
-        uses: cicirello/jacoco-badge-generator@v2
-        with:
-          badges-directory: badges
-          generate-branches-badge: true
-          jacoco-csv-file: tailoringexpert-coverage/target/site/jacoco-aggregate-ut/jacoco.csv
+    - name: Generate Jacoco Badge
+      id: jacoco
+      uses: cicirello/jacoco-badge-generator@v2
+      with:
+        badges-directory: badges
+        generate-branches-badge: true
+        jacoco-csv-file: tailoringexpert-coverage/target/site/jacoco-aggregate-ut/jacoco.csv
 
-      - name: Log coverage percentage
-        run: |
-          echo "coverage = ${{ steps.jacoco.outputs.coverage }}"
-          echo "branches = ${{ steps.jacoco.outputs.branches }}"
+    - name: Log coverage percentage
+      run: |
+        echo "coverage = ${{ steps.jacoco.outputs.coverage }}"
+        echo "branches = ${{ steps.jacoco.outputs.branches }}"
 
-      - name: Commit and push
-        if: ${{ github.event_name != 'pull_request' }}
-        run: |
-          cd badges
-          if [[ `git status --porcelain *.svg` ]]; then
-            git config --global user.name 'github-actions'
-            git config --global user.email '41898282+github-actions[bot]@users.noreply.github.com'
-            git add *.svg
-            git commit -m "Autogenerated JaCoCo coverage badge" *.svg
-            git push
-          fi
+    - name: Commit and push
+      if: ${{ github.event_name != 'pull_request' }}
+      run: |
+        cd badges
+        if [[ `git status --porcelain *.svg` ]]; then
+          git config --global user.name 'github-actions'
+          git config --global user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add *.svg
+          git commit -m "Autogenerated JaCoCo coverage badge" *.svg
+          git push
+        fi
 
-      - name: Upload Jacoco coverage report
-        uses: actions/upload-artifact@v7
-        with:
-          name: jacoco-report
-          path: tailoringexpert-coverage/target/site/jacoco-aggregate-ut/
+    - name: Upload Jacoco coverage report
+      uses: actions/upload-artifact@v7
+      with:
+        name: jacoco-report
+        path: tailoringexpert-coverage/target/site/jacoco-aggregate-ut/
