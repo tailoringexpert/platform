@@ -8,27 +8,13 @@ on:
   workflow_dispatch:
     inputs:
       version:
-        description: 'Version number'     
+        description: "Version number"
         required: true
 
 jobs:
-  evaluate-release-manager:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Evaluate release manager
-        id: check_release_manager
-        run: echo "status=${{contains(secrets.RELEASE_MANAGER, github.actor)}}" >> $GITHUB_OUTPUT
-      - name: Show evaluation result
-        run: echo "User ${{github.actor}} is release manager ${{steps.check_release_manager.output.status}}"
-
-    outputs:
-      status: ${{steps.check_release_manager.outputs.status }}
-
   create-changelog:
     runs-on: ubuntu-latest
-    needs: evaluate-release-manager
 
-    if: ${{needs.evaluate-release-manager.outputs.status == 'true'}}
     steps:
       - name: Show user inputs
         run: |
