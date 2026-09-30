@@ -1,0 +1,30 @@
+name: CI/CD Pipeline
+
+on:
+  workflow_dispatch:
+    inputs:
+      RELEASE_BUILD:
+        description: "Create a release"
+        type: boolean
+        default: false
+      DEPLOY:
+        description: "Deploy to tailoringxpert repo"
+        type: boolean
+        default: false
+      DEPLOY_TO_CUSTOM_REPOSITORY:
+        description: "Select also to maven repo defined by profile custom-maven"
+        type: boolean
+        default: false
+      BRANCH:
+        description: "Branch to checkout"
+        type: string
+        default: "develop"
+
+jobs:
+  placeholder-job:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Initialer GitHub Actions Platzhalter
+        run: |
+          echo "Workflow erfolgreich auf main registriert."
+          echo "Du kannst diesen Workflow nun auf jedem beliebigen Branch ausführen und testen."
