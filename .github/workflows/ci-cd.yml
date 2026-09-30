@@ -16,15 +16,13 @@ on:
         type: boolean
         default: false
       BRANCH:
-        description: "Branch to checkout"
+        description: "Branch to checkout (Ignored if RELEASE_BUILD is true)"
         type: string
         default: "develop"
 
 jobs:
-  placeholder-job:
+  skeleton:
     runs-on: ubuntu-latest
     steps:
-      - name: Initialer GitHub Actions Platzhalter
-        run: |
-          echo "Workflow erfolgreich auf main registriert."
-          echo "Du kannst diesen Workflow nun auf jedem beliebigen Branch ausführen und testen."
+      - name: Platzhalter
+        run: echo "Dieses Skelett dient nur zur UI-Registrierung auf main."
