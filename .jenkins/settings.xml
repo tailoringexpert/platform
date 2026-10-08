@@ -4,6 +4,12 @@
     xsi:schemaLocation="http://maven.apache.org/SETTINGS/1.0.0 http://maven.apache.org/xsd/settings-1.0.0.xsd">
 
     <servers>
+        <!--deprecated to be used until jenkins updated-->
+        <server>
+            <id>tailoringexpert</id>
+            <username>${MAVEN_CREDENTIALS_USR}</username>
+            <password>${MAVEN_CREDENTIALS_PSW}</password>
+        </server>
         <server>
             <id>tailoringexpert-maven</id>
             <username>${NEXUS_CREDENTIALS_USR}</username>
@@ -25,6 +31,19 @@
     </servers>
 
     <profiles>
+        <profile>
+            <id>default</id>
+            <activation>
+                <activeByDefault>true</activeByDefault>
+            </activation>
+            <properties>
+                <server.snapshot>${MAVEN_SERVERID}</server.snapshot>
+                <server.release>${MAVEN_SERVERID}</server.release>
+                <tailoringexpert-releases.repository>${MAVEN_RELEASEURL}</tailoringexpert-releases.repository>
+                <tailoringexpert-snapshots.repository>${MAVEN_SNAPSHOTURL}</tailoringexpert-snapshots.repository>
+                <tailoringexpert.repository>${MAVEN_URL}</tailoringexpert.repository>
+            </properties>
+        </profile>
         <profile>
             <id>tailoringexpert-maven</id>
             <activation>
