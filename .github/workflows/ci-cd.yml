@@ -42,8 +42,7 @@ jobs:
   pipeline:
     runs-on: ubuntu-latest
 
-    environment: github
-    #${{ github.event.inputs.ENVIRONMENT }}
+    environment: ${{ github.event.inputs.ENVIRONMENT }}
 
     permissions:
       contents: read
