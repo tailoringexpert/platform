@@ -3,71 +3,73 @@ name: CI/CD Pipeline
 on:
   workflow_dispatch:
     inputs:
+      ENVIRONMENT:
+        description: "Target"
+        type: choice
+        required: true
+        default: "github"
+        options:
+          - "github"
+          - "tailoringexpert"
+      DEPLOY:
+        description: "Deploy to repo"
+        type: boolean
+        default: false
       RELEASE_BUILD:
         description: "Create a release"
         type: boolean
         default: false
-      DEPLOY:
-        description: "Deploy to tailoringxpert repo"
-        type: boolean
-        default: false
-      DEPLOY_TO_CUSTOM_REPOSITORY:
-        description: "Select also to maven repo defined by profile custom-maven"
-        type: boolean
-        default: false
-      BRANCH:
-        description: "Branch to checkout (Ignored if RELEASE_BUILD is true)"
-        type: string
-        default: "develop"
 
-# Verhindert, dass alte Builds Log-Speicher blockieren (Entspricht buildDiscarder)
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: false
 
 env:
-  # Statische Variablen
-  GIT_REPOSITORY: "tailoringexpert/platform.git"
-  M2_REPO_PATH: ${{ github.workspace }}/.m2/repository
-
-  # Bezieht Umgebungsvariablen/Secrets aus den GitHub Secrets
-  GIT_CREDENTIALS: ${{ secrets.GIT_CREDENTIALS }}
-  GPG_SIGNKEY: ${{ secrets.GIT_GPG_SIGNKEY }}
-  SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-
-  GIT_COMMITTER_NAME: ${{ secrets.GIT_COMMITTER_NAME }}
+  GIT_COMMITTER_NAME: ${{ vars.GIT_COMMITTER_NAME }}
   GIT_COMMITTER_EMAIL: ${{ secrets.GIT_COMMITTER_EMAIL }}
-  MAVEN_SNAPSHOTURL: ${{ secrets.MAVEN_SNAPSHOTURL }}
-  MAVEN_RELEASEURL: ${{ secrets.MAVEN_RELEASEURL }}
-  MAVEN_CREDENTIALS_USR: ${{ secrets.MAVEN_CREDENTIALS_USR }}
-  MAVEN_CREDENTIALS_PSW: ${{ secrets.MAVEN_CREDENTIALS_PSW }}
+  GPG_SIGNKEY: ${{ secrets.GIT_GPG_SIGNKEY }}
+  
+  M2_REPO_PATH: ${{ github.workspace }}/.m2/repository
+  MAVEN_SNAPSHOTURL: ${{ vars.MAVEN_SNAPSHOTURL || secrets.MAVEN_SNAPSHOTURL}}
+  MAVEN_RELEASEURL: ${{ vars.MAVEN_RELEASEURL || secrets.MAVEN_RELEASEURL }}
+  MAVEN_CREDENTIALS_USR: ${{ secrets.MAVEN_CREDENTIALS_USR || github.actor}}
+  MAVEN_CREDENTIALS_PSW: ${{ secrets.MAVEN_CREDENTIALS_PSW || secrets.GITHUB_TOKEN }}
 
-  # Hier korrigiert (Typo 'CREDENDITALS' entfernt)
-  DOCKER_CREDENTIALS_USR: ${{ secrets.DOCKER_CREDENTIALS_USR }}
-  DOCKER_CREDENTIALS_PSW: ${{ secrets.DOCKER_CREDENTIALS_PSW }}
+  SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+  SONAR_HOSTURL: ${{ vars.SONAR_HOSTURL || secrets.SONAR_HOSTURL }}
 
 jobs:
   pipeline:
     runs-on: ubuntu-latest
 
-    container:
-      # WICHTIG: vars.DOCKER_URL muss in den GitHub Settings -> Variables eingetragen sein!
-      image: ${{ vars.DOCKER_URL }}/tailoringexpert/maven:3.9-eclipse-25
+    environment: ${{ github.event.inputs.ENVIRONMENT }}
 
-      # Direktes Mapping der echten GitHub-Secrets (da env-Kontext hier noch nicht existiert)
-      credentials:
-        username: ${{ secrets.DOCKER_CREDENTIALS_USR }}
-        password: ${{ secrets.DOCKER_CREDENTIALS_PSW }}
+    permissions:
+      contents: read
+      packages: write
+
+    container:
+      image: ghcr.io/tailoringexpert/maven:3.9-eclipse-25
+      #options: -user 1001:127
+      env:
+        GIT_COMMITTER_NAME: ${{ env.GIT_COMMITTER_NAME }}
+        GIT_COMMITTER_EMAIL: ${{ env.GIT_COMMITTER_EMAIL }}
+        MAVEN_SERVERID: ${{ github.event.inputs.ENVIRONMENT }}
+        MAVEN_SNAPSHOTURL: ${{ env.MAVEN_SNAPSHOTURL }}
+        MAVEN_RELEASEURL: ${{ env.MAVEN_RELEASEURL }}
+        MAVEN_CREDENTIALS_USR: ${{ env.MAVEN_CREDENTIALS_USR }}
+        MAVEN_CREDENTIALS_PSW: ${{ env.MAVEN_CREDENTIALS_PSW }}
+        SONAR_TOKEN: ${{ env.SONAR_TOKEN }}
 
     steps:
-      - name: Checkout Code
+      - name: Checkout code
         uses: actions/checkout@v4
         with:
-          ref: ${{ github.event.inputs.RELEASE_BUILD == 'true' && 'develop' || github.event.inputs.BRANCH }}
-          token: ${{ env.GIT_CREDENTIALS }} # Korrigiert auf env.GIT_CREDENTIALS (Großschreibung)
+          ref: ${{ github.event.inputs.RELEASE_BUILD == 'true' && 'develop' ||  github.ref_name }}
+          token: ${{ secrets.GITHUB_TOKEN }} 
           fetch-depth: 0
 
-      - name: Cache Maven Packages
+      - name: Cache maven packages
         uses: actions/cache@v4
         with:
           path: ${{ env.M2_REPO_PATH }}
@@ -75,39 +77,49 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-maven-
 
-      - name: Import GPG Key
+      - name: Import gpg key
         run: |
           echo "${{ env.GPG_SIGNKEY }}" | gpg --batch --import || true
 
       - name: Build
         run: |
-          mvn --settings .jenkins/settings.xml -Dmaven.repo.local=${{ env.M2_REPO_PATH }} -DskipTests clean compile -P tailoringexpert-maven
-
+          mvn --settings .jenkins/settings.xml -Dmaven.repo.local=${{ env.M2_REPO_PATH }} -DskipTests clean compile 
+          
       - name: Verify
         run: |
-          mvn --settings .jenkins/settings.xml -Dmaven.repo.local=${{ env.M2_REPO_PATH }} verify -P tailoringexpert-maven
+          mvn --settings .jenkins/settings.xml -Dmaven.repo.local=${{ env.M2_REPO_PATH }} verify 
 
-      - name: Upload JaCoCo Coverage Report
+      - name: Upload JaCoCo coverage report
         if: success()
         uses: actions/upload-artifact@v4
         with:
           name: jacoco-report
           path: "**/target/site/jacoco/"
 
-      - name: SonarQube Analysis
+      - name: Perform quality check
+        timeout-minutes: 60
         run: |
-          mvn --settings .jenkins/settings.xml -Dmaven.repo.local=${{ env.M2_REPO_PATH }} sonar:sonar -P tailoringexpert-maven
-        env:
-          SONAR_TOKEN: ${{ env.SONAR_TOKEN }}
+          mvn --settings .jenkins/settings.xml \
+              -Dmaven.repo.local=${{ env.M2_REPO_PATH }}/repository \
+              sonar:sonar \
+              -Dsonar.token=${{ env.SONAR_TOKEN }} \
+              -Dsonar.host.url="https://sonar.michael-baedorf.de"
+
+      - name: Check quality gate
+        uses: sonarsource/sonarqube-quality-gate-action@master
+        timeout-minutes: 60
+        with:
+          scanMetadataReportFile: ./target/sonar/report-task.txt
 
       - name: Install
         run: |
-          mvn --settings .jenkins/settings.xml -Dmaven.repo.local=${{ env.M2_REPO_PATH }} -DskipTests install -P tailoringexpert-maven
+          mvn --settings .jenkins/settings.xml -Dmaven.repo.local=${{ env.M2_REPO_PATH }} -DskipTests install
 
-      # Release-Vorbereitung (NUR lokal im Runner, kein Push zurück zu GitHub)
-      - name: Gitflow Release (Lokaler Build & Verifizierung)
+      - name: Release
         if: ${{ github.event.inputs.RELEASE_BUILD == 'true' }}
         run: |
+          git config --global --add safe.directory "$GITHUB_WORKSPACE"
+
           git config --global user.name "${{ env.GIT_COMMITTER_NAME }}"
           git config --global user.email "${{ env.GIT_COMMITTER_EMAIL }}"
           git config --global commit.gpgsign true
@@ -115,4 +127,13 @@ jobs:
           GPG_KEY_ID=$(gpg --list-secret-keys --keyid-format LONG | grep sec | awk '{print $2}' | cut -d'/' -f2)
           git config --global user.signingkey "$GPG_KEY_ID"
 
-          mvn --settings .jenkins/settings.xml -Dmaven.repo.local=${{ env.M2_REPO_PATH }} -B -Dresume=false -DpushChanges=false -DargLine='-DprocessAllModules --settings .jenkins/settings.xml -Dmaven.repo.local=/home/maven/.m2 --settings .jenkins/settings.xml -P tailoringexpert-maven' -DskipTestProject=true -DgpgSignTag=true -DgpgSignCommit=true gitflow:release -P tailoringexpert-maven
+          mvn --settings .jenkins/settings.xml -Dmaven.repo.local=${{ env.M2_REPO_PATH }} -B -Dresume=false -DpushChanges=false -DargLine='-DprocessAllModules --settings .jenkins/settings.xml -Dmaven.repo.local=/home/maven/.m2' -DskipTestProject=true -DgpgSignTag=true -DgpgSignCommit=true gitflow:release
+      
+      - name: Deploy
+        if: ${{ github.event.inputs.DEPLOY == 'true' }}
+        run: |
+          mvn --settings .jenkins/settings.xml \
+              -Dmaven.repo.local=${{ env.M2_REPO_PATH }} \
+              -DskipTests \
+              deploy              
+
