@@ -6,14 +6,9 @@
     <servers>
         <!--deprecated to be used until jenkins updated-->
         <server>
-            <id>tailoringexpert</id>
+            <id>${MAVEN_SERVERID}</id>
             <username>${MAVEN_CREDENTIALS_USR}</username>
             <password>${MAVEN_CREDENTIALS_PSW}</password>
-        </server>
-        <server>
-            <id>tailoringexpert-maven</id>
-            <username>${NEXUS_CREDENTIALS_USR}</username>
-            <password>${NEXUS_CREDENTIALS_PSW}</password>
         </server>
         <server>
             <id>custom-maven</id>
@@ -42,19 +37,6 @@
                 <tailoringexpert-releases.repository>${MAVEN_RELEASEURL}</tailoringexpert-releases.repository>
                 <tailoringexpert-snapshots.repository>${MAVEN_SNAPSHOTURL}</tailoringexpert-snapshots.repository>
                 <tailoringexpert.repository>${MAVEN_URL}</tailoringexpert.repository>
-            </properties>
-        </profile>
-        <profile>
-            <id>tailoringexpert-maven</id>
-            <activation>
-                <activeByDefault>true</activeByDefault>
-            </activation>
-            <properties>
-                <server.snapshot>tailoringexpert-maven</server.snapshot>
-                <server.release>tailoringexpert-maven</server.release>
-                <tailoringexpert-releases.repository>${NEXUS_RELEASEURL}</tailoringexpert-releases.repository>
-                <tailoringexpert-snapshots.repository>${NEXUS_SNAPSHOTURL}</tailoringexpert-snapshots.repository>
-                <tailoringexpert.repository>${NEXUS_URL}</tailoringexpert.repository>
             </properties>
         </profile>
         <profile>
