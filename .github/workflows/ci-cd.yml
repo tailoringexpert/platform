@@ -107,7 +107,7 @@ jobs:
               -Dmaven.repo.local=${{ env.M2_REPO_PATH }}/repository \
               sonar:sonar \
               -Dsonar.token=${{ env.SONAR_TOKEN }} \
-              -Dsonar.host.url="https://sonar.michael-baedorf.de"
+              -Dsonar.host.url=${{ env.SONAR_HOSTURL }}
 
       - name: Check quality gate
         uses: sonarsource/sonarqube-quality-gate-action@master
