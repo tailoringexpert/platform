@@ -141,7 +141,7 @@ jobs:
           fi
 
       - name: Upload Jacoco coverage report
-        uses: actions/upload-artifact@v7
+        uses: actions/upload-artifact@v6
         with:
           name: jacoco-report
           path: tailoringexpert-coverage/target/site/jacoco-aggregate-ut/
