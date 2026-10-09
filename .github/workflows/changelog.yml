@@ -1,24 +1,31 @@
-# This is a basic workflow that is manually triggered
-
 name: changelog
 
-# Controls when the action will run. Workflow runs when manually triggered using the UI
-# or API.
 on:
   workflow_dispatch:
-    inputs:
-      version:
-        description: "Version number"
-        required: true
 
 jobs:
   create-changelog:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Show user inputs
+      - name: Checkout
+        uses: actions/checkout@v7
+
+      - name: Get raw version
+        id: pom_version
+        uses: NicolasBonnin/maven-get-version-action@2b4a1032d4406603c98e3d8a2c4fa1289b59b6dd
+
+      - name: Release version
+        id: release_version
         run: |
-          echo "Version: ${{ github.event.inputs.version }}"
+          RAW_VERSION=${{ steps.pom_version.outputs.version }}
+    
+          RELEASE_VERSION=${RAW_VERSION%-SNAPSHOT}
+          RELEASE_VERSION=${RELEASE_VERSION%-snapshot}
+    
+          echo "Release Version: $RELEASE_VERSION"
+    
+          echo "version=$RELEASE_VERSION" >> $GITHUB_OUTPUT     
 
       - name: Create tag
         uses: actions/github-script@v9
@@ -27,12 +34,9 @@ jobs:
             github.rest.git.createRef({
               owner: context.repo.owner,
               repo: context.repo.repo,
-              ref: 'refs/tags/v${{ github.event.inputs.version }}',
+              ref: 'refs/tags/v${{ steps.release_version.outputs.version }}',
               sha: context.sha
             })
-
-      - name: Checkout
-        uses: actions/checkout@v7
 
       - name: Generate changelog
         id: generate_changelog
@@ -65,6 +69,6 @@ jobs:
             github.rest.git.deleteRef({
               owner: context.repo.owner,
               repo: context.repo.repo,
-              ref: 'tags/v${{ github.event.inputs.version }}',
+              ref: 'tags/v${{ steps.release_version.outputs.version }}',
               sha: context.sha
             })
