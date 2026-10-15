@@ -16,6 +16,10 @@
         <version>0.2.10-SNAPSHOT</version>
     </parent>
 
+    <properties>
+        <skip.app.deploy>true</skip.app.deploy>
+    </properties>
+
     <dependencies>
         <dependency>
             <groupId>eu.tailoringexpert</groupId>
@@ -103,7 +107,7 @@
                 <configuration>
                     <layout>ZIP</layout>
                     <classifier>exec</classifier>
-                    <finalName>tailoringexpert</finalName>
+                    <attach>true</attach>
                     <excludeGroupIds>
                         org.mariadb.jdbc,
                         org.projectlombok,
@@ -114,12 +118,131 @@
                 </configuration>
                 <executions>
                     <execution>
+                        <id>default-repackage</id>
                         <goals>
                             <goal>repackage</goal>
                         </goals>
                     </execution>
                 </executions>
             </plugin>
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-deploy-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>default-deploy</id>
+                        <phase>none</phase>
+                    </execution>
+                </executions>
+            </plugin>
+
         </plugins>
     </build>
+
+    <profiles>
+        <profile>
+            <id>deploy-snapshot</id>
+            <activation>
+                <property>
+                    <name>project.version</name>
+                    <value>regex:.*-SNAPSHOT</value>
+                </property>
+            </activation>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-deploy-plugin</artifactId>
+                        <executions>
+                            <execution>
+                                <id>deploy-jar-snapshot</id>
+                                <phase>deploy</phase>
+                                <goals>
+                                    <goal>deploy-file</goal>
+                                </goals>
+                                <configuration>
+                                    <file>${project.build.directory}/${project.build.finalName}.jar</file>
+                                    <pomFile>pom.xml</pomFile>
+                                    <repositoryId>
+                                        ${project.distributionManagement.snapshotRepository.id}</repositoryId>
+                                    <url>${tailoringexpert-snapshots.repository}</url>
+                                </configuration>
+                            </execution>
+
+                            <execution>
+                                <id>deploy-app-snapshot</id>
+                                <phase>deploy</phase>
+                                <goals>
+                                    <goal>deploy-file</goal>
+                                </goals>
+                                <configuration>
+                                    <skip>${skip.app.deploy}</skip>
+                                    <file>
+                                        ${project.build.directory}/${project.build.finalName}-exec.jar</file>
+                                    <pomFile>pom.xml</pomFile>
+                                    <classifier>exec</classifier>
+                                    <repositoryId>
+                                        ${project.distributionManagement.snapshotRepository.id}</repositoryId>
+                                    <url>${tailoringexpert-snapshots.repository}</url>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+
+        <profile>
+            <id>deploy-release</id>
+            <activation>
+                <property>
+                    <name>project.version</name>
+                    <value>regex:^((?!-SNAPSHOT).)*$</value>
+                </property>
+            </activation>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-deploy-plugin</artifactId>
+                        <executions>
+                            <execution>
+                                <id>deploy-jar-release</id>
+                                <phase>deploy</phase>
+                                <goals>
+                                    <goal>deploy-file</goal>
+                                </goals>
+                                <configuration>
+                                    <file>${project.build.directory}/${project.build.finalName}.jar</file>
+                                    <pomFile>pom.xml</pomFile>
+                                    <repositoryId>${project.distributionManagement.repository.id}</repositoryId>
+                                    <url>${tailoringexpert-releases.repository}</url>
+                                </configuration>
+                            </execution>
+
+                            <execution>
+                                <id>deploy-app-release</id>
+                                <phase>deploy</phase>
+                                <goals>
+                                    <goal>deploy-file</goal>
+                                </goals>
+                                <configuration>
+                                    <skip>${skip.app.deploy}</skip>
+                                    <file>${project.build.directory}/${project.build.finalName}.jar</file>
+                                    <pomFile>pom.xml</pomFile>
+                                    <classifier>exec</classifier>
+                                    <!-- IDs und URLs hart für den Release-Fall verdrahtet -->
+                                    <repositoryId>${project.distributionManagement.repository.id}</repositoryId>
+                                    <url>${tailoringexpert-releases.repository}</url>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+    </profiles>
+
+
 </project>

@@ -12,14 +12,6 @@
         </server>
         <server>
             <id>custom-maven</id>
-            <!-- <configuration>
-                <httpHeaders>
-                    <property>
-                        <name>${MAVEN_CUSTOM_CREDENTIALS_USR}</name>
-                        <value>${MAVEN_CUSTOM_CREDENTIALS_PSW}</value>
-                    </property>
-                </httpHeaders>
-            </configuration> -->
             <username>${MAVEN_CUSTOM_CREDENTIALS_USR}</username>
             <password>${MAVEN_CUSTOM_CREDENTIALS_PSW}</password>
         </server>
