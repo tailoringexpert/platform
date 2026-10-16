@@ -83,17 +83,15 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-maven-
 
-      # - name: Import gpg key
-      #   run: |
-      #     echo "${{ env.GIT_GPG_SIGNKEY }}" | gpg --batch --import || true
-
       - name: Build
         run: |
-          mvn --settings .jenkins/settings.xml -Dmaven.repo.local=${{ env.M2_REPO_PATH }} -DskipTests clean compile
+          mvn --settings .jenkins/settings.xml -Dmaven.repo.local=${{ env.M2_REPO_PATH }} -DskipTests \
+              clean compile
 
       - name: Verify
         run: |
-          mvn --settings .jenkins/settings.xml -Dmaven.repo.local=${{ env.M2_REPO_PATH }} verify
+          mvn --settings .jenkins/settings.xml -Dmaven.repo.local=${{ env.M2_REPO_PATH }} \
+              verify
 
       - name: Upload JaCoCo coverage report
         if: success()
@@ -107,9 +105,7 @@ jobs:
         run: |
           mvn --settings .jenkins/settings.xml \
               -Dmaven.repo.local=${{ env.M2_REPO_PATH }}/repository \
-              sonar:sonar \
-              -Dsonar.token=${{ env.SONAR_TOKEN }} \
-              -Dsonar.host.url=${{ env.SONAR_HOSTURL }}
+              sonar:sonar
 
       - name: Check quality gate
         uses: sonarsource/sonarqube-quality-gate-action@7a5fffe8e523c40e0c740b6bc2712ab503e52efa
@@ -119,51 +115,22 @@ jobs:
 
       - name: Install
         run: |
-          mvn --settings .jenkins/settings.xml -Dmaven.repo.local=${{ env.M2_REPO_PATH }} -DskipTests install
+          mvn --settings .jenkins/settings.xml -Dmaven.repo.local=${{ env.M2_REPO_PATH }} -DskipTests \
+              install
 
       - name: Release
         if: ${{ github.event.inputs.RELEASE_BUILD == 'true' }}
         run: |
-          echo "${{ env.GIT_GPG_SIGNKEY }}" | gpg --batch --import || true
-          GIT_GPG_KEY_ID=$(gpg --list-secret-keys --keyid-format LONG | grep sec | awk '{print $2}' | cut -d'/' -f2)
-          git config --global user.signingkey "$GIT_GPG_KEY_ID"
-          git config --global commit.gpgsign true
-
-          git config --global --add safe.directory "$GITHUB_WORKSPACE"
-
-          git config --global user.name "${{ env.GIT_COMMITTER_NAME }}"
-          git config --global user.email "${{ env.GIT_COMMITTER_EMAIL }}"
-
+          setup-git.sh
           mvn --settings .jenkins/settings.xml -Dmaven.repo.local=${{ env.M2_REPO_PATH }} -B -Dresume=false -DpushChanges=false \
              -DargLine='-DprocessAllModules --settings .jenkins/settings.xml -Dmaven.repo.local=/home/maven/.m2' \
-             -DskipTestProject=true -DgpgSignTag=true -DgpgSignCommit=true gitflow:release
+             -DskipTestProject=true -DgpgSignTag=true -DgpgSignCommit=true \
+             gitflow:release
 
       - name: Deploy
         if: ${{ github.event.inputs.DEPLOY == 'true' }}
         run: |
-          mkdir -p ~/.gnupg
-          chmod 700 ~/.gnupg
-          echo "pinentry-mode loopback" > ~/.gnupg/gpg.conf
-          echo "allow-loopback-pinentry" > ~/.gnupg/gpg-agent.conf
-          chmod 600 ~/.gnupg/*
-
-          # 2. Schlüssel in temporäre Datei schreiben
-          cat << 'EOF' > /tmp/gpg_key.asc
-          ${{ env.MAVEN_GPG_SIGNKEY }}
-          EOF
-
-          # 3. Importieren und gezielt NUR die ID dieses Imports extrahieren
-          # status-fd 1 zwingt GPG, den Import-Status auf STDOUT auszugeben
-          MAVEN_GPG_KEY_ID=$(gpg --status-fd 1 --batch --import /tmp/gpg_key.asc | awk '/\[GNUPG:\] IMPORT_OK/ {print $4}')
-
-          echo "Exakte Maven GPG-ID: $MAVEN_GPG_KEY_ID"
-          rm -f /tmp/gpg_key.asc
-
-          if [ -z "$MAVEN_GPG_KEY_ID" ]; then
-            echo "Fehler: Der Maven-Schlüssel konnte nicht importiert werden!"
-            exit 1
-          fi
-
+          setup-maven-gpg.sh
           mvn --settings .jenkins/settings.xml -Dmaven.repo.local=${{ env.M2_REPO_PATH }} \
               -DskipTests \
               -Dgpg.arguments="--pinentry-mode loopback" \
