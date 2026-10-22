@@ -111,11 +111,64 @@ class TenantFactoryTest {
     }
 
     @Test
-    void datasource_ValidConfigRootPropertyFileExists_TenantDataSourceReturned() throws Exception {
+    void datasource_ValidConfigRootPropertyFileExistsNoSkipVar_FilledTenantDataSourceReturned() throws Exception {
         // arrange
         String tenantConfigRoot = Paths.get("tenants").toAbsolutePath().toString();
         File file = createFile();
         Properties properties = createProperties();
+
+        doReturn(Stream.of(file.toPath()))
+                .when(factory).findByFileExtension(Paths.get(tenantConfigRoot), ".properties");
+        doReturn(properties)
+                .when(factory).loadProperties(file);
+        doReturn(createDefaultDataSource())
+                .when(factory).buildDataSource(properties);
+
+        // act
+        DataSource actual = factory.dataSource();
+
+        // assert
+        assertThat(actual)
+                .isNotNull()
+                .isInstanceOf(TenantDataSource.class);
+        assertThat(((TenantDataSource) actual).getResolvedDataSources())
+                .hasSize(1)
+                .containsKey("demo");
+    }
+
+    @Test
+    void datasource_ValidConfigRootPropertyFileExistsSkipVarTrue_EmptyTenantDataSourceReturned() throws Exception {
+        // arrange
+        String tenantConfigRoot = Paths.get("tenants").toAbsolutePath().toString();
+        File file = createFile();
+        Properties properties = createProperties();
+        properties.put("skip", "true");
+
+        doReturn(Stream.of(file.toPath()))
+                .when(factory).findByFileExtension(Paths.get(tenantConfigRoot), ".properties");
+        doReturn(properties)
+                .when(factory).loadProperties(file);
+        doReturn(createDefaultDataSource())
+                .when(factory).buildDataSource(properties);
+
+        // act
+        DataSource actual = factory.dataSource();
+
+        // assert
+        assertThat(actual)
+                .isNotNull()
+                .isInstanceOf(TenantDataSource.class);
+        assertThat(((TenantDataSource) actual).getResolvedDataSources())
+                .isEmpty();
+    }
+
+        @Test
+    void datasource_ValidConfigRootPropertyFileExistsSkipVarFalse_FilledTenantDataSourceReturned() throws Exception {
+        // arrange
+        String tenantConfigRoot = Paths.get("tenants").toAbsolutePath().toString();
+        File file = createFile();
+        Properties properties = createProperties();
+        properties.put("skip", "false");
 
         doReturn(Stream.of(file.toPath()))
                 .when(factory).findByFileExtension(Paths.get(tenantConfigRoot), ".properties");

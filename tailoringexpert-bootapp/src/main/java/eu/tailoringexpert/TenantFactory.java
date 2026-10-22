@@ -32,6 +32,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Properties;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -63,9 +64,12 @@ public class TenantFactory {
             files.map(Path::toFile)
                     .forEach(propertyFile -> {
                         final Properties tenantProperties = loadProperties(propertyFile);
-                        final String tenantId = tenantProperties.getProperty("id");
-                        final String tenantName = tenantProperties.getProperty("name");
-                        TenantContext.registerTenant(tenantId, tenantName);
+                        Optional.of(tenantProperties.getProperty("skip", "false"))
+                                .filter(s -> !Boolean.parseBoolean(s)).ifPresent(s -> {
+                                    final String tenantId = tenantProperties.getProperty("id");
+                                    final String tenantName = tenantProperties.getProperty("name");
+                                    TenantContext.registerTenant(tenantId, tenantName);
+                                });
                     });
         }
         return TenantContext.getRegisteredTenants();
@@ -85,9 +89,12 @@ public class TenantFactory {
                     .forEach(propertyFile -> {
                         log.debug(propertyFile.getAbsolutePath());
                         final Properties tenantProperties = loadProperties(propertyFile);
-                        final String tenantId = tenantProperties.getProperty("id");
-                        final DataSource tenantDataSource = buildDataSource(tenantProperties);
-                        resolvedDataSources.put(tenantId, tenantDataSource);
+                        Optional.of(tenantProperties.getProperty("skip", "false"))
+                                .filter(s -> !Boolean.parseBoolean(s)).ifPresent(s -> {
+                                    final String tenantId = tenantProperties.getProperty("id");
+                                    final DataSource tenantDataSource = buildDataSource(tenantProperties);
+                                    resolvedDataSources.put(tenantId, tenantDataSource);
+                                });
                     });
         }
         if (resolvedDataSources.isEmpty()) {
