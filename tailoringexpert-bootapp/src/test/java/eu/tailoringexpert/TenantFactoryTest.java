@@ -111,7 +111,7 @@ class TenantFactoryTest {
     }
 
     @Test
-    void datasource_ValidConfigRootPropertyFileExistsNoSkipVar_FilledTenantDataSourceReturned() throws Exception {
+    void datasource_ValidConfigRootPropertyFileExistsNoConfgiureVar_EmptyTenantDataSourceReturned() throws Exception {
         // arrange
         String tenantConfigRoot = Paths.get("tenants").toAbsolutePath().toString();
         File file = createFile();
@@ -132,17 +132,16 @@ class TenantFactoryTest {
                 .isNotNull()
                 .isInstanceOf(TenantDataSource.class);
         assertThat(((TenantDataSource) actual).getResolvedDataSources())
-                .hasSize(1)
-                .containsKey("demo");
+                .isEmpty();
     }
 
     @Test
-    void datasource_ValidConfigRootPropertyFileExistsSkipVarTrue_EmptyTenantDataSourceReturned() throws Exception {
+    void datasource_ValidConfigRootPropertyFileExistsConfigureVarFalse_EmptyTenantDataSourceReturned() throws Exception {
         // arrange
         String tenantConfigRoot = Paths.get("tenants").toAbsolutePath().toString();
         File file = createFile();
         Properties properties = createProperties();
-        properties.put("skip", "true");
+        properties.put("configure", "false");
 
         doReturn(Stream.of(file.toPath()))
                 .when(factory).findByFileExtension(Paths.get(tenantConfigRoot), ".properties");
@@ -163,12 +162,12 @@ class TenantFactoryTest {
     }
 
         @Test
-    void datasource_ValidConfigRootPropertyFileExistsSkipVarFalse_FilledTenantDataSourceReturned() throws Exception {
+    void datasource_ValidConfigRootPropertyFileExistsConfigureTrue_FilledTenantDataSourceReturned() throws Exception {
         // arrange
         String tenantConfigRoot = Paths.get("tenants").toAbsolutePath().toString();
         File file = createFile();
         Properties properties = createProperties();
-        properties.put("skip", "false");
+        properties.put("configure", "true");
 
         doReturn(Stream.of(file.toPath()))
                 .when(factory).findByFileExtension(Paths.get(tenantConfigRoot), ".properties");
