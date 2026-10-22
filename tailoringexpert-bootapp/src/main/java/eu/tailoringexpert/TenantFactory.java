@@ -64,8 +64,8 @@ public class TenantFactory {
             files.map(Path::toFile)
                     .forEach(propertyFile -> {
                         final Properties tenantProperties = loadProperties(propertyFile);
-                        Optional.of(tenantProperties.getProperty("skip", "false"))
-                                .filter(s -> !Boolean.parseBoolean(s)).ifPresent(s -> {
+                        Optional.of(tenantProperties.getProperty("configure", "true"))
+                                .filter(Boolean::parseBoolean).ifPresent(s -> {
                                     final String tenantId = tenantProperties.getProperty("id");
                                     final String tenantName = tenantProperties.getProperty("name");
                                     TenantContext.registerTenant(tenantId, tenantName);
@@ -89,8 +89,8 @@ public class TenantFactory {
                     .forEach(propertyFile -> {
                         log.debug(propertyFile.getAbsolutePath());
                         final Properties tenantProperties = loadProperties(propertyFile);
-                        Optional.of(tenantProperties.getProperty("skip", "false"))
-                                .filter(s -> !Boolean.parseBoolean(s)).ifPresent(s -> {
+                        Optional.of(tenantProperties.getProperty("configure", "false"))
+                                .filter(Boolean::parseBoolean).ifPresent(s -> {
                                     final String tenantId = tenantProperties.getProperty("id");
                                     final DataSource tenantDataSource = buildDataSource(tenantProperties);
                                     resolvedDataSources.put(tenantId, tenantDataSource);
