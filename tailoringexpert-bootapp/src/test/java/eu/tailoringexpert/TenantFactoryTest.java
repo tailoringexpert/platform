@@ -111,63 +111,11 @@ class TenantFactoryTest {
     }
 
     @Test
-    void datasource_ValidConfigRootPropertyFileExistsNoConfgiureVar_EmptyTenantDataSourceReturned() throws Exception {
+    void datasource_ValidConfigRootPropertyFileExists_TenantDataSourceReturned() throws Exception {
         // arrange
         String tenantConfigRoot = Paths.get("tenants").toAbsolutePath().toString();
         File file = createFile();
         Properties properties = createProperties();
-
-        doReturn(Stream.of(file.toPath()))
-                .when(factory).findByFileExtension(Paths.get(tenantConfigRoot), ".properties");
-        doReturn(properties)
-                .when(factory).loadProperties(file);
-        doReturn(createDefaultDataSource())
-                .when(factory).buildDataSource(properties);
-
-        // act
-        DataSource actual = factory.dataSource();
-
-        // assert
-        assertThat(actual)
-                .isNotNull()
-                .isInstanceOf(TenantDataSource.class);
-        assertThat(((TenantDataSource) actual).getResolvedDataSources())
-                .isEmpty();
-    }
-
-    @Test
-    void datasource_ValidConfigRootPropertyFileExistsConfigureVarFalse_EmptyTenantDataSourceReturned() throws Exception {
-        // arrange
-        String tenantConfigRoot = Paths.get("tenants").toAbsolutePath().toString();
-        File file = createFile();
-        Properties properties = createProperties();
-        properties.put("configure", "false");
-
-        doReturn(Stream.of(file.toPath()))
-                .when(factory).findByFileExtension(Paths.get(tenantConfigRoot), ".properties");
-        doReturn(properties)
-                .when(factory).loadProperties(file);
-        doReturn(createDefaultDataSource())
-                .when(factory).buildDataSource(properties);
-
-        // act
-        DataSource actual = factory.dataSource();
-
-        // assert
-        assertThat(actual)
-                .isNotNull()
-                .isInstanceOf(TenantDataSource.class);
-        assertThat(((TenantDataSource) actual).getResolvedDataSources())
-                .isEmpty();
-    }
-
-        @Test
-    void datasource_ValidConfigRootPropertyFileExistsConfigureTrue_FilledTenantDataSourceReturned() throws Exception {
-        // arrange
-        String tenantConfigRoot = Paths.get("tenants").toAbsolutePath().toString();
-        File file = createFile();
-        Properties properties = createProperties();
-        properties.put("configure", "true");
 
         doReturn(Stream.of(file.toPath()))
                 .when(factory).findByFileExtension(Paths.get(tenantConfigRoot), ".properties");
