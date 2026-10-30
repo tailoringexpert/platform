@@ -105,7 +105,7 @@
         <skipFeatureVersion>true</skipFeatureVersion>
 
         <!-- plugins -->
-        <jacoco-maven-plugin.version>0.8.15</jacoco-maven-plugin.version>
+        <jacoco-maven-plugin.version>0.8.16</jacoco-maven-plugin.version>
         <liquibase-maven-plugin.version>5.0.4</liquibase-maven-plugin.version>
         <spring-boot-maven-plugin.version>4.1.2</spring-boot-maven-plugin.version>
         <springdoc-openapi-maven-plugin.version>1.4</springdoc-openapi-maven-plugin.version>
