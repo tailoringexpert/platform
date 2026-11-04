@@ -39,36 +39,6 @@
         <tag>HEAD</tag>
     </scm>
 
-    <repositories>
-        <repository>
-            <id>${server.snapshot}</id>
-            <!--suppress
-                    UnresolvedMavenProperty -->
-            <url>${tailoringexpert-snapshots.repository}</url>
-        </repository>
-        <repository>
-            <id>${server.release}</id>
-            <!--suppress
-                    UnresolvedMavenProperty -->
-            <url>${tailoringexpert-releases.repository}</url>
-        </repository>
-    </repositories>
-
-    <distributionManagement>
-        <snapshotRepository>
-            <id>${server.snapshot}</id>
-            <!--suppress
-                    UnresolvedMavenProperty -->
-            <url>${tailoringexpert-snapshots.repository}</url>
-        </snapshotRepository>
-        <repository>
-            <id>${server.release}</id>
-            <!--suppress
-                    UnresolvedMavenProperty -->
-            <url>${tailoringexpert-releases.repository}</url>
-        </repository>
-    </distributionManagement>
-
     <modules>
         <module>tailoringexpert-core</module>
         <module>tailoringexpert-tenant</module>
@@ -125,8 +95,8 @@
         <maven-source-plugin.version>3.4.0</maven-source-plugin.version>
         <maven-surefire-plugin.version>3.6.1</maven-surefire-plugin.version>
         <sonar-maven-plugin.version>5.8.0.7211</sonar-maven-plugin.version>
+        <central-publishing-maven-plugin.version>0.12.0</central-publishing-maven-plugin.version>
     </properties>
-
 
     <dependencyManagement>
         <dependencies>
@@ -473,35 +443,21 @@
                 <groupId>org.sonarsource.scanner.maven</groupId>
                 <artifactId>sonar-maven-plugin</artifactId>
             </plugin>
+                        <plugin>
+                <groupId>org.sonatype.central</groupId>
+                <artifactId>central-publishing-maven-plugin</artifactId>
+                <version>${central-publishing-maven-plugin.version}</version>
+                <extensions>true</extensions>
+                <configuration>
+                    <publishingServerId>central</publishingServerId>
+                    <autoPublish>true</autoPublish>
+                    <waitUntil>published</waitUntil>
+                </configuration>
+            </plugin>
         </plugins>
     </build>
 
     <profiles>
-        <profile>
-            <id>central</id>
-            <activation>
-                <property>
-                    <name>${MAVEN_SERVERID}</name>
-                    <value>central</value>
-                </property>
-            </activation>
-            <build>
-                <plugins>
-                    <plugin>
-                        <groupId>org.sonatype.central</groupId>
-                        <artifactId>central-publishing-maven-plugin</artifactId>
-                        <version>${central-publishing-maven-plugin.version}</version>
-                        <extensions>true</extensions>
-                        <configuration>
-                            <publishingServerId>central</publishingServerId>
-                            <autoPublish>true</autoPublish>
-                            <waitUntil>published</waitUntil>
-                        </configuration>
-                    </plugin>
-                </plugins>
-            </build>
-        </profile>
-
         <profile>
             <!-- because of lombok @Builder javadoc generation problems, it is necessary to delombok
             first -->
