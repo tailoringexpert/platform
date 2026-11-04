@@ -1,19 +1,8 @@
 name: CI/CD Pipeline
 
 on:
-  #push:
-  #branches: [ "feature/#540" ]
   workflow_dispatch:
     inputs:
-      ENVIRONMENT:
-        description: "Target"
-        type: choice
-        required: true
-        default: "sonatype"
-        options:
-          - "sonatype"
-          - "github"
-          - "tailoringexpert"
       DEPLOY:
         description: "Deploy to repo"
         type: boolean
@@ -33,34 +22,29 @@ env:
   GIT_GPG_SIGNKEY: ${{ secrets.GIT_GPG_SIGNKEY }}
 
   M2_REPO_PATH: ${{ github.workspace }}/.m2/repository
-  MAVEN_SNAPSHOTURL: ${{ vars.MAVEN_SNAPSHOTURL || secrets.MAVEN_SNAPSHOTURL}}
-  MAVEN_RELEASEURL: ${{ vars.MAVEN_RELEASEURL || secrets.MAVEN_RELEASEURL }}
-  MAVEN_CREDENTIALS_USR: ${{ secrets.MAVEN_CREDENTIALS_USR || github.actor}}
-  MAVEN_CREDENTIALS_PSW: ${{ secrets.MAVEN_CREDENTIALS_PSW || secrets.GITHUB_TOKEN }}
+  MAVEN_CREDENTIALS_USR: ${{ secrets.MAVEN_CREDENTIALS_USR }}
+  MAVEN_CREDENTIALS_PSW: ${{ secrets.MAVEN_CREDENTIALS_PSW }}
   MAVEN_GPG_SIGNKEY: ${{ secrets.MAVEN_GPG_SIGNKEY }}
   MAVEN_GPG_PASSPHRASE: ${{ secrets.MAVEN_GPG_PASSPHRASE }}
 
   SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-  SONAR_HOSTURL: ${{ vars.SONAR_HOSTURL || secrets.SONAR_HOSTURL }}
+  SONAR_HOSTURL: ${{ vars.SONAR_HOSTURL }}
 
 jobs:
   pipeline:
     runs-on: ubuntu-latest
 
-    environment: ${{ github.event.inputs.ENVIRONMENT }}
+    environment: central
 
     permissions:
       contents: read
       packages: write
 
     container:
-      image: ghcr.io/tailoringexpert/maven:3.9-eclipse-25
+      image: ${{ vars.CONTAINER_IMAGE }}
       env:
         GIT_COMMITTER_NAME: ${{ env.GIT_COMMITTER_NAME }}
         GIT_COMMITTER_EMAIL: ${{ env.GIT_COMMITTER_EMAIL }}
-        MAVEN_SERVERID: ${{ github.event.inputs.ENVIRONMENT }}
-        MAVEN_SNAPSHOTURL: ${{ env.MAVEN_SNAPSHOTURL }}
-        MAVEN_RELEASEURL: ${{ env.MAVEN_RELEASEURL }}
         MAVEN_CREDENTIALS_USR: ${{ env.MAVEN_CREDENTIALS_USR }}
         MAVEN_CREDENTIALS_PSW: ${{ env.MAVEN_CREDENTIALS_PSW }}
         MAVEN_GPG_SIGNKEY: ${{ env.MAVEN_GPG_SIGNKEY }}
@@ -85,13 +69,16 @@ jobs:
 
       - name: Build
         run: |
-          mvn --settings .jenkins/settings.xml -Dmaven.repo.local=${{ env.M2_REPO_PATH }} -DskipTests \
-              clean compile
+          mvn --settings .github/settings.xml \
+              -Dmaven.repo.local=${{ env.M2_REPO_PATH }}  \
+              -DskipTests \
+            clean compile
 
       - name: Verify
         run: |
-          mvn --settings .jenkins/settings.xml -Dmaven.repo.local=${{ env.M2_REPO_PATH }} \
-              verify
+          mvn --settings .github/settings.xml \
+              -Dmaven.repo.local=${{ env.M2_REPO_PATH }} \
+            verify
 
       - name: Upload JaCoCo coverage report
         if: success()
@@ -103,30 +90,34 @@ jobs:
       - name: Perform quality check
         timeout-minutes: 60
         run: |
-          mvn --settings .jenkins/settings.xml \
+          mvn --settings .github/settings.xml \
               -Dmaven.repo.local=${{ env.M2_REPO_PATH }}/repository \
               -Dsonar.qualitygate.wait=true \
-              sonar:sonar
+             sonar:sonar
 
       - name: Install
         run: |
-          mvn --settings .jenkins/settings.xml -Dmaven.repo.local=${{ env.M2_REPO_PATH }} -DskipTests \
-              install
+          mvn --settings .github/settings.xml \
+               -Dmaven.repo.local=${{ env.M2_REPO_PATH }} \
+               -DskipTests \
+            install
 
       - name: Release
         if: ${{ github.event.inputs.RELEASE_BUILD == 'true' }}
         run: |
           setup-git.sh
-          mvn --settings .jenkins/settings.xml -Dmaven.repo.local=${{ env.M2_REPO_PATH }} -B -Dresume=false -DpushChanges=false \
-             -DargLine='-DprocessAllModules --settings .jenkins/settings.xml -Dmaven.repo.local=/home/maven/.m2' \
-             -DskipTestProject=true -DgpgSignTag=true -DgpgSignCommit=true \
-             gitflow:release
+          mvn --settings .github/settings.xml \
+              -Dmaven.repo.local=${{ env.M2_REPO_PATH }} -B -Dresume=false -DpushChanges=false \
+              -DargLine='-DprocessAllModules --settings .github/settings.xml -Dmaven.repo.local=/home/maven/.m2' \
+              -DskipTestProject=true -DgpgSignTag=true -DgpgSignCommit=true \
+            gitflow:release
 
       - name: Deploy
         if: ${{ github.event.inputs.DEPLOY == 'true' }}
         run: |
           setup-maven-gpg.sh
-          mvn --settings .jenkins/settings.xml -Dmaven.repo.local=${{ env.M2_REPO_PATH }} \
+          mvn --settings .github/settings.xml \
+              -Dmaven.repo.local=${{ env.M2_REPO_PATH }} \
               -DskipTests \
               -Dgpg.arguments="--pinentry-mode loopback" \
-              deploy
+            deploy
