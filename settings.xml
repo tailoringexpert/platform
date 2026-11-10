@@ -15,7 +15,7 @@
             <password>${MAVEN_CREDENTIALS_PSW}</password>
         </server>
     </servers>
-
+<!-- 
     <profiles>
         <profile>
             <id>central</id>
@@ -27,6 +27,6 @@
                 <sonar.token>${SONAR_TOKEN}</sonar.token>
             </properties>
         </profile>
-    </profiles>
+    </profiles> -->
 
 </settings>

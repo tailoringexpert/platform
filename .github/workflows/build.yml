@@ -1,56 +1,34 @@
 name: build
 
 on:
+  push:
+    branches:
+      - develop
   workflow_dispatch:
-    inputs:
-      DEPLOY:
-        description: "Deploy to repo"
-        type: boolean
-        default: false
-      RELEASE_BUILD:
-        description: "Create a release"
-        type: boolean
-        default: false
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: false
 
 env:
+  MAVEN_REPOSITORY: '/home/maven'
   GIT_COMMITTER_NAME: ${{ vars.GIT_COMMITTER_NAME }}
   GIT_COMMITTER_EMAIL: ${{ secrets.GIT_COMMITTER_EMAIL }}
   GIT_GPG_SIGNKEY_BASE64: ${{ secrets.GIT_GPG_SIGNKEY_BASE64 }}
-
-  MAVEN_SETTINGS: './settings.xml'
-  MAVEN_REPOSITORY: '/home/maven'
-  MAVEN_CREDENTIALS_USR: ${{ secrets.MAVEN_CREDENTIALS_USR }}
-  MAVEN_CREDENTIALS_PSW: ${{ secrets.MAVEN_CREDENTIALS_PSW }}
-  MAVEN_GPG_SIGNKEY_BASE64: ${{ secrets.MAVEN_GPG_SIGNKEY }}
-  MAVEN_GPG_PASSPHRASE: ${{ secrets.MAVEN_GPG_PASSPHRASE }}
-
   SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
   SONAR_HOSTURL: ${{ vars.SONAR_HOSTURL }}
-
-
 
 jobs:
   build:
     runs-on: ubuntu-latest
 
-  permissions:
+    permissions:
       contents: read
       packages: write
 
     container:
       image: ${{ vars.CONTAINER_IMAGE }}
       env:
-        GIT_WORKSPACE: ${{ github.workspace }}
-        GIT_COMMITTER_NAME: ${{ env.GIT_COMMITTER_NAME }}
-        GIT_COMMITTER_EMAIL: ${{ env.GIT_COMMITTER_EMAIL }}
-        MAVEN_CREDENTIALS_USR: ${{ env.MAVEN_CREDENTIALS_USR }}
-        MAVEN_CREDENTIALS_PSW: ${{ env.MAVEN_CREDENTIALS_PSW }}
-        MAVEN_GPG_SIGNKEY_BASE64:  ${{ env.MAVEN_GPG_SIGNKEY_BASE64 }}
-        MAVEN_GPG_PASSPHRASE: ${{ env.MAVEN_GPG_PASSPHRASE }}
         SONAR_TOKEN: ${{ env.SONAR_TOKEN }}
 
     steps:
@@ -65,8 +43,6 @@ jobs:
         run: |
           echo "GIT_WORKSPACE=$(pwd)" >> $GITHUB_ENV
           echo "MAVEN_SETTINGS=$(pwd)/settings.xml" >> $GITHUB_ENV
-          
-          git config --global --add safe.directory $(pwd)
 
       - name: Branch name
         run: echo running on branch ${GITHUB_REF##*/}
@@ -84,7 +60,6 @@ jobs:
         with:
           ref: badges
           path: badges
-
 
       - name: Build
         run: |
@@ -129,3 +104,11 @@ jobs:
         with:
           name: jacoco-report
           path: tailoringexpert-coverage/target/site/jacoco-aggregate-ut/
+          
+      - name: Perform quality check
+        timeout-minutes: 60
+        run: |
+          mvn --settings $MAVEN_SETTINGS \
+              -Dmaven.repo.local=$MAVEN_REPOSITORY  \
+              -Dsonar.qualitygate.wait=true \
+             sonar:sonar

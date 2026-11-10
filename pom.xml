@@ -86,7 +86,8 @@
         <sonar.projectKey>${project.groupId}:${project.artifactId}</sonar.projectKey>
         <sonar.projectName>${sonar.projectKey}</sonar.projectName>
         <sonar.exclusions>**/*MixIn.java, **/*Configuration.java, **/App.java</sonar.exclusions>
-
+        <sonar.host.url>${SONAR_HOSTURL}</sonar.host.url>
+        <sonar.token>${SONAR_TOKEN}</sonar.token>
         <skipFeatureVersion>true</skipFeatureVersion>
 
         <!-- plugins -->
@@ -418,8 +419,10 @@
                             <goal>sign</goal>
                         </goals>
                         <configuration>
-                            <keyname>${MAVEN_GPG_SIGNKEYID}</keyname>
-                            <passphrase>${MAVEN_GPG_PASSPHRASE}</passphrase>
+                            <gpgArguments>
+                                <arg>--pinentry-mode</arg>
+                                <arg>loopback</arg>
+                            </gpgArguments>
                         </configuration>
                     </execution>
                 </executions>
