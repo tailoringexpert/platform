@@ -31,13 +31,11 @@ env:
   SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
   SONAR_HOSTURL: ${{ vars.SONAR_HOSTURL }}
 
-
-
 jobs:
   build:
     runs-on: ubuntu-latest
 
-  permissions:
+    permissions:
       contents: read
       packages: write
 
