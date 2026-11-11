@@ -55,7 +55,7 @@ pipeline {
 
         SONAR_TOKEN = credentials('SONAR_SONAYTPE_TOKEN')
         SONAR_HOSTURL = "${env.SONAR_SONATYPE_HOSTURL}"
-        XDG_CONFIG_HOME = '/data/.config
+        XDG_CONFIG_HOME = "/data/.config"
         // other (external) defined env vars
         // M2_VOLUME maven      repoository volume
         // GIT_COMMITTER_NAME   name of the git committer
