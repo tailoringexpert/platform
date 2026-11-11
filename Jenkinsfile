@@ -55,7 +55,7 @@ pipeline {
 
         SONAR_TOKEN = credentials('SONAR_SONAYTPE_TOKEN')
         SONAR_HOSTURL = "${env.SONAR_SONATYPE_HOSTURL}"
-        XDG_CONFIG_HOME = "/data/.config"
+        XDG_CONFIG_HOME = "/tmp/jgit"
         // other (external) defined env vars
         // M2_VOLUME maven      repoository volume
         // GIT_COMMITTER_NAME   name of the git committer
@@ -79,8 +79,6 @@ pipeline {
         stage('build') {
             steps {
                 sh '''
-                    setup-git.sh
-                    setup-maven-gpg.sh
                     mvn --settings $MAVEN_SETTINGS  \
                         -Dmaven.repo.local=$MAVEN_REPOSITORY \
                         -DskipTests \
