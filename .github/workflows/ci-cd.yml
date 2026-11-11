@@ -123,6 +123,7 @@ jobs:
       - name: Deploy
         if: ${{ github.event.inputs.DEPLOY == 'true' }}
         run: |
+          setup-git.sh
           setup-maven-gpg.sh
           mvn --settings $MAVEN_SETTINGS \
               -Dmaven.repo.local=$MAVEN_REPOSITORY \
