@@ -34,28 +34,28 @@ pipeline {
             selectedValue: 'NONE',
             sortMode: 'NONE',
             type: 'PT_BRANCH',
-            description: 'Select target branch')
+            description: 'Select branch')
     }
 
     environment {
         GIT_REPOSITORY = 'tailoringexpert/platform.git' 
-        GIT_WORKSPACE = '/data'
         GIT_CREDENTIALS_ID = 'TAILORINGEXPERT_GITHUB_CREDENTIALS'
         GIT_CREDENTIALS = credentials('TAILORINGEXPERT_GITHUB_CREDENTIALS')
         GIT_GPG_SIGNKEY_BASE64 = credentials('GIT_GITHUB_GPG_SIGNKEY_BASE64')
         GIT_GPG_PASSPHRASE  = credentials('GIT_GITHUB_GPG_PASSPHRASE')
-
-        MAVEN_SETTINGS = "./settings.xml"
-        MAVEN_REPOSITORY = "/home/maven"
         MAVEN_CREDENTIALS = credentials('MAVEN_SONATYPE_CREDENTIALS')
-        MAVEN_CREDENTIALS_USR = "${env.MAVEN_CREDENTIALS_USR}"
-        MAVEN_CREDENTIALS_PSW = "${env.MAVEN_CREDENTIALS_PSW}"
         MAVEN_GPG_SIGNKEY_BASE64 = credentials('MAVEN_SONATYPE_GPG_SIGNKEY_BASE64')
         MAVEN_GPG_PASSPHRASE = credentials('MAVEN_SONATYPE_GPG_PASSPHRASE')
-
         SONAR_TOKEN = credentials('SONAR_SONAYTPE_TOKEN')
         SONAR_HOSTURL = "${env.SONAR_SONATYPE_HOSTURL}"
+
+        GIT_WORKSPACE = '/data'
+        MAVEN_SETTINGS = "./settings.xml"
+        MAVEN_REPOSITORY = "/home/maven"
         XDG_CONFIG_HOME = "/tmp/jgit"
+
+        MAVEN_CREDENTIALS_USR = "${env.MAVEN_CREDENTIALS_USR}"
+        MAVEN_CREDENTIALS_PSW = "${env.MAVEN_CREDENTIALS_PSW}"
         // other (external) defined env vars
         // M2_VOLUME maven      repoository volume
         // GIT_COMMITTER_NAME   name of the git committer
@@ -136,7 +136,7 @@ pipeline {
             }
         }
 
-        stage('Perform quality check') {
+        stage('quality gate') {
             options {
                 timeout(time: 60, unit: 'MINUTES')
             }
@@ -169,7 +169,7 @@ pipeline {
 
             steps {
                 sh '''
-                    setup-git.sh            
+                    . setup-git.sh            
 				    mvn --settings $MAVEN_SETTINGS -B \
                         -Dmaven.repo.local=$MAVEN_REPOSITORY \
                         -Dresume=false \
@@ -198,7 +198,7 @@ pipeline {
 
                     if (params.DEPLOY || params.RELEASE_BUILD) {
                         sh '''
-                            setup-maven-gpg.sh
+                            . setup-maven-gpg.sh
 						    mvn --settings $MAVEN_SETTINGS \
                                 -Dmaven.repo.local=$MAVEN_REPOSITORY \
                                 -DskipTests \
