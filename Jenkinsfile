@@ -9,23 +9,6 @@ pipeline {
                 -v $PWD:/data
             '''
             reuseNode true
-        
-            // args '''
-            //     --entrypoint='' \
-            //     -u 501:1000 \
-            //     -v $M2_VOLUME:/home/maven \
-            //     -v $PWD:/data \
-            //     -e GIT_WORKSPACE=/data \
-            //     -e GIT_COMMITTER_NAME=$GIT_COMMITTER_NAME \
-            //     -e GIT_COMMITTER_EMAIL=$GIT_COMMITTER_EMAIL \
-            //     -e MAVEN_REPOSITORY=$MAVEN_REPOSITORY \
-            //     -e MAVEN_CREDENTIALS_USR=$MAVEN_CREDENTIALS_USR \
-            //     -e MAVEN_CREDENTIALS_PSW=$MAVEN_CREDENTIALS_PSW \
-            //     -e SONAR_TOKEN=$SONAR_TOKEN \
-            //     -e SONAR_HOSTURL=$SONAR_SONATYPE_HOSTURL
-            //     -e SONAR_HOSTURL="${env.SONAR_SONATYPE_HOSTURL}"
-            // '''
-            reuseNode true
        }
     }
 
@@ -72,6 +55,7 @@ pipeline {
 
         SONAR_TOKEN = credentials('SONAR_SONAYTPE_TOKEN')
         SONAR_HOSTURL = "${env.SONAR_SONATYPE_HOSTURL}"
+        XDG_CONFIG_HOME = '/data/.config
         // other (external) defined env vars
         // M2_VOLUME maven      repoository volume
         // GIT_COMMITTER_NAME   name of the git committer
